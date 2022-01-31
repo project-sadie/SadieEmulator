@@ -1,0 +1,11 @@
+﻿namespace Sadie.Networking.Packets.Server.Players.Friends;
+
+public class FriendList : NetworkPacketWriter
+{
+    public FriendList(int pages, int index, int total) : base(ServerPacketIds.SendFriend)
+    {
+        WriteInt(pages);
+        WriteInt(index);
+        WriteInt(total);
+    }
+}

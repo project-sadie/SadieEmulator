@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SadieEmulator", "SadieEmulator\SadieEmulator.csproj", "{C1876B7B-B71D-41EE-A812-FF518D36D004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Database", "Sadie.Database\Sadie.Database.csproj", "{49A8F049-8021-4882-AD19-8C0FF171CC14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking", "Sadie.Networking\Sadie.Networking.csproj", "{62284185-265A-467C-AF4B-5D416D3446B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Packets", "Sadie.Networking.Packets\Sadie.Networking.Packets.csproj", "{EDB3084A-61A6-4316-9248-050FD932B7CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Players", "Sadie.Game.Players\Sadie.Game.Players.csproj", "{D3C7859C-E142-4157-915A-25DAB8125C20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Shared", "Sadie.Shared\Sadie.Shared.csproj", "{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1876B7B-B71D-41EE-A812-FF518D36D004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1876B7B-B71D-41EE-A812-FF518D36D004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1876B7B-B71D-41EE-A812-FF518D36D004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1876B7B-B71D-41EE-A812-FF518D36D004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62284185-265A-467C-AF4B-5D416D3446B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62284185-265A-467C-AF4B-5D416D3446B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62284185-265A-467C-AF4B-5D416D3446B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62284185-265A-467C-AF4B-5D416D3446B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDB3084A-61A6-4316-9248-050FD932B7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDB3084A-61A6-4316-9248-050FD932B7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDB3084A-61A6-4316-9248-050FD932B7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDB3084A-61A6-4316-9248-050FD932B7CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3C7859C-E142-4157-915A-25DAB8125C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3C7859C-E142-4157-915A-25DAB8125C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3C7859C-E142-4157-915A-25DAB8125C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3C7859C-E142-4157-915A-25DAB8125C20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

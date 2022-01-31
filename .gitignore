@@ -1,0 +1,6 @@
+*/bin
+*/obj
+*/.idea
+appsettings.json
+.idea/
+*.sln.iml
