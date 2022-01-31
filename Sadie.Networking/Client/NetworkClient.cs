@@ -1,9 +1,6 @@
-using System.Buffers.Binary;
 using System.Net.Sockets;
 using Sadie.Game.Players;
 using Sadie.Networking.Packets;
-using System.Text;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Client
 {

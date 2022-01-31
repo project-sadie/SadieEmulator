@@ -1,5 +1,4 @@
-﻿using System.Buffers.Binary;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
 using Sadie.Networking.Packets;
 using Sadie.Shared;
