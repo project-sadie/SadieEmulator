@@ -32,7 +32,7 @@ namespace Sadie.Database
                 using (GetConnection()) { }
                 return true;
             }
-            catch (MySqlException e)
+            catch (MySqlException)
             {
                 return false;
             }
