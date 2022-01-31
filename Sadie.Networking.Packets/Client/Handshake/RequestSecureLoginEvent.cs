@@ -36,7 +36,7 @@ namespace Sadie.Networking.Packets.Client.Handshake
             
             var (foundPlayer, player) = await _playerRepository.TryGetPlayerBySsoAsync(sso);
 
-            if (!foundPlayer)
+            if (!foundPlayer || player == null) // put the second check to shut my IDE up about nullable markings.
             {
                 _logger.LogWarning($"Failed to find a player with sso token '{sso}'");
                 

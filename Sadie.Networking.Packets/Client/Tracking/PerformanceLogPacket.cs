@@ -4,9 +4,9 @@ namespace Sadie.Networking.Packets.Client.Tracking
 {
     public class PerformanceLogPacket : INetworkPacketEvent
     {
-        public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+        public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
         {
-            
+            return Task.CompletedTask;
         }
     }
 }

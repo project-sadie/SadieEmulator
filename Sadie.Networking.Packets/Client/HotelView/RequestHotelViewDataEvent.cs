@@ -8,7 +8,6 @@ public class RequestHotelViewDataEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var unknown1 = reader.ReadString();
-        Console.WriteLine($"Received [ '{unknown1}' ] via hotel view");
         
         if (unknown1.Contains(';'))
         {

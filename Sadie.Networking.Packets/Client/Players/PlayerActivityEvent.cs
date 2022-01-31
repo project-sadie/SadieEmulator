@@ -31,9 +31,9 @@ public class PlayerActivityEvent : INetworkPacketEvent
 
     private async Task OnLoginAsync(INetworkClient networkClient)
     {
-        var player = networkClient.Player;
+        var player = networkClient.Player!;
         
-        if (player == null || !_playerRepository.TryAddPlayer(player))
+        if (!_playerRepository.TryAddPlayer(player))
         {
             _logger.LogWarning($"Player {player.Id} could not be registered");
             networkClient.Dispose();
