@@ -13,4 +13,6 @@ public static class SadieConstants
                                            "</cross-domain-policy>\x0";
 
     public static string DateTimeFormat => "yyyy-MM-dd HH:mm:ss";
+    
+    public static string MockHeightmap = "00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000";
 }

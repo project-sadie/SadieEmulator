@@ -31,4 +31,9 @@ public class ServerPacketIds
     public const short RoomCategories = 1562;
     public const short PlayerFriendRequests = 280;
     public const short PlayerSanctionStatus = 2221;
+    public const short LoadedRoom = 758;
+    public const short RoomInformation = 2031;
+    public const short RoomPaint = 2454;
+    public const short RoomRelativeMap = 2753;
+    public const short RoomHeightMap = 1301;
 }

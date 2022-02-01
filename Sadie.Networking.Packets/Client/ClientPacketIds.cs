@@ -27,5 +27,8 @@ namespace Sadie.Networking.Packets.Client
         public const int RequestFriendRequest = 2448;
         public const int PlayerSanctionStatus = 2746;
         public const int RequestTargetOffer = 2487;
+        public const int LoadRoom = 2312;
+        public const int UnknownEvent3 = 2519;
+        public const int GetRoomHeightmap = 3898;
     }
 }

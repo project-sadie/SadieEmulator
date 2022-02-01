@@ -20,6 +20,7 @@ using Sadie.Networking.Packets.Client.Navigator;
 using Sadie.Networking.Packets.Client.Players;
 using Sadie.Networking.Packets.Client.Players.Club;
 using Sadie.Networking.Packets.Client.Players.Friends;
+using Sadie.Networking.Packets.Client.Rooms;
 using Sadie.Networking.Packets.Client.Tracking;
 using Sadie.Networking.Packets.Client.Unknown;
 
@@ -86,6 +87,13 @@ namespace SadieEmulator
                 [ClientPacketIds.RequestFriendRequest] = new RequestFriendRequestEvent(),
                 [ClientPacketIds.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),
                 [ClientPacketIds.RequestTargetOffer] = new UnknownEvent2(),
+                [ClientPacketIds.LoadRoom] = new LoadRoomEvent(),
+                [ClientPacketIds.UnknownEvent3] = new UnknownEvent3(),
+                [ClientPacketIds.GetRoomHeightmap] = new GetRoomHeightmapEvent(),
+                // 21
+                // 796
+                // 219
+                // 3320
             });
             
             serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
