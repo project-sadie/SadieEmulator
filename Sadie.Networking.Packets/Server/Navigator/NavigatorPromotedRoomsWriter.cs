@@ -4,6 +4,8 @@ public class NavigatorPromotedRoomsWriter : NetworkPacketWriter
 {
     public NavigatorPromotedRoomsWriter() : base(ServerPacketId.NavigatorPromotedRooms)
     {
+        // TODO: Pass structure in 
+        
         WriteInt(2);
         WriteString("");
         WriteInt(0);

@@ -4,8 +4,6 @@ public class HotelViewDataWriter : NetworkPacketWriter
 {
     public HotelViewDataWriter(string key, string value) : base(ServerPacketId.HotelViewData)
     {
-        Console.WriteLine($"Sending [ key: '{key}', value: '{value}' ] via hotel view");
-        
         WriteString(key);
         WriteString(value);
     }

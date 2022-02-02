@@ -4,6 +4,8 @@ public class PlayerMeMenuSettingsWriter : NetworkPacketWriter
 {
     public PlayerMeMenuSettingsWriter() : base(ServerPacketId.PlayerMeMenuSettings)
     {
+        // TODO: Pass structure in 
+        
         WriteInt(100);
         WriteInt(100);
         WriteInt(100); 

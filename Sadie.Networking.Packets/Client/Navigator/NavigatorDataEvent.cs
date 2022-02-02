@@ -1,5 +1,6 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Navigator;
+using Sadie.Shared;
 
 namespace Sadie.Networking.Packets.Client.Navigator;
 
@@ -9,7 +10,9 @@ public class NavigatorDataEvent : INetworkPacketEvent
     {
         await client.WriteToStreamAsync(new NavigatorMetaDataWriter().GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter().GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter().GetAllBytes());
+        
+        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(SadieConstants.NavigatorCategories).GetAllBytes());
+        
         await client.WriteToStreamAsync(new NavigatorSavedSearchesWriter().GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorEventCategoriesWriter().GetAllBytes());
     }

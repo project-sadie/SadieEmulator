@@ -4,6 +4,8 @@ public class PlayerSanctionStatusWriter : NetworkPacketWriter
 {
     public PlayerSanctionStatusWriter() : base(ServerPacketId.PlayerSanctionStatus)
     {
+        // TODO: Pass structure in 
+        
         WriteBoolean(false);
         WriteBoolean(false);
         WriteString("ALERT");

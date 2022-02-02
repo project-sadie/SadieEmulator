@@ -2,9 +2,9 @@
 
 internal class RoomDataWriter : NetworkPacketWriter
 {
-    internal RoomDataWriter(int roomId) : base(ServerPacketId.RoomData)
+    internal RoomDataWriter(int roomId, string modelName) : base(ServerPacketId.RoomData)
     {
-        WriteString("model");
+        WriteString(modelName);
         WriteInt(roomId);
     }
 }

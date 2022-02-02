@@ -4,6 +4,8 @@ public class PlayerClubMembershipWriter : NetworkPacketWriter
 {
     public PlayerClubMembershipWriter(string subscription) : base(ServerPacketId.PlayerClubMembership)
     {
+        // TODO: Pass structure in 
+        
         WriteString(subscription);
         WriteInt(0);
         WriteInt(0);

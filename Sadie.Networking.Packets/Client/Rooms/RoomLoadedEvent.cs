@@ -11,7 +11,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         var password = reader.ReadString();
 
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
-        await client.WriteToStreamAsync(new RoomDataWriter(roomId).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomDataWriter(roomId, "model").GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
     }
 }

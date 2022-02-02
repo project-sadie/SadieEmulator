@@ -2,10 +2,10 @@
 
 public class PlayerPermissionsWriter : NetworkPacketWriter
 {
-    public PlayerPermissionsWriter(int club, int rank, bool ambassadar) : base(ServerPacketId.PlayerPermissions)
+    public PlayerPermissionsWriter(int club, int rank, bool ambassador) : base(ServerPacketId.PlayerPermissions)
     {
         WriteInt(club);
         WriteInt(rank);
-        WriteBoolean(ambassadar);
+        WriteBoolean(ambassador);
     }
 }

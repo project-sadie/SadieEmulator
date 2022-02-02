@@ -49,7 +49,7 @@ namespace Sadie.Networking.Packets.Client.Handshake
             await client.WriteToStreamAsync(new PlayerEffectListWriter().GetAllBytes());
             await client.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
             await client.WriteToStreamAsync(new PlayerIdentityWriter().GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerPermissionsWriter(1, 1, 2).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
             await client.WriteToStreamAsync(new PlayerStatusWriter().GetAllBytes());
             
             await _playerRepository.ResetSsoTokenForPlayerAsync(player.Id);
