@@ -3,7 +3,7 @@ using Sadie.Networking.Packets.Server.Players.Purse;
 
 namespace Sadie.Networking.Packets.Client.Players;
 
-public class RequestPlayerBalancePacket : INetworkPacketEvent
+public class PlayerBalanceEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {

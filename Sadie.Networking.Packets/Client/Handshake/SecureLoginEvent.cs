@@ -11,12 +11,12 @@ using Sadie.Shared;
 
 namespace Sadie.Networking.Packets.Client.Handshake
 {
-    public class RequestSecureLoginEvent : INetworkPacketEvent
+    public class SecureLoginEvent : INetworkPacketEvent
     {
-        private readonly ILogger<RequestSecureLoginEvent> _logger;
+        private readonly ILogger<SecureLoginEvent> _logger;
         private readonly IPlayerRepository _playerRepository;
         
-        public RequestSecureLoginEvent(ILogger<RequestSecureLoginEvent> logger, IPlayerRepository playerRepository)
+        public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository)
         {
             _logger = logger;
             _playerRepository = playerRepository;

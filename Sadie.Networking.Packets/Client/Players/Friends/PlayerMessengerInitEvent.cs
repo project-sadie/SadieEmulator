@@ -3,7 +3,7 @@ using Sadie.Networking.Packets.Server.Players.Friends;
 
 namespace Sadie.Networking.Packets.Client.Players.Friends;
 
-public class RequestInitFriendsEvent : INetworkPacketEvent
+public class PlayerMessengerInitEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {

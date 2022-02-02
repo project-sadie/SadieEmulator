@@ -3,7 +3,7 @@ using Sadie.Networking.Packets.Server.HotelView;
 
 namespace Sadie.Networking.Packets.Client.HotelView;
 
-public class RequestHotelViewDataEvent : INetworkPacketEvent
+public class HotelViewDataEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {

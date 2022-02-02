@@ -25,7 +25,7 @@ public class NetworkPacketWriter
         _packet.Write(reverse ? data.Reverse().ToArray() : data);
     }
 
-    public void WriteShort(short data)
+    protected void WriteShort(short data)
     {
         WriteBytes(BitConverter.GetBytes(data), true);
     }

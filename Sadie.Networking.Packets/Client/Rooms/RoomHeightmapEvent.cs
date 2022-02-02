@@ -3,7 +3,7 @@ using Sadie.Networking.Packets.Server.Rooms;
 
 namespace Sadie.Networking.Packets.Client.Rooms;
 
-public class GetRoomHeightmapEvent : INetworkPacketEvent
+public class RoomHeightmapEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {

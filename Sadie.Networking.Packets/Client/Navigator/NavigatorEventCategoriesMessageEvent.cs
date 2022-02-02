@@ -3,7 +3,7 @@ using Sadie.Networking.Packets.Server.Navigator;
 
 namespace Sadie.Networking.Packets.Client.Navigator;
 
-public class GetEventCategoriesMessageEvent : INetworkPacketEvent
+public class NavigatorEventCategoriesMessageEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
