@@ -7,6 +7,6 @@ public class PlayerMeMenuSettingsEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerMeMenuSettings().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter().GetAllBytes());
     }
 }

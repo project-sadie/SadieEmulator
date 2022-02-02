@@ -7,6 +7,6 @@ public class PromotedRoomsEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PromotedRooms().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorPromotedRoomsWriter().GetAllBytes());
     }
 }

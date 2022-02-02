@@ -9,7 +9,7 @@ public class PlayerDataEvent : INetworkPacketEvent
     {
         var playerData = (Game.Players.PlayerData) client.Player!;
 
-        await client.WriteToStreamAsync(new PlayerData(playerData).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerPerks().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerDataWriter(playerData).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerPerksWriter().GetAllBytes());
     }
 }

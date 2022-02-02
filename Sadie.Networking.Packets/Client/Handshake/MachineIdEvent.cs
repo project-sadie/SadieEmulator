@@ -7,7 +7,7 @@ namespace Sadie.Networking.Packets.Client.Handshake
     {
         public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
         {
-            await client.WriteToStreamAsync(new SendUniqueMachineIdPacket(reader.ReadString()).GetAllBytes());
+            await client.WriteToStreamAsync(new MachineIdWriter(reader.ReadString()).GetAllBytes());
         }
     }
 }

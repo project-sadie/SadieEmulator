@@ -7,6 +7,6 @@ public class HotelViewBonusRareEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new HotelViewBonusRare().GetAllBytes());
+        await client.WriteToStreamAsync(new HotelViewBonusRareWriter().GetAllBytes());
     }
 }

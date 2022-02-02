@@ -7,10 +7,10 @@ public class NavigatorDataEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new NavigatorMetaDataParser().GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorLiftedRooms().GetAllBytes());
-        await client.WriteToStreamAsync(new NewNavigatorCollapsedCategories().GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorSavedSearches().GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorEventCategories().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorMetaDataWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorSavedSearchesWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorEventCategoriesWriter().GetAllBytes());
     }
 }

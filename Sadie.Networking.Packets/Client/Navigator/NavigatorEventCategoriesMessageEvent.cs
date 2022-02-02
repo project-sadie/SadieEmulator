@@ -7,6 +7,6 @@ public class NavigatorEventCategoriesMessageEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new NavigatorSettings().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorSettingsWriter().GetAllBytes());
     }
 }

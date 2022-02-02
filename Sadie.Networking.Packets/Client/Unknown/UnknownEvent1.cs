@@ -7,6 +7,6 @@ public class UnknownEvent1 : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerIgnoredUsers().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerIgnoredUsersWriter().GetAllBytes());
     }
 }

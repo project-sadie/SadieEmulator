@@ -7,6 +7,6 @@ public class PlayerSanctionStatusEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerSanctionStatus().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerSanctionStatusWriter().GetAllBytes());
     }
 }

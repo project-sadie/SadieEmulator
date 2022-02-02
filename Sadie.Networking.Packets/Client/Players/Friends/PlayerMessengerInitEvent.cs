@@ -7,6 +7,6 @@ public class PlayerMessengerInitEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new MessengerInitComposer().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerMessengerInitWriter().GetAllBytes());
     }
 }

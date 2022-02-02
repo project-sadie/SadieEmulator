@@ -7,7 +7,7 @@ public class RoomHeightmapEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new RoomRelativeMap().GetAllBytes());
-        await client.WriteToStreamAsync(new RoomHeightMap().GetAllBytes());
+        await client.WriteToStreamAsync(new RoomRelativeMapWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new RoomHeightMapWriter().GetAllBytes());
     }
 }

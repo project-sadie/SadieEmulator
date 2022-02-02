@@ -7,6 +7,6 @@ public class PlayerFriendRequestsListEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerFriendRequests().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerFriendRequestsWriter().GetAllBytes());
     }
 }

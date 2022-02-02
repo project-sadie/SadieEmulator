@@ -7,6 +7,6 @@ public class RoomCategoriesEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new RoomCategories().GetAllBytes());
+        await client.WriteToStreamAsync(new RoomCategoriesWriter().GetAllBytes());
     }
 }

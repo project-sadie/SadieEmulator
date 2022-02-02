@@ -44,13 +44,13 @@ namespace Sadie.Networking.Packets.Client.Handshake
                 return;
             }
 
-            await client.WriteToStreamAsync(new SecureLoginOkPacket().GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerHomeRoomPacket(player.HomeRoom, 0).GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerEffectList().GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerClothingList().GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerIdentity().GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerPermissions().GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerStatus().GetAllBytes());
+            await client.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, 0).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerEffectListWriter().GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerIdentityWriter().GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerPermissionsWriter(1, 1, 2).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerStatusWriter().GetAllBytes());
             
             await _playerRepository.ResetSsoTokenForPlayerAsync(player.Id);
             
