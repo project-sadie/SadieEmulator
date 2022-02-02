@@ -2,7 +2,7 @@
 
 public class PlayerActivityPointsBalanceWriter : NetworkPacketWriter
 {
-    public PlayerActivityPointsBalanceWriter(long pixels, long seasonPoints, long gotwPoints) : base(ServerPacketId.PlayerPermissions)
+    public PlayerActivityPointsBalanceWriter(long pixels, long seasonPoints, long gotwPoints) : base(ServerPacketId.PlayerActivityPointsBalance)
     {
         
         WriteInt(11);//Count

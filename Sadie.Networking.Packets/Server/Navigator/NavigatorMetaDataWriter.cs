@@ -2,7 +2,7 @@ namespace Sadie.Networking.Packets.Server.Navigator;
 
 public class NavigatorMetaDataWriter : NetworkPacketWriter
 {
-    public NavigatorMetaDataWriter() : base(ServerPacketId.NavigatorMetaDataParserComposer)
+    public NavigatorMetaDataWriter() : base(ServerPacketId.NavigatorMetaData)
     {
         WriteInt(0);
     }

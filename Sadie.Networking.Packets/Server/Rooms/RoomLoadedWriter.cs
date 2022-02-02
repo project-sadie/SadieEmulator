@@ -2,7 +2,7 @@
 
 internal class RoomLoadedWriter : NetworkPacketWriter
 {
-    internal RoomLoadedWriter() : base(ServerPacketId.LoadedRoom)
+    internal RoomLoadedWriter() : base(ServerPacketId.RoomLoaded)
     {
     }
 }

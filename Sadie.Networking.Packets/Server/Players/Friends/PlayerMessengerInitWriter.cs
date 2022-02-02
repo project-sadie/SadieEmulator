@@ -2,7 +2,7 @@
 
 public class PlayerMessengerInitWriter : NetworkPacketWriter
 {
-    public PlayerMessengerInitWriter() : base(ServerPacketId.MessengerInitComposer)
+    public PlayerMessengerInitWriter() : base(ServerPacketId.PlayerMessengerInit)
     {
         WriteInt(int.MaxValue);
         WriteInt(1337); // unknown1

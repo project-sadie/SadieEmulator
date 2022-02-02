@@ -2,7 +2,7 @@
 
 public class NavigatorPromotedRoomsWriter : NetworkPacketWriter
 {
-    public NavigatorPromotedRoomsWriter() : base(ServerPacketId.PromotedRooms)
+    public NavigatorPromotedRoomsWriter() : base(ServerPacketId.NavigatorPromotedRooms)
     {
         WriteInt(2);
         WriteString("");
