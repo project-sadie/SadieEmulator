@@ -62,38 +62,34 @@ namespace SadieEmulator
 
             serviceCollection.AddSingleton(provider => new ConcurrentDictionary<int, INetworkPacketEvent>
             {
-                [ClientPacketId.ReceiveClientVersion] = new ClientVersionEvent(),
-                [ClientPacketId.ReceiveClientVariables] = new ClientVariablesEvent(),
-                [ClientPacketId.ReceivedUniqueMachineId] = new MachineIdEvent(),
-                [ClientPacketId.TrySecureLogin] = new SecureLoginEvent(provider.GetRequiredService<ILogger<SecureLoginEvent>>(), provider.GetRequiredService<IPlayerRepository>()),
+                [ClientPacketId.ClientVersion] = new ClientVersionEvent(),
+                [ClientPacketId.ClientVariables] = new ClientVariablesEvent(),
+                [ClientPacketId.MachineId] = new MachineIdEvent(),
+                [ClientPacketId.SecureLogin] = new SecureLoginEvent(provider.GetRequiredService<ILogger<SecureLoginEvent>>(), provider.GetRequiredService<IPlayerRepository>()),
                 [ClientPacketId.PerformanceLog] = new PerformanceLogEvent(),
                 [ClientPacketId.PlayerActivity] = new PlayerActivityEvent(provider.GetRequiredService<ILogger<PlayerActivityEvent>>(), provider.GetRequiredService<IPlayerRepository>()),
                 [ClientPacketId.PlayerData] = new PlayerDataEvent(),
-                [ClientPacketId.RequestPlayerBalance] = new PlayerBalanceEvent(),
-                [ClientPacketId.RequestPlayerClubMembership] = new PlayerClubMembershipEvent(),
-                [ClientPacketId.RequestNewNavigatorData] = new NavigatorDataEvent(),
-                [ClientPacketId.RequestFriendsEvent] = new PlayerFriendsListEvent(),
-                [ClientPacketId.RequestInitFriendsEvent] = new PlayerMessengerInitEvent(),
-                [ClientPacketId.PingEvent] = new PlayerPingEvent(),
+                [ClientPacketId.PlayerBalance] = new PlayerBalanceEvent(),
+                [ClientPacketId.PlayerClubMembership] = new PlayerClubMembershipEvent(),
+                [ClientPacketId.NavigatorData] = new NavigatorDataEvent(),
+                [ClientPacketId.PlayerFriendsList] = new PlayerFriendsListEvent(),
+                [ClientPacketId.PlayerMessengerInit] = new PlayerMessengerInitEvent(),
+                [ClientPacketId.PlayerPing] = new PlayerPingEvent(),
                 [ClientPacketId.HotelViewData] = new HotelViewDataEvent(),
                 [ClientPacketId.PlayerUsername] = new PlayerUsernameEvent(),
                 [ClientPacketId.PlayerMeMenuSettings] = new PlayerMeMenuSettingsEvent(),
                 [ClientPacketId.HotelViewBonusRare] = new HotelViewBonusRareEvent(),
                 [ClientPacketId.UnknownEvent1] = new UnknownEvent1(),
-                [ClientPacketId.GameCenterRequestGames] = new RequestGameCenterConfigEvent(),
-                [ClientPacketId.RequestPromotedRooms] = new PromotedRoomsEvent(),
-                [ClientPacketId.RequestRoomCategories] = new RoomCategoriesEvent(),
-                [ClientPacketId.GetEventCategories] = new NavigatorEventCategoriesMessageEvent(),
-                [ClientPacketId.RequestFriendRequest] = new PlayerFriendRequestsListEvent(),
+                [ClientPacketId.GameCenterRequestGames] = new RequestGameCenterConfigEvent(), // CLEAN PACKET NAME
+                [ClientPacketId.PromotedRooms] = new PromotedRoomsEvent(),
+                [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(),
+                [ClientPacketId.NavigatorEventCategories] = new NavigatorEventCategoriesEvent(),
+                [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsListEvent(),
                 [ClientPacketId.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),
-                [ClientPacketId.RequestTargetOffer] = new UnknownEvent2(),
-                [ClientPacketId.LoadRoom] = new RoomLoadedEvent(),
+                [ClientPacketId.UnknownEvent2] = new UnknownEvent2(),
+                [ClientPacketId.RoomLoaded] = new RoomLoadedEvent(),
                 [ClientPacketId.UnknownEvent3] = new UnknownEvent3(),
-                [ClientPacketId.GetRoomHeightmap] = new RoomHeightmapEvent(),
-                // 21
-                // 796
-                // 219
-                // 3320
+                [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(),
             });
             
             serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
