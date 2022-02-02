@@ -44,6 +44,8 @@ namespace Sadie.Networking.Packets.Client.Handshake
                 return;
             }
 
+            await client.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
+            
             await _playerRepository.ResetSsoTokenForPlayerAsync(player.Id);
             
             client.Player = player;
