@@ -8,7 +8,11 @@ public class PlayerFactory
     {
         return new Player(
             record.Get<long>("id"),
-            record.Get<long>("home_room_id")
+            record.Get<string>("username"),
+            record.Get<long>("home_room_id"),
+            record.Get<string>("figure_code"),
+            record.Get<string>("motto"),
+            record.Get<char>("gender") == 'M' ? PlayerAvatarGender.Male : PlayerAvatarGender.Female
         );
     }
 }

@@ -11,7 +11,7 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(string ssoToken)
     {
-        var reader = await GetReaderAsync("SELECT `players`.`id`, `players`.`sso_token`, `player_data`.`username`, `player_data`.`home_room_id` FROM `players` INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
+        var reader = await GetReaderAsync("SELECT `players`.`id`, `player_data`.`username`, `player_data`.`home_room_id`, `player_data`.`figure_code`, `player_data`.`motto`, `player_data`.`gender` FROM `players` INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
         {
             { "ssoToken", ssoToken }
         });
