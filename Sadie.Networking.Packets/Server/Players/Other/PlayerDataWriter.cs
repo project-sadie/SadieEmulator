@@ -11,7 +11,7 @@ public class PlayerDataWriter : NetworkPacketWriter
         WriteString(playerData.FigureCode);
         WriteString(playerData.Gender == PlayerAvatarGender.Male ? "M" : "F");
         WriteString(playerData.Motto);
-        WriteString("");
+        WriteString(playerData.Username);
         WriteBoolean(false); // unknown1
         WriteInt(0); // respect points received
         WriteInt(0); // respect points
