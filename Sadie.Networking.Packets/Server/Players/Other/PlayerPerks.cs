@@ -2,7 +2,7 @@
 
 public class PlayerPerks : NetworkPacketWriter
 {
-    public PlayerPerks() : base(ServerPacketIds.PlayerPerks)
+    public PlayerPerks() : base(ServerPacketId.PlayerPerks)
     {
         WriteInt(13);
         

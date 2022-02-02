@@ -2,7 +2,7 @@
 
 public class PlayerClub : NetworkPacketWriter
 {
-    public PlayerClub(string subscription) : base(ServerPacketIds.PlayerClub)
+    public PlayerClub(string subscription) : base(ServerPacketId.PlayerClub)
     {
         WriteString(subscription);
         WriteInt(0);

@@ -4,7 +4,7 @@ namespace Sadie.Networking.Packets.Server.Rooms;
 
 internal class RoomHeightMap : NetworkPacketWriter
 {
-    internal RoomHeightMap() : base(ServerPacketIds.RoomHeightMap)
+    internal RoomHeightMap() : base(ServerPacketId.RoomHeightMap)
     {
         WriteBoolean(true);
         WriteInt(-1);

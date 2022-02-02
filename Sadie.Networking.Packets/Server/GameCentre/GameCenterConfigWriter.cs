@@ -2,7 +2,7 @@
 
 public class GameCenterConfigWriter : NetworkPacketWriter
 {
-    public GameCenterConfigWriter() : base(ServerPacketIds.GameCentreConfiguration)
+    public GameCenterConfigWriter() : base(ServerPacketId.GameCentreConfiguration)
     {
         WriteInt(0);
         WriteInt(0);

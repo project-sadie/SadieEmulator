@@ -2,7 +2,7 @@ namespace Sadie.Networking.Packets.Server.Navigator;
 
 public class NewNavigatorCollapsedCategories : NetworkPacketWriter
 {
-    public NewNavigatorCollapsedCategories() : base(ServerPacketIds.NewNavigatorCollapsedCategories)
+    public NewNavigatorCollapsedCategories() : base(ServerPacketId.NewNavigatorCollapsedCategories)
     {
         WriteInt(46);
         WriteString("new_ads");

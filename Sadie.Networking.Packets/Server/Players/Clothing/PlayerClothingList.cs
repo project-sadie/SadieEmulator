@@ -2,7 +2,7 @@
 
 public class PlayerClothingList : NetworkPacketWriter
 {
-    public PlayerClothingList() : base(ServerPacketIds.PlayerClothingList)
+    public PlayerClothingList() : base(ServerPacketId.PlayerClothingList)
     {
         WriteInt(0);
         WriteInt(0);

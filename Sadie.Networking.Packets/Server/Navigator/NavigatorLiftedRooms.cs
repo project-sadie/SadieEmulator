@@ -2,7 +2,7 @@ namespace Sadie.Networking.Packets.Server.Navigator;
 
 public class NavigatorLiftedRooms : NetworkPacketWriter
 {
-    public NavigatorLiftedRooms() : base(ServerPacketIds.NavigatorLiftedRooms)
+    public NavigatorLiftedRooms() : base(ServerPacketId.NavigatorLiftedRooms)
     {
         WriteInt(0);
     }

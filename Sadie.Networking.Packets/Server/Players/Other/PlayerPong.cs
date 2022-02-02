@@ -2,7 +2,7 @@
 
 public class PlayerPong : NetworkPacketWriter
 {
-    public PlayerPong(int id) : base(ServerPacketIds.PlayerPong)
+    public PlayerPong(int id) : base(ServerPacketId.PlayerPong)
     {
         WriteInt(id);
     }

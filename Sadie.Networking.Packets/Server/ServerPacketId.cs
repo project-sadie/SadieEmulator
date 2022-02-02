@@ -1,6 +1,6 @@
 namespace Sadie.Networking.Packets.Server;
 
-public class ServerPacketIds
+public class ServerPacketId
 {
     public const short SecureLoginOk = 2491;
     public const short PlayerHomeRoom = 2875;

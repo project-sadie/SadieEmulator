@@ -2,7 +2,7 @@
 
 public class PlayerStatus : NetworkPacketWriter
 {
-    public PlayerStatus() : base(ServerPacketIds.PlayerStatus)
+    public PlayerStatus() : base(ServerPacketId.PlayerStatus)
     {
         WriteBoolean(true);
         WriteBoolean(false);

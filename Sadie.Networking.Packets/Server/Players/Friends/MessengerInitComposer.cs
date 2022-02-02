@@ -2,7 +2,7 @@
 
 public class MessengerInitComposer : NetworkPacketWriter
 {
-    public MessengerInitComposer() : base(ServerPacketIds.MessengerInitComposer)
+    public MessengerInitComposer() : base(ServerPacketId.MessengerInitComposer)
     {
         WriteInt(int.MaxValue);
         WriteInt(1337); // unknown1

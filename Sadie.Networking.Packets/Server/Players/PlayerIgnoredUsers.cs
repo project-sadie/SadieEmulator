@@ -2,7 +2,7 @@
 
 public class PlayerIgnoredUsers : NetworkPacketWriter
 {
-    public PlayerIgnoredUsers() : base(ServerPacketIds.PlayerIgnoredUsers)
+    public PlayerIgnoredUsers() : base(ServerPacketId.PlayerIgnoredUsers)
     {
         WriteInt(0);
     }

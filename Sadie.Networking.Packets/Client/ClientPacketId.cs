@@ -1,6 +1,6 @@
 namespace Sadie.Networking.Packets.Client
 {
-    public class ClientPacketIds
+    public class ClientPacketId
     {
         public const int ReceiveClientVersion = 4000;
         public const int ReceiveClientVariables = 1053;

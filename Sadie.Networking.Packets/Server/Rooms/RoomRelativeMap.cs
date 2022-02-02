@@ -4,7 +4,7 @@ namespace Sadie.Networking.Packets.Server.Rooms;
 
 internal class RoomRelativeMap : NetworkPacketWriter
 {
-    internal RoomRelativeMap() : base(ServerPacketIds.RoomRelativeMap)
+    internal RoomRelativeMap() : base(ServerPacketId.RoomRelativeMap)
     {
         var model = SadieConstants.MockHeightmap.Split("\n");
         var mapSizeX = model[0].Length;

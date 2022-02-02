@@ -2,7 +2,7 @@
 
 public class PlayerFriendRequests : NetworkPacketWriter
 {
-    public PlayerFriendRequests() : base(ServerPacketIds.PlayerFriendRequests)
+    public PlayerFriendRequests() : base(ServerPacketId.PlayerFriendRequests)
     {
         WriteInt(0);
         WriteInt(0);

@@ -2,7 +2,7 @@ namespace Sadie.Networking.Packets.Server.Navigator;
 
 public class NavigatorSettings : NetworkPacketWriter
 {
-    public NavigatorSettings() : base(ServerPacketIds.NavigatorSettings)
+    public NavigatorSettings() : base(ServerPacketId.NavigatorSettings)
     {
         WriteInt(100);
         WriteInt(100);

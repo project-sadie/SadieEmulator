@@ -2,7 +2,7 @@
 
 public class RoomCategories : NetworkPacketWriter
 {
-    public RoomCategories() : base(ServerPacketIds.RoomCategories)
+    public RoomCategories() : base(ServerPacketId.RoomCategories)
     {
         WriteInt(0);
     }

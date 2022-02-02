@@ -2,7 +2,7 @@
 
 internal class RoomInformation : NetworkPacketWriter
 {
-    internal RoomInformation(int roomId) : base(ServerPacketIds.RoomInformation)
+    internal RoomInformation(int roomId) : base(ServerPacketId.RoomInformation)
     {
         WriteString("model");
         WriteInt(roomId);

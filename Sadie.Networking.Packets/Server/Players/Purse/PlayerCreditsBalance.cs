@@ -2,7 +2,7 @@
 
 public class PlayerCreditsBalance : NetworkPacketWriter
 {
-    public PlayerCreditsBalance(long credits) : base(ServerPacketIds.PlayerPermissions)
+    public PlayerCreditsBalance(long credits) : base(ServerPacketId.PlayerPermissions)
     {
         WriteString(credits + ".0");
     }

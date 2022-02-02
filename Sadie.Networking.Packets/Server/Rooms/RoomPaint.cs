@@ -2,7 +2,7 @@
 
 internal class RoomPaint : NetworkPacketWriter
 {
-    internal RoomPaint(string type, string value) : base(ServerPacketIds.RoomPaint)
+    internal RoomPaint(string type, string value) : base(ServerPacketId.RoomPaint)
     {
         WriteString(type);
         WriteString(value);

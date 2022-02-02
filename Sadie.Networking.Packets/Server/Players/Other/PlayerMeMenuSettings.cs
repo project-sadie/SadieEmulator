@@ -2,7 +2,7 @@
 
 public class PlayerMeMenuSettings : NetworkPacketWriter
 {
-    public PlayerMeMenuSettings() : base(ServerPacketIds.PlayerMeMenuSettings)
+    public PlayerMeMenuSettings() : base(ServerPacketId.PlayerMeMenuSettings)
     {
         WriteInt(100);
         WriteInt(100);

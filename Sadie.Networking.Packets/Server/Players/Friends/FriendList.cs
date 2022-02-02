@@ -2,7 +2,7 @@
 
 public class FriendList : NetworkPacketWriter
 {
-    public FriendList(int pages, int index, int total) : base(ServerPacketIds.SendFriend)
+    public FriendList(int pages, int index, int total) : base(ServerPacketId.SendFriend)
     {
         WriteInt(pages);
         WriteInt(index);

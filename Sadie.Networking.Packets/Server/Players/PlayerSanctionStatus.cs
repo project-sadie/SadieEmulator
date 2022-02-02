@@ -2,7 +2,7 @@
 
 public class PlayerSanctionStatus : NetworkPacketWriter
 {
-    public PlayerSanctionStatus() : base(ServerPacketIds.PlayerSanctionStatus)
+    public PlayerSanctionStatus() : base(ServerPacketId.PlayerSanctionStatus)
     {
         WriteBoolean(false);
         WriteBoolean(false);

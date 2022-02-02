@@ -2,7 +2,7 @@
 
 public class HotelViewBonusRare : NetworkPacketWriter
 {
-    public HotelViewBonusRare() : base(ServerPacketIds.HotelViewBonusRare)
+    public HotelViewBonusRare() : base(ServerPacketId.HotelViewBonusRare)
     {
         WriteString("throne");
         WriteInt(0);

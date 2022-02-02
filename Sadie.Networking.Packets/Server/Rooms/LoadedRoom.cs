@@ -2,7 +2,7 @@
 
 internal class LoadedRoom : NetworkPacketWriter
 {
-    internal LoadedRoom() : base(ServerPacketIds.LoadedRoom)
+    internal LoadedRoom() : base(ServerPacketId.LoadedRoom)
     {
     }
 }

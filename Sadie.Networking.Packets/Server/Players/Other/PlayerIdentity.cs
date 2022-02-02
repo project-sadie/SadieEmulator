@@ -2,7 +2,7 @@
 
 public class PlayerIdentity : NetworkPacketWriter
 {
-    public PlayerIdentity() : base(ServerPacketIds.PlayerIdentity)
+    public PlayerIdentity() : base(ServerPacketId.PlayerIdentity)
     {
         WriteInt(1);
     }

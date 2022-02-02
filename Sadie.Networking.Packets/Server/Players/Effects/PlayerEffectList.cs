@@ -2,7 +2,7 @@
 
 public class PlayerEffectList : NetworkPacketWriter
 {
-    public PlayerEffectList() : base(ServerPacketIds.PlayerEffectList)
+    public PlayerEffectList() : base(ServerPacketId.PlayerEffectList)
     {
         WriteInt(0);
     }

@@ -4,7 +4,7 @@ namespace Sadie.Networking.Packets.Server.Players.Other;
 
 public class PlayerData : NetworkPacketWriter
 {
-    public PlayerData(IPlayerData playerData) : base(ServerPacketIds.PlayerData)
+    public PlayerData(IPlayerData playerData) : base(ServerPacketId.PlayerData)
     {
         WriteLong(playerData.Id);
         WriteString("admin");

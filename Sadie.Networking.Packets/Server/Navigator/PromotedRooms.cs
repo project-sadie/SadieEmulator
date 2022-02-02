@@ -2,7 +2,7 @@
 
 public class PromotedRooms : NetworkPacketWriter
 {
-    public PromotedRooms() : base(ServerPacketIds.PromotedRooms)
+    public PromotedRooms() : base(ServerPacketId.PromotedRooms)
     {
         WriteInt(2);
         WriteString("");
