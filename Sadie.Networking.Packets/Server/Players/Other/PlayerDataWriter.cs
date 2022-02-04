@@ -12,13 +12,13 @@ public class PlayerDataWriter : NetworkPacketWriter
         WriteString(playerData.Gender == PlayerAvatarGender.Male ? "M" : "F");
         WriteString(playerData.Motto);
         WriteString(playerData.Username);
-        WriteBoolean(false); // unknown1
-        WriteInt(0); // respect points received
-        WriteInt(0); // respect points
-        WriteInt(0); // pet respect points
-        WriteBoolean(false); // unknown2
-        WriteString("01-01-1970 00:00:00"); // unknown3
-        WriteBoolean(true); // allow username change
-        WriteBoolean(false); // unknown4
+        WriteBoolean(false);
+        WriteInt(0);
+        WriteInt(0);
+        WriteInt(0);
+        WriteBoolean(false);
+        WriteString("01-01-1970 00:00:00");
+        WriteBoolean(false);
+        WriteBoolean(false);
     }
 }
