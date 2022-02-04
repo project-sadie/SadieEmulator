@@ -37,4 +37,5 @@ public class ServerPacketId
     public const short RoomRelativeMap = 2753;
     public const short RoomHeightMap = 1301;
     public const short PlayerActivityPointsBalance = 2018;
+    public const short PlayerCreditsBalance = 3475;
 }
