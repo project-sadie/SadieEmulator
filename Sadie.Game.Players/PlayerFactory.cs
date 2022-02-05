@@ -12,7 +12,8 @@ public class PlayerFactory
             record.Get<long>("home_room_id"),
             record.Get<string>("figure_code"),
             record.Get<string>("motto"),
-            record.Get<char>("gender") == 'M' ? PlayerAvatarGender.Male : PlayerAvatarGender.Female
+            record.Get<char>("gender") == 'M' ? PlayerAvatarGender.Male : PlayerAvatarGender.Female,
+            new PlayerBalance(3333, 4444, 5555, 6666)
         );
     }
 }
