@@ -3,7 +3,8 @@ namespace Sadie.Shared;
 public static class SadieConstants
 {
     public static int HabboPacketMinLength => 4;
-    public static int HabboPacketMaxLength => 4000;
+    public static int HabboPacketBufferSize => 4096;
+    public static int HabboPacketMaxLength => HabboPacketBufferSize - 4;
     public static int HabboSsoMinLength => 20;
 
     public static string HabboPolicyXml => "<?xml version=\"1.0\"?>\r\n" +
