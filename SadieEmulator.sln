@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SadieEmulator", "SadieEmulator\SadieEmulator.csproj", "{C1876B7B-B71D-41EE-A812-FF518D36D004}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Server", "Sadie.Server\Sadie.Server.csproj", "{C1876B7B-B71D-41EE-A812-FF518D36D004}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Database", "Sadie.Database\Sadie.Database.csproj", "{49A8F049-8021-4882-AD19-8C0FF171CC14}"
 EndProject
