@@ -19,7 +19,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         var (roomId, password) = (reader.ReadInt(), reader.ReadString());
         var (found, room) = _roomRepository.TryGetRoomById(roomId);
 
-        if (!found)
+        if (!found || room == null)
         {
             return;
         }
