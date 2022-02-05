@@ -12,4 +12,5 @@ public class PlayerAvatarData : IPlayerAvatarData
     public string FigureCode { get; }
     public string Motto { get; }
     public PlayerAvatarGender Gender { get; }
+    public long LastRoomLoaded { get; set; }
 }

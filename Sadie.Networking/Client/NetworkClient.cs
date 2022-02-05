@@ -11,7 +11,7 @@ namespace Sadie.Networking.Client
             SetClient(this);
         }
         
-        public IPlayer? Player { get; set; }
+        public IPlayer Player { get; set; } = null!;
 
         public Task ListenAsync()
         {
@@ -25,7 +25,7 @@ namespace Sadie.Networking.Client
 
         public new void Dispose()
         {
-            Player?.Dispose();
+            Player.Dispose();
         }
     }
 }

@@ -94,7 +94,7 @@ namespace SadieEmulator
                 [ClientPacketId.UnknownEvent2] = new UnknownEvent2(),
                 [ClientPacketId.RoomLoaded] = new RoomLoadedEvent(provider.GetRequiredService<IRoomRepository>()),
                 [ClientPacketId.UnknownEvent3] = new UnknownEvent3(),
-                [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(),
+                [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
             });
             
             serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
