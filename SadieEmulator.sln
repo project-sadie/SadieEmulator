@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Players", "Sadie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Shared", "Sadie.Shared\Sadie.Shared.csproj", "{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Rooms", "Sadie.Game.Rooms\Sadie.Game.Rooms.csproj", "{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

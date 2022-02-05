@@ -7,8 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
-      <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
+      <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
     </ItemGroup>
 
 </Project>

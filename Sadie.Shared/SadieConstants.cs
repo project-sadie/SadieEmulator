@@ -15,7 +15,7 @@ public static class SadieConstants
 
     public static string DateTimeFormat => "yyyy-MM-dd HH:mm:ss";
     
-    public static string MockHeightmap = "00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000\r\n00000000";
+    public static string MockHeightmap = "X000000000\r\nX000000000\r\nX000000000\r\nX000000000\r\nX000000000\r\nX000000000\r\nX000000000\r\nX000000000\r\n0000000000\r\nX000000000";
 
     public static List<string> NavigatorCategories = new()
     {

@@ -1,0 +1,24 @@
+﻿using Sadie.Database;
+
+namespace Sadie.Game.Rooms;
+
+public class RoomDao : BaseDao, IRoomDao
+{
+    public RoomDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
+    {
+    }
+
+    public async Task<Tuple<bool, RoomEntity?>> TryGetRoomById(long roomId)
+    {
+        var reader = await GetReaderAsync("SELECT `rooms`.`id`, `rooms`.`name`, `rooms`.`layout_id`, `room_layouts`.`name` AS `layout_name`, `room_layouts`.`heightmap`  FROM `rooms` INNER JOIN `room_layouts` ON `room_layouts`.`id` = `rooms`.`layout_id` WHERE `rooms`.`id` = @roomId LIMIT 1;", new Dictionary<string, object>
+        {
+            { "roomId", roomId }
+        });
+
+        var (success, record) = reader.Read();
+
+        return success && record != null ?
+            new Tuple<bool, RoomEntity?>(true, RoomFactory.CreateFromRecord(record)) : 
+            new Tuple<bool, RoomEntity?>(false, null);
+    }
+}
