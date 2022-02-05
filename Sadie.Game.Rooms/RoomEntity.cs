@@ -2,7 +2,7 @@
 
 public class RoomEntity : RoomData
 {
-    public RoomEntity(long id, string name, RoomModel model) : base(id, name, model)
+    public RoomEntity(long id, string name, RoomLayout layout) : base(id, name, layout)
     {
     }
 }

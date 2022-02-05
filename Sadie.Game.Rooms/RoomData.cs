@@ -4,12 +4,12 @@ public class RoomData : RoomSettings
 {
     public long Id { get; }
     public string Name { get; }
-    public RoomModel Model { get; }
+    public RoomLayout Layout { get; }
     
-    public RoomData(long id, string name, RoomModel model)
+    public RoomData(long id, string name, RoomLayout layout)
     {
         Id = id;
         Name = name;
-        Model = model;
+        Layout = layout;
     }
 }

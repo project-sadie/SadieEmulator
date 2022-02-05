@@ -1,12 +1,12 @@
 ﻿namespace Sadie.Game.Rooms;
 
-public class RoomModel
+public class RoomLayout
 {
     public long Id { get; }
     public string Name { get; }
     public string HeightMap { get; }
     
-    public RoomModel(long id, string name, string heightMap)
+    public RoomLayout(long id, string name, string heightMap)
     {
         Id = id;
         Name = name;
