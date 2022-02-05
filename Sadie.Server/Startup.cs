@@ -85,7 +85,7 @@ namespace SadieEmulator
                 [ClientPacketId.PlayerMeMenuSettings] = new PlayerMeMenuSettingsEvent(),
                 [ClientPacketId.HotelViewBonusRare] = new HotelViewBonusRareEvent(),
                 [ClientPacketId.UnknownEvent1] = new UnknownEvent1(),
-                [ClientPacketId.GameCenterRequestGames] = new RequestGameCenterConfigEvent(), // CLEAN PACKET NAME
+                [ClientPacketId.GameCenterRequestGames] = new RequestGameCenterConfigEvent(),
                 [ClientPacketId.PromotedRooms] = new PromotedRoomsEvent(),
                 [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(),
                 [ClientPacketId.NavigatorEventCategories] = new NavigatorEventCategoriesEvent(),

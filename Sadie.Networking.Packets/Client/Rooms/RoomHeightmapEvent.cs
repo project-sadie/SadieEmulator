@@ -1,14 +1,30 @@
-﻿using Sadie.Networking.Client;
+﻿using Sadie.Game.Rooms;
+using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Rooms;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Packets.Client.Rooms;
 
 public class RoomHeightmapEvent : INetworkPacketEvent
 {
+    private readonly IRoomRepository _roomRepository;
+
+    public RoomHeightmapEvent(IRoomRepository roomRepository)
+    {
+        _roomRepository = roomRepository;
+    }
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new RoomRelativeMapWriter(SadieConstants.MockHeightmap).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, SadieConstants.MockHeightmap.Replace("\r\n", "\r")).GetAllBytes());
+        var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(client.Player.LastRoomLoaded);
+        
+        if (!found || room == null)
+        {
+            return;
+        }
+
+        var roomLayout = room.Layout;
+        
+        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomLayout.HeightMap).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, roomLayout.HeightMap.Replace("\r\n", "\r")).GetAllBytes());
     }
 }

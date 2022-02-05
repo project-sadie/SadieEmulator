@@ -24,8 +24,10 @@ public class RoomLoadedEvent : INetworkPacketEvent
             return;
         }
 
+        client.Player.LastRoomLoaded = roomId;
+
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
-        await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Model.Name).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Layout.Name).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
     }
 }
