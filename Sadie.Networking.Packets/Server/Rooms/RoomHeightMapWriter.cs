@@ -1,6 +1,4 @@
-﻿using Sadie.Shared;
-
-namespace Sadie.Networking.Packets.Server.Rooms;
+﻿namespace Sadie.Networking.Packets.Server.Rooms;
 
 internal class RoomHeightMapWriter : NetworkPacketWriter
 {

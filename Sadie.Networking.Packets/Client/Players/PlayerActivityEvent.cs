@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Handshake;
 using Sadie.Networking.Packets.Server.Players.Clothing;
 using Sadie.Networking.Packets.Server.Players.Effects;
 using Sadie.Networking.Packets.Server.Players.Other;
