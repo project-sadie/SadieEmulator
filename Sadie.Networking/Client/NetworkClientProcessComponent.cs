@@ -30,7 +30,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
             if (bytes > 0)
             {
-                OnReceivedByteCount(bytes);
+                await OnReceivedAsync(bytes);
             }
         }
         catch (Exception e)
@@ -43,7 +43,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
     protected void SetClient(INetworkClient client) => _networkClient = client;
 
-    private void OnReceivedByteCount(int bytesReceived)
+    private async Task OnReceivedAsync(int bytesReceived)
     {
         try
         {
@@ -68,7 +68,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         }
         finally
         {
-            StartListening().Wait();
+            await StartListening();
         }
     }
 
