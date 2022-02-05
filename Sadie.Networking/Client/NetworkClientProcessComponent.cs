@@ -26,11 +26,14 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
     {
         try
         {
-            var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
-
-            if (bytes > 0)
+            while (true)
             {
-                await OnReceivedAsync(bytes);
+                var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
+
+                if (bytes > 0)
+                {
+                    await OnReceivedAsync(bytes);
+                }
             }
         }
         catch (Exception e)
@@ -65,10 +68,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         catch (Exception)
         {
             Dispose();
-        }
-        finally
-        {
-            await StartListening();
         }
     }
 

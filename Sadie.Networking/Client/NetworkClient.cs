@@ -13,10 +13,12 @@ namespace Sadie.Networking.Client
         
         public IPlayer? Player { get; set; }
 
-        public Task ListenAsync()
+        public async Task ListenAsync()
         {
-            StartListening();
-            return Task.CompletedTask;
+            Task.Run(async () =>
+            {
+                await StartListening();
+            });
         }
 
         public new void Dispose()
