@@ -22,32 +22,27 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         _buffer = new byte[SadieConstants.HabboPacketBufferSize];
     }
 
-    protected void StartListening()
-    {
-        _client.Client.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, OnReceived, _client);
-    }
-    
-    private INetworkClient? _networkClient;
-
-    protected void SetClient(INetworkClient client) => _networkClient = client;
-    
-    private void OnReceived(IAsyncResult iar)
+    protected async Task StartListening()
     {
         try
         {
-            var bytesReceived = _client.Client.EndReceive(iar);
+            var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
 
-            if (bytesReceived > 0)
+            if (bytes > 0)
             {
-                OnReceivedByteCount(bytesReceived);
+                OnReceivedByteCount(bytes);
             }
         }
-        catch (NullReferenceException)
+        catch (Exception e)
         {
             Dispose();
         }
     }
     
+    private INetworkClient? _networkClient;
+
+    protected void SetClient(INetworkClient client) => _networkClient = client;
+
     private void OnReceivedByteCount(int bytesReceived)
     {
         try
@@ -67,13 +62,13 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Dispose();
         }
         finally
         {
-            _client.Client.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, OnReceived, _client);
+            StartListening().Wait();
         }
     }
 
