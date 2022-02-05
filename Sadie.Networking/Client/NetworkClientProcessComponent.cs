@@ -19,7 +19,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         _stream = client.GetStream();
         
         _packetHandler = packetHandler;
-        _buffer = new byte[8000];
+        _buffer = new byte[SadieConstants.HabboPacketBufferSize];
     }
 
     protected void StartListening()
@@ -39,7 +39,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
             if (bytesReceived > 0)
             {
-                OnReceived(bytesReceived);
+                OnReceivedByteCount(bytesReceived);
             }
         }
         catch (NullReferenceException)
@@ -48,24 +48,28 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         }
     }
     
-    private void OnReceived(int bytesReceived)
+    private void OnReceivedByteCount(int bytesReceived)
     {
         try
         {
-            var packet = DecodePacketFromBytes(bytesReceived, _buffer);
-
-            if (_networkClient == null || packet == null)
-            {
-                return;
-            }
-
-            if (packet.PacketId == -1)
+            var data = new byte[bytesReceived];
+            Buffer.BlockCopy(_buffer, 0, data, 0, bytesReceived);
+            
+            if (data[0] == 60)
             {
                 OnReceivedPolicyRequest();
-                return;
             }
-            
-            _packetHandler.HandleAsync(_networkClient, packet).Wait();
+            else if (_networkClient != null)
+            {
+                foreach (var packet in DecodePacketsFromBytes(data))
+                {
+                    _packetHandler.HandleAsync(_networkClient, packet).Wait();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Dispose();
         }
         finally
         {

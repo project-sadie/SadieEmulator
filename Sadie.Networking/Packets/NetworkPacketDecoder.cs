@@ -5,19 +5,13 @@ namespace Sadie.Networking.Packets;
 
 public class NetworkPacketDecoder
 {
-    protected static NetworkPacket? DecodePacketFromBytes(int bytesReceived, byte[] buffer)
+    protected static List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
     {
-        var packet = new byte[bytesReceived];
-        Array.Copy(buffer, packet, bytesReceived);
-
-        if (packet[0] == 60)
-        {
-            return new NetworkPacket(-1, Array.Empty<byte>());
-        }
-
+        // TODO: Refactor this :(
+        
         if (packet.Length < SadieConstants.HabboPacketMinLength || packet.Length > SadieConstants.HabboPacketMaxLength)
         {
-            return null;
+            return new List<NetworkPacket>();
         }
 
         using var reader = new BinaryReader(new MemoryStream(packet));
@@ -31,6 +25,18 @@ public class NetworkPacketDecoder
         var content = new byte[packetData.Length - 2];
         Buffer.BlockCopy(packetData, 2, content, 0, packetData.Length - 2);
 
-        return new NetworkPacket(packetId, content);
+        var packets = new List<NetworkPacket>();
+        
+        if (reader.BaseStream.Length - 4 > packetLength)
+        {
+            var extra = new byte[reader.BaseStream.Length - reader.BaseStream.Position];
+            Buffer.BlockCopy(packet, (int)reader.BaseStream.Position, extra, 0, (int)(reader.BaseStream.Length - reader.BaseStream.Position));
+
+            packets.AddRange(DecodePacketsFromBytes(extra));
+        }
+        
+        packets.Add(new NetworkPacket(packetId, content));
+
+        return packets;
     }
 }
