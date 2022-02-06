@@ -1,7 +1,7 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Players;
 
-namespace Sadie.Networking.Packets.Client.Players;
+namespace Sadie.Networking.Packets.Client.Players.Friends;
 
 public class PlayerFriendRequestsListEvent : INetworkPacketEvent
 {

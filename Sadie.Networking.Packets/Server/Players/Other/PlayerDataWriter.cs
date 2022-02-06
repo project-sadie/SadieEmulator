@@ -18,7 +18,7 @@ internal class PlayerDataWriter : NetworkPacketWriter
         WriteLong(playerData.RespectPoints);
         WriteLong(playerData.RespectPointsPet);
         WriteBoolean(false);
-        WriteString(playerData.LastOnline.ToString(CultureInfo.InvariantCulture));
+        WriteString(playerData.LastOnline.ToString());
         WriteBoolean(false);
         WriteBoolean(false);
     }

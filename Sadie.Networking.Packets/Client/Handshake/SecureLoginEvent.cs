@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Handshake;
+using Sadie.Networking.Packets.Server.Players.Other;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Packets.Client.Handshake
@@ -40,6 +41,7 @@ namespace Sadie.Networking.Packets.Client.Handshake
             }
 
             await client.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
+            await client.WriteToStreamAsync(new NoobnessLevelWriter().GetAllBytes());
             
             await _playerRepository.ResetSsoTokenForPlayerAsync(player.Id);
             
