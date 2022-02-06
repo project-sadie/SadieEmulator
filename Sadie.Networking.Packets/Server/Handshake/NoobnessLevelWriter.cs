@@ -1,4 +1,4 @@
-﻿namespace Sadie.Networking.Packets.Server.Players.Other;
+﻿namespace Sadie.Networking.Packets.Server.Handshake;
 
 internal class NoobnessLevelWriter : NetworkPacketWriter
 {
