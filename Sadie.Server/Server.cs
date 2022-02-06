@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
 
 namespace SadieEmulator;
@@ -32,7 +33,12 @@ public class Server : IServer
         }
 
         _logger.LogInformation("Database connection is working!");
+        
+        var roomCategoryRepo = _serviceProvider.GetRequiredService<IRoomCategoryRepository>();
 
+        await roomCategoryRepo.LoadInitialDataAsync();
+        _logger.LogInformation("Loaded room categories");
+        
         _logger.LogDebug("Server has booted up.");
         
         var networkListener = _serviceProvider.GetRequiredService<INetworkListener>();

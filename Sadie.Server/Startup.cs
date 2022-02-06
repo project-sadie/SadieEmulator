@@ -10,6 +10,7 @@ using MySqlConnector;
 using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -42,6 +43,9 @@ namespace SadieEmulator
             serviceCollection.AddSingleton<IRoomDao, RoomDao>();
             serviceCollection.AddSingleton(new ConcurrentDictionary<long, RoomEntity>());
             serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
+            
+            serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();
+            serviceCollection.AddSingleton<IRoomCategoryRepository, RoomCategoryRepository>();
             
             ConfigureNetworking(config, serviceCollection);
         }
@@ -87,7 +91,7 @@ namespace SadieEmulator
                 [ClientPacketId.UnknownEvent1] = new UnknownEvent1(),
                 [ClientPacketId.GameCenterRequestGames] = new RequestGameCenterConfigEvent(),
                 [ClientPacketId.PromotedRooms] = new PromotedRoomsEvent(),
-                [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(),
+                [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(provider.GetRequiredService<IRoomCategoryRepository>()),
                 [ClientPacketId.NavigatorEventCategories] = new NavigatorEventCategoriesEvent(),
                 [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsListEvent(),
                 [ClientPacketId.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),

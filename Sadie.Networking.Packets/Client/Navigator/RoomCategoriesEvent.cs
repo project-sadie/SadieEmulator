@@ -1,12 +1,22 @@
-﻿using Sadie.Networking.Client;
+﻿using Sadie.Game.Rooms.Categories;
+using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Navigator;
 
 namespace Sadie.Networking.Packets.Client.Navigator;
 
 public class RoomCategoriesEvent : INetworkPacketEvent
 {
+    private readonly IRoomCategoryRepository _roomCategoryRepository;
+
+    public RoomCategoriesEvent(IRoomCategoryRepository roomCategoryRepository)
+    {
+        _roomCategoryRepository = roomCategoryRepository;
+    }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new RoomCategoriesWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new RoomCategoriesWriter(
+            _roomCategoryRepository.GetAllCategories()
+        ).GetAllBytes());
     }
 }
