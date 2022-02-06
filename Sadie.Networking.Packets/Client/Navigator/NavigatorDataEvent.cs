@@ -1,4 +1,5 @@
 ﻿using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Categories;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Navigator;
 using Sadie.Shared;
@@ -13,6 +14,6 @@ public class NavigatorDataEvent : INetworkPacketEvent
         await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter(new List<RoomEntity>()).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(SadieConstants.NavigatorCategories).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorSavedSearchesWriter().GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorEventCategoriesWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorEventCategoriesWriter(new List<RoomCategory>()).GetAllBytes());
     }
 }
