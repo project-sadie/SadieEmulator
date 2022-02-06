@@ -2,10 +2,10 @@
 
 internal class PlayerStatusWriter : NetworkPacketWriter
 {
-    internal PlayerStatusWriter(bool unknown1, bool unknown2, bool unknown3) : base(ServerPacketId.PlayerStatus)
+    internal PlayerStatusWriter(bool isOpen, bool isShuttingDown, bool isAuthentic) : base(ServerPacketId.PlayerStatus)
     {
-        WriteBoolean(unknown1);
-        WriteBoolean(unknown2);
-        WriteBoolean(unknown3);
+        WriteBoolean(isOpen);
+        WriteBoolean(isShuttingDown);
+        WriteBoolean(isAuthentic);
     }
 }
