@@ -10,7 +10,10 @@ public class Player : PlayerData, IPlayer
         string motto, 
         PlayerAvatarGender gender, 
         PlayerBalance balance,
-        DateTime lastOnline) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline)
+        DateTime lastOnline,
+        long respectsReceived, 
+        long respectPoints, 
+        long respectPointsPet) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline, respectsReceived, respectPoints, respectPointsPet)
     {
     }
     

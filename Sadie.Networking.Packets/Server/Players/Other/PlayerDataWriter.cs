@@ -1,8 +1,9 @@
-﻿using Sadie.Game.Players;
+﻿using System.Globalization;
+using Sadie.Game.Players;
 
 namespace Sadie.Networking.Packets.Server.Players.Other;
 
-public class PlayerDataWriter : NetworkPacketWriter
+public class PlayerDataWriter : NetworkPacketWriter // @hardcode
 {
     public PlayerDataWriter(IPlayerData playerData) : base(ServerPacketId.PlayerData)
     {
@@ -13,11 +14,11 @@ public class PlayerDataWriter : NetworkPacketWriter
         WriteString(playerData.Motto);
         WriteString(playerData.Username);
         WriteBoolean(false);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
+        WriteLong(playerData.RespectsReceived);
+        WriteLong(playerData.RespectPoints);
+        WriteLong(playerData.RespectPointsPet);
         WriteBoolean(false);
-        WriteString(playerData.LastOnline.ToString());
+        WriteString(playerData.LastOnline.ToString(CultureInfo.InvariantCulture));
         WriteBoolean(false);
         WriteBoolean(false);
     }
