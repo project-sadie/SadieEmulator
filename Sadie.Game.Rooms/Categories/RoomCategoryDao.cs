@@ -17,7 +17,7 @@ public class RoomCategoryDao : BaseDao, IRoomCategoryDao
         {
             var (success, record) = reader.Read();
 
-            if (!success)
+            if (!success || record == null)
             {
                 break;
             }
