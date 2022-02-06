@@ -17,7 +17,7 @@ public class PlayerDataWriter : NetworkPacketWriter
         WriteInt(0);
         WriteInt(0);
         WriteBoolean(false);
-        WriteString("01-01-1970 00:00:00");
+        WriteString(playerData.LastOnline.ToString());
         WriteBoolean(false);
         WriteBoolean(false);
     }

@@ -13,7 +13,8 @@ public class PlayerFactory
             record.Get<string>("figure_code"),
             record.Get<string>("motto"),
             record.Get<char>("gender") == 'M' ? PlayerAvatarGender.Male : PlayerAvatarGender.Female,
-            new PlayerBalance(3333, 4444, 5555, 6666)
+            new PlayerBalance(3333, 4444, 5555, 6666),
+            DateTime.TryParse(record.Get<string>("last_online"), out var timestamp) ? timestamp : DateTime.MinValue
         );
     }
 }

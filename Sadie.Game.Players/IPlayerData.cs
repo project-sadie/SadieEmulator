@@ -6,4 +6,5 @@ public interface IPlayerData : IPlayerAvatarData
     string Username { get; }
     long HomeRoom { get; }
     PlayerBalance Balance { get; }
+    DateTime LastOnline { get; }
 }

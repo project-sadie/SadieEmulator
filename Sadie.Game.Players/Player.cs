@@ -9,7 +9,8 @@ public class Player : PlayerData, IPlayer
         string figureCode, 
         string motto, 
         PlayerAvatarGender gender, 
-        PlayerBalance balance) : base(id, username, homeRoom, figureCode, motto, gender, balance)
+        PlayerBalance balance,
+        DateTime lastOnline) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline)
     {
     }
     
