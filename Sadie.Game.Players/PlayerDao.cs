@@ -11,7 +11,7 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(string ssoToken)
     {
-        var reader = await GetReaderAsync("SELECT `players`.`id`, `player_data`.`username`, `player_data`.`home_room_id`, `player_data`.`figure_code`, `player_data`.`motto`, `player_data`.`gender` FROM `players` INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
+        var reader = await GetReaderAsync("SELECT `players`.`id`, `players`.`username`, `player_data`.`home_room_id`, `player_data`.`figure_code`, `player_data`.`motto`, `player_data`.`gender`, `player_data`.`credit_balance`, `player_data`.`pixel_balance`, `player_data`.`seasonal_balance`, `player_data`.`gotw_points` FROM `players` INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
         {
             { "ssoToken", ssoToken }
         });
@@ -25,7 +25,7 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task MarkPlayerAsOnlineAsync(long id)
     {
-        await QueryAsync("UPDATE `player_data` SET `online` = 1, `last_online` = @lastOnline WHERE `profile_id` = @profileId", new Dictionary<string, object>
+        await QueryAsync("UPDATE `player_data` SET `is_online` = 1, `last_online` = @lastOnline WHERE `profile_id` = @profileId", new Dictionary<string, object>
         {
             { "lastOnline", DateTime.Now.ToString(SadieConstants.DateTimeFormat) },
             { "profileId", id }
@@ -34,7 +34,7 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task MarkPlayerAsOfflineAsync(long id)
     {
-        await QueryAsync("UPDATE `player_data` SET `online` = 0 WHERE `profile_id` = @profileId", new Dictionary<string, object>
+        await QueryAsync("UPDATE `player_data` SET `is_online` = 0 WHERE `profile_id` = @profileId", new Dictionary<string, object>
         {
             { "profileId", id }
         });
