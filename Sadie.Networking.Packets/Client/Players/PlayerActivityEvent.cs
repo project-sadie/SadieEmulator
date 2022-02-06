@@ -53,11 +53,11 @@ public class PlayerActivityEvent : INetworkPacketEvent
 
         player.Authenticated = true;
         
-        await networkClient.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, 0).GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, 1).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerEffectListWriter().GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerIdentityWriter().GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerStatusWriter().GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
     }
 }

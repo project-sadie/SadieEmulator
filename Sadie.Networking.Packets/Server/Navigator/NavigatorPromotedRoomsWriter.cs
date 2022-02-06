@@ -1,11 +1,9 @@
 ﻿namespace Sadie.Networking.Packets.Server.Navigator;
 
-public class NavigatorPromotedRoomsWriter : NetworkPacketWriter
+internal class NavigatorPromotedRoomsWriter : NetworkPacketWriter
 {
-    public NavigatorPromotedRoomsWriter() : base(ServerPacketId.NavigatorPromotedRooms)
+    internal NavigatorPromotedRoomsWriter() : base(ServerPacketId.NavigatorPromotedRooms)
     {
-        // TODO: Pass structure in 
-        
         WriteInt(2);
         WriteString("");
         WriteInt(0);

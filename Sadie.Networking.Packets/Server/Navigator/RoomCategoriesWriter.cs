@@ -1,11 +1,9 @@
 ﻿namespace Sadie.Networking.Packets.Server.Navigator;
 
-public class RoomCategoriesWriter : NetworkPacketWriter
+internal class RoomCategoriesWriter : NetworkPacketWriter
 {
-    public RoomCategoriesWriter() : base(ServerPacketId.RoomCategories)
+    internal RoomCategoriesWriter() : base(ServerPacketId.RoomCategories)
     {
-        // TODO: Pass structure in 
-        
         WriteInt(0);
     }
 }

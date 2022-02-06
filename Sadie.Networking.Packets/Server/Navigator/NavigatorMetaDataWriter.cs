@@ -1,11 +1,9 @@
 namespace Sadie.Networking.Packets.Server.Navigator;
 
-public class NavigatorMetaDataWriter : NetworkPacketWriter
+internal class NavigatorMetaDataWriter : NetworkPacketWriter
 {
-    public NavigatorMetaDataWriter() : base(ServerPacketId.NavigatorMetaData)
+    internal NavigatorMetaDataWriter() : base(ServerPacketId.NavigatorMetaData)
     {
-        // TODO: Pass structure in 
-        
         WriteInt(0);
     }
 }

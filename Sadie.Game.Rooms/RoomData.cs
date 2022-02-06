@@ -5,8 +5,8 @@ public class RoomData : RoomSettings
     public long Id { get; }
     public string Name { get; }
     public RoomLayout Layout { get; }
-    
-    public RoomData(long id, string name, RoomLayout layout)
+
+    protected RoomData(long id, string name, RoomLayout layout)
     {
         Id = id;
         Name = name;

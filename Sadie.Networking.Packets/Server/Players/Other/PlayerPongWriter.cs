@@ -1,8 +1,8 @@
 ﻿namespace Sadie.Networking.Packets.Server.Players.Other;
 
-public class PlayerPongWriter : NetworkPacketWriter
+internal class PlayerPongWriter : NetworkPacketWriter
 {
-    public PlayerPongWriter(int id) : base(ServerPacketId.PlayerPong)
+    internal PlayerPongWriter(int id) : base(ServerPacketId.PlayerPong)
     {
         WriteInt(id);
     }

@@ -3,9 +3,9 @@ using Sadie.Game.Players;
 
 namespace Sadie.Networking.Packets.Server.Players.Other;
 
-public class PlayerDataWriter : NetworkPacketWriter // @hardcode
+internal class PlayerDataWriter : NetworkPacketWriter
 {
-    public PlayerDataWriter(IPlayerData playerData) : base(ServerPacketId.PlayerData)
+    internal PlayerDataWriter(IPlayerData playerData) : base(ServerPacketId.PlayerData)
     {
         WriteLong(playerData.Id);
         WriteString(playerData.Username);

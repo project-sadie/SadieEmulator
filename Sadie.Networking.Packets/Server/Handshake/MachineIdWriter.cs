@@ -1,8 +1,8 @@
 namespace Sadie.Networking.Packets.Server.Handshake;
 
-public class MachineIdWriter : NetworkPacketWriter
+internal class MachineIdWriter : NetworkPacketWriter
 {
-    public MachineIdWriter(string machineId) : base(ServerPacketId.UniqueMachineId)
+    internal MachineIdWriter(string machineId) : base(ServerPacketId.UniqueMachineId)
     {
         WriteString(machineId);
     }

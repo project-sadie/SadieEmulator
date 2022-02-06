@@ -1,11 +1,9 @@
 ﻿namespace Sadie.Networking.Packets.Server.Players.Other;
 
-public class PlayerPerksWriter : NetworkPacketWriter
+internal class PlayerPerksWriter : NetworkPacketWriter
 {
-    public PlayerPerksWriter() : base(ServerPacketId.PlayerPerks)
+    internal PlayerPerksWriter() : base(ServerPacketId.PlayerPerks)
     {
-        // TODO: Pass structure in 
-        
         WriteInt(13);
         
         WriteString("USE_GUIDE_TOOL");

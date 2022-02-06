@@ -1,13 +1,11 @@
 ﻿namespace Sadie.Networking.Packets.Server.Players.Other;
 
-public class PlayerStatusWriter : NetworkPacketWriter
+internal class PlayerStatusWriter : NetworkPacketWriter
 {
-    public PlayerStatusWriter() : base(ServerPacketId.PlayerStatus)
+    internal PlayerStatusWriter(bool unknown1, bool unknown2, bool unknown3) : base(ServerPacketId.PlayerStatus)
     {
-        // TODO: Pass structure in 
-        
-        WriteBoolean(true);
-        WriteBoolean(false);
-        WriteBoolean(true);
+        WriteBoolean(unknown1);
+        WriteBoolean(unknown2);
+        WriteBoolean(unknown3);
     }
 }

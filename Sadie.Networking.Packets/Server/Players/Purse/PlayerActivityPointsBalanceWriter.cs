@@ -1,11 +1,9 @@
 ﻿namespace Sadie.Networking.Packets.Server.Players.Purse;
 
-public class PlayerActivityPointsBalanceWriter : NetworkPacketWriter
+internal class PlayerActivityPointsBalanceWriter : NetworkPacketWriter
 {
-    public PlayerActivityPointsBalanceWriter(long pixels, long seasonPoints, long gotwPoints) : base(ServerPacketId.PlayerActivityPointsBalance)
+    internal PlayerActivityPointsBalanceWriter(long pixels, long seasonPoints, long gotwPoints) : base(ServerPacketId.PlayerActivityPointsBalance)
     {
-        // TODO: Pass structure in 
-        
         WriteInt(11);//Count
         WriteInt(0);//Pixels
         WriteLong(pixels);

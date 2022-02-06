@@ -1,8 +1,8 @@
 ﻿namespace Sadie.Networking.Packets.Server.Players.Other;
 
-public class PlayerIdentityWriter : NetworkPacketWriter
+internal class PlayerIdentityWriter : NetworkPacketWriter
 {
-    public PlayerIdentityWriter() : base(ServerPacketId.PlayerIdentity)
+    internal PlayerIdentityWriter() : base(ServerPacketId.PlayerIdentity)
     {
         WriteInt(1);
     }

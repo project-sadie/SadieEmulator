@@ -1,23 +1,34 @@
 ﻿namespace Sadie.Networking.Packets.Server.Players;
 
-public class PlayerSanctionStatusWriter : NetworkPacketWriter
+internal class PlayerSanctionStatusWriter : NetworkPacketWriter
 {
-    public PlayerSanctionStatusWriter() : base(ServerPacketId.PlayerSanctionStatus)
+    internal PlayerSanctionStatusWriter(
+        bool hasPreviousSanction, 
+        bool onProbation, 
+        string lastSanctionType, 
+        int sanctionTime, 
+        int unknown1,
+        string reason, 
+        DateTime probationStart, 
+        int unknown2,
+        string nextSanctionType, 
+        int hoursForNextSanction,
+        int unknown3,
+        bool muted, 
+        DateTime tradeLockedUntil) : base(ServerPacketId.PlayerSanctionStatus)
     {
-        // TODO: Pass structure in 
-        
-        WriteBoolean(false);
-        WriteBoolean(false);
-        WriteString("ALERT");
-        WriteInt(0);
-        WriteInt(30);
-        WriteString("cfh.reason.EMPTY");
-        WriteString(DateTime.Now.Year.ToString());
-        WriteInt(0);
-        WriteString("ALERT");
-        WriteInt(0);
-        WriteInt(30);
-        WriteBoolean(false);
-        WriteString("");
+        WriteBoolean(hasPreviousSanction);
+        WriteBoolean(onProbation);
+        WriteString(lastSanctionType);
+        WriteInt(sanctionTime);
+        WriteInt(unknown1);
+        WriteString(reason);
+        WriteString(probationStart.ToString());
+        WriteInt(unknown2);
+        WriteString(nextSanctionType);
+        WriteInt(hoursForNextSanction);
+        WriteInt(unknown3);
+        WriteBoolean(muted);
+        WriteString(tradeLockedUntil == DateTime.MinValue ? "" : tradeLockedUntil.ToString());
     }
 }

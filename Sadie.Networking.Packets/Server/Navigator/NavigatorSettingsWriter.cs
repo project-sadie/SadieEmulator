@@ -1,11 +1,9 @@
 namespace Sadie.Networking.Packets.Server.Navigator;
 
-public class NavigatorSettingsWriter : NetworkPacketWriter
+internal class NavigatorSettingsWriter : NetworkPacketWriter
 {
-    public NavigatorSettingsWriter() : base(ServerPacketId.NavigatorSettings)
+    internal NavigatorSettingsWriter() : base(ServerPacketId.NavigatorSettings)
     {
-        // TODO: Pass structure in 
-        
         WriteInt(100);
         WriteInt(100);
         WriteInt(425);

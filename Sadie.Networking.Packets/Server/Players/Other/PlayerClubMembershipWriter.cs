@@ -1,11 +1,9 @@
 ﻿namespace Sadie.Networking.Packets.Server.Players.Other;
 
-public class PlayerClubMembershipWriter : NetworkPacketWriter
+internal class PlayerClubMembershipWriter : NetworkPacketWriter
 {
-    public PlayerClubMembershipWriter(string subscription) : base(ServerPacketId.PlayerClubMembership)
+    internal PlayerClubMembershipWriter(string subscription) : base(ServerPacketId.PlayerClubMembership)
     {
-        // TODO: Pass structure in 
-        
         WriteString(subscription);
         WriteInt(0);
         WriteInt(0);
