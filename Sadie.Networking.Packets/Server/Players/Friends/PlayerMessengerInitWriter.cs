@@ -2,11 +2,13 @@
 
 internal class PlayerMessengerInitWriter : NetworkPacketWriter
 {
-    internal PlayerMessengerInitWriter() : base(ServerPacketId.PlayerMessengerInit)
+    internal PlayerMessengerInitWriter(int maxFriends, int unknown1, int maxFriendsHc, int unknown2, int unknown3, string unknown4) : base(ServerPacketId.PlayerMessengerInit)
     {
-        WriteInt(int.MaxValue);
-        WriteInt(1337); // unknown1
-        WriteInt(int.MaxValue);
-        WriteInt(0);
+        WriteInt(maxFriends);
+        WriteInt(unknown1);
+        WriteInt(maxFriendsHc);
+        WriteInt(unknown2);
+        WriteInt(unknown3);
+        WriteString(unknown4);
     }
 }
