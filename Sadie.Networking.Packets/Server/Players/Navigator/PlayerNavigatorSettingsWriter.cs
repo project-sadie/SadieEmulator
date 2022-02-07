@@ -1,14 +1,16 @@
+using Sadie.Game.Players;
+
 namespace Sadie.Networking.Packets.Server.Players.Navigator;
 
 internal class PlayerNavigatorSettingsWriter : NetworkPacketWriter
 {
-    internal PlayerNavigatorSettingsWriter(int windowPositionX, int windowPositionY, int windowWidth, int windowHeight, bool openSearches, int unknown1) : base(ServerPacketId.NavigatorSettings)
+    internal PlayerNavigatorSettingsWriter(PlayerNavigatorSettings navigatorSettings) : base(ServerPacketId.NavigatorSettings)
     {
-        WriteInt(windowPositionX);
-        WriteInt(windowPositionY);
-        WriteInt(windowWidth);
-        WriteInt(windowHeight);
-        WriteBoolean(openSearches);
-        WriteInt(unknown1);
+        WriteInt(navigatorSettings.WindowX);
+        WriteInt(navigatorSettings.WindowY);
+        WriteInt(navigatorSettings.WindowWidth);
+        WriteInt(navigatorSettings.WindowHeight);
+        WriteBoolean(navigatorSettings.OpenSearches);
+        WriteInt(navigatorSettings.Unknown1);
     }
 }

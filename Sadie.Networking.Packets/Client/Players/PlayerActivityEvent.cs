@@ -59,6 +59,6 @@ public class PlayerActivityEvent : INetworkPacketEvent
         await networkClient.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(100, 100, 425, 535, false, 0).GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
     }
 }

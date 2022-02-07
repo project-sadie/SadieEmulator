@@ -4,7 +4,7 @@ namespace Sadie.Game.Players;
 
 public class PlayerFactory
 {
-    public static PlayerBalance CreateBalanceFromRecord(DatabaseRecord record)
+    private static PlayerBalance CreateBalanceFromRecord(DatabaseRecord record)
     {
         return new PlayerBalance(
             record.Get<long>("credit_balance"),
@@ -24,9 +24,15 @@ public class PlayerFactory
             record.Get<char>("gender") == 'M' ? PlayerAvatarGender.Male : PlayerAvatarGender.Female,
             CreateBalanceFromRecord(record),
             DateTime.TryParse(record.Get<string>("last_online"), out var timestamp) ? timestamp : DateTime.MinValue,
-            0,
+            0, // TODO: load this
             record.Get<long>("respect_points"),
-            record.Get<long>("respect_points_pet")
+            record.Get<long>("respect_points_pet"),
+            CreateNavigatorSettingsFromRecord(record)
         );
+    }
+
+    private static PlayerNavigatorSettings CreateNavigatorSettingsFromRecord(DatabaseRecord record)
+    {
+        return new PlayerNavigatorSettings(100, 100, 425, 535, false, 0);
     }
 }

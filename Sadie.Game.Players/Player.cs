@@ -13,7 +13,8 @@ public class Player : PlayerData, IPlayer
         DateTime lastOnline,
         long respectsReceived, 
         long respectPoints, 
-        long respectPointsPet) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline, respectsReceived, respectPoints, respectPointsPet)
+        long respectPointsPet,
+        PlayerNavigatorSettings navigatorSettings) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline, respectsReceived, respectPoints, respectPointsPet, navigatorSettings)
     {
     }
     

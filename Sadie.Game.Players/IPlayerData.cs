@@ -10,4 +10,5 @@ public interface IPlayerData : IPlayerAvatarData
     public long RespectsReceived { get; }
     public long RespectPoints { get; }
     public long RespectPointsPet { get; }
+    public PlayerNavigatorSettings NavigatorSettings { get; }
 }
