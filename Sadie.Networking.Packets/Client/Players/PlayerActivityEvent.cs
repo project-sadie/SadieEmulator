@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Effects;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Players.Clothing;
 using Sadie.Networking.Packets.Server.Players.Effects;
@@ -55,7 +56,7 @@ public class PlayerActivityEvent : INetworkPacketEvent
         player.Authenticated = true;
         
         await networkClient.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, 1).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerEffectListWriter().GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
