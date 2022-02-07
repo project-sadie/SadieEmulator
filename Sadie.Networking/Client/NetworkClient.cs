@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Networking.Packets;
 
@@ -6,7 +7,9 @@ namespace Sadie.Networking.Client
 {
     public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     {
-        public NetworkClient(TcpClient tcpClient, INetworkPacketHandler packetHandler) : base(tcpClient, packetHandler)
+        private readonly CancellationTokenSource _cts = new();
+        
+        public NetworkClient(TcpClient tcpClient, INetworkPacketHandler packetHandler, ILogger<NetworkClientProcessComponent> logger) : base(logger, tcpClient, packetHandler)
         {
             SetClient(this);
         }
@@ -17,7 +20,7 @@ namespace Sadie.Networking.Client
         {
             Task.Run(async () =>
             {
-                await StartListening();
+                await StartListening(_cts.Token);
             });
 
             return Task.CompletedTask;
@@ -25,6 +28,7 @@ namespace Sadie.Networking.Client
 
         public new void Dispose()
         {
+            _cts.Cancel();
             Player.Dispose();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Sadie.Networking.Packets;
 using Sadie.Shared;
 
@@ -7,27 +8,33 @@ namespace Sadie.Networking.Client;
 
 public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 {
+    private readonly ILogger<NetworkClientProcessComponent> _logger;
     private readonly TcpClient _client;
     private readonly NetworkStream _stream;
     
     private readonly INetworkPacketHandler _packetHandler;
-    private readonly byte[] _buffer; 
+    private readonly byte[] _buffer;
+    private readonly CancellationTokenSource _cts;
 
-    protected NetworkClientProcessComponent(TcpClient client, INetworkPacketHandler packetHandler)
+    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler)
     {
+        _logger = logger;
         _client = client;
         _stream = client.GetStream();
         
         _packetHandler = packetHandler;
         _buffer = new byte[SadieConstants.HabboPacketBufferSize];
+        _cts = new CancellationTokenSource();
     }
 
-    protected async Task StartListening()
+    protected async Task StartListening(CancellationToken cancellationToken)
     {
         try
         {
             while (true)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
 
                 if (bytes > 0)
@@ -38,6 +45,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         }
         catch (Exception e)
         {
+            _logger.LogError(e.ToString());
             Dispose();
         }
     }
@@ -65,8 +73,9 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
                 }
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            _logger.LogError(e.ToString());
             Dispose();
         }
     }
