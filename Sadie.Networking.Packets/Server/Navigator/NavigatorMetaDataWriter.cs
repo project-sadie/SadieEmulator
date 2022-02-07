@@ -2,8 +2,14 @@ namespace Sadie.Networking.Packets.Server.Navigator;
 
 internal class NavigatorMetaDataWriter : NetworkPacketWriter
 {
-    internal NavigatorMetaDataWriter() : base(ServerPacketId.NavigatorMetaData)
+    internal NavigatorMetaDataWriter(Dictionary<string, int> metaData) : base(ServerPacketId.NavigatorMetaData)
     {
-        WriteInt(0);
+        WriteInt(metaData.Count);
+
+        foreach (var (key, value) in metaData)
+        {
+            WriteString(key);
+            WriteInt(value);
+        }
     }
 }

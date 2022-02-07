@@ -7,6 +7,6 @@ public class RequestGameCenterConfigEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new GameCenterConfigWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new GameAchievementsListWriter().GetAllBytes());
     }
 }

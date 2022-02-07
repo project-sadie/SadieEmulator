@@ -1,8 +1,8 @@
 ﻿namespace Sadie.Networking.Packets.Server.GameCentre;
 
-internal class GameCenterConfigWriter : NetworkPacketWriter
+internal class GameAchievementsListWriter : NetworkPacketWriter
 {
-    internal GameCenterConfigWriter() : base(ServerPacketId.GameCentreConfig)
+    internal GameAchievementsListWriter() : base(ServerPacketId.GameCentreConfig)
     {
         WriteInt(0);
         WriteInt(0);
