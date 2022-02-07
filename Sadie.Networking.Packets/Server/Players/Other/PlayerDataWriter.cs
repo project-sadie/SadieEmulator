@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Sadie.Game.Players;
+﻿using Sadie.Game.Players;
 
 namespace Sadie.Networking.Packets.Server.Players.Other;
 
