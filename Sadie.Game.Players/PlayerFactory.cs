@@ -33,6 +33,12 @@ public class PlayerFactory
 
     private static PlayerNavigatorSettings CreateNavigatorSettingsFromRecord(DatabaseRecord record)
     {
-        return new PlayerNavigatorSettings(100, 100, 425, 535, false, 0);
+        return new PlayerNavigatorSettings(
+            record.Get<int>("window_x"),
+            record.Get<int>("window_y"),
+            record.Get<int>("window_width"),
+            record.Get<int>("window_height"),
+            record.Get<int>("open_searches") == 1,
+            0);
     }
 }
