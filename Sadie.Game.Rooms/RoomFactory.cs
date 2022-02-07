@@ -4,7 +4,7 @@ namespace Sadie.Game.Rooms;
 
 public class RoomFactory
 {
-    public static RoomLayout CreateModelFromRecord(DatabaseRecord @record)
+    private static RoomLayout CreateModelFromRecord(DatabaseRecord @record)
     {
         return new RoomLayout(record.Get<long>("layout_id"), record.Get<string>("layout_name"), record.Get<string>("heightmap"));
     }

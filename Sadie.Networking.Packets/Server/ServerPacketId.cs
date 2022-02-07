@@ -7,7 +7,7 @@ public class ServerPacketId
     public const short UniqueMachineId = 1488;
     public const short PlayerEffectList = 340;
     public const short PlayerClothingList = 1450;
-    public const short PlayerIdentity = 3738;
+    public const short NoobnessLevel = 3738;
     public const short PlayerPermissions = 411;
     public const short PlayerStatus = 2033;
     public const short PlayerData = 2725;

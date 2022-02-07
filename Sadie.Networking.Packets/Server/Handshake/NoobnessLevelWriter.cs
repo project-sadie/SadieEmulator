@@ -2,8 +2,8 @@
 
 internal class NoobnessLevelWriter : NetworkPacketWriter
 {
-    internal NoobnessLevelWriter() : base(ServerPacketId.PlayerIdentity)
+    internal NoobnessLevelWriter(int level) : base(ServerPacketId.NoobnessLevel)
     {
-        WriteInt(1);
+        WriteInt(level);
     }
 }
