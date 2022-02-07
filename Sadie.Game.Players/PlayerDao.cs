@@ -12,7 +12,29 @@ public class PlayerDao : BaseDao, IPlayerDao
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(string ssoToken)
     {
         var reader = await GetReaderAsync(@"
-            SELECT `players`.`id`, `players`.`username`, `player_data`.`home_room_id`, `player_data`.`figure_code`, `player_data`.`motto`, `player_data`.`gender`, `player_data`.`credit_balance`, `player_data`.`pixel_balance`, `player_data`.`seasonal_balance`, `player_data`.`gotw_points` FROM `players` 
+            SELECT 
+                   `players`.`id`, 
+                   `players`.`username`, 
+                   
+                   `player_data`.`home_room_id`, 
+                   `player_data`.`figure_code`, 
+                   `player_data`.`motto`, 
+                   `player_data`.`gender`, 
+                   `player_data`.`credit_balance`, 
+                   `player_data`.`pixel_balance`, 
+                   `player_data`.`seasonal_balance`, 
+                   `player_data`.`gotw_points`,
+                   `player_data`.`respect_points`,
+                   `player_data`.`respect_points_pet`,
+                   `player_data`.`last_online`,
+            
+                    `player_navigator_settings`.`window_x`,
+                    `player_navigator_settings`.`window_y`,
+                    `player_navigator_settings`.`window_width`,
+                    `player_navigator_settings`.`window_height`,
+                    `player_navigator_settings`.`open_searches`
+            
+            FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
                 INNER JOIN `player_navigator_settings` ON `player_navigator_settings`.`profile_id` = `players`.`id` 
             WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
