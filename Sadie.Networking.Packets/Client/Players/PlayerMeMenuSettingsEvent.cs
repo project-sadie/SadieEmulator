@@ -7,6 +7,16 @@ public class PlayerMeMenuSettingsEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter().GetAllBytes());
+        var settings = client.Player.Settings;
+        
+        await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter(
+            settings.SystemVolume, 
+            settings.FurnitureVolume, 
+            settings.TraxVolume, 
+            settings.OldChat, 
+            settings.BlockRoomInvites, 
+            settings.BlockCameraFollow, 
+            settings.UiFlags, 
+            settings.ChatColor).GetAllBytes());
     }
 }

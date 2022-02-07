@@ -6,7 +6,6 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 {
     public PlayerFriendshipDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
     {
-        
     }
     
     public async Task<List<PlayerFriendshipData>> GetFriendshipRequestsAsync(long playerId)

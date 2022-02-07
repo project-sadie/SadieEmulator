@@ -2,15 +2,15 @@
 
 internal class PlayerMeMenuSettingsWriter : NetworkPacketWriter
 {
-    internal PlayerMeMenuSettingsWriter() : base(ServerPacketId.PlayerMeMenuSettings)
+    internal PlayerMeMenuSettingsWriter(int systemVolume, int furnitureVolume, int traxVolume, bool oldChat, bool blockRoomInvites, bool blockCameraFollow, int uiFlags, int chatColor) : base(ServerPacketId.PlayerMeMenuSettings)
     {
-        WriteInt(100);
-        WriteInt(100);
-        WriteInt(100); 
-        WriteBoolean(false);
-        WriteBoolean(false);
-        WriteBoolean(false);
-        WriteInt(0);
-        WriteInt(1);
+        WriteInt(systemVolume);
+        WriteInt(furnitureVolume);
+        WriteInt(traxVolume);
+        WriteBoolean(oldChat);
+        WriteBoolean(blockRoomInvites);
+        WriteBoolean(blockCameraFollow);
+        WriteInt(uiFlags);
+        WriteInt(chatColor);
     }
 }

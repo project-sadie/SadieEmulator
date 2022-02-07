@@ -7,8 +7,9 @@ public interface IPlayerData : IPlayerAvatarData
     long HomeRoom { get; }
     PlayerBalance Balance { get; }
     DateTime LastOnline { get; }
-    public long RespectsReceived { get; }
-    public long RespectPoints { get; }
-    public long RespectPointsPet { get; }
-    public PlayerNavigatorSettings NavigatorSettings { get; }
+    long RespectsReceived { get; }
+    long RespectPoints { get; }
+    long RespectPointsPet { get; }
+    PlayerNavigatorSettings NavigatorSettings { get; }
+    PlayerSettings Settings { get; }
 }

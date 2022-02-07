@@ -14,7 +14,8 @@ public class Player : PlayerData, IPlayer
         long respectsReceived, 
         long respectPoints, 
         long respectPointsPet,
-        PlayerNavigatorSettings navigatorSettings) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline, respectsReceived, respectPoints, respectPointsPet, navigatorSettings)
+        PlayerNavigatorSettings navigatorSettings,
+        PlayerSettings settings) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline, respectsReceived, respectPoints, respectPointsPet, navigatorSettings, settings)
     {
     }
     
