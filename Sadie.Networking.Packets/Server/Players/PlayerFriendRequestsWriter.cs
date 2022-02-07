@@ -1,10 +1,11 @@
 ﻿using Sadie.Game.Players;
+using Sadie.Game.Players.Friendships;
 
 namespace Sadie.Networking.Packets.Server.Players;
 
 internal class PlayerFriendRequestsWriter : NetworkPacketWriter
 {
-    internal PlayerFriendRequestsWriter(List<PlayerFriendRequest> requests) : base(ServerPacketId.PlayerFriendRequests)
+    internal PlayerFriendRequestsWriter(List<PlayerFriendshipData> requests) : base(ServerPacketId.PlayerFriendRequests)
     {
         WriteInt(requests.Count);
         WriteInt(requests.Count);

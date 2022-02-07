@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using MySqlConnector;
 using Sadie.Database;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
@@ -39,6 +40,9 @@ namespace SadieEmulator
 
             serviceCollection.AddSingleton<IPlayerDao, PlayerDao>();
             serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
+
+            serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
+            serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
 
             serviceCollection.AddSingleton<IRoomDao, RoomDao>();
             serviceCollection.AddSingleton(new ConcurrentDictionary<long, RoomEntity>());
@@ -93,7 +97,7 @@ namespace SadieEmulator
                 [ClientPacketId.PromotedRooms] = new PromotedRoomsEvent(),
                 [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(provider.GetRequiredService<IRoomCategoryRepository>()),
                 [ClientPacketId.NavigatorEventCategories] = new NavigatorEventCategoriesEvent(),
-                [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsListEvent(),
+                [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsListEvent(provider.GetRequiredService<IPlayerFriendshipRepository>()),
                 [ClientPacketId.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),
                 [ClientPacketId.UnknownEvent2] = new UnknownEvent2(),
                 [ClientPacketId.RoomLoaded] = new RoomLoadedEvent(provider.GetRequiredService<IRoomRepository>()),

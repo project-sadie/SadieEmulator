@@ -1,12 +1,12 @@
-﻿namespace Sadie.Game.Players;
+﻿namespace Sadie.Game.Players.Friendships;
 
-public class PlayerFriendRequest
+public class PlayerFriendshipData
 {
     public long Id { get; }
     public string Username { get; }
     public string FigureCode { get; }
     
-    public PlayerFriendRequest(long id, string username, string figureCode)
+    public PlayerFriendshipData(long id, string username, string figureCode)
     {
         Id = id;
         Username = username;
