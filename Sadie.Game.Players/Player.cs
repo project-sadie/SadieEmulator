@@ -1,3 +1,5 @@
+using Sadie.Game.Players.Avatar;
+
 namespace Sadie.Game.Players;
 
 public class Player : PlayerData, IPlayer
