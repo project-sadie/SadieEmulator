@@ -53,7 +53,8 @@ public class PlayerFactory
             record.Get<long>("respect_points_pet"),
             CreateNavigatorSettingsFromRecord(record),
             CreateSettingsFromRecord(record), 
-            CreateSavedSearchesFromReader(savedSearchesReader)
+            CreateSavedSearchesFromReader(savedSearchesReader),
+            record.Get<long>("achievement_score")
         );
     }
 

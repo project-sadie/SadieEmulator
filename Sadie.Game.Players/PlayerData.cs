@@ -19,7 +19,8 @@ public class PlayerData : PlayerAvatarData, IPlayerData
         long respectPointsPet, 
         PlayerNavigatorSettings navigatorSettings,
         PlayerSettings settings, 
-        List<PlayerSavedSearch> savedSearches) : base(figureCode, motto, gender)
+        List<PlayerSavedSearch> savedSearches,
+        long achievementScore) : base(figureCode, motto, gender, achievementScore)
     {
         Id = id;
         Username = username;

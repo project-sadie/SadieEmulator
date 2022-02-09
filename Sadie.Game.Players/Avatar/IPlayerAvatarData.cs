@@ -6,4 +6,5 @@ public interface IPlayerAvatarData
     string Motto { get; }
     PlayerAvatarGender Gender { get; }
     long LastRoomLoaded { get; set; }
+    long AchievementScore { get; set; }
 }

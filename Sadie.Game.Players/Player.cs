@@ -19,7 +19,8 @@ public class Player : PlayerData, IPlayer
         long respectPointsPet,
         PlayerNavigatorSettings navigatorSettings,
         PlayerSettings settings,
-        List<PlayerSavedSearch> savedSearches) : 
+        List<PlayerSavedSearch> savedSearches,
+        long achievementScore) : 
         
         base(
             id, 
@@ -35,7 +36,8 @@ public class Player : PlayerData, IPlayer
             respectPointsPet, 
             navigatorSettings, 
             settings, 
-            savedSearches)
+            savedSearches,
+            achievementScore)
     {
     }
     

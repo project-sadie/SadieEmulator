@@ -1,6 +1,4 @@
-using Sadie.Game.Players;
-
-namespace Sadie.Networking.Packets.Server.Players.Navigator;
+namespace Sadie.Networking.Packets.Server.Players;
 
 internal class PlayerNotificationSettingsWriter : NetworkPacketWriter
 {

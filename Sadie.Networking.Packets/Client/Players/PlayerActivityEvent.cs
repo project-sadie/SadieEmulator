@@ -2,6 +2,7 @@
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Networking.Client;
+using Sadie.Networking.Packets.Server.Players;
 using Sadie.Networking.Packets.Server.Players.Clothing;
 using Sadie.Networking.Packets.Server.Players.Effects;
 using Sadie.Networking.Packets.Server.Players.Navigator;
@@ -62,5 +63,6 @@ public class PlayerActivityEvent : INetworkPacketEvent
         await networkClient.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.Settings.ShowNotifications).GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerAchievementScoreWriter(player.AchievementScore).GetAllBytes());
     }
 }
