@@ -1,4 +1,5 @@
 using Sadie.Game.Players.Avatar;
+using Sadie.Game.Players.Navigator;
 
 namespace Sadie.Game.Players;
 
@@ -17,7 +18,24 @@ public class Player : PlayerData, IPlayer
         long respectPoints, 
         long respectPointsPet,
         PlayerNavigatorSettings navigatorSettings,
-        PlayerSettings settings) : base(id, username, homeRoom, figureCode, motto, gender, balance, lastOnline, respectsReceived, respectPoints, respectPointsPet, navigatorSettings, settings)
+        PlayerSettings settings,
+        List<PlayerSavedSearch> savedSearches) : 
+        
+        base(
+            id, 
+            username, 
+            homeRoom, 
+            figureCode, 
+            motto, 
+            gender, 
+            balance, 
+            lastOnline, 
+            respectsReceived, 
+            respectPoints, 
+            respectPointsPet, 
+            navigatorSettings, 
+            settings, 
+            savedSearches)
     {
     }
     

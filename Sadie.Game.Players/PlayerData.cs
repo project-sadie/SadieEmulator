@@ -18,7 +18,8 @@ public class PlayerData : PlayerAvatarData, IPlayerData
         long respectPoints, 
         long respectPointsPet, 
         PlayerNavigatorSettings navigatorSettings,
-        PlayerSettings settings) : base(figureCode, motto, gender)
+        PlayerSettings settings, 
+        List<PlayerSavedSearch> savedSearches) : base(figureCode, motto, gender)
     {
         Id = id;
         Username = username;
@@ -30,6 +31,7 @@ public class PlayerData : PlayerAvatarData, IPlayerData
         RespectPointsPet = respectPointsPet;
         NavigatorSettings = navigatorSettings;
         Settings = settings;
+        SavedSearches = savedSearches;
     }
 
     public long Id { get; }
