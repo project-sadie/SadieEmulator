@@ -42,6 +42,7 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_game_settings`.`block_camera_follow`,
                    `player_game_settings`.`ui_flags`,
                    `player_game_settings`.`chat_color`,
+                   `player_game_settings`.`show_notifications`,
                    
                     (SELECT COUNT(*) FROM `player_respects` WHERE `target_profile_id` = `players`.`id`) AS `respects_received`
             

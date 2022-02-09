@@ -38,4 +38,5 @@ public class ServerPacketId
     public const short RoomHeightMap = 1301;
     public const short PlayerActivityPointsBalance = 2018;
     public const short PlayerCreditsBalance = 3475;
+    public const short NotificationSettings = 3284;
 }

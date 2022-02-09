@@ -78,6 +78,7 @@ public class PlayerFactory
             record.Get<int>("block_room_invited") == 1,
             record.Get<int>("block_camera_follow") == 1,
             record.Get<int>("ui_flags"),
-            record.Get<int>("chat_color"));
+            record.Get<int>("chat_color"),
+            record.Get<int>("show_notifications") == 1);
     }
 }
