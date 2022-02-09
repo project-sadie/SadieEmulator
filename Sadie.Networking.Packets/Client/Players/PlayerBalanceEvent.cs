@@ -8,7 +8,7 @@ public class PlayerBalanceEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var balance = client.Player.Balance;
-        var currencies = new Dictionary<int, long>()
+        var currencies = new Dictionary<int, long>
         {
             {0, balance.Pixels},
             {1, 0}, // snowflakes
@@ -20,7 +20,7 @@ public class PlayerBalanceEvent : INetworkPacketEvent
             {102, 0}, // unknown
             {103, balance.Gotw},
             {104, 0}, // unknown
-            {105, 0}, // unknown
+            {105, 0} // unknown
         };
         
         await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(balance.Credits).GetAllBytes());
