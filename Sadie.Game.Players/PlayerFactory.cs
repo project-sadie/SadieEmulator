@@ -48,7 +48,7 @@ public class PlayerFactory
             record.Get<char>("gender") == 'M' ? PlayerAvatarGender.Male : PlayerAvatarGender.Female,
             CreateBalanceFromRecord(record),
             DateTime.TryParse(record.Get<string>("last_online"), out var timestamp) ? timestamp : DateTime.MinValue,
-            0, // TODO: load this
+            record.Get<long>("respects_received"),
             record.Get<long>("respect_points"),
             record.Get<long>("respect_points_pet"),
             CreateNavigatorSettingsFromRecord(record),

@@ -32,7 +32,9 @@ public class PlayerDao : BaseDao, IPlayerDao
                     `player_navigator_settings`.`window_y`,
                     `player_navigator_settings`.`window_width`,
                     `player_navigator_settings`.`window_height`,
-                    `player_navigator_settings`.`open_searches`
+                    `player_navigator_settings`.`open_searches`,
+
+                    (SELECT COUNT(*) FROM `player_respects` WHERE `target_profile_id` = `players`.`id`) AS `respects_received`
             
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
