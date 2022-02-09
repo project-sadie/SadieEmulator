@@ -3,33 +3,32 @@ using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Client
+namespace Sadie.Networking.Client;
+
+public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 {
-    public class NetworkClient : NetworkClientProcessComponent, INetworkClient
+    private readonly CancellationTokenSource _cts = new();
+        
+    public NetworkClient(TcpClient tcpClient, INetworkPacketHandler packetHandler, ILogger<NetworkClientProcessComponent> logger) : base(logger, tcpClient, packetHandler)
     {
-        private readonly CancellationTokenSource _cts = new();
+        SetClient(this);
+    }
         
-        public NetworkClient(TcpClient tcpClient, INetworkPacketHandler packetHandler, ILogger<NetworkClientProcessComponent> logger) : base(logger, tcpClient, packetHandler)
-        {
-            SetClient(this);
-        }
-        
-        public IPlayer Player { get; set; } = null!;
+    public IPlayer Player { get; set; } = null!;
 
-        public Task ListenAsync()
+    public Task ListenAsync()
+    {
+        Task.Run(async () =>
         {
-            Task.Run(async () =>
-            {
-                await StartListening(_cts.Token);
-            });
+            await StartListening(_cts.Token);
+        });
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        public new void Dispose()
-        {
-            _cts.Cancel();
-            Player.Dispose();
-        }
+    public new void Dispose()
+    {
+        _cts.Cancel();
+        Player.Dispose();
     }
 }

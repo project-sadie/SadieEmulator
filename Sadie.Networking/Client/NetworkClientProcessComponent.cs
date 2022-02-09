@@ -14,7 +14,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
     
     private readonly INetworkPacketHandler _packetHandler;
     private readonly byte[] _buffer;
-    private readonly CancellationTokenSource _cts;
 
     protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler)
     {
@@ -24,7 +23,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         
         _packetHandler = packetHandler;
         _buffer = new byte[SadieConstants.HabboPacketBufferSize];
-        _cts = new CancellationTokenSource();
     }
 
     protected async Task StartListening(CancellationToken cancellationToken)
@@ -54,7 +52,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
     protected void SetClient(INetworkClient client) => _networkClient = client;
 
-    private async Task OnReceivedAsync(int bytesReceived)
+    private Task OnReceivedAsync(int bytesReceived)
     {
         try
         {
@@ -78,11 +76,13 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
             _logger.LogError(e.ToString());
             Dispose();
         }
+
+        return Task.CompletedTask;
     }
 
     private void OnReceivedPolicyRequest()
     {
-        WriteToStreamAsync(Encoding.Default.GetBytes(SadieConstants.HabboPolicyXml)).Wait();
+        WriteToStreamAsync(Encoding.Default.GetBytes(SadieConstants.CrossDomainPolicy)).Wait();
     }
 
     public async Task WriteToStreamAsync(byte[] data)
