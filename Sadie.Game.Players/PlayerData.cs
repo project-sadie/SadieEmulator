@@ -1,4 +1,5 @@
 using Sadie.Game.Players.Avatar;
+using Sadie.Game.Players.Navigator;
 
 namespace Sadie.Game.Players;
 
@@ -41,4 +42,5 @@ public class PlayerData : PlayerAvatarData, IPlayerData
     public long RespectPointsPet { get; }
     public PlayerNavigatorSettings NavigatorSettings { get; }
     public PlayerSettings Settings { get; }
+    public List<PlayerSavedSearch> SavedSearches { get; }
 }

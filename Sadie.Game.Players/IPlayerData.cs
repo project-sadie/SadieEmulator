@@ -1,4 +1,5 @@
 using Sadie.Game.Players.Avatar;
+using Sadie.Game.Players.Navigator;
 
 namespace Sadie.Game.Players;
 
@@ -14,4 +15,5 @@ public interface IPlayerData : IPlayerAvatarData
     long RespectPointsPet { get; }
     PlayerNavigatorSettings NavigatorSettings { get; }
     PlayerSettings Settings { get; }
+    List<PlayerSavedSearch> SavedSearches { get; }
 }
