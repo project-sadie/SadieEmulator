@@ -1,5 +1,4 @@
-﻿using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
+﻿using Sadie.Game.Players.Friendships;
 
 namespace Sadie.Networking.Packets.Server.Players;
 

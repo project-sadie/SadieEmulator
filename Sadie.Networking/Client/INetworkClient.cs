@@ -1,11 +1,10 @@
 using Sadie.Game.Players;
 
-namespace Sadie.Networking.Client
+namespace Sadie.Networking.Client;
+
+public interface INetworkClient : IDisposable
 {
-    public interface INetworkClient : IDisposable
-    {
-        IPlayer Player { get; set; }
-        Task ListenAsync();
-        Task WriteToStreamAsync(byte[] data);
-    }
+    IPlayer Player { get; set; }
+    Task ListenAsync();
+    Task WriteToStreamAsync(byte[] data);
 }
