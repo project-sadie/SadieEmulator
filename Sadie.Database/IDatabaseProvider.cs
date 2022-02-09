@@ -1,8 +1,7 @@
-namespace Sadie.Database
+namespace Sadie.Database;
+
+public interface IDatabaseProvider
 {
-    public interface IDatabaseProvider
-    {
-        IDatabaseConnection GetConnection();
-        bool TestConnection();
-    }
+    IDatabaseConnection GetConnection();
+    bool TestConnection();
 }

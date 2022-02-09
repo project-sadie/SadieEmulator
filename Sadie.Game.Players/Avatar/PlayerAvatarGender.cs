@@ -1,4 +1,4 @@
-﻿namespace Sadie.Game.Players;
+﻿namespace Sadie.Game.Players.Avatar;
 
 public enum PlayerAvatarGender
 {
