@@ -1,5 +1,6 @@
 using Sadie.Database;
 using Sadie.Game.Players.Avatar;
+using Sadie.Game.Players.Navigator;
 
 namespace Sadie.Game.Players;
 
@@ -29,7 +30,8 @@ public class PlayerFactory
             record.Get<long>("respect_points"),
             record.Get<long>("respect_points_pet"),
             CreateNavigatorSettingsFromRecord(record),
-            CreateSettingsFromRecord()
+            CreateSettingsFromRecord(), 
+            new List<PlayerSavedSearch>()
         );
     }
 
