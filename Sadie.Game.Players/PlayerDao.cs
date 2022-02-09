@@ -44,9 +44,21 @@ public class PlayerDao : BaseDao, IPlayerDao
 
         var (success, record) = reader.Read();
 
-        return success && record != null ?
-            new Tuple<bool, IPlayer?>(true, PlayerFactory.CreateFromRecord(record)) : 
-            new Tuple<bool, IPlayer?>(false, null);
+        if (success && record != null)
+        {
+            var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
+            return new Tuple<bool, IPlayer?>(true, PlayerFactory.CreateFromRecord(record, savedSearchesReader));
+        }
+
+        return new Tuple<bool, IPlayer?>(false, null);
+    }
+
+    private async Task<DatabaseReader> GetReaderForSavedSearchesAsync(long id)
+    {
+        return await GetReaderAsync("SELECT `id`,`search`,`filter` FROM `player_saved_searches` WHERE `profile_id` = @profileId", new Dictionary<string, object>
+        {
+            { "profileId", id }
+        });
     }
 
     public async Task MarkPlayerAsOnlineAsync(long id)

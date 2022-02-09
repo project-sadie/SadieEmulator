@@ -14,8 +14,30 @@ public class PlayerFactory
             record.Get<long>("seasonal_balance"),
             record.Get<long>("gotw_points"));
     }
+
+    private static List<PlayerSavedSearch> CreateSavedSearchesFromReader(DatabaseReader savedSearchesReader)
+    {
+        var data = new List<PlayerSavedSearch>();
+        
+        while (true)
+        {
+            var (success, record) = savedSearchesReader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            data.Add(new PlayerSavedSearch(
+                record.Get<long>("id"),
+                record.Get<string>("search"),
+                record.Get<string>("filter")));
+        }
+        
+        return data;
+    }
     
-    public static IPlayer CreateFromRecord(DatabaseRecord record)
+    public static IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader)
     {
         return new Player(
             record.Get<long>("id"),
@@ -31,7 +53,7 @@ public class PlayerFactory
             record.Get<long>("respect_points_pet"),
             CreateNavigatorSettingsFromRecord(record),
             CreateSettingsFromRecord(), 
-            new List<PlayerSavedSearch>()
+            CreateSavedSearchesFromReader(savedSearchesReader)
         );
     }
 

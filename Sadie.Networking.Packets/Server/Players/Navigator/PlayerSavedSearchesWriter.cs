@@ -10,7 +10,7 @@ internal class PlayerSavedSearchesWriter : NetworkPacketWriter
 
         foreach (var search in searches)
         {
-            WriteInt(search.Id);
+            WriteLong(search.Id);
             WriteString(search.Search);
             WriteString(search.Filter);
             WriteString(search.Unknown1);

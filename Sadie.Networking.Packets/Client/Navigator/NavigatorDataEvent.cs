@@ -1,5 +1,4 @@
-﻿using Sadie.Game.Players.Navigator;
-using Sadie.Game.Rooms;
+﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Navigator;
 using Sadie.Networking.Packets.Server.Players.Navigator;
