@@ -1,4 +1,5 @@
 ﻿using Sadie.Game.Players;
+using Sadie.Game.Players.Avatar;
 
 namespace Sadie.Networking.Packets.Server.Players.Other;
 

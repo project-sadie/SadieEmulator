@@ -5,9 +5,9 @@ public static class SadieConstants
     public static int HabboPacketMinLength => 4;
     public static int HabboPacketBufferSize => 4096;
     public static int HabboPacketMaxLength => HabboPacketBufferSize - 4;
-    public static int HabboSsoMinLength => 20;
+    public static int PlayerSsoMinLength => 20;
 
-    public static string HabboPolicyXml => "<?xml version=\"1.0\"?>\r\n" +
+    public static string CrossDomainPolicy => "<?xml version=\"1.0\"?>\r\n" +
                                            "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">\r\n" +
                                            "<cross-domain-policy>\r\n" +
                                            "<allow-access-from domain=\"*\" to-ports=\"1-31111\" />\r\n" +
@@ -15,7 +15,7 @@ public static class SadieConstants
 
     public static string DateTimeFormat => "yyyy-MM-dd HH:mm:ss";
     
-    public static List<string> NavigatorCategories = new()
+    public static readonly List<string> NavigatorCategories = new()
     {
         "new_ads",
         "friend_finding",
@@ -61,6 +61,6 @@ public static class SadieConstants
         "eventcategory__Grand Openings",
         "eventcategory__Friending",
         "eventcategory__Jobs",
-        "eventcategory__Group Events",
+        "eventcategory__Group Events"
     };
 }
