@@ -17,7 +17,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                    `player_data`.`figure_code`
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
-            WHERE `players`.`id` IN (SELECT `sender_id` FROM `player_friendships` WHERE `target_id` = @playerId AND `status` = 1);", new Dictionary<string, object>()
+            WHERE `players`.`id` IN (SELECT `sender_id` FROM `player_friendships` WHERE `target_id` = @playerId AND `status` = 1);", new Dictionary<string, object>
         {
             { "playerId", playerId }
         });
