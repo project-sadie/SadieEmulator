@@ -52,7 +52,7 @@ public class PlayerFactory
             record.Get<long>("respect_points"),
             record.Get<long>("respect_points_pet"),
             CreateNavigatorSettingsFromRecord(record),
-            CreateSettingsFromRecord(), 
+            CreateSettingsFromRecord(record), 
             CreateSavedSearchesFromReader(savedSearchesReader)
         );
     }
@@ -68,9 +68,16 @@ public class PlayerFactory
             0);
     }
 
-    private static PlayerSettings CreateSettingsFromRecord()
+    private static PlayerSettings CreateSettingsFromRecord(DatabaseRecord record)
     {
-        // TODO: Load this
-        return new PlayerSettings(100, 100, 100, false, false, false, 0, 1);
+        return new PlayerSettings(
+            record.Get<int>("system_volume"),
+            record.Get<int>("furniture_volume"),
+            record.Get<int>("trax_volume"),
+            record.Get<int>("prefer_old_chat") == 1,
+            record.Get<int>("block_room_invited") == 1,
+            record.Get<int>("block_camera_follow") == 1,
+            record.Get<int>("ui_flags"),
+            record.Get<int>("chat_color"));
     }
 }

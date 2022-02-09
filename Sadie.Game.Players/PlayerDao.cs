@@ -34,11 +34,22 @@ public class PlayerDao : BaseDao, IPlayerDao
                     `player_navigator_settings`.`window_height`,
                     `player_navigator_settings`.`open_searches`,
 
+                   `player_game_settings`.`system_volume`,
+                   `player_game_settings`.`furniture_volume`,
+                   `player_game_settings`.`trax_volume`,
+                   `player_game_settings`.`prefer_old_chat`,
+                   `player_game_settings`.`block_room_invited`,
+                   `player_game_settings`.`block_camera_follow`,
+                   `player_game_settings`.`ui_flags`,
+                   `player_game_settings`.`chat_color`,
+                   
                     (SELECT COUNT(*) FROM `player_respects` WHERE `target_profile_id` = `players`.`id`) AS `respects_received`
             
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
                 INNER JOIN `player_navigator_settings` ON `player_navigator_settings`.`profile_id` = `players`.`id` 
+                INNER JOIN `player_game_settings` ON `player_game_settings`.`profile_id` = `players`.`id` 
+        
             WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
         {
             { "ssoToken", ssoToken }
