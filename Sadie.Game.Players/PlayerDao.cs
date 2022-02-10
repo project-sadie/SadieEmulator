@@ -27,6 +27,7 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_data`.`respect_points`,
                    `player_data`.`respect_points_pet`,
                    `player_data`.`last_online`,
+                   `player_data`.`achievement_score`,
             
                     `player_navigator_settings`.`window_x`,
                     `player_navigator_settings`.`window_y`,

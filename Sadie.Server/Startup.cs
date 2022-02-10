@@ -100,7 +100,7 @@ public static class Startup
             [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsListEvent(provider.GetRequiredService<IPlayerFriendshipRepository>()),
             [ClientPacketId.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),
             [ClientPacketId.UnknownEvent2] = new UnknownEvent2(),
-            [ClientPacketId.RoomLoaded] = new RoomLoadedEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomLoaded] = new RoomLoadedEvent(provider.GetRequiredService<ILogger<RoomLoadedEvent>>(), provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.UnknownEvent3] = new UnknownEvent3(),
             [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>())
         });
