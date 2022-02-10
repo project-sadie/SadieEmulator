@@ -5,8 +5,7 @@ internal class RoomRelativeMapWriter : NetworkPacketWriter
     internal RoomRelativeMapWriter(string heightMap) : base(ServerPacketId.RoomRelativeMap)
     {
         var heightMapLines = heightMap.Split("\n");
-        
-        var mapSizeX = heightMapLines[0].Length;
+        var mapSizeX = heightMapLines.OrderByDescending(x => x.Length).First().Length;
         var mapSizeY = heightMapLines.Length;
         var mapSize = mapSizeX * mapSizeY;
         
