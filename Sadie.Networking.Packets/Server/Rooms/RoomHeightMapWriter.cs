@@ -2,10 +2,10 @@
 
 internal class RoomHeightMapWriter : NetworkPacketWriter
 {
-    internal RoomHeightMapWriter(bool unknown1, int unknown2, string unknown3) : base(ServerPacketId.RoomHeightMap)
+    internal RoomHeightMapWriter(bool unknown1, int wallHeight, string map) : base(ServerPacketId.RoomHeightMap)
     {
         WriteBoolean(unknown1);
-        WriteInt(unknown2);
-        WriteString(unknown3);
+        WriteInt(wallHeight);
+        WriteString(map);
     }
 }
