@@ -1,23 +1,21 @@
-﻿namespace Sadie.Networking.Packets.Server.Rooms;
+﻿using Sadie.Game.Rooms;
+
+namespace Sadie.Networking.Packets.Server.Rooms;
 
 internal class RoomRelativeMapWriter : NetworkPacketWriter
 {
-    internal RoomRelativeMapWriter(string heightMap) : base(ServerPacketId.RoomRelativeMap)
+    internal RoomRelativeMapWriter(RoomLayoutData layout) : base(ServerPacketId.RoomRelativeMap)
     {
-        var heightMapLines = heightMap.Split("\n");
-        var mapSizeX = heightMapLines.OrderByDescending(x => x.Length).First().Length;
-        var mapSizeY = heightMapLines.Length;
-        var mapSize = mapSizeX * mapSizeY;
+        var mapSizeX = layout.SizeX;
+        var mapSizeY = layout.SizeY;
+        var mapSize = layout.SizeX * layout.SizeY;
         
         WriteInt(mapSize / mapSizeY);
         WriteInt(mapSize);
 
-        for (var y = 0; y < mapSizeY; y++)
+        for (var x = 0; x < mapSizeX * mapSizeY; x++)
         {
-            for (var x = 0; x < mapSizeX; x++)
-            {
-                WriteShort(64 * 256);
-            }
+            WriteShort(16384);
         }
     }
 }
