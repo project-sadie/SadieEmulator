@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sadie.Game.Players.Avatar;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -32,7 +33,15 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         player.LastRoomLoaded = roomId;
 
-        if (!room.UserRepository.TryAdd(RoomUserFactory.Create(player.Id, room.Layout.DoorPoint, room.Layout.DoorDirection)))
+        if (!room.UserRepository.TryAdd(RoomUserFactory.Create(
+                player.Id, 
+                room.Layout.DoorPoint, 
+                room.Layout.DoorDirection,
+                player.Username,
+                player.Motto,
+                player.FigureCode,
+                player.Gender == PlayerAvatarGender.Male ? "M" : "F",
+                player.AchievementScore)))
         {
             _logger.LogError($"Failed to add user {player.Id} to room {roomId}");
             return;
