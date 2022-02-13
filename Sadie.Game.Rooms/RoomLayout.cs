@@ -1,4 +1,6 @@
-﻿namespace Sadie.Game.Rooms;
+﻿using Sadie.Shared;
+
+namespace Sadie.Game.Rooms;
 
 public class RoomLayout : RoomLayoutData
 {
@@ -6,10 +8,13 @@ public class RoomLayout : RoomLayoutData
     public string Name { get; }
     public string HeightMap { get; }
     
-    public RoomLayout(long id, string name, string heightMap) : base(heightMap)
+    public HPoint DoorPoint { get; }
+    
+    public RoomLayout(long id, string name, string heightMap, HPoint doorPoint) : base(heightMap)
     {
         Id = id;
         Name = name;
         HeightMap = heightMap;
+        DoorPoint = doorPoint;
     }
 }
