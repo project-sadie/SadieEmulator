@@ -25,9 +25,8 @@ public class RoomRepository : IRoomRepository
         if (result && room != null)
         {
             _rooms[room.Id] = room;
-            return await _dao.TryGetRoomById(id);
         }
 
-        return new Tuple<bool, Room?>(false, null);
+        return TryGetRoomById(id);
     }
 }
