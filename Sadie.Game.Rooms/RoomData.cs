@@ -8,13 +8,13 @@ public class RoomData : RoomSettings
     public long Id { get; }
     public string Name { get; }
     public RoomLayout Layout { get; }
-    public ConcurrentDictionary<long, RoomUser> Users { get; }
+    public RoomUserRepository UserRepository { get; }
 
-    protected RoomData(long id, string name, RoomLayout layout, ConcurrentDictionary<long, RoomUser> users)
+    protected RoomData(long id, string name, RoomLayout layout, RoomUserRepository userRepository)
     {
         Id = id;
         Name = name;
         Layout = layout;
-        Users = users;
+        UserRepository = userRepository;
     }
 }

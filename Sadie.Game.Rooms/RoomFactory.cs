@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared;
@@ -7,7 +8,14 @@ namespace Sadie.Game.Rooms;
 
 public class RoomFactory
 {
-    private static RoomLayout CreateModelFromRecord(DatabaseRecord record)
+    private readonly IServiceProvider _serviceProvider;
+
+    public RoomFactory(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+    
+    public RoomLayout CreateModelFromRecord(DatabaseRecord record)
     {
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
@@ -20,7 +28,7 @@ public class RoomFactory
             doorPoint);
     }
     
-    public static Room CreateFromRecord(DatabaseRecord record)
+    public Room CreateFromRecord(DatabaseRecord record)
     {
         var model = CreateModelFromRecord(record);
         
@@ -28,7 +36,7 @@ public class RoomFactory
             record.Get<long>("id"),
             record.Get<string>("name"),
             model,
-            new ConcurrentDictionary<long, RoomUser>()
+            ActivatorUtilities.CreateInstance<RoomUserRepository>(_serviceProvider, new ConcurrentDictionary<long, RoomUser>())
         );
     }
 }

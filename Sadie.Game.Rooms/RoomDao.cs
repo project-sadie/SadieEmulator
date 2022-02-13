@@ -4,8 +4,11 @@ namespace Sadie.Game.Rooms;
 
 public class RoomDao : BaseDao, IRoomDao
 {
-    public RoomDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
+    private readonly RoomFactory _factory;
+
+    public RoomDao(IDatabaseProvider databaseProvider, RoomFactory factory) : base(databaseProvider)
     {
+        _factory = factory;
     }
 
     public async Task<Tuple<bool, Room?>> TryGetRoomById(long roomId)
@@ -30,7 +33,7 @@ public class RoomDao : BaseDao, IRoomDao
         var (success, record) = reader.Read();
 
         return success && record != null ?
-            new Tuple<bool, Room?>(true, RoomFactory.CreateFromRecord(record)) : 
+            new Tuple<bool, Room?>(true, _factory.CreateFromRecord(record)) : 
             new Tuple<bool, Room?>(false, null);
     }
 }
