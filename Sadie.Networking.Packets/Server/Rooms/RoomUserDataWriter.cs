@@ -1,5 +1,4 @@
-﻿using Sadie.Game.Players.Avatar;
-using Sadie.Game.Rooms.Users;
+﻿using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Networking.Packets.Server.Rooms;
 
@@ -19,7 +18,7 @@ internal class RoomUserDataWriter : NetworkPacketWriter
             WriteInt(user.Point.X);
             WriteInt(user.Point.Y);
             WriteString(user.Point.Z + "");
-            WriteInt(0);
+            WriteInt((int) user.Direction);
             WriteInt(1);
             WriteString("M");
             WriteInt(-1);

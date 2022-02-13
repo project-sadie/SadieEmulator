@@ -8,13 +8,10 @@ public class RoomLayout : RoomLayoutData
     public string Name { get; }
     public string HeightMap { get; }
     
-    public HPoint DoorPoint { get; }
-    
-    public RoomLayout(long id, string name, string heightMap, HPoint doorPoint) : base(heightMap)
+    public RoomLayout(long id, string name, string heightMap, HPoint doorPoint, HDirection doorDirection) : base(heightMap, doorPoint, doorDirection)
     {
         Id = id;
         Name = name;
         HeightMap = heightMap;
-        DoorPoint = doorPoint;
     }
 }

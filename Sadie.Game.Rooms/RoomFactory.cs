@@ -25,7 +25,8 @@ public class RoomFactory : IRoomFactory
             record.Get<long>("layout_id"), 
             record.Get<string>("layout_name"), 
             record.Get<string>("heightmap"), 
-            doorPoint);
+            doorPoint,
+            (HDirection)record.Get<int>("door_direction"));
     }
     
     public Room CreateFromRecord(DatabaseRecord record)
