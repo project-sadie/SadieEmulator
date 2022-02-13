@@ -44,6 +44,7 @@ public static class Startup
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
 
+        serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
         serviceCollection.AddSingleton(new ConcurrentDictionary<long, Room>());
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();

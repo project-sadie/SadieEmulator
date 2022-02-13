@@ -4,9 +4,9 @@ namespace Sadie.Game.Rooms;
 
 public class RoomDao : BaseDao, IRoomDao
 {
-    private readonly RoomFactory _factory;
+    private readonly IRoomFactory _factory;
 
-    public RoomDao(IDatabaseProvider databaseProvider, RoomFactory factory) : base(databaseProvider)
+    public RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) : base(databaseProvider)
     {
         _factory = factory;
     }

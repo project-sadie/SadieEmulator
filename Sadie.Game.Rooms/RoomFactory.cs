@@ -6,7 +6,7 @@ using Sadie.Shared;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomFactory
+public class RoomFactory : IRoomFactory
 {
     private readonly IServiceProvider _serviceProvider;
 
@@ -19,7 +19,7 @@ public class RoomFactory
     {
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
-            record.Get<int>("door_z"));
+            record.Get<double>("door_z"));
         
         return new RoomLayout(
             record.Get<long>("layout_id"), 
