@@ -22,7 +22,8 @@ public class RoomDao : BaseDao, IRoomDao
                    `room_layouts`.`heightmap`,
                    `room_layouts`.`door_x`,
                    `room_layouts`.`door_y`,
-                   `room_layouts`.`door_z`
+                   `room_layouts`.`door_z`,
+                   `room_layouts`.`door_direction`
             FROM `rooms` 
                 INNER JOIN `room_layouts` ON `room_layouts`.`id` = `rooms`.`layout_id` WHERE `rooms`.`id` = @roomId 
             LIMIT 1;", new Dictionary<string, object>
