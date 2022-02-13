@@ -31,8 +31,9 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
         await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Layout.Name).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomPaintWriter("floor", "0.0").GetAllBytes());
-        await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", "0.0").GetAllBytes());
+        // await client.WriteToStreamAsync(new RoomPaintWriter("floor", "0.0").GetAllBytes());
+        // await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", "0.0").GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
+        await client.WriteToStreamAsync(new RoomUserDataWriter().GetAllBytes());
     }
 }

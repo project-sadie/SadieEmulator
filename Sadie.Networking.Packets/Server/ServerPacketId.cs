@@ -40,4 +40,5 @@ public class ServerPacketId
     public const short PlayerCreditsBalance = 3475;
     public const short NotificationSettings = 3284;
     public const short PlayerAchievementScore = 1968;
+    public const short RoomUserData = 374;
 }
