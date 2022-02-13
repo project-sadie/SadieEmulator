@@ -14,7 +14,7 @@ internal class RoomUserDataWriter : NetworkPacketWriter
             WriteString(user.Username);
             WriteString(user.Motto);
             WriteString(user.FigureCode);
-            WriteInt(1);
+            WriteLong(user.Id);
             WriteInt(user.Point.X);
             WriteInt(user.Point.Y);
             WriteString(user.Point.Z + "");
