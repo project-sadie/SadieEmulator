@@ -25,6 +25,6 @@ public class RoomHeightmapEvent : INetworkPacketEvent
         var roomLayout = room.Layout;
         
         await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomLayout).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomHeightMapWriter(false, -1, roomLayout.RelativeHeightmap).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, roomLayout.HeightMap.Replace("\n", "\r")).GetAllBytes());
     }
 }
