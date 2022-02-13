@@ -2,10 +2,12 @@
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserRepository : ConcurrentDictionary<long, RoomUser>
+public class RoomUserRepository
 {
-    public RoomUserRepository(ConcurrentDictionary<long, RoomUser> users) : base(users)
+    private readonly ConcurrentDictionary<long, RoomUser> _users;
+
+    public RoomUserRepository(ConcurrentDictionary<long, RoomUser> users)
     {
+        _users = users;
     }
-    
 }
