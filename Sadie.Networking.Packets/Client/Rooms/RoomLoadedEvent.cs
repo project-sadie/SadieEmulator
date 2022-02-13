@@ -37,6 +37,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
                 player.Id, 
                 room.Layout.DoorPoint, 
                 room.Layout.DoorDirection,
+                room.Layout.DoorDirection,
                 player.Username,
                 player.Motto,
                 player.FigureCode,

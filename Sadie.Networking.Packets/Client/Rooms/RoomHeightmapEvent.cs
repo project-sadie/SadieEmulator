@@ -1,6 +1,7 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Rooms;
+using Sadie.Networking.Packets.Server.Rooms.Users;
 
 namespace Sadie.Networking.Packets.Client.Rooms;
 
@@ -27,5 +28,6 @@ public class RoomHeightmapEvent : INetworkPacketEvent
         await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomLayout).GetAllBytes());
         await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, roomLayout.HeightMap.Replace("\n", "\r")).GetAllBytes());
         await client.WriteToStreamAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
     }
 }
