@@ -1,10 +1,11 @@
-﻿using Sadie.Game.Rooms.Users;
+﻿using System.Collections.Concurrent;
+using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
 public class Room : RoomData
 {
-    public Room(long id, string name, RoomLayout layout, List<RoomUser> users) : base(id, name, layout, users)
+    public Room(long id, string name, RoomLayout layout, ConcurrentDictionary<long, RoomUser> users) : base(id, name, layout, users)
     {
     }
 }

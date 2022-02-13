@@ -1,4 +1,5 @@
-﻿using Sadie.Database;
+﻿using System.Collections.Concurrent;
+using Sadie.Database;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared;
 
@@ -27,7 +28,7 @@ public class RoomFactory
             record.Get<long>("id"),
             record.Get<string>("name"),
             model,
-            new List<RoomUser>()
+            new ConcurrentDictionary<long, RoomUser>()
         );
     }
 }
