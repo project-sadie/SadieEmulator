@@ -1,4 +1,5 @@
 ﻿using Sadie.Database;
+using Sadie.Game.Rooms.Users;
 using Sadie.Shared;
 
 namespace Sadie.Game.Rooms;
@@ -18,14 +19,15 @@ public class RoomFactory
             doorPoint);
     }
     
-    public static RoomEntity CreateFromRecord(DatabaseRecord record)
+    public static Room CreateFromRecord(DatabaseRecord record)
     {
         var model = CreateModelFromRecord(record);
         
-        return new RoomEntity(
+        return new Room(
             record.Get<long>("id"),
             record.Get<string>("name"),
-            model
+            model,
+            new List<RoomUser>()
         );
     }
 }

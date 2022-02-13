@@ -8,7 +8,7 @@ public class RoomDao : BaseDao, IRoomDao
     {
     }
 
-    public async Task<Tuple<bool, RoomEntity?>> TryGetRoomById(long roomId)
+    public async Task<Tuple<bool, Room?>> TryGetRoomById(long roomId)
     {
         var reader = await GetReaderAsync(@"
             SELECT 
@@ -30,7 +30,7 @@ public class RoomDao : BaseDao, IRoomDao
         var (success, record) = reader.Read();
 
         return success && record != null ?
-            new Tuple<bool, RoomEntity?>(true, RoomFactory.CreateFromRecord(record)) : 
-            new Tuple<bool, RoomEntity?>(false, null);
+            new Tuple<bool, Room?>(true, RoomFactory.CreateFromRecord(record)) : 
+            new Tuple<bool, Room?>(false, null);
     }
 }

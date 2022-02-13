@@ -2,5 +2,5 @@ namespace Sadie.Game.Rooms;
 
 public interface IRoomDao
 {
-    Task<Tuple<bool, RoomEntity?>> TryGetRoomById(long roomId);
+    Task<Tuple<bool, Room?>> TryGetRoomById(long roomId);
 }

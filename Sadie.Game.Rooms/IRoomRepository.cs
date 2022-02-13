@@ -2,6 +2,6 @@ namespace Sadie.Game.Rooms;
 
 public interface IRoomRepository
 {
-    Tuple<bool, RoomEntity?> TryGetRoomById(long id);
-    Task<Tuple<bool, RoomEntity?>> TryLoadRoomByIdAsync(long id);
+    Tuple<bool, Room?> TryGetRoomById(long id);
+    Task<Tuple<bool, Room?>> TryLoadRoomByIdAsync(long id);
 }

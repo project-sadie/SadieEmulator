@@ -45,7 +45,7 @@ public static class Startup
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
 
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
-        serviceCollection.AddSingleton(new ConcurrentDictionary<long, RoomEntity>());
+        serviceCollection.AddSingleton(new ConcurrentDictionary<long, Room>());
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
             
         serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();

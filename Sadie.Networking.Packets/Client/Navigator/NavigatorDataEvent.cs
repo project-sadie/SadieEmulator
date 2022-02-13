@@ -19,7 +19,7 @@ public class NavigatorDataEvent : INetworkPacketEvent
         };
         
         await client.WriteToStreamAsync(new NavigatorMetaDataWriter(metaData).GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter(new List<RoomEntity>()).GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter(new List<Room>()).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(SadieConstants.NavigatorCategories).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerSavedSearchesWriter(client.Player.SavedSearches).GetAllBytes());
 
