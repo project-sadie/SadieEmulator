@@ -4,10 +4,10 @@ namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser
 {
-    public int Id { get; }
+    public long Id { get; }
     public HPoint Point { get; }
     
-    public RoomUser(int id, HPoint point)
+    public RoomUser(long id, HPoint point)
     {
         Id = id;
         Point = point;

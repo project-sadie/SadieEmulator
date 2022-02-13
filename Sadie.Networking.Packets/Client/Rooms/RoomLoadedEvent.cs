@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Rooms;
 
@@ -18,21 +19,26 @@ public class RoomLoadedEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        var player = client.Player;
         var (roomId, password) = (reader.ReadInt(), reader.ReadString());
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
 
         if (!found || room == null)
         {
-            _logger.LogError($"Failed to load room with ID {roomId}");
+            _logger.LogError($"Failed to load room {roomId}");
             return;
         }
 
-        client.Player.LastRoomLoaded = roomId;
+        player.LastRoomLoaded = roomId;
 
+        if (!room.UserRepository.TryAdd(RoomUserFactory.Create(player.Id, room.Layout.DoorPoint)))
+        {
+            _logger.LogError($"Failed to add user {player.Id} to room {roomId}");
+            return;
+        }
+        
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
         await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Layout.Name).GetAllBytes());
-        // await client.WriteToStreamAsync(new RoomPaintWriter("floor", "0.0").GetAllBytes());
-        // await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", "0.0").GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
     }
 }
