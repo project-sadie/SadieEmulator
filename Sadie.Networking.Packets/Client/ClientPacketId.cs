@@ -30,4 +30,5 @@ public class ClientPacketId
     public const short RoomLoaded = 2312;
     public const short UnknownEvent3 = 2519;
     public const short RoomHeightmap = 3898;
+    public const short PlayerChat = 1314;
 }
