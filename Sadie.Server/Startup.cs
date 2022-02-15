@@ -24,9 +24,9 @@ using Sadie.Networking.Packets.Client.Players;
 using Sadie.Networking.Packets.Client.Players.Club;
 using Sadie.Networking.Packets.Client.Players.Friends;
 using Sadie.Networking.Packets.Client.Rooms;
+using Sadie.Networking.Packets.Client.Rooms.Users.Chat;
 using Sadie.Networking.Packets.Client.Tracking;
 using Sadie.Networking.Packets.Client.Unknown;
-using Sadie.Networking.Packets.Server.Players.Chat;
 
 namespace SadieEmulator;
 
@@ -105,7 +105,8 @@ public static class Startup
             [ClientPacketId.RoomLoaded] = new RoomLoadedEvent(provider.GetRequiredService<ILogger<RoomLoadedEvent>>(), provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.UnknownEvent3] = new UnknownEvent3(),
             [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.PlayerChat] = new PlayerChatMessageEvent()
+            [ClientPacketId.RoomUserChat] = new RoomUserChatEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomUserShout] = new RoomUserShoutEvent(provider.GetRequiredService<IRoomRepository>())
         });
             
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
