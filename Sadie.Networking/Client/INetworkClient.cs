@@ -1,5 +1,4 @@
 using Sadie.Game.Players;
-using Sadie.Shared;
 using Sadie.Shared.Networking;
 
 namespace Sadie.Networking.Client;

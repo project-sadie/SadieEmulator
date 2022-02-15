@@ -63,4 +63,6 @@ public static class SadieConstants
         "eventcategory__Jobs",
         "eventcategory__Group Events"
     };
+
+    public static int MaxChatMessageLength => 100;
 }

@@ -1,6 +1,7 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets.Server.Rooms.Users;
+using Sadie.Shared;
 
 namespace Sadie.Networking.Packets.Client.Rooms.Users.Chat;
 
@@ -17,7 +18,7 @@ public class RoomUserShoutEvent : INetworkPacketEvent
     {
         var text = reader.ReadString();
 
-        if (string.IsNullOrEmpty(text) || text.Length > 100)
+        if (string.IsNullOrEmpty(text) || text.Length > SadieConstants.MaxChatMessageLength)
         {
             return;
         }
