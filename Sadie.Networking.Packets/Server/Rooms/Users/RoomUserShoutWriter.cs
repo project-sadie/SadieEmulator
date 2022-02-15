@@ -6,7 +6,7 @@ internal class RoomUserShoutWriter : NetworkPacketWriter
 {
     internal RoomUserShoutWriter(RoomChatMessage message) : base(ServerPacketId.RoomUserShout)
     {
-        WriteLong(message.Room.Id);
+        WriteLong(message.Sender.Id);
         WriteString(message.Message);
         WriteLong(message.EmotionId);
         WriteLong(message.BubbleId);
