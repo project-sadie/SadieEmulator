@@ -20,6 +20,13 @@ public class RoomRepository : IRoomRepository
     
     public async Task<Tuple<bool, Room?>> TryLoadRoomByIdAsync(long id)
     {
+        var (memoryResult, memoryValue) = TryGetRoomById(id);
+
+        if (memoryResult)
+        {
+            return new Tuple<bool, Room?>(true, memoryValue);
+        }
+        
         var (result, room) = await _dao.TryGetRoomById(id);
 
         if (result && room != null)
