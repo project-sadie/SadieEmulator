@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
+      <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
     </ItemGroup>
 
 </Project>

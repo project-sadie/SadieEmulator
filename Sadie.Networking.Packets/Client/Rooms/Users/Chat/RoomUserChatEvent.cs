@@ -33,7 +33,10 @@ public class RoomUserChatEvent : INetworkPacketEvent
         var bubbleColor = reader.ReadInt();
         var message = new RoomChatMessage(user, text, room, bubbleColor, 1);
         
-        client.WriteToStreamAsync(new RoomUserChatWriter(message).GetAllBytes());
+        foreach (var roomUser in room.UserRepository.GetAll())
+        {
+            roomUser.NetworkObject.WriteToStreamAsync(new RoomUserChatWriter(message).GetAllBytes());
+        }
         
         return Task.CompletedTask;
     }

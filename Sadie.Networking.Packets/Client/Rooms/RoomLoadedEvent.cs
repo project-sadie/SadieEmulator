@@ -33,6 +33,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         player.LastRoomLoaded = roomId;
 
         if (!room.UserRepository.TryAdd(RoomUserFactory.Create(
+                client,
                 player.Id, 
                 room.Layout.DoorPoint, 
                 room.Layout.DoorDirection,
