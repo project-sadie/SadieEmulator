@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Sadie.Shared;
+﻿using Sadie.Shared;
 
 namespace Sadie.Game.Rooms;
 
