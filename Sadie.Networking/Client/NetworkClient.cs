@@ -29,6 +29,6 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     public new void Dispose()
     {
         _cts.Cancel();
-        Player.Dispose();
+        Player?.Dispose();
     }
 }
