@@ -5,7 +5,7 @@ namespace Sadie.Game.Rooms.Users;
 public class RoomUserData : RoomUserAvatarData
 {
     public long Id { get; }
-    public HPoint Point { get; }
+    public HPoint Point { get; set;  }
     public HDirection DirectionHead { get; }
     public HDirection Direction { get; }
 

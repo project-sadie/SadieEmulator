@@ -32,4 +32,5 @@ public class ClientPacketId
     public const short RoomHeightmap = 3898;
     public const short RoomUserChat = 1314;
     public const short RoomUserShout = 2085;
+    public const short RoomUserWalk = 3320;
 }
