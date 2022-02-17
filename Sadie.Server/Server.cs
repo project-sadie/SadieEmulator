@@ -49,6 +49,8 @@ public class Server : IServer
     
     private static void WriteHeaderToConsole()
     {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        
         Console.WriteLine(@"");
         Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
         Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
@@ -59,6 +61,9 @@ public class Server : IServer
         Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
         Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
         Console.WriteLine(@"");
+        
+        Console.ForegroundColor = ConsoleColor.White;
+        
         Console.WriteLine($"         You are running version {Version}");
         Console.WriteLine(@"");
     }
