@@ -39,26 +39,10 @@ public static class Startup
             
         ConfigureServer(serviceCollection);
         ConfigureDatabase(config, serviceCollection);
-
-        serviceCollection.AddSingleton<IPlayerBalance, PlayerBalance>();
-        serviceCollection.AddSingleton<IPlayer, Player>();
-        serviceCollection.AddSingleton<IPlayerFactory, PlayerFactory>();
-        serviceCollection.AddSingleton<IPlayerDao, PlayerDao>();
-        serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
-
-        serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
-        serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
-
-        serviceCollection.AddSingleton<IRoomUserRepository, RoomUserRepository>();
-        serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
-        serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
-        serviceCollection.AddSingleton<IRoomDao, RoomDao>();
-        serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
-            
-        serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();
-        serviceCollection.AddSingleton<IRoomCategoryRepository, RoomCategoryRepository>();
-            
+        ConfigurePlayers(serviceCollection);
+        ConfigureRooms(serviceCollection);
         ConfigureNetworking(config, serviceCollection);
+        ConfigureNetworkingPackets(serviceCollection);
     }
 
     private static void ConfigureServer(IServiceCollection serviceCollection)
@@ -73,13 +57,44 @@ public static class Startup
         serviceCollection.AddSingleton<IDatabaseProvider, DatabaseProvider>();
     }
 
+    private static void ConfigurePlayers(IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton<IPlayerBalance, PlayerBalance>();
+        serviceCollection.AddSingleton<IPlayer, Player>();
+        serviceCollection.AddSingleton<IPlayerFactory, PlayerFactory>();
+        serviceCollection.AddSingleton<IPlayerDao, PlayerDao>();
+        serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
+        serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
+        serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
+    }
+
+    private static void ConfigureRooms(IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton<IRoomUserRepository, RoomUserRepository>();
+        serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
+        serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
+        serviceCollection.AddSingleton<IRoomDao, RoomDao>();
+        serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
+            
+        serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();
+        serviceCollection.AddSingleton<IRoomCategoryRepository, RoomCategoryRepository>();
+    }
     private static void ConfigureNetworking(IConfiguration config, IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton(new TcpListener(
             IPAddress.Parse(config.GetValue<string>("Networking:Host")), 
             config.GetValue<int>("Networking:Port"))  
         );
+            
+        serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
+        serviceCollection.AddSingleton<INetworkClientFactory, NetworkClientFactory>();
+        serviceCollection.AddSingleton<INetworkClientRepository, NetworkClientRepository>();
+        serviceCollection.AddTransient<INetworkClient, NetworkClient>();
+        serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
+    }
 
+    private static void ConfigureNetworkingPackets(IServiceCollection serviceCollection)
+    {
         serviceCollection.AddSingleton(provider => new ConcurrentDictionary<int, INetworkPacketEvent>
         {
             [ClientPacketId.ClientVersion] = new ClientVersionEvent(),
@@ -114,11 +129,5 @@ public static class Startup
             [ClientPacketId.RoomUserShout] = new RoomUserShoutEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserWalk] = new RoomUserWalkEvent(provider.GetRequiredService<IRoomRepository>())
         });
-            
-        serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
-        serviceCollection.AddSingleton<INetworkClientFactory, NetworkClientFactory>();
-        serviceCollection.AddSingleton<INetworkClientRepository, NetworkClientRepository>();
-        serviceCollection.AddTransient<INetworkClient, NetworkClient>();
-        serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
     }
 }
