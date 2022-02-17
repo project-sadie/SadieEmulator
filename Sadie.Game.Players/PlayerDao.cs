@@ -5,8 +5,11 @@ namespace Sadie.Game.Players;
 
 public class PlayerDao : BaseDao, IPlayerDao
 {
-    public PlayerDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
+    private readonly IPlayerFactory _playerFactory;
+
+    public PlayerDao(IDatabaseProvider databaseProvider, IPlayerFactory playerFactory) : base(databaseProvider)
     {
+        _playerFactory = playerFactory;
     }
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(string ssoToken)
@@ -62,7 +65,7 @@ public class PlayerDao : BaseDao, IPlayerDao
         if (success && record != null)
         {
             var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
-            return new Tuple<bool, IPlayer?>(true, PlayerFactory.CreateFromRecord(record, savedSearchesReader));
+            return new Tuple<bool, IPlayer?>(true, _playerFactory.CreateFromRecord(record, savedSearchesReader));
         }
 
         return new Tuple<bool, IPlayer?>(false, null);
