@@ -28,12 +28,22 @@ using Sadie.Networking.Packets.Client.Rooms;
 using Sadie.Networking.Packets.Client.Rooms.Users.Chat;
 using Sadie.Networking.Packets.Client.Tracking;
 using Sadie.Networking.Packets.Client.Unknown;
+using Serilog;
 
 namespace SadieEmulator;
 
 public static class Startup
 {
-    public static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection serviceCollection)
+    public static IHost CreateDefaultHostBuilder()
+    {
+        return Host.CreateDefaultBuilder()
+                .ConfigureServices(ConfigureServices)
+                .UseSerilog((hostContext, _, logger) => 
+                    logger.ReadFrom.Configuration(hostContext.Configuration))
+                .Build();
+    }
+
+    private static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection serviceCollection)
     {
         var config = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
             

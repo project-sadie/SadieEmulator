@@ -10,12 +10,7 @@ internal static class Program
     {
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
 
-        var host = Host.CreateDefaultBuilder()
-            .ConfigureServices(Startup.ConfigureServices)
-            .UseSerilog((hostContext, _, logger) => 
-                logger.ReadFrom.Configuration(hostContext.Configuration))
-            .Build();
-
+        var host = Startup.CreateDefaultHostBuilder();
         var services = host.Services;
 
         await services.GetRequiredService<IServer>().RunAsync();
