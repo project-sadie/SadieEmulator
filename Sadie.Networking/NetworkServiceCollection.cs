@@ -10,10 +10,12 @@ public class NetworkServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        var host = config["Networking:Host"];
+        var port = int.Parse(config["Networking:Port"]);
+        
         serviceCollection.AddSingleton(new TcpListener(
-            IPAddress.Parse(config.GetValue<string>("Networking:Host")), 
-            config.GetValue<int>("Networking:Port"))  
-        );
+            IPAddress.Parse(host), port
+        ));
             
         serviceCollection.AddSingleton<INetworkClientFactory, NetworkClientFactory>();
         serviceCollection.AddSingleton<INetworkClientRepository, NetworkClientRepository>();
