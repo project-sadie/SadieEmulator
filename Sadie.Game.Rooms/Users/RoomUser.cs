@@ -7,12 +7,12 @@ namespace Sadie.Game.Rooms.Users;
 public class RoomUser : RoomUserData, IDisposable
 {
     private readonly ILogger<RoomUser> _logger;
-    private readonly RoomUserRepository _roomUserRepository;
+    private readonly IRoomUserRepository _roomUserRepository;
     public INetworkObject NetworkObject { get; }
 
     public RoomUser(
         ILogger<RoomUser> logger,
-        RoomUserRepository roomUserRepository,
+        IRoomUserRepository roomUserRepository,
         INetworkObject networkObject, 
         long id, 
         HPoint point, 

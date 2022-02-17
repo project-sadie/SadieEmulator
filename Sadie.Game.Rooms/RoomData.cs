@@ -7,9 +7,9 @@ public class RoomData : RoomSettings
     public long Id { get; }
     public string Name { get; }
     public RoomLayout Layout { get; }
-    public RoomUserRepository UserRepository { get; }
+    public IRoomUserRepository UserRepository { get; }
 
-    protected RoomData(long id, string name, RoomLayout layout, RoomUserRepository userRepository)
+    protected RoomData(long id, string name, RoomLayout layout, IRoomUserRepository userRepository)
     {
         Id = id;
         Name = name;

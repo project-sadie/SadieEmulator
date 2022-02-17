@@ -1,6 +1,6 @@
 ﻿namespace Sadie.Game.Players;
 
-public class PlayerBalance
+public class PlayerBalance : IPlayerBalance
 {
     public long Credits { get; }
     public long Pixels { get; }

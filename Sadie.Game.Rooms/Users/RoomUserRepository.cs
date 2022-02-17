@@ -2,13 +2,13 @@
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserRepository
+public class RoomUserRepository : IRoomUserRepository
 {
     private readonly ConcurrentDictionary<long, RoomUser> _users;
 
-    public RoomUserRepository(ConcurrentDictionary<long, RoomUser> users)
+    public RoomUserRepository()
     {
-        _users = users;
+        _users = new ConcurrentDictionary<long, RoomUser>();
     }
 
     public ICollection<RoomUser> GetAll() => _users.Values;

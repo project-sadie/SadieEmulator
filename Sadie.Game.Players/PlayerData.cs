@@ -12,7 +12,7 @@ public class PlayerData : PlayerAvatarData, IPlayerData
         string figureCode, 
         string motto, 
         PlayerAvatarGender gender, 
-        PlayerBalance balance, 
+        IPlayerBalance balance, 
         DateTime lastOnline, 
         long respectsReceived, 
         long respectPoints, 
@@ -38,7 +38,7 @@ public class PlayerData : PlayerAvatarData, IPlayerData
     public long Id { get; }
     public string Username { get; }
     public long HomeRoom { get; }
-    public PlayerBalance Balance { get; }
+    public IPlayerBalance Balance { get; }
     public DateTime LastOnline { get; }
     public long RespectsReceived { get; }
     public long RespectPoints { get; }

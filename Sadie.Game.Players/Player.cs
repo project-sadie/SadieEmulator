@@ -18,7 +18,7 @@ public class Player : PlayerData, IPlayer
         string figureCode, 
         string motto, 
         PlayerAvatarGender gender, 
-        PlayerBalance balance,
+        IPlayerBalance balance,
         DateTime lastOnline,
         long respectsReceived, 
         long respectPoints, 

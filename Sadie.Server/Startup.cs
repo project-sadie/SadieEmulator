@@ -40,7 +40,7 @@ public static class Startup
         ConfigureServer(serviceCollection);
         ConfigureDatabase(config, serviceCollection);
 
-        serviceCollection.AddSingleton<PlayerBalance>();
+        serviceCollection.AddSingleton<IPlayerBalance, PlayerBalance>();
         serviceCollection.AddSingleton<IPlayer, Player>();
         serviceCollection.AddSingleton<IPlayerFactory, PlayerFactory>();
         serviceCollection.AddSingleton<IPlayerDao, PlayerDao>();
@@ -49,12 +49,10 @@ public static class Startup
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
 
-        serviceCollection.AddSingleton<ConcurrentDictionary<long, RoomUser>>();
-        serviceCollection.AddSingleton<RoomUserRepository>();
+        serviceCollection.AddSingleton<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
-        serviceCollection.AddSingleton(new ConcurrentDictionary<long, Room>());
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
             
         serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();

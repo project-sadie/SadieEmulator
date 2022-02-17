@@ -15,7 +15,7 @@ public class PlayerFactory : IPlayerFactory
         _serviceProvider = serviceProvider;
     }
 
-    private PlayerBalance CreateBalanceFromRecord(DatabaseRecord record)
+    private IPlayerBalance CreateBalanceFromRecord(DatabaseRecord record)
     {
         return ActivatorUtilities.CreateInstance<PlayerBalance>(
             _serviceProvider, 

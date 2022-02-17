@@ -4,7 +4,7 @@ namespace Sadie.Game.Rooms;
 
 public class Room : RoomData
 {
-    public Room(long id, string name, RoomLayout layout, RoomUserRepository userRepository) : base(id, name, layout, userRepository)
+    public Room(long id, string name, RoomLayout layout, IRoomUserRepository userRepository) : base(id, name, layout, userRepository)
     {
     }
 }

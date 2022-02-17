@@ -1,7 +1,5 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
-using Sadie.Game.Rooms.Users;
 using Sadie.Shared;
 
 namespace Sadie.Game.Rooms;
@@ -32,12 +30,11 @@ public class RoomFactory : IRoomFactory
     public Room CreateFromRecord(DatabaseRecord record)
     {
         var model = CreateModelFromRecord(record);
-        
-        return new Room(
-            record.Get<long>("id"),
-            record.Get<string>("name"),
-            model,
-            ActivatorUtilities.CreateInstance<RoomUserRepository>(_serviceProvider, new ConcurrentDictionary<long, RoomUser>())
-        );
+
+        return ActivatorUtilities.CreateInstance<Room>(
+            _serviceProvider, 
+            record.Get<long>("id"), 
+            record.Get<string>("name"), 
+            model);
     }
 }

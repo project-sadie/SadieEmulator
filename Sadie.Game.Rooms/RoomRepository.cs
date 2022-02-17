@@ -7,10 +7,10 @@ public class RoomRepository : IRoomRepository
     private readonly IRoomDao _dao;
     private readonly ConcurrentDictionary<long, Room> _rooms;
 
-    public RoomRepository(IRoomDao dao, ConcurrentDictionary<long, Room> rooms)
+    public RoomRepository(IRoomDao dao)
     {
         _dao = dao;
-        _rooms = rooms;
+        _rooms = new ConcurrentDictionary<long, Room>();
     }
     
     public Tuple<bool, Room?> TryGetRoomById(long id)
