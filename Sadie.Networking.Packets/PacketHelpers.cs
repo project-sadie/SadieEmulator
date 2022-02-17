@@ -21,6 +21,7 @@ public class PacketHelpers
 
         room = roomObject;
         user = client.RoomUser;
+        
         return true;
     }
 }
