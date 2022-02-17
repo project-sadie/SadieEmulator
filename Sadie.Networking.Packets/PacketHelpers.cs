@@ -11,15 +11,7 @@ public class PacketHelpers
         var roomId = client.Player.LastRoomLoaded;
         var (result, roomObject) = roomRepository.TryGetRoomById(roomId);
 
-        if (!result || roomObject == null)
-        {
-            room = null;
-            user = null;
-            
-            return false;
-        }
-
-        if (!roomObject.UserRepository.TryGet(client.Player.Id, out user))
+        if (!result || roomObject == null || client.RoomUser == null)
         {
             room = null;
             user = null;
@@ -28,6 +20,7 @@ public class PacketHelpers
         }
 
         room = roomObject;
+        user = client.RoomUser;
         return true;
     }
 }
