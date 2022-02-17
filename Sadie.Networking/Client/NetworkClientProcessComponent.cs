@@ -31,6 +31,12 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         {
             while (true)
             {
+                if (_networkClient == null || _networkClient.LastPing != default && DateTime.Now.Subtract(_networkClient.LastPing).TotalSeconds >= 60)
+                {
+                    Dispose();
+                    break;
+                }
+                
                 cancellationToken.ThrowIfCancellationRequested();
                 
                 var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
@@ -39,6 +45,8 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
                 {
                     await OnReceivedAsync(bytes);
                 }
+                
+                Thread.Sleep(50);
             }
         }
         catch (Exception e)

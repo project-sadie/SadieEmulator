@@ -1,14 +1,24 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Players.Avatar;
 using Sadie.Game.Players.Navigator;
 
 namespace Sadie.Game.Players;
 
-public class PlayerFactory
+public class PlayerFactory : IPlayerFactory
 {
-    private static PlayerBalance CreateBalanceFromRecord(DatabaseRecord record)
+    private readonly IServiceProvider _serviceProvider;
+
+    public PlayerFactory(IServiceProvider serviceProvider)
     {
-        return new PlayerBalance(
+        _serviceProvider = serviceProvider;
+    }
+
+    private PlayerBalance CreateBalanceFromRecord(DatabaseRecord record)
+    {
+        return ActivatorUtilities.CreateInstance<PlayerBalance>(
+            _serviceProvider, 
             record.Get<long>("credit_balance"),
             record.Get<long>("pixel_balance"),
             record.Get<long>("seasonal_balance"),
@@ -37,9 +47,12 @@ public class PlayerFactory
         return data;
     }
     
-    public static IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader)
+    public IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader)
     {
-        return new Player(
+        return ActivatorUtilities.CreateInstance<Player>(
+            _serviceProvider,
+            _serviceProvider.GetRequiredService<ILogger<Player>>(),
+            _serviceProvider.GetRequiredService<IPlayerRepository>(),
             record.Get<long>("id"),
             record.Get<string>("username"),
             record.Get<long>("home_room_id"),
@@ -52,10 +65,9 @@ public class PlayerFactory
             record.Get<long>("respect_points"),
             record.Get<long>("respect_points_pet"),
             CreateNavigatorSettingsFromRecord(record),
-            CreateSettingsFromRecord(record), 
+            CreateSettingsFromRecord(record),
             CreateSavedSearchesFromReader(savedSearchesReader),
-            record.Get<long>("achievement_score")
-        );
+            record.Get<long>("achievement_score"));
     }
 
     private static PlayerNavigatorSettings CreateNavigatorSettingsFromRecord(DatabaseRecord record)

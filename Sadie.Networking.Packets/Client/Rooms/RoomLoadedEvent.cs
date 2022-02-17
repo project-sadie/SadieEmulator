@@ -11,11 +11,13 @@ public class RoomLoadedEvent : INetworkPacketEvent
 {
     private readonly ILogger<RoomLoadedEvent> _logger;
     private readonly IRoomRepository _roomRepository;
+    private readonly IRoomUserFactory _roomUserFactory;
 
-    public RoomLoadedEvent(ILogger<RoomLoadedEvent> logger, IRoomRepository roomRepository)
+    public RoomLoadedEvent(ILogger<RoomLoadedEvent> logger, IRoomRepository roomRepository, IRoomUserFactory roomUserFactory)
     {
         _logger = logger;
         _roomRepository = roomRepository;
+        _roomUserFactory = roomUserFactory;
     }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -32,21 +34,25 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         player.LastRoomLoaded = roomId;
 
-        if (!room.UserRepository.TryAdd(RoomUserFactory.Create(
-                client,
-                player.Id, 
-                room.Layout.DoorPoint, 
-                room.Layout.DoorDirection,
-                room.Layout.DoorDirection,
-                player.Username,
-                player.Motto,
-                player.FigureCode,
-                player.Gender == PlayerAvatarGender.Male ? "M" : "F",
-                player.AchievementScore)))
+        var roomUser = _roomUserFactory.Create(
+            client,
+            player.Id,
+            room.Layout.DoorPoint,
+            room.Layout.DoorDirection,
+            room.Layout.DoorDirection,
+            player.Username,
+            player.Motto,
+            player.FigureCode,
+            player.Gender == PlayerAvatarGender.Male ? "M" : "F",
+            player.AchievementScore);
+
+        if (!room.UserRepository.TryAdd(roomUser))
         {
             _logger.LogError($"Failed to add user {player.Id} to room {roomId}");
             return;
         }
+
+        client.RoomUser = roomUser;
         
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
         await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Layout.Name).GetAllBytes());

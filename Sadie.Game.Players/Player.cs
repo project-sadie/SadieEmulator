@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Sadie.Game.Players.Avatar;
 using Sadie.Game.Players.Navigator;
 
@@ -5,7 +6,12 @@ namespace Sadie.Game.Players;
 
 public class Player : PlayerData, IPlayer
 {
+    private readonly ILogger<Player> _logger;
+    private readonly IPlayerRepository _playerRepository;
+
     public Player(
+        ILogger<Player> logger,
+        IPlayerRepository playerRepository,
         long id, 
         string username, 
         long homeRoom, 
@@ -39,12 +45,17 @@ public class Player : PlayerData, IPlayer
             savedSearches,
             achievementScore)
     {
+        _logger = logger;
+        _playerRepository = playerRepository;
     }
     
     public bool Authenticated { get; set; }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        Console.WriteLine("Player logged out?");
+        _playerRepository.TryRemovePlayer(Id);
+        await _playerRepository.MarkPlayerAsOfflineAsync(Id);
+        
+        _logger.LogWarning($"Player '{Username}' has logged out");
     }
 }

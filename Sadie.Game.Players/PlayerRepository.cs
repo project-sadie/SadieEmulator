@@ -23,7 +23,8 @@ public class PlayerRepository : IPlayerRepository
         return await _playerDao.TryGetPlayerBySsoTokenAsync(sso);
     }
 
-    public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Id, player);
+    public bool TryAddPlayer(IPlayer? player) => _players.TryAdd(player.Id, player);
+    public bool TryRemovePlayer(long playerId) => _players.TryRemove(playerId, out var _);
 
     public async Task MarkPlayerAsOnlineAsync(long id)
     {

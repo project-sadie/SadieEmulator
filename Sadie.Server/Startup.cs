@@ -12,6 +12,7 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
+using Sadie.Game.Rooms.Users;
 using Sadie.Networking;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -39,12 +40,18 @@ public static class Startup
         ConfigureServer(serviceCollection);
         ConfigureDatabase(config, serviceCollection);
 
+        serviceCollection.AddSingleton<PlayerBalance>();
+        serviceCollection.AddSingleton<IPlayer, Player>();
+        serviceCollection.AddSingleton<IPlayerFactory, PlayerFactory>();
         serviceCollection.AddSingleton<IPlayerDao, PlayerDao>();
         serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
 
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
 
+        serviceCollection.AddSingleton<ConcurrentDictionary<long, RoomUser>>();
+        serviceCollection.AddSingleton<RoomUserRepository>();
+        serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
         serviceCollection.AddSingleton(new ConcurrentDictionary<long, Room>());
@@ -102,7 +109,7 @@ public static class Startup
             [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsListEvent(provider.GetRequiredService<IPlayerFriendshipRepository>()),
             [ClientPacketId.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),
             [ClientPacketId.UnknownEvent2] = new UnknownEvent2(),
-            [ClientPacketId.RoomLoaded] = new RoomLoadedEvent(provider.GetRequiredService<ILogger<RoomLoadedEvent>>(), provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomLoaded] = ActivatorUtilities.CreateInstance<RoomLoadedEvent>(provider),
             [ClientPacketId.UnknownEvent3] = new UnknownEvent3(),
             [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserChat] = new RoomUserChatEvent(provider.GetRequiredService<IRoomRepository>()),

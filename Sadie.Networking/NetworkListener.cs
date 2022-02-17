@@ -47,8 +47,10 @@ public class NetworkListener : INetworkListener
         
     private async Task AcceptClient(TcpClient client)
     {
-        var networkClient = _clientFactory.CreateClient(client);
-        _clientRepository.AddClient(networkClient);
+        var clientId = new Guid();
+        var networkClient = _clientFactory.CreateClient(clientId, client);
+        
+        _clientRepository.AddClient(clientId, networkClient);
                 
         await networkClient.ListenAsync();
     }

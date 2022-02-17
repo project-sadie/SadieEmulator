@@ -4,20 +4,20 @@ namespace Sadie.Networking.Client;
 
 public class NetworkClientRepository : INetworkClientRepository
 {
-    private readonly ConcurrentDictionary<int, INetworkClient> _clients;
+    private readonly ConcurrentDictionary<Guid, INetworkClient> _clients;
 
     public NetworkClientRepository()
     {
-        _clients = new ConcurrentDictionary<int, INetworkClient>();
+        _clients = new ConcurrentDictionary<Guid, INetworkClient>();
     }
 
-    public void AddClient(INetworkClient client)
+    public void AddClient(Guid guid, INetworkClient client)
     {
-        _clients[_clients.Count] = client;
+        _clients[guid] = client;
     }
 
-    public bool TryRemove(int clientId)
+    public bool TryRemove(Guid guid)
     {
-        return _clients.TryRemove(clientId, out _);
+        return _clients.TryRemove(guid, out _);
     }
 }

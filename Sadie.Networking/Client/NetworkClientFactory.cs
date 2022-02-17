@@ -1,6 +1,5 @@
 using System.Net.Sockets;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Client;
 
@@ -13,8 +12,8 @@ public class NetworkClientFactory : INetworkClientFactory
         _serviceProvider = serviceProvider;
     }
 
-    public INetworkClient CreateClient(TcpClient tcpClient)
+    public INetworkClient CreateClient(Guid guid, TcpClient tcpClient)
     {
-        return ActivatorUtilities.CreateInstance<NetworkClient>(_serviceProvider, tcpClient, _serviceProvider.GetRequiredService<INetworkPacketHandler>());
+        return ActivatorUtilities.CreateInstance<NetworkClient>(_serviceProvider, guid, tcpClient);
     }
 }

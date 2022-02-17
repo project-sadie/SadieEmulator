@@ -1,0 +1,8 @@
+using Sadie.Database;
+
+namespace Sadie.Game.Players;
+
+public interface IPlayerFactory
+{
+    IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader);
+}

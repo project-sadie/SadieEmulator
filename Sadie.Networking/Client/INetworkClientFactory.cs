@@ -4,5 +4,5 @@ namespace Sadie.Networking.Client;
 
 public interface INetworkClientFactory
 {
-    INetworkClient CreateClient(TcpClient tcpClient);
+    INetworkClient CreateClient(Guid guid, TcpClient tcpClient);
 }

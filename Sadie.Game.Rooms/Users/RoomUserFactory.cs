@@ -1,10 +1,40 @@
-﻿using Sadie.Shared;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Shared;
 using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
-public static class RoomUserFactory
+public class RoomUserFactory : IRoomUserFactory
 {
-    public static RoomUser Create(INetworkObject networkObject, long id, HPoint point, HDirection directionHead, HDirection direction, string username, string motto, string figureCode, string gender, long achievementScore) => 
-        new RoomUser(networkObject, id, point, directionHead, direction, username, motto, figureCode, gender, achievementScore);
+    private readonly IServiceProvider _serviceProvider;
+
+    public RoomUserFactory(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public RoomUser Create(
+        INetworkObject networkObject, 
+        long id, HPoint point, 
+        HDirection directionHead,
+        HDirection direction, 
+        string username, 
+        string motto, 
+        string figureCode, 
+        string gender, 
+        long achievementScore)
+    {
+        return ActivatorUtilities.CreateInstance<RoomUser>(
+            _serviceProvider,
+        networkObject, 
+            id, 
+            point, 
+            directionHead, 
+            direction, 
+            username, 
+            motto, 
+            figureCode, 
+            gender, 
+            achievementScore);
+    }
 }

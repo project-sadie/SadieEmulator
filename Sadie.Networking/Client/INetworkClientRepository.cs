@@ -2,6 +2,6 @@ namespace Sadie.Networking.Client;
 
 public interface INetworkClientRepository
 {
-    void AddClient(INetworkClient client);
-    bool TryRemove(int clientId);
+    void AddClient(Guid guid, INetworkClient client);
+    bool TryRemove(Guid clientId);
 }

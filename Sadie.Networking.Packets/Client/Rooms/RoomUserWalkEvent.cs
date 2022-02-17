@@ -1,6 +1,5 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Rooms;
 using Sadie.Networking.Packets.Server.Rooms.Users;
 
 namespace Sadie.Networking.Packets.Client.Rooms;

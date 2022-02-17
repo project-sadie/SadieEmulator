@@ -51,7 +51,7 @@ public class PlayerActivityEvent : INetworkPacketEvent
             return;
         }
             
-        _logger.LogWarning($"Player {player.Id} has logged in");
+        _logger.LogWarning($"Player '{player.Username}' has logged in");
         await _playerRepository.MarkPlayerAsOnlineAsync(player.Id);
 
         player.Authenticated = true;
