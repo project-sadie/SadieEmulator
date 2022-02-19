@@ -1,6 +1,7 @@
 using Sadie.Game.Rooms.Categories;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Server.Navigator;
+namespace Sadie.Networking.Writers.Navigator;
 
 public class NavigatorEventCategoriesWriter : NetworkPacketWriter
 {

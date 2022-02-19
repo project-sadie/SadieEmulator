@@ -1,7 +1,8 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Players.Friends;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Players.Friends;
 
-namespace Sadie.Networking.Packets.Client.Players.Friends;
+namespace Sadie.Networking.Events.Players.Friends;
 
 public class PlayerMessengerInitEvent : INetworkPacketEvent
 {

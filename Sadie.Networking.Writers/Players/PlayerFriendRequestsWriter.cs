@@ -1,6 +1,7 @@
 ﻿using Sadie.Game.Players.Friendships;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Server.Players;
+namespace Sadie.Networking.Writers.Players;
 
 public class PlayerFriendRequestsWriter : NetworkPacketWriter
 {

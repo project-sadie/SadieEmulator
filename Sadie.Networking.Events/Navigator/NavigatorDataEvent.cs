@@ -1,10 +1,11 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Navigator;
-using Sadie.Networking.Packets.Server.Players.Navigator;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Navigator;
+using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Shared;
 
-namespace Sadie.Networking.Packets.Client.Navigator;
+namespace Sadie.Networking.Events.Navigator;
 
 public class NavigatorDataEvent : INetworkPacketEvent
 {

@@ -1,6 +1,7 @@
 ﻿using Sadie.Game.Rooms;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Server.Rooms;
+namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomRelativeMapWriter : NetworkPacketWriter
 {

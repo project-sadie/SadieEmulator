@@ -1,6 +1,7 @@
 ﻿using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Client.Players;
+namespace Sadie.Networking.Events.Players;
 
 public class PlayerUsernameEvent : INetworkPacketEvent
 {

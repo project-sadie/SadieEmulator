@@ -1,7 +1,8 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.GameCentre;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.GameCentre;
 
-namespace Sadie.Networking.Packets.Client.GameCenter;
+namespace Sadie.Networking.Events.GameCenter;
 
 public class RequestGameCenterConfigEvent : INetworkPacketEvent
 {

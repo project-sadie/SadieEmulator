@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Handshake;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Handshake;
 using Sadie.Shared;
 
-namespace Sadie.Networking.Packets.Client.Handshake;
+namespace Sadie.Networking.Events.Handshake;
 
 public class SecureLoginEvent : INetworkPacketEvent
 {

@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.Players.Purse;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Players.Purse;
 
 public class PlayerActivityPointsBalanceWriter : NetworkPacketWriter
 {

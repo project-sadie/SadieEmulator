@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.Rooms;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomPaintWriter : NetworkPacketWriter
 {

@@ -1,7 +1,8 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.HotelView;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.HotelView;
 
-namespace Sadie.Networking.Packets.Client.HotelView;
+namespace Sadie.Networking.Events.HotelView;
 
 public class HotelViewBonusRareEvent : INetworkPacketEvent
 {

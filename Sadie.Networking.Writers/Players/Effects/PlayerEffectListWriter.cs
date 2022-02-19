@@ -1,6 +1,7 @@
 ﻿using Sadie.Game.Players.Effects;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Server.Players.Effects;
+namespace Sadie.Networking.Writers.Players.Effects;
 
 public class PlayerEffectListWriter : NetworkPacketWriter
 {

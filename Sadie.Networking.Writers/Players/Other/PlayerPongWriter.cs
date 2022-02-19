@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.Players.Other;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerPongWriter : NetworkPacketWriter
 {

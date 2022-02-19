@@ -1,8 +1,9 @@
 ﻿using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Players;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Players;
 
-namespace Sadie.Networking.Packets.Client.Players.Friends;
+namespace Sadie.Networking.Events.Players.Friends;
 
 public class PlayerFriendRequestsListEvent : INetworkPacketEvent
 {

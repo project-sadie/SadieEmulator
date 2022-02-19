@@ -1,6 +1,7 @@
 using Sadie.Game.Players.Navigator;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Server.Players.Navigator;
+namespace Sadie.Networking.Writers.Players.Navigator;
 
 public class PlayerSavedSearchesWriter : NetworkPacketWriter
 {

@@ -1,7 +1,8 @@
 ﻿using Sadie.Game.Players;
 using Sadie.Game.Players.Avatar;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Server.Players.Other;
+namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerDataWriter : NetworkPacketWriter
 {

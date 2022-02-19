@@ -1,4 +1,6 @@
-namespace Sadie.Networking.Packets.Server.Navigator;
+using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Navigator;
 
 public class NavigatorMetaDataWriter : NetworkPacketWriter
 {

@@ -1,9 +1,10 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Rooms;
-using Sadie.Networking.Packets.Server.Rooms.Users;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Users;
 
-namespace Sadie.Networking.Packets.Client.Rooms;
+namespace Sadie.Networking.Events.Rooms;
 
 public class RoomHeightmapEvent : INetworkPacketEvent
 {

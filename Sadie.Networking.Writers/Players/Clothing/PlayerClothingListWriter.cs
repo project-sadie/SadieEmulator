@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.Players.Clothing;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Players.Clothing;
 
 public class PlayerClothingListWriter : NetworkPacketWriter
 {

@@ -1,4 +1,4 @@
-namespace Sadie.Networking.Packets.Client;
+namespace Sadie.Networking.Events;
 
 public class ClientPacketId
 {

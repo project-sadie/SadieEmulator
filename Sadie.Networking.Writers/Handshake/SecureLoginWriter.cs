@@ -1,4 +1,6 @@
-namespace Sadie.Networking.Packets.Server.Handshake;
+using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Handshake;
 
 public class SecureLoginWriter : NetworkPacketWriter
 {

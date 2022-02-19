@@ -1,7 +1,8 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Players.Other;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Players.Other;
 
-namespace Sadie.Networking.Packets.Client.Players;
+namespace Sadie.Networking.Events.Players;
 
 public class PlayerDataEvent : INetworkPacketEvent
 {

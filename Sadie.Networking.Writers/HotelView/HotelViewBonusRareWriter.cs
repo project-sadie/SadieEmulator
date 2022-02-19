@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.HotelView;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.HotelView;
 
 public class HotelViewBonusRareWriter : NetworkPacketWriter
 {

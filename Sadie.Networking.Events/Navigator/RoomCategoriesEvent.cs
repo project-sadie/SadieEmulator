@@ -1,8 +1,9 @@
 ﻿using Sadie.Game.Rooms.Categories;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Navigator;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Navigator;
 
-namespace Sadie.Networking.Packets.Client.Navigator;
+namespace Sadie.Networking.Events.Navigator;
 
 public class RoomCategoriesEvent : INetworkPacketEvent
 {

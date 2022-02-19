@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.Players.Friends;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Players.Friends;
 
 public class PlayerMessengerInitWriter : NetworkPacketWriter
 {

@@ -1,4 +1,6 @@
-namespace Sadie.Networking.Packets.Server.Players.Rooms;
+using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Players.Rooms;
 
 public class PlayerHomeRoomWriter : NetworkPacketWriter
 {

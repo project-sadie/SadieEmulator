@@ -1,6 +1,7 @@
 ﻿using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Client.Unknown;
+namespace Sadie.Networking.Events.Unknown;
 
 public class UnknownEvent2 : INetworkPacketEvent
 {

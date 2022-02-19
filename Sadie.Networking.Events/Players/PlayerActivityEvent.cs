@@ -2,15 +2,16 @@
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Players;
-using Sadie.Networking.Packets.Server.Players.Clothing;
-using Sadie.Networking.Packets.Server.Players.Effects;
-using Sadie.Networking.Packets.Server.Players.Navigator;
-using Sadie.Networking.Packets.Server.Players.Other;
-using Sadie.Networking.Packets.Server.Players.Permission;
-using Sadie.Networking.Packets.Server.Players.Rooms;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Players.Clothing;
+using Sadie.Networking.Writers.Players.Effects;
+using Sadie.Networking.Writers.Players.Navigator;
+using Sadie.Networking.Writers.Players.Other;
+using Sadie.Networking.Writers.Players.Permission;
+using Sadie.Networking.Writers.Players.Rooms;
 
-namespace Sadie.Networking.Packets.Client.Players;
+namespace Sadie.Networking.Events.Players;
 
 public class PlayerActivityEvent : INetworkPacketEvent
 {

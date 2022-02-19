@@ -2,7 +2,7 @@
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 
-namespace Sadie.Networking.Packets;
+namespace Sadie.Networking.Events;
 
 public class PacketHelpers
 {

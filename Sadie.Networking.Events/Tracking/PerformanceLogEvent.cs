@@ -1,6 +1,7 @@
 using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Client.Tracking;
+namespace Sadie.Networking.Events.Tracking;
 
 public class PerformanceLogEvent : INetworkPacketEvent
 {

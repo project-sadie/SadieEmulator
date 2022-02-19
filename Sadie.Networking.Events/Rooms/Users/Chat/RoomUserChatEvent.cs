@@ -1,9 +1,10 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Rooms.Users;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared;
 
-namespace Sadie.Networking.Packets.Client.Rooms.Users.Chat;
+namespace Sadie.Networking.Events.Rooms.Users.Chat;
 
 public class RoomUserChatEvent : INetworkPacketEvent
 {

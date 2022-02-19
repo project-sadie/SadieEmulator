@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.Players;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Players;
 
 public class PlayerSanctionStatusWriter : NetworkPacketWriter
 {

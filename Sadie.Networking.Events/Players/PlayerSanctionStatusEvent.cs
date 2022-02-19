@@ -1,7 +1,8 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Players;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Players;
 
-namespace Sadie.Networking.Packets.Client.Players;
+namespace Sadie.Networking.Events.Players;
 
 public class PlayerSanctionStatusEvent : INetworkPacketEvent
 {

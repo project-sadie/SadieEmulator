@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.Players.Permission;
+﻿using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Players.Permission;
 
 public class PlayerPermissionsWriter : NetworkPacketWriter
 {
