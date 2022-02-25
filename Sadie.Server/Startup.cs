@@ -2,10 +2,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sadie.Database;
+using Sadie.Game;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Events;
 using Serilog;
 
 namespace SadieEmulator;
@@ -32,5 +33,6 @@ public static class Startup
         RoomServiceCollection.AddServices(serviceCollection);
         NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
+        GameService.AddServices(serviceCollection);
     }
 }

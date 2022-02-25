@@ -1,6 +1,6 @@
 ﻿using Sadie.Game.Players;
 using Sadie.Game.Players.Avatar;
-using Sadie.Networking.Packets;
+using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 

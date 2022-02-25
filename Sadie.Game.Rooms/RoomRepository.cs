@@ -36,4 +36,12 @@ public class RoomRepository : IRoomRepository
 
         return TryGetRoomById(id);
     }
+
+    public async Task RunPeriodicCheckAsync()
+    {
+        foreach (var room in _rooms.Values)
+        {
+            await room.RunPeriodicCheckAsync();
+        }
+    }
 }

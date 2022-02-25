@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Sadie.Game.Rooms.Packets;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -23,5 +24,11 @@ public class RoomUserRepository : IRoomUserRepository
         {
             await roomUser.NetworkObject.WriteToStreamAsync(data);
         }
+    }
+    
+    public async Task UpdateStatusForUsersAsync()
+    {
+        await BroadcastDataToUsersAsync(new RoomUserDataWriter(GetAll()).GetAllBytes());
+        await BroadcastDataToUsersAsync(new RoomUserStatusWriter(GetAll()).GetAllBytes());
     }
 }

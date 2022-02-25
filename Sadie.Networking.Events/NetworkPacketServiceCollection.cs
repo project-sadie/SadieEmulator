@@ -5,20 +5,21 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
-using Sadie.Networking.Packets.Client;
-using Sadie.Networking.Packets.Client.GameCenter;
-using Sadie.Networking.Packets.Client.Handshake;
-using Sadie.Networking.Packets.Client.HotelView;
-using Sadie.Networking.Packets.Client.Navigator;
-using Sadie.Networking.Packets.Client.Players;
-using Sadie.Networking.Packets.Client.Players.Club;
-using Sadie.Networking.Packets.Client.Players.Friends;
-using Sadie.Networking.Packets.Client.Rooms;
-using Sadie.Networking.Packets.Client.Rooms.Users.Chat;
-using Sadie.Networking.Packets.Client.Tracking;
-using Sadie.Networking.Packets.Client.Unknown;
+using Sadie.Networking.Events.GameCenter;
+using Sadie.Networking.Events.Handshake;
+using Sadie.Networking.Events.HotelView;
+using Sadie.Networking.Events.Navigator;
+using Sadie.Networking.Events.Players;
+using Sadie.Networking.Events.Players.Club;
+using Sadie.Networking.Events.Players.Friends;
+using Sadie.Networking.Events.Rooms;
+using Sadie.Networking.Events.Rooms.Users;
+using Sadie.Networking.Events.Rooms.Users.Chat;
+using Sadie.Networking.Events.Tracking;
+using Sadie.Networking.Events.Unknown;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets;
+namespace Sadie.Networking.Events;
 
 public class NetworkPacketServiceCollection
 {

@@ -1,10 +1,22 @@
-﻿using Sadie.Game.Rooms.Users;
+﻿using Microsoft.Extensions.Logging;
+using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
 public class Room : RoomData
 {
-    public Room(long id, string name, RoomLayout layout, IRoomUserRepository userRepository) : base(id, name, layout, userRepository)
+    private readonly ILogger<Room> _logger;
+
+    public Room(ILogger<Room> logger, long id, string name, RoomLayout layout, IRoomUserRepository userRepository) : base(id, name, layout, userRepository)
     {
+        _logger = logger;
+    }
+
+    public async Task RunPeriodicCheckAsync()
+    {
+        foreach (var roomUser in UserRepository.GetAll())
+        {
+            await roomUser.RunPeriodicCheckAsync();
+        }
     }
 }

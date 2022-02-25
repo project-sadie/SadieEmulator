@@ -1,4 +1,7 @@
-﻿namespace Sadie.Game.Rooms;
+﻿using Sadie.Game.Rooms.Users;
+using Sadie.Shared;
+
+namespace Sadie.Game.Rooms;
 
 public static class RoomHelpers
 {
@@ -22,5 +25,15 @@ public static class RoomHelpers
         }
         
         return tiles;
+    }
+
+    public static List<HPoint> BuildPathForWalk(RoomUser roomUser, bool diagonalAllowed, HPoint start, HPoint end)
+    {
+        var points = new List<HPoint>
+        {
+            end
+        };
+
+        return points;
     }
 }

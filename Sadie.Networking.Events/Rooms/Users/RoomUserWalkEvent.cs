@@ -1,8 +1,8 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets.Server.Rooms.Users;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Client.Rooms;
+namespace Sadie.Networking.Events.Rooms.Users;
 
 public class RoomUserWalkEvent : INetworkPacketEvent
 {
@@ -15,7 +15,7 @@ public class RoomUserWalkEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if (!PacketHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
@@ -30,11 +30,10 @@ public class RoomUserWalkEvent : INetworkPacketEvent
             return;
         }
 
-        var userRepository = room.UserRepository;
+        var point = tile.Point;
         
-        roomUser.Point = tile.Point;
-        
-        await userRepository.BroadcastDataToUsersAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
-        await userRepository.BroadcastDataToUsersAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
+        // TODO: return if already there
+
+        roomUser!.WalkToPoint(point);
     }
 }

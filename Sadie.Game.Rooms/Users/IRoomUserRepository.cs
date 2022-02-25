@@ -8,4 +8,5 @@ public interface IRoomUserRepository
     bool TryRemove(long id);
     int Count { get; }
     Task BroadcastDataToUsersAsync(byte[] data);
+    Task UpdateStatusForUsersAsync();
 }

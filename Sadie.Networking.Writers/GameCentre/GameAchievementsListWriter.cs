@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets.Server.GameCentre;
+﻿using Sadie.Shared.Networking.Packets;
+
+namespace Sadie.Networking.Writers.GameCentre;
 
 public class GameAchievementsListWriter : NetworkPacketWriter
 {

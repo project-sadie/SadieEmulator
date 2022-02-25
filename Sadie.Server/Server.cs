@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
 
@@ -38,6 +39,9 @@ public class Server : IServer
 
         await roomCategoryRepo.LoadInitialDataAsync();
         _logger.LogInformation("Loaded room categories");
+        
+        var gameProcessor = _serviceProvider.GetRequiredService<IGameProcessor>();
+        gameProcessor.ProcessAsync();
         
         _logger.LogDebug("Server has booted up.");
         

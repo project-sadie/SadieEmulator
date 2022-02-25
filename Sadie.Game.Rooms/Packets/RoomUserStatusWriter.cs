@@ -1,7 +1,8 @@
 ﻿using Sadie.Game.Rooms.Users;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Writers;
+using Sadie.Shared.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Rooms.Users;
+namespace Sadie.Game.Rooms.Packets;
 
 public class RoomUserStatusWriter : NetworkPacketWriter
 {
