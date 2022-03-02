@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms.Users;
+﻿using System.Collections.Generic;
+using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Writers;
 using Sadie.Shared.Networking.Packets;
 
@@ -18,7 +19,7 @@ public class RoomUserStatusWriter : NetworkPacketWriter
             WriteString(user.Point.Z + "");
             WriteInt((int) user.DirectionHead);
             WriteInt((int) user.Direction);
-            WriteString(""); // statuses
+            WriteString(user.StatusMap.Count < 1 ? "" : "/" + string.Join("", user.StatusMap.Select(x => x.Key + (string.IsNullOrEmpty(x.Value) ? "" : " " + x.Value))));
         }
     }
 }
