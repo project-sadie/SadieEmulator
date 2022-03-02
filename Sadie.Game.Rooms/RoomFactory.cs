@@ -17,7 +17,7 @@ public class RoomFactory : IRoomFactory
     {
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
-            record.Get<double>("door_z"));
+            record.Get<float>("door_z"));
         
         return new RoomLayout(
             record.Get<long>("layout_id"), 
