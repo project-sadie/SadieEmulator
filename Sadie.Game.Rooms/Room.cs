@@ -18,5 +18,7 @@ public class Room : RoomData
         {
             await roomUser.RunPeriodicCheckAsync();
         }
+
+        await UserRepository.UpdateStatusForUsersAsync();
     }
 }
