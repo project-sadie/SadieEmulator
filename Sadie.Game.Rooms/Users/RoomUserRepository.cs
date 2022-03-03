@@ -28,7 +28,6 @@ public class RoomUserRepository : IRoomUserRepository
     
     public async Task UpdateStatusForUsersAsync()
     {
-        await BroadcastDataToUsersAsync(new RoomUserDataWriter(GetAll()).GetAllBytes());
         await BroadcastDataToUsersAsync(new RoomUserStatusWriter(GetAll()).GetAllBytes());
     }
 }
