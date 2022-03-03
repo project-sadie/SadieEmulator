@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Drawing;
+using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 
@@ -34,6 +35,6 @@ public class RoomUserWalkEvent : INetworkPacketEvent
         
         // TODO: return if already there
 
-        roomUser!.WalkToPoint(point);
+        roomUser!.WalkToPoint(new Point(point.X, point.Y));
     }
 }
