@@ -36,6 +36,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         player.LastRoomLoaded = roomId;
 
         var roomUser = _roomUserFactory.Create(
+            room,
             client,
             player.Id,
             room.Layout.DoorPoint,

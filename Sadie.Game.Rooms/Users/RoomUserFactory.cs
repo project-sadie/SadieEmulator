@@ -14,6 +14,7 @@ public class RoomUserFactory : IRoomUserFactory
     }
 
     public RoomUser Create(
+        Room room,
         INetworkObject networkObject, 
         long id, HPoint point, 
         HDirection directionHead,
@@ -26,6 +27,7 @@ public class RoomUserFactory : IRoomUserFactory
     {
         return ActivatorUtilities.CreateInstance<RoomUser>(
             _serviceProvider,
+            room,
         networkObject, 
             id, 
             point, 

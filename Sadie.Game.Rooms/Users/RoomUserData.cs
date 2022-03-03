@@ -1,13 +1,16 @@
-﻿using Sadie.Shared;
+﻿using System.Drawing;
+using Sadie.Shared;
 
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUserData : RoomUserAvatarData
 {
     public long Id { get; }
-    public HPoint Point { get; set;  }
-    public HDirection DirectionHead { get; }
-    public HDirection Direction { get; }
+    public HPoint Point { get; protected set;  }
+    public HDirection DirectionHead { get; protected set; }
+    public HDirection Direction { get; protected set; }
+
+    public readonly Dictionary<string, string> StatusMap;
 
     protected RoomUserData(long id, HPoint point, HDirection directionHead, HDirection direction, string username, string motto, string figureCode, string gender, long achievementScore) : 
         base (username, motto, figureCode, gender, achievementScore)
@@ -16,5 +19,10 @@ public class RoomUserData : RoomUserAvatarData
         Point = point;
         DirectionHead = directionHead;
         Direction = direction;
+        StatusMap = new Dictionary<string, string>();
     }
+    
+    protected Queue<HPoint> _goalSteps = new();
+    protected HPoint? _nextPoint;
+    protected bool _isWalking;
 }
