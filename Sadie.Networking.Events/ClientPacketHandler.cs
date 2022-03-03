@@ -1,8 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Packets.Client;
+namespace Sadie.Networking.Events;
 
 public class ClientPacketHandler : INetworkPacketHandler
 {
