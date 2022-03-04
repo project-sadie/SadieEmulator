@@ -6,7 +6,7 @@ namespace Sadie.Networking.Events;
 
 internal static class PacketEventHelpers
 {
-    internal static bool TryResolveRoomObjectsForClient(IRoomRepository roomRepository, INetworkClient client, out Room? room, out RoomUser? user)
+    internal static bool TryResolveRoomObjectsForClient(IRoomRepository roomRepository, INetworkClient client, out IRoom? room, out RoomUser? user)
     {
         if (client.Player == null)
         {

@@ -1,8 +1,8 @@
 namespace Sadie.Game.Rooms;
 
-public interface IRoomRepository
+public interface IRoomRepository : IDisposable
 {
-    Tuple<bool, Room?> TryGetRoomById(long id);
-    Task<Tuple<bool, Room?>> TryLoadRoomByIdAsync(long id);
+    Tuple<bool, IRoom?> TryGetRoomById(long id);
+    Task<Tuple<bool, IRoom?>> TryLoadRoomByIdAsync(long id);
     Task RunPeriodicCheckAsync();
 }

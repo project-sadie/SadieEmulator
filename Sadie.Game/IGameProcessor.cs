@@ -1,6 +1,6 @@
 namespace Sadie.Game;
 
-public interface IGameProcessor
+public interface IGameProcessor : IDisposable
 {
     Task ProcessAsync();
 }

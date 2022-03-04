@@ -30,4 +30,14 @@ public class RoomUserRepository : IRoomUserRepository
     {
         await BroadcastDataToUsersAsync(new RoomUserStatusWriter(GetAll()).GetAllBytes());
     }
+
+    public void Dispose()
+    {
+        foreach (var user in _users.Values)
+        {
+            user.Dispose();
+        }
+        
+        _users.Clear();
+    }
 }

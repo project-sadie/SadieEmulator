@@ -1,6 +1,6 @@
 namespace Sadie.Game.Rooms.Users;
 
-public interface IRoomUserRepository
+public interface IRoomUserRepository : IDisposable
 {
     ICollection<RoomUser> GetAll();
     bool TryAdd(RoomUser user);

@@ -3,7 +3,7 @@ using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
-public class Room : RoomData
+public class Room : RoomData, IRoom
 {
     private readonly ILogger<Room> _logger;
 
@@ -20,5 +20,10 @@ public class Room : RoomData
         }
 
         await UserRepository.UpdateStatusForUsersAsync();
+    }
+
+    public void Dispose()
+    {
+        UserRepository.Dispose();
     }
 }

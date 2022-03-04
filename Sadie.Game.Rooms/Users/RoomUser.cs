@@ -5,7 +5,7 @@ using Point = System.Drawing.Point;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUser : RoomUserData, IDisposable
+public class RoomUser : RoomUserData, IRoomUser
 {
     private readonly ILogger<RoomUser> _logger;
     private readonly Room _room;

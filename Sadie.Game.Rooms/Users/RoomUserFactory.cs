@@ -14,7 +14,7 @@ public class RoomUserFactory : IRoomUserFactory
     }
 
     public RoomUser Create(
-        Room room,
+        IRoom room,
         INetworkObject networkObject, 
         long id, HPoint point, 
         HDirection directionHead,

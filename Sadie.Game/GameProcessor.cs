@@ -16,4 +16,9 @@ public class GameProcessor : IGameProcessor
     {
         await TimerUtilities.RunPeriodically(TimeSpan.FromMilliseconds(500), _roomRepository.RunPeriodicCheckAsync);
     }
+
+    public void Dispose()
+    {
+        _roomRepository?.Dispose();
+    }
 }

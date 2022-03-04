@@ -5,26 +5,26 @@ namespace Sadie.Game.Rooms;
 public class RoomRepository : IRoomRepository
 {
     private readonly IRoomDao _dao;
-    private readonly ConcurrentDictionary<long, Room> _rooms;
+    private readonly ConcurrentDictionary<long, IRoom> _rooms;
 
     public RoomRepository(IRoomDao dao)
     {
         _dao = dao;
-        _rooms = new ConcurrentDictionary<long, Room>();
+        _rooms = new ConcurrentDictionary<long, IRoom>();
     }
     
-    public Tuple<bool, Room?> TryGetRoomById(long id)
+    public Tuple<bool, IRoom?> TryGetRoomById(long id)
     {
-        return new Tuple<bool, Room?>(_rooms.TryGetValue(id, out var room), room);
+        return new Tuple<bool, IRoom?>(_rooms.TryGetValue(id, out var room), room);
     }
     
-    public async Task<Tuple<bool, Room?>> TryLoadRoomByIdAsync(long id)
+    public async Task<Tuple<bool, IRoom?>> TryLoadRoomByIdAsync(long id)
     {
         var (memoryResult, memoryValue) = TryGetRoomById(id);
 
         if (memoryResult)
         {
-            return new Tuple<bool, Room?>(true, memoryValue);
+            return new Tuple<bool, IRoom?>(true, memoryValue);
         }
         
         var (result, room) = await _dao.TryGetRoomById(id);
@@ -43,5 +43,15 @@ public class RoomRepository : IRoomRepository
         {
             await room.RunPeriodicCheckAsync();
         }
+    }
+
+    public void Dispose()
+    {
+        foreach (var room in _rooms.Values)
+        {
+            room?.Dispose();
+        }
+        
+        _rooms.Clear();
     }
 }
