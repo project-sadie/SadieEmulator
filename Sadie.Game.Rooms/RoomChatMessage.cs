@@ -6,11 +6,11 @@ public class RoomChatMessage
 {
     public RoomUser Sender { get; }
     public string Message { get; }
-    public Room Room { get; }
+    public IRoom Room { get; }
     public int BubbleId { get; }
     public int EmotionId { get; }
 
-    public RoomChatMessage(RoomUser sender, string message, Room room, int bubbleId, int emotionId)
+    public RoomChatMessage(RoomUser sender, string message, IRoom room, int bubbleId, int emotionId)
     {
         Sender = sender;
         Message = message;
