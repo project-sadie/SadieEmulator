@@ -24,7 +24,7 @@ public class PlayerRepository : IPlayerRepository
     }
 
     public bool TryAddPlayer(IPlayer? player) => _players.TryAdd(player.Id, player);
-    public bool TryRemovePlayer(long playerId) => _players.TryRemove(playerId, out var _);
+    public bool TryRemovePlayer(long playerId) => _players.TryRemove(playerId, out _);
 
     public async Task MarkPlayerAsOnlineAsync(long id)
     {
