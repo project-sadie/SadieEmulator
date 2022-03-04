@@ -38,9 +38,8 @@ public static class RoomHelpers
         {
             UseDiagonals = useDiagonal,
         };
-
-        var tileMap = BuildTileMapFromHeightMap(layout);
-        var worldGrid = new WorldGrid(tileMap);
+        
+        var worldGrid = new WorldGrid(layout.TileMap);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
         var route = pathfinder.FindPath(start, end).ToList();
 
@@ -48,7 +47,7 @@ public static class RoomHelpers
             .Skip(1));
     }
 
-    private static short[,] BuildTileMapFromHeightMap(RoomLayoutData layoutData)
+    public static short[,] BuildTileMapFromHeightMap(RoomLayoutData layoutData)
     {
         var map = new short[layoutData.SizeY, layoutData.SizeX];
 
