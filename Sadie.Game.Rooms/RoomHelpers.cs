@@ -47,19 +47,6 @@ public static class RoomHelpers
             .Skip(1));
     }
 
-    public static short[,] BuildTileMapFromHeightMap(RoomLayoutData layoutData)
-    {
-        var map = new short[layoutData.SizeY, layoutData.SizeX];
-
-        foreach (var tile in layoutData.Tiles)
-        {
-            var point = tile.Point;
-            map[point.Y, point.X] = (short)(tile.State == RoomTileState.Open ? 1 : 0);
-        }
-
-        return map;
-    }
-
     public static HDirection GetDirectionForNextStep(HPoint current, HPoint next)
     {
         var rotation = HDirection.North;

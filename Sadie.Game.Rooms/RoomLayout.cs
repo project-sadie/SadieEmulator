@@ -14,6 +14,12 @@ public class RoomLayout : RoomLayoutData
         Id = id;
         Name = name;
         HeightMap = heightMap;
-        TileMap = RoomHelpers.BuildTileMapFromHeightMap(this);
+        TileMap = new short[SizeY, SizeX];
+
+        foreach (var tile in Tiles)
+        {
+            var point = tile.Point;
+            TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open ? 1 : 0);
+        }
     }
 }
