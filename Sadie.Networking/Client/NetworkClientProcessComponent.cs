@@ -100,7 +100,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
     public void Dispose()
     {
-        _client.Close();
         _networkClient?.Dispose();
     }
 }

@@ -43,7 +43,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 
     public DateTime LastPing { get; set; }
 
-    public new void Dispose()
+    public void Dispose()
     {
         Player?.DisposeAsync();
         RoomUser?.Dispose();
