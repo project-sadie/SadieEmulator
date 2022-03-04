@@ -1,7 +1,7 @@
-﻿using AStar;
+﻿using System.Drawing;
+using AStar;
 using AStar.Options;
 using Sadie.Shared;
-using Point = System.Drawing.Point;
 
 namespace Sadie.Game.Rooms;
 
