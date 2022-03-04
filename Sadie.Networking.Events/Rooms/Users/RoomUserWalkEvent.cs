@@ -32,9 +32,8 @@ public class RoomUserWalkEvent : INetworkPacketEvent
         }
 
         var point = tile.Point;
-        
-        // TODO: return if already there
+        var useDiagonal = true;
 
-        roomUser!.WalkToPoint(new Point(point.X, point.Y));
+        roomUser!.WalkToPoint(new Point(point.X, point.Y), useDiagonal);
     }
 }

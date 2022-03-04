@@ -1,5 +1,7 @@
-﻿using Sadie.Game.Rooms.Users;
+﻿using AStar;
+using AStar.Options;
 using Sadie.Shared;
+using Point = System.Drawing.Point;
 
 namespace Sadie.Game.Rooms;
 
@@ -17,7 +19,10 @@ public static class RoomHelpers
             {
                 var zResult = int.TryParse(currentLine[x].ToString(), out var z);
                 
-                var state = zResult ? RoomTileState.Open : RoomTileState.Closed;
+                var state = zResult ? 
+                    RoomTileState.Open : 
+                    RoomTileState.Closed;
+                
                 var tile = new RoomTile(x, y, zResult ? z : 33, state);
                 
                 tiles.Add(tile);
@@ -27,13 +32,72 @@ public static class RoomHelpers
         return tiles;
     }
 
-    public static List<HPoint> BuildPathForWalk(RoomUser roomUser, bool diagonalAllowed, HPoint start, HPoint end)
+    public static Queue<HPoint> BuildPathForWalk(RoomLayout layout, Point start, Point end, bool useDiagonal)
     {
-        var points = new List<HPoint>
+        var pathfinderOptions = new PathFinderOptions
         {
-            end
+            UseDiagonals = useDiagonal,
         };
 
-        return points;
+        var tileMap = BuildTileMapFromHeightMap(layout);
+        var worldGrid = new WorldGrid(tileMap);
+        var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
+        var route = pathfinder.FindPath(start, end).ToList();
+
+        return new Queue<HPoint>(route.Select(x => layout.Tiles.First(y => y.Point.X == x.X && y.Point.Y == x.Y).Point)
+            .Skip(1));
+    }
+
+    private static short[,] BuildTileMapFromHeightMap(RoomLayoutData layoutData)
+    {
+        var map = new short[layoutData.SizeY, layoutData.SizeX];
+
+        foreach (var tile in layoutData.Tiles)
+        {
+            var point = tile.Point;
+            map[point.Y, point.X] = (short)(tile.State == RoomTileState.Open ? 1 : 0);
+        }
+
+        return map;
+    }
+
+    public static HDirection GetDirectionForNextStep(HPoint current, HPoint next)
+    {
+        var rotation = HDirection.North;
+
+        if (current.X > next.X && current.Y > next.Y)
+        {
+            rotation = HDirection.NorthWest;
+        }
+        else if (current.X < next.X && current.Y < next.Y)
+        {
+            rotation = HDirection.SouthEast;
+        }
+        else if (current.X > next.X && current.Y < next.Y)
+        {
+            rotation = HDirection.SouthWest;
+        }
+        else if (current.X < next.X && current.Y > next.Y)
+        {
+            rotation = HDirection.NorthEast;
+        }
+        else if (current.X > next.X)
+        {
+            rotation = HDirection.West;
+        }
+        else if (current.X < next.X)
+        {
+            rotation = HDirection.East;
+        }
+        else if (current.Y < next.Y)
+        {
+            rotation = HDirection.South;
+        }
+        else if (current.Y > next.Y)
+        {
+            rotation = HDirection.North;
+        }
+
+        return rotation;
     }
 }

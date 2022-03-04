@@ -1,17 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sadie.Shared;
 using Sadie.Shared.Networking;
+using Sadie.Shared;
+using Point = System.Drawing.Point;
 
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser : RoomUserData, IDisposable
 {
     private readonly ILogger<RoomUser> _logger;
+    private readonly Room _room;
     private readonly IRoomUserRepository _roomUserRepository;
     public INetworkObject NetworkObject { get; }
 
     public RoomUser(
         ILogger<RoomUser> logger,
+        Room room,
         IRoomUserRepository roomUserRepository,
         INetworkObject networkObject, 
         long id, 
@@ -26,8 +29,58 @@ public class RoomUser : RoomUserData, IDisposable
         base(id, point, directionHead, direction, username, motto, figureCode, gender, achievementScore)
     {
         _logger = logger;
+        _room = room;
         _roomUserRepository = roomUserRepository;
         NetworkObject = networkObject;
+    }
+
+    public void WalkToPoint(Point point, bool useDiagonal) // 2bMoved
+    {
+        if (_nextPoint != null)
+        {
+            Point = _nextPoint;
+        }
+        
+        _goalSteps = RoomHelpers.BuildPathForWalk(_room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
+        _isWalking = true;
+    }
+
+    public async Task RunPeriodicCheckAsync() // 2bMoved
+    {
+        Console.WriteLine($"Checking on {Username}");
+        
+        if (_isWalking)
+        {
+            await ProcessMovementAsync();
+        }
+    }
+
+    private async Task ProcessMovementAsync() // 2bMoved
+    {
+        if (_nextPoint != null)
+        {
+            Point = _nextPoint;
+        }
+
+        if (_goalSteps.Count > 0)
+        {
+            var next = _goalSteps.Dequeue();
+            var direction = RoomHelpers.GetDirectionForNextStep(Point, next);
+
+            Direction = direction;
+            DirectionHead = direction;
+            
+            StatusMap["mv"] = $"{next.X},{next.Y},{Math.Round(next.Z * 100.0) / 100.0}";
+
+            _nextPoint = next;
+        }
+        else
+        {
+            _nextPoint = null;
+            _isWalking = false;
+
+            StatusMap.Remove("mv");
+        }
     }
 
     public void Dispose()
