@@ -14,9 +14,10 @@ public class GameProcessor : IGameProcessor
         _cts = new CancellationTokenSource();
     }
 
-    public async Task Boot()
+    public Task Boot()
     {
         ProcessAsync();
+        return Task.CompletedTask;
     }
     
     public async Task ProcessAsync()
