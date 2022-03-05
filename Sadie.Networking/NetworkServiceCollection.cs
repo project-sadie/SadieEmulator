@@ -10,8 +10,8 @@ public class NetworkServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        var host = config["Networking:Host"];
-        var port = int.Parse(config["Networking:Port"]);
+        var host = config["Sadie:Networking:Host"];
+        var port = int.Parse(config["Sadie:Networking:Port"]);
         
         serviceCollection.AddSingleton(new TcpListener(
             IPAddress.Parse(host), port
