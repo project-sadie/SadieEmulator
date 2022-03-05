@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Sadie.Shared;
+using Sadie.Shared.Game.Rooms;
 using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Rooms.Users;

@@ -1,4 +1,4 @@
-namespace Sadie.Networking.Writers;
+namespace Sadie.Shared.Networking;
 
 public class ServerPacketId
 {

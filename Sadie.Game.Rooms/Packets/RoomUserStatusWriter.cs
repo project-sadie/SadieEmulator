@@ -1,5 +1,5 @@
 ﻿using Sadie.Game.Rooms.Users;
-using Sadie.Networking.Writers;
+using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets;

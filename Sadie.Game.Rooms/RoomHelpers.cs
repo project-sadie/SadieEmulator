@@ -1,7 +1,8 @@
 ﻿using System.Drawing;
-using AStar;
-using AStar.Options;
+using Sadie.Game.Rooms.PathFinding;
+using Sadie.Game.Rooms.PathFinding.Options;
 using Sadie.Shared;
+using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 

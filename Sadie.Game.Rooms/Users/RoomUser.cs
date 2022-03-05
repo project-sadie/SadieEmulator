@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Shared.Networking;
 using Sadie.Shared;
+using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
 

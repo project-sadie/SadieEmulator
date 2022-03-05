@@ -1,4 +1,5 @@
-﻿using Sadie.Shared.Networking.Packets;
+﻿using Sadie.Shared.Networking;
+using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Friends;
 
