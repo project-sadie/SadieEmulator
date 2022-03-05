@@ -22,7 +22,7 @@ public class RoomUserData : RoomUserAvatarData
         StatusMap = new Dictionary<string, string>();
     }
     
-    protected Queue<HPoint> _goalSteps = new();
-    protected HPoint? _nextPoint;
-    protected bool _isWalking;
+    protected Queue<HPoint> GoalSteps = new();
+    protected HPoint? NextPoint;
+    protected bool IsWalking;
 }

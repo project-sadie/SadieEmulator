@@ -36,15 +36,15 @@ public class RoomUser : RoomUserData, IRoomUser
 
     private void SetNextPosition()
     {
-        Point = _nextPoint ?? Point;
+        Point = NextPoint ?? Point;
     }
     
     public void WalkToPoint(Point point, bool useDiagonal) // 2bMoved
     {
         SetNextPosition();
         
-        _goalSteps = RoomHelpers.BuildPathForWalk(_room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
-        _isWalking = true;
+        GoalSteps = RoomHelpers.BuildPathForWalk(_room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
+        IsWalking = true;
     }
 
     public async Task RunPeriodicCheckAsync()
@@ -52,7 +52,7 @@ public class RoomUser : RoomUserData, IRoomUser
     {
         Console.WriteLine($"Checking on {Username}");
         
-        if (_isWalking)
+        if (IsWalking)
         {
             await ProcessMovementAsync();
         }
@@ -62,9 +62,9 @@ public class RoomUser : RoomUserData, IRoomUser
     {
         SetNextPosition();
 
-        if (_goalSteps.Count > 0)
+        if (GoalSteps.Count > 0)
         {
-            var next = _goalSteps.Dequeue();
+            var next = GoalSteps.Dequeue();
             var direction = RoomHelpers.GetDirectionForNextStep(Point, next);
 
             Direction = direction;
@@ -72,12 +72,12 @@ public class RoomUser : RoomUserData, IRoomUser
             
             StatusMap[RoomUserStatus.Move] = $"{next.X},{next.Y},{Math.Round(next.Z * 100.0) / 100.0}";
 
-            _nextPoint = next;
+            NextPoint = next;
         }
         else
         {
-            _nextPoint = null;
-            _isWalking = false;
+            NextPoint = null;
+            IsWalking = false;
 
             StatusMap.Remove(RoomUserStatus.Move);
         }
