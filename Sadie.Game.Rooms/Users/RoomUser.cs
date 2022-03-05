@@ -49,10 +49,7 @@ public class RoomUser : RoomUserData, IRoomUser
     }
 
     public async Task RunPeriodicCheckAsync()
-    
     {
-        Console.WriteLine($"Checking on {Username}");
-        
         if (IsWalking)
         {
             await ProcessMovementAsync();
