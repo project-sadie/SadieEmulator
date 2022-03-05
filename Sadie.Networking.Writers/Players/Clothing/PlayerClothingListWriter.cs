@@ -5,10 +5,11 @@ namespace Sadie.Networking.Writers.Players.Clothing;
 
 public class PlayerClothingListWriter : NetworkPacketWriter
 {
-    public PlayerClothingListWriter() : base(ServerPacketId.PlayerClothingList)
+    // TODO ...
+    
+    public PlayerClothingListWriter()
     {
-        // TODO: Complete this
-        
+        WriteShort(ServerPacketId.PlayerClothingList);
         WriteInt(0);
         WriteInt(0);
     }

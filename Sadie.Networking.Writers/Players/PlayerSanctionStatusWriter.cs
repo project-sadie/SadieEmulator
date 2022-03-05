@@ -18,8 +18,9 @@ public class PlayerSanctionStatusWriter : NetworkPacketWriter
         int hoursForNextSanction,
         int unknown3,
         bool muted, 
-        DateTime tradeLockedUntil) : base(ServerPacketId.PlayerSanctionStatus)
+        DateTime tradeLockedUntil)
     {
+        WriteShort(ServerPacketId.PlayerSanctionStatus);
         WriteBoolean(hasPreviousSanction);
         WriteBoolean(onProbation);
         WriteString(lastSanctionType);

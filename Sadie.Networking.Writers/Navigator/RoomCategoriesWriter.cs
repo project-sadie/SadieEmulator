@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Navigator;
 
 public class RoomCategoriesWriter : NetworkPacketWriter
 {
-    public RoomCategoriesWriter(List<RoomCategory> categories) : base(ServerPacketId.RoomCategories)
+    public RoomCategoriesWriter(List<RoomCategory> categories)
     {
+        WriteShort(ServerPacketId.RoomCategories);
         WriteInt(categories.Count);
 
         foreach (var category in categories)

@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomRelativeMapWriter : NetworkPacketWriter
 {
-    public RoomRelativeMapWriter(RoomLayoutData layout) : base(ServerPacketId.RoomRelativeMap)
+    public RoomRelativeMapWriter(RoomLayoutData layout)
     {
+        WriteShort(ServerPacketId.RoomRelativeMap);
         WriteInt(layout.Size / layout.SizeY);
         WriteInt(layout.Size);
 

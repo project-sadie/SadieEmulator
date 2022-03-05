@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Players.Navigator;
 
 public class PlayerSavedSearchesWriter : NetworkPacketWriter
 {
-    public PlayerSavedSearchesWriter(List<PlayerSavedSearch> searches) : base(ServerPacketId.NavigatorSavedSearches)
+    public PlayerSavedSearchesWriter(List<PlayerSavedSearch> searches)
     {
+        WriteShort(ServerPacketId.NavigatorSavedSearches);
         WriteInt(searches.Count);
 
         foreach (var search in searches)

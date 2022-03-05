@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Players;
 
 public class PlayerIgnoredUsersWriter : NetworkPacketWriter
 {
-    public PlayerIgnoredUsersWriter() : base(ServerPacketId.PlayerIgnoredUsers)
+    public PlayerIgnoredUsersWriter()
     {
+        WriteShort(ServerPacketId.PlayerIgnoredUsers);
         WriteInt(0);
     }
 }

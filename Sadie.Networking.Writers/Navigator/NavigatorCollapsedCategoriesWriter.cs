@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Navigator;
 
 public class NavigatorCollapsedCategoriesWriter : NetworkPacketWriter
 {
-    public NavigatorCollapsedCategoriesWriter(List<string> categories) : base(ServerPacketId.NavigatorCollapsedCategories)
+    public NavigatorCollapsedCategoriesWriter(List<string> categories)
     {
+        WriteShort(ServerPacketId.NavigatorCollapsedCategories);
         WriteInt(categories.Count);
 
         foreach (var category in categories)

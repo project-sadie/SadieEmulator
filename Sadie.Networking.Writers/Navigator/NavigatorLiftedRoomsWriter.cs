@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Navigator;
 
 public class NavigatorLiftedRoomsWriter : NetworkPacketWriter
 {
-    public NavigatorLiftedRoomsWriter(List<Room> rooms) : base(ServerPacketId.NavigatorLiftedRooms)
+    public NavigatorLiftedRoomsWriter(List<Room> rooms)
     {
+        WriteShort(ServerPacketId.NavigatorLiftedRooms);
         WriteInt(rooms.Count);
 
         foreach (var room in rooms)

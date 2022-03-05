@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerPerksWriter : NetworkPacketWriter
 {
-    public PlayerPerksWriter() : base(ServerPacketId.PlayerPerks)
+    public PlayerPerksWriter()
     {
+        WriteShort(ServerPacketId.PlayerPerks);
         WriteInt(13);
         
         WriteString("USE_GUIDE_TOOL");

@@ -6,8 +6,9 @@ namespace Sadie.Game.Rooms.Packets;
 
 public class RoomUserDataWriter : NetworkPacketWriter
 {
-    public RoomUserDataWriter(ICollection<RoomUser> users) : base(ServerPacketId.RoomUserData)
+    public RoomUserDataWriter(ICollection<RoomUser> users)
     {
+        WriteShort(ServerPacketId.RoomUserData);
         WriteInt(users.Count);
 
         foreach (var user in users)

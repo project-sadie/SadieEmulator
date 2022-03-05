@@ -5,7 +5,8 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomLoadedWriter : NetworkPacketWriter
 {
-    public RoomLoadedWriter() : base(ServerPacketId.RoomLoaded)
+    public RoomLoadedWriter()
     {
+        WriteShort(ServerPacketId.RoomLoaded);
     }
 }

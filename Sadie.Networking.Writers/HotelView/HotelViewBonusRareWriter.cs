@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.HotelView;
 
 public class HotelViewBonusRareWriter : NetworkPacketWriter
 {
-    public HotelViewBonusRareWriter() : base(ServerPacketId.HotelViewBonusRare)
+    public HotelViewBonusRareWriter()
     {
+        WriteShort(ServerPacketId.HotelViewBonusRare);
         WriteString("throne");
         WriteInt(0);
         WriteInt(1000);

@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Players;
 
 public class PlayerFriendRequestsWriter : NetworkPacketWriter
 {
-    public PlayerFriendRequestsWriter(List<PlayerFriendshipData> requests) : base(ServerPacketId.PlayerFriendRequests)
+    public PlayerFriendRequestsWriter(List<PlayerFriendshipData> requests)
     {
+        WriteShort(ServerPacketId.PlayerFriendRequests);
         WriteInt(requests.Count);
         WriteInt(requests.Count);
 

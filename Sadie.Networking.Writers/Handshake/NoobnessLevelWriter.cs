@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Handshake;
 
 public class NoobnessLevelWriter : NetworkPacketWriter
 {
-    public NoobnessLevelWriter(int level) : base(ServerPacketId.NoobnessLevel)
+    public NoobnessLevelWriter(int level)
     {
+        WriteShort(ServerPacketId.NoobnessLevel);
         WriteInt(level);
     }
 }

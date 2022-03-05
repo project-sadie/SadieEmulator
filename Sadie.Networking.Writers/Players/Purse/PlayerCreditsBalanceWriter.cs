@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Players.Purse;
 
 public class PlayerCreditsBalanceWriter : NetworkPacketWriter
 {
-    public PlayerCreditsBalanceWriter(long credits) : base(ServerPacketId.PlayerCreditsBalance)
+    public PlayerCreditsBalanceWriter(long credits)
     {
+        WriteShort(ServerPacketId.PlayerCreditsBalance);
         WriteString(credits + ".0");
     }
 }

@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Players;
 
 public class PlayerNotificationSettingsWriter : NetworkPacketWriter
 {
-    public PlayerNotificationSettingsWriter(bool showNotifications) : base(ServerPacketId.NotificationSettings)
+    public PlayerNotificationSettingsWriter(bool showNotifications)
     {
+        WriteShort(ServerPacketId.NotificationSettings);
         WriteBoolean(showNotifications);
     }
 }

@@ -7,11 +7,9 @@ public class NetworkPacketWriter
 {
     private readonly ArrayBufferWriter<byte> _packet;
         
-    protected NetworkPacketWriter(short packetId)
+    protected NetworkPacketWriter()
     {
         _packet = new ArrayBufferWriter<byte>();
-            
-        WriteShort(packetId);
     }
 
     protected void WriteString(string data)

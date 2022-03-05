@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.HotelView;
 
 public class HotelViewDataWriter : NetworkPacketWriter
 {
-    public HotelViewDataWriter(string key, string value) : base(ServerPacketId.HotelViewData)
+    public HotelViewDataWriter(string key, string value)
     {
+        WriteShort(ServerPacketId.HotelViewData);
         WriteString(key);
         WriteString(value);
     }

@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Navigator;
 
 public class NavigatorPromotedRoomsWriter : NetworkPacketWriter
 {
-    public NavigatorPromotedRoomsWriter() : base(ServerPacketId.NavigatorPromotedRooms)
+    public NavigatorPromotedRoomsWriter()
     {
+        WriteShort(ServerPacketId.NavigatorPromotedRooms);
         WriteInt(2);
         WriteString("");
         WriteInt(0);

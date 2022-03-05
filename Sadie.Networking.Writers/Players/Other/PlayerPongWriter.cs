@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerPongWriter : NetworkPacketWriter
 {
-    public PlayerPongWriter(int id) : base(ServerPacketId.PlayerPong)
+    public PlayerPongWriter(int id)
     {
+        WriteShort(ServerPacketId.PlayerPong);
         WriteInt(id);
     }
 }

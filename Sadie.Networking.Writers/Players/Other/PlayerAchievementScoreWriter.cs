@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerAchievementScoreWriter : NetworkPacketWriter
 {
-    public PlayerAchievementScoreWriter(long achievementScore) : base(ServerPacketId.PlayerAchievementScore)
+    public PlayerAchievementScoreWriter(long achievementScore)
     {
+        WriteShort(ServerPacketId.PlayerAchievementScore);
         WriteLong(achievementScore);
     }
 }

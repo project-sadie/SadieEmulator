@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Players.Effects;
 
 public class PlayerEffectListWriter : NetworkPacketWriter
 {
-    public PlayerEffectListWriter(List<PlayerEffect> effects) : base(ServerPacketId.PlayerEffectList)
+    public PlayerEffectListWriter(List<PlayerEffect> effects)
     {
+        WriteShort(ServerPacketId.PlayerEffectList);
         WriteInt(effects.Count);
 
         foreach (var effect in effects)

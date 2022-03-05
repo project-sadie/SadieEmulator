@@ -5,8 +5,17 @@ namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerMeMenuSettingsWriter : NetworkPacketWriter
 {
-    public PlayerMeMenuSettingsWriter(int systemVolume, int furnitureVolume, int traxVolume, bool oldChat, bool blockRoomInvites, bool blockCameraFollow, int uiFlags, int chatColor) : base(ServerPacketId.PlayerMeMenuSettings)
+    public PlayerMeMenuSettingsWriter(
+        int systemVolume, 
+        int furnitureVolume, 
+        int traxVolume, 
+        bool oldChat, 
+        bool blockRoomInvites, 
+        bool blockCameraFollow, 
+        int uiFlags, 
+        int chatColor)
     {
+        WriteShort(ServerPacketId.PlayerMeMenuSettings);
         WriteInt(systemVolume);
         WriteInt(furnitureVolume);
         WriteInt(traxVolume);

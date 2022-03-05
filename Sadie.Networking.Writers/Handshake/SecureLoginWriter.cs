@@ -5,7 +5,8 @@ namespace Sadie.Networking.Writers.Handshake;
 
 public class SecureLoginWriter : NetworkPacketWriter
 {
-    public SecureLoginWriter() : base(ServerPacketId.SecureLogin)
+    public SecureLoginWriter()
     {
+        WriteShort(ServerPacketId.SecureLogin);
     }
 }

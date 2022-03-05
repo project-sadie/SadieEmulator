@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserChatWriter : NetworkPacketWriter
 {
-    public RoomUserChatWriter(RoomChatMessage message) : base(ServerPacketId.RoomUserChat)
+    public RoomUserChatWriter(RoomChatMessage message)
     {
+        WriteShort(ServerPacketId.RoomUserChat);
         WriteLong(message.Sender.Id);
         WriteString(message.Message);
         WriteLong(message.EmotionId);

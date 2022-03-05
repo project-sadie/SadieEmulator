@@ -5,8 +5,9 @@ namespace Sadie.Networking.Writers.GameCentre;
 
 public class GameAchievementsListWriter : NetworkPacketWriter
 {
-    public GameAchievementsListWriter() : base(ServerPacketId.GameCentreConfig)
+    public GameAchievementsListWriter()
     {
+        WriteShort(ServerPacketId.GameCentreConfig);
         WriteInt(0);
         WriteInt(0);
         WriteInt(0);
