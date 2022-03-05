@@ -3,9 +3,9 @@
 public static class RoomUserStatus
 {
     public const string
-        Move = "mc",
+        Move = "mv",
         Sit = "sit",
         Lay = "lay",
-        FlatControl = "flatctrl",
+        FlatCtrl = "flatctrl",
         Dance = "dance";
 }
