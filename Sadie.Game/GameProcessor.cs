@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Diagnostics;
+using Sadie.Game.Rooms;
 using Sadie.Shared.Utilities;
 
 namespace Sadie.Game;
@@ -10,6 +11,11 @@ public class GameProcessor : IGameProcessor
     public GameProcessor(IRoomRepository roomRepository)
     {
         _roomRepository = roomRepository;
+    }
+
+    public async Task Boot()
+    {
+        ProcessAsync();
     }
     
     public async Task ProcessAsync()

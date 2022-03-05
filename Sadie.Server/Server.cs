@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
@@ -22,6 +23,8 @@ public class Server : IServer
     
     public async Task RunAsync()
     {
+        var stopwatch = Stopwatch.StartNew();
+        
         WriteHeaderToConsole();
             
         _logger.LogInformation("Booting up...");
@@ -41,9 +44,12 @@ public class Server : IServer
         _logger.LogInformation("Loaded room categories");
         
         var gameProcessor = _serviceProvider.GetRequiredService<IGameProcessor>();
-        gameProcessor.ProcessAsync();
+        await gameProcessor.Boot();
+        _logger.LogInformation("Loaded game services");
         
-        _logger.LogDebug("Server has booted up.");
+        stopwatch.Stop();
+        
+        _logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
         
         var networkListener = _serviceProvider.GetRequiredService<INetworkListener>();
 
@@ -74,6 +80,7 @@ public class Server : IServer
 
     public void Dispose()
     {
-        
+        var gameProcessor = _serviceProvider.GetRequiredService<IGameProcessor>();
+        gameProcessor.Dispose();
     }
 }
