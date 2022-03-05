@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Sadie.Game.Rooms.Users;
+﻿using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Writers;
 using Sadie.Shared.Networking.Packets;
 

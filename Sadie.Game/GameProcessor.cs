@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Sadie.Game.Rooms;
+﻿using Sadie.Game.Rooms;
 using Sadie.Shared.Utilities;
 
 namespace Sadie.Game;
