@@ -1,4 +1,4 @@
-﻿namespace Sadie.Shared;
+﻿namespace Sadie.Shared.Game.Rooms;
 
 public enum HDirection
 {
