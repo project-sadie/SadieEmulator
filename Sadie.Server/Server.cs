@@ -27,7 +27,7 @@ public class Server : IServer
         
         WriteHeaderToConsole();
             
-        _logger.LogInformation("Booting up...");
+        _logger.LogTrace("Booting up...");
 
         var dbProvider = _serviceProvider.GetRequiredService<IDatabaseProvider>();
 
@@ -36,16 +36,16 @@ public class Server : IServer
             throw new Exception("Failed to connect to the database.");
         }
 
-        _logger.LogInformation("Database connection is working!");
+        _logger.LogTrace("Database connection is working!");
         
         var roomCategoryRepo = _serviceProvider.GetRequiredService<IRoomCategoryRepository>();
 
         await roomCategoryRepo.LoadInitialDataAsync();
-        _logger.LogInformation("Loaded room categories");
+        _logger.LogTrace("Loaded room categories");
         
         var gameProcessor = _serviceProvider.GetRequiredService<IGameProcessor>();
         await gameProcessor.Boot();
-        _logger.LogInformation("Loaded game services");
+        _logger.LogTrace("Loaded game services");
         
         stopwatch.Stop();
         
