@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Drawing;
+using Microsoft.Extensions.Logging;
 using Sadie.Shared.Networking;
 using Sadie.Shared;
-using Point = System.Drawing.Point;
 
 namespace Sadie.Game.Rooms.Users;
 

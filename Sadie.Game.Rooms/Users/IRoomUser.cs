@@ -18,5 +18,4 @@ public interface IRoomUser : IDisposable
     HDirection Direction { get; }
     void WalkToPoint(Point point, bool useDiagonal);
     Task RunPeriodicCheckAsync();
-    void Dispose();
 }
