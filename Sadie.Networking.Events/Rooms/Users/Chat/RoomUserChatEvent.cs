@@ -33,6 +33,6 @@ public class RoomUserChatEvent : INetworkPacketEvent
         roomUser.ChatBubble = (RoomChatBubble) bubbleId;
 
         var message = new RoomChatMessage(roomUser!, text, room!, (int) roomUser.ChatBubble, 1);
-        await room!.UserRepository.BroadcastDataToUsersAsync(new RoomUserChatWriter(message).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserChatWriter(message).GetAllBytes());
     }
 }

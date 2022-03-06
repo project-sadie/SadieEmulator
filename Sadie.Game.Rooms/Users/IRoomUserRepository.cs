@@ -7,6 +7,6 @@ public interface IRoomUserRepository : IDisposable
     bool TryGet(long id, out RoomUser? user);
     bool TryRemove(long id);
     int Count { get; }
-    Task BroadcastDataToUsersAsync(byte[] data);
+    Task BroadcastDataAsync(byte[] data);
     Task UpdateStatusForUsersAsync();
 }

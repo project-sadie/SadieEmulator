@@ -32,6 +32,6 @@ public class RoomUserShoutEvent : INetworkPacketEvent
         var bubbleColor = reader.ReadInt();
         var message = new RoomChatMessage(roomUser!, text, room!, bubbleColor, 1);
 
-        await room!.UserRepository.BroadcastDataToUsersAsync(new RoomUserShoutWriter(message).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserShoutWriter(message).GetAllBytes());
     }
 }

@@ -15,10 +15,21 @@ public class RoomUserRepository : IRoomUserRepository
     public ICollection<RoomUser> GetAll() => _users.Values;
     public bool TryAdd(RoomUser user) => _users.TryAdd(user.Id, user);
     public bool TryGet(long id, out RoomUser? user) => _users.TryGetValue(id, out user);
-    public bool TryRemove(long id) => _users.TryRemove(id, out var _);
+
+    public bool TryRemove(long id)
+    {
+        var result = _users.TryRemove(id, out _);
+
+        if (result)
+        {
+            BroadcastDataAsync(new RoomUserLeftWriter(id).GetAllBytes()).Wait(); // TODO: Sort this
+        }
+
+        return result;
+    }
     public int Count => _users.Count;
     
-    public async Task BroadcastDataToUsersAsync(byte[] data)
+    public async Task BroadcastDataAsync(byte[] data)
     {
         foreach (var roomUser in _users.Values)
         {
@@ -28,7 +39,8 @@ public class RoomUserRepository : IRoomUserRepository
     
     public async Task UpdateStatusForUsersAsync()
     {
-        await BroadcastDataToUsersAsync(new RoomUserStatusWriter(GetAll()).GetAllBytes());
+        var writer = new RoomUserStatusWriter(GetAll());
+        await BroadcastDataAsync(writer.GetAllBytes());
     }
 
     public void Dispose()
