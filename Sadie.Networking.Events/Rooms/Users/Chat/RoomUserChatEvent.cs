@@ -28,10 +28,11 @@ public class RoomUserChatEvent : INetworkPacketEvent
         {
             return;
         }
-        
-        var bubbleColor = reader.ReadInt();
-        var message = new RoomChatMessage(roomUser!, text, room!, bubbleColor, 1);
-        
+
+        var bubbleId = reader.ReadInt();
+        roomUser.ChatBubble = (RoomChatBubble) bubbleId;
+
+        var message = new RoomChatMessage(roomUser!, text, room!, (int) roomUser.ChatBubble, 1);
         await room!.UserRepository.BroadcastDataToUsersAsync(new RoomUserChatWriter(message).GetAllBytes());
     }
 }
