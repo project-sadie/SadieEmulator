@@ -28,8 +28,8 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         SetClient(this);
     }
         
-    public IPlayer? Player { get; set; } = null;
-    public RoomUser? RoomUser { get; set; } = null;
+    public IPlayer? Player { get; set; }
+    public RoomUser? RoomUser { get; set; }
 
     public Task ListenAsync()
     {
@@ -46,11 +46,16 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     public void Dispose()
     {
         Player?.DisposeAsync();
+        Player = null;
+        
         RoomUser?.Dispose();
-
+        RoomUser = null;
+        
         if (!_clientRepository.TryRemove(_guid))
         {
             _logger.LogError("Failed to dispose network client.");
         }
+        
+        base.Dispose();
     }
 }
