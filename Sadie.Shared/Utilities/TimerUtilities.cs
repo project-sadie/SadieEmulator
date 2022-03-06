@@ -4,7 +4,9 @@ public static class TimerUtilities
 {
     public static async Task RunPeriodically(TimeSpan timeSpan, Func<Task> task, CancellationToken cancellationToken)
     {
-        while (await new PeriodicTimer(timeSpan).WaitForNextTickAsync(cancellationToken))
+        var timer = new PeriodicTimer(timeSpan);
+        
+        while (await timer.WaitForNextTickAsync(cancellationToken))
         {
             await task();
         }
