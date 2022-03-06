@@ -33,7 +33,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
             {
                 if (_networkClient == null || _networkClient.LastPing != default && DateTime.Now.Subtract(_networkClient.LastPing).TotalSeconds >= 60)
                 {
-                    Dispose();
+                    _networkClient?.Dispose();
                     break;
                 }
                 
@@ -52,7 +52,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         catch (Exception e)
         {
             _logger.LogError(e.ToString());
-            Dispose();
+            _networkClient?.Dispose();
         }
     }
     
@@ -60,7 +60,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
     protected void SetClient(INetworkClient client) => _networkClient = client;
 
-    private Task OnReceivedAsync(int bytesReceived)
+    private async Task OnReceivedAsync(int bytesReceived)
     {
         try
         {
@@ -69,37 +69,43 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
             
             if (data[0] == 60)
             {
-                OnReceivedPolicyRequest();
+                await OnReceivedPolicyRequest();
             }
             else if (_networkClient != null)
             {
                 foreach (var packet in DecodePacketsFromBytes(data))
                 {
-                    _packetHandler.HandleAsync(_networkClient, packet).Wait();
+                    await _packetHandler.HandleAsync(_networkClient, packet);
                 }
             }
         }
         catch (Exception e)
         {
             _logger.LogError(e.ToString());
-            Dispose();
+            _networkClient?.Dispose();
         }
-
-        return Task.CompletedTask;
     }
 
-    private void OnReceivedPolicyRequest()
+    private async Task OnReceivedPolicyRequest()
     {
-        WriteToStreamAsync(Encoding.Default.GetBytes(SadieConstants.CrossDomainPolicy)).Wait();
+        await WriteToStreamAsync(Encoding.Default.GetBytes(SadieConstants.CrossDomainPolicy));
     }
 
     public async Task WriteToStreamAsync(byte[] data)
     {
-        await _stream.WriteAsync(data);
+        try
+        {
+            await _stream.WriteAsync(data);
+        }
+        catch (IOException)
+        {
+            _logger.LogError("Failed to write data to the stream.");
+        }
     }
 
     public void Dispose()
     {
-        _networkClient?.Dispose();
+        _client.GetStream().Close();
+        _client.Close();
     }
 }
