@@ -13,12 +13,6 @@ public class GameProcessor : IGameProcessor
         _roomRepository = roomRepository;
         _cts = new CancellationTokenSource();
     }
-
-    public Task Boot()
-    {
-        ProcessAsync();
-        return Task.CompletedTask;
-    }
     
     public async Task ProcessAsync()
     {
