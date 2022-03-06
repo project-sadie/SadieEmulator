@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
 
@@ -47,7 +48,7 @@ public class NetworkListener : INetworkListener
         
     private async Task AcceptClient(TcpClient client)
     {
-        var clientId = new Guid();
+        var clientId = Guid.NewGuid();
         var networkClient = _clientFactory.CreateClient(clientId, client);
         
         _clientRepository.AddClient(clientId, networkClient);
