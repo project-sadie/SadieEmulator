@@ -20,9 +20,11 @@ public class RoomUserData : RoomUserAvatarData
         DirectionHead = directionHead;
         Direction = direction;
         StatusMap = new Dictionary<string, string>();
+        ChatBubble = RoomChatBubble.Default;
     }
     
     protected Queue<HPoint> GoalSteps = new();
     protected HPoint? NextPoint;
     protected bool IsWalking;
+    public RoomChatBubble ChatBubble;
 }
