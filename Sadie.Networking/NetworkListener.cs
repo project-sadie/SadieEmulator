@@ -35,12 +35,6 @@ public class NetworkListener : INetworkListener
             
         while (_listening)
         {
-            if (!_listener.Pending())
-            {
-                Thread.Sleep(100);
-                continue;
-            }
-                
             var client = await _listener.AcceptTcpClientAsync();
             await AcceptClient(client);
         }
