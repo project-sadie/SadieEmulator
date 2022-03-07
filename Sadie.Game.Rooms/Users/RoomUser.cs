@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.Logging;
+using Sadie.Game.Rooms.Packets;
 using Sadie.Shared.Networking;
 using Sadie.Shared;
 using Sadie.Shared.Game.Rooms;
@@ -86,6 +87,9 @@ public class RoomUser : RoomUserData, IRoomUser
         if (!_roomUserRepository.TryRemove(Id))
         {
             _logger.LogError($"Failed to dispose room user {Id}");
+            return;
         }
+        
+        Task.Run(async () => await _roomUserRepository.BroadcastDataAsync(new RoomUserLeftWriter(Id).GetAllBytes())).Wait();
     }
 }
