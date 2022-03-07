@@ -25,7 +25,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Game\Sadie.Game.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
-      <ProjectReference Include="..\Sadie.Networking.Packets\Sadie.Networking.Packets.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
 
