@@ -17,22 +17,14 @@ public class RoomUserChatEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var text = reader.ReadString();
-
-        if (string.IsNullOrEmpty(text) || text.Length > SadieConstants.MaxChatMessageLength)
-        {
-            return;
-        }
-
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
 
-        var bubbleId = reader.ReadInt();
-        roomUser.ChatBubble = (RoomChatBubble) bubbleId;
-
-        var message = new RoomChatMessage(roomUser!, text, room!, (int) roomUser.ChatBubble, 1);
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserChatWriter(message).GetAllBytes());
+        if (roomUser != null && roomUser.TrySpeak(reader.ReadString(), (RoomChatBubble) reader.ReadInt(), out var chatMessage))
+        {
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserChatWriter(chatMessage!).GetAllBytes());
+        }
     }
 }

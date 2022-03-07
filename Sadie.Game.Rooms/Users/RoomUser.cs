@@ -82,6 +82,20 @@ public class RoomUser : RoomUserData, IRoomUser
         }
     }
 
+    public bool TrySpeak(string message, RoomChatBubble bubble, out RoomChatMessage? chatMesage)
+    {
+        if (string.IsNullOrEmpty(message) || message.Length > SadieConstants.MaxChatMessageLength)
+        {
+            chatMesage = null;
+            return false;
+        }
+
+        ChatBubble = bubble;
+        
+        chatMesage = new RoomChatMessage(this, message, _room, (int) ChatBubble, 1);
+        return true;
+    }
+
     public void Dispose()
     {
         if (!_roomUserRepository.TryRemove(Id))
