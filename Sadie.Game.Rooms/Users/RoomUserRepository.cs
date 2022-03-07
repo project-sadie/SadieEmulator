@@ -18,15 +18,9 @@ public class RoomUserRepository : IRoomUserRepository
 
     public bool TryRemove(long id)
     {
-        var result = _users.TryRemove(id, out _);
-
-        if (result)
-        {
-            BroadcastDataAsync(new RoomUserLeftWriter(id).GetAllBytes()).Wait(); // TODO: Sort this
-        }
-
-        return result;
+        return _users.TryRemove(id, out _);
     }
+    
     public int Count => _users.Count;
     
     public async Task BroadcastDataAsync(byte[] data)
