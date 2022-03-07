@@ -44,7 +44,9 @@ public class Server : IServer
         _logger.LogTrace("Loaded room categories");
         
         var gameProcessor = _serviceProvider.GetRequiredService<IGameProcessor>();
-        Task.Run(gameProcessor.ProcessAsync);
+
+        Task.Factory.StartNew(gameProcessor.ProcessAsync, CancellationToken.None, TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
         
         _logger.LogTrace("Loaded game services");
         

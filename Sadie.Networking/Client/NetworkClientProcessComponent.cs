@@ -25,7 +25,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         _buffer = new byte[SadieConstants.HabboPacketBufferSize];
     }
 
-    protected async Task StartListening(CancellationToken cancellationToken)
+    protected async Task StartListening()
     {
         try
         {
@@ -37,8 +37,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
                     break;
                 }
                 
-                cancellationToken.ThrowIfCancellationRequested();
-                
                 var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
 
                 if (bytes > 0)
@@ -49,9 +47,8 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
                 Thread.Sleep(50);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            _logger.LogError(e.ToString());
             _networkClient?.Dispose();
         }
     }
@@ -75,7 +72,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
             {
                 foreach (var packet in DecodePacketsFromBytes(data))
                 {
-                    await _packetHandler.HandleAsync(_networkClient, packet);
+                    _packetHandler.HandleAsync(_networkClient, packet);
                 }
             }
         }
@@ -93,14 +90,12 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
     public async Task WriteToStreamAsync(byte[] data)
     {
-        try
+        if (!_stream.CanWrite)
         {
-            await _stream.WriteAsync(data);
+            return;
         }
-        catch (IOException)
-        {
-            _logger.LogError("Failed to write data to the stream.");
-        }
+        
+        await _stream.WriteAsync(data);
     }
 
     public void Dispose()

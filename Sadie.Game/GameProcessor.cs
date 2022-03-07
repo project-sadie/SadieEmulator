@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Diagnostics;
+using Sadie.Game.Rooms;
 using Sadie.Shared.Utilities;
 
 namespace Sadie.Game;
@@ -16,7 +17,11 @@ public class GameProcessor : IGameProcessor
     
     public async Task ProcessAsync()
     {
-        await TimerUtilities.RunPeriodically(TimeSpan.FromMilliseconds(500), _roomRepository.RunPeriodicCheckAsync, _cts.Token);
+        while (true)
+        {
+            await _roomRepository.RunPeriodicCheckAsync();
+            await Task.Delay(500);
+        }
     }
 
     public void Dispose()

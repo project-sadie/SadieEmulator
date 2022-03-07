@@ -33,11 +33,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 
     public Task ListenAsync()
     {
-        Task.Run(async () =>
-        {
-            await StartListening(_cts.Token);
-        });
-
+        Task.Factory.StartNew(StartListening, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         return Task.CompletedTask;
     }
 
@@ -45,16 +41,18 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 
     public void Dispose()
     {
-        Player?.DisposeAsync();
-        Player = null;
-        
         RoomUser?.Dispose();
         RoomUser = null;
+        
+        Player?.DisposeAsync();
+        Player = null;
         
         if (!_clientRepository.TryRemove(_guid))
         {
             _logger.LogError("Failed to dispose network client.");
         }
+        
+        _cts.Cancel();
         
         base.Dispose();
     }
