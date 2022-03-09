@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.Shared;
 using Sadie.Shared.Game.Rooms;
 using Sadie.Shared.Networking;
 
