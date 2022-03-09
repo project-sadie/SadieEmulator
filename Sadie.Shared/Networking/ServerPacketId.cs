@@ -45,4 +45,5 @@ public class ServerPacketId
     public const short RoomUserChat = 1446;
     public const short RoomUserShout = 1036;
     public const short RoomUserLeft = 2661;
+    public const short RoomUserDance = 2233;
 }
