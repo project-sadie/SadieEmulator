@@ -92,7 +92,7 @@ public class RoomUser : RoomUserData, IRoomUser
 
         ChatBubble = bubble;
         
-        chatMesage = new RoomChatMessage(this, message, _room, (int) ChatBubble, 1);
+        chatMesage = new RoomChatMessage(this, message, _room, ChatBubble, 1);
         return true;
     }
 

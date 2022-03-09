@@ -12,7 +12,7 @@ public class RoomUserChatWriter : NetworkPacketWriter
         WriteLong(message.Sender.Id);
         WriteString(message.Message);
         WriteLong(message.EmotionId);
-        WriteLong(message.BubbleId);
+        WriteLong((int) message.Bubble);
         WriteLong(0);
         WriteLong(message.Message.Length);
     }

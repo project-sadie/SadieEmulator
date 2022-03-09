@@ -7,15 +7,15 @@ public class RoomChatMessage
     public RoomUser Sender { get; }
     public string Message { get; }
     public IRoom Room { get; }
-    public int BubbleId { get; }
+    public RoomChatBubble Bubble { get; }
     public int EmotionId { get; }
 
-    public RoomChatMessage(RoomUser sender, string message, IRoom room, int bubbleId, int emotionId)
+    public RoomChatMessage(RoomUser sender, string message, IRoom room, RoomChatBubble bubble, int emotionId)
     {
         Sender = sender;
         Message = message;
         Room = room;
-        BubbleId = bubbleId;
+        Bubble = bubble;
         EmotionId = emotionId;
     }
 }
