@@ -60,7 +60,8 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserChat] = new RoomUserChatEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserShout] = new RoomUserShoutEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserWalk] = new RoomUserWalkEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomUserDance] = new RoomUserDanceEvent(provider.GetRequiredService<IRoomRepository>())
+            [ClientPacketId.RoomUserDance] = new RoomUserDanceEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomUserAction] = new RoomUserActionEvent(provider.GetRequiredService<IRoomRepository>())
         });
     }
 }
