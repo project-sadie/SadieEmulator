@@ -2,7 +2,6 @@
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Rooms.Users.Chat;
 

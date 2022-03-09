@@ -24,7 +24,7 @@ public class SecureLoginEvent : INetworkPacketEvent
 
         if (!ValidateSso(sso)) 
         {
-            _logger.LogWarning($@"Rejected an insecure sso token.");
+            _logger.LogWarning("Rejected an insecure sso token.");
                 
             client.Dispose();
             return;
@@ -34,7 +34,7 @@ public class SecureLoginEvent : INetworkPacketEvent
 
         if (!foundPlayer || player == null) // put the second check to shut my IDE up about nullable markings.
         {
-            _logger.LogWarning($"Failed to resolve player from their provided sso.");
+            _logger.LogWarning("Failed to resolve player from their provided sso.");
                 
             client.Dispose();
             return;
