@@ -10,7 +10,7 @@ namespace SadieEmulator;
 
 public class Server : IServer
 {
-    private static readonly Version Version = new(0, 4);
+    private static readonly Version Version = new(0, 5);
 
     private readonly ILogger<Server> _logger;
     private readonly IServiceProvider _serviceProvider;
