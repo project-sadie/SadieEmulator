@@ -35,4 +35,6 @@ public class ClientPacketId
     public const short RoomUserWalk = 3320;
     public const short RoomUserDance = 2080;
     public const short RoomUserAction = 2456;
+    public const short RoomUserStartTyping = 1597;
+    public const short RoomUserStopTyping = 1474;
 }
