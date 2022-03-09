@@ -14,10 +14,4 @@
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2-mauipre.1.22054.8" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="Sadie.Networking.Packets, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <HintPath>..\Sadie.Server\bin\Debug\net6.0\Sadie.Networking.Packets.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
