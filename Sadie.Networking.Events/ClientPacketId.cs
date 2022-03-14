@@ -37,4 +37,7 @@ public class ClientPacketId
     public const short RoomUserAction = 2456;
     public const short RoomUserStartTyping = 1597;
     public const short RoomUserStopTyping = 1474;
+    public const short RoomUserLookAt = 3301;
+    public const short RoomUserSign = 1975;
+    public const short RoomUserSit = 2235;
 }

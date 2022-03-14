@@ -64,6 +64,9 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserAction] = new RoomUserActionEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserStartTyping] = new RoomUserStartTypingEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserStopTyping] = new RoomUserStopTypingEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomUserLookAt] = new RoomUserLookAtEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomUserSign] = new RoomUserSignEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomUserSit] = new RoomUserSitEvent(provider.GetRequiredService<IRoomRepository>()),
         });
     }
 }

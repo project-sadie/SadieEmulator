@@ -24,6 +24,6 @@ public class RoomUserData : RoomUserAvatarData
     
     protected Queue<HPoint> GoalSteps = new();
     protected HPoint? NextPoint;
-    protected bool IsWalking;
+    public bool IsWalking { get; protected set; }
     public RoomChatBubble ChatBubble;
 }

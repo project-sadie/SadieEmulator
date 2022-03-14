@@ -7,5 +7,6 @@ public static class RoomUserStatus
         Sit = "sit",
         Lay = "lay",
         FlatCtrl = "flatctrl",
-        Dance = "dance";
+        Dance = "dance",
+        Sign = "sign";
 }

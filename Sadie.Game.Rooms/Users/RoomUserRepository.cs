@@ -36,6 +36,14 @@ public class RoomUserRepository : IRoomUserRepository
         var writer = new RoomUserStatusWriter(GetAll());
         await BroadcastDataAsync(writer.GetAllBytes());
     }
+    
+    public async Task UpdateStatusForUserAsync(RoomUser user)
+    {
+        var users = new List<RoomUser> {user};
+        var writer = new RoomUserStatusWriter(users);
+        
+        await BroadcastDataAsync(writer.GetAllBytes());
+    }
 
     public void Dispose()
     {

@@ -9,4 +9,5 @@ public interface IRoomUserRepository : IDisposable
     int Count { get; }
     Task BroadcastDataAsync(byte[] data);
     Task UpdateStatusForUsersAsync();
+    Task UpdateStatusForUserAsync(RoomUser user);
 }
