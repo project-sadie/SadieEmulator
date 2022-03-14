@@ -47,7 +47,7 @@ public static class RoomHelpers
             .Skip(1));
     }
 
-    public static HDirection GetDirectionForNextStep(HPoint current, HPoint next)
+    public static HDirection GetDirectionForNextStep(Point current, Point next)
     {
         var rotation = HDirection.North;
 
