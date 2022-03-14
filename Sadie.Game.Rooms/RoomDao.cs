@@ -18,6 +18,7 @@ public class RoomDao : BaseDao, IRoomDao
                    `rooms`.`id`, 
                    `rooms`.`name`, 
                    `rooms`.`layout_id`, 
+                   `room_settings`.`walk_diagonal`, 
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,
                    `room_layouts`.`door_x`,
@@ -25,7 +26,8 @@ public class RoomDao : BaseDao, IRoomDao
                    `room_layouts`.`door_z`,
                    `room_layouts`.`door_direction`
             FROM `rooms` 
-                INNER JOIN `room_layouts` ON `room_layouts`.`id` = `rooms`.`layout_id` WHERE `rooms`.`id` = @roomId 
+                INNER JOIN `room_settings` ON `room_settings`.`room_id` = `rooms`.`id`
+                INNER JOIN `room_layouts` ON `room_layouts`.`id` = `rooms`.`layout_id`
             LIMIT 1;", new Dictionary<string, object>
         {
             { "roomId", roomId }
