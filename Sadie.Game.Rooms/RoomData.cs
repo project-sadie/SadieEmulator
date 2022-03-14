@@ -9,7 +9,7 @@ public class RoomData : RoomSettings
     public RoomLayout Layout { get; }
     public IRoomUserRepository UserRepository { get; }
 
-    protected RoomData(long id, string name, RoomLayout layout, IRoomUserRepository userRepository)
+    protected RoomData(long id, string name, RoomLayout layout, IRoomUserRepository userRepository, bool walkDiagonal) : base(walkDiagonal)
     {
         Id = id;
         Name = name;

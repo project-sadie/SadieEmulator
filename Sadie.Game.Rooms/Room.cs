@@ -7,7 +7,7 @@ public class Room : RoomData, IRoom
 {
     private readonly ILogger<Room> _logger;
 
-    public Room(ILogger<Room> logger, long id, string name, RoomLayout layout, IRoomUserRepository userRepository) : base(id, name, layout, userRepository)
+    public Room(ILogger<Room> logger, long id, string name, RoomLayout layout, IRoomUserRepository userRepository, bool walkDiagonal) : base(id, name, layout, userRepository, walkDiagonal)
     {
         _logger = logger;
     }

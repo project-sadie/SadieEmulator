@@ -35,6 +35,7 @@ public class RoomFactory : IRoomFactory
             _serviceProvider, 
             record.Get<long>("id"), 
             record.Get<string>("name"), 
-            model);
+            model,
+            record.Get<bool>("walk_diagonal"));
     }
 }
