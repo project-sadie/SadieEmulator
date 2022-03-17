@@ -25,6 +25,18 @@ public class ClientPacketHandler : INetworkPacketHandler
         }
 
         _logger.LogDebug($"Executing packet '{packetEvent.GetType().Name}'");
-        await packetEvent.HandleAsync(client, packet);
+        await ExecuteAsync(client, packet, packetEvent);
+    }
+
+    private async Task ExecuteAsync(INetworkClient client, INetworkPacket packet, INetworkPacketEvent @event)
+    {
+        try
+        {
+            await @event.HandleAsync(client, packet);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.ToString());
+        }
     }
 }
