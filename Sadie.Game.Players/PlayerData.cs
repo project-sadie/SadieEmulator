@@ -43,7 +43,7 @@ public class PlayerData : PlayerAvatarData, IPlayerData
     public long RespectsReceived { get; }
     public long RespectPoints { get; }
     public long RespectPointsPet { get; }
-    public PlayerNavigatorSettings NavigatorSettings { get; }
+    public PlayerNavigatorSettings NavigatorSettings { get; set; }
     public PlayerSettings Settings { get; }
     public List<PlayerSavedSearch> SavedSearches { get; }
 }

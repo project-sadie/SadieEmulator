@@ -13,7 +13,7 @@ public interface IPlayerData : IPlayerAvatarData
     long RespectsReceived { get; }
     long RespectPoints { get; }
     long RespectPointsPet { get; }
-    PlayerNavigatorSettings NavigatorSettings { get; }
+    PlayerNavigatorSettings NavigatorSettings { get; set; }
     PlayerSettings Settings { get; }
     List<PlayerSavedSearch> SavedSearches { get; }
 }
