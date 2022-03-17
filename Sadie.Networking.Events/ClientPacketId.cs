@@ -40,4 +40,6 @@ public class ClientPacketId
     public const short RoomUserLookAt = 3301;
     public const short RoomUserSign = 1975;
     public const short RoomUserSit = 2235;
+    public const short SaveNavigatorSettings = 3159;
+    public const short NavigatorRooms = 249;
 }
