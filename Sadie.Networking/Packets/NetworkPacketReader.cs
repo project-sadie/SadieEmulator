@@ -24,6 +24,11 @@ public class NetworkPacketReader : INetworkPacketReader
         return BinaryPrimitives.ReadInt32BigEndian(ReadBytes(4));
     }
 
+    public bool ReadBool()
+    {
+        return _packetData[_packetPosition++] == 1;
+    }
+
     private byte[] ReadBytes(int bytes)
     {
         var data = new byte[bytes];
