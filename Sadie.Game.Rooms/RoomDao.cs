@@ -28,6 +28,7 @@ public class RoomDao : BaseDao, IRoomDao
             FROM `rooms` 
                 INNER JOIN `room_settings` ON `room_settings`.`room_id` = `rooms`.`id`
                 INNER JOIN `room_layouts` ON `room_layouts`.`id` = `rooms`.`layout_id`
+            WHERE `rooms`.`id` = @roomId
             LIMIT 1;", new Dictionary<string, object>
         {
             { "roomId", roomId }
