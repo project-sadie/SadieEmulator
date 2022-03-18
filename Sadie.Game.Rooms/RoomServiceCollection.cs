@@ -8,7 +8,7 @@ public class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IRoomUserRepository, RoomUserRepository>();
+        serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
