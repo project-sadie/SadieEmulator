@@ -57,7 +57,7 @@ public class PlayerActivityEvent : INetworkPacketEvent
 
         player.Authenticated = true;
         
-        await networkClient.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, 1).GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, player.HomeRoom).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
