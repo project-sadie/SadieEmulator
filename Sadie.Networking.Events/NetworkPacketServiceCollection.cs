@@ -68,7 +68,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserSign] = new RoomUserSignEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserSit] = new RoomUserSitEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
-            [ClientPacketId.NavigatorRooms] = new NavigatorRoomsEvent(),
+            [ClientPacketId.NavigatorRooms] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
         });
     }
 }
