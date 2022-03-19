@@ -28,6 +28,7 @@ public class RoomUserFactory : IRoomUserFactory
         return ActivatorUtilities.CreateInstance<RoomUser>(
             _serviceProvider,
             room,
+            room.UserRepository,
         networkObject, 
             id, 
             point, 
