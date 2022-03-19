@@ -5,10 +5,10 @@ namespace Sadie.Networking.Writers.Players.Rooms;
 
 public class PlayerHomeRoomWriter : NetworkPacketWriter
 {
-    public PlayerHomeRoomWriter(long homeRoom, int newRoom)
+    public PlayerHomeRoomWriter(long homeRoom, long newRoom)
     {
         WriteShort(ServerPacketId.PlayerHomeRoom);
         WriteLong(homeRoom);
-        WriteInt(newRoom);
+        WriteLong(newRoom);
     }
 }
