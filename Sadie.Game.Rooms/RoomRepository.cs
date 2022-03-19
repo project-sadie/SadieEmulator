@@ -45,6 +45,11 @@ public class RoomRepository : IRoomRepository
         }
     }
 
+    public List<IRoom> GetAll()
+    {
+        return _rooms.Values.ToList();
+    }
+
     public void Dispose()
     {
         foreach (var room in _rooms.Values)
