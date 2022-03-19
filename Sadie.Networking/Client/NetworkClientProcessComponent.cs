@@ -90,16 +90,29 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
 
     public async Task WriteToStreamAsync(byte[] data)
     {
-        if (!_stream.CanWrite)
+        try
+        {
+            await _stream.WriteAsync(data);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.ToString());
+            _networkClient?.Dispose();
+        }
+    }
+
+    private bool _disposed;
+    
+
+    public void Dispose()
+    {
+        if (_disposed)
         {
             return;
         }
         
-        await _stream.WriteAsync(data);
-    }
-
-    public void Dispose()
-    {
+        _disposed = true;
+        
         _client.GetStream().Close();
         _client.Close();
     }
