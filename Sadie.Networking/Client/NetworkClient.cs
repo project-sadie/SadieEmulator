@@ -11,6 +11,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     private readonly Guid _guid;
     private readonly ILogger<NetworkClient> _logger;
     private readonly INetworkClientRepository _clientRepository;
+    private readonly TcpClient _tcpClient;
     private readonly CancellationTokenSource _cts = new();
         
     public NetworkClient(
@@ -24,7 +25,8 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         _guid = guid;
         _logger = logger;
         _clientRepository = clientRepository;
-        
+        _tcpClient = tcpClient;
+
         SetClient(this);
     }
         
@@ -33,19 +35,41 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 
     public Task ListenAsync()
     {
-        Task.Factory.StartNew(StartListening, _cts.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        var listeningThread = new Thread(StartListening)
+        {
+            Name = "Client Listening Thread",
+            Priority = ThreadPriority.AboveNormal
+        };
+        
+        listeningThread.Start();
         return Task.CompletedTask;
     }
 
     public DateTime LastPing { get; set; }
 
-    public void Dispose()
+
+    private bool _disposed;
+    
+    public async ValueTask DisposeAsync()
     {
-        RoomUser?.Dispose();
-        RoomUser = null;
-        
-        Player?.DisposeAsync();
-        Player = null;
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+
+        if (RoomUser != null)
+        {
+            await RoomUser.DisposeAsync();
+            RoomUser = null;
+        }
+
+        if (Player != null)
+        {
+            await Player.DisposeAsync();
+            Player = null;
+        }
         
         if (!_clientRepository.TryRemove(_guid))
         {
@@ -53,7 +77,11 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         }
         
         _cts.Cancel();
-        
-        base.Dispose();
+
+        if (_tcpClient.Connected)
+        {
+            _tcpClient.GetStream().Close();
+            _tcpClient.Close();
+        }
     }
 }

@@ -6,7 +6,7 @@ using Sadie.Shared;
 
 namespace Sadie.Networking.Client;
 
-public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
+public class NetworkClientProcessComponent : NetworkPacketDecoder
 {
     private readonly ILogger<NetworkClientProcessComponent> _logger;
     private readonly TcpClient _client;
@@ -25,31 +25,30 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         _buffer = new byte[SadieConstants.HabboPacketBufferSize];
     }
 
-    protected async Task StartListening()
+    protected async void StartListening()
     {
         try
         {
             while (true)
             {
-                if (_networkClient == null || _networkClient.LastPing != default && DateTime.Now.Subtract(_networkClient.LastPing).TotalSeconds >= 60)
-                {
-                    _networkClient?.Dispose();
-                    break;
-                }
-                
                 var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
 
                 if (bytes > 0)
                 {
                     await OnReceivedAsync(bytes);
                 }
-                
+
                 Thread.Sleep(50);
             }
         }
-        catch (Exception)
+        catch (SocketException e)
         {
-            _networkClient?.Dispose();
+            _networkClient.DisposeAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.ToString());
+            _networkClient.DisposeAsync();
         }
     }
     
@@ -79,7 +78,11 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         catch (Exception e)
         {
             _logger.LogError(e.ToString());
-            _networkClient?.Dispose();
+            
+            if (_networkClient != null)
+            {
+                await _networkClient.DisposeAsync();
+            }
         }
     }
 
@@ -88,32 +91,20 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder, IDisposable
         await WriteToStreamAsync(Encoding.Default.GetBytes(SadieConstants.CrossDomainPolicy));
     }
 
+    private bool hasErrored;
+    
     public async Task WriteToStreamAsync(byte[] data)
     {
         try
         {
             await _stream.WriteAsync(data);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            _logger.LogError(e.ToString());
-            _networkClient?.Dispose();
+            if (_networkClient != null)
+            {
+                await _networkClient.DisposeAsync();
+            }
         }
-    }
-
-    private bool _disposed;
-    
-
-    public void Dispose()
-    {
-        if (_disposed)
-        {
-            return;
-        }
-        
-        _disposed = true;
-        
-        _client.GetStream().Close();
-        _client.Close();
     }
 }

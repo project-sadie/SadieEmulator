@@ -4,7 +4,7 @@ using Sadie.Shared.Networking;
 
 namespace Sadie.Networking.Client;
 
-public interface INetworkClient : IDisposable, INetworkObject
+public interface INetworkClient : IAsyncDisposable, INetworkObject
 {
     IPlayer? Player { get; set; }
     RoomUser? RoomUser { get; set; }
