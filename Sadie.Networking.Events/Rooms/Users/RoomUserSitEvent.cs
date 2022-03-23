@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Sadie.Game.Rooms;
+﻿using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -23,6 +22,5 @@ public class RoomUserSitEvent : INetworkPacketEvent
         }
         
         roomUser!.StatusMap[RoomUserStatus.Sit] = 0.5 + "";
-        await room!.UserRepository.UpdateStatusForUserAsync(roomUser);
     }
 }

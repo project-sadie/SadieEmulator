@@ -26,7 +26,7 @@ public class SecureLoginEvent : INetworkPacketEvent
         {
             _logger.LogWarning("Rejected an insecure sso token.");
                 
-            client.Dispose();
+            await client.DisposeAsync();
             return;
         }
             
@@ -36,7 +36,7 @@ public class SecureLoginEvent : INetworkPacketEvent
         {
             _logger.LogWarning("Failed to resolve player from their provided sso.");
                 
-            client.Dispose();
+            await client.DisposeAsync();
             return;
         }
 
