@@ -1,0 +1,11 @@
+﻿namespace Sadie.Shared.Game.Avatar;
+
+public interface IAvatarData
+{
+    string Username { get; }
+    string FigureCode { get; set; }
+    string Motto { get; set; }
+    AvatarGender Gender { get; set; }
+    long LastRoomLoaded { get; set; }
+    long AchievementScore { get; set; }
+}
