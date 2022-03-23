@@ -47,12 +47,12 @@ public class PlayerActivityEvent : INetworkPacketEvent
         
         if (!_playerRepository.TryAddPlayer(player))
         {
-            _logger.LogWarning($"Player {player.Id} could not be registered");
-            networkClient.Dispose();
+            _logger.LogError($"Player {player.Id} could not be registered");
+            await networkClient.DisposeAsync();
             return;
         }
             
-        _logger.LogWarning($"Player '{player.Username}' has logged in");
+        _logger.LogInformation($"Player '{player.Username}' has logged in");
         await _playerRepository.MarkPlayerAsOnlineAsync(player.Id);
 
         player.Authenticated = true;

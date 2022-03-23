@@ -1,6 +1,6 @@
 namespace SadieEmulator;
 
-public interface IServer : IDisposable
+public interface IServer : IAsyncDisposable
 {
     Task RunAsync();
 }

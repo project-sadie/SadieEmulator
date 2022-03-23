@@ -2,15 +2,16 @@ using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
-using Sadie.Game;
+using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
+using SadieEmulator.Tasks;
 
 namespace SadieEmulator;
 
 public class Server : IServer
 {
-    private static readonly Version Version = new(0, 5);
+    public static readonly Version Version = new(0, 5);
 
     private readonly ILogger<Server> _logger;
     private readonly IServiceProvider _serviceProvider;
@@ -42,18 +43,16 @@ public class Server : IServer
 
         await roomCategoryRepo.LoadInitialDataAsync();
         _logger.LogTrace("Loaded room categories");
-        
-        var gameProcessor = _serviceProvider.GetRequiredService<IGameProcessor>();
 
-        Task.Factory.StartNew(gameProcessor.ProcessAsync, CancellationToken.None, TaskCreationOptions.LongRunning,
-            TaskScheduler.Default);
+        var taskWorker = _serviceProvider.GetRequiredService<IServerTaskWorker>();
+        taskWorker.Start();
         
         _logger.LogTrace("Loaded game services");
         
         stopwatch.Stop();
         
         _logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
-        
+
         var networkListener = _serviceProvider.GetRequiredService<INetworkListener>();
 
         networkListener.Start();
@@ -81,9 +80,10 @@ public class Server : IServer
         Console.WriteLine(@"");
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        var gameProcessor = _serviceProvider.GetRequiredService<IGameProcessor>();
-        gameProcessor.Dispose();
+        var roomRepository = _serviceProvider.GetRequiredService<IRoomRepository>();
+        
+        await roomRepository.DisposeAsync();
     }
 }
