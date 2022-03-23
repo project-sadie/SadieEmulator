@@ -69,7 +69,8 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserSit] = new RoomUserSitEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
             [ClientPacketId.NavigatorRooms] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.PlayerChangeAppearance] = new PlayerChangeAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.PlayerChangedMotto] = new PlayerChangedMottoEvent(provider.GetRequiredService<IRoomRepository>()),
         });
     }
 }

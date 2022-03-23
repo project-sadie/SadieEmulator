@@ -65,4 +65,5 @@ public static class SadieConstants
     };
 
     public static int MaxChatMessageLength => 100;
+    public static int MaxMottoLength => 50;
 }
