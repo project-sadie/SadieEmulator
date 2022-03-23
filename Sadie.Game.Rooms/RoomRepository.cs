@@ -50,11 +50,16 @@ public class RoomRepository : IRoomRepository
         return _rooms.Values.ToList();
     }
 
-    public void Dispose()
+    public int Count()
+    {
+        return _rooms.Count;
+    }
+
+    public async ValueTask DisposeAsync()
     {
         foreach (var room in _rooms.Values)
         {
-            room?.Dispose();
+            await room.DisposeAsync();
         }
         
         _rooms.Clear();

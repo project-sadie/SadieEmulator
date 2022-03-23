@@ -9,4 +9,5 @@ public interface IPlayerRepository
     Task MarkPlayerAsOnlineAsync(long id);
     Task MarkPlayerAsOfflineAsync(long id);
     Task ResetSsoTokenForPlayerAsync(long id);
+    int Count();
 }

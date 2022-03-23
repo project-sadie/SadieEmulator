@@ -40,4 +40,9 @@ public class PlayerRepository : IPlayerRepository
     {
         await _playerDao.ResetSsoTokenForPlayerAsync(id);
     }
+
+    public int Count()
+    {
+        return _players.Count;
+    }
 }
