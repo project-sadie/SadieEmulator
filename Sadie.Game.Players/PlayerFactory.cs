@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
-using Sadie.Game.Players.Avatar;
 using Sadie.Game.Players.Navigator;
+using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
@@ -58,7 +58,7 @@ public class PlayerFactory : IPlayerFactory
             record.Get<long>("home_room_id"),
             record.Get<string>("figure_code"),
             record.Get<string>("motto"),
-            record.Get<char>("gender") == 'M' ? PlayerAvatarGender.Male : PlayerAvatarGender.Female,
+            record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female,
             CreateBalanceFromRecord(record),
             DateTime.TryParse(record.Get<string>("last_online"), out var timestamp) ? timestamp : DateTime.MinValue,
             record.Get<long>("respects_received"),

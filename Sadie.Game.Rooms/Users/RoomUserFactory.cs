@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Game.Rooms;
 using Sadie.Shared.Networking;
 
@@ -19,11 +20,7 @@ public class RoomUserFactory : IRoomUserFactory
         long id, HPoint point, 
         HDirection directionHead,
         HDirection direction, 
-        string username, 
-        string motto, 
-        string figureCode, 
-        string gender, 
-        long achievementScore)
+        IAvatarData avatarData)
     {
         return ActivatorUtilities.CreateInstance<RoomUser>(
             _serviceProvider,
@@ -34,10 +31,6 @@ public class RoomUserFactory : IRoomUserFactory
             point, 
             directionHead, 
             direction, 
-            username, 
-            motto, 
-            figureCode, 
-            gender, 
-            achievementScore);
+            avatarData);
     }
 }
