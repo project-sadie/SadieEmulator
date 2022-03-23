@@ -7,8 +7,8 @@ public class PlayerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IPlayerBalance, PlayerBalance>();
-        serviceCollection.AddSingleton<IPlayer, Player>();
+        serviceCollection.AddTransient<IPlayerBalance, PlayerBalance>();
+        serviceCollection.AddTransient<IPlayer, Player>();
         serviceCollection.AddSingleton<IPlayerFactory, PlayerFactory>();
         serviceCollection.AddSingleton<IPlayerDao, PlayerDao>();
         serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
