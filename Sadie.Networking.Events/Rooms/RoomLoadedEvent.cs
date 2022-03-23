@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sadie.Game.Players.Avatar;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Networking.Events.Rooms;
 
@@ -35,6 +35,8 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         player.LastRoomLoaded = roomId;
 
+        var avatarData = (IAvatarData) player;
+        
         var roomUser = _roomUserFactory.Create(
             room,
             client,
@@ -42,11 +44,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
             room.Layout.DoorPoint,
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
-            player.Username,
-            player.Motto,
-            player.FigureCode,
-            player.Gender == PlayerAvatarGender.Male ? "M" : "F",
-            player.AchievementScore);
+            avatarData);
 
         if (!room.UserRepository.TryAdd(roomUser))
         {

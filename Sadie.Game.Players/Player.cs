@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
-using Sadie.Game.Players.Avatar;
 using Sadie.Game.Players.Navigator;
+using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
@@ -17,7 +17,7 @@ public class Player : PlayerData, IPlayer
         long homeRoom, 
         string figureCode, 
         string motto, 
-        PlayerAvatarGender gender, 
+        AvatarGender gender, 
         IPlayerBalance balance,
         DateTime lastOnline,
         long respectsReceived, 

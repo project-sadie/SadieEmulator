@@ -1,5 +1,5 @@
 ﻿using Sadie.Game.Players;
-using Sadie.Game.Players.Avatar;
+using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
@@ -13,7 +13,7 @@ public class PlayerDataWriter : NetworkPacketWriter
         WriteLong(playerData.Id);
         WriteString(playerData.Username);
         WriteString(playerData.FigureCode);
-        WriteString(playerData.Gender == PlayerAvatarGender.Male ? "M" : "F");
+        WriteString(playerData.Gender == AvatarGender.Male ? "M" : "F");
         WriteString(playerData.Motto);
         WriteString(playerData.Username);
         WriteBoolean(false);

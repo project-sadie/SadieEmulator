@@ -4,6 +4,7 @@ using Sadie.Game.Rooms.Packets;
 using Sadie.Shared.Networking;
 using Sadie.Shared;
 using Sadie.Shared.Extensions;
+using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
@@ -23,13 +24,9 @@ public class RoomUser : RoomUserData, IRoomUser
         long id, 
         HPoint point, 
         HDirection directionHead, 
-        HDirection direction, 
-        string username, 
-        string motto, 
-        string figureCode, 
-        string gender, 
-        long achievementScore) : 
-        base(id, point, directionHead, direction, username, motto, figureCode, gender, achievementScore)
+        HDirection direction,
+        AvatarData avatarData) : 
+        base(id, point, directionHead, direction, avatarData)
     {
         _logger = logger;
         _room = room;

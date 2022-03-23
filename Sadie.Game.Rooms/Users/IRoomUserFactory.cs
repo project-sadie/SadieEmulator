@@ -1,3 +1,4 @@
+using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Game.Rooms;
 using Sadie.Shared.Networking;
 
@@ -11,9 +12,5 @@ public interface IRoomUserFactory
         long id, HPoint point, 
         HDirection directionHead,
         HDirection direction, 
-        string username, 
-        string motto, 
-        string figureCode, 
-        string gender, 
-        long achievementScore);
+        IAvatarData avatarData);
 }

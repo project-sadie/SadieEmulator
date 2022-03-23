@@ -1,4 +1,5 @@
 ﻿using Sadie.Game.Rooms.Users;
+using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
@@ -14,21 +15,21 @@ public class RoomUserDataWriter : NetworkPacketWriter
         foreach (var user in users)
         {
             WriteLong(user.Id);
-            WriteString(user.Username);
-            WriteString(user.Motto);
-            WriteString(user.FigureCode);
+            WriteString(user.AvatarData.Username);
+            WriteString(user.AvatarData.Motto);
+            WriteString(user.AvatarData.FigureCode);
             WriteLong(user.Id);
             WriteInt(user.Point.X);
             WriteInt(user.Point.Y);
             WriteString(user.Point.Z + "");
             WriteInt(3);
             WriteInt(1);
-            WriteString(user.Gender);
+            WriteString(user.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
             WriteInt(-1);
             WriteInt(-1);
             WriteString("");
             WriteString("");
-            WriteLong(user.AchievementScore);
+            WriteLong(user.AvatarData.AchievementScore);
             WriteBoolean(true);
         }
     }

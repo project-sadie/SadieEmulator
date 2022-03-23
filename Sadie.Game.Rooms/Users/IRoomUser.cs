@@ -7,11 +7,6 @@ namespace Sadie.Game.Rooms.Users;
 public interface IRoomUser : IAsyncDisposable
 {
     INetworkObject NetworkObject { get; }
-    string Username { get; }
-    string Motto { get; }
-    string FigureCode { get; }
-    string Gender { get; }
-    long AchievementScore { get; }
     long Id { get; }
     HPoint Point { get; }
     HDirection DirectionHead { get; }

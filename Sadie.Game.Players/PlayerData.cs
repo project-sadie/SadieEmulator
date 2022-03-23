@@ -1,9 +1,9 @@
-using Sadie.Game.Players.Avatar;
 using Sadie.Game.Players.Navigator;
+using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
-public class PlayerData : PlayerAvatarData, IPlayerData
+public class PlayerData : AvatarData, IPlayerData
 {
     protected PlayerData(
         long id, 
@@ -11,7 +11,7 @@ public class PlayerData : PlayerAvatarData, IPlayerData
         long homeRoom, 
         string figureCode, 
         string motto, 
-        PlayerAvatarGender gender, 
+        AvatarGender gender, 
         IPlayerBalance balance, 
         DateTime lastOnline, 
         long respectsReceived, 
@@ -20,7 +20,7 @@ public class PlayerData : PlayerAvatarData, IPlayerData
         PlayerNavigatorSettings navigatorSettings,
         PlayerSettings settings, 
         List<PlayerSavedSearch> savedSearches,
-        long achievementScore) : base(figureCode, motto, gender, achievementScore)
+        long achievementScore) : base(username, figureCode, motto, gender, achievementScore)
     {
         Id = id;
         Username = username;

@@ -1,9 +1,9 @@
-using Sadie.Game.Players.Avatar;
 using Sadie.Game.Players.Navigator;
+using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
-public interface IPlayerData : IPlayerAvatarData
+public interface IPlayerData : IAvatarData
 {
     long Id { get; }
     string Username { get; }
