@@ -3,7 +3,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
 
-namespace Sadie.Networking.Events.Rooms.Users;
+namespace Sadie.Networking.Events.Rooms.Users.Chat;
 
 public class RoomUserStartTypingEvent : INetworkPacketEvent
 {
