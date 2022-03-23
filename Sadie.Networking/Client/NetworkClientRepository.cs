@@ -20,4 +20,15 @@ public class NetworkClientRepository : INetworkClientRepository
     {
         return _clients.TryRemove(guid, out _);
     }
+
+    public async Task DisconnectIdleClientsAsync()
+    {
+        var idleClients = _clients.Values
+            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 60);
+
+        foreach (var client in idleClients)
+        {
+            await client.DisposeAsync();
+        }
+    }
 }
