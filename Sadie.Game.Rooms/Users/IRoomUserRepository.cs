@@ -1,6 +1,6 @@
 namespace Sadie.Game.Rooms.Users;
 
-public interface IRoomUserRepository : IDisposable
+public interface IRoomUserRepository : IAsyncDisposable
 {
     ICollection<RoomUser> GetAll();
     bool TryAdd(RoomUser user);
@@ -8,6 +8,4 @@ public interface IRoomUserRepository : IDisposable
     bool TryRemove(long id);
     int Count { get; }
     Task BroadcastDataAsync(byte[] data);
-    Task UpdateStatusForUsersAsync();
-    Task UpdateStatusForUserAsync(RoomUser user);
 }

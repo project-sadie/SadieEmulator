@@ -56,6 +56,6 @@ public class Player : PlayerData, IPlayer
         _playerRepository.TryRemovePlayer(Id);
         await _playerRepository.MarkPlayerAsOfflineAsync(Id);
         
-        _logger.LogWarning($"Player '{Username}' has logged out");
+        _logger.LogInformation($"Player '{Username}' has logged out");
     }
 }

@@ -27,29 +27,15 @@ public class RoomUserRepository : IRoomUserRepository
     {
         foreach (var roomUser in _users.Values)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(data);
+            roomUser.NetworkObject.WriteToStreamAsync(data);
         }
     }
     
-    public async Task UpdateStatusForUsersAsync()
-    {
-        var writer = new RoomUserStatusWriter(GetAll());
-        await BroadcastDataAsync(writer.GetAllBytes());
-    }
-    
-    public async Task UpdateStatusForUserAsync(RoomUser user)
-    {
-        var users = new List<RoomUser> {user};
-        var writer = new RoomUserStatusWriter(users);
-        
-        await BroadcastDataAsync(writer.GetAllBytes());
-    }
-
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         foreach (var user in _users.Values)
         {
-            user.Dispose();
+            await user.DisposeAsync();
         }
         
         _users.Clear();
