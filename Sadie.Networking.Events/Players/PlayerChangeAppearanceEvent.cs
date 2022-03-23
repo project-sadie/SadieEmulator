@@ -26,6 +26,7 @@ public class PlayerChangeAppearanceEvent : INetworkPacketEvent
         var figureCode = reader.ReadString();
         
         // TODO: Validate inputs above
+        // TODO: Update gender and figure code
         
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {
