@@ -9,7 +9,7 @@ public class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddSingleton<IDatabaseConnection, DatabaseConnection>();
+        serviceCollection.AddTransient<IDatabaseConnection, DatabaseConnection>();
         serviceCollection.AddSingleton<DbConnectionStringBuilder>(new MySqlConnectionStringBuilder(config.GetConnectionString("Default")));
         serviceCollection.AddSingleton<IDatabaseProvider, DatabaseProvider>();
     }
