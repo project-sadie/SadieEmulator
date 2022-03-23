@@ -49,4 +49,5 @@ public class ServerPacketId
     public const short RoomUserAction = 1631;
     public const short RoomUserTyping = 1717;
     public const short NavigatorRooms = 2690;
+    public const short PlayerChangedAppearance = 2429;
 }

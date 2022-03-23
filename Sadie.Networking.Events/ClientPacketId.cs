@@ -42,4 +42,5 @@ public class ClientPacketId
     public const short RoomUserSit = 2235;
     public const short SaveNavigatorSettings = 3159;
     public const short NavigatorRooms = 249;
+    public const short PlayerChangeAppearance = 2730;
 }
