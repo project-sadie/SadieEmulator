@@ -1,12 +1,20 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
+using Sadie.Networking.Client;
 using Sadie.Networking.Events;
+using SadieEmulator.Tasks;
+using SadieEmulator.Tasks.Game;
+using SadieEmulator.Tasks.Game.Rooms;
+using SadieEmulator.Tasks.Networking;
+using SadieEmulator.Tasks.Other;
 using Serilog;
 
 namespace SadieEmulator;
@@ -26,6 +34,15 @@ public static class Startup
     {
         serviceCollection.AddSingleton<IServer, Server>();
         
+        serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>(provider => new ServerTaskWorker(
+            provider.GetRequiredService<ILogger<ServerTaskWorker>>(), 
+            new List<IServerTask>
+            {
+                new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
+                new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
+                new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
+            }));
+        
         var config = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
             
         DatabaseServiceCollection.AddServices(serviceCollection, config);
@@ -33,6 +50,7 @@ public static class Startup
         RoomServiceCollection.AddServices(serviceCollection);
         NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
-        GameService.AddServices(serviceCollection);
+        
+        serviceCollection.AddSingleton<ServerTaskWorker>();
     }
 }
