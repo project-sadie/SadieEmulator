@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sadie.Game.Rooms.Packets;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -19,11 +20,16 @@ public class Room : RoomData, IRoom
             await roomUser.RunPeriodicCheckAsync();
         }
 
-        await UserRepository.UpdateStatusForUsersAsync();
+        var users = UserRepository.GetAll();
+        var statusWriter = new RoomUserStatusWriter(users).GetAllBytes();
+        var dataWriter = new RoomUserDataWriter(users).GetAllBytes();
+
+        await UserRepository.BroadcastDataAsync(statusWriter);
+        await UserRepository.BroadcastDataAsync(dataWriter);
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        UserRepository.Dispose();
+        await UserRepository.DisposeAsync();
     }
 }

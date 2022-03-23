@@ -52,6 +52,14 @@ public class RoomUser : RoomUserData, IRoomUser
         IsWalking = true;
     }
 
+    public void StopWalking()
+    {
+        NextPoint = null;
+        IsWalking = false;
+
+        StatusMap.Remove(RoomUserStatus.Move);
+    }
+
     public void LookAtPoint(Point point)
     {
         var direction = RoomHelpers.GetDirectionForNextStep(Point.ToPoint(), point);
@@ -84,10 +92,7 @@ public class RoomUser : RoomUserData, IRoomUser
         }
         else
         {
-            NextPoint = null;
-            IsWalking = false;
-
-            StatusMap.Remove(RoomUserStatus.Move);
+            StopWalking();
         }
     }
 
@@ -108,14 +113,15 @@ public class RoomUser : RoomUserData, IRoomUser
         return true;
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         if (!_roomUserRepository.TryRemove(Id))
         {
             _logger.LogError($"Failed to dispose room user {Id}");
-            return;
         }
-        
-        Task.Run(async () => await _roomUserRepository.BroadcastDataAsync(new RoomUserLeftWriter(Id).GetAllBytes())).Wait();
+        else
+        {
+            await _roomUserRepository.BroadcastDataAsync(new RoomUserLeftWriter(Id).GetAllBytes());
+        }
     }
 }

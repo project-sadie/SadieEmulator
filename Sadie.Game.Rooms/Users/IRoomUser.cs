@@ -4,7 +4,7 @@ using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
-public interface IRoomUser : IDisposable
+public interface IRoomUser : IAsyncDisposable
 {
     INetworkObject NetworkObject { get; }
     string Username { get; }

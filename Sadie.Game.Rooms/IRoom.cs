@@ -2,7 +2,7 @@
 
 namespace Sadie.Game.Rooms;
 
-public interface IRoom : IDisposable
+public interface IRoom : IAsyncDisposable
 {
     Task RunPeriodicCheckAsync();
     long Id { get; }
