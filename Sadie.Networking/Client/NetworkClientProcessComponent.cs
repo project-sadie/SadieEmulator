@@ -2,7 +2,6 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Packets;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Client;
 
@@ -88,7 +87,11 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
 
     private async Task OnReceivedPolicyRequest()
     {
-        await WriteToStreamAsync(Encoding.Default.GetBytes(SadieConstants.CrossDomainPolicy));
+        await WriteToStreamAsync(Encoding.Default.GetBytes("<?xml version=\"1.0\"?>\r\n" +
+                                                           "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">\r\n" +
+                                                           "<cross-domain-policy>\r\n" +
+                                                           "<allow-access-from domain=\"*\" to-ports=\"1-31111\" />\r\n" +
+                                                           "</cross-domain-policy>\x0"));
     }
 
     private bool hasErrored;

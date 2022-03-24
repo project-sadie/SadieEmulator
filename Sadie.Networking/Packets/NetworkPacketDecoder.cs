@@ -1,5 +1,4 @@
 ﻿using System.Buffers.Binary;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Packets;
 
