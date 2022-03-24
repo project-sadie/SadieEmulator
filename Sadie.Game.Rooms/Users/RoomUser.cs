@@ -79,6 +79,14 @@ public class RoomUser : RoomUserData, IRoomUser
     private async Task ProcessMovementAsync() // 2bMoved
     {
         SetNextPosition();
+        
+        var doorPoint = _room.Layout.DoorPoint;
+        
+        if (NextPoint != null && Point.X == doorPoint.X && Point.Y == doorPoint.Y)
+        {
+            await LeaveRoomAsync();
+            return;
+        }
 
         if (GoalSteps.Count > 0)
         {
@@ -111,6 +119,17 @@ public class RoomUser : RoomUserData, IRoomUser
         
         chatMesage = new RoomChatMessage(this, message, _room, bubble, 1);
         return true;
+    }
+
+    private async Task SendToHotelViewAsync()
+    {
+        await NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter().GetAllBytes());
+    }
+
+    public async Task LeaveRoomAsync()
+    {
+        await SendToHotelViewAsync();
+        await DisposeAsync();
     }
 
     public async ValueTask DisposeAsync()

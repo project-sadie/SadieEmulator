@@ -50,4 +50,6 @@ public class ServerPacketId
     public const short RoomUserTyping = 1717;
     public const short NavigatorRooms = 2690;
     public const short PlayerChangedAppearance = 2429;
+    public const short RoomUserClosed = 2260;
+    public const short RoomUserHotelView = 122;
 }
