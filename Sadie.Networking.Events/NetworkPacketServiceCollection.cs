@@ -26,6 +26,10 @@ public class NetworkPacketServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
+        serviceCollection.AddSingleton<SecureLoginEvent>();
+        serviceCollection.AddSingleton<PlayerActivityEvent>();
+        serviceCollection.AddSingleton<PlayerChangedMottoEvent>();
+        
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
         serviceCollection.AddSingleton(provider => new ConcurrentDictionary<int, INetworkPacketEvent>
@@ -33,9 +37,9 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.ClientVersion] = new ClientVersionEvent(),
             [ClientPacketId.ClientVariables] = new ClientVariablesEvent(),
             [ClientPacketId.MachineId] = new MachineIdEvent(),
-            [ClientPacketId.SecureLogin] = new SecureLoginEvent(provider.GetRequiredService<ILogger<SecureLoginEvent>>(), provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<SadieConstants>()),
+            [ClientPacketId.SecureLogin] = provider.GetRequiredService<SecureLoginEvent>(),
             [ClientPacketId.PerformanceLog] = new PerformanceLogEvent(),
-            [ClientPacketId.PlayerActivity] = new PlayerActivityEvent(provider.GetRequiredService<ILogger<PlayerActivityEvent>>(), provider.GetRequiredService<IPlayerRepository>()),
+            [ClientPacketId.PlayerActivity] = provider.GetRequiredService<PlayerActivityEvent>(),
             [ClientPacketId.PlayerData] = new PlayerDataEvent(),
             [ClientPacketId.PlayerBalance] = new PlayerBalanceEvent(),
             [ClientPacketId.PlayerClubMembership] = new PlayerClubMembershipEvent(),
@@ -71,7 +75,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
             [ClientPacketId.NavigatorRooms] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.PlayerChangedMotto] = new PlayerChangedMottoEvent(provider.GetRequiredService<IRoomRepository>(), provider.GetRequiredService<SadieConstants>()),
+            [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
         });
     }
 }

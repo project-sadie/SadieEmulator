@@ -5,9 +5,9 @@ namespace Sadie.Networking.Packets;
 
 public class NetworkPacketDecoder
 {
-    private readonly SadieConstants _constants;
+    private readonly NetworkingConstants _constants;
     
-    public NetworkPacketDecoder(SadieConstants constants)
+    public NetworkPacketDecoder(NetworkingConstants constants)
     {
         _constants = constants;
     }
@@ -16,7 +16,7 @@ public class NetworkPacketDecoder
     {
         // TODO: Refactor this :(
         
-        if (packet.Length < _constants.FramingLengthByteCount || packet.Length > _constants.BufferSize - _constants.FramingLengthByteCount)
+        if (packet.Length < _constants.FrameLengthByteCount || packet.Length > _constants.BufferByteSize - _constants.FrameLengthByteCount)
         {
             return new List<NetworkPacket>();
         }

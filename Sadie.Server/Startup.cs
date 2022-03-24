@@ -31,11 +31,7 @@ public static class Startup
     private static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection serviceCollection)
     {
         var config = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
-        var sadieConstants = new SadieConstants();
-        
-        config.GetSection("Constants").Bind(sadieConstants);
 
-        serviceCollection.AddSingleton(sadieConstants);
         serviceCollection.AddSingleton<IServer, Server>();
         
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>(provider => new ServerTaskWorker(
@@ -48,8 +44,8 @@ public static class Startup
             }));
 
         DatabaseServiceCollection.AddServices(serviceCollection, config);
-        PlayerServiceCollection.AddServices(serviceCollection);
-        RoomServiceCollection.AddServices(serviceCollection);
+        PlayerServiceCollection.AddServices(serviceCollection, config);
+        RoomServiceCollection.AddServices(serviceCollection, config);
         NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         

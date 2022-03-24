@@ -13,18 +13,16 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
     private readonly NetworkStream _stream;
     
     private readonly INetworkPacketHandler _packetHandler;
-    private readonly SadieConstants _constants;
     private readonly byte[] _buffer;
 
-    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler, SadieConstants constants) : base(constants)
+    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler, NetworkingConstants constants) : base(constants)
     {
         _logger = logger;
         _client = client;
         _stream = client.GetStream();
         
         _packetHandler = packetHandler;
-        _constants = constants;
-        _buffer = new byte[_constants.BufferSize];
+        _buffer = new byte[constants.BufferByteSize];
     }
 
     protected async void StartListening()

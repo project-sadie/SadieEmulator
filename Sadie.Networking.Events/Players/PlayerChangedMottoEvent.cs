@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms;
+﻿using Sadie.Game.Players;
+using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -11,9 +12,9 @@ namespace Sadie.Networking.Events.Players;
 public class PlayerChangedMottoEvent : INetworkPacketEvent
 {
     private readonly IRoomRepository _roomRepository;
-    private readonly SadieConstants _constants;
+    private readonly PlayerConstants _constants;
 
-    public PlayerChangedMottoEvent(IRoomRepository roomRepository, SadieConstants constants)
+    public PlayerChangedMottoEvent(IRoomRepository roomRepository, PlayerConstants constants)
     {
         _roomRepository = roomRepository;
         _constants = constants;
@@ -24,9 +25,9 @@ public class PlayerChangedMottoEvent : INetworkPacketEvent
         var player = client.Player;
         var motto = reader.ReadString();
 
-        if (motto.Length >= _constants.MaxPlayerMottoLength)
+        if (motto.Length >= _constants.MaxMottoLength)
         {
-            motto = motto.Truncate(_constants.MaxPlayerMottoLength);
+            motto = motto.Truncate(_constants.MaxMottoLength);
         }
 
         player.Motto = motto;

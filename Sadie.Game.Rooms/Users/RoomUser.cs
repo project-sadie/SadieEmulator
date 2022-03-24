@@ -14,7 +14,7 @@ public class RoomUser : RoomUserData, IRoomUser
     private readonly ILogger<RoomUser> _logger;
     private readonly Room _room;
     private readonly IRoomUserRepository _roomUserRepository;
-    private readonly SadieConstants _constants;
+    private readonly RoomConstants _constants;
     public INetworkObject NetworkObject { get; }
 
     public RoomUser(
@@ -27,7 +27,7 @@ public class RoomUser : RoomUserData, IRoomUser
         HDirection directionHead, 
         HDirection direction,
         AvatarData avatarData,
-        SadieConstants constants) : 
+        RoomConstants constants) : 
         base(id, point, directionHead, direction, avatarData)
     {
         _logger = logger;

@@ -22,7 +22,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         TcpClient tcpClient, 
         INetworkPacketHandler packetHandler, 
         ILogger<NetworkClientProcessComponent> baseLogger, 
-        SadieConstants constants) : base(baseLogger, tcpClient, packetHandler, constants)
+        NetworkingConstants constants) : base(baseLogger, tcpClient, packetHandler, constants)
     {
         _guid = guid;
         _logger = logger;

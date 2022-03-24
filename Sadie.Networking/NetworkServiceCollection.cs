@@ -10,7 +10,7 @@ public class NetworkServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        var host = config["Networking:Host"];
+        var host = config["Networking:Host"] ?? IPAddress.Any.ToString();
         var port = int.Parse(config["Networking:Port"]);
         
         serviceCollection.AddSingleton(new TcpListener(
@@ -21,5 +21,9 @@ public class NetworkServiceCollection
         serviceCollection.AddSingleton<INetworkClientRepository, NetworkClientRepository>();
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
         serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
+
+        var networkConstants = new NetworkingConstants();
+        config.GetSection("Constants:Networking").Bind(networkConstants);
+        serviceCollection.AddSingleton(networkConstants);
     }
 }

@@ -11,9 +11,9 @@ public class SecureLoginEvent : INetworkPacketEvent
 {
     private readonly ILogger<SecureLoginEvent> _logger;
     private readonly IPlayerRepository _playerRepository;
-    private readonly SadieConstants _constants;
+    private readonly PlayerConstants _constants;
 
-    public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository, SadieConstants constants)
+    public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository, PlayerConstants constants)
     {
         _logger = logger;
         _playerRepository = playerRepository;
@@ -51,5 +51,5 @@ public class SecureLoginEvent : INetworkPacketEvent
     }
 
     private bool ValidateSso(string sso) => 
-        !string.IsNullOrEmpty(sso) && sso.Length >= _constants.MinPlayerSsoLength;
+        !string.IsNullOrEmpty(sso) && sso.Length >= _constants.MinSsoLength;
 }
