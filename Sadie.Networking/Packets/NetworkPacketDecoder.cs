@@ -1,14 +1,22 @@
 ﻿using System.Buffers.Binary;
+using Sadie.Shared;
 
 namespace Sadie.Networking.Packets;
 
 public class NetworkPacketDecoder
 {
-    protected static List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
+    private readonly SadieConstants _constants;
+    
+    public NetworkPacketDecoder(SadieConstants constants)
+    {
+        _constants = constants;
+    }
+
+    protected List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
     {
         // TODO: Refactor this :(
         
-        if (packet.Length < SadieConstants.HabboPacketMinLength || packet.Length > SadieConstants.HabboPacketMaxLength)
+        if (packet.Length < _constants.FramingLengthByteCount || packet.Length > _constants.BufferSize - _constants.FramingLengthByteCount)
         {
             return new List<NetworkPacket>();
         }

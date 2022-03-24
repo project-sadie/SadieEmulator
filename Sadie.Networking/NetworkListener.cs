@@ -30,7 +30,7 @@ public class NetworkListener : INetworkListener
         
     public async Task ListenAsync()
     {
-        _logger.LogInformation("Networking is listening for connections.");
+        _logger.LogInformation("Networking is listening for connections");
             
         while (_listening)
         {

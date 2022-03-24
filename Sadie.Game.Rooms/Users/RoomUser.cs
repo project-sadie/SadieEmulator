@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms.Packets;
+using Sadie.Shared;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Game.Avatar;
@@ -13,6 +14,7 @@ public class RoomUser : RoomUserData, IRoomUser
     private readonly ILogger<RoomUser> _logger;
     private readonly Room _room;
     private readonly IRoomUserRepository _roomUserRepository;
+    private readonly SadieConstants _constants;
     public INetworkObject NetworkObject { get; }
 
     public RoomUser(
@@ -24,12 +26,14 @@ public class RoomUser : RoomUserData, IRoomUser
         HPoint point, 
         HDirection directionHead, 
         HDirection direction,
-        AvatarData avatarData) : 
+        AvatarData avatarData,
+        SadieConstants constants) : 
         base(id, point, directionHead, direction, avatarData)
     {
         _logger = logger;
         _room = room;
         _roomUserRepository = roomUserRepository;
+        _constants = constants;
         NetworkObject = networkObject;
     }
 
@@ -94,7 +98,7 @@ public class RoomUser : RoomUserData, IRoomUser
 
     public bool TrySpeak(string message, RoomChatBubble bubble, out RoomChatMessage? chatMesage)
     {
-        if (string.IsNullOrEmpty(message) || message.Length > SadieConstants.MaxChatMessageLength)
+        if (string.IsNullOrEmpty(message) || message.Length > _constants.MaxChatMessageLength)
         {
             chatMesage = null;
             return false;

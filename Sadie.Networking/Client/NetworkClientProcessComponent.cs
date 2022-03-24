@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Packets;
+using Sadie.Shared;
 
 namespace Sadie.Networking.Client;
 
@@ -12,16 +13,18 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
     private readonly NetworkStream _stream;
     
     private readonly INetworkPacketHandler _packetHandler;
+    private readonly SadieConstants _constants;
     private readonly byte[] _buffer;
 
-    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler)
+    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler, SadieConstants constants) : base(constants)
     {
         _logger = logger;
         _client = client;
         _stream = client.GetStream();
         
         _packetHandler = packetHandler;
-        _buffer = new byte[SadieConstants.HabboPacketBufferSize];
+        _constants = constants;
+        _buffer = new byte[_constants.BufferSize];
     }
 
     protected async void StartListening()

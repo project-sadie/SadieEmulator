@@ -18,6 +18,7 @@ using Sadie.Networking.Events.Rooms.Users.Chat;
 using Sadie.Networking.Events.Tracking;
 using Sadie.Networking.Events.Unknown;
 using Sadie.Networking.Packets;
+using Sadie.Shared;
 
 namespace Sadie.Networking.Events;
 
@@ -32,7 +33,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.ClientVersion] = new ClientVersionEvent(),
             [ClientPacketId.ClientVariables] = new ClientVariablesEvent(),
             [ClientPacketId.MachineId] = new MachineIdEvent(),
-            [ClientPacketId.SecureLogin] = new SecureLoginEvent(provider.GetRequiredService<ILogger<SecureLoginEvent>>(), provider.GetRequiredService<IPlayerRepository>()),
+            [ClientPacketId.SecureLogin] = new SecureLoginEvent(provider.GetRequiredService<ILogger<SecureLoginEvent>>(), provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<SadieConstants>()),
             [ClientPacketId.PerformanceLog] = new PerformanceLogEvent(),
             [ClientPacketId.PlayerActivity] = new PlayerActivityEvent(provider.GetRequiredService<ILogger<PlayerActivityEvent>>(), provider.GetRequiredService<IPlayerRepository>()),
             [ClientPacketId.PlayerData] = new PlayerDataEvent(),
@@ -70,7 +71,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
             [ClientPacketId.NavigatorRooms] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.PlayerChangedMotto] = new PlayerChangedMottoEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.PlayerChangedMotto] = new PlayerChangedMottoEvent(provider.GetRequiredService<IRoomRepository>(), provider.GetRequiredService<SadieConstants>()),
         });
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
+using Sadie.Shared;
 
 namespace Sadie.Networking.Client;
 
@@ -20,7 +21,8 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         INetworkClientRepository clientRepository, 
         TcpClient tcpClient, 
         INetworkPacketHandler packetHandler, 
-        ILogger<NetworkClientProcessComponent> baseLogger) : base(baseLogger, tcpClient, packetHandler)
+        ILogger<NetworkClientProcessComponent> baseLogger, 
+        SadieConstants constants) : base(baseLogger, tcpClient, packetHandler, constants)
     {
         _guid = guid;
         _logger = logger;
@@ -73,7 +75,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         
         if (!_clientRepository.TryRemove(_guid))
         {
-            _logger.LogError("Failed to dispose network client.");
+            _logger.LogError("Failed to dispose network client");
         }
         
         _cts.Cancel();

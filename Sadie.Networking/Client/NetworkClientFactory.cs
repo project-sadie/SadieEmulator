@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Shared;
 
 namespace Sadie.Networking.Client;
 
