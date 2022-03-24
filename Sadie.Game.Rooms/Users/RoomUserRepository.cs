@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using Sadie.Game.Rooms.Packets;
 
 namespace Sadie.Game.Rooms.Users;
 

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms.Packets;
 using Sadie.Shared.Networking;
-using Sadie.Shared;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Game.Rooms;
