@@ -1,5 +1,4 @@
 using Sadie.Database;
-using Sadie.Shared;
 
 namespace Sadie.Game.Players;
 
@@ -83,7 +82,7 @@ public class PlayerDao : BaseDao, IPlayerDao
     {
         await QueryAsync("UPDATE `player_data` SET `is_online` = 1, `last_online` = @lastOnline WHERE `profile_id` = @profileId", new Dictionary<string, object>
         {
-            { "lastOnline", DateTime.Now.ToString(SadieConstants.DateTimeFormat) },
+            { "lastOnline", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "profileId", id }
         });
     }
