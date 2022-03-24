@@ -1,7 +1,7 @@
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Rooms.Users;
+namespace Sadie.Game.Rooms.Packets;
 
 public class RoomUserClosedWriter : NetworkPacketWriter
 {
