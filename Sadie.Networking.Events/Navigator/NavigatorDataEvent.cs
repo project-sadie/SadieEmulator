@@ -3,7 +3,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Navigator;
 using Sadie.Networking.Writers.Players.Navigator;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Navigator;
 
@@ -19,10 +18,58 @@ public class NavigatorDataEvent : INetworkPacketEvent
             {"myworld_view", 0}
         };
         
+        var categories = new List<string>()
+        {
+            "new_ads",
+            "friend_finding",
+            "staffpicks",
+            "with_friends",
+            "with_rights",
+            "query",
+            "recommended",
+            "my_groups",
+            "favorites",
+            "history",
+            "top_promotions",
+            "campaign_target",
+            "friends_rooms",
+            "groups",
+            "metadata",
+            "history_freq",
+            "highest_score",
+            "competition",
+            "category__Agencies",
+            "category__Role Playing",
+            "category__Global Chat & Discussi",
+            "category__GLOBAL BUILDING AND DE",
+            "category__global party",
+            "category__global games",
+            "category__global fansite",
+            "category__global help",
+            "category__Trading",
+            "category__global personal space",
+            "category__Habbo Life",
+            "category__TRADING",
+            "category__global official",
+            "category__global trade",
+            "category__global bc",
+            "category__global personal space",
+            "eventcategory__Hottest Events",
+            "eventcategory__Parties & Music",
+            "eventcategory__Role Play",
+            "eventcategory__Help Desk",
+            "eventcategory__Trading",
+            "eventcategory__Games",
+            "eventcategory__Debates & Discuss",
+            "eventcategory__Grand Openings",
+            "eventcategory__Friending",
+            "eventcategory__Jobs",
+            "eventcategory__Group Events"
+        };
+        
         await client.WriteToStreamAsync(new NavigatorMetaDataWriter(metaData).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter(new List<Room>()).GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(SadieConstants.NavigatorCategories).GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(categories).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerSavedSearchesWriter(client.Player.SavedSearches).GetAllBytes());
-
     }
 }
