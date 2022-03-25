@@ -87,11 +87,13 @@ public class PlayerDao : BaseDao, IPlayerDao
         });
     }
 
-    public async Task MarkPlayerAsOfflineAsync(long id)
+    public async Task MarkPlayerAsOfflineAsync(IPlayer player)
     {
-        await QueryAsync("UPDATE `player_data` SET `is_online` = 0 WHERE `profile_id` = @profileId", new Dictionary<string, object>
+        await QueryAsync("UPDATE `player_data` SET `is_online` = 0, `figure_code` = @figureCode, `motto` = @motto WHERE `profile_id` = @profileId", new Dictionary<string, object>
         {
-            { "profileId", id }
+            { "figureCode", player.FigureCode },
+            { "motto", player.Motto },
+            { "profileId", player.Id }
         });
     }
 
@@ -99,7 +101,7 @@ public class PlayerDao : BaseDao, IPlayerDao
     {
         await QueryAsync("UPDATE `players` SET `sso_token` = '' WHERE `id` = @profileId", new Dictionary<string, object>
         {
-            { "profileId", id }
+            { "profileId", 0 }
         });
     }
 }

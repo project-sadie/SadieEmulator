@@ -7,7 +7,7 @@ public interface IPlayerRepository
     bool TryAddPlayer(IPlayer? player);
     bool TryRemovePlayer(long playerId);
     Task MarkPlayerAsOnlineAsync(long id);
-    Task MarkPlayerAsOfflineAsync(long id);
+    Task MarkPlayerAsOfflineAsync(IPlayer player);
     Task ResetSsoTokenForPlayerAsync(long id);
     int Count();
 }

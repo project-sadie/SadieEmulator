@@ -54,7 +54,7 @@ public class Player : PlayerData, IPlayer
     public async ValueTask DisposeAsync()
     {
         _playerRepository.TryRemovePlayer(Id);
-        await _playerRepository.MarkPlayerAsOfflineAsync(Id);
+        await _playerRepository.MarkPlayerAsOfflineAsync(this);
         
         _logger.LogInformation($"Player '{Username}' has logged out");
     }
