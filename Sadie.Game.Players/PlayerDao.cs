@@ -99,7 +99,10 @@ public class PlayerDao : BaseDao, IPlayerDao
                 `credit_balance` = @creditBalance, 
                 `pixel_balance` = @pixelBalance,
                 `seasonal_balance` = @seasonalBalance,
-                `gotw_points` = @gotwPoints
+                `gotw_points` = @gotwPoints,
+                `respect_points` = @respectPoints,
+                `respect_points_pet` = @respectPointsPet,
+                `achievement_score` = @achievementScore
             WHERE `profile_id` = @profileId", new Dictionary<string, object>
         {
             { "figureCode", player.FigureCode },
@@ -109,6 +112,9 @@ public class PlayerDao : BaseDao, IPlayerDao
             { "pixelBalance", player.Balance.Pixels },
             { "seasonalBalance", player.Balance.Seasonal },
             { "gotwPoints", player.Balance.Gotw },
+            { "respectPoints", player.RespectPoints },
+            { "respectPointsPet", player.RespectPointsPet },
+            { "achievementScore", player.AchievementScore },
             { "profileId", player.Id }
         });
     }
