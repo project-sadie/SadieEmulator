@@ -1,7 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
@@ -18,7 +16,6 @@ using Sadie.Networking.Events.Rooms.Users.Chat;
 using Sadie.Networking.Events.Tracking;
 using Sadie.Networking.Events.Unknown;
 using Sadie.Networking.Packets;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Events;
 

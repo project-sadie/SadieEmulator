@@ -4,7 +4,6 @@ using Sadie.Game.Rooms.Packets;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Shared;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Players;

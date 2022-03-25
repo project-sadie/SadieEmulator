@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Client;
 

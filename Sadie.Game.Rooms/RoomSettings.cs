@@ -2,7 +2,7 @@
 
 public class RoomSettings
 {
-    public RoomSettings(bool useDiagonal)
+    protected RoomSettings(bool useDiagonal)
     {
         UseDiagonal = useDiagonal;
     }

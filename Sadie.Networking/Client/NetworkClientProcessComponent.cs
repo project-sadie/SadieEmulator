@@ -2,7 +2,6 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Packets;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Client;
 
@@ -95,8 +94,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
                                                            "</cross-domain-policy>\x0"));
     }
 
-    private bool hasErrored;
-    
     public async Task WriteToStreamAsync(byte[] data)
     {
         try
