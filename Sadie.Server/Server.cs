@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
@@ -82,8 +83,16 @@ public class Server : IServer
 
     public async ValueTask DisposeAsync()
     {
-        var roomRepository = _serviceProvider.GetRequiredService<IRoomRepository>();
+        _logger.LogWarning("Service is about to shut down...");
+        Thread.Sleep(5000);
         
+        var roomRepository = _serviceProvider.GetRequiredService<IRoomRepository>();
+        var playerRepository = _serviceProvider.GetRequiredService<IPlayerRepository>();
+        
+        _logger.LogInformation("Disposing rooms...");
         await roomRepository.DisposeAsync();
+        
+        _logger.LogInformation("Disposing players...");
+        await playerRepository.DisposeAsync();
     }
 }
