@@ -1,4 +1,5 @@
 using Sadie.Database;
+using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
@@ -89,10 +90,25 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task MarkPlayerAsOfflineAsync(IPlayer player)
     {
-        await QueryAsync("UPDATE `player_data` SET `is_online` = 0, `figure_code` = @figureCode, `motto` = @motto WHERE `profile_id` = @profileId", new Dictionary<string, object>
+        await QueryAsync(@"UPDATE `player_data` 
+            SET 
+                `is_online` = 0, 
+                `figure_code` = @figureCode, 
+                `motto` = @motto, 
+                `gender` = @gender, 
+                `credit_balance` = @creditBalance, 
+                `pixel_balance` = @pixelBalance,
+                `seasonal_balance` = @seasonalBalance,
+                `gotw_points` = @gotwPoints
+            WHERE `profile_id` = @profileId", new Dictionary<string, object>
         {
             { "figureCode", player.FigureCode },
             { "motto", player.Motto },
+            { "gender", player.Gender == AvatarGender.Male ? "M" : "F" },
+            { "creditBalance", player.Balance.Credits },
+            { "pixelBalance", player.Balance.Pixels },
+            { "seasonalBalance", player.Balance.Seasonal },
+            { "gotwPoints", player.Balance.Gotw },
             { "profileId", player.Id }
         });
     }
@@ -101,7 +117,7 @@ public class PlayerDao : BaseDao, IPlayerDao
     {
         await QueryAsync("UPDATE `players` SET `sso_token` = '' WHERE `id` = @profileId", new Dictionary<string, object>
         {
-            { "profileId", 0 }
+            { "profileId", id }
         });
     }
 }
