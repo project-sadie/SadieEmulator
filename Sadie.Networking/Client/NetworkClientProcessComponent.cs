@@ -40,14 +40,18 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
                 Thread.Sleep(50);
             }
         }
+        catch (NullReferenceException e)
+        {
+            _networkClient?.DisposeAsync();
+        }
         catch (SocketException e)
         {
-            _networkClient.DisposeAsync();
+            _networkClient?.DisposeAsync();
         }
         catch (Exception e)
         {
             _logger.LogError(e.ToString());
-            _networkClient.DisposeAsync();
+            _networkClient?.DisposeAsync();
         }
     }
     
