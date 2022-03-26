@@ -1,3 +1,4 @@
+using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
 
