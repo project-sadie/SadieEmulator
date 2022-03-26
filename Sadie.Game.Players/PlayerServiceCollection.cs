@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Friendships;
 
 namespace Sadie.Game.Players;
@@ -15,6 +16,7 @@ public class PlayerServiceCollection
         serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
+        serviceCollection.AddSingleton<PlayerFriendshipFactory>();
         
         var playerConstants = new PlayerConstants();
         config.GetSection("Constants:Player").Bind(playerConstants);

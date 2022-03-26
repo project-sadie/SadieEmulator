@@ -4,12 +4,13 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking.Events.GameCenter;
+using Sadie.Networking.Events.Generic;
 using Sadie.Networking.Events.Handshake;
 using Sadie.Networking.Events.HotelView;
 using Sadie.Networking.Events.Navigator;
 using Sadie.Networking.Events.Players;
 using Sadie.Networking.Events.Players.Club;
-using Sadie.Networking.Events.Players.Friends;
+using Sadie.Networking.Events.Players.Messenger;
 using Sadie.Networking.Events.Rooms;
 using Sadie.Networking.Events.Rooms.Users;
 using Sadie.Networking.Events.Rooms.Users.Chat;
@@ -26,6 +27,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<SecureLoginEvent>();
         serviceCollection.AddSingleton<PlayerActivityEvent>();
         serviceCollection.AddSingleton<PlayerChangedMottoEvent>();
+        serviceCollection.AddSingleton<PlayerRelationshipsEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -73,6 +75,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.NavigatorRooms] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
+            [ClientPacketId.PlayerRelationships] = provider.GetRequiredService<PlayerRelationshipsEvent>(),
         });
     }
 }

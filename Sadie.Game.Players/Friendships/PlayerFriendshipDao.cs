@@ -4,11 +4,24 @@ namespace Sadie.Game.Players.Friendships;
 
 public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 {
-    public PlayerFriendshipDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
+    private readonly PlayerFriendshipFactory _friendshipFactory;
+
+    public PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFriendshipFactory friendshipFactory) : base(databaseProvider)
     {
+        _friendshipFactory = friendshipFactory;
     }
     
     public async Task<List<PlayerFriendshipData>> GetFriendshipRequestsAsync(long playerId)
+    {
+        return await GetFriendshipRecordByStatus(playerId, 1);
+    }
+
+    public async Task<List<PlayerFriendshipData>> GetFriendshipsAsync(long playerId)
+    {
+        return await GetFriendshipRecordByStatus(playerId, 2);
+    }
+
+    private async Task<List<PlayerFriendshipData>> GetFriendshipRecordByStatus(long playerId, int statusId)
     {
         var reader = await GetReaderAsync(@"
             SELECT 
@@ -17,9 +30,10 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                    `player_data`.`figure_code`
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
-            WHERE `players`.`id` IN (SELECT `sender_id` FROM `player_friendships` WHERE `target_id` = @playerId AND `status` = 1);", new Dictionary<string, object>
+            WHERE `players`.`id` IN (SELECT `sender_id` FROM `player_friendships` WHERE `target_id` = @playerId AND `status` = @statusId);", new Dictionary<string, object>
         {
-            { "playerId", playerId }
+            { "playerId", playerId },
+            { "statusId", statusId }
         });
         
         var data = new List<PlayerFriendshipData>();
@@ -33,7 +47,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
             
-            data.Add(PlayerFriendshipFactory.CreateFromRecord(record));
+            data.Add(_friendshipFactory.CreateFromRecord(record));
         }
         
         return data;

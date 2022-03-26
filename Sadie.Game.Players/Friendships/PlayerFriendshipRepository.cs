@@ -13,4 +13,9 @@ public class PlayerFriendshipRepository : IPlayerFriendshipRepository
     {
         return await _friendshipDao.GetFriendshipRequestsAsync(playerId);
     }
+
+    public async Task<List<PlayerFriendshipData>> GetFriendshipsAsync(long playerId)
+    {
+        return await _friendshipDao.GetFriendshipsAsync(playerId);
+    }
 }

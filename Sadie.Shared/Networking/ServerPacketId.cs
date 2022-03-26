@@ -52,4 +52,5 @@ public class ServerPacketId
     public const short PlayerChangedAppearance = 2429;
     public const short RoomUserClosed = 2260;
     public const short RoomUserHotelView = 122;
+    public const short PlayerRelationships = 2016;
 }

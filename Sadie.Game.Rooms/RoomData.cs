@@ -15,7 +15,17 @@ public class RoomData : RoomSettings
     public int MaxUsers { get; }
     public IRoomUserRepository UserRepository { get; }
 
-    protected RoomData(long id, string name, RoomLayout layout, long ownerId, string ownerName, string description, int score, List<string> tags, int maxUsers, IRoomUserRepository userRepository, bool walkDiagonal) : base(walkDiagonal)
+    protected RoomData(long id,
+        string name,
+        RoomLayout layout,
+        long ownerId,
+        string ownerName,
+        string description,
+        int score,
+        List<string> tags,
+        int maxUsers,
+        IRoomUserRepository userRepository,
+        bool walkDiagonal) : base(walkDiagonal)
     {
         Id = id;
         Name = name;

@@ -5,11 +5,13 @@ public class PlayerFriendshipData
     public long Id { get; }
     public string Username { get; }
     public string FigureCode { get; }
-    
-    public PlayerFriendshipData(long id, string username, string figureCode)
+    public PlayerFriendshipType FriendshipType { get; }
+
+    public PlayerFriendshipData(long id, string username, string figureCode, PlayerFriendshipType friendshipType)
     {
         Id = id;
         Username = username;
         FigureCode = figureCode;
+        FriendshipType = friendshipType;
     }
 }

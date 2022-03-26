@@ -44,4 +44,5 @@ public class ClientPacketId
     public const short NavigatorRooms = 249;
     public const short PlayerChangedAppearance = 2730;
     public const short PlayerChangedMotto = 2228;
+    public const short PlayerRelationships = 2138;
 }

@@ -1,14 +1,24 @@
-﻿using Sadie.Database;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Database;
 
 namespace Sadie.Game.Players.Friendships;
 
-public static class PlayerFriendshipFactory
+public class PlayerFriendshipFactory
 {
-    public static PlayerFriendshipData CreateFromRecord(DatabaseRecord @record)
+    private readonly IServiceProvider _serviceProvider;
+
+    public PlayerFriendshipFactory(IServiceProvider serviceProvider)
     {
-        return new PlayerFriendshipData(
+        _serviceProvider = serviceProvider;
+    }
+    
+    public PlayerFriendshipData CreateFromRecord(DatabaseRecord @record)
+    {
+        return ActivatorUtilities.CreateInstance<PlayerFriendshipData>(
+            _serviceProvider, 
             record.Get<long>("id"),
             record.Get<string>("username"),
-            record.Get<string>("figure_code"));
+            record.Get<string>("figure_code"),
+            (PlayerFriendshipType) record.Get<int>("type_id"));
     }
 }
