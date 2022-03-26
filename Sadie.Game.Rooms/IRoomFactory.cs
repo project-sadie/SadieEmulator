@@ -4,6 +4,6 @@ namespace Sadie.Game.Rooms;
 
 public interface IRoomFactory
 {
-    RoomLayout CreateModelFromRecord(DatabaseRecord record);
+    RoomLayout CreateLayoutFromRecord(DatabaseRecord record);
     Room CreateFromRecord(DatabaseRecord record);
 }

@@ -10,5 +10,9 @@ public interface IRoom : IAsyncDisposable
     RoomLayout Layout { get; }
     long OwnerId { get; }
     string OwnerName { get; }
+    public string Description { get; }
+    public int Score { get; }
+    public List<string> Tags { get; }
+    public int MaxUsers { get; }
     IRoomUserRepository UserRepository { get; }
 }

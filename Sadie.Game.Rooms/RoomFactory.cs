@@ -13,7 +13,7 @@ public class RoomFactory : IRoomFactory
         _serviceProvider = serviceProvider;
     }
     
-    public RoomLayout CreateModelFromRecord(DatabaseRecord record)
+    public RoomLayout CreateLayoutFromRecord(DatabaseRecord record)
     {
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
@@ -29,7 +29,7 @@ public class RoomFactory : IRoomFactory
     
     public Room CreateFromRecord(DatabaseRecord record)
     {
-        var model = CreateModelFromRecord(record);
+        var model = CreateLayoutFromRecord(record);
 
         return ActivatorUtilities.CreateInstance<Room>(
             _serviceProvider,
@@ -38,6 +38,10 @@ public class RoomFactory : IRoomFactory
             model,
             record.Get<long>("owner_id"),
             record.Get<string>("owner_name"),
+            record.Get<string>("description"),
+            record.Get<int>("score"),
+            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
+            record.Get<int>("max_users_allowed"),
             record.Get<bool>("walk_diagonal"));
     }
 }

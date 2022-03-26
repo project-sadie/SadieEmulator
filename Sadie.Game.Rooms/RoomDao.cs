@@ -19,7 +19,17 @@ public class RoomDao : BaseDao, IRoomDao
                    `rooms`.`name`, 
                    `rooms`.`layout_id`, 
                    `rooms`.`owner_id`,
+                   `rooms`.`description`,
+                   `rooms`.`score`,
+                   `rooms`.`max_users_allowed`,
+                   
                    (SELECT `username` FROM `players` WHERE `id` = `rooms`.`owner_id`) AS `owner_name`,
+                   
+                   (SELECT GROUP_CONCAT(`name`) AS `comma_seperated_tags`
+                    FROM `room_tags`
+                    WHERE `room_id` = `rooms`.`id`
+                    GROUP BY `room_id`) AS `comma_seperated_tags`,
+                   
                    `room_settings`.`walk_diagonal`, 
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,

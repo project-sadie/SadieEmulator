@@ -30,14 +30,19 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
                 WriteString(room.OwnerName);
                 WriteInt(0); // TODO: state 
                 WriteInt(room.UserRepository.Count);
-                WriteInt(50); // TODO: max users
-                WriteString("description"); // TODO: Description
+                WriteInt(room.MaxUsers);
+                WriteString(room.Description);
                 WriteInt(0); // unknown
-                WriteInt(456); // TODO: score
+                WriteInt(room.Score);
                 WriteInt(0); // unknown
                 WriteInt(1); // TODO: category
-                WriteInt(0); // TODO: amount of tags
-                // TODO: foreach tags
+                WriteInt(room.Tags.Count);
+
+                foreach (var tag in room.Tags)
+                {
+                    WriteString(tag);
+                }
+                
                 WriteInt(0 | 8); // TODO: base
             }
         }
