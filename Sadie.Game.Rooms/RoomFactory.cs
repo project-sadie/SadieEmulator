@@ -32,10 +32,12 @@ public class RoomFactory : IRoomFactory
         var model = CreateModelFromRecord(record);
 
         return ActivatorUtilities.CreateInstance<Room>(
-            _serviceProvider, 
-            record.Get<long>("id"), 
-            record.Get<string>("name"), 
+            _serviceProvider,
+            record.Get<long>("id"),
+            record.Get<string>("name"),
             model,
+            record.Get<long>("owner_id"),
+            record.Get<string>("owner_name"),
             record.Get<bool>("walk_diagonal"));
     }
 }

@@ -8,5 +8,7 @@ public interface IRoom : IAsyncDisposable
     long Id { get; }
     string Name { get; }
     RoomLayout Layout { get; }
+    long OwnerId { get; }
+    string OwnerName { get; }
     IRoomUserRepository UserRepository { get; }
 }

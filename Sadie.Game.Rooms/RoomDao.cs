@@ -18,6 +18,8 @@ public class RoomDao : BaseDao, IRoomDao
                    `rooms`.`id`, 
                    `rooms`.`name`, 
                    `rooms`.`layout_id`, 
+                   `rooms`.`owner_id`,
+                   (SELECT `username` FROM `players` WHERE `id` = `rooms`.`owner_id`) AS `owner_name`,
                    `room_settings`.`walk_diagonal`, 
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,

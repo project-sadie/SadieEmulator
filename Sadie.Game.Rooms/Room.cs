@@ -5,7 +5,7 @@ namespace Sadie.Game.Rooms;
 
 public class Room : RoomData, IRoom
 {
-    public Room(long id, string name, RoomLayout layout, IRoomUserRepository userRepository, bool walkDiagonal) : base(id, name, layout, userRepository, walkDiagonal)
+    public Room(long id, string name, RoomLayout layout, long ownerId, string ownerName, IRoomUserRepository userRepository, bool walkDiagonal) : base(id, name, layout, ownerId, ownerName, userRepository, walkDiagonal)
     {
     }
 

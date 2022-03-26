@@ -26,8 +26,8 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
             {
                 WriteLong(room.Id);
                 WriteString(room.Name);
-                WriteInt(0); // TODO: Owner ID
-                WriteString(""); // TODO: Owner Name
+                WriteLong(room.OwnerId);
+                WriteString(room.OwnerName);
                 WriteInt(0); // TODO: state 
                 WriteInt(room.UserRepository.Count);
                 WriteInt(50); // TODO: max users
