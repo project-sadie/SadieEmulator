@@ -5,12 +5,12 @@ namespace Sadie.Game.Players;
 public class PlayerRepository : IPlayerRepository
 {
     private readonly IPlayerDao _playerDao;
-    private readonly ConcurrentDictionary<long, IPlayer?> _players;
+    private readonly ConcurrentDictionary<long, IPlayer> _players;
 
     public PlayerRepository(IPlayerDao playerDao)
     {
         _playerDao = playerDao;
-        _players = new ConcurrentDictionary<long, IPlayer?>();
+        _players = new ConcurrentDictionary<long, IPlayer>();
     }
 
     public bool TryGetPlayerById(long id, out IPlayer? player)
@@ -23,7 +23,7 @@ public class PlayerRepository : IPlayerRepository
         return await _playerDao.TryGetPlayerBySsoTokenAsync(sso);
     }
 
-    public bool TryAddPlayer(IPlayer? player) => _players.TryAdd(player.Id, player);
+    public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Id, player);
     public bool TryRemovePlayer(long playerId) => _players.TryRemove(playerId, out _);
 
     public async Task MarkPlayerAsOnlineAsync(long id)
@@ -44,5 +44,13 @@ public class PlayerRepository : IPlayerRepository
     public int Count()
     {
         return _players.Count;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var player in _players.Values)
+        {
+            await player.DisposeAsync();
+        }
     }
 }
