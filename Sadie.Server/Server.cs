@@ -84,7 +84,6 @@ public class Server : IServer
     public async ValueTask DisposeAsync()
     {
         _logger.LogWarning("Service is about to shut down...");
-        Thread.Sleep(5000);
         
         var roomRepository = _serviceProvider.GetRequiredService<IRoomRepository>();
         var playerRepository = _serviceProvider.GetRequiredService<IPlayerRepository>();
