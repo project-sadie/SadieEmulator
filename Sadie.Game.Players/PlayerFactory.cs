@@ -68,7 +68,8 @@ public class PlayerFactory : IPlayerFactory
             CreateNavigatorSettingsFromRecord(record),
             CreateSettingsFromRecord(record),
             CreateSavedSearchesFromReader(savedSearchesReader),
-            record.Get<long>("achievement_score"));
+            record.Get<long>("achievement_score"),
+            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")));
     }
 
     private static PlayerNavigatorSettings CreateNavigatorSettingsFromRecord(DatabaseRecord record)
