@@ -32,8 +32,7 @@ public class RoomUserWalkEvent : INetworkPacketEvent
         }
 
         var point = tile.Point;
-        const bool useDiagonal = true;
 
-        roomUser!.WalkToPoint(new Point(point.X, point.Y), useDiagonal);
+        roomUser!.WalkToPoint(new Point(point.X, point.Y), room.Settings.CanWalkDiagonal);
     }
 }

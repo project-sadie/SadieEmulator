@@ -16,7 +16,7 @@ public class Room : RoomData, IRoom
         List<string> tags, 
         int maxUsers,
         IRoomUserRepository userRepository, 
-        bool walkDiagonal) : base(id, name, layout, ownerId, ownerName, description, score, tags, maxUsers, userRepository, walkDiagonal)
+        IRoomSettings settings) : base(id, name, layout, ownerId, ownerName, description, score, tags, maxUsers, userRepository, settings)
     {
     }
 

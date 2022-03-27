@@ -8,4 +8,5 @@ public interface IAvatarData
     AvatarGender Gender { get; set; }
     long LastRoomLoaded { get; set; }
     long AchievementScore { get; set; }
+    List<string> Tags { get; set; }
 }

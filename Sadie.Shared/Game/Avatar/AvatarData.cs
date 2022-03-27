@@ -2,14 +2,15 @@
 
 public class AvatarData : IAvatarData
 {
-    public AvatarData(string username, string figureCode, string motto, AvatarGender gender, long achievementScore)
+    public AvatarData(string username, string figureCode, string motto, AvatarGender gender, long achievementScore, List<string> tags)
     {
         Username = username;
         FigureCode = figureCode;
         Motto = motto;
         Gender = gender;
-        AchievementScore = achievementScore;
         LastRoomLoaded = 0;
+        AchievementScore = achievementScore;
+        Tags = tags;
     }
 
     public string Username { get; }
@@ -18,4 +19,5 @@ public class AvatarData : IAvatarData
     public AvatarGender Gender { get; set; }
     public long LastRoomLoaded { get; set; }
     public long AchievementScore { get; set; }
+    public List<string> Tags { get; set; }
 }

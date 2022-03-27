@@ -1,11 +1,13 @@
 ﻿namespace Sadie.Game.Rooms;
 
-public class RoomSettings
+public class RoomSettings : IRoomSettings
 {
-    protected RoomSettings(bool useDiagonal)
+    public RoomSettings(bool walkDiagonal, bool muted)
     {
-        UseDiagonal = useDiagonal;
+        CanWalkDiagonal = walkDiagonal;
+        Muted = muted;
     }
 
-    public bool UseDiagonal { get; }
+    public bool CanWalkDiagonal { get; }
+    public bool Muted { get; }
 }

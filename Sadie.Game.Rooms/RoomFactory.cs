@@ -26,10 +26,18 @@ public class RoomFactory : IRoomFactory
             doorPoint,
             (HDirection)record.Get<int>("door_direction"));
     }
+
+    private static IRoomSettings CreateSettingsFromRecord(DatabaseRecord record)
+    {
+        return new RoomSettings(
+            record.Get<bool>("walk_diagonal"),
+            record.Get<bool>("is_muted"));
+    }
     
     public Room CreateFromRecord(DatabaseRecord record)
     {
         var model = CreateLayoutFromRecord(record);
+        var settings = CreateSettingsFromRecord(record);
 
         return ActivatorUtilities.CreateInstance<Room>(
             _serviceProvider,
@@ -42,6 +50,6 @@ public class RoomFactory : IRoomFactory
             record.Get<int>("score"),
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
             record.Get<int>("max_users_allowed"),
-            record.Get<bool>("walk_diagonal"));
+            settings);
     }
 }

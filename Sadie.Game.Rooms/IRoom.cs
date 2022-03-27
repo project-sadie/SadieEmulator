@@ -15,4 +15,5 @@ public interface IRoom : IAsyncDisposable
     public List<string> Tags { get; }
     public int MaxUsers { get; }
     IRoomUserRepository UserRepository { get; }
+    public IRoomSettings Settings { get; }
 }

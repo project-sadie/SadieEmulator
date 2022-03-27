@@ -2,7 +2,7 @@
 
 namespace Sadie.Game.Rooms;
 
-public class RoomData : RoomSettings
+public class RoomData
 {
     public long Id { get; }
     public string Name { get; }
@@ -14,6 +14,7 @@ public class RoomData : RoomSettings
     public List<string> Tags { get; }
     public int MaxUsers { get; }
     public IRoomUserRepository UserRepository { get; }
+    public IRoomSettings Settings { get; }
 
     protected RoomData(long id,
         string name,
@@ -25,7 +26,7 @@ public class RoomData : RoomSettings
         List<string> tags,
         int maxUsers,
         IRoomUserRepository userRepository,
-        bool walkDiagonal) : base(walkDiagonal)
+        IRoomSettings settings) 
     {
         Id = id;
         Name = name;
@@ -37,5 +38,6 @@ public class RoomData : RoomSettings
         Tags = tags;
         MaxUsers = maxUsers;
         UserRepository = userRepository;
+        Settings = settings;
     }
 }

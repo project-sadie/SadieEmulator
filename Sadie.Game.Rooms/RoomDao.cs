@@ -31,6 +31,7 @@ public class RoomDao : BaseDao, IRoomDao
                     GROUP BY `room_id`) AS `comma_seperated_tags`,
                    
                    `room_settings`.`walk_diagonal`, 
+                   `room_settings`.`is_muted`, 
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,
                    `room_layouts`.`door_x`,
