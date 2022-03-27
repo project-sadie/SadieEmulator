@@ -26,6 +26,16 @@ public class RoomLoadedEvent : INetworkPacketEvent
         var player = client.Player;
         var (roomId, password) = (reader.ReadInt(), reader.ReadString());
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
+        
+        if (player!.LastRoomLoaded != default)
+        {
+            var (foundLast, lastRoom) = await _roomRepository.TryLoadRoomByIdAsync(player.LastRoomLoaded);
+
+            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser))
+            {
+                await oldUser!.DisposeAsync();
+            }
+        }
 
         if (!found || room == null)
         {

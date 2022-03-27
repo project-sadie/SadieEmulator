@@ -30,6 +30,7 @@ public class ClientPacketId
     public const short RoomLoaded = 2312;
     public const short UnknownEvent3 = 2519;
     public const short RoomHeightmap = 3898;
+    public const short RoomHeightmap2 = 2300;
     public const short RoomUserChat = 1314;
     public const short RoomUserShout = 2085;
     public const short RoomUserWalk = 3320;
@@ -45,4 +46,6 @@ public class ClientPacketId
     public const short PlayerChangedAppearance = 2730;
     public const short PlayerChangedMotto = 2228;
     public const short PlayerRelationships = 2138;
+    public const short RoomUserTags = 17;
+    public const short RoomForwardData = 2230;
 }

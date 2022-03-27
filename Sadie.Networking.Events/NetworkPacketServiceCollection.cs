@@ -28,6 +28,8 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerActivityEvent>();
         serviceCollection.AddSingleton<PlayerChangedMottoEvent>();
         serviceCollection.AddSingleton<PlayerRelationshipsEvent>();
+        serviceCollection.AddSingleton<RoomUserTagsEvent>();
+        serviceCollection.AddSingleton<RoomForwardDataEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -61,6 +63,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomLoaded] = ActivatorUtilities.CreateInstance<RoomLoadedEvent>(provider),
             [ClientPacketId.UnknownEvent3] = new UnknownEvent3(),
             [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.RoomHeightmap2] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserChat] = new RoomUserChatEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserShout] = new RoomUserShoutEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserWalk] = new RoomUserWalkEvent(provider.GetRequiredService<IRoomRepository>()),
@@ -76,6 +79,8 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
             [ClientPacketId.PlayerRelationships] = provider.GetRequiredService<PlayerRelationshipsEvent>(),
+            [ClientPacketId.RoomUserTags] = provider.GetRequiredService<RoomUserTagsEvent>(),
+            [ClientPacketId.RoomForwardData] = provider.GetRequiredService<RoomForwardDataEvent>(),
         });
     }
 }

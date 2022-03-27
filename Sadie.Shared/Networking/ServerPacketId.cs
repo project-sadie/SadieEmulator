@@ -53,4 +53,6 @@ public class ServerPacketId
     public const short RoomUserClosed = 2260;
     public const short RoomUserHotelView = 122;
     public const short PlayerRelationships = 2016;
+    public const short RoomUserTags = 1255;
+    public const short RoomForwardData = 687;
 }
