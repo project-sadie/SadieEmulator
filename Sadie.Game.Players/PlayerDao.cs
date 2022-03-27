@@ -31,6 +31,11 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_data`.`respect_points_pet`,
                    `player_data`.`last_online`,
                    `player_data`.`achievement_score`,
+                   
+                   (SELECT GROUP_CONCAT(`name`) AS `comma_seperated_tags`
+                    FROM `player_tags`
+                    WHERE `player_id` = `players`.`id`
+                    GROUP BY `player_id`) AS `comma_seperated_tags`,
             
                     `player_navigator_settings`.`window_x`,
                     `player_navigator_settings`.`window_y`,

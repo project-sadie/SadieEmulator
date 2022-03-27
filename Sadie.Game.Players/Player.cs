@@ -27,7 +27,8 @@ public class Player : PlayerData, IPlayer
         PlayerNavigatorSettings navigatorSettings,
         PlayerSettings settings,
         List<PlayerSavedSearch> savedSearches,
-        long achievementScore) : 
+        long achievementScore,
+        List<string> tags) : 
         
         base(
             id, 
@@ -44,7 +45,8 @@ public class Player : PlayerData, IPlayer
             navigatorSettings, 
             settings, 
             savedSearches,
-            achievementScore)
+            achievementScore, 
+            tags)
     {
         _logger = logger;
         _playerRepository = playerRepository;
