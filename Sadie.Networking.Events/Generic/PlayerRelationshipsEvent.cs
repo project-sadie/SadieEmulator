@@ -23,7 +23,7 @@ public class PlayerRelationshipsEvent : INetworkPacketEvent
         {
             {1, playerFriends.Where(x => x.FriendshipType == PlayerFriendshipType.Lover).ToList()},
             {2, playerFriends.Where(x => x.FriendshipType == PlayerFriendshipType.Friend).ToList()},
-            {3, playerFriends.Where(x => x.FriendshipType == PlayerFriendshipType.Hater).ToList()},
+            {3, playerFriends.Where(x => x.FriendshipType == PlayerFriendshipType.Hater).ToList()}
         };
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, playerRelations).GetAllBytes());
