@@ -6,7 +6,7 @@ public class DisconnectIdleClientsTask : IServerTask
 {
     private readonly INetworkClientRepository _clientRepository;
     public string Name => "DisconnectIdleClientsTask";
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(30);
+    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(20);
     public DateTime LastExecuted { get; set; }
     
     public DisconnectIdleClientsTask(INetworkClientRepository clientRepository)
