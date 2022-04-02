@@ -1,16 +1,16 @@
 using Sadie.Game.Rooms;
 
-namespace Sadie.Game.Navigator;
+namespace Sadie.Game.Navigator.Search;
 
 public class NavigatorSearchResult
 {
-    public NavigatorSearchResult(int order, string unknown1, string unknown2, List<IRoom> rooms, NavigatorSearchAction action, bool isCollapsed)
+    public NavigatorSearchResult(int order, string unknown1, string unknown2, List<IRoom> rooms, NavigatorSearchButton button, bool isCollapsed)
     {
         Order = order;
         Unknown1 = unknown1;
         Unknown2 = unknown2;
         Rooms = rooms;
-        Action = action;
+        Button = button;
         IsCollapsed = isCollapsed;
     }
 
@@ -18,6 +18,6 @@ public class NavigatorSearchResult
     public string Unknown1 { get; }
     public string Unknown2 { get; }
     public List<IRoom> Rooms { get; }
-    public NavigatorSearchAction Action { get; }
+    public NavigatorSearchButton Button { get; }
     public bool IsCollapsed { get; }
 }
