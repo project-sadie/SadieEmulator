@@ -75,12 +75,12 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserSign] = new RoomUserSignEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserSit] = new RoomUserSitEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
-            [ClientPacketId.NavigatorRooms] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.NavigatorSearch] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
             [ClientPacketId.PlayerRelationships] = provider.GetRequiredService<PlayerRelationshipsEvent>(),
             [ClientPacketId.RoomUserTags] = provider.GetRequiredService<RoomUserTagsEvent>(),
-            [ClientPacketId.RoomForwardData] = provider.GetRequiredService<RoomForwardDataEvent>(),
+            [ClientPacketId.RoomForwardData] = provider.GetRequiredService<RoomForwardDataEvent>()
         });
     }
 }
