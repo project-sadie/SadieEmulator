@@ -53,12 +53,12 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_game_settings`.`chat_color`,
                    `player_game_settings`.`show_notifications`,
                    
-                    (SELECT COUNT(*) FROM `player_respects` WHERE `target_profile_id` = `players`.`id`) AS `respects_received`
+                    (SELECT COUNT(*) FROM `player_respects` WHERE `target_player_id` = `players`.`id`) AS `respects_received`
             
             FROM `players` 
-                INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
-                INNER JOIN `player_navigator_settings` ON `player_navigator_settings`.`profile_id` = `players`.`id` 
-                INNER JOIN `player_game_settings` ON `player_game_settings`.`profile_id` = `players`.`id` 
+                INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
+                INNER JOIN `player_navigator_settings` ON `player_navigator_settings`.`player_id` = `players`.`id` 
+                INNER JOIN `player_game_settings` ON `player_game_settings`.`player_id` = `players`.`id` 
         
             WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
         {
@@ -78,7 +78,7 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     private async Task<DatabaseReader> GetReaderForSavedSearchesAsync(long id)
     {
-        return await GetReaderAsync("SELECT `id`,`search`,`filter` FROM `player_saved_searches` WHERE `profile_id` = @profileId", new Dictionary<string, object>
+        return await GetReaderAsync("SELECT `id`,`search`,`filter` FROM `player_saved_searches` WHERE `player_id` = @profileId", new Dictionary<string, object>
         {
             { "profileId", id }
         });
@@ -86,7 +86,7 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task MarkPlayerAsOnlineAsync(long id)
     {
-        await QueryAsync("UPDATE `player_data` SET `is_online` = 1, `last_online` = @lastOnline WHERE `profile_id` = @profileId", new Dictionary<string, object>
+        await QueryAsync("UPDATE `player_data` SET `is_online` = 1, `last_online` = @lastOnline WHERE `player_id` = @profileId", new Dictionary<string, object>
         {
             { "lastOnline", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "profileId", id }
@@ -108,7 +108,7 @@ public class PlayerDao : BaseDao, IPlayerDao
                 `respect_points` = @respectPoints,
                 `respect_points_pet` = @respectPointsPet,
                 `achievement_score` = @achievementScore
-            WHERE `profile_id` = @profileId", new Dictionary<string, object>
+            WHERE `player_id` = @playerId", new Dictionary<string, object>
         {
             { "figureCode", player.FigureCode },
             { "motto", player.Motto },
@@ -120,15 +120,15 @@ public class PlayerDao : BaseDao, IPlayerDao
             { "respectPoints", player.RespectPoints },
             { "respectPointsPet", player.RespectPointsPet },
             { "achievementScore", player.AchievementScore },
-            { "profileId", player.Id }
+            { "playerId", player.Id }
         });
     }
 
     public async Task ResetSsoTokenForPlayerAsync(long id)
     {
-        await QueryAsync("UPDATE `players` SET `sso_token` = '' WHERE `id` = @profileId", new Dictionary<string, object>
+        await QueryAsync("UPDATE `players` SET `sso_token` = '' WHERE `id` = @playerId", new Dictionary<string, object>
         {
-            { "profileId", id }
+            { "playerId", id }
         });
     }
 }

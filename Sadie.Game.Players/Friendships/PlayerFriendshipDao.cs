@@ -29,7 +29,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                    `players`.`username`, 
                    `player_data`.`figure_code`
             FROM `players` 
-                INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
+                INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
             WHERE `players`.`id` IN (SELECT `origin_player_id` FROM `player_friendships` WHERE `target_player_id` = @playerId AND `status` = @statusId);", new Dictionary<string, object>
         {
             { "playerId", playerId },
