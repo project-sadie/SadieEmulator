@@ -1,21 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Sadie.Database;
-using Sadie.Game.Navigator;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
-using Sadie.Networking;
-using Sadie.Networking.Client;
-using Sadie.Networking.Events;
-using SadieEmulator.Tasks;
-using SadieEmulator.Tasks.Game.Rooms;
-using SadieEmulator.Tasks.Networking;
-using SadieEmulator.Tasks.Other;
+using SadieEmulator;
 using Serilog;
 
-namespace SadieEmulator;
+namespace Sadie.Console;
 
 public static class Startup
 {
