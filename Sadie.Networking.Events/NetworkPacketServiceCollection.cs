@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Game.Navigator;
+using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
@@ -75,7 +77,12 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserSign] = new RoomUserSignEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserSit] = new RoomUserSitEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
-            [ClientPacketId.NavigatorSearch] = new NavigatorSearchEvent(provider.GetRequiredService<IRoomRepository>()),
+            
+            [ClientPacketId.NavigatorSearch] = new NavigatorSearchEvent(
+                provider.GetRequiredService<IRoomRepository>(), 
+                provider.GetRequiredService<NavigatorTabRepository>(), 
+                provider.GetRequiredService<NavigatorRoomProvider>()),
+            
             [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
             [ClientPacketId.PlayerRelationships] = provider.GetRequiredService<PlayerRelationshipsEvent>(),

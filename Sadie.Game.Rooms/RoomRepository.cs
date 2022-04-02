@@ -45,9 +45,13 @@ public class RoomRepository : IRoomRepository
         }
     }
 
-    public List<IRoom> GetAll()
+    public List<IRoom> GetPopularRooms(int amount)
     {
-        return _rooms.Values.ToList();
+        return _rooms.Values.
+            Where(x => x.UserRepository.Count > 0).
+            Take(amount).
+            OrderByDescending(x => x.UserRepository.Count).
+            ToList();
     }
 
     public int Count()

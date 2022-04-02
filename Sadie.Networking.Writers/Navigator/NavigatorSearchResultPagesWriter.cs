@@ -1,4 +1,7 @@
 using Sadie.Game.Navigator;
+using Sadie.Game.Navigator.Categories;
+using Sadie.Game.Navigator.Search;
+using Sadie.Game.Rooms;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
@@ -6,23 +9,27 @@ namespace Sadie.Networking.Writers.Navigator;
 
 public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
 {
-    public NavigatorSearchResultPagesWriter(string tabName, string searchQuery, List<NavigatorSearchResult> searchResults)
+    public NavigatorSearchResultPagesWriter(string tabName, string searchQuery, List<NavigatorCategory> resultCategories, NavigatorRoomProvider roomProvider)
     {
         WriteShort(ServerPacketId.NavigatorRooms);
         WriteString(tabName);
         WriteString(searchQuery);
-        WriteInt(searchResults.Count);
+        
+        WriteInt(resultCategories.Count);
 
-        foreach (var result in searchResults)
+        foreach (var result in resultCategories)
         {
-            WriteString(result.Unknown1);
-            WriteString(result.Unknown2);
-            WriteInt((int) result.Action);
-            WriteBoolean(result.IsCollapsed);
-            WriteInt(0); // TODO: DISPLAY MODE 
-            WriteInt(result.Rooms.Count);
+            WriteString(result.CodeName);
+            WriteString(result.Name);
+            WriteInt((int) 0); // TODO: SEARCH ACTION?
+            WriteBoolean(false); // TODO: is it collapsed?
+            WriteInt(0); // TODO: Show thumbnail? display mode
+
+            var rooms = roomProvider.GetRoomsForCategoryName(result.CodeName);
             
-            foreach (var room in result.Rooms)
+            WriteInt(rooms.Count);
+            
+            foreach (var room in rooms)
             {
                 WriteLong(room.Id);
                 WriteString(room.Name);

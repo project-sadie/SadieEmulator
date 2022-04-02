@@ -44,6 +44,11 @@ public class Server : IServer
 
         await roomCategoryRepo.LoadInitialDataAsync();
         _logger.LogTrace("Loaded room categories");
+        
+        var navigatorTabRepo = _serviceProvider.GetRequiredService<IRoomCategoryRepository>();
+
+        await navigatorTabRepo.LoadInitialDataAsync();
+        _logger.LogTrace("Loaded navigator tabs");
 
         var taskWorker = _serviceProvider.GetRequiredService<IServerTaskWorker>();
         taskWorker.Start();

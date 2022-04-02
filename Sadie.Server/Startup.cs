@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
@@ -47,6 +48,7 @@ public static class Startup
         RoomServiceCollection.AddServices(serviceCollection, config);
         NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
+        NavigatorServiceCollection.AddServices(serviceCollection);
         
         serviceCollection.AddSingleton<ServerTaskWorker>();
     }

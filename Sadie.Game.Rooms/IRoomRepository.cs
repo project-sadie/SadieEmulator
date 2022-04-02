@@ -5,6 +5,6 @@ public interface IRoomRepository : IAsyncDisposable
     Tuple<bool, IRoom?> TryGetRoomById(long id);
     Task<Tuple<bool, IRoom?>> TryLoadRoomByIdAsync(long id);
     Task RunPeriodicCheckAsync();
-    List<IRoom> GetAll();
+    List<IRoom> GetPopularRooms(int amount);
     int Count();
 }
