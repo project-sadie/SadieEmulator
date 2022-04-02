@@ -31,25 +31,7 @@ public static class Startup
     private static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection serviceCollection)
     {
         var config = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
-
         serviceCollection.AddSingleton<IServer, Server>();
-        
-        serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>(provider => new ServerTaskWorker(
-            provider.GetRequiredService<ILogger<ServerTaskWorker>>(), 
-            new List<IServerTask>
-            {
-                new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
-                new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
-                new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>())
-            }));
-
-        DatabaseServiceCollection.AddServices(serviceCollection, config);
-        PlayerServiceCollection.AddServices(serviceCollection, config);
-        RoomServiceCollection.AddServices(serviceCollection, config);
-        NetworkServiceCollection.AddServices(serviceCollection, config);
-        NetworkPacketServiceCollection.AddServices(serviceCollection);
-        NavigatorServiceCollection.AddServices(serviceCollection);
-        
-        serviceCollection.AddSingleton<ServerTaskWorker>();
+        ServerServiceCollection.AddServices(serviceCollection, config);
     }
 }
