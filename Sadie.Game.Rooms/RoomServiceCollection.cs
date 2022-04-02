@@ -15,6 +15,7 @@ public class RoomServiceCollection
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
             
+        serviceCollection.AddSingleton<RoomCategoryFactory>();
         serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();
         serviceCollection.AddSingleton<IRoomCategoryRepository, RoomCategoryRepository>();
         

@@ -4,8 +4,11 @@ namespace Sadie.Game.Rooms.Categories;
 
 public class RoomCategoryDao : BaseDao, IRoomCategoryDao
 {
-    public RoomCategoryDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
+    private readonly RoomCategoryFactory _categoryFactory;
+
+    public RoomCategoryDao(IDatabaseProvider databaseProvider, RoomCategoryFactory categoryFactory) : base(databaseProvider)
     {
+        _categoryFactory = categoryFactory;
     }
     
     public async Task<List<RoomCategory>> GetAllCategoriesAsync()
@@ -22,7 +25,7 @@ public class RoomCategoryDao : BaseDao, IRoomCategoryDao
                 break;
             }
             
-            categories.Add(RoomCategoryFactory.CreateFromRecord(record));
+            categories.Add(_categoryFactory.CreateFromRecord(record));
         }
 
         return categories;
