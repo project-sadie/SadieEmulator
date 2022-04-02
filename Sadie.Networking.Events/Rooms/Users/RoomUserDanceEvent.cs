@@ -22,6 +22,6 @@ public class RoomUserDanceEvent : INetworkPacketEvent
         }
         
         var danceId = reader.ReadInt();
-        await client.WriteToStreamAsync(new RoomUserDanceWriter(roomUser!.Id, danceId).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomUserDanceWriter(roomUser!.Id, danceId).GetAllBytes());
     }
 }
