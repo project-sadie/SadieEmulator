@@ -28,7 +28,7 @@ public class ClientPacketHandler : INetworkPacketHandler
         await ExecuteAsync(client, packet, packetEvent);
     }
 
-    private async Task ExecuteAsync(INetworkClient client, INetworkPacket packet, INetworkPacketEvent @event)
+    private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEvent @event)
     {
         try
         {
