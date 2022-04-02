@@ -9,13 +9,13 @@ public class PlayerFriendshipRepository : IPlayerFriendshipRepository
         _friendshipDao = friendshipDao;
     }
 
-    public async Task<List<PlayerFriendshipData>> GetFriendshipRequestsAsync(long playerId)
+    public async Task<List<PlayerFriendshipData>> GetPendingFriendsAsync(long playerId)
     {
-        return await _friendshipDao.GetFriendshipRequestsAsync(playerId);
+        return await _friendshipDao.GetPendingFriendsAsync(playerId);
     }
 
-    public async Task<List<PlayerFriendshipData>> GetFriendshipsAsync(long playerId)
+    public async Task<List<PlayerFriendshipData>> GetActiveFriendsAsync(long playerId)
     {
-        return await _friendshipDao.GetFriendshipsAsync(playerId);
+        return await _friendshipDao.GetActiveFriendsAsync(playerId);
     }
 }

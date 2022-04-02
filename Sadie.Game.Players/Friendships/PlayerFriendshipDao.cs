@@ -11,12 +11,12 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
         _friendshipFactory = friendshipFactory;
     }
     
-    public async Task<List<PlayerFriendshipData>> GetFriendshipRequestsAsync(long playerId)
+    public async Task<List<PlayerFriendshipData>> GetPendingFriendsAsync(long playerId)
     {
         return await GetFriendshipRecordByStatus(playerId, 1);
     }
 
-    public async Task<List<PlayerFriendshipData>> GetFriendshipsAsync(long playerId)
+    public async Task<List<PlayerFriendshipData>> GetActiveFriendsAsync(long playerId)
     {
         return await GetFriendshipRecordByStatus(playerId, 2);
     }
@@ -30,7 +30,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                    `player_data`.`figure_code`
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`profile_id` = `players`.`id` 
-            WHERE `players`.`id` IN (SELECT `sender_id` FROM `player_friendships` WHERE `target_id` = @playerId AND `status` = @statusId);", new Dictionary<string, object>
+            WHERE `players`.`id` IN (SELECT `origin_player_id` FROM `player_friendships` WHERE `target_player_id` = @playerId AND `status` = @statusId);", new Dictionary<string, object>
         {
             { "playerId", playerId },
             { "statusId", statusId }
