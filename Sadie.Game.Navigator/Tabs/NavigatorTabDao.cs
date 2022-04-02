@@ -8,7 +8,7 @@ public class NavigatorTabDao : BaseDao
     private readonly NavigatorTabFactory _tabFactory;
     private readonly NavigatorCategoryDao _navigatorCategoryDao;
 
-    protected NavigatorTabDao(IDatabaseProvider databaseProvider, NavigatorTabFactory tabFactory, NavigatorCategoryDao navigatorCategoryDao) : base(databaseProvider)
+    public NavigatorTabDao(IDatabaseProvider databaseProvider, NavigatorTabFactory tabFactory, NavigatorCategoryDao navigatorCategoryDao) : base(databaseProvider)
     {
         _tabFactory = tabFactory;
         _navigatorCategoryDao = navigatorCategoryDao;
