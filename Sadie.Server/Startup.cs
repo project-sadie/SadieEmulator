@@ -39,7 +39,7 @@ public static class Startup
             {
                 new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
                 new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
-                new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
+                new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>())
             }));
 
         DatabaseServiceCollection.AddServices(serviceCollection, config);
