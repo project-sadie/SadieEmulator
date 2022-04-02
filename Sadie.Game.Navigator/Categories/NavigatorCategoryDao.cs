@@ -1,5 +1,4 @@
 using Sadie.Database;
-using Sadie.Game.Navigator.Tabs;
 
 namespace Sadie.Game.Navigator.Categories;
 

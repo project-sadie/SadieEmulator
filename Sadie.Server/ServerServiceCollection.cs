@@ -5,8 +5,6 @@ using Sadie.Database;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Categories;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events;
