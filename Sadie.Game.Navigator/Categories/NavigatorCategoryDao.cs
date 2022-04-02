@@ -7,7 +7,7 @@ public class NavigatorCategoryDao : BaseDao
 {
     private readonly NavigatorCategoryFactory _categoryFactory;
 
-    protected NavigatorCategoryDao(IDatabaseProvider databaseProvider, NavigatorCategoryFactory categoryFactory) : base(databaseProvider)
+    public NavigatorCategoryDao(IDatabaseProvider databaseProvider, NavigatorCategoryFactory categoryFactory) : base(databaseProvider)
     {
         _categoryFactory = categoryFactory;
     }
