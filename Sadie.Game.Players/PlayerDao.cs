@@ -111,9 +111,6 @@ public class PlayerDao : BaseDao, IPlayerDao
         await QueryAsync(@"UPDATE `player_data` 
             SET 
                 `is_online` = 0, 
-                `figure_code` = @figureCode, 
-                `motto` = @motto, 
-                `gender` = @gender, 
                 `credit_balance` = @creditBalance, 
                 `pixel_balance` = @pixelBalance,
                 `seasonal_balance` = @seasonalBalance,
@@ -123,9 +120,6 @@ public class PlayerDao : BaseDao, IPlayerDao
                 `achievement_score` = @achievementScore
             WHERE `player_id` = @playerId", new Dictionary<string, object>
         {
-            { "figureCode", player.FigureCode },
-            { "motto", player.Motto },
-            { "gender", player.Gender == AvatarGender.Male ? "M" : "F" },
             { "creditBalance", player.Balance.Credits },
             { "pixelBalance", player.Balance.Pixels },
             { "seasonalBalance", player.Balance.Seasonal },
@@ -133,6 +127,20 @@ public class PlayerDao : BaseDao, IPlayerDao
             { "respectPoints", player.RespectPoints },
             { "respectPointsPet", player.RespectPointsPet },
             { "achievementScore", player.AchievementScore },
+            { "playerId", player.Id }
+        });
+        
+        
+        await QueryAsync(@"UPDATE `player_avatar_data` 
+            SET 
+                `figure_code` = @figureCode, 
+                `motto` = @motto, 
+                `gender` = @gender
+            WHERE `player_id` = @playerId", new Dictionary<string, object>
+        {
+            { "figureCode", player.FigureCode },
+            { "motto", player.Motto },
+            { "gender", player.Gender == AvatarGender.Male ? "M" : "F" },
             { "playerId", player.Id }
         });
     }
