@@ -19,6 +19,7 @@ using Sadie.Networking.Events.Rooms.Users.Chat;
 using Sadie.Networking.Events.Tracking;
 using Sadie.Networking.Events.Unknown;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events;
 
@@ -32,6 +33,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerRelationshipsEvent>();
         serviceCollection.AddSingleton<RoomUserTagsEvent>();
         serviceCollection.AddSingleton<RoomForwardDataEvent>();
+        serviceCollection.AddSingleton<PlayerProfileEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -87,7 +89,8 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
             [ClientPacketId.PlayerRelationships] = provider.GetRequiredService<PlayerRelationshipsEvent>(),
             [ClientPacketId.RoomUserTags] = provider.GetRequiredService<RoomUserTagsEvent>(),
-            [ClientPacketId.RoomForwardData] = provider.GetRequiredService<RoomForwardDataEvent>()
+            [ClientPacketId.RoomForwardData] = provider.GetRequiredService<RoomForwardDataEvent>(),
+            [ClientPacketId.PlayerProfile] = provider.GetRequiredService<PlayerProfileEvent>()
         });
     }
 }

@@ -48,4 +48,5 @@ public class ClientPacketId
     public const short PlayerRelationships = 2138;
     public const short RoomUserTags = 17;
     public const short RoomForwardData = 2230;
+    public const short PlayerProfile = 3265;
 }
