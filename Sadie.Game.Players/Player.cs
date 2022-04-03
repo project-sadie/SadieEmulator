@@ -27,6 +27,7 @@ public class Player : PlayerData, IPlayer
         PlayerNavigatorSettings navigatorSettings,
         PlayerSettings settings,
         List<PlayerSavedSearch> savedSearches,
+        List<string> permissions,
         long achievementScore,
         List<string> tags) : 
         
@@ -45,6 +46,7 @@ public class Player : PlayerData, IPlayer
             navigatorSettings, 
             settings, 
             savedSearches,
+            permissions,
             achievementScore, 
             tags)
     {
@@ -53,6 +55,8 @@ public class Player : PlayerData, IPlayer
     }
     
     public bool Authenticated { get; set; }
+
+    public bool HasPermission(string name) => Permissions.Contains(name);
 
     public async ValueTask DisposeAsync()
     {

@@ -65,5 +65,10 @@ public class PlayerActivityEvent : INetworkPacketEvent
         await networkClient.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.Settings.ShowNotifications).GetAllBytes());
         await networkClient.WriteToStreamAsync(new PlayerAchievementScoreWriter(player.AchievementScore).GetAllBytes());
+
+        if (player.HasPermission("moderation_tools"))
+        {
+            // Send mod tools
+        }
     }
 }

@@ -17,4 +17,5 @@ public interface IPlayerData : IAvatarData
     PlayerNavigatorSettings NavigatorSettings { get; set; }
     PlayerSettings Settings { get; }
     List<PlayerSavedSearch> SavedSearches { get; }
+    List<string> Permissions { get; }
 }

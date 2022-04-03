@@ -21,6 +21,7 @@ public class PlayerData : AvatarData, IPlayerData
         PlayerNavigatorSettings navigatorSettings,
         PlayerSettings settings, 
         List<PlayerSavedSearch> savedSearches,
+        List<string> permissions,
         long achievementScore,
         List<string> tags) : base(username, figureCode, motto, gender, achievementScore, tags)
     {
@@ -35,6 +36,7 @@ public class PlayerData : AvatarData, IPlayerData
         NavigatorSettings = navigatorSettings;
         Settings = settings;
         SavedSearches = savedSearches;
+        Permissions = permissions;
     }
 
     public long Id { get; }
@@ -48,4 +50,5 @@ public class PlayerData : AvatarData, IPlayerData
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
     public PlayerSettings Settings { get; }
     public List<PlayerSavedSearch> SavedSearches { get; }
+    public List<string> Permissions { get; }
 }

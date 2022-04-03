@@ -18,11 +18,9 @@ public class PlayerDao : BaseDao, IPlayerDao
             SELECT 
                    `players`.`id`, 
                    `players`.`username`, 
+                   `players`.`role_id`, 
                    
                    `player_data`.`home_room_id`, 
-                   `player_data`.`figure_code`, 
-                   `player_data`.`motto`, 
-                   `player_data`.`gender`, 
                    `player_data`.`credit_balance`, 
                    `player_data`.`pixel_balance`, 
                    `player_data`.`seasonal_balance`, 
@@ -31,6 +29,10 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_data`.`respect_points_pet`,
                    `player_data`.`last_online`,
                    `player_data`.`achievement_score`,
+                   
+                   `player_avatar_data`.`figure_code`, 
+                   `player_avatar_data`.`motto`, 
+                   `player_avatar_data`.`gender`, 
                    
                    (SELECT GROUP_CONCAT(`name`) AS `comma_seperated_tags`
                     FROM `player_tags`
@@ -57,6 +59,7 @@ public class PlayerDao : BaseDao, IPlayerDao
             
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
+                INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
                 INNER JOIN `player_navigator_settings` ON `player_navigator_settings`.`player_id` = `players`.`id` 
                 INNER JOIN `player_game_settings` ON `player_game_settings`.`player_id` = `players`.`id` 
         
@@ -67,13 +70,15 @@ public class PlayerDao : BaseDao, IPlayerDao
 
         var (success, record) = reader.Read();
 
-        if (success && record != null)
+        if (!success || record == null)
         {
-            var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
-            return new Tuple<bool, IPlayer?>(true, _playerFactory.CreateFromRecord(record, savedSearchesReader));
+            return new Tuple<bool, IPlayer?>(false, null);
         }
-
-        return new Tuple<bool, IPlayer?>(false, null);
+        
+        var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
+        var permissionsReader = await GetReaderForPermissionsAsync(record.Get<int>("role_id"));
+            
+        return new Tuple<bool, IPlayer?>(true, _playerFactory.CreateFromRecord(record, savedSearchesReader, permissionsReader));
     }
 
     private async Task<DatabaseReader> GetReaderForSavedSearchesAsync(long id)
@@ -81,6 +86,14 @@ public class PlayerDao : BaseDao, IPlayerDao
         return await GetReaderAsync("SELECT `id`,`search`,`filter` FROM `player_saved_searches` WHERE `player_id` = @profileId", new Dictionary<string, object>
         {
             { "profileId", id }
+        });
+    }
+
+    private async Task<DatabaseReader> GetReaderForPermissionsAsync(long roleId)
+    {
+        return await GetReaderAsync("SELECT `name` FROM `player_permissions` WHERE `id` IN (SELECT `permission_id` FROM `player_role_permissions` WHERE `player_role_permissions`.`role_id` = @roleId)", new Dictionary<string, object>
+        {
+            { "roleId", roleId }
         });
     }
 

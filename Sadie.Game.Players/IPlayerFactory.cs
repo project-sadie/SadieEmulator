@@ -4,5 +4,5 @@ namespace Sadie.Game.Players;
 
 public interface IPlayerFactory
 {
-    IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader);
+    IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader);
 }

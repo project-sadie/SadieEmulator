@@ -47,8 +47,27 @@ public class PlayerFactory : IPlayerFactory
         
         return data;
     }
+
+    private static List<string> CreatePermissionsFromReader(DatabaseReader reader)
+    {
+        var data = new List<string>();
+        
+        while (true)
+        {
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            data.Add(record.Get<string>("name"));
+        }
+        
+        return data;
+    }
     
-    public IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader)
+    public IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
@@ -68,6 +87,7 @@ public class PlayerFactory : IPlayerFactory
             CreateNavigatorSettingsFromRecord(record),
             CreateSettingsFromRecord(record),
             CreateSavedSearchesFromReader(savedSearchesReader),
+            CreatePermissionsFromReader(permissionsReader),
             record.Get<long>("achievement_score"),
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")));
     }
