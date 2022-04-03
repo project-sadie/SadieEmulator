@@ -3,6 +3,7 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Moderation;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Clothing;
 using Sadie.Networking.Writers.Players.Effects;
@@ -68,7 +69,7 @@ public class PlayerActivityEvent : INetworkPacketEvent
 
         if (player.HasPermission("moderation_tools"))
         {
-            // Send mod tools
+            await networkClient.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
         }
     }
 }

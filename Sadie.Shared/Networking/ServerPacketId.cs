@@ -55,4 +55,5 @@ public class ServerPacketId
     public const short PlayerRelationships = 2016;
     public const short RoomUserTags = 1255;
     public const short RoomForwardData = 687;
+    public const short ModerationTools = 2545;
 }
