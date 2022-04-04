@@ -11,12 +11,10 @@ public class NavigatorServiceCollection
         serviceCollection.AddSingleton<NavigatorCategoryDao>();
         serviceCollection.AddSingleton<NavigatorCategoryFactory>();
         serviceCollection.AddSingleton<NavigatorCategory>();
-        
         serviceCollection.AddSingleton<NavigatorTab>();
         serviceCollection.AddSingleton<NavigatorTabDao>();
         serviceCollection.AddSingleton<NavigatorTabRepository>();
         serviceCollection.AddSingleton<NavigatorTabFactory>();
-        
         serviceCollection.AddSingleton<NavigatorRoomProvider>();
     }
 }
