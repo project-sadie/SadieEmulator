@@ -14,7 +14,7 @@ public class PlayerProfileWriter : NetworkPacketWriter
         WriteString(playerData.Username);
         WriteString(playerData.FigureCode);
         WriteString(playerData.Motto);
-        WriteString((DateTime.Now - playerData.CreatedAt).ToTimeAgo(true));
+        WriteString(playerData.CreatedAt.ToString("yyyy-MM-dd HH:mm:s"));
         WriteLong(playerData.AchievementScore);
         WriteLong(friendshipCount);
         WriteBoolean(friendshipExists);
