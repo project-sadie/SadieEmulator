@@ -46,6 +46,11 @@ public class PlayerRepository : IPlayerRepository
         return _players.Count;
     }
 
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
+    {
+        return await _playerDao.TryGetPlayerData(playerId);
+    }
+
     public async ValueTask DisposeAsync()
     {
         foreach (var player in _players.Values)

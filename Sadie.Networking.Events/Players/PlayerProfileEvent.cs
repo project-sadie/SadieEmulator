@@ -9,13 +9,11 @@ namespace Sadie.Networking.Events.Players;
 public class PlayerProfileEvent : INetworkPacketEvent
 {
     private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerDao _playerDao;
     private readonly IPlayerFriendshipRepository _friendshipRepository;
 
-    public PlayerProfileEvent(IPlayerRepository playerRepository, IPlayerDao playerDao, IPlayerFriendshipRepository friendshipRepository)
+    public PlayerProfileEvent(IPlayerRepository playerRepository, IPlayerFriendshipRepository friendshipRepository)
     {
         _playerRepository = playerRepository;
-        _playerDao = playerDao;
         _friendshipRepository = friendshipRepository;
     }
 
@@ -38,7 +36,7 @@ public class PlayerProfileEvent : INetworkPacketEvent
         }
         else
         {
-            var (found, fetchedPlayerData) = await _playerDao.TryGetPlayerData(playerId);
+            var (found, fetchedPlayerData) = await _playerRepository.TryGetPlayerData(playerId);
 
             if (found)
             {
