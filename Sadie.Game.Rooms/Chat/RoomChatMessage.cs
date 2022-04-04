@@ -1,6 +1,6 @@
 ﻿using Sadie.Game.Rooms.Users;
 
-namespace Sadie.Game.Rooms;
+namespace Sadie.Game.Rooms.Chat;
 
 public class RoomChatMessage
 {

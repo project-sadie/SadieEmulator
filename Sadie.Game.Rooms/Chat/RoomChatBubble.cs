@@ -1,4 +1,4 @@
-﻿namespace Sadie.Game.Rooms;
+﻿namespace Sadie.Game.Rooms.Chat;
 
 public enum RoomChatBubble
 {

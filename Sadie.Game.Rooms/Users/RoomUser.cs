@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.Logging;
+using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.Packets;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Extensions;

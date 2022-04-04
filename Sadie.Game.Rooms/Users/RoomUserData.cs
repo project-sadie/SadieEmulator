@@ -1,4 +1,5 @@
-﻿using Sadie.Shared.Game.Avatar;
+﻿using Sadie.Game.Rooms.Chat;
+using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;

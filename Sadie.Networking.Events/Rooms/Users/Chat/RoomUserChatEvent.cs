@@ -1,4 +1,5 @@
 ﻿using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Chat;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
