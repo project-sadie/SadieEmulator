@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SadieEmulator;
 using Serilog;
 
@@ -12,13 +13,15 @@ internal static class Program
     {
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
         AppDomain.CurrentDomain.ProcessExit += OnClose;
-
+        
         System.Console.CancelKeyPress += OnClose;
         
-        var host = Startup.CreateDefaultHostBuilder();
-        var services = host.Services;
-
-        _server = services.GetRequiredService<IServer>();
+        var host = Host.CreateDefaultBuilder()
+            .ConfigureServices((context, collection) => ServerServiceCollection.AddServices(collection, context.Configuration))
+            .UseSerilog((hostContext, _, logger) => logger.ReadFrom.Configuration(hostContext.Configuration))
+            .Build();
+        
+        _server = host.Services.GetRequiredService<IServer>();
         
         await _server.RunAsync();
     }

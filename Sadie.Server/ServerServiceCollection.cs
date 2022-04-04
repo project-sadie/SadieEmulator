@@ -19,6 +19,7 @@ public class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>(provider => new ServerTaskWorker(
             provider.GetRequiredService<ILogger<ServerTaskWorker>>(), 
             new List<IServerTask>
