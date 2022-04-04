@@ -24,9 +24,8 @@ public class UpdateStatusTask : IServerTask
     {
         var usersOnline = _playerRepository.Count();
         var roomCount = _roomRepository.Count();
-        var uptime = (DateTime.Now - Process.GetCurrentProcess().StartTime);
         
-        Console.Title = $"Sadie Emulator {Server.Version} - Users: {usersOnline} - Rooms: {roomCount} - Uptime: {uptime.ToTimeAgo()}";
+        Console.Title = $"Sadie Emulator {Server.Version} - Users: {usersOnline} - Rooms: {roomCount}";
         
         return Task.CompletedTask;
     }
