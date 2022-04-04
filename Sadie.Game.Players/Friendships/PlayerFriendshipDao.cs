@@ -10,27 +10,17 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
     {
         _friendshipFactory = friendshipFactory;
     }
-    
-    public async Task<List<PlayerFriendshipData>> GetPendingFriendsAsync(long playerId)
-    {
-        return await GetFriendshipRecordByStatus(playerId, PlayerFriendshipStatus.Pending);
-    }
 
-    public async Task<List<PlayerFriendshipData>> GetActiveFriendsAsync(long playerId)
-    {
-        return await GetFriendshipRecordByStatus(playerId, PlayerFriendshipStatus.Accepted);
-    }
-
-    public async Task<int> GetActiveFriendsCountAsync(long playerId)
+    public async Task<int> GetFriendshipCountAsync(long playerId, PlayerFriendshipStatus status)
     {
         return await CountAsync("SELECT COUNT(*) FROM `player_friendships` WHERE (`origin_player_id` = @playerId OR `target_player_id` = @playerId) AND `status` = @statusId", new Dictionary<string, object>
         {
             { "playerId", playerId },
-            { "statusId", 2 }
+            { "statusId", (int)status }
         });
     }
 
-    public async Task<bool> DoesFriendshipExist(long player1Id, long player2Id, PlayerFriendshipStatus status)
+    public async Task<bool> DoesFriendshipExistAsync(long player1Id, long player2Id, PlayerFriendshipStatus status)
     {
         return await CountAsync(
             "SELECT COUNT(*) FROM `player_friendships` WHERE ((`origin_player_id` = @player1Id AND `target_player_id` = @player2Id) OR (`origin_player_id` = @player2Id AND `target_player_id` = @player1Id)) AND `status` = @statusId",
@@ -42,7 +32,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
             }) > 0;
     }
 
-    private async Task<List<PlayerFriendshipData>> GetFriendshipRecordByStatus(long playerId, PlayerFriendshipStatus statusId)
+    public async Task<List<PlayerFriendshipData>> GetFriendshipRecordsAsync(long playerId, PlayerFriendshipStatus status)
     {
         var reader = await GetReaderAsync(@"
             SELECT 
@@ -54,7 +44,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
             WHERE `players`.`id` IN (SELECT `origin_player_id` FROM `player_friendships` WHERE `target_player_id` = @playerId AND `status` = @statusId);", new Dictionary<string, object>
         {
             { "playerId", playerId },
-            { "statusId", statusId }
+            { "statusId", status }
         });
         
         var data = new List<PlayerFriendshipData>();

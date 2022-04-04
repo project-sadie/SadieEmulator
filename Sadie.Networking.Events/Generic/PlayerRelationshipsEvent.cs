@@ -17,7 +17,7 @@ public class PlayerRelationshipsEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = reader.ReadInt();
-        var playerFriends = await _friendshipRepository.GetActiveFriendsAsync(playerId);
+        var playerFriends = await _friendshipRepository.GetFriendshipRecords(playerId, PlayerFriendshipStatus.Accepted);
         
         var playerRelations = new Dictionary<int, List<PlayerFriendshipData>>
         {

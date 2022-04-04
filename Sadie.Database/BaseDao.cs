@@ -11,11 +11,15 @@ public class BaseDao
         _databaseProvider = databaseProvider;
     }
 
-    protected async Task<DatabaseReader> GetReaderAsync(string commandText, Dictionary<string, object> parameters)
+    protected async Task<DatabaseReader> GetReaderAsync(string commandText, Dictionary<string, object>? parameters = default)
     {
         using var dbConnection = _databaseProvider.GetConnection();
         dbConnection.SetQuery(commandText);
-        dbConnection.AddParameters(parameters);
+
+        if (parameters is {Count: > 0})
+        {
+            dbConnection.AddParameters(parameters);
+        }
 
         var reader = await dbConnection.ExecuteReaderAsync();
         var batch = reader.ToListOfDictionaries();

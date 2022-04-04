@@ -2,8 +2,7 @@ namespace Sadie.Game.Players.Friendships;
 
 public interface IPlayerFriendshipRepository
 {
-    Task<List<PlayerFriendshipData>> GetPendingFriendsAsync(long playerId);
-    Task<List<PlayerFriendshipData>> GetActiveFriendsAsync(long playerId);
-    Task<int> GetActiveFriendsCountAsync(long playerId);
+    Task<List<PlayerFriendshipData>> GetFriendshipRecords(long playerId, PlayerFriendshipStatus status);
+    Task<int> GetFriendshipCountAsync(long playerId, PlayerFriendshipStatus status);
     Task<bool> DoesFriendshipExist(long player1Id, long player2Id, PlayerFriendshipStatus status);
 }

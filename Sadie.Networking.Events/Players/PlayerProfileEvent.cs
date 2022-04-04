@@ -49,7 +49,7 @@ public class PlayerProfileEvent : INetworkPacketEvent
             return;
         }
 
-        var playerFriends = await _friendshipRepository.GetActiveFriendsCountAsync(playerId);
+        var playerFriends = await _friendshipRepository.GetFriendshipCountAsync(playerId, PlayerFriendshipStatus.Accepted);
         var friendshipExists = await _friendshipRepository.DoesFriendshipExist(client.Player.Id, playerId, PlayerFriendshipStatus.Accepted);
         var friendshipRequestExists = await _friendshipRepository.DoesFriendshipExist(client.Player.Id, playerId, PlayerFriendshipStatus.Pending);
         

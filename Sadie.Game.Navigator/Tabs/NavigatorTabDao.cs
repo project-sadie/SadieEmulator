@@ -17,7 +17,7 @@ public class NavigatorTabDao : BaseDao
     public async Task<List<NavigatorTab>> GetAllAsync()
     {
         var tabs = new List<NavigatorTab>();
-        var reader = await GetReaderAsync("SELECT `id`,`name` FROM `navigator_tabs`;", new Dictionary<string, object>());
+        var reader = await GetReaderAsync("SELECT `id`,`name` FROM `navigator_tabs`;");
 
         while (true)
         {

@@ -25,7 +25,7 @@ public class UpdateStatusTask : IServerTask
         var usersOnline = _playerRepository.Count();
         var roomCount = _roomRepository.Count();
         
-        Console.Title = $"Sadie Emulator {Server.Version} - Users: {usersOnline} - Rooms: {roomCount}";
+        Console.Title = $"Sadie {Server.Version} - Players Online: {usersOnline} - Rooms Loaded: {roomCount}";
         
         return Task.CompletedTask;
     }
