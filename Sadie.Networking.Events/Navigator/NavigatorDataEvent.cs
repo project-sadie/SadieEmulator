@@ -18,7 +18,7 @@ public class NavigatorDataEvent : INetworkPacketEvent
             {"myworld_view", 0}
         };
         
-        var categories = new List<string>()
+        var categories = new List<string>
         {
             "new_ads",
             "friend_finding",

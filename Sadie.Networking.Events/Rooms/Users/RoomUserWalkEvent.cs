@@ -14,25 +14,26 @@ public class RoomUserWalkEvent : INetworkPacketEvent
         _roomRepository = roomRepository;
     }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {
-            return;
+            return Task.CompletedTask;
         }
         
         var x = reader.ReadInt();
         var y = reader.ReadInt();
         
-        var tile = room.Layout.Tiles.FirstOrDefault(z => z.Point.X == x && z.Point.Y == y);
+        var tile = room!.Layout.Tiles.FirstOrDefault(z => z.Point.X == x && z.Point.Y == y);
         
         if (tile == null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var point = tile.Point;
 
         roomUser!.WalkToPoint(new Point(point.X, point.Y), room.Settings.CanWalkDiagonal);
+        return Task.CompletedTask;
     }
 }

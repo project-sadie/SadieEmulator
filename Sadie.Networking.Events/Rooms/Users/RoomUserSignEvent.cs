@@ -14,13 +14,15 @@ public class RoomUserSignEvent : INetworkPacketEvent
         _roomRepository = roomRepository;
     }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {
-            return;
+            return Task.CompletedTask;
         }
 
         roomUser!.StatusMap[RoomUserStatus.Sign] = reader.ReadInt().ToString();
+        
+        return Task.CompletedTask;
     }
 }

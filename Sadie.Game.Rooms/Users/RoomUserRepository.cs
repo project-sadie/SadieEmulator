@@ -22,12 +22,14 @@ public class RoomUserRepository : IRoomUserRepository
     
     public int Count => _users.Count;
     
-    public async Task BroadcastDataAsync(byte[] data)
+    public Task BroadcastDataAsync(byte[] data)
     {
         foreach (var roomUser in _users.Values)
         {
             roomUser.NetworkObject.WriteToStreamAsync(data);
         }
+
+        return Task.CompletedTask;
     }
     
     public async ValueTask DisposeAsync()

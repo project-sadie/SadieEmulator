@@ -18,7 +18,7 @@ public class RoomUserTagsEvent : INetworkPacketEvent
     {
         var roomUserId = reader.ReadInt();
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out _))
         {
             return;
         }

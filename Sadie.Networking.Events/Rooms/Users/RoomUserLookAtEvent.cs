@@ -15,16 +15,16 @@ public class RoomUserLookAtEvent : INetworkPacketEvent
         _roomRepository = roomRepository;
     }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out _, out var roomUser))
         {
-            return;
+            return Task.CompletedTask;
         }
 
         if (roomUser!.StatusMap.ContainsKey(RoomUserStatus.Move))
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var currentPoint = roomUser.Point;
@@ -33,9 +33,10 @@ public class RoomUserLookAtEvent : INetworkPacketEvent
 
         if (currentPoint.X == x && currentPoint.Y == y)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         roomUser.LookAtPoint(new Point(x, y));
+        return Task.CompletedTask;
     }
 }

@@ -15,7 +15,7 @@ public class NavigatorCategoryDao : BaseDao
     {
         var categories = new List<NavigatorCategory>();
         
-        var reader = await GetReaderAsync("SELECT `id`,`name`,`code_name`,`order_id` FROM `navigator_categories` WHERE `tab_id` = @tabId;", new Dictionary<string, object>()
+        var reader = await GetReaderAsync("SELECT `id`,`name`,`code_name`,`order_id` FROM `navigator_categories` WHERE `tab_id` = @tabId;", new Dictionary<string, object>
         {
             { "tabId", tabId }
         });

@@ -23,7 +23,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 
     public async Task<int> GetActiveFriendsCountAsync(long playerId)
     {
-        return await CountAsync("SELECT COUNT(*) FROM `player_friendships` WHERE (`origin_player_id` = @playerId OR `target_player_id` = @playerId) AND `status` = @statusId", new Dictionary<string, object>()
+        return await CountAsync("SELECT COUNT(*) FROM `player_friendships` WHERE (`origin_player_id` = @playerId OR `target_player_id` = @playerId) AND `status` = @statusId", new Dictionary<string, object>
         {
             { "playerId", playerId },
             { "statusId", 2 }
