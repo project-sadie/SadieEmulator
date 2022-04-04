@@ -2,7 +2,7 @@ namespace Sadie.Shared.Extensions;
 
 public static class TimeSpanExtensions
 {
-    public static string ToTimeAgo(this TimeSpan timeSpan)
+    public static string ToTimeAgo(this TimeSpan timeSpan, bool @short = false)
     {
         // TODO: fix this lol
         

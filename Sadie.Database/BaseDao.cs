@@ -33,4 +33,13 @@ public class BaseDao
 
         return await dbConnection.ExecuteNonQueryAsync();
     }
+
+    protected async Task<int> CountAsync(string commandText, Dictionary<string, object> parameters)
+    {
+        using var dbConnection = _databaseProvider.GetConnection();
+        dbConnection.SetQuery(commandText);
+        dbConnection.AddParameters(parameters);
+
+        return dbConnection.ExecuteScalar<int>();
+    }
 }

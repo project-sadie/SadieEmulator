@@ -75,6 +75,7 @@ public class PlayerFactory : IPlayerFactory
             _serviceProvider.GetRequiredService<IPlayerRepository>(),
             record.Get<long>("id"),
             record.Get<string>("username"),
+            record.Get<DateTime>("created_at"),
             record.Get<long>("home_room_id"),
             record.Get<string>("figure_code"),
             record.Get<string>("motto"),
@@ -90,6 +91,32 @@ public class PlayerFactory : IPlayerFactory
             CreatePermissionsFromReader(permissionsReader),
             record.Get<long>("achievement_score"),
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")));
+    }
+    
+    public IPlayer CreateFromBasicRecord(DatabaseRecord record)
+    {
+        return ActivatorUtilities.CreateInstance<Player>(
+            _serviceProvider,
+            _serviceProvider.GetRequiredService<ILogger<Player>>(),
+            _serviceProvider.GetRequiredService<IPlayerRepository>(),
+            record.Get<long>("id"),
+            record.Get<string>("username"),
+            record.Get<DateTime>("created_at"),
+            0,
+            record.Get<string>("figure_code"),
+            record.Get<string>("motto"),
+            record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female,
+            new PlayerBalance(0, 0, 0, 0),
+            DateTime.TryParse(record.Get<string>("last_online"), out var timestamp) ? timestamp : DateTime.MinValue,
+            0,
+            0,
+            0,
+            CreateNavigatorSettingsFromRecord(record),
+            CreateSettingsFromRecord(record),
+            new List<PlayerSavedSearch>(),
+            new List<string>(),
+            0,
+            new List<string>());
     }
 
     private static PlayerNavigatorSettings CreateNavigatorSettingsFromRecord(DatabaseRecord record)

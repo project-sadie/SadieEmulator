@@ -152,4 +152,34 @@ public class PlayerDao : BaseDao, IPlayerDao
             { "playerId", id }
         });
     }
+
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
+    {
+        var reader = await GetReaderAsync(@"
+            SELECT 
+                   `players`.`id`, 
+                   `players`.`username`, 
+                   `players`.`created_at`, 
+            
+                   `player_data`.`last_online`,
+                   `player_data`.`achievement_score`,
+                   
+                   `player_avatar_data`.`figure_code`, 
+                   `player_avatar_data`.`motto`, 
+                   `player_avatar_data`.`gender`
+            
+            FROM `players` 
+                INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
+                INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
+            WHERE `players`.`id` = @playerId LIMIT 1;", new Dictionary<string, object>
+        {
+            { "playerId", playerId }
+        });
+
+        var (success, record) = reader.Read();
+
+        return success && record != null ?
+            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateFromBasicRecord(record)) : 
+            new Tuple<bool, IPlayerData?>(false, null);
+    }
 }

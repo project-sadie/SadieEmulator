@@ -13,15 +13,36 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
     
     public async Task<List<PlayerFriendshipData>> GetPendingFriendsAsync(long playerId)
     {
-        return await GetFriendshipRecordByStatus(playerId, 1);
+        return await GetFriendshipRecordByStatus(playerId, PlayerFriendshipStatus.Pending);
     }
 
     public async Task<List<PlayerFriendshipData>> GetActiveFriendsAsync(long playerId)
     {
-        return await GetFriendshipRecordByStatus(playerId, 2);
+        return await GetFriendshipRecordByStatus(playerId, PlayerFriendshipStatus.Accepted);
     }
 
-    private async Task<List<PlayerFriendshipData>> GetFriendshipRecordByStatus(long playerId, int statusId)
+    public async Task<int> GetActiveFriendsCountAsync(long playerId)
+    {
+        return await CountAsync("SELECT COUNT(*) FROM `player_friendships` WHERE (`origin_player_id` = @playerId OR `target_player_id` = @playerId) AND `status` = @statusId", new Dictionary<string, object>()
+        {
+            { "playerId", playerId },
+            { "statusId", 2 }
+        });
+    }
+
+    public async Task<bool> DoesFriendshipExist(long player1Id, long player2Id, PlayerFriendshipStatus status)
+    {
+        return await CountAsync(
+            "SELECT COUNT(*) FROM `player_friendships` WHERE ((`origin_player_id` = @player1Id AND `target_player_id` = @player2Id) OR (`origin_player_id` = @player2Id AND `target_player_id` = @player1Id)) AND `status` = @statusId",
+            new Dictionary<string, object>
+            {
+                {"player1Id", player1Id},
+                {"player2Id", player2Id},
+                {"statusId", status}
+            }) > 0;
+    }
+
+    private async Task<List<PlayerFriendshipData>> GetFriendshipRecordByStatus(long playerId, PlayerFriendshipStatus statusId)
     {
         var reader = await GetReaderAsync(@"
             SELECT 

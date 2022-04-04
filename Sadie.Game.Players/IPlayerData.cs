@@ -8,6 +8,7 @@ public interface IPlayerData : IAvatarData
 {
     long Id { get; }
     string Username { get; }
+    DateTime CreatedAt { get; }
     long HomeRoom { get; }
     IPlayerBalance Balance { get; }
     DateTime LastOnline { get; }

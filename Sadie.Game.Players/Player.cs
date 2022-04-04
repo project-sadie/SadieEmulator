@@ -15,6 +15,7 @@ public class Player : PlayerData, IPlayer
         IPlayerRepository playerRepository,
         long id, 
         string username, 
+        DateTime createdAt,
         long homeRoom, 
         string figureCode, 
         string motto, 
@@ -34,6 +35,7 @@ public class Player : PlayerData, IPlayer
         base(
             id, 
             username, 
+            createdAt,
             homeRoom, 
             figureCode, 
             motto, 

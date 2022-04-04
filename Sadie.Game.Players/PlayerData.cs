@@ -9,6 +9,7 @@ public class PlayerData : AvatarData, IPlayerData
     protected PlayerData(
         long id, 
         string username, 
+        DateTime createdAt,
         long homeRoom, 
         string figureCode, 
         string motto, 
@@ -27,6 +28,7 @@ public class PlayerData : AvatarData, IPlayerData
     {
         Id = id;
         Username = username;
+        CreatedAt = createdAt;
         HomeRoom = homeRoom;
         Balance = balance;
         LastOnline = lastOnline;
@@ -41,6 +43,7 @@ public class PlayerData : AvatarData, IPlayerData
 
     public long Id { get; }
     public string Username { get; }
+    public DateTime CreatedAt { get; }
     public long HomeRoom { get; }
     public IPlayerBalance Balance { get; }
     public DateTime LastOnline { get; }
