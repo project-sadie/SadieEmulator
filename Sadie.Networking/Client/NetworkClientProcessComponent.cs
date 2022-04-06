@@ -14,8 +14,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
     private readonly INetworkPacketHandler _packetHandler;
     private readonly byte[] _buffer;
 
-    private bool _usingWebSockets;
-
     protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler, NetworkingConstants constants) : base(constants)
     {
         _logger = logger;
@@ -62,19 +60,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
             var data = new byte[bytesReceived];
             Buffer.BlockCopy(_buffer, 0, data, 0, bytesReceived);
 
-            var dataString = Encoding.Default.GetString(data);
-            
-            if (dataString[..3] == "GET")
-            {
-                await HandleUpgradeRequestAsync(dataString);
-                return;
-            }
-
-            if (_usingWebSockets)
-            {
-                data = WebSocketHelpers.UnmaskData(data);
-            }
-
             if (data[0] == 60)
             {
                 await OnReceivedPolicyRequest();
@@ -98,12 +83,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
         }
     }
 
-    private async Task HandleUpgradeRequestAsync(string dataString)
-    {
-        await WriteToStreamAsync(WebSocketHelpers.GetHandshakeResponseBytes(dataString));
-        _usingWebSockets = true;
-    }
-
     private async Task OnReceivedPolicyRequest()
     {
         await WriteToStreamAsync(Encoding.Default.GetBytes("<?xml version=\"1.0\"?>\r\n" +
@@ -117,11 +96,6 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
     {
         try
         {
-            if (_usingWebSockets)
-            {
-                data = WebSocketHelpers.AddFramingToOutput(data);
-            }
-
             await _stream.WriteAsync(data);
         }
         catch (Exception)
