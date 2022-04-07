@@ -15,6 +15,12 @@ public class RoomUserRepository : IRoomUserRepository
     public bool TryAdd(RoomUser user) => _users.TryAdd(user.Id, user);
     public bool TryGet(long id, out RoomUser? user) => _users.TryGetValue(id, out user);
 
+    public bool TryGetByUsername(string username, out RoomUser? user)
+    {
+        user = _users.Values.FirstOrDefault(x => x.AvatarData.Username == username);
+        return user != null;
+    }
+
     public bool TryRemove(long id)
     {
         return _users.TryRemove(id, out _);
