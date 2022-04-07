@@ -22,7 +22,7 @@ public class RoomUserChatEvent : INetworkPacketEvent
             return;
         }
 
-        if (roomUser != null && roomUser.TrySpeak(reader.ReadString(), (RoomChatBubble) reader.ReadInt(), out var chatMessage))
+        if (roomUser != null && roomUser.TryCreateChatMessage(reader.ReadString(), (RoomChatBubble) reader.ReadInt(), out var chatMessage))
         {
             await room!.UserRepository.BroadcastDataAsync(new RoomUserChatWriter(chatMessage!).GetAllBytes());
         }
