@@ -20,14 +20,14 @@ public class PlayerProfileEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = reader.ReadInt();
-        var isThemselves = reader.ReadBool();
-        var playerOnline = isThemselves;
+        var playerOnline = false;
 
         IPlayerData playerData = null;
         
-        if (isThemselves)
+        if (playerId == client.Player.Id)
         {
             playerData = client.Player;
+            playerOnline = true;
         }
         else if (_playerRepository.TryGetPlayerById(playerId, out var player))
         {
