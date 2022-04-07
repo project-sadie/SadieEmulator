@@ -13,13 +13,17 @@ public class RoomUserStatusWriter : NetworkPacketWriter
 
         foreach (var user in users)
         {
+            var statusList = user.
+                StatusMap.
+                Select(x => x.Key + (string.IsNullOrEmpty(x.Value) ? "" : " " + x.Value));
+            
             WriteLong(user.Id);
             WriteInt(user.Point.X);
             WriteInt(user.Point.Y);
             WriteString(user.Point.Z + "");
             WriteInt((int) user.DirectionHead);
             WriteInt((int) user.Direction);
-            WriteString(user.StatusMap.Count < 1 ? "" : "/" + string.Join("", user.StatusMap.Select(x => x.Key + (string.IsNullOrEmpty(x.Value) ? "" : " " + x.Value))));
+            WriteString("/" + string.Join("", statusList));
         }
     }
 }
