@@ -1,5 +1,4 @@
 using Sadie.Game.Players;
-using Sadie.Shared.Extensions;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 

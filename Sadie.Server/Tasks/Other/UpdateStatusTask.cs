@@ -1,7 +1,5 @@
-using System.Diagnostics;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
-using Sadie.Shared.Extensions;
 
 namespace SadieEmulator.Tasks.Other;
 
