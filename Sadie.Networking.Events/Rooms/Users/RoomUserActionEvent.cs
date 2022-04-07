@@ -1,4 +1,5 @@
 ﻿using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -22,6 +23,6 @@ public class RoomUserActionEvent : INetworkPacketEvent
         }
         
         var actionId = reader.ReadInt();
-        await client.WriteToStreamAsync(new RoomUserActionWriter(roomUser!.Id, actionId).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomUserActionWriter(roomUser!.Id, (RoomUserAction)actionId).GetAllBytes());
     }
 }
