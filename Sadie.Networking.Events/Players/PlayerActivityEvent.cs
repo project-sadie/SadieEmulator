@@ -1,33 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Effects;
-using Sadie.Networking.Client;
+﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Moderation;
-using Sadie.Networking.Writers.Players;
-using Sadie.Networking.Writers.Players.Clothing;
-using Sadie.Networking.Writers.Players.Effects;
-using Sadie.Networking.Writers.Players.Navigator;
-using Sadie.Networking.Writers.Players.Other;
-using Sadie.Networking.Writers.Players.Permission;
-using Sadie.Networking.Writers.Players.Rooms;
 
 namespace Sadie.Networking.Events.Players;
 
 public class PlayerActivityEvent : INetworkPacketEvent
 {
-    private readonly ILogger<PlayerActivityEvent> _logger;
-    private readonly IPlayerRepository _playerRepository;
-
-    public PlayerActivityEvent(ILogger<PlayerActivityEvent> logger, IPlayerRepository playerRepository)
+    public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
-        _logger = logger;
-        _playerRepository = playerRepository;
-    }
-    
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
-    {
-        if (client.Player is {Authenticated: true})
+        if (networkClient.Player is {Authenticated: true})
         {
             return;
         }
@@ -35,41 +15,5 @@ public class PlayerActivityEvent : INetworkPacketEvent
         var type = reader.ReadString();
         var value = reader.ReadString();
         var action = reader.ReadString();
-        
-        if (type == "Login" && value == "socket" && action == "client.auth_ok")
-        {
-            await OnLoginAsync(client);
-        }
-    }
-
-    private async Task OnLoginAsync(INetworkClient networkClient)
-    {
-        var player = networkClient.Player!;
-        
-        if (!_playerRepository.TryAddPlayer(player))
-        {
-            _logger.LogError($"Player {player.Id} could not be registered");
-            await networkClient.DisposeAsync();
-            return;
-        }
-            
-        _logger.LogInformation($"Player '{player.Username}' has logged in");
-        await _playerRepository.MarkPlayerAsOnlineAsync(player.Id);
-
-        player.Authenticated = true;
-        
-        await networkClient.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, player.HomeRoom).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.Settings.ShowNotifications).GetAllBytes());
-        await networkClient.WriteToStreamAsync(new PlayerAchievementScoreWriter(player.AchievementScore).GetAllBytes());
-
-        if (player.HasPermission("moderation_tools"))
-        {
-            await networkClient.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
-        }
     }
 }

@@ -1,8 +1,17 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Effects;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Handshake;
+using Sadie.Networking.Writers.Moderation;
+using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Players.Clothing;
+using Sadie.Networking.Writers.Players.Effects;
+using Sadie.Networking.Writers.Players.Navigator;
+using Sadie.Networking.Writers.Players.Other;
+using Sadie.Networking.Writers.Players.Permission;
+using Sadie.Networking.Writers.Players.Rooms;
 
 namespace Sadie.Networking.Events.Handshake;
 
@@ -47,6 +56,32 @@ public class SecureLoginEvent : INetworkPacketEvent
         await _playerRepository.ResetSsoTokenForPlayerAsync(player.Id);
             
         client.Player = player;
+        
+        if (!_playerRepository.TryAddPlayer(player))
+        {
+            _logger.LogError($"Player {player.Id} could not be registered");
+            await client.DisposeAsync();
+            return;
+        }
+            
+        _logger.LogInformation($"Player '{player.Username}' has logged in");
+        await _playerRepository.MarkPlayerAsOnlineAsync(player.Id);
+
+        player.Authenticated = true;
+        
+        await client.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, player.HomeRoom).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.Settings.ShowNotifications).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerAchievementScoreWriter(player.AchievementScore).GetAllBytes());
+
+        if (player.HasPermission("moderation_tools"))
+        {
+            await client.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
+        }
     }
 
     private bool ValidateSso(string sso) => 
