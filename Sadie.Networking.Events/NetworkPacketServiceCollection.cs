@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Navigator;
 using Sadie.Game.Navigator.Tabs;
+using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Respect;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking.Events.GameCenter;
@@ -19,7 +21,6 @@ using Sadie.Networking.Events.Rooms.Users.Chat;
 using Sadie.Networking.Events.Tracking;
 using Sadie.Networking.Events.Unknown;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events;
 
@@ -34,6 +35,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserTagsEvent>();
         serviceCollection.AddSingleton<RoomForwardDataEvent>();
         serviceCollection.AddSingleton<PlayerProfileEvent>();
+        serviceCollection.AddSingleton<PlayerWearingBadgesEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -90,7 +92,9 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerRelationships] = provider.GetRequiredService<PlayerRelationshipsEvent>(),
             [ClientPacketId.RoomUserTags] = provider.GetRequiredService<RoomUserTagsEvent>(),
             [ClientPacketId.RoomForwardData] = provider.GetRequiredService<RoomForwardDataEvent>(),
-            [ClientPacketId.PlayerProfile] = provider.GetRequiredService<PlayerProfileEvent>()
+            [ClientPacketId.PlayerProfile] = provider.GetRequiredService<PlayerProfileEvent>(),
+            [ClientPacketId.PlayerBadges] = provider.GetRequiredService<PlayerWearingBadgesEvent>(),
+            [ClientPacketId.RoomUserRespect] = new RoomUserRespectEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>(), provider.GetRequiredService<IPlayerRespectDao>()),
         });
     }
 }

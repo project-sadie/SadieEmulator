@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
@@ -67,13 +68,13 @@ public class PlayerFactory : IPlayerFactory
         return data;
     }
     
-    public IPlayer CreateFromRecord(DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader)
+    public IPlayer Create(DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> playerBadges)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
             _serviceProvider.GetRequiredService<ILogger<Player>>(),
             _serviceProvider.GetRequiredService<IPlayerRepository>(),
-            record.Get<long>("id"),
+            record.Get<int>("id"),
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
             record.Get<long>("home_room_id"),
@@ -82,24 +83,25 @@ public class PlayerFactory : IPlayerFactory
             record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female,
             CreateBalanceFromRecord(record),
             DateTime.TryParse(record.Get<string>("last_online"), out var timestamp) ? timestamp : DateTime.MinValue,
-            record.Get<long>("respects_received"),
-            record.Get<long>("respect_points"),
-            record.Get<long>("respect_points_pet"),
+            record.Get<int>("respects_received"),
+            record.Get<int>("respect_points"),
+            record.Get<int>("respect_points_pet"),
             CreateNavigatorSettingsFromRecord(record),
             CreateSettingsFromRecord(record),
             CreateSavedSearchesFromReader(savedSearchesReader),
             CreatePermissionsFromReader(permissionsReader),
             record.Get<long>("achievement_score"),
-            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")));
+            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
+            playerBadges);
     }
     
-    public IPlayer CreateFromBasicRecord(DatabaseRecord record)
+    public IPlayer CreateBasic(DatabaseRecord record)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
             _serviceProvider.GetRequiredService<ILogger<Player>>(),
             _serviceProvider.GetRequiredService<IPlayerRepository>(),
-            record.Get<long>("id"),
+            record.Get<int>("id"),
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
             0,

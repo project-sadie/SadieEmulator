@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
@@ -13,7 +14,7 @@ public class Player : PlayerData, IPlayer
     public Player(
         ILogger<Player> logger,
         IPlayerRepository playerRepository,
-        long id, 
+        int id, 
         string username, 
         DateTime createdAt,
         long homeRoom, 
@@ -22,15 +23,16 @@ public class Player : PlayerData, IPlayer
         AvatarGender gender, 
         IPlayerBalance balance,
         DateTime lastOnline,
-        long respectsReceived, 
-        long respectPoints, 
-        long respectPointsPet,
+        int respectsReceived, 
+        int respectPoints, 
+        int respectPointsPet,
         PlayerNavigatorSettings navigatorSettings,
         PlayerSettings settings,
         List<PlayerSavedSearch> savedSearches,
         List<string> permissions,
         long achievementScore,
-        List<string> tags) : 
+        List<string> tags,
+        List<PlayerBadge> badges) : 
         
         base(
             id, 
@@ -50,7 +52,8 @@ public class Player : PlayerData, IPlayer
             savedSearches,
             permissions,
             achievementScore, 
-            tags)
+            tags,
+            badges)
     {
         _logger = logger;
         _playerRepository = playerRepository;

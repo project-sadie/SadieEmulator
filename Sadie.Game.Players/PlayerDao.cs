@@ -1,4 +1,5 @@
 using Sadie.Database;
+using Sadie.Game.Players.Badges;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -6,10 +7,12 @@ namespace Sadie.Game.Players;
 public class PlayerDao : BaseDao, IPlayerDao
 {
     private readonly IPlayerFactory _playerFactory;
+    private readonly IPlayerBadgeDao _badgeDao;
 
-    public PlayerDao(IDatabaseProvider databaseProvider, IPlayerFactory playerFactory) : base(databaseProvider)
+    public PlayerDao(IDatabaseProvider databaseProvider, IPlayerFactory playerFactory, IPlayerBadgeDao badgeDao) : base(databaseProvider)
     {
         _playerFactory = playerFactory;
+        _badgeDao = badgeDao;
     }
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(string ssoToken)
@@ -19,6 +22,7 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `players`.`id`, 
                    `players`.`username`, 
                    `players`.`role_id`, 
+                   `players`.`created_at`, 
                    
                    `player_data`.`home_room_id`, 
                    `player_data`.`credit_balance`, 
@@ -77,8 +81,9 @@ public class PlayerDao : BaseDao, IPlayerDao
         
         var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
         var permissionsReader = await GetReaderForPermissionsAsync(record.Get<int>("role_id"));
+        var playerBadges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
             
-        return new Tuple<bool, IPlayer?>(true, _playerFactory.CreateFromRecord(record, savedSearchesReader, permissionsReader));
+        return new Tuple<bool, IPlayer?>(true, _playerFactory.Create(record, savedSearchesReader, permissionsReader, playerBadges));
     }
 
     private async Task<DatabaseReader> GetReaderForSavedSearchesAsync(long id)
@@ -179,7 +184,7 @@ public class PlayerDao : BaseDao, IPlayerDao
         var (success, record) = reader.Read();
 
         return success && record != null ?
-            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateFromBasicRecord(record)) : 
+            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record)) : 
             new Tuple<bool, IPlayerData?>(false, null);
     }
 }

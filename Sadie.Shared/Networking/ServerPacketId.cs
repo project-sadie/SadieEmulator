@@ -57,4 +57,8 @@ public class ServerPacketId
     public const short RoomForwardData = 687;
     public const short ModerationTools = 2696;
     public const short PlayerProfile = 3898;
+    public const short PlayerBadges = 1087;
+    public const short PlayerAlert = 3801;
+    public const short PlayerMessage = 2035;
+    public const short RoomUserRespect = 2815;
 }
