@@ -111,11 +111,6 @@ public class RoomUser : RoomUserData, IRoomUser
             chatMesage = null;
             return false;
         }
-
-        if (bubble == RoomChatBubble.Respect)
-        {
-            bubble = RoomChatBubble.Default;
-        }
         
         chatMesage = new RoomChatMessage(this, message, _room, bubble, 1);
         return true;
@@ -138,9 +133,7 @@ public class RoomUser : RoomUserData, IRoomUser
         {
             _logger.LogError($"Failed to dispose room user {Id}");
         }
-        else
-        {
-            await _roomUserRepository.BroadcastDataAsync(new RoomUserLeftWriter(Id).GetAllBytes());
-        }
+        
+        await _roomUserRepository.BroadcastDataAsync(new RoomUserLeftWriter(Id).GetAllBytes());
     }
 }
