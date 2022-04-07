@@ -41,12 +41,13 @@ public class ClientPacketId
     public const short RoomUserLookAt = 3301;
     public const short RoomUserSign = 1975;
     public const short RoomUserSit = 2235;
+    public const short RoomUserTags = 17;
+    public const short RoomForwardData = 2230;
+    public const short RoomUserRespect = 2694;
     public const short SaveNavigatorSettings = 3159;
     public const short NavigatorSearch = 249;
     public const short PlayerChangedAppearance = 2730;
     public const short PlayerChangedMotto = 2228;
     public const short PlayerRelationships = 2138;
-    public const short RoomUserTags = 17;
-    public const short RoomForwardData = 2230;
     public const short PlayerProfile = 3265;
 }
