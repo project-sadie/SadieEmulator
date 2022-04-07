@@ -28,7 +28,7 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
     {
         try
         {
-            while (true)
+            while (_client.Connected)
             {
                 var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
                 
