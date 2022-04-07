@@ -40,6 +40,6 @@ public class PlayerWearingBadgesEvent : INetworkPacketEvent
             return;
         }
         
-        await room!.UserRepository.BroadcastDataAsync(new PlayerBadgesWriter(playerId, playerBadges).GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerBadgesWriter(playerId, playerBadges).GetAllBytes());
     }
 }
