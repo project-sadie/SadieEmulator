@@ -1,5 +1,4 @@
-﻿using Sadie.Game.Rooms.Chat;
-using Sadie.Shared.Game.Avatar;
+﻿using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
@@ -13,7 +12,7 @@ public class RoomUserData
     public AvatarData AvatarData { get; }
 
     public readonly Dictionary<string, string> StatusMap;
-
+    
     protected RoomUserData(long id, HPoint point, HDirection directionHead, HDirection direction, AvatarData avatarData)
     {
         Id = id;
@@ -22,11 +21,9 @@ public class RoomUserData
         Direction = direction;
         AvatarData = avatarData;
         StatusMap = new Dictionary<string, string>();
-        ChatBubble = RoomChatBubble.Default;
     }
     
     protected Queue<HPoint> GoalSteps = new();
     protected HPoint? NextPoint;
-    public bool IsWalking { get; protected set; }
-    public RoomChatBubble ChatBubble;
+    protected bool IsWalking { get; set; }
 }
