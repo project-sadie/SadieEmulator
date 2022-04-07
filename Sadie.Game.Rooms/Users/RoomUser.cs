@@ -104,7 +104,7 @@ public class RoomUser : RoomUserData, IRoomUser
         }
     }
 
-    public bool TrySpeak(string message, RoomChatBubble bubble, out RoomChatMessage? chatMesage)
+    public bool TryCreateChatMessage(string message, RoomChatBubble bubble, out RoomChatMessage? chatMesage)
     {
         if (string.IsNullOrEmpty(message) || message.Length > _constants.MaxChatMessageLength)
         {
