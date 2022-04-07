@@ -50,4 +50,5 @@ public class ClientPacketId
     public const short PlayerChangedMotto = 2228;
     public const short PlayerRelationships = 2138;
     public const short PlayerProfile = 3265;
+    public const short PlayerBadges = 2091;
 }
