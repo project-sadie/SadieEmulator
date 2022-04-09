@@ -1,5 +1,6 @@
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
 
@@ -21,4 +22,5 @@ public interface IPlayerData : IAvatarData
     List<PlayerSavedSearch> SavedSearches { get; }
     List<string> Permissions { get; }
     List<PlayerBadge> Badges { get; }
+    List<PlayerFriendshipData> Friendships { get; }
 }
