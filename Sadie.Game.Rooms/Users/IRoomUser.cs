@@ -4,10 +4,10 @@ using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
-public interface IRoomUser : IAsyncDisposable
+public interface IRoomUser : IRoomUserData, IAsyncDisposable
 {
+    int Id { get; }
     INetworkObject NetworkObject { get; }
-    long Id { get; }
     HPoint Point { get; }
     HDirection DirectionHead { get; }
     HDirection Direction { get; }
