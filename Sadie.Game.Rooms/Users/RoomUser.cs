@@ -15,6 +15,8 @@ public class RoomUser : RoomUserData, IRoomUser
     private readonly Room _room;
     private readonly IRoomUserRepository _roomUserRepository;
     private readonly RoomConstants _constants;
+    
+    public int Id { get; }
     public INetworkObject NetworkObject { get; }
 
     public RoomUser(
@@ -22,18 +24,20 @@ public class RoomUser : RoomUserData, IRoomUser
         Room room,
         IRoomUserRepository roomUserRepository,
         INetworkObject networkObject, 
-        long id, 
+        int id, 
         HPoint point, 
         HDirection directionHead, 
         HDirection direction,
         AvatarData avatarData,
         RoomConstants constants) : 
-        base(id, point, directionHead, direction, avatarData)
+        base(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle))
     {
         _logger = logger;
         _room = room;
         _roomUserRepository = roomUserRepository;
         _constants = constants;
+        
+        Id = id;
         NetworkObject = networkObject;
     }
 

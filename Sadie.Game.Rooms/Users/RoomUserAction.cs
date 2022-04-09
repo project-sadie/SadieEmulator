@@ -6,7 +6,6 @@ public enum RoomUserAction
     Wave = 1,
     Kiss = 2,
     Laugh = 3,
-    Unknown = 4,
     Idle = 5,
     Jump = 6,
     ThumbsUp = 7

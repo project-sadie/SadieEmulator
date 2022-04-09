@@ -3,24 +3,26 @@ using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserData
+public class RoomUserData : IRoomUserData
 {
-    public long Id { get; }
     public HPoint Point { get; protected set;  }
     public HDirection DirectionHead { get; protected set; }
     public HDirection Direction { get; protected set; }
     public AvatarData AvatarData { get; }
 
     public readonly Dictionary<string, string> StatusMap;
+    public DateTime LastAction { get; set; }
+    public TimeSpan IdleTime { get; }
+    public bool IsIdle => DateTime.Now - LastAction >= IdleTime;
     
-    protected RoomUserData(long id, HPoint point, HDirection directionHead, HDirection direction, AvatarData avatarData)
+    protected RoomUserData(HPoint point, HDirection directionHead, HDirection direction, AvatarData avatarData, TimeSpan idleTime)
     {
-        Id = id;
         Point = point;
         DirectionHead = directionHead;
         Direction = direction;
         AvatarData = avatarData;
         StatusMap = new Dictionary<string, string>();
+        IdleTime = idleTime;
     }
     
     protected Queue<HPoint> GoalSteps = new();
