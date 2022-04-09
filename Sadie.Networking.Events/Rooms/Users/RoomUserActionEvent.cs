@@ -22,7 +22,19 @@ public class RoomUserActionEvent : INetworkPacketEvent
             return;
         }
         
-        var actionId = reader.ReadInt();
-        await client.WriteToStreamAsync(new RoomUserActionWriter(roomUser!.Id, (RoomUserAction)actionId).GetAllBytes());
+        var action = (RoomUserAction) reader.ReadInt();
+
+        if (action == RoomUserAction.Idle)
+        {
+            if (!roomUser.IsIdle)
+            {
+                roomUser!.LastAction -= roomUser.IdleTime;
+            }
+            
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(roomUser).GetAllBytes());
+            return;
+        }
+
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, action).GetAllBytes());
     }
 }
