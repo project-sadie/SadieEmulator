@@ -52,4 +52,5 @@ public class ClientPacketId
     public const short PlayerRelationships = 2138;
     public const short PlayerProfile = 3265;
     public const short PlayerBadges = 2091;
+    public const short PlayerFriendRequest = 3157;
 }

@@ -14,7 +14,7 @@ using Sadie.Networking.Events.HotelView;
 using Sadie.Networking.Events.Navigator;
 using Sadie.Networking.Events.Players;
 using Sadie.Networking.Events.Players.Club;
-using Sadie.Networking.Events.Players.Messenger;
+using Sadie.Networking.Events.Players.Friendships;
 using Sadie.Networking.Events.Rooms;
 using Sadie.Networking.Events.Rooms.Users;
 using Sadie.Networking.Events.Rooms.Users.Chat;
@@ -51,7 +51,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerBalance] = new PlayerBalanceEvent(),
             [ClientPacketId.PlayerClubMembership] = new PlayerClubMembershipEvent(),
             [ClientPacketId.NavigatorData] = new NavigatorDataEvent(),
-            [ClientPacketId.PlayerFriendsList] = new PlayerFriendsListEvent(),
+            [ClientPacketId.PlayerFriendsList] = new PlayerFriendsEvent(),
             [ClientPacketId.PlayerMessengerInit] = new PlayerMessengerInitEvent(),
             [ClientPacketId.PlayerPing] = new PlayerPingEvent(),
             [ClientPacketId.HotelViewData] = new HotelViewDataEvent(),
@@ -63,7 +63,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PromotedRooms] = new PromotedRoomsEvent(),
             [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(provider.GetRequiredService<IRoomCategoryRepository>()),
             [ClientPacketId.NavigatorEventCategories] = new NavigatorEventCategoriesEvent(),
-            [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsListEvent(provider.GetRequiredService<IPlayerFriendshipRepository>()),
+            [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsEvent(provider.GetRequiredService<IPlayerFriendshipRepository>()),
             [ClientPacketId.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),
             [ClientPacketId.UnknownEvent2] = new UnknownEvent2(),
             [ClientPacketId.RoomLoaded] = ActivatorUtilities.CreateInstance<RoomLoadedEvent>(provider),
@@ -96,6 +96,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerProfile] = provider.GetRequiredService<PlayerProfileEvent>(),
             [ClientPacketId.PlayerBadges] = provider.GetRequiredService<PlayerWearingBadgesEvent>(),
             [ClientPacketId.RoomUserRespect] = new RoomUserRespectEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>(), provider.GetRequiredService<IPlayerRespectDao>()),
+            [ClientPacketId.PlayerFriendRequest] = new PlayerFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>(), provider.GetRequiredService<PlayerConstants>()),
         });
     }
 }
