@@ -9,10 +9,9 @@ public class PlayerSettings
     public bool BlockRoomInvites { get; }
     public bool BlockCameraFollow { get; }
     public int UiFlags { get; }
-    public int ChatColor { get; }
     public bool ShowNotifications { get; }
     
-    public PlayerSettings(int systemVolume, int furnitureVolume, int traxVolume, bool oldChat, bool blockRoomInvites, bool blockCameraFollow, int uiFlags, int chatColor, bool showNotifications)
+    public PlayerSettings(int systemVolume, int furnitureVolume, int traxVolume, bool oldChat, bool blockRoomInvites, bool blockCameraFollow, int uiFlags, bool showNotifications)
     {
         SystemVolume = systemVolume;
         FurnitureVolume = furnitureVolume;
@@ -21,7 +20,6 @@ public class PlayerSettings
         BlockRoomInvites = blockRoomInvites;
         BlockCameraFollow = blockCameraFollow;
         UiFlags = uiFlags;
-        ChatColor = chatColor;
         ShowNotifications = showNotifications;
     }
 }

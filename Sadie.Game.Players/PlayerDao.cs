@@ -2,6 +2,7 @@ using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
 
@@ -18,7 +19,7 @@ public class PlayerDao : BaseDao, IPlayerDao
         _friendshipDao = friendshipDao;
     }
 
-    public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(string ssoToken)
+    public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
     {
         var reader = await GetReaderAsync(@"
             SELECT 
@@ -36,10 +37,12 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_data`.`respect_points_pet`,
                    `player_data`.`last_online`,
                    `player_data`.`achievement_score`,
+                   `player_data`.`allow_friend_requests`,
                    
                    `player_avatar_data`.`figure_code`, 
                    `player_avatar_data`.`motto`, 
                    `player_avatar_data`.`gender`, 
+                   `player_avatar_data`.`chat_bubble`,
                    
                    (SELECT GROUP_CONCAT(`name`) AS `comma_seperated_tags`
                     FROM `player_tags`
@@ -59,7 +62,6 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_game_settings`.`block_room_invited`,
                    `player_game_settings`.`block_camera_follow`,
                    `player_game_settings`.`ui_flags`,
-                   `player_game_settings`.`chat_color`,
                    `player_game_settings`.`show_notifications`,
                    
                     (SELECT COUNT(*) FROM `player_respects` WHERE `target_player_id` = `players`.`id`) AS `respects_received`
@@ -85,9 +87,9 @@ public class PlayerDao : BaseDao, IPlayerDao
         var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
         var permissionsReader = await GetReaderForPermissionsAsync(record.Get<int>("role_id"));
         var badges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
-        var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"), PlayerFriendshipStatus.Accepted);
+        var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"));
             
-        return new Tuple<bool, IPlayer?>(true, _playerFactory.Create(record, savedSearchesReader, permissionsReader, badges, friendships));
+        return new Tuple<bool, IPlayer?>(true, _playerFactory.Create(networkObject, record, savedSearchesReader, permissionsReader, badges, friendships));
     }
 
     private async Task<DatabaseReader> GetReaderForSavedSearchesAsync(long id)
@@ -164,7 +166,6 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
     {
-        
         var reader = await GetReaderForPlayerData("id", new Dictionary<string, object>
         {
             {"value", playerId}
@@ -172,9 +173,13 @@ public class PlayerDao : BaseDao, IPlayerDao
 
         var (success, record) = reader.Read();
 
-        return success && record != null ?
-            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record)) : 
-            new Tuple<bool, IPlayerData?>(false, null);
+        if (success && record != null)
+        {
+            var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"));
+            return new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record, friendships));
+        }
+
+        return new Tuple<bool, IPlayerData?>(false, null);
     }
 
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(string username)
@@ -186,9 +191,13 @@ public class PlayerDao : BaseDao, IPlayerDao
 
         var (success, record) = reader.Read();
 
-        return success && record != null ?
-            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record)) : 
-            new Tuple<bool, IPlayerData?>(false, null);
+        if (success && record != null)
+        {
+            var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"));
+            return new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record, friendships));
+        }
+
+        return new Tuple<bool, IPlayerData?>(false, null);
     }
 
     private async Task<DatabaseReader> GetReaderForPlayerData(string column, Dictionary<string, object> parameters)
@@ -201,6 +210,7 @@ public class PlayerDao : BaseDao, IPlayerDao
             
                    `player_data`.`last_online`,
                    `player_data`.`achievement_score`,
+                   `player_data`.`allow_friend_requests`,
                    
                    `player_avatar_data`.`figure_code`, 
                    `player_avatar_data`.`motto`, 

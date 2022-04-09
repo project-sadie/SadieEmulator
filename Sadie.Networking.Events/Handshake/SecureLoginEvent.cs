@@ -40,7 +40,7 @@ public class SecureLoginEvent : INetworkPacketEvent
             return;
         }
             
-        var (foundPlayer, player) = await _playerRepository.TryGetPlayerBySsoAsync(sso);
+        var (foundPlayer, player) = await _playerRepository.TryGetPlayerBySsoAsync(client, sso);
 
         if (!foundPlayer || player == null) // put the second check to shut my IDE up about nullable markings.
         {

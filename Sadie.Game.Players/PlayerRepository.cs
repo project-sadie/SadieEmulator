@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
 
@@ -27,9 +28,9 @@ public class PlayerRepository : IPlayerRepository
         return player != default;
     }
 
-    public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoAsync(string sso)
+    public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
     {
-        return await _playerDao.TryGetPlayerBySsoTokenAsync(sso);
+        return await _playerDao.TryGetPlayerBySsoTokenAsync(networkObject, sso);
     }
 
     public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Id, player);

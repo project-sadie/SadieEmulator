@@ -4,16 +4,19 @@ using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
 
 public class Player : PlayerData, IPlayer
 {
+    public INetworkObject NetworkObject { get; }
     private readonly ILogger<Player> _logger;
 
     public Player(
         ILogger<Player> logger,
         int id, 
+        INetworkObject networkObject,
         string username, 
         DateTime createdAt,
         long homeRoom, 
@@ -32,7 +35,9 @@ public class Player : PlayerData, IPlayer
         long achievementScore,
         List<string> tags,
         List<PlayerBadge> badges, 
-        List<PlayerFriendshipData> friendships) : 
+        List<PlayerFriendshipData> friendships, 
+        int chatBubble,
+        bool acceptFriendRequests) : 
         
         base(
             id, 
@@ -54,8 +59,11 @@ public class Player : PlayerData, IPlayer
             achievementScore, 
             tags,
             badges, 
-            friendships)
+            friendships,
+            chatBubble, 
+            acceptFriendRequests)
     {
+        NetworkObject = networkObject;
         _logger = logger;
     }
     

@@ -23,4 +23,5 @@ public interface IPlayerData : IAvatarData
     List<string> Permissions { get; }
     List<PlayerBadge> Badges { get; }
     List<PlayerFriendshipData> Friendships { get; }
+    bool AllowFriendRequests { get; }
 }

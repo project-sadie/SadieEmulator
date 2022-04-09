@@ -28,10 +28,11 @@ public class PlayerData : AvatarData, IPlayerData
         long achievementScore,
         List<string> tags,
         List<PlayerBadge> badges, 
-        List<PlayerFriendshipData> friendships) : base(username, figureCode, motto, gender, achievementScore, tags)
+        List<PlayerFriendshipData> friendships,
+        int chatBubble, 
+        bool allowFriendRequests) : base(username, figureCode, motto, gender, achievementScore, tags, chatBubble)
     {
         Id = id;
-        Username = username;
         CreatedAt = createdAt;
         HomeRoom = homeRoom;
         Balance = balance;
@@ -45,10 +46,10 @@ public class PlayerData : AvatarData, IPlayerData
         Permissions = permissions;
         Badges = badges;
         Friendships = friendships;
+        AllowFriendRequests = allowFriendRequests;
     }
 
     public int Id { get; }
-    public string Username { get; }
     public DateTime CreatedAt { get; }
     public long HomeRoom { get; }
     public IPlayerBalance Balance { get; }
@@ -62,4 +63,5 @@ public class PlayerData : AvatarData, IPlayerData
     public List<string> Permissions { get; }
     public List<PlayerBadge> Badges { get; }
     public List<PlayerFriendshipData> Friendships { get; }
+    public bool AllowFriendRequests { get; }
 }

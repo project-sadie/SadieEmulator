@@ -9,4 +9,5 @@ public interface IAvatarData
     long LastRoomLoaded { get; set; }
     long AchievementScore { get; set; }
     List<string> Tags { get; set; }
+    public int ChatBubble { get; }
 }

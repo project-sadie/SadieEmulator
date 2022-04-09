@@ -14,13 +14,23 @@ public class PlayerFriendshipRepository : IPlayerFriendshipRepository
         return await _friendshipDao.GetFriendshipRecordsAsync(playerId, status);
     }
 
-    public async Task<int> GetFriendshipCountAsync(long playerId, PlayerFriendshipStatus status)
+    public async Task<int> GetFriendsCountAsync(long playerId, PlayerFriendshipStatus status)
     {
         return await _friendshipDao.GetFriendshipCountAsync(playerId, status);
     }
 
-    public async Task<bool> DoesFriendshipExistAsync(long player1Id, long player2Id, PlayerFriendshipStatus status)
+    public async Task<bool> ExistsAsync(long player1Id, long player2Id, PlayerFriendshipStatus status)
     {
         return await _friendshipDao.DoesFriendshipExistAsync(player1Id, player2Id, status);
+    }
+
+    public async Task CreateAsync(long player1Id, long player2Id, PlayerFriendshipStatus status)
+    {
+        await _friendshipDao.CreateAsync(player1Id, player2Id, status);
+    }
+
+    public Task UpdateAsync(long player1Id, long player2Id, PlayerFriendshipStatus newStatus)
+    {
+        throw new NotImplementedException();
     }
 }

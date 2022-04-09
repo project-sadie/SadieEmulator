@@ -21,9 +21,9 @@ public class PlayerRelationshipsEvent : INetworkPacketEvent
         
         var playerRelations = new Dictionary<int, List<PlayerFriendshipData>>
         {
-            {1, playerFriends.Where(x => x.FriendshipType == PlayerFriendshipType.Lover).ToList()},
-            {2, playerFriends.Where(x => x.FriendshipType == PlayerFriendshipType.Friend).ToList()},
-            {3, playerFriends.Where(x => x.FriendshipType == PlayerFriendshipType.Hater).ToList()}
+            {1, playerFriends.Where(x => x.Type == PlayerFriendshipType.Lover).ToList()},
+            {2, playerFriends.Where(x => x.Type == PlayerFriendshipType.Friend).ToList()},
+            {3, playerFriends.Where(x => x.Type == PlayerFriendshipType.Hater).ToList()}
         };
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, playerRelations).GetAllBytes());

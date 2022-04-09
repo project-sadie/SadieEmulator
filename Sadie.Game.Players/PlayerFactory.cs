@@ -6,6 +6,7 @@ using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
 
@@ -69,7 +70,7 @@ public class PlayerFactory : IPlayerFactory
         return data;
     }
     
-    public IPlayer Create(DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> badges, List<PlayerFriendshipData> friendships)
+    public IPlayer Create(INetworkObject networkObject, DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> badges, List<PlayerFriendshipData> friendships)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
@@ -94,16 +95,19 @@ public class PlayerFactory : IPlayerFactory
             record.Get<long>("achievement_score"),
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
             badges,
-            friendships);
+            friendships,
+            record.Get<int>("chat_bubble"),
+            record.Get<int>("allow_friend_requests") == 1);
     }
     
-    public IPlayer CreateBasic(DatabaseRecord record)
+    public IPlayer CreateBasic(DatabaseRecord record, List<PlayerFriendshipData> friendships)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
             _serviceProvider.GetRequiredService<ILogger<Player>>(),
             _serviceProvider.GetRequiredService<IPlayerRepository>(),
             record.Get<int>("id"),
+            null,
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
             0,
@@ -120,7 +124,11 @@ public class PlayerFactory : IPlayerFactory
             new List<PlayerSavedSearch>(),
             new List<string>(),
             0,
-            new List<string>());
+            new List<string>(),
+            new List<PlayerBadge>(),
+            friendships,
+            1,
+            record.Get<int>("allow_friend_requests") == 1);
     }
 
     private static PlayerNavigatorSettings CreateNavigatorSettingsFromRecord(DatabaseRecord record)
@@ -144,7 +152,6 @@ public class PlayerFactory : IPlayerFactory
             record.Get<int>("block_room_invited") == 1,
             record.Get<int>("block_camera_follow") == 1,
             record.Get<int>("ui_flags"),
-            record.Get<int>("chat_color"),
             record.Get<int>("show_notifications") == 1);
     }
 }

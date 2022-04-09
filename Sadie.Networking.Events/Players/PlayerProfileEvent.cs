@@ -49,9 +49,9 @@ public class PlayerProfileEvent : INetworkPacketEvent
             return;
         }
 
-        var playerFriends = await _friendshipRepository.GetFriendshipCountAsync(playerId, PlayerFriendshipStatus.Accepted);
-        var friendshipExists = await _friendshipRepository.DoesFriendshipExistAsync(client.Player.Id, playerId, PlayerFriendshipStatus.Accepted);
-        var friendshipRequestExists = await _friendshipRepository.DoesFriendshipExistAsync(client.Player.Id, playerId, PlayerFriendshipStatus.Pending);
+        var playerFriends = await _friendshipRepository.GetFriendsCountAsync(playerId, PlayerFriendshipStatus.Accepted);
+        var friendshipExists = await _friendshipRepository.ExistsAsync(client.Player.Id, playerId, PlayerFriendshipStatus.Accepted);
+        var friendshipRequestExists = await _friendshipRepository.ExistsAsync(client.Player.Id, playerId, PlayerFriendshipStatus.Pending);
         
         await client.WriteToStreamAsync(new PlayerProfileWriter(playerData, playerOnline, playerFriends, friendshipExists, friendshipRequestExists).GetAllBytes());
     }
