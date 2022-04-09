@@ -48,6 +48,7 @@ public class ServerPacketId
     public const short RoomUserLeft = 2661;
     public const short RoomUserDance = 2233;
     public const short RoomUserAction = 1631;
+    public const short RoomUserIdle = 1797;
     public const short RoomUserTyping = 1717;
     public const short NavigatorRooms = 2690;
     public const short PlayerChangedAppearance = 2429;
