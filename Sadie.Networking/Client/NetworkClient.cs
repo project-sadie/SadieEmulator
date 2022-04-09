@@ -12,6 +12,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     private readonly ILogger<NetworkClient> _logger;
     private readonly INetworkClientRepository _clientRepository;
     private readonly TcpClient _tcpClient;
+    private readonly IPlayerRepository _playerRepository;
     private readonly CancellationTokenSource _cts = new();
         
     public NetworkClient(
@@ -21,12 +22,14 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         TcpClient tcpClient, 
         INetworkPacketHandler packetHandler, 
         ILogger<NetworkClientProcessComponent> baseLogger, 
-        NetworkingConstants constants) : base(baseLogger, tcpClient, packetHandler, constants)
+        NetworkingConstants constants,
+        IPlayerRepository playerRepository) : base(baseLogger, tcpClient, packetHandler, constants)
     {
         _guid = guid;
         _logger = logger;
         _clientRepository = clientRepository;
         _tcpClient = tcpClient;
+        _playerRepository = playerRepository;
 
         SetClient(this);
     }
@@ -66,13 +69,12 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
             RoomUser = null;
         }
 
-        if (Player != null)
+        if (Player != null && await _playerRepository.TryRemovePlayerAsync(Player.Id))
         {
-            await Player.DisposeAsync();
             Player = null;
         }
         
-        if (!_clientRepository.TryRemove(_guid))
+        if (!await _clientRepository.TryRemoveAsync(_guid))
         {
             _logger.LogError("Failed to dispose network client");
         }

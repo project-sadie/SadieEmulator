@@ -1,14 +1,17 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 
 namespace Sadie.Game.Players;
 
 public class PlayerRepository : IPlayerRepository
 {
+    private readonly ILogger<PlayerRepository> _logger;
     private readonly IPlayerDao _playerDao;
     private readonly ConcurrentDictionary<long, IPlayer> _players;
 
-    public PlayerRepository(IPlayerDao playerDao)
+    public PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playerDao)
     {
+        _logger = logger;
         _playerDao = playerDao;
         _players = new ConcurrentDictionary<long, IPlayer>();
     }
@@ -18,13 +21,33 @@ public class PlayerRepository : IPlayerRepository
         return _players.TryGetValue(id, out player);
     }
 
+    public bool TryGetPlayerByUsername(string username, out IPlayer? player)
+    {
+        player = _players.Values.FirstOrDefault(x => x.Username == username);
+        return player != default;
+    }
+
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoAsync(string sso)
     {
         return await _playerDao.TryGetPlayerBySsoTokenAsync(sso);
     }
 
     public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Id, player);
-    public bool TryRemovePlayer(long playerId) => _players.TryRemove(playerId, out _);
+
+    public async Task<bool> TryRemovePlayerAsync(long playerId)
+    {
+        var result = _players.TryRemove(playerId, out var player);
+
+        if (player == null)
+        {
+            return result;
+        }
+        
+        await MarkPlayerAsOfflineAsync(player);
+        await player!.DisposeAsync();
+
+        return result;
+    }
 
     public async Task MarkPlayerAsOnlineAsync(long id)
     {
@@ -51,11 +74,19 @@ public class PlayerRepository : IPlayerRepository
         return await _playerDao.TryGetPlayerData(playerId);
     }
 
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(string username)
+    {
+        return await _playerDao.TryGetPlayerData(username);
+    }
+
     public async ValueTask DisposeAsync()
     {
         foreach (var player in _players.Values)
         {
-            await player.DisposeAsync();
+            if (!await TryRemovePlayerAsync(player.Id))
+            {
+                _logger.LogError($"Failed to properly dispose of player {player.Username}");
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
 
@@ -9,11 +10,9 @@ namespace Sadie.Game.Players;
 public class Player : PlayerData, IPlayer
 {
     private readonly ILogger<Player> _logger;
-    private readonly IPlayerRepository _playerRepository;
 
     public Player(
         ILogger<Player> logger,
-        IPlayerRepository playerRepository,
         int id, 
         string username, 
         DateTime createdAt,
@@ -32,7 +31,8 @@ public class Player : PlayerData, IPlayer
         List<string> permissions,
         long achievementScore,
         List<string> tags,
-        List<PlayerBadge> badges) : 
+        List<PlayerBadge> badges, 
+        List<PlayerFriendshipData> friendships) : 
         
         base(
             id, 
@@ -53,21 +53,19 @@ public class Player : PlayerData, IPlayer
             permissions,
             achievementScore, 
             tags,
-            badges)
+            badges, 
+            friendships)
     {
         _logger = logger;
-        _playerRepository = playerRepository;
     }
     
     public bool Authenticated { get; set; }
 
     public bool HasPermission(string name) => Permissions.Contains(name);
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
-        _playerRepository.TryRemovePlayer(Id);
-        await _playerRepository.MarkPlayerAsOfflineAsync(this);
-        
         _logger.LogInformation($"Player '{Username}' has logged out");
+        return ValueTask.CompletedTask;
     }
 }
