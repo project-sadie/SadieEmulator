@@ -19,9 +19,16 @@ public class NetworkClientRepository : INetworkClientRepository
         _clients[guid] = client;
     }
 
-    public bool TryRemove(Guid guid)
+    public async Task<bool> TryRemoveAsync(Guid guid)
     {
-        return _clients.TryRemove(guid, out _);
+        var result = _clients.TryRemove(guid, out var client);
+        
+        if (client != null)
+        {
+            await client.DisposeAsync();
+        }
+
+        return result;
     }
 
     public async Task DisconnectIdleClientsAsync()
