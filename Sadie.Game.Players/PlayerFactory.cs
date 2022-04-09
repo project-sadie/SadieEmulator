@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
 
@@ -68,7 +69,7 @@ public class PlayerFactory : IPlayerFactory
         return data;
     }
     
-    public IPlayer Create(DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> playerBadges)
+    public IPlayer Create(DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> badges, List<PlayerFriendshipData> friendships)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
@@ -92,7 +93,8 @@ public class PlayerFactory : IPlayerFactory
             CreatePermissionsFromReader(permissionsReader),
             record.Get<long>("achievement_score"),
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
-            playerBadges);
+            badges,
+            friendships);
     }
     
     public IPlayer CreateBasic(DatabaseRecord record)

@@ -1,5 +1,6 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
+using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -8,11 +9,13 @@ public class PlayerDao : BaseDao, IPlayerDao
 {
     private readonly IPlayerFactory _playerFactory;
     private readonly IPlayerBadgeDao _badgeDao;
+    private readonly IPlayerFriendshipDao _friendshipDao;
 
-    public PlayerDao(IDatabaseProvider databaseProvider, IPlayerFactory playerFactory, IPlayerBadgeDao badgeDao) : base(databaseProvider)
+    public PlayerDao(IDatabaseProvider databaseProvider, IPlayerFactory playerFactory, IPlayerBadgeDao badgeDao, IPlayerFriendshipDao friendshipDao) : base(databaseProvider)
     {
         _playerFactory = playerFactory;
         _badgeDao = badgeDao;
+        _friendshipDao = friendshipDao;
     }
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(string ssoToken)
@@ -81,9 +84,10 @@ public class PlayerDao : BaseDao, IPlayerDao
         
         var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
         var permissionsReader = await GetReaderForPermissionsAsync(record.Get<int>("role_id"));
-        var playerBadges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
+        var badges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
+        var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"), PlayerFriendshipStatus.Accepted);
             
-        return new Tuple<bool, IPlayer?>(true, _playerFactory.Create(record, savedSearchesReader, permissionsReader, playerBadges));
+        return new Tuple<bool, IPlayer?>(true, _playerFactory.Create(record, savedSearchesReader, permissionsReader, badges, friendships));
     }
 
     private async Task<DatabaseReader> GetReaderForSavedSearchesAsync(long id)
@@ -160,7 +164,36 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
     {
-        var reader = await GetReaderAsync(@"
+        
+        var reader = await GetReaderForPlayerData("id", new Dictionary<string, object>
+        {
+            {"value", playerId}
+        });
+
+        var (success, record) = reader.Read();
+
+        return success && record != null ?
+            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record)) : 
+            new Tuple<bool, IPlayerData?>(false, null);
+    }
+
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(string username)
+    {
+        var reader = await GetReaderForPlayerData("username", new Dictionary<string, object>
+        {
+            {"value", username}
+        });
+
+        var (success, record) = reader.Read();
+
+        return success && record != null ?
+            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record)) : 
+            new Tuple<bool, IPlayerData?>(false, null);
+    }
+
+    private async Task<DatabaseReader> GetReaderForPlayerData(string column, Dictionary<string, object> parameters)
+    {
+        return await GetReaderAsync(@$"
             SELECT 
                    `players`.`id`, 
                    `players`.`username`, 
@@ -176,15 +209,6 @@ public class PlayerDao : BaseDao, IPlayerDao
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
                 INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
-            WHERE `players`.`id` = @playerId LIMIT 1;", new Dictionary<string, object>
-        {
-            { "playerId", playerId }
-        });
-
-        var (success, record) = reader.Read();
-
-        return success && record != null ?
-            new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record)) : 
-            new Tuple<bool, IPlayerData?>(false, null);
+            WHERE `players`.`{column}` = @value LIMIT 1;", parameters);
     }
 }

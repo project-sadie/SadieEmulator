@@ -19,7 +19,7 @@ public class PlayerFriendshipRepository : IPlayerFriendshipRepository
         return await _friendshipDao.GetFriendshipCountAsync(playerId, status);
     }
 
-    public async Task<bool> DoesFriendshipExist(long player1Id, long player2Id, PlayerFriendshipStatus status)
+    public async Task<bool> DoesFriendshipExistAsync(long player1Id, long player2Id, PlayerFriendshipStatus status)
     {
         return await _friendshipDao.DoesFriendshipExistAsync(player1Id, player2Id, status);
     }

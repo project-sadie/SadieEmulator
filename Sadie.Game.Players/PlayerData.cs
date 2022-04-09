@@ -1,5 +1,6 @@
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
 
@@ -26,7 +27,8 @@ public class PlayerData : AvatarData, IPlayerData
         List<string> permissions,
         long achievementScore,
         List<string> tags,
-        List<PlayerBadge> badges) : base(username, figureCode, motto, gender, achievementScore, tags)
+        List<PlayerBadge> badges, 
+        List<PlayerFriendshipData> friendships) : base(username, figureCode, motto, gender, achievementScore, tags)
     {
         Id = id;
         Username = username;
@@ -42,6 +44,7 @@ public class PlayerData : AvatarData, IPlayerData
         SavedSearches = savedSearches;
         Permissions = permissions;
         Badges = badges;
+        Friendships = friendships;
     }
 
     public int Id { get; }
@@ -58,4 +61,5 @@ public class PlayerData : AvatarData, IPlayerData
     public List<PlayerSavedSearch> SavedSearches { get; }
     public List<string> Permissions { get; }
     public List<PlayerBadge> Badges { get; }
+    public List<PlayerFriendshipData> Friendships { get; }
 }
