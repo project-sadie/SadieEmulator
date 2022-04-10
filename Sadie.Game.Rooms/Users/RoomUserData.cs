@@ -9,8 +9,7 @@ public class RoomUserData : IRoomUserData
     public HDirection DirectionHead { get; protected set; }
     public HDirection Direction { get; protected set; }
     public AvatarData AvatarData { get; }
-
-    public readonly Dictionary<string, string> StatusMap;
+    public Dictionary<string, string> StatusMap { get; }
     public DateTime LastAction { get; set; }
     public TimeSpan IdleTime { get; }
     public bool IsIdle => DateTime.Now - LastAction >= IdleTime;
