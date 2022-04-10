@@ -1,4 +1,3 @@
-using System.Data;
 using MySqlConnector;
 
 namespace Sadie.Database;

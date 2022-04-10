@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
