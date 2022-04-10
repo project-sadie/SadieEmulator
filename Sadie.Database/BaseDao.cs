@@ -11,15 +11,12 @@ public class BaseDao
         _databaseProvider = databaseProvider;
     }
 
-    protected async Task<DatabaseReader> GetReaderAsync(string commandText, Dictionary<string, object>? parameters = default)
+    protected async Task<DatabaseReader> GetReaderAsync(string commandText, Dictionary<string, object> parameters = null!)
     {
         using var dbConnection = _databaseProvider.GetConnection();
         dbConnection.SetQuery(commandText);
 
-        if (parameters is {Count: > 0})
-        {
-            dbConnection.AddParameters(parameters);
-        }
+        AddOptionalParameters(dbConnection, parameters);
 
         var reader = await dbConnection.ExecuteReaderAsync();
         var batch = reader.ToListOfDictionaries();
@@ -29,21 +26,31 @@ public class BaseDao
         );
     }
 
-    protected async Task<int> QueryAsync(string commandText, Dictionary<string, object> parameters)
+    protected async Task<int> QueryAsync(string commandText, Dictionary<string, object> parameters = null!)
     {
         using var dbConnection = _databaseProvider.GetConnection();
         dbConnection.SetQuery(commandText);
-        dbConnection.AddParameters(parameters);
+
+        AddOptionalParameters(dbConnection, parameters);
 
         return await dbConnection.ExecuteNonQueryAsync();
     }
 
-    protected Task<int> CountAsync(string commandText, Dictionary<string, object> parameters)
+    protected async Task<int> CountAsync(string commandText, Dictionary<string, object> parameters = null!)
     {
         using var dbConnection = _databaseProvider.GetConnection();
         dbConnection.SetQuery(commandText);
-        dbConnection.AddParameters(parameters);
 
-        return Task.FromResult(dbConnection.ExecuteScalar<int>());
+        AddOptionalParameters(dbConnection, parameters);
+
+        return await dbConnection.ExecuteScalarAsync<int>();
+    }
+
+    private static void AddOptionalParameters(IDatabaseConnection connection, Dictionary<string, object> parameters)
+    {
+        if (parameters is {Count: > 0})
+        {
+            connection.AddParameters(parameters);
+        }
     }
 }

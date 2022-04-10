@@ -1,14 +1,15 @@
 using System.Data;
 using System.Globalization;
+using MySqlConnector;
 
 namespace Sadie.Database;
 
 public class DatabaseConnection : IDatabaseConnection
 {
-    private readonly IDbConnection _connection;
-    private readonly IDbCommand _command;
+    private readonly MySqlConnection _connection;
+    private readonly MySqlCommand _command;
 
-    public DatabaseConnection(IDbConnection connection, IDbCommand command)
+    public DatabaseConnection(MySqlConnection connection, MySqlCommand command)
     {
         _connection = connection;
         _command = command;
@@ -27,14 +28,14 @@ public class DatabaseConnection : IDatabaseConnection
         return _command.ExecuteNonQuery();
     }
 
-    public Task<int> ExecuteNonQueryAsync()
+    public async Task<int> ExecuteNonQueryAsync()
     {
-        return Task.FromResult(_command.ExecuteNonQuery());
+        return await _command.ExecuteNonQueryAsync();
     }
 
-    public Task<IDataReader> ExecuteReaderAsync()
+    public async Task<MySqlDataReader> ExecuteReaderAsync()
     {
-        return Task.FromResult(_command.ExecuteReader());
+        return await _command.ExecuteReaderAsync();
     }
 
     public void AddParameter(string name, object value)
@@ -60,10 +61,15 @@ public class DatabaseConnection : IDatabaseConnection
         return (T) Convert.ChangeType(_command.ExecuteScalar(), typeof(T), CultureInfo.InvariantCulture)!;
     }
         
-    public int GetLastId()
+    public async Task<T> ExecuteScalarAsync<T>()
+    {
+        return (T) Convert.ChangeType(await _command.ExecuteScalarAsync(), typeof(T), CultureInfo.InvariantCulture)!;
+    }
+        
+    public async Task<int> GetLastIdAsync()
     {
         SetQuery("SELECT LAST_INSERT_ID();");
-        return ExecuteScalar<int>();
+        return await ExecuteScalarAsync<int>();
     }
         
     public void Dispose()
