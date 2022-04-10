@@ -11,19 +11,19 @@ internal static class Program
     
     private static async Task Main()
     {
+        SetEventHandlers();
+
+        var host = Startup.CreateHost();
+        _server = host.Services.GetRequiredService<IServer>();
+        await _server.RunAsync();
+    }
+
+    private static void SetEventHandlers()
+    {
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
         AppDomain.CurrentDomain.ProcessExit += OnClose;
         
         System.Console.CancelKeyPress += OnClose;
-        
-        var host = Host.CreateDefaultBuilder()
-            .ConfigureServices((context, collection) => ServerServiceCollection.AddServices(collection, context.Configuration))
-            .UseSerilog((hostContext, _, logger) => logger.ReadFrom.Configuration(hostContext.Configuration))
-            .Build();
-        
-        _server = host.Services.GetRequiredService<IServer>();
-        
-        await _server.RunAsync();
     }
 
     private static async void OnClose(object? sender, EventArgs e)
