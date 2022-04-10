@@ -31,9 +31,9 @@ public class RoomLoadedEvent : INetworkPacketEvent
         {
             var (foundLast, lastRoom) = await _roomRepository.TryLoadRoomByIdAsync(player.LastRoomLoaded);
 
-            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser))
+            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
             {
-                await oldUser!.DisposeAsync();
+                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id);
             }
         }
 

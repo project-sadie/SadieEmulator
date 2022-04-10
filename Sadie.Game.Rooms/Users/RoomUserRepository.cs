@@ -1,29 +1,52 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
+using Sadie.Game.Rooms.Packets;
 
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUserRepository : IRoomUserRepository
 {
-    private readonly ConcurrentDictionary<long, RoomUser> _users;
+    private readonly ILogger<RoomUserRepository> _logger;
+    private readonly ConcurrentDictionary<long, IRoomUser> _users;
 
-    public RoomUserRepository()
+    public RoomUserRepository(ILogger<RoomUserRepository> logger)
     {
-        _users = new ConcurrentDictionary<long, RoomUser>();
+        _logger = logger;
+        _users = new ConcurrentDictionary<long, IRoomUser>();
     }
 
-    public ICollection<RoomUser> GetAll() => _users.Values;
-    public bool TryAdd(RoomUser user) => _users.TryAdd(user.Id, user);
-    public bool TryGet(long id, out RoomUser? user) => _users.TryGetValue(id, out user);
+    public ICollection<IRoomUser> GetAll() => _users.Values;
+    public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Id, user);
+    public bool TryGet(long id, out IRoomUser? user) => _users.TryGetValue(id, out user);
 
-    public bool TryGetByUsername(string username, out RoomUser? user)
+    public bool TryGetByUsername(string username, out IRoomUser? user)
     {
         user = _users.Values.FirstOrDefault(x => x.AvatarData.Username == username);
         return user != null;
     }
 
-    public bool TryRemove(long id)
+    public async Task TryRemoveAsync(long id, bool hotelView = false)
     {
-        return _users.TryRemove(id, out _);
+        var result = _users.TryRemove(id, out var roomUser);
+
+        if (!result)
+        {
+            _logger.LogError($"Failed to remove a room user");
+        }
+
+        if (roomUser == null)
+        {
+            return;
+        }
+        
+        await BroadcastDataAsync(new RoomUserLeftWriter(roomUser.Id).GetAllBytes());
+
+        if (hotelView)
+        {
+            await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter().GetAllBytes());
+        }
+        
+        await roomUser.DisposeAsync();
     }
     
     public int Count => _users.Count;
@@ -42,7 +65,7 @@ public class RoomUserRepository : IRoomUserRepository
     {
         foreach (var user in _users.Values)
         {
-            await user.DisposeAsync();
+            await TryRemoveAsync(user.Id);
         }
         
         _users.Clear();

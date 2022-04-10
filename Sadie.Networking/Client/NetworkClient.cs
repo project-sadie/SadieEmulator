@@ -1,6 +1,7 @@
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
+using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
 
@@ -10,26 +11,28 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 {
     private readonly Guid _guid;
     private readonly ILogger<NetworkClient> _logger;
-    private readonly INetworkClientRepository _clientRepository;
     private readonly TcpClient _tcpClient;
     private readonly IPlayerRepository _playerRepository;
-    private readonly CancellationTokenSource _cts = new();
-        
+    private readonly IRoomRepository _roomRepository;
+    private readonly INetworkClientRepository _clientRepository;
+
     public NetworkClient(
         Guid guid, 
         ILogger<NetworkClient> logger, 
-        INetworkClientRepository clientRepository, 
         TcpClient tcpClient, 
         INetworkPacketHandler packetHandler, 
         ILogger<NetworkClientProcessComponent> baseLogger, 
         NetworkingConstants constants,
-        IPlayerRepository playerRepository) : base(baseLogger, tcpClient, packetHandler, constants)
+        IPlayerRepository playerRepository, 
+        IRoomRepository roomRepository,
+        INetworkClientRepository clientRepository) : base(baseLogger, tcpClient, packetHandler, constants)
     {
         _guid = guid;
         _logger = logger;
-        _clientRepository = clientRepository;
         _tcpClient = tcpClient;
         _playerRepository = playerRepository;
+        _roomRepository = roomRepository;
+        _clientRepository = clientRepository;
 
         SetClient(this);
     }
@@ -65,21 +68,24 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 
         if (RoomUser != null)
         {
-            await RoomUser.DisposeAsync();
-            RoomUser = null;
+            var (foundRoom, lastRoom) = _roomRepository.TryGetRoomById(RoomUser.AvatarData.LastRoomLoaded);
+
+            if (foundRoom && lastRoom != null)
+            {
+                await lastRoom.UserRepository.TryRemoveAsync(RoomUser.Id);
+                RoomUser = null;
+            }
         }
 
         if (Player != null && await _playerRepository.TryRemovePlayerAsync(Player.Id))
         {
             Player = null;
         }
-        
+
         if (!await _clientRepository.TryRemoveAsync(_guid))
         {
-            _logger.LogError("Failed to dispose network client");
+            _logger.LogError("Failed to dispose of network client");
         }
-        
-        _cts.Cancel();
 
         if (_tcpClient.Connected)
         {

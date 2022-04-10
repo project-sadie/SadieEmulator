@@ -1,7 +1,5 @@
 ﻿using System.Drawing;
-using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms.Chat;
-using Sadie.Game.Rooms.Packets;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Game.Avatar;
@@ -11,18 +9,14 @@ namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser : RoomUserData, IRoomUser
 {
-    private readonly ILogger<RoomUser> _logger;
     private readonly Room _room;
-    private readonly IRoomUserRepository _roomUserRepository;
     private readonly RoomConstants _constants;
     
     public int Id { get; }
     public INetworkObject NetworkObject { get; }
 
     public RoomUser(
-        ILogger<RoomUser> logger,
         Room room,
-        IRoomUserRepository roomUserRepository,
         INetworkObject networkObject, 
         int id, 
         HPoint point, 
@@ -32,9 +26,7 @@ public class RoomUser : RoomUserData, IRoomUser
         RoomConstants constants) : 
         base(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle))
     {
-        _logger = logger;
         _room = room;
-        _roomUserRepository = roomUserRepository;
         _constants = constants;
         
         Id = id;
@@ -83,14 +75,6 @@ public class RoomUser : RoomUserData, IRoomUser
     private async Task ProcessMovementAsync() // 2bMoved
     {
         SetNextPosition();
-        
-        var doorPoint = _room.Layout.DoorPoint;
-        
-        if (NextPoint != null && Point.X == doorPoint.X && Point.Y == doorPoint.Y)
-        {
-            await LeaveRoomAsync();
-            return;
-        }
 
         if (GoalSteps.Count > 0)
         {
@@ -120,24 +104,8 @@ public class RoomUser : RoomUserData, IRoomUser
         return true;
     }
 
-    private async Task SendToHotelViewAsync()
-    {
-        await NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter().GetAllBytes());
-    }
-
-    public async Task LeaveRoomAsync()
-    {
-        await SendToHotelViewAsync();
-        await DisposeAsync();
-    }
-
     public async ValueTask DisposeAsync()
     {
-        if (!_roomUserRepository.TryRemove(Id))
-        {
-            _logger.LogError($"Failed to dispose room user {Id}");
-        }
         
-        await _roomUserRepository.BroadcastDataAsync(new RoomUserLeftWriter(Id).GetAllBytes());
     }
 }
