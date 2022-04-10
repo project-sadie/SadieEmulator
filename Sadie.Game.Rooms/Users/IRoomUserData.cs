@@ -9,6 +9,7 @@ public interface IRoomUserData
     HDirection DirectionHead { get; }
     HDirection Direction { get; }
     AvatarData AvatarData { get; }
+    Dictionary<string, string> StatusMap { get; }
     DateTime LastAction { get; }
     bool IsIdle { get; }
 }

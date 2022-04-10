@@ -6,7 +6,7 @@ namespace Sadie.Game.Rooms.Packets;
 
 public class RoomUserStatusWriter : NetworkPacketWriter
 {
-    public RoomUserStatusWriter(ICollection<RoomUser> users)
+    public RoomUserStatusWriter(ICollection<IRoomUser> users)
     {
         WriteShort(ServerPacketId.RoomUserStatus);
         WriteInt(users.Count);
