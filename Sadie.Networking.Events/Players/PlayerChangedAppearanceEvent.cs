@@ -38,6 +38,6 @@ public class PlayerChangedAppearanceEvent : INetworkPacketEvent
         }
         
         await client.WriteToStreamAsync(new PlayerChangedAppearanceWriter(figureCode, gender).GetAllBytes());
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<RoomUser> { roomUser! }).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }).GetAllBytes());
     }
 }

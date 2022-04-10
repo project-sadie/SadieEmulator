@@ -36,6 +36,6 @@ public class PlayerChangedMottoEvent : INetworkPacketEvent
             return;
         }
         
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<RoomUser> { roomUser! }).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }).GetAllBytes());
     }
 }
