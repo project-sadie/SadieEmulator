@@ -16,13 +16,12 @@ public class RoomUserSitEvent : INetworkPacketEvent
 
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }
         
-        roomUser!.StatusMap[RoomUserStatus.Sit] = 0.5 + "";
-        
+        roomUser.StatusMap[RoomUserStatus.Sit] = 0.5 + "";
         return Task.CompletedTask;
     }
 }

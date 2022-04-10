@@ -28,13 +28,13 @@ public class RoomUserActionEvent : INetworkPacketEvent
         {
             if (!roomUser.IsIdle)
             {
-                roomUser!.LastAction -= roomUser.IdleTime;
+                roomUser.LastAction -= roomUser.IdleTime;
             }
             
             await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(roomUser).GetAllBytes());
             return;
         }
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, action).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser.Id, action).GetAllBytes());
     }
 }

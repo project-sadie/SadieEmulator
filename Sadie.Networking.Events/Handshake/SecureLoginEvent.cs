@@ -12,6 +12,7 @@ using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
+using Sadie.Shared.Networking;
 
 namespace Sadie.Networking.Events.Handshake;
 
@@ -49,10 +50,7 @@ public class SecureLoginEvent : INetworkPacketEvent
             await client.DisposeAsync();
             return;
         }
-
-        await client.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
-        await client.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
-            
+        
         await _playerRepository.ResetSsoTokenForPlayerAsync(player.Id);
             
         client.Player = player;
@@ -68,7 +66,14 @@ public class SecureLoginEvent : INetworkPacketEvent
         await _playerRepository.MarkPlayerAsOnlineAsync(player.Id);
 
         player.Authenticated = true;
-        
+
+        await SendExtraPacketsAsync(client, player);
+    }
+
+    private static async Task SendExtraPacketsAsync(INetworkObject client, IPlayer player)
+    {
+        await client.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, player.HomeRoom).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
@@ -77,7 +82,7 @@ public class SecureLoginEvent : INetworkPacketEvent
         await client.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.Settings.ShowNotifications).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerAchievementScoreWriter(player.AchievementScore).GetAllBytes());
-
+            
         if (player.HasPermission("moderation_tools"))
         {
             await client.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
