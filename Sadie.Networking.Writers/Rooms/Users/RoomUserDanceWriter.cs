@@ -5,10 +5,10 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserDanceWriter : NetworkPacketWriter
 {
-    public RoomUserDanceWriter(long userId, int danceId)
+    public RoomUserDanceWriter(int userId, int danceId)
     {
         WriteShort(ServerPacketId.RoomUserDance);
-        WriteLong(userId);
-        WriteLong(danceId);
+        WriteInt(userId);
+        WriteInt(danceId);
     }
 }

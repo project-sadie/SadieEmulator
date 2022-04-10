@@ -5,10 +5,10 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserTagsWriter : NetworkPacketWriter
 {
-    public RoomUserTagsWriter(long roomUserId, List<string> tags)
+    public RoomUserTagsWriter(int userId, List<string> tags)
     {
         WriteShort(ServerPacketId.RoomUserTags);
-        WriteLong(roomUserId);
+        WriteInt(userId);
         WriteInt(tags.Count);
 
         foreach (var tag in tags)

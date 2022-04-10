@@ -24,7 +24,7 @@ public class RoomUserShoutEvent : INetworkPacketEvent
 
         if (roomUser != null && roomUser.TryCreateChatMessage(reader.ReadString(), (RoomChatBubble) reader.ReadInt(), out var chatMessage))
         {
-            await room!.UserRepository.BroadcastDataAsync(new RoomUserShoutWriter(chatMessage!).GetAllBytes());
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserShoutWriter(chatMessage!, 0).GetAllBytes());
         }
     }
 }

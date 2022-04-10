@@ -6,14 +6,14 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserShoutWriter : NetworkPacketWriter
 {
-    public RoomUserShoutWriter(RoomChatMessage message)
+    public RoomUserShoutWriter(RoomChatMessage message, int unknown1)
     {
         WriteShort(ServerPacketId.RoomUserShout);
-        WriteLong(message.Sender.Id);
+        WriteInt(message.Sender.Id);
         WriteString(message.Message);
-        WriteLong(message.EmotionId);
-        WriteLong((int) message.Bubble);
-        WriteLong(0);
-        WriteLong(message.Message.Length);
+        WriteInt(message.EmotionId);
+        WriteInt((int) message.Bubble);
+        WriteInt(unknown1);
+        WriteInt(message.Message.Length);
     }
 }

@@ -5,10 +5,10 @@ namespace Sadie.Game.Rooms;
 public interface IRoom : IAsyncDisposable
 {
     Task RunPeriodicCheckAsync();
-    long Id { get; }
+    int Id { get; }
     string Name { get; }
     RoomLayout Layout { get; }
-    long OwnerId { get; }
+    int OwnerId { get; }
     string OwnerName { get; }
     public string Description { get; }
     public int Score { get; }

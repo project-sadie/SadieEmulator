@@ -14,11 +14,11 @@ public class RoomUserDataWriter : NetworkPacketWriter
 
         foreach (var user in users)
         {
-            WriteLong(user.Id);
+            WriteInt(user.Id);
             WriteString(user.AvatarData.Username);
             WriteString(user.AvatarData.Motto);
             WriteString(user.AvatarData.FigureCode);
-            WriteLong(user.Id);
+            WriteInt(user.Id);
             WriteInt(user.Point.X);
             WriteInt(user.Point.Y);
             WriteString(user.Point.Z + "");

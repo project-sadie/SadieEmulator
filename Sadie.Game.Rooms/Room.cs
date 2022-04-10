@@ -6,10 +6,10 @@ namespace Sadie.Game.Rooms;
 public class Room : RoomData, IRoom
 {
     public Room(
-        long id, 
+        int id, 
         string name, 
         RoomLayout layout, 
-        long ownerId, 
+        int ownerId, 
         string ownerName, 
         string description, 
         int score, 

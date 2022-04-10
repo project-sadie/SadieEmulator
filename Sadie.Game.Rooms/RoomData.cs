@@ -4,10 +4,10 @@ namespace Sadie.Game.Rooms;
 
 public class RoomData
 {
-    public long Id { get; }
+    public int Id { get; }
     public string Name { get; }
     public RoomLayout Layout { get; }
-    public long OwnerId { get; }
+    public int OwnerId { get; }
     public string OwnerName { get; }
     public string Description { get; }
     public int Score { get; }
@@ -16,10 +16,10 @@ public class RoomData
     public IRoomUserRepository UserRepository { get; }
     public IRoomSettings Settings { get; }
 
-    protected RoomData(long id,
+    protected RoomData(int id,
         string name,
         RoomLayout layout,
-        long ownerId,
+        int ownerId,
         string ownerName,
         string description,
         int score,
