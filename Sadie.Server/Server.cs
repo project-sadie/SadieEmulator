@@ -29,32 +29,15 @@ public class Server : IServer
         var stopwatch = Stopwatch.StartNew();
         
         WriteHeaderToConsole();
-            
+        
         _logger.LogTrace("Booting up...");
-
-        var dbProvider = _serviceProvider.GetRequiredService<IDatabaseProvider>();
-
-        if (!dbProvider.TestConnection())
-        {
-            throw new Exception("Failed to connect to the database.");
-        }
-
-        _logger.LogTrace("Database connection is working!");
         
-        var roomCategoryRepo = _serviceProvider.GetRequiredService<IRoomCategoryRepository>();
-
-        await roomCategoryRepo.LoadInitialDataAsync();
-        _logger.LogTrace("Loaded room categories");
+        TestDatabaseConnection();
         
-        var navigatorTabRepo = _serviceProvider.GetRequiredService<NavigatorTabRepository>();
-
-        await navigatorTabRepo.LoadInitialDataAsync();
-        _logger.LogTrace("Loaded navigator tabs");
+        await LoadInitialDataAsync();
 
         var taskWorker = _serviceProvider.GetRequiredService<IServerTaskWorker>();
         taskWorker.Start();
-        
-        _logger.LogTrace("Loaded game services");
         
         stopwatch.Stop();
         
@@ -64,6 +47,29 @@ public class Server : IServer
 
         networkListener.Start();
         await networkListener.ListenAsync();
+    }
+
+    private void TestDatabaseConnection()
+    {
+        var dbProvider = _serviceProvider.GetRequiredService<IDatabaseProvider>();
+
+        if (!dbProvider.TestConnection())
+        {
+            throw new Exception("Failed to connect to the database.");
+        }
+
+        _logger.LogTrace("Database connection is working!");
+    }
+
+    private async Task LoadInitialDataAsync()
+    {
+        var roomCategoryRepo = _serviceProvider.GetRequiredService<IRoomCategoryRepository>();
+        await roomCategoryRepo.LoadInitialDataAsync();
+        _logger.LogTrace("Loaded room categories");
+        
+        var navigatorTabRepo = _serviceProvider.GetRequiredService<NavigatorTabRepository>();
+        await navigatorTabRepo.LoadInitialDataAsync();
+        _logger.LogTrace("Loaded navigator tabs");
     }
     
     private static void WriteHeaderToConsole()

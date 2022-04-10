@@ -19,16 +19,15 @@ public class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddSingleton<IServer, Server>();
-        serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>(provider => new ServerTaskWorker(
-            provider.GetRequiredService<ILogger<ServerTaskWorker>>(), 
-            new List<IServerTask>
-            {
-                new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
-                new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
-                new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>())
-            }));
+        serviceCollection.AddSingleton(provider => new List<IServerTask>
+        {
+            new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
+            new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
+            new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>())
+        });
         
+        serviceCollection.AddSingleton<IServer, Server>();
+        serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
         serviceCollection.AddSingleton<ServerTaskWorker>();
         
         DatabaseServiceCollection.AddServices(serviceCollection, config);
