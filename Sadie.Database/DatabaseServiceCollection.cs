@@ -13,7 +13,6 @@ public class DatabaseServiceCollection
         
         serviceCollection.AddSingleton(connectionStringBuilder);
         serviceCollection.AddTransient<IDatabaseConnection, DatabaseConnection>();
-        serviceCollection.AddSingleton<DbConnectionStringBuilder>();
         serviceCollection.AddSingleton<IDatabaseProvider, DatabaseProvider>();
     }
 }

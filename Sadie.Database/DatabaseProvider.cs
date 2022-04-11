@@ -9,7 +9,7 @@ public class DatabaseProvider : IDatabaseProvider
     private readonly string _connectionString;
     private readonly IServiceProvider _serviceProvider;
 
-    public DatabaseProvider(DbConnectionStringBuilder connectionString, IServiceProvider serviceProvider)
+    public DatabaseProvider(MySqlConnectionStringBuilder connectionString, IServiceProvider serviceProvider)
     {
         _connectionString = connectionString.ToString();
         _serviceProvider = serviceProvider;
