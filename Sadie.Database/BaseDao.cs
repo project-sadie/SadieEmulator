@@ -46,6 +46,16 @@ public class BaseDao
         return await dbConnection.ExecuteScalarAsync<int>();
     }
 
+    protected async Task<bool> Exists(string commandText, Dictionary<string, object> parameters = null!)
+    {
+        using var dbConnection = _databaseProvider.GetConnection();
+        dbConnection.SetQuery($"SELECT CASE WHEN EXISTS({commandText.TrimEnd(new []{';'})}) THEN 1 ELSE 0 END");
+
+        AddOptionalParameters(dbConnection, parameters);
+
+        return await dbConnection.ExecuteScalarAsync<int>() == 1;
+    }
+
     private static void AddOptionalParameters(IDatabaseConnection connection, Dictionary<string, object> parameters)
     {
         if (parameters is {Count: > 0})
