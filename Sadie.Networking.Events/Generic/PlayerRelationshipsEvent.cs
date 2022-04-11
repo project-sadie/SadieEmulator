@@ -17,13 +17,13 @@ public class PlayerRelationshipsEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = reader.ReadInt();
-        var playerFriends = await _friendshipRepository.GetFriendshipRecords(playerId, PlayerFriendshipStatus.Accepted);
+        var playerFriends = await _friendshipRepository.GetFriendsForPlayerAsync(playerId);
         
         var playerRelations = new Dictionary<int, List<PlayerFriendshipData>>
         {
-            {1, playerFriends.Where(x => x.Type == PlayerFriendshipType.Lover).ToList()},
-            {2, playerFriends.Where(x => x.Type == PlayerFriendshipType.Friend).ToList()},
-            {3, playerFriends.Where(x => x.Type == PlayerFriendshipType.Hater).ToList()}
+            {1, playerFriends.Where(x => x.Type == PlayerFriendshipType.Lover).Select(x => x.TargetData).ToList()},
+            {2, playerFriends.Where(x => x.Type == PlayerFriendshipType.Friend).Select(x => x.TargetData).ToList()},
+            {3, playerFriends.Where(x => x.Type == PlayerFriendshipType.Hater).Select(x => x.TargetData).ToList()}
         };
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, playerRelations).GetAllBytes());

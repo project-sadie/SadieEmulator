@@ -51,7 +51,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerBalance] = new PlayerBalanceEvent(),
             [ClientPacketId.PlayerClubMembership] = new PlayerClubMembershipEvent(),
             [ClientPacketId.NavigatorData] = new NavigatorDataEvent(),
-            [ClientPacketId.PlayerFriendsList] = new PlayerFriendsEvent(),
+            [ClientPacketId.PlayerFriendsList] = new PlayerFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerMessengerInit] = new PlayerMessengerInitEvent(),
             [ClientPacketId.PlayerPing] = new PlayerPingEvent(),
             [ClientPacketId.HotelViewData] = new HotelViewDataEvent(),
@@ -96,7 +96,10 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerProfile] = provider.GetRequiredService<PlayerProfileEvent>(),
             [ClientPacketId.PlayerBadges] = provider.GetRequiredService<PlayerWearingBadgesEvent>(),
             [ClientPacketId.RoomUserRespect] = new RoomUserRespectEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>(), provider.GetRequiredService<IPlayerRespectDao>()),
-            [ClientPacketId.PlayerFriendRequest] = new PlayerFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>(), provider.GetRequiredService<PlayerConstants>()),
+            [ClientPacketId.PlayerFriendRequest] = new PlayerSendFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>(), provider.GetRequiredService<PlayerConstants>()),
+            [ClientPacketId.PlayerAcceptFriendRequest] = new PlayerAcceptFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>(), provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.PlayerDeclineFriendRequest] = new PlayerDeclineFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>()),
+            [ClientPacketId.PlayerRemoveFriend] = new PlayerRemoveFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>()),
         });
     }
 }

@@ -16,9 +16,7 @@ public class PlayerFriendRequestsEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var pendingFriends = await _friendshipRepository.
-            GetFriendshipRecords(client.Player.Id, PlayerFriendshipStatus.Pending);
-        
-        await client.WriteToStreamAsync(new PlayerFriendRequestsWriter(pendingFriends).GetAllBytes());
+        var pendingFriends = await _friendshipRepository.GetIncomingFriendRequestsForPlayerAsync(client.Player!.Id);
+        await client.WriteToStreamAsync(new PlayerFriendRequestsWriter(pendingFriends.Select(x => x.TargetData).ToList()).GetAllBytes());
     }
 }
