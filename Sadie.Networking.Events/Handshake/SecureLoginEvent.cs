@@ -65,6 +65,7 @@ public class SecureLoginEvent : INetworkPacketEvent
         _logger.LogInformation($"Player '{player.Username}' has logged in");
         await _playerRepository.MarkPlayerAsOnlineAsync(player.Id);
 
+        player.LastOnline = DateTime.Now;
         player.Authenticated = true;
 
         await SendExtraPacketsAsync(client, player);

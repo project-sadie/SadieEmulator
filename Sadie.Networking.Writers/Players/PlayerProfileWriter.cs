@@ -13,14 +13,14 @@ public class PlayerProfileWriter : NetworkPacketWriter
         WriteString(playerData.Username);
         WriteString(playerData.FigureCode);
         WriteString(playerData.Motto);
-        WriteString(playerData.CreatedAt.ToString("yyyy-MM-dd HH:mm:s"));
+        WriteString(playerData.CreatedAt.ToString("dd MMMM yyyy"));
         WriteLong(playerData.AchievementScore);
         WriteLong(friendshipCount);
         WriteBoolean(friendshipExists);
         WriteBoolean(friendshipRequestExists);
         WriteBoolean(online);
         WriteInt(0);
-        WriteInt(1);
+        WriteInt((int)(DateTime.Now - playerData.LastOnline).TotalSeconds);
         WriteBoolean(true);
     }
 }
