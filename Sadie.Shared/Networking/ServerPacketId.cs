@@ -65,4 +65,6 @@ public class ServerPacketId
     public const short RoomUserRespect = 2815;
     public const short PlayerFriendshipError = 892;
     public const short PlayerFriendRequest = 2219;
+    public const short PlayerRemoveFriends = 2800;
+    public const short PlayerUpdateFriend = 2800;
 }
