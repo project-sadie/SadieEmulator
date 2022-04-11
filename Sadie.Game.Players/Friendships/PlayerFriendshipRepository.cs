@@ -9,28 +9,63 @@ public class PlayerFriendshipRepository : IPlayerFriendshipRepository
         _friendshipDao = friendshipDao;
     }
 
-    public async Task<List<PlayerFriendshipData>> GetFriendshipRecords(long playerId, PlayerFriendshipStatus status)
+    public async Task<List<PlayerFriendship>> GetIncomingFriendRequestsForPlayerAsync(int playerId)
     {
-        return await _friendshipDao.GetFriendshipRecordsAsync(playerId, status);
+        return await _friendshipDao.GetIncomingFriendRequestsForPlayerAsync(playerId);
     }
 
-    public async Task<int> GetFriendsCountAsync(long playerId, PlayerFriendshipStatus status)
+    public async Task<List<PlayerFriendship>> GetOutgoingFriendRequestsForPlayerAsync(int playerId)
     {
-        return await _friendshipDao.GetFriendshipCountAsync(playerId, status);
+        return await _friendshipDao.GetOutgoingFriendRequestsForPlayerAsync(playerId);
     }
 
-    public async Task<bool> ExistsAsync(long player1Id, long player2Id, PlayerFriendshipStatus status)
+    public async Task<List<PlayerFriendship>> GetFriendsForPlayerAsync(int playerId)
     {
-        return await _friendshipDao.DoesFriendshipExistAsync(player1Id, player2Id, status);
+        return await _friendshipDao.GetFriendsForPlayerAsync(playerId);
     }
 
-    public async Task CreateAsync(long player1Id, long player2Id, PlayerFriendshipStatus status)
+    public async Task AcceptFriendRequestAsync(int originId, int targetId)
     {
-        await _friendshipDao.CreateAsync(player1Id, player2Id, status);
+        await _friendshipDao.AcceptFriendRequestAsync(originId, targetId);
     }
 
-    public Task UpdateAsync(long player1Id, long player2Id, PlayerFriendshipStatus newStatus)
+    public async Task AcceptFriendRequestAsync(int requestId)
     {
-        throw new NotImplementedException();
+        await _friendshipDao.AcceptFriendRequestAsync(requestId);
+    }
+
+    public async Task DeclineFriendRequestAsync(int originId, int targetId)
+    {
+        await _friendshipDao.DeclineFriendRequestAsync(originId, targetId);
+    }
+
+    public async Task DeclineAllFriendRequestsAsync(int targetId)
+    {
+        await _friendshipDao.DeclineAllFriendRequestsAsync(targetId);
+    }
+
+    public async Task CreateFriendRequestAsync(int originId, int targetId)
+    {
+        await _friendshipDao.CreateFriendRequestAsync(originId, targetId);
+    }
+
+    public async Task<bool> DoesRequestExist(int playerId1, int playerId2)
+    {
+        return await _friendshipDao.DoesRequestExist(playerId1, playerId2);
+    }
+
+    public async Task<bool> DoesFriendshipExist(int playerId1, int playerId2)
+    {
+        return await _friendshipDao.DoesFriendshipExist(playerId1, playerId2);
+    }
+
+    public async Task<List<PlayerFriendship>> GetAllRecordsForPlayerAsync(int playerId)
+    {
+        return await _friendshipDao.GetAllRecordsForPlayerAsync(playerId);
+    }
+
+    public async Task DeleteFriendshipAsync(int playerId1, int playerId2)
+    {
+        await _friendshipDao.DeclineFriendRequestAsync(playerId1, playerId2);
     }
 }

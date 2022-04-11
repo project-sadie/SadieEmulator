@@ -1,19 +1,25 @@
-﻿namespace Sadie.Game.Players.Friendships;
+using Sadie.Shared.Game.Avatar;
+
+namespace Sadie.Game.Players.Friendships;
 
 public class PlayerFriendshipData
 {
-    public long Id { get; }
+    public int Id { get; }
     public string Username { get; }
     public string FigureCode { get; }
-    public PlayerFriendshipStatus Status { get; set; }
-    public PlayerFriendshipType Type { get; }
-
-    public PlayerFriendshipData(long id, string username, string figureCode, PlayerFriendshipStatus status, PlayerFriendshipType type)
+    public string Motto { get; }
+    public AvatarGender Gender { get; }
+    
+    public PlayerFriendshipData(int id,
+        string username,
+        string figureCode,
+        string motto,
+        AvatarGender gender)
     {
         Id = id;
         Username = username;
-        FigureCode = figureCode;        
-        Status = status;
-        Type = type;
+        FigureCode = figureCode;
+        Motto = motto;
+        Gender = gender;
     }
 }
