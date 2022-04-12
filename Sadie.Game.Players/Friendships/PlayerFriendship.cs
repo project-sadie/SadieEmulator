@@ -4,7 +4,7 @@ public class PlayerFriendship
 {
     public int Id { get; }
     public PlayerFriendshipStatus Status { get; set; }
-    public PlayerFriendshipType Type { get; }
+    public PlayerFriendshipType Type { get; set; }
     public int OriginId { get; }
     public int TargetId { get; }
     public PlayerFriendshipData TargetData { get; }
