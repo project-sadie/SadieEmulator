@@ -41,10 +41,10 @@ public class RoomFactory : IRoomFactory
 
         return ActivatorUtilities.CreateInstance<Room>(
             _serviceProvider,
-            record.Get<long>("id"),
+            record.Get<int>("id"),
             record.Get<string>("name"),
             model,
-            record.Get<long>("owner_id"),
+            record.Get<int>("owner_id"),
             record.Get<string>("owner_name"),
             record.Get<string>("description"),
             record.Get<int>("score"),

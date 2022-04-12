@@ -70,16 +70,15 @@ public class PlayerFactory : IPlayerFactory
         return data;
     }
     
-    public IPlayer Create(INetworkObject networkObject, DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> badges, List<PlayerFriendshipData> friendships)
+    public IPlayer Create(INetworkObject networkObject, DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> badges, PlayerFriendshipComponent friendshipComponent)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
-            _serviceProvider.GetRequiredService<ILogger<Player>>(),
-            _serviceProvider.GetRequiredService<IPlayerRepository>(),
             record.Get<int>("id"),
+            networkObject,
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
-            record.Get<long>("home_room_id"),
+            record.Get<int>("home_room_id"),
             record.Get<string>("figure_code"),
             record.Get<string>("motto"),
             record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female,
@@ -95,12 +94,12 @@ public class PlayerFactory : IPlayerFactory
             record.Get<long>("achievement_score"),
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
             badges,
-            friendships,
+            friendshipComponent,
             record.Get<int>("chat_bubble"),
             record.Get<int>("allow_friend_requests") == 1);
     }
     
-    public IPlayer CreateBasic(DatabaseRecord record, List<PlayerFriendshipData> friendships)
+    public IPlayer CreateBasic(DatabaseRecord record, PlayerFriendshipComponent friendshipComponent)
     {
         return ActivatorUtilities.CreateInstance<Player>(
             _serviceProvider,
@@ -126,7 +125,7 @@ public class PlayerFactory : IPlayerFactory
             0,
             new List<string>(),
             new List<PlayerBadge>(),
-            friendships,
+            friendshipComponent,
             1,
             record.Get<int>("allow_friend_requests") == 1);
     }

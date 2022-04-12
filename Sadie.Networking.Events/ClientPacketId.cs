@@ -53,4 +53,7 @@ public class ClientPacketId
     public const short PlayerProfile = 3265;
     public const short PlayerBadges = 2091;
     public const short PlayerFriendRequest = 3157;
+    public const short PlayerAcceptFriendRequest = 137;
+    public const short PlayerDeclineFriendRequest = 2890;
+    public const short PlayerRemoveFriend = 1689;
 }

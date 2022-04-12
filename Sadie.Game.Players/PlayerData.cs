@@ -12,7 +12,7 @@ public class PlayerData : AvatarData, IPlayerData
         int id, 
         string username, 
         DateTime createdAt,
-        long homeRoom, 
+        int homeRoom, 
         string figureCode, 
         string motto, 
         AvatarGender gender, 
@@ -28,7 +28,7 @@ public class PlayerData : AvatarData, IPlayerData
         long achievementScore,
         List<string> tags,
         List<PlayerBadge> badges, 
-        List<PlayerFriendshipData> friendships,
+        PlayerFriendshipComponent friendshipComponent,
         int chatBubble, 
         bool allowFriendRequests) : base(username, figureCode, motto, gender, achievementScore, tags, chatBubble)
     {
@@ -45,15 +45,15 @@ public class PlayerData : AvatarData, IPlayerData
         SavedSearches = savedSearches;
         Permissions = permissions;
         Badges = badges;
-        Friendships = friendships;
+        FriendshipComponent = friendshipComponent;
         AllowFriendRequests = allowFriendRequests;
     }
 
     public int Id { get; }
     public DateTime CreatedAt { get; }
-    public long HomeRoom { get; }
+    public int HomeRoom { get; }
     public IPlayerBalance Balance { get; }
-    public DateTime LastOnline { get; }
+    public DateTime LastOnline { get; set; }
     public int RespectsReceived { get; set; }
     public int RespectPoints { get; set; }
     public int RespectPointsPet { get; }
@@ -62,6 +62,6 @@ public class PlayerData : AvatarData, IPlayerData
     public List<PlayerSavedSearch> SavedSearches { get; }
     public List<string> Permissions { get; }
     public List<PlayerBadge> Badges { get; }
-    public List<PlayerFriendshipData> Friendships { get; }
+    public PlayerFriendshipComponent FriendshipComponent { get; }
     public bool AllowFriendRequests { get; }
 }

@@ -11,9 +11,9 @@ public interface IPlayerData : IAvatarData
     int Id { get; }
     string Username { get; }
     DateTime CreatedAt { get; }
-    long HomeRoom { get; }
+    int HomeRoom { get; }
     IPlayerBalance Balance { get; }
-    DateTime LastOnline { get; }
+    DateTime LastOnline { get; set; }
     int RespectsReceived { get; set; }
     int RespectPoints { get; set; }
     int RespectPointsPet { get; }
@@ -22,6 +22,6 @@ public interface IPlayerData : IAvatarData
     List<PlayerSavedSearch> SavedSearches { get; }
     List<string> Permissions { get; }
     List<PlayerBadge> Badges { get; }
-    List<PlayerFriendshipData> Friendships { get; }
+    PlayerFriendshipComponent FriendshipComponent { get; }
     bool AllowFriendRequests { get; }
 }

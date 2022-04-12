@@ -19,7 +19,7 @@ public class Player : PlayerData, IPlayer
         INetworkObject networkObject,
         string username, 
         DateTime createdAt,
-        long homeRoom, 
+        int homeRoom, 
         string figureCode, 
         string motto, 
         AvatarGender gender, 
@@ -35,7 +35,7 @@ public class Player : PlayerData, IPlayer
         long achievementScore,
         List<string> tags,
         List<PlayerBadge> badges, 
-        List<PlayerFriendshipData> friendships, 
+        PlayerFriendshipComponent friendshipComponent, 
         int chatBubble,
         bool acceptFriendRequests) : 
         
@@ -59,7 +59,7 @@ public class Player : PlayerData, IPlayer
             achievementScore, 
             tags,
             badges, 
-            friendships,
+            friendshipComponent,
             chatBubble, 
             acceptFriendRequests)
     {

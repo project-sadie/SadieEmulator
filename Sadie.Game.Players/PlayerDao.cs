@@ -19,6 +19,11 @@ public class PlayerDao : BaseDao, IPlayerDao
         _friendshipDao = friendshipDao;
     }
 
+    private async Task<PlayerFriendshipComponent> CreateFriendshipComponentAsync(int playerId)
+    {
+        return new PlayerFriendshipComponent(playerId, await _friendshipDao.GetAllRecordsForPlayerAsync(playerId));
+    }
+
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
     {
         var reader = await GetReaderAsync(@"
@@ -87,7 +92,7 @@ public class PlayerDao : BaseDao, IPlayerDao
         var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
         var permissionsReader = await GetReaderForPermissionsAsync(record.Get<int>("role_id"));
         var badges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
-        var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"));
+        var friendships = await CreateFriendshipComponentAsync(record.Get<int>("id"));
             
         return new Tuple<bool, IPlayer?>(true, _playerFactory.Create(networkObject, record, savedSearchesReader, permissionsReader, badges, friendships));
     }
@@ -175,7 +180,8 @@ public class PlayerDao : BaseDao, IPlayerDao
 
         if (success && record != null)
         {
-            var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"));
+            var friendships = await CreateFriendshipComponentAsync(record.Get<int>("id"));
+            
             return new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record, friendships));
         }
 
@@ -193,7 +199,8 @@ public class PlayerDao : BaseDao, IPlayerDao
 
         if (success && record != null)
         {
-            var friendships = await _friendshipDao.GetFriendshipRecordsAsync(record.Get<int>("id"));
+            var friendships = await CreateFriendshipComponentAsync(record.Get<int>("id"));
+            
             return new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record, friendships));
         }
 

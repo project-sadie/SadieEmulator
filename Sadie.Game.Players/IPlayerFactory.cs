@@ -7,6 +7,6 @@ namespace Sadie.Game.Players;
 
 public interface IPlayerFactory
 {
-    IPlayer Create(INetworkObject networkObject, DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> badges, List<PlayerFriendshipData> friendships);
-    IPlayer CreateBasic(DatabaseRecord record, List<PlayerFriendshipData> friendships);
+    IPlayer Create(INetworkObject networkObject, DatabaseRecord record, DatabaseReader savedSearchesReader, DatabaseReader permissionsReader, List<PlayerBadge> badges, PlayerFriendshipComponent friendshipComponent);
+    IPlayer CreateBasic(DatabaseRecord record, PlayerFriendshipComponent friendshipComponent);
 }

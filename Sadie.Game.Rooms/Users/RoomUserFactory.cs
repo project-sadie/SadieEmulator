@@ -17,7 +17,8 @@ public class RoomUserFactory : IRoomUserFactory
     public RoomUser Create(
         IRoom room,
         INetworkObject networkObject, 
-        int id, HPoint point, 
+        int id, 
+        HPoint point, 
         HDirection directionHead,
         HDirection direction, 
         IAvatarData avatarData)
@@ -25,7 +26,6 @@ public class RoomUserFactory : IRoomUserFactory
         return ActivatorUtilities.CreateInstance<RoomUser>(
             _serviceProvider,
             room,
-            room.UserRepository,
         networkObject, 
             id, 
             point, 
