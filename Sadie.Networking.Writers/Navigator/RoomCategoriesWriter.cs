@@ -18,7 +18,7 @@ public class RoomCategoriesWriter : NetworkPacketWriter
             WriteBoolean(category.Visible);
             WriteBoolean(false); // unknown
             WriteString(category.Caption);
-            WriteString(category.Caption);
+            WriteString(category.Caption.StartsWith("${") ? "" : category.Caption);
             WriteBoolean(false); // unknown
         }
     }

@@ -37,6 +37,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerProfileEvent>();
         serviceCollection.AddSingleton<PlayerWearingBadgesEvent>();
         serviceCollection.AddSingleton<PlayerChangeRelationEvent>();
+        serviceCollection.AddSingleton<PlayerCreateRoomEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -103,6 +104,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerDeclineFriendRequest] = new PlayerDeclineFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>()),
             [ClientPacketId.PlayerRemoveFriend] = new PlayerRemoveFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>()),
             [ClientPacketId.PlayerChangeRelation] = provider.GetRequiredService<PlayerChangeRelationEvent>(),
+            [ClientPacketId.PlayerCreateRoom] = provider.GetRequiredService<PlayerCreateRoomEvent>(),
         });
     }
 }

@@ -58,4 +58,5 @@ public class ClientPacketId
     public const short PlayerDeclineFriendRequest = 2890;
     public const short PlayerRemoveFriend = 1689;
     public const short PlayerChangeRelation = 3768;
+    public const short PlayerCreateRoom = 2752;
 }
