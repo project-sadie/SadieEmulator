@@ -75,9 +75,9 @@ public class PlayerRepository : IPlayerRepository
         return await _playerDao.TryGetPlayerData(playerId);
     }
 
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(string username)
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username)
     {
-        return await _playerDao.TryGetPlayerData(username);
+        return await _playerDao.TryGetPlayerDataByUsername(username);
     }
 
     public async ValueTask DisposeAsync()

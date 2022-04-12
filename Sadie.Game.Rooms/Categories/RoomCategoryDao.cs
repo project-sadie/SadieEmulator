@@ -25,7 +25,9 @@ public class RoomCategoryDao : BaseDao, IRoomCategoryDao
                 break;
             }
             
-            categories.Add(_categoryFactory.CreateFromRecord(record));
+            categories.Add(_categoryFactory.CreateFromRecord(record.Get<int>("id"), 
+                record.Get<string>("caption"), 
+                record.Get<int>("is_visible") == 1));
         }
 
         return categories;

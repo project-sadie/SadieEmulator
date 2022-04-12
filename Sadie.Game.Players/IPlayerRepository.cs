@@ -14,5 +14,5 @@ public interface IPlayerRepository : IAsyncDisposable
     Task ResetSsoTokenForPlayerAsync(long id);
     int Count();
     Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId);
-    Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(string username);
+    Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username);
 }

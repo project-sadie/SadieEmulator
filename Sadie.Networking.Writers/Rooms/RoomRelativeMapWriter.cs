@@ -16,7 +16,7 @@ public class RoomRelativeMapWriter : NetworkPacketWriter
         {
             for (var x = 0; x < layout.SizeX; x++)
             {
-                var tile = layout.GetTile(x, y);
+                var tile = layout.FindTile(x, y);
                 var height = tile?.Point.Z * 256.0 ?? 0;
 
                 if (tile is {State: RoomTileState.Closed})

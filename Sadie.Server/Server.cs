@@ -29,20 +29,21 @@ public class Server : IServer
         var stopwatch = Stopwatch.StartNew();
         
         WriteHeaderToConsole();
-        
-        _logger.LogTrace("Booting up...");
-        
         TestDatabaseConnection();
         
         await LoadInitialDataAsync();
-
-        var taskWorker = _serviceProvider.GetRequiredService<IServerTaskWorker>();
-        taskWorker.Start();
         
+        _serviceProvider.GetRequiredService<IServerTaskWorker>().Start();
+
         stopwatch.Stop();
         
         _logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
 
+        await StartListeningForConnectionsAsync();
+    }
+
+    private async Task StartListeningForConnectionsAsync()
+    {
         var networkListener = _serviceProvider.GetRequiredService<INetworkListener>();
 
         networkListener.Start();
@@ -72,7 +73,7 @@ public class Server : IServer
         _logger.LogTrace("Loaded navigator tabs");
     }
     
-    private static void WriteHeaderToConsole()
+    private void WriteHeaderToConsole()
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         
@@ -91,6 +92,8 @@ public class Server : IServer
         
         Console.WriteLine($"         You are running version {Version}");
         Console.WriteLine(@"");
+        
+        _logger.LogTrace("Booting up...");
     }
 
     public async ValueTask DisposeAsync()

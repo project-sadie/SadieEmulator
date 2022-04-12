@@ -46,7 +46,7 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
         }
         else
         {
-            var (found, offlineData) = await _playerRepository.TryGetPlayerData(targetUsername);
+            var (found, offlineData) = await _playerRepository.TryGetPlayerDataByUsername(targetUsername);
 
             if (found)
             {

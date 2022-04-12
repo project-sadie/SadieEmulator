@@ -9,5 +9,5 @@ public interface IPlayerDao
     Task MarkPlayerAsOfflineAsync(IPlayer player);
     Task ResetSsoTokenForPlayerAsync(long id);
     Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId);
-    Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(string username);
+    Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username);
 }

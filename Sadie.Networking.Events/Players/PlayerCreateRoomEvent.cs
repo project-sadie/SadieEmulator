@@ -14,6 +14,6 @@ public class PlayerCreateRoomEvent : INetworkPacketEvent
         var maxUsersAllowed = reader.ReadInt();
         var tradingPermission = reader.ReadInt();
         
-        
+        return Task.CompletedTask;
     }
 }

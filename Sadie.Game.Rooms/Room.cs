@@ -22,12 +22,13 @@ public class Room : RoomData, IRoom
 
     public async Task RunPeriodicCheckAsync()
     {
-        foreach (var roomUser in UserRepository.GetAll())
+        var users = UserRepository.GetAll();
+        
+        foreach (var roomUser in users)
         {
             await roomUser.RunPeriodicCheckAsync();
         }
 
-        var users = UserRepository.GetAll();
         var statusWriter = new RoomUserStatusWriter(users).GetAllBytes();
         var dataWriter = new RoomUserDataWriter(users).GetAllBytes();
 

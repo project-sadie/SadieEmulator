@@ -188,7 +188,7 @@ public class PlayerDao : BaseDao, IPlayerDao
         return new Tuple<bool, IPlayerData?>(false, null);
     }
 
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(string username)
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username)
     {
         var reader = await GetReaderForPlayerData("username", new Dictionary<string, object>
         {

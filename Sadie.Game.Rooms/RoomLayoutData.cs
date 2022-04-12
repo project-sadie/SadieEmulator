@@ -23,6 +23,6 @@ public class RoomLayoutData
         DoorDirection = doorDirection;
     }
 
-    public RoomTile? GetTile(int x, int y) => 
+    public RoomTile? FindTile(int x, int y) => 
         Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);
 }

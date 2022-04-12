@@ -5,16 +5,14 @@ namespace Sadie.Networking.Packets;
 public class NetworkPacketDecoder
 {
     private readonly NetworkingConstants _constants;
-    
-    public NetworkPacketDecoder(NetworkingConstants constants)
+
+    protected NetworkPacketDecoder(NetworkingConstants constants)
     {
         _constants = constants;
     }
 
     protected List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
     {
-        // TODO: Refactor this :(
-        
         if (packet.Length < _constants.FrameLengthByteCount || packet.Length > _constants.BufferByteSize - _constants.FrameLengthByteCount)
         {
             return new List<NetworkPacket>();
@@ -42,7 +40,6 @@ public class NetworkPacketDecoder
         }
         
         packets.Add(new NetworkPacket(packetId, content));
-
         return packets;
     }
 }

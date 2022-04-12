@@ -1,15 +1,18 @@
-﻿using Sadie.Database;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Sadie.Game.Rooms.Categories;
 
 public class RoomCategoryFactory
 {
-    public RoomCategory CreateFromRecord(DatabaseRecord record)
+    private readonly IServiceProvider _serviceProvider;
+
+    public RoomCategoryFactory(IServiceProvider serviceProvider)
     {
-        return new RoomCategory(
-            record.Get<int>("id"), 
-            record.Get<string>("caption"), 
-            record.Get<int>("is_visible") == 1
-        );
+        _serviceProvider = serviceProvider;
+    }
+
+    public RoomCategory CreateFromRecord(int id, string caption, bool isVisible)
+    {
+        return ActivatorUtilities.CreateInstance<RoomCategory>(_serviceProvider, id, caption, isVisible);
     }
 }

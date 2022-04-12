@@ -52,7 +52,7 @@ public class ServerTaskWorker : IServerTaskWorker
         await task.ExecuteAsync();
         stopwatch.Stop();
 
-        if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 4)
+        if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 2)
         {
             _logger.LogWarning($"Task '{task.Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
         }
