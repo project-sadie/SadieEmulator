@@ -21,6 +21,7 @@ public class ClientPacketId
     public const short HotelViewBonusRare = 957;
     public const short UnknownEvent1 = 1371;
     public const short GameCenterRequestGames = 741;
+    public const short UnknownEvent4 = 2399;
     public const short PromotedRooms = 2908;
     public const short RoomCategories = 3027;
     public const short NavigatorEventCategories = 1782;

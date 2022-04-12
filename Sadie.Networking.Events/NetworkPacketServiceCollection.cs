@@ -61,6 +61,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.HotelViewBonusRare] = new HotelViewBonusRareEvent(),
             [ClientPacketId.UnknownEvent1] = new UnknownEvent1(),
             [ClientPacketId.GameCenterRequestGames] = new RequestGameCenterConfigEvent(),
+            [ClientPacketId.UnknownEvent4] = new UnknownEvent4(),
             [ClientPacketId.PromotedRooms] = new PromotedRoomsEvent(),
             [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(provider.GetRequiredService<IRoomCategoryRepository>()),
             [ClientPacketId.NavigatorEventCategories] = new NavigatorEventCategoriesEvent(),
