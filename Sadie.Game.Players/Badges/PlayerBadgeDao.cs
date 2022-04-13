@@ -4,8 +4,11 @@ namespace Sadie.Game.Players.Badges;
 
 public class PlayerBadgeDao : BaseDao, IPlayerBadgeDao
 {
-    public PlayerBadgeDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
+    private readonly IPlayerBadgeFactory _badgeFactory;
+
+    public PlayerBadgeDao(IDatabaseProvider databaseProvider, IPlayerBadgeFactory badgeFactory) : base(databaseProvider)
     {
+        _badgeFactory = badgeFactory;
     }
     
     public async Task<List<PlayerBadge>> GetBadgesForPlayerAsync(int profileId)
@@ -31,7 +34,7 @@ public class PlayerBadgeDao : BaseDao, IPlayerBadgeDao
                 break;
             }
             
-            data.Add(new PlayerBadge(
+            data.Add(_badgeFactory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("code"),
                 record.Get<int>("slot")));

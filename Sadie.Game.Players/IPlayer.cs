@@ -2,9 +2,9 @@ using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
 
-public interface IPlayer : IPlayerData, IAsyncDisposable
+public interface IPlayer : IAsyncDisposable
 {
     INetworkObject NetworkObject { get; }
     bool Authenticated { get; set; }
-    bool HasPermission(string name);
+    IPlayerData Data { get; }
 }

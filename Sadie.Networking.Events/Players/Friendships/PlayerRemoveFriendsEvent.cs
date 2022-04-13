@@ -20,7 +20,8 @@ public class PlayerRemoveFriendsEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerId = client.Player.Id;
+        var playerId = client.Player.Data.Id;
+        
         var amount = reader.ReadInt();
         var removedIds = new List<int>();
 
@@ -31,14 +32,14 @@ public class PlayerRemoveFriendsEvent : INetworkPacketEvent
 
             if (_playerRepository.TryGetPlayerById(currentId, out var target) && target != null)
             {
-                target.FriendshipComponent.RemoveFriend(playerId);
+                target.Data.FriendshipComponent.RemoveFriend(playerId);
                 await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter(new List<int> { playerId }).GetAllBytes());
             }
 
             await _friendshipRepository.DeleteFriendshipAsync(playerId, currentId);
         }
 
-        client.Player.FriendshipComponent.RemoveFriends(removedIds);
+        client.Player.Data.FriendshipComponent.RemoveFriends(removedIds);
         await client.WriteToStreamAsync(new PlayerRemoveFriendsWriter(removedIds).GetAllBytes());
     }
 }

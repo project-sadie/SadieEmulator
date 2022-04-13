@@ -66,10 +66,12 @@ public class NavigatorDataEvent : INetworkPacketEvent
             "eventcategory__Jobs",
             "eventcategory__Group Events"
         };
+
+        var savedSearches = client.Player.Data.SavedSearches;
         
         await client.WriteToStreamAsync(new NavigatorMetaDataWriter(metaData).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter(new List<Room>()).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(categories).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerSavedSearchesWriter(client.Player.SavedSearches).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerSavedSearchesWriter(savedSearches).GetAllBytes());
     }
 }

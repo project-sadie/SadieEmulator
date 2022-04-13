@@ -77,7 +77,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
             }
         }
 
-        if (Player != null && await _playerRepository.TryRemovePlayerAsync(Player.Id))
+        if (Player != null && await _playerRepository.TryRemovePlayerAsync(Player.Data.Id))
         {
             Player = null;
         }

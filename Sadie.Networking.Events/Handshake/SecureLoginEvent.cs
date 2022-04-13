@@ -50,43 +50,46 @@ public class SecureLoginEvent : INetworkPacketEvent
             await client.DisposeAsync();
             return;
         }
+
+        var playerData = player.Data;
+        var playerId = playerData.Id;
         
-        await _playerRepository.ResetSsoTokenForPlayerAsync(player.Id);
+        await _playerRepository.ResetSsoTokenForPlayerAsync(playerId);
             
         client.Player = player;
         
         if (!_playerRepository.TryAddPlayer(player))
         {
-            _logger.LogError($"Player {player.Id} could not be registered");
+            _logger.LogError($"Player {playerId} could not be registered");
             await client.DisposeAsync();
             return;
         }
             
-        _logger.LogInformation($"Player '{player.Username}' has logged in");
-        await _playerRepository.MarkPlayerAsOnlineAsync(player.Id);
+        _logger.LogInformation($"Player '{playerData.Username}' has logged in");
+        await _playerRepository.MarkPlayerAsOnlineAsync(playerId);
 
-        player.LastOnline = DateTime.Now;
+        player.Data.LastOnline = DateTime.Now;
         player.Authenticated = true;
 
-        await SendExtraPacketsAsync(client, player);
+        await SendExtraPacketsAsync(client, player.Data);
     }
 
-    private static async Task SendExtraPacketsAsync(INetworkObject client, IPlayer player)
+    private static async Task SendExtraPacketsAsync(INetworkObject networkObject, IPlayerData playerData)
     {
-        await client.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
-        await client.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerHomeRoomWriter(player.HomeRoom, player.HomeRoom).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.Settings.ShowNotifications).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerAchievementScoreWriter(player.AchievementScore).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
+        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoom, playerData.HomeRoom).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(playerData.NavigatorSettings).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(playerData.Settings.ShowNotifications).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore).GetAllBytes());
             
-        if (player.HasPermission("moderation_tools"))
+        if (playerData.HasPermission("moderation_tools"))
         {
-            await client.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
+            await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
         }
     }
 

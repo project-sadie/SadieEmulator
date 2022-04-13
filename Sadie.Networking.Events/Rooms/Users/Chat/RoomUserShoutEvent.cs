@@ -9,23 +9,29 @@ namespace Sadie.Networking.Events.Rooms.Users.Chat;
 public class RoomUserShoutEvent : INetworkPacketEvent
 {
     private readonly IRoomRepository _roomRepository;
+    private readonly RoomConstants _roomConstants;
 
-    public RoomUserShoutEvent(IRoomRepository roomRepository)
+    public RoomUserShoutEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
     {
         _roomRepository = roomRepository;
+        _roomConstants = roomConstants;
     }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        var message = reader.ReadString();
+        
+        if (string.IsNullOrEmpty(message) || message.Length > _roomConstants.MaxChatMessageLength)
+        {
+            return;
+        }
+        
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
 
-        if (roomUser != null)
-        {
-            var chatMessage = new RoomChatMessage(roomUser, reader.ReadString(), room, (RoomChatBubble) reader.ReadInt(), 0);
-            await room!.UserRepository.BroadcastDataAsync(new RoomUserShoutWriter(chatMessage!, 0).GetAllBytes());
-        }
+        var chatMessage = new RoomChatMessage(roomUser, message, room, (RoomChatBubble) reader.ReadInt(), 0);
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserShoutWriter(chatMessage!, 0).GetAllBytes());
     }
 }

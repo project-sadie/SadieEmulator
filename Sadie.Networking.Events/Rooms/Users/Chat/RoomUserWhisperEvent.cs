@@ -9,10 +9,12 @@ namespace Sadie.Networking.Events.Rooms.Users.Chat;
 public class RoomUserWhisperEvent : INetworkPacketEvent
 {
     private readonly IRoomRepository _roomRepository;
+    private readonly RoomConstants _roomConstants;
 
-    public RoomUserWhisperEvent(IRoomRepository roomRepository)
+    public RoomUserWhisperEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
     {
         _roomRepository = roomRepository;
+        _roomConstants = roomConstants;
     }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -27,6 +29,11 @@ public class RoomUserWhisperEvent : INetworkPacketEvent
         var whisperMessage = string.Join("", whisperData.Skip(1));
 
         if (!room.UserRepository.TryGetByUsername(whisperUsername, out var targetUser))
+        {
+            return;
+        }
+        
+        if (string.IsNullOrEmpty(whisperMessage) || whisperMessage.Length > _roomConstants.MaxChatMessageLength)
         {
             return;
         }

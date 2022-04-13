@@ -10,16 +10,19 @@ public class SaveNavigatorSettingsEvent : INetworkPacketEvent
     {
         var player = client.Player;
 
-        if (player != null)
+        if (player == null)
         {
-            player.NavigatorSettings = new PlayerNavigatorSettings(
-                reader.ReadInt(),
-                reader.ReadInt(),
-                reader.ReadInt(),
-                reader.ReadInt(),
-                reader.ReadBool(),
-                reader.ReadInt());
+            return Task.CompletedTask;
         }
+        
+        var navigatorSettings = player.Data.NavigatorSettings;
+
+        navigatorSettings.WindowX = reader.ReadInt();
+        navigatorSettings.WindowY = reader.ReadInt();
+        navigatorSettings.WindowWidth = reader.ReadInt();
+        navigatorSettings.WindowHeight = reader.ReadInt();
+        navigatorSettings.OpenSearches = reader.ReadBool();
+        navigatorSettings.Unknown1 = reader.ReadInt();
 
         return Task.CompletedTask;
     }

@@ -1,0 +1,68 @@
+using Microsoft.Extensions.DependencyInjection;
+using Sadie.Game.Players.Badges;
+using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Navigator;
+using Sadie.Shared.Game.Avatar;
+
+namespace Sadie.Game.Players;
+
+public class PlayerDataFactory : IPlayerDataFactory
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public PlayerDataFactory(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+    
+    public IPlayerData Create(
+        int id, 
+        string username, 
+        DateTime createdAt,
+        int homeRoom, 
+        string figureCode, 
+        string motto, 
+        AvatarGender gender, 
+        IPlayerBalance balance, 
+        DateTime lastOnline, 
+        int respectsReceived, 
+        int respectPoints, 
+        int respectPointsPet, 
+        PlayerNavigatorSettings navigatorSettings,
+        PlayerSettings settings, 
+        List<PlayerSavedSearch> savedSearches,
+        List<string> permissions,
+        long achievementScore,
+        List<string> tags,
+        List<PlayerBadge> badges, 
+        PlayerFriendshipComponent friendshipComponent,
+        int chatBubble, 
+        bool allowFriendRequests)
+    {
+        return ActivatorUtilities.CreateInstance<PlayerData>(
+            _serviceProvider,
+            id,
+            username,
+            createdAt,
+            homeRoom,
+            figureCode,
+            motto,
+            gender,
+            balance,
+            lastOnline,
+            respectsReceived,
+            respectPoints,
+            respectPointsPet,
+            navigatorSettings,
+            settings,
+            savedSearches,
+            permissions,
+            achievementScore,
+            tags,
+            badges,
+            friendshipComponent,
+            chatBubble,
+            allowFriendRequests);
+    }
+}

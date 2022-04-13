@@ -19,12 +19,13 @@ public class PlayerFriendsEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var friends = client.Player!.FriendshipComponent.Friendships;
+        var player = client.Player!;
+        var friends = player.Data.FriendshipComponent.Friendships;
         var pages = friends.Count / 500 + 1;
         
         for (var i = 0; i < pages; i++)
         {
-            var batch = client.Player!.FriendshipComponent.Friendships.Skip(i * 500).
+            var batch = friends.Skip(i * 500).
                 Take(500).
                 ToList();
             

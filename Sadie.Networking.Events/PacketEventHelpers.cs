@@ -8,7 +8,9 @@ internal static class PacketEventHelpers
 {
     internal static bool TryResolveRoomObjectsForClient(IRoomRepository roomRepository, INetworkClient client, out IRoom room, out RoomUser user)
     {
-        if (client.Player == null)
+        var player = client.Player;
+        
+        if (player == null)
         {
             room = null!;
             user = null!;
@@ -16,7 +18,7 @@ internal static class PacketEventHelpers
             return false;
         }
         
-        var roomId = client.Player.LastRoomLoaded;
+        var roomId = player.Data.LastRoomLoaded;
         var (result, roomObject) = roomRepository.TryGetRoomById(roomId);
 
         if (!result || roomObject == null || client.RoomUser == null)

@@ -20,6 +20,7 @@ public class PlayerChangedAppearanceEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
+        var playerData = player.Data;
         
         var gender = reader.ReadString() == "M" ? 
             AvatarGender.Male : 
@@ -29,8 +30,8 @@ public class PlayerChangedAppearanceEvent : INetworkPacketEvent
         
         // TODO: Validate inputs above
 
-        player.Gender = gender;
-        player.FigureCode = figureCode;
+        playerData.Gender = gender;
+        playerData.FigureCode = figureCode;
         
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {

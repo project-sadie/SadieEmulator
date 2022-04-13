@@ -19,40 +19,43 @@ public class PlayerProfileEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerId = reader.ReadInt();
-        var playerOnline = false;
-
-        IPlayerData playerData = null;
+        var player = client.Player;
+        var playerId = player.Data.Id;
         
-        if (playerId == client.Player.Id)
+        var profileId = reader.ReadInt();
+        var profileOnline = false;
+
+        IPlayerData onlineData = null;
+        
+        if (profileId == playerId)
         {
-            playerData = client.Player;
-            playerOnline = true;
+            onlineData = client.Player.Data;
+            profileOnline = true;
         }
-        else if (_playerRepository.TryGetPlayerById(playerId, out var player))
+        else if (_playerRepository.TryGetPlayerById(profileId, out var onlinePlayer))
         {
-            playerData = player;
-            playerOnline = true;
+            onlineData = onlinePlayer.Data;
+            profileOnline = true;
         }
         else
         {
-            var (found, fetchedPlayerData) = await _playerRepository.TryGetPlayerData(playerId);
+            var (found, fetchedPlayerData) = await _playerRepository.TryGetPlayerData(profileId);
 
             if (found)
             {
-                playerData = fetchedPlayerData;
+                onlineData = fetchedPlayerData;
             }
         }
 
-        if (playerData == null)
+        if (onlineData == null)
         {
             return;
         }
 
-        var friendCount = playerData.FriendshipComponent.Friendships.Count;
-        var friendshipExists = await _friendshipRepository.DoesFriendshipExist(client.Player.Id, playerId);
-        var friendshipRequestExists = await _friendshipRepository.DoesRequestExist(client.Player.Id, playerId);
+        var friendCount = onlineData.FriendshipComponent.Friendships.Count;
+        var friendshipExists = await _friendshipRepository.DoesFriendshipExist(playerId, profileId);
+        var friendshipRequestExists = await _friendshipRepository.DoesRequestExist(playerId, profileId);
         
-        await client.WriteToStreamAsync(new PlayerProfileWriter(playerData, playerOnline, friendCount, friendshipExists, friendshipRequestExists).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerProfileWriter(onlineData, profileOnline, friendCount, friendshipExists, friendshipRequestExists).GetAllBytes());
     }
 }

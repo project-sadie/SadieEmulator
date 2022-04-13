@@ -197,14 +197,14 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
             
-            var targetData = _friendshipFactory.CreateData(
+            var targetData = _friendshipFactory.CreateFriendshipData(
                 record.Get<int>("target_id"),
                 record.Get<string>("username"),
                 record.Get<string>("figure_code"),
                 record.Get<string>("motto"),
                 record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
             
-            data.Add(_friendshipFactory.CreateFromRecord(
+            data.Add(_friendshipFactory.CreateFriendship(
                 record.Get<int>("request_id"),
                 record.Get<int>("origin_player_id"),
                 record.Get<int>("target_player_id"),
@@ -249,14 +249,14 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
 
-            var targetData = _friendshipFactory.CreateData(
+            var targetData = _friendshipFactory.CreateFriendshipData(
                 record.Get<int>("target_id"),
                 record.Get<string>("username"),
                 record.Get<string>("figure_code"),
                 record.Get<string>("motto"),
                 record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
             
-            data.Add(_friendshipFactory.CreateFromRecord(
+            data.Add(_friendshipFactory.CreateFriendship(
                 record.Get<int>("request_id"),
                 record.Get<int>("origin_player_id"),
                 record.Get<int>("target_player_id"),
@@ -301,14 +301,14 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
             
-            var targetData = _friendshipFactory.CreateData(
+            var targetData = _friendshipFactory.CreateFriendshipData(
                 record.Get<int>("target_id"),
                 record.Get<string>("username"),
                 record.Get<string>("figure_code"),
                 record.Get<string>("motto"),
                 record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
             
-            data.Add(_friendshipFactory.CreateFromRecord(
+            data.Add(_friendshipFactory.CreateFriendship(
                 record.Get<int>("request_id"),
                 record.Get<int>("origin_player_id"),
                 record.Get<int>("target_player_id"),
@@ -417,14 +417,14 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
             
-            var targetData = _friendshipFactory.CreateData(
+            var targetData = _friendshipFactory.CreateFriendshipData(
                 record.Get<int>("target_id"),
                 record.Get<string>("username"),
                 record.Get<string>("figure_code"),
                 record.Get<string>("motto"),
                 record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
             
-            data.Add(_friendshipFactory.CreateFromRecord(
+            data.Add(_friendshipFactory.CreateFriendship(
                 record.Get<int>("request_id"),
                 record.Get<int>("origin_player_id"),
                 record.Get<int>("target_player_id"),

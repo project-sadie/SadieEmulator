@@ -8,7 +8,9 @@ public class PlayerBalanceEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var balance = client.Player.Balance;
+        var player = client.Player;
+        var balance = player.Data.Balance;
+        
         var currencies = new Dictionary<int, long>
         {
             {0, balance.Pixels},

@@ -8,12 +8,14 @@ public class PlayerRepository : IPlayerRepository
 {
     private readonly ILogger<PlayerRepository> _logger;
     private readonly IPlayerDao _playerDao;
+    private readonly IPlayerDataDao _playerDataDao;
     private readonly ConcurrentDictionary<int, IPlayer> _players;
 
-    public PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playerDao)
+    public PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playerDao, IPlayerDataDao playerDataDao)
     {
         _logger = logger;
         _playerDao = playerDao;
+        _playerDataDao = playerDataDao;
         _players = new ConcurrentDictionary<int, IPlayer>();
     }
 
@@ -24,7 +26,7 @@ public class PlayerRepository : IPlayerRepository
 
     public bool TryGetPlayerByUsername(string username, out IPlayer? player)
     {
-        player = _players.Values.FirstOrDefault(x => x.Username == username);
+        player = _players.Values.FirstOrDefault(x => x.Data.Username == username);
         return player != default;
     }
 
@@ -33,7 +35,7 @@ public class PlayerRepository : IPlayerRepository
         return await _playerDao.TryGetPlayerBySsoTokenAsync(networkObject, sso);
     }
 
-    public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Id, player);
+    public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Data.Id, player);
 
     public async Task<bool> TryRemovePlayerAsync(int playerId)
     {
@@ -44,7 +46,7 @@ public class PlayerRepository : IPlayerRepository
             return result;
         }
         
-        await MarkPlayerAsOfflineAsync(player);
+        await MarkPlayerAsOfflineAsync(player.Data);
         await player!.DisposeAsync();
 
         return result;
@@ -52,12 +54,12 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task MarkPlayerAsOnlineAsync(int id)
     {
-        await _playerDao.MarkPlayerAsOnlineAsync(id);
+        await _playerDataDao.MarkPlayerAsOnlineAsync(id);
     }
 
-    private async Task MarkPlayerAsOfflineAsync(IPlayer player)
+    private async Task MarkPlayerAsOfflineAsync(IPlayerData playerData)
     {
-        await _playerDao.MarkPlayerAsOfflineAsync(player);
+        await _playerDataDao.MarkPlayerAsOfflineAsync(playerData);
     }
 
     public async Task ResetSsoTokenForPlayerAsync(int id)
@@ -72,21 +74,21 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(int playerId)
     {
-        return await _playerDao.TryGetPlayerData(playerId);
+        return await _playerDataDao.TryGetPlayerData(playerId);
     }
 
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username)
     {
-        return await _playerDao.TryGetPlayerDataByUsername(username);
+        return await _playerDataDao.TryGetPlayerDataByUsername(username);
     }
 
     public async ValueTask DisposeAsync()
     {
         foreach (var player in _players.Values)
         {
-            if (!await TryRemovePlayerAsync(player.Id))
+            if (!await TryRemovePlayerAsync(player.Data.Id))
             {
-                _logger.LogError($"Failed to properly dispose of player {player.Username}");
+                _logger.LogError($"Failed to properly dispose of player {player.Data.Username}");
             }
         }
     }

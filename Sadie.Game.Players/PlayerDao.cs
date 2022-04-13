@@ -1,6 +1,7 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 
@@ -9,19 +10,19 @@ namespace Sadie.Game.Players;
 public class PlayerDao : BaseDao, IPlayerDao
 {
     private readonly IPlayerFactory _playerFactory;
+    private readonly IPlayerDataFactory _playerDataFactory;
     private readonly IPlayerBadgeDao _badgeDao;
     private readonly IPlayerFriendshipDao _friendshipDao;
 
-    public PlayerDao(IDatabaseProvider databaseProvider, IPlayerFactory playerFactory, IPlayerBadgeDao badgeDao, IPlayerFriendshipDao friendshipDao) : base(databaseProvider)
+    public PlayerDao(IDatabaseProvider databaseProvider, 
+        IPlayerFactory playerFactory, 
+        IPlayerDataFactory playerDataFactory, 
+        IPlayerBadgeDao badgeDao, IPlayerFriendshipDao friendshipDao) : base(databaseProvider)
     {
         _playerFactory = playerFactory;
+        _playerDataFactory = playerDataFactory;
         _badgeDao = badgeDao;
         _friendshipDao = friendshipDao;
-    }
-
-    private async Task<PlayerFriendshipComponent> CreateFriendshipComponentAsync(int playerId)
-    {
-        return new PlayerFriendshipComponent(playerId, await _friendshipDao.GetAllRecordsForPlayerAsync(playerId));
     }
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
@@ -64,19 +65,17 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_game_settings`.`furniture_volume`,
                    `player_game_settings`.`trax_volume`,
                    `player_game_settings`.`prefer_old_chat`,
-                   `player_game_settings`.`block_room_invited`,
+                   `player_game_settings`.`block_room_invites`,
                    `player_game_settings`.`block_camera_follow`,
                    `player_game_settings`.`ui_flags`,
                    `player_game_settings`.`show_notifications`,
-                   
+        
                     (SELECT COUNT(*) FROM `player_respects` WHERE `target_player_id` = `players`.`id`) AS `respects_received`
-            
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
                 INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
                 INNER JOIN `player_navigator_settings` ON `player_navigator_settings`.`player_id` = `players`.`id` 
                 INNER JOIN `player_game_settings` ON `player_game_settings`.`player_id` = `players`.`id` 
-        
             WHERE `players`.`sso_token` = @ssoToken LIMIT 1;", new Dictionary<string, object>
         {
             { "ssoToken", ssoToken }
@@ -89,76 +88,113 @@ public class PlayerDao : BaseDao, IPlayerDao
             return new Tuple<bool, IPlayer?>(false, null);
         }
         
-        var savedSearchesReader = await GetReaderForSavedSearchesAsync(record.Get<int>("id"));
-        var permissionsReader = await GetReaderForPermissionsAsync(record.Get<int>("role_id"));
+        var savedSearches = await GetSavedSearchesAsync(record.Get<int>("id"));
+        
+        var balance = _playerFactory.CreateBalance(record.Get<long>("credit_balance"),
+            record.Get<long>("pixel_balance"),
+            record.Get<long>("seasonal_balance"),
+            record.Get<long>("gotw_points"));
+
+        var navigatorSettings = _playerFactory.CreateNavigatorSettings(record.Get<int>("window_x"),
+            record.Get<int>("window_y"),
+            record.Get<int>("window_width"),
+            record.Get<int>("window_height"),
+            record.Get<int>("open_searches") == 1,
+            0);
+
+        var settings = _playerFactory.CreateSettings(record.Get<int>("system_volume"),
+            record.Get<int>("furniture_volume"),
+            record.Get<int>("trax_volume"),
+            record.Get<int>("prefer_old_chat") == 1,
+            record.Get<int>("block_room_invites") == 1,
+            record.Get<int>("block_camera_follow") == 1,
+            record.Get<int>("ui_flags"),
+            record.Get<int>("show_notifications") == 1);
+        
+        var permissions = await GetPermissionsAsync(record.Get<int>("role_id"));
         var badges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
-        var friendships = await CreateFriendshipComponentAsync(record.Get<int>("id"));
+        var friendships = await _friendshipDao.GetAllRecordsForPlayerAsync(record.Get<int>("id"));
+        var friendshipComponent = _playerFactory.CreatePlayerFriendshipComponent(record.Get<int>("id"), friendships);
+
+        var playerData = _playerDataFactory.Create(
+            record.Get<int>("id"),
+            record.Get<string>("username"),
+            record.Get<DateTime>("created_at"),
+            record.Get<int>("home_room_id"),
+            record.Get<string>("figure_code"),
+            record.Get<string>("motto"),
+            record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female, balance,
+            DateTime.TryParse(record.Get<string>("last_online"), out var timestamp) ? timestamp : DateTime.MinValue,
+            record.Get<int>("respects_received"),
+            record.Get<int>("respect_points"),
+            record.Get<int>("respect_points_pet"),
+            navigatorSettings,
+            settings,
+            savedSearches,
+            permissions,
+            record.Get<int>("achievement_score"),
+            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
+            badges,
+            friendshipComponent,
+            record.Get<int>("chat_bubble"),
+            record.Get<int>("allow_friend_requests") == 1);
+        
+        var player = _playerFactory.Create(
+            networkObject,
+            playerData);
             
-        return new Tuple<bool, IPlayer?>(true, _playerFactory.Create(networkObject, record, savedSearchesReader, permissionsReader, badges, friendships));
+        return new Tuple<bool, IPlayer?>(true, player);
     }
 
-    private async Task<DatabaseReader> GetReaderForSavedSearchesAsync(long id)
+    private async Task<List<PlayerSavedSearch>> GetSavedSearchesAsync(long id)
     {
-        return await GetReaderAsync("SELECT `id`,`search`,`filter` FROM `player_saved_searches` WHERE `player_id` = @profileId", new Dictionary<string, object>
+        var reader = await GetReaderAsync("SELECT `id`,`search`,`filter` FROM `player_saved_searches` WHERE `player_id` = @profileId", new Dictionary<string, object>
         {
             { "profileId", id }
         });
+        
+        var data = new List<PlayerSavedSearch>();
+        
+        while (true)
+        {
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            data.Add(new PlayerSavedSearch(
+                record.Get<long>("id"),
+                record.Get<string>("search"),
+                record.Get<string>("filter")));
+        }
+        
+        return data;
     }
 
-    private async Task<DatabaseReader> GetReaderForPermissionsAsync(long roleId)
+    private async Task<List<string>> GetPermissionsAsync(long roleId)
     {
-        return await GetReaderAsync("SELECT `name` FROM `player_permissions` WHERE `id` IN (SELECT `permission_id` FROM `player_role_permissions` WHERE `player_role_permissions`.`role_id` = @roleId)", new Dictionary<string, object>
+        var reader = await GetReaderAsync("SELECT `name` FROM `player_permissions` WHERE `id` IN (SELECT `permission_id` FROM `player_role_permissions` WHERE `player_role_permissions`.`role_id` = @roleId)", new Dictionary<string, object>
         {
             { "roleId", roleId }
         });
-    }
-
-    public async Task MarkPlayerAsOnlineAsync(long id)
-    {
-        await QueryAsync("UPDATE `player_data` SET `is_online` = 1, `last_online` = @lastOnline WHERE `player_id` = @profileId", new Dictionary<string, object>
-        {
-            { "lastOnline", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
-            { "profileId", id }
-        });
-    }
-
-    public async Task MarkPlayerAsOfflineAsync(IPlayer player)
-    {
-        await QueryAsync(@"UPDATE `player_data` 
-            SET 
-                `is_online` = 0, 
-                `credit_balance` = @creditBalance, 
-                `pixel_balance` = @pixelBalance,
-                `seasonal_balance` = @seasonalBalance,
-                `gotw_points` = @gotwPoints,
-                `respect_points` = @respectPoints,
-                `respect_points_pet` = @respectPointsPet,
-                `achievement_score` = @achievementScore
-            WHERE `player_id` = @playerId", new Dictionary<string, object>
-        {
-            { "creditBalance", player.Balance.Credits },
-            { "pixelBalance", player.Balance.Pixels },
-            { "seasonalBalance", player.Balance.Seasonal },
-            { "gotwPoints", player.Balance.Gotw },
-            { "respectPoints", player.RespectPoints },
-            { "respectPointsPet", player.RespectPointsPet },
-            { "achievementScore", player.AchievementScore },
-            { "playerId", player.Id }
-        });
         
+        var data = new List<string>();
         
-        await QueryAsync(@"UPDATE `player_avatar_data` 
-            SET 
-                `figure_code` = @figureCode, 
-                `motto` = @motto, 
-                `gender` = @gender
-            WHERE `player_id` = @playerId", new Dictionary<string, object>
+        while (true)
         {
-            { "figureCode", player.FigureCode },
-            { "motto", player.Motto },
-            { "gender", player.Gender == AvatarGender.Male ? "M" : "F" },
-            { "playerId", player.Id }
-        });
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            data.Add(record.Get<string>("name"));
+        }
+
+        return data;
     }
 
     public async Task ResetSsoTokenForPlayerAsync(long id)
@@ -167,65 +203,5 @@ public class PlayerDao : BaseDao, IPlayerDao
         {
             { "playerId", id }
         });
-    }
-
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
-    {
-        var reader = await GetReaderForPlayerData("id", new Dictionary<string, object>
-        {
-            {"value", playerId}
-        });
-
-        var (success, record) = reader.Read();
-
-        if (success && record != null)
-        {
-            var friendships = await CreateFriendshipComponentAsync(record.Get<int>("id"));
-            
-            return new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record, friendships));
-        }
-
-        return new Tuple<bool, IPlayerData?>(false, null);
-    }
-
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username)
-    {
-        var reader = await GetReaderForPlayerData("username", new Dictionary<string, object>
-        {
-            {"value", username}
-        });
-
-        var (success, record) = reader.Read();
-
-        if (success && record != null)
-        {
-            var friendships = await CreateFriendshipComponentAsync(record.Get<int>("id"));
-            
-            return new Tuple<bool, IPlayerData?>(true, _playerFactory.CreateBasic(record, friendships));
-        }
-
-        return new Tuple<bool, IPlayerData?>(false, null);
-    }
-
-    private async Task<DatabaseReader> GetReaderForPlayerData(string column, Dictionary<string, object> parameters)
-    {
-        return await GetReaderAsync(@$"
-            SELECT 
-                   `players`.`id`, 
-                   `players`.`username`, 
-                   `players`.`created_at`, 
-            
-                   `player_data`.`last_online`,
-                   `player_data`.`achievement_score`,
-                   `player_data`.`allow_friend_requests`,
-                   
-                   `player_avatar_data`.`figure_code`, 
-                   `player_avatar_data`.`motto`, 
-                   `player_avatar_data`.`gender`
-            
-            FROM `players` 
-                INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
-                INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
-            WHERE `players`.`{column}` = @value LIMIT 1;", parameters);
     }
 }

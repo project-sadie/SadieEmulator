@@ -23,15 +23,17 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
+        var playerData = player.Data;
+        
         var targetUsername = reader.ReadString();
         
-        if (player!.FriendshipComponent.Friendships.Count >= _playerConstants.MaxFriendships)
+        if (playerData.FriendshipComponent.Friendships.Count >= _playerConstants.MaxFriendships)
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TooManyFriends).GetAllBytes());
             return;
         }
         
-        if (targetUsername == client.Player!.Username)
+        if (targetUsername == playerData.Username)
         {
             return;
         }
@@ -39,9 +41,9 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
         IPlayerData? targetData = null;
         var targetOnline = false;
 
-        if (_playerRepository.TryGetPlayerByUsername(targetUsername, out var targetPlayer))
+        if (_playerRepository.TryGetPlayerByUsername(targetUsername, out var targetPlayer) && targetPlayer != null)
         {
-            targetData = targetPlayer!;
+            targetData = targetPlayer.Data;
             targetOnline = true;
         }
         else
@@ -60,7 +62,9 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
             return;
         }
 
-        if (player.FriendshipComponent.IsFriendsWith(targetData.Id))
+        var friendshipComponent = playerData.FriendshipComponent;
+
+        if (friendshipComponent.IsFriendsWith(targetData.Id))
         {
             return;
         }
@@ -76,7 +80,7 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
             return;
         }
 
-        var playerFriends = player.FriendshipComponent.Friendships;
+        var playerFriends = friendshipComponent.Friendships;
         var friendship = playerFriends.FirstOrDefault(x => x.TargetData.Username == targetUsername);
 
         if (friendship != null)
@@ -86,24 +90,24 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
                 case PlayerFriendshipStatus.Accepted:
                     return;
                 case PlayerFriendshipStatus.Pending:
-                    await _friendshipRepository.AcceptFriendRequestAsync(player.Id, targetData.Id);
-                    player.FriendshipComponent.AcceptIncomingRequest(targetData.Id);
+                    await _friendshipRepository.AcceptFriendRequestAsync(playerData.Id, targetData.Id);
+                    friendshipComponent.AcceptIncomingRequest(targetData.Id);
 
                     if (targetOnline && targetPlayer != null)
                     {
-                        targetPlayer.FriendshipComponent.OutgoingRequestAccepted(targetData.Id);
+                        targetPlayer.Data.FriendshipComponent.OutgoingRequestAccepted(targetData.Id);
                     }
                     return;
             }
         }
         
-        await _friendshipRepository.CreateFriendRequestAsync(player.Id, targetData.Id);
-        player.FriendshipComponent.Friendships = await _friendshipRepository.GetAllRecordsForPlayerAsync(client.Player.Id);
+        await _friendshipRepository.CreateFriendRequestAsync(playerData.Id, targetData.Id);
+        friendshipComponent.Friendships = await _friendshipRepository.GetAllRecordsForPlayerAsync(playerData.Id);
 
         if (targetOnline && targetPlayer != null)
         {
-            targetPlayer.FriendshipComponent.Friendships = await _friendshipRepository.GetAllRecordsForPlayerAsync(targetPlayer.Id);
-            await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerFriendRequestWriter(player.Id, player.Username, player.FigureCode).GetAllBytes());
+            targetPlayer.Data.FriendshipComponent.Friendships = await _friendshipRepository.GetAllRecordsForPlayerAsync(targetData.Id);
+            await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerFriendRequestWriter(playerData.Id, playerData.Username, playerData.FigureCode).GetAllBytes());
         }
     }
 }

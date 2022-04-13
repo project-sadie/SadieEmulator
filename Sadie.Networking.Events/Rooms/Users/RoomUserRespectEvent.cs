@@ -29,22 +29,26 @@ public class RoomUserRespectEvent : INetworkPacketEvent
         }
         
         var player = client.Player!;
+        var playerData = player.Data;
         var targetId = reader.ReadInt();
+        var lastRoom = player.Data.LastRoomLoaded;
         
-        if (player.RespectPoints < 1 || 
-            client.Player!.Id == targetId || 
+        if (playerData.RespectPoints < 1 || 
+            playerData.Id == targetId || 
             !_playerRepository.TryGetPlayerById(targetId, out var targetPlayer) || 
-            targetPlayer!.LastRoomLoaded != 0 && player.LastRoomLoaded != targetPlayer.LastRoomLoaded)
+            targetPlayer!.Data.LastRoomLoaded != 0 && lastRoom != targetPlayer.Data.LastRoomLoaded)
         {
             return;
         }
 
-        player.RespectPoints--;
-        targetPlayer.RespectsReceived++;
-        
-        await _respectDao.CreateAsync(player.Id, targetId);
+        var targetData = targetPlayer.Data;
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(targetId, targetPlayer.RespectsReceived).GetAllBytes());
+        playerData.RespectPoints--;
+        targetData.RespectsReceived++;
+        
+        await _respectDao.CreateAsync(playerData.Id, targetId);
+
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(targetId, targetData.RespectsReceived).GetAllBytes());
         await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, RoomUserAction.ThumbsUp).GetAllBytes());
     }
 }

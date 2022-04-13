@@ -21,12 +21,16 @@ public class PlayerChangeRelationEvent : INetworkPacketEvent
     {
         var playerId = reader.ReadInt();
         var relationId = reader.ReadInt();
-        var friendships = client.Player!.FriendshipComponent.Friendships;
-        var friendship = friendships.FirstOrDefault(x => x.OriginId == playerId || x.TargetId == playerId);
+        
+        var friendshipComponent = client.Player.Data.FriendshipComponent;
+        
+        var friendship = friendshipComponent.
+            Friendships.
+            FirstOrDefault(x => x.OriginId == playerId || x.TargetId == playerId);
 
         if (friendship != null)
         {
-            client.Player!.FriendshipComponent.UpdateRelation(playerId, (PlayerFriendshipType) relationId);
+            friendshipComponent.UpdateRelation(playerId, (PlayerFriendshipType) relationId);
             await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(friendship, _playerRepository, _roomRepository).GetAllBytes());
         }
     }

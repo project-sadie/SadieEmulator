@@ -26,7 +26,7 @@ public class PlayerWearingBadgesEvent : INetworkPacketEvent
         var isPlayerOnline = _playerRepository.TryGetPlayerById(playerId, out var player);
         
         var playerBadges = isPlayerOnline ? 
-            player!.Badges : 
+            player!.Data.Badges : 
             await _badgeRepository.GetBadgesForPlayerAsync(playerId);
 
         playerBadges = playerBadges.

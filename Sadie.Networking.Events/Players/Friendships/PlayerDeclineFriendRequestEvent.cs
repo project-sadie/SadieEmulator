@@ -18,12 +18,16 @@ public class PlayerDeclineFriendRequestEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        var player = client.Player;
+        var playerData = player.Data;
+        var playerId = playerData.Id;
+        
         var declineAll = reader.ReadBool();
         const int limit = 100;
 
         if (declineAll)
         {
-            await _friendshipRepository.DeclineAllFriendRequestsAsync(client.Player!.Id);
+            await _friendshipRepository.DeclineAllFriendRequestsAsync(playerId);
         }
         else
         {
@@ -32,14 +36,14 @@ public class PlayerDeclineFriendRequestEvent : INetworkPacketEvent
             for (var i = 0; i < amount && i < limit; i++)
             {
                 var originId = reader.ReadInt();
-                var targetId = client.Player!.Id;
+                var targetId = playerId;
 
                 await _friendshipRepository.DeclineFriendRequestAsync(originId, targetId);
-                client.Player.FriendshipComponent.DeclineIncomingRequest(originId);
+                playerData.FriendshipComponent.DeclineIncomingRequest(originId);
 
                 if (_playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
                 {
-                    origin.FriendshipComponent.OutgoingRequestDeclined(targetId);
+                    origin.Data.FriendshipComponent.OutgoingRequestDeclined(targetId);
                 }
             }
         }

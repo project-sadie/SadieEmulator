@@ -13,7 +13,7 @@ public class PlayerFriendshipFactory
         _serviceProvider = serviceProvider;
     }
 
-    public PlayerFriendshipData CreateData(int id, string username, string figureCode, string motto, AvatarGender gender)
+    public PlayerFriendshipData CreateFriendshipData(int id, string username, string figureCode, string motto, AvatarGender gender)
     {
         return ActivatorUtilities.CreateInstance<PlayerFriendshipData>(
             _serviceProvider,
@@ -25,7 +25,7 @@ public class PlayerFriendshipFactory
         );
     }
     
-    public PlayerFriendship CreateFromRecord(
+    public PlayerFriendship CreateFriendship(
         int requestId, 
         int originId, 
         int targetId, 

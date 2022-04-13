@@ -64,4 +64,10 @@ public class PlayerData : AvatarData, IPlayerData
     public List<PlayerBadge> Badges { get; }
     public PlayerFriendshipComponent FriendshipComponent { get; }
     public bool AllowFriendRequests { get; }
+    public bool HasPermission(string name) => Permissions.Contains(name);
+
+    public ValueTask DisposeAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -47,7 +47,7 @@ public class RoomRepository : IRoomRepository
     }
 
     public int Count => _rooms.Count;
-    public ICollection<IRoom> GetAllRooms() => _rooms.Values;
+    public IEnumerable<IRoom> GetAllRooms() => _rooms.Values;
 
     public async ValueTask DisposeAsync()
     {

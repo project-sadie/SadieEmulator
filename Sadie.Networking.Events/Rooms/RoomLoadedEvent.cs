@@ -24,14 +24,17 @@ public class RoomLoadedEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
+        var playerData = player.Data;
+        
         var (roomId, password) = (reader.ReadInt(), reader.ReadString());
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
+        var lastRoomId = player.Data.LastRoomLoaded;
         
-        if (player!.LastRoomLoaded != default)
+        if (lastRoomId != 0)
         {
-            var (foundLast, lastRoom) = await _roomRepository.TryLoadRoomByIdAsync(player.LastRoomLoaded);
+            var (foundLast, lastRoom) = await _roomRepository.TryLoadRoomByIdAsync(lastRoomId);
 
-            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
+            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(playerData.Id, out var oldUser) && oldUser != null)
             {
                 await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id);
             }
@@ -43,14 +46,14 @@ public class RoomLoadedEvent : INetworkPacketEvent
             return;
         }
 
-        player.LastRoomLoaded = roomId;
+        playerData.LastRoomLoaded = roomId;
 
         var avatarData = (IAvatarData) player;
         
         var roomUser = _roomUserFactory.Create(
             room,
             client,
-            player.Id,
+            playerData.Id,
             room.Layout.DoorPoint,
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
@@ -58,7 +61,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         if (!room.UserRepository.TryAdd(roomUser))
         {
-            _logger.LogError($"Failed to add user {player.Id} to room {roomId}");
+            _logger.LogError($"Failed to add user {playerData.Id} to room {roomId}");
             return;
         }
 

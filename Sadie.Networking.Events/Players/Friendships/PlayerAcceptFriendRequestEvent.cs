@@ -22,32 +22,38 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        var player = client.Player;
+        var playerId = player.Data.Id;
+        
         var amount = reader.ReadInt();
         const int limit = 100;
 
+        var friendshipComponent = player.Data.FriendshipComponent;
+        
         for (var i = 0; i < amount && i < limit; i++)
         {
             var originId = reader.ReadInt();
-            var request = client.Player!.FriendshipComponent.Friendships.FirstOrDefault(x => x.OriginId == originId && x.Status == PlayerFriendshipStatus.Pending);
+            var request = friendshipComponent.Friendships.FirstOrDefault(x => x.OriginId == originId && x.Status == PlayerFriendshipStatus.Pending);
 
             if (request == null)
             {
                 continue;
             }
             
-            if (request.TargetId != client.Player!.Id)
+            if (request.TargetId != playerId)
             {
                 continue;
             }
 
             if (_playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
             {
-                origin.FriendshipComponent.OutgoingRequestAccepted(client.Player.Id);
+                var targetFriendshipComponent = origin.Data.FriendshipComponent;
                 
-                var targetRequest = origin.
-                        FriendshipComponent.
+                targetFriendshipComponent.OutgoingRequestAccepted(playerId);
+                
+                var targetRequest = targetFriendshipComponent.
                         Friendships.
-                        FirstOrDefault(x => x.OriginId == originId && x.TargetId == client.Player.Id);
+                        FirstOrDefault(x => x.OriginId == originId && x.TargetId == playerId);
 
                 if (targetRequest != null)
                 {
@@ -55,8 +61,8 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                 }
             }
 
-            await _friendshipRepository.AcceptFriendRequestAsync(originId, client.Player!.Id);
-            client.Player.FriendshipComponent.AcceptIncomingRequest(originId);
+            await _friendshipRepository.AcceptFriendRequestAsync(originId, playerId);
+            friendshipComponent.AcceptIncomingRequest(originId);
             
             await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(request, _playerRepository, _roomRepository).GetAllBytes());
         }

@@ -6,7 +6,7 @@ using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
-public interface IPlayerData : IAvatarData
+public interface IPlayerData : IAvatarData, IAsyncDisposable
 {
     int Id { get; }
     string Username { get; }
@@ -24,4 +24,5 @@ public interface IPlayerData : IAvatarData
     List<PlayerBadge> Badges { get; }
     PlayerFriendshipComponent FriendshipComponent { get; }
     bool AllowFriendRequests { get; }
+    bool HasPermission(string name);
 }

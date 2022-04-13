@@ -6,5 +6,5 @@ public interface IRoomRepository : IAsyncDisposable
     Task<Tuple<bool, IRoom?>> TryLoadRoomByIdAsync(long id);
     List<IRoom> GetPopularRooms(int amount);
     int Count { get; }
-    ICollection<IRoom> GetAllRooms();
+    IEnumerable<IRoom> GetAllRooms();
 }

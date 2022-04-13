@@ -17,7 +17,7 @@ public class RoomHeightmapEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var (found, room) = _roomRepository.TryGetRoomById(client.Player.LastRoomLoaded);
+        var (found, room) = _roomRepository.TryGetRoomById(client.Player.Data.LastRoomLoaded);
         
         if (!found || room == null)
         {

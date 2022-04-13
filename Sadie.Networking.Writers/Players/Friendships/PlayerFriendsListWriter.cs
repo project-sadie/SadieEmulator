@@ -24,9 +24,9 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
 
             if (isOnline && onlineFriend != null)
             {
-                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(onlineFriend.LastRoomLoaded);
+                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(onlineFriend.Data.LastRoomLoaded);
 
-                if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(onlineFriend.Id, out _))
+                if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(onlineFriend.Data.Id, out _))
                 {
                     inRoom = true;
                 }

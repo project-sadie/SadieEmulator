@@ -22,14 +22,14 @@ public class PlayerChangedMottoEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
-        var motto = reader.ReadString();
+        var newMotto = reader.ReadString();
 
-        if (motto.Length >= _constants.MaxMottoLength)
+        if (newMotto.Length >= _constants.MaxMottoLength)
         {
-            motto = motto.Truncate(_constants.MaxMottoLength);
+            newMotto = newMotto.Truncate(_constants.MaxMottoLength);
         }
 
-        player.Motto = motto;
+        player.Data.Motto = newMotto;
         
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
         {
