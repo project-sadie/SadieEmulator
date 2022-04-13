@@ -55,7 +55,7 @@ public class PlayerRepository : IPlayerRepository
         await _playerDao.MarkPlayerAsOnlineAsync(id);
     }
 
-    public async Task MarkPlayerAsOfflineAsync(IPlayer player)
+    private async Task MarkPlayerAsOfflineAsync(IPlayer player)
     {
         await _playerDao.MarkPlayerAsOfflineAsync(player);
     }

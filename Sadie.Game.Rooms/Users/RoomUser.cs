@@ -92,18 +92,6 @@ public class RoomUser : RoomUserData, IRoomUser
         }
     }
 
-    public bool TryCreateChatMessage(string message, RoomChatBubble bubble, out RoomChatMessage? chatMesage)
-    {
-        if (string.IsNullOrEmpty(message) || message.Length > _constants.MaxChatMessageLength)
-        {
-            chatMesage = null;
-            return false;
-        }
-        
-        chatMesage = new RoomChatMessage(this, message, _room, bubble, 1);
-        return true;
-    }
-
     public async ValueTask DisposeAsync()
     {
         

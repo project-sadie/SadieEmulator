@@ -10,7 +10,6 @@ public interface IPlayerRepository : IAsyncDisposable
     bool TryAddPlayer(IPlayer player);
     Task<bool> TryRemovePlayerAsync(int playerId);
     Task MarkPlayerAsOnlineAsync(int id);
-    Task MarkPlayerAsOfflineAsync(IPlayer player);
     Task ResetSsoTokenForPlayerAsync(int id);
     int Count();
     Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(int playerId);
