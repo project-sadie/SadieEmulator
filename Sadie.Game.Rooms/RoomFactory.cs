@@ -13,43 +13,42 @@ public class RoomFactory : IRoomFactory
         _serviceProvider = serviceProvider;
     }
     
-    public RoomLayout CreateLayoutFromRecord(DatabaseRecord record)
+    public RoomLayout CreateLayout(int id,
+        string name,
+        string heightmap,
+        HPoint doorPoint,
+        HDirection doorDirection)
     {
-        var doorPoint = new HPoint(record.Get<int>("door_x"),
-            record.Get<int>("door_y"),
-            record.Get<float>("door_z"));
-        
-        return new RoomLayout(
-            record.Get<long>("layout_id"), 
-            record.Get<string>("layout_name"), 
-            record.Get<string>("heightmap"), 
-            doorPoint,
-            (HDirection)record.Get<int>("door_direction"));
+        return ActivatorUtilities.CreateInstance<RoomLayout>(_serviceProvider, id, name, heightmap, doorDirection, doorDirection);
     }
 
-    private static IRoomSettings CreateSettingsFromRecord(DatabaseRecord record)
+    public IRoomSettings CreateSettings(bool walkDiagonal, bool muted)
     {
-        return new RoomSettings(
-            record.Get<bool>("walk_diagonal"),
-            record.Get<bool>("is_muted"));
+        return ActivatorUtilities.CreateInstance<IRoomSettings>(_serviceProvider, walkDiagonal, muted);
     }
-    
-    public Room CreateFromRecord(DatabaseRecord record)
-    {
-        var model = CreateLayoutFromRecord(record);
-        var settings = CreateSettingsFromRecord(record);
 
+    public IRoom Create(int id,
+        string name,
+        RoomLayout layout,
+        int ownerId,
+        string ownerUsername,
+        string description,
+        int score,
+        List<string> tags,
+        int maxUsersAllowed,
+        IRoomSettings settings)
+    {
         return ActivatorUtilities.CreateInstance<Room>(
             _serviceProvider,
-            record.Get<int>("id"),
-            record.Get<string>("name"),
-            model,
-            record.Get<int>("owner_id"),
-            record.Get<string>("owner_name"),
-            record.Get<string>("description"),
-            record.Get<int>("score"),
-            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
-            record.Get<int>("max_users_allowed"),
+            id, 
+            name,
+            layout,
+            ownerId,
+            ownerUsername,
+            description,
+            score,
+            tags,
+            maxUsersAllowed,
             settings);
     }
 }

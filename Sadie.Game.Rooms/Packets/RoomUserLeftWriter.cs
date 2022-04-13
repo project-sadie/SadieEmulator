@@ -5,7 +5,7 @@ namespace Sadie.Game.Rooms.Packets;
 
 public class RoomUserLeftWriter : NetworkPacketWriter
 {
-    public RoomUserLeftWriter(long userId)
+    public RoomUserLeftWriter(int userId)
     {
         WriteShort(ServerPacketId.RoomUserLeft);
         WriteString(userId.ToString());

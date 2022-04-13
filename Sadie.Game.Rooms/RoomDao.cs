@@ -1,4 +1,5 @@
 ﻿using Sadie.Database;
+using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
@@ -49,8 +50,35 @@ public class RoomDao : BaseDao, IRoomDao
 
         var (success, record) = reader.Read();
 
-        return success && record != null ?
-            new Tuple<bool, IRoom?>(true, _factory.CreateFromRecord(record)) : 
-            new Tuple<bool, IRoom?>(false, null);
+        if (!success || record == null)
+        {
+            return new Tuple<bool, IRoom?>(false, null);
+        }
+        
+        var settings = _factory.CreateSettings(
+            record.Get<bool>("walk_diagonal"),
+            record.Get<bool>("is_muted"));
+        
+        var doorPoint = new HPoint(record.Get<int>("door_x"),
+            record.Get<int>("door_y"),
+            record.Get<float>("door_z"));
+        
+        var layout = _factory.CreateLayout(
+            record.Get<int>("layout_id"),
+            record.Get<string>("layout_name"),
+            record.Get<string>("heightmap"),
+            doorPoint,
+            (HDirection) record.Get<int>("door_direction"));
+
+        return new Tuple<bool, IRoom?>(true, _factory.Create(record.Get<int>("id"),
+            record.Get<string>("name"),
+            layout,
+            record.Get<int>("owner_id"),
+            record.Get<string>("owner_name"),
+            record.Get<string>("description"),
+            record.Get<int>("score"),
+            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
+            record.Get<int>("max_users_allowed"),
+            settings));
     }
 }

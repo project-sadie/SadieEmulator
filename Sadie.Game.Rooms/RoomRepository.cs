@@ -37,27 +37,17 @@ public class RoomRepository : IRoomRepository
         return TryGetRoomById(id);
     }
 
-    public async Task RunPeriodicCheckAsync()
-    {
-        foreach (var room in _rooms.Values)
-        {
-            await room.RunPeriodicCheckAsync();
-        }
-    }
-
     public List<IRoom> GetPopularRooms(int amount)
     {
         return _rooms.Values.
             Where(x => x.UserRepository.Count > 0).
-            Take(amount).
             OrderByDescending(x => x.UserRepository.Count).
+            Take(amount).
             ToList();
     }
 
-    public int Count()
-    {
-        return _rooms.Count;
-    }
+    public int Count => _rooms.Count;
+    public ICollection<IRoom> GetAllRooms() => _rooms.Values;
 
     public async ValueTask DisposeAsync()
     {

@@ -21,7 +21,7 @@ public class UpdateStatusTask : IServerTask
     public Task ExecuteAsync()
     {
         var usersOnline = _playerRepository.Count();
-        var roomCount = _roomRepository.Count();
+        var roomCount = _roomRepository.Count;
         
         Console.Title = $"Sadie {Server.Version} - Players Online: {usersOnline} - Rooms Loaded: {roomCount}";
         

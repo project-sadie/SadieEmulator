@@ -4,12 +4,12 @@ namespace Sadie.Game.Rooms;
 
 public class RoomLayout : RoomLayoutData
 {
-    public long Id { get; }
+    public int Id { get; }
     public string Name { get; }
     public string HeightMap { get; }
     public short[,] TileMap { get; }
     
-    public RoomLayout(long id, string name, string heightMap, HPoint doorPoint, HDirection doorDirection) : base(heightMap, doorPoint, doorDirection)
+    public RoomLayout(int id, string name, string heightMap, HPoint doorPoint, HDirection doorDirection) : base(heightMap, doorPoint, doorDirection)
     {
         Id = id;
         Name = name;

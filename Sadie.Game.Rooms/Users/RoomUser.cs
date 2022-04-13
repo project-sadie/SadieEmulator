@@ -38,7 +38,7 @@ public class RoomUser : RoomUserData, IRoomUser
         Point = NextPoint ?? Point;
     }
     
-    public void WalkToPoint(Point point, bool useDiagonal) // 2bMoved
+    public void WalkToPoint(Point point, bool useDiagonal)
     {
         StatusMap.Clear();
         
