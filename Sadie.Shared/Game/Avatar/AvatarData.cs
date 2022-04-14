@@ -8,7 +8,7 @@ public class AvatarData : IAvatarData
         FigureCode = figureCode;
         Motto = motto;
         Gender = gender;
-        LastRoomLoaded = 0;
+        CurrentRoomId = 0;
         AchievementScore = achievementScore;
         Tags = tags;
         ChatBubble = chatBubble;
@@ -18,7 +18,7 @@ public class AvatarData : IAvatarData
     public string FigureCode { get; set; }
     public string Motto { get; set; }
     public AvatarGender Gender { get; set; }
-    public long LastRoomLoaded { get; set; }
+    public int CurrentRoomId { get; set; }
     public long AchievementScore { get; set; }
     public List<string> Tags { get; set; }
     public int ChatBubble { get; }

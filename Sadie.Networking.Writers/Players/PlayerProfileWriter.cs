@@ -16,11 +16,11 @@ public class PlayerProfileWriter : NetworkPacketWriter
         WriteString(playerData.CreatedAt.ToString("dd MMMM yyyy"));
         WriteLong(playerData.AchievementScore);
         WriteLong(friendshipCount);
-        WriteBoolean(friendshipExists);
-        WriteBoolean(friendshipRequestExists);
-        WriteBoolean(online);
-        WriteInt(0);
-        WriteInt((int)(DateTime.Now - playerData.LastOnline).TotalSeconds);
-        WriteBoolean(true);
+        WriteBool(friendshipExists);
+        WriteBool(friendshipRequestExists);
+        WriteBool(online);
+        WriteInteger(0);
+        WriteInteger((int)(DateTime.Now - playerData.LastOnline).TotalSeconds);
+        WriteBool(true);
     }
 }

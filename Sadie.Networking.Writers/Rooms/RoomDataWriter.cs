@@ -5,10 +5,10 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomDataWriter : NetworkPacketWriter
 {
-    public RoomDataWriter(int roomId, string modelName)
+    public RoomDataWriter(int roomId, string layoutName)
     {
         WriteShort(ServerPacketId.RoomData);
-        WriteString(modelName);
-        WriteInt(roomId);
+        WriteString(layoutName);
+        WriteInteger(roomId);
     }
 }

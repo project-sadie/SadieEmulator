@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms.Users;
+﻿using Sadie.Game.Rooms.Chat;
+using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
@@ -15,6 +16,7 @@ public class RoomData
     public int MaxUsers { get; }
     public IRoomUserRepository UserRepository { get; }
     public IRoomSettings Settings { get; }
+    public List<RoomChatMessage> ChatMessages { get; }
 
     protected RoomData(int id,
         string name,
@@ -39,5 +41,6 @@ public class RoomData
         MaxUsers = maxUsers;
         UserRepository = userRepository;
         Settings = settings;
+        ChatMessages = new List<RoomChatMessage>();
     }
 }

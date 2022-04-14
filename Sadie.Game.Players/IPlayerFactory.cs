@@ -1,6 +1,7 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
@@ -29,7 +30,4 @@ public interface IPlayerFactory
         bool blockCameraFollow,
         int uiFlag,
         bool showNotifications);
-
-    PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId,
-        List<PlayerFriendship> friendships);
 }

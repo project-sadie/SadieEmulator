@@ -21,8 +21,8 @@ public class RoomUserWalkEvent : INetworkPacketEvent
             return Task.CompletedTask;
         }
         
-        var x = reader.ReadInt();
-        var y = reader.ReadInt();
+        var x = reader.ReadInteger();
+        var y = reader.ReadInteger();
         
         var tile = room!.Layout.Tiles.FirstOrDefault(z => z.Point.X == x && z.Point.Y == y);
         

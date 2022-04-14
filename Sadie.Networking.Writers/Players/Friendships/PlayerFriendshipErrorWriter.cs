@@ -2,14 +2,14 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Players.Friends;
+namespace Sadie.Networking.Writers.Players.Friendships;
 
 public class PlayerFriendshipErrorWriter : NetworkPacketWriter
 {
     public PlayerFriendshipErrorWriter(int unknown1, PlayerFriendshipError error)
     {
         WriteShort(ServerPacketId.PlayerFriendshipError);
-        WriteInt(unknown1);
-        WriteInt((int) error);
+        WriteInteger(unknown1);
+        WriteInteger((int) error);
     }
 }

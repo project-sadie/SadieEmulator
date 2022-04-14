@@ -9,12 +9,12 @@ public class NavigatorLiftedRoomsWriter : NetworkPacketWriter
     public NavigatorLiftedRoomsWriter(List<Room> rooms)
     {
         WriteShort(ServerPacketId.NavigatorLiftedRooms);
-        WriteInt(rooms.Count);
+        WriteInteger(rooms.Count);
 
         foreach (var room in rooms)
         {
             WriteLong(room.Id);
-            WriteInt(0); // unknown
+            WriteInteger(0); // unknown
             WriteString(""); // thumbnail?
             WriteString(room.Name);
         }

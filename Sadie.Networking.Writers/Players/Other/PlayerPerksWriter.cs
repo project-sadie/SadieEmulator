@@ -8,66 +8,66 @@ public class PlayerPerksWriter : NetworkPacketWriter
     public PlayerPerksWriter()
     {
         WriteShort(ServerPacketId.PlayerPerks);
-        WriteInt(13);
+        WriteInteger(13);
         
         WriteString("USE_GUIDE_TOOL");
         WriteString("requirement.unfulfilled.helper_level_4");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("GIVE_GUIDE_TOURS");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("JUDGE_CHAT_REVIEWS");
         WriteString("requirement.unfulfilled.helper_level_6");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("VOTE_IN_COMPETITIONS");
         WriteString("requirement.unfulfilled.helper_level_2");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("CALL_ON_HELPERS");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("CITIZEN");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("TRADE");
         WriteString("requirement.unfulfilled.no_trade_lock");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("HEIGHTMAP_EDITOR_BETA");
         WriteString("requirement.unfulfilled.feature_disabled");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("BUILDER_AT_WORK");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("CALL_ON_HELPERS");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("CAMERA");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("NAVIGATOR_PHASE_TWO_2014");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("MOUSE_ZOOM");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("NAVIGATOR_ROOM_THUMBNAIL_CAMERA");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
         
         WriteString("HABBO_CLUB_OFFER_BETA");
         WriteString("");
-        WriteBoolean(true);
+        WriteBool(true);
     }
 }

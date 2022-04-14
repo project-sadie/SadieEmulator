@@ -2,6 +2,7 @@ using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
+using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 
@@ -13,16 +14,20 @@ public class PlayerDao : BaseDao, IPlayerDao
     private readonly IPlayerDataFactory _playerDataFactory;
     private readonly IPlayerBadgeDao _badgeDao;
     private readonly IPlayerFriendshipDao _friendshipDao;
+    private readonly IPlayerSubscriptionDao _subscriptionDao;
 
     public PlayerDao(IDatabaseProvider databaseProvider, 
         IPlayerFactory playerFactory, 
         IPlayerDataFactory playerDataFactory, 
-        IPlayerBadgeDao badgeDao, IPlayerFriendshipDao friendshipDao) : base(databaseProvider)
+        IPlayerBadgeDao badgeDao, 
+        IPlayerFriendshipDao friendshipDao,
+        IPlayerSubscriptionDao subscriptionDao) : base(databaseProvider)
     {
         _playerFactory = playerFactory;
         _playerDataFactory = playerDataFactory;
         _badgeDao = badgeDao;
         _friendshipDao = friendshipDao;
+        _subscriptionDao = subscriptionDao;
     }
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
@@ -48,7 +53,7 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_avatar_data`.`figure_code`, 
                    `player_avatar_data`.`motto`, 
                    `player_avatar_data`.`gender`, 
-                   `player_avatar_data`.`chat_bubble`,
+                   `player_avatar_data`.`chat_bubble_id`,
                    
                    (SELECT GROUP_CONCAT(`name`) AS `comma_seperated_tags`
                     FROM `player_tags`
@@ -114,7 +119,7 @@ public class PlayerDao : BaseDao, IPlayerDao
         var permissions = await GetPermissionsAsync(record.Get<int>("role_id"));
         var badges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
         var friendships = await _friendshipDao.GetAllRecordsForPlayerAsync(record.Get<int>("id"));
-        var friendshipComponent = _playerFactory.CreatePlayerFriendshipComponent(record.Get<int>("id"), friendships);
+        var subscriptions = await _subscriptionDao.GetSubscriptionsForPlayerAsync(record.Get<int>("id"));
 
         var playerData = _playerDataFactory.Create(
             record.Get<int>("id"),
@@ -135,9 +140,10 @@ public class PlayerDao : BaseDao, IPlayerDao
             record.Get<int>("achievement_score"),
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
             badges,
-            friendshipComponent,
-            record.Get<int>("chat_bubble"),
-            record.Get<int>("allow_friend_requests") == 1);
+            friendships,
+            record.Get<int>("chat_bubble_id"),
+            record.Get<int>("allow_friend_requests") == 1,
+            subscriptions);
         
         var player = _playerFactory.Create(
             networkObject,

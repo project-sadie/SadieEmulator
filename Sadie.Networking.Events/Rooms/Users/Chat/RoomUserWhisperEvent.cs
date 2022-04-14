@@ -38,7 +38,9 @@ public class RoomUserWhisperEvent : INetworkPacketEvent
             return;
         }
 
-        var chatMessage = new RoomChatMessage(roomUser, whisperMessage, room, (RoomChatBubble) reader.ReadInt(), 0);
+        var chatMessage = new RoomChatMessage(roomUser, whisperMessage, room, (RoomChatBubble) reader.ReadInteger(), 0);
+        room.ChatMessages.Add(chatMessage);
+        
         var packetBytes = new RoomUserWhisperWriter(chatMessage).GetAllBytes();
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);

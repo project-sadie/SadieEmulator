@@ -8,7 +8,7 @@ public class RoomUserDanceWriter : NetworkPacketWriter
     public RoomUserDanceWriter(int userId, int danceId)
     {
         WriteShort(ServerPacketId.RoomUserDance);
-        WriteInt(userId);
-        WriteInt(danceId);
+        WriteInteger(userId);
+        WriteInteger(danceId);
     }
 }

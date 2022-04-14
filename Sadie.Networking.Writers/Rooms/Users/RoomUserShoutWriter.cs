@@ -9,11 +9,11 @@ public class RoomUserShoutWriter : NetworkPacketWriter
     public RoomUserShoutWriter(RoomChatMessage message, int unknown1)
     {
         WriteShort(ServerPacketId.RoomUserShout);
-        WriteInt(message.Sender.Id);
+        WriteInteger(message.Sender.Id);
         WriteString(message.Message);
-        WriteInt(message.EmotionId);
-        WriteInt((int) message.Bubble);
-        WriteInt(unknown1);
-        WriteInt(message.Message.Length);
+        WriteInteger(message.EmotionId);
+        WriteInteger((int) message.Bubble);
+        WriteInteger(unknown1);
+        WriteInteger(message.Message.Length);
     }
 }

@@ -21,18 +21,18 @@ public class PlayerSanctionStatusWriter : NetworkPacketWriter
         DateTime tradeLockedUntil)
     {
         WriteShort(ServerPacketId.PlayerSanctionStatus);
-        WriteBoolean(hasPreviousSanction);
-        WriteBoolean(onProbation);
+        WriteBool(hasPreviousSanction);
+        WriteBool(onProbation);
         WriteString(lastSanctionType);
-        WriteInt(sanctionTime);
-        WriteInt(unknown1);
+        WriteInteger(sanctionTime);
+        WriteInteger(unknown1);
         WriteString(reason);
         WriteString(probationStart.ToString());
-        WriteInt(unknown2);
+        WriteInteger(unknown2);
         WriteString(nextSanctionType);
-        WriteInt(hoursForNextSanction);
-        WriteInt(unknown3);
-        WriteBoolean(muted);
+        WriteInteger(hoursForNextSanction);
+        WriteInteger(unknown3);
+        WriteBool(muted);
         WriteString(tradeLockedUntil == DateTime.MinValue ? "" : tradeLockedUntil.ToString());
     }
 }

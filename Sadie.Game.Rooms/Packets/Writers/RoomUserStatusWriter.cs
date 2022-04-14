@@ -9,7 +9,7 @@ public class RoomUserStatusWriter : NetworkPacketWriter
     public RoomUserStatusWriter(ICollection<IRoomUser> users)
     {
         WriteShort(ServerPacketId.RoomUserStatus);
-        WriteInt(users.Count);
+        WriteInteger(users.Count);
 
         foreach (var user in users)
         {
@@ -18,11 +18,11 @@ public class RoomUserStatusWriter : NetworkPacketWriter
                 Select(x => x.Key + (string.IsNullOrEmpty(x.Value) ? "" : " " + x.Value));
             
             WriteLong(user.Id);
-            WriteInt(user.Point.X);
-            WriteInt(user.Point.Y);
+            WriteInteger(user.Point.X);
+            WriteInteger(user.Point.Y);
             WriteString(user.Point.Z + "");
-            WriteInt((int) user.DirectionHead);
-            WriteInt((int) user.Direction);
+            WriteInteger((int) user.DirectionHead);
+            WriteInteger((int) user.Direction);
             WriteString("/" + string.Join("", statusList));
         }
     }

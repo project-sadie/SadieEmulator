@@ -8,8 +8,8 @@ public class PlayerStatusWriter : NetworkPacketWriter
     public PlayerStatusWriter(bool isOpen, bool isShuttingDown, bool isAuthentic)
     {
         WriteShort(ServerPacketId.PlayerStatus);
-        WriteBoolean(isOpen);
-        WriteBoolean(isShuttingDown);
-        WriteBoolean(isAuthentic);
+        WriteBool(isOpen);
+        WriteBool(isShuttingDown);
+        WriteBool(isAuthentic);
     }
 }

@@ -22,7 +22,7 @@ public class PlayerProfileEvent : INetworkPacketEvent
         var player = client.Player;
         var playerId = player.Data.Id;
         
-        var profileId = reader.ReadInt();
+        var profileId = reader.ReadInteger();
         var profileOnline = false;
 
         IPlayerData onlineData = null;
@@ -39,7 +39,7 @@ public class PlayerProfileEvent : INetworkPacketEvent
         }
         else
         {
-            var (found, fetchedPlayerData) = await _playerRepository.TryGetPlayerData(profileId);
+            var (found, fetchedPlayerData) = await _playerRepository.TryGetPlayerDataAsync(profileId);
 
             if (found)
             {

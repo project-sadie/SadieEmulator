@@ -16,7 +16,7 @@ public class RoomUserTagsEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var roomUserId = reader.ReadInt();
+        var roomUserId = reader.ReadInteger();
         
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out _))
         {

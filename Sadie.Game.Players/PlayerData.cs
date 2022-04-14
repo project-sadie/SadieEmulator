@@ -1,14 +1,16 @@
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
+using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
 public class PlayerData : AvatarData, IPlayerData
 {
-    protected PlayerData(
+    public PlayerData(
         int id, 
         string username, 
         DateTime createdAt,
@@ -30,7 +32,8 @@ public class PlayerData : AvatarData, IPlayerData
         List<PlayerBadge> badges, 
         PlayerFriendshipComponent friendshipComponent,
         int chatBubble, 
-        bool allowFriendRequests) : base(username, figureCode, motto, gender, achievementScore, tags, chatBubble)
+        bool allowFriendRequests,
+        List<IPlayerSubscription> subscriptions) : base(username, figureCode, motto, gender, achievementScore, tags, chatBubble)
     {
         Id = id;
         CreatedAt = createdAt;
@@ -47,6 +50,7 @@ public class PlayerData : AvatarData, IPlayerData
         Badges = badges;
         FriendshipComponent = friendshipComponent;
         AllowFriendRequests = allowFriendRequests;
+        Subscriptions = subscriptions;
     }
 
     public int Id { get; }
@@ -64,7 +68,7 @@ public class PlayerData : AvatarData, IPlayerData
     public List<PlayerBadge> Badges { get; }
     public PlayerFriendshipComponent FriendshipComponent { get; }
     public bool AllowFriendRequests { get; }
-    public bool HasPermission(string name) => Permissions.Contains(name);
+    public List<IPlayerSubscription> Subscriptions { get; }
 
     public ValueTask DisposeAsync()
     {

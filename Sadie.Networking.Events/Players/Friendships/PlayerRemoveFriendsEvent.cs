@@ -2,7 +2,6 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players.Friends;
 using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Players.Friendships;
@@ -22,12 +21,12 @@ public class PlayerRemoveFriendsEvent : INetworkPacketEvent
     {
         var playerId = client.Player.Data.Id;
         
-        var amount = reader.ReadInt();
+        var amount = reader.ReadInteger();
         var removedIds = new List<int>();
 
         for (var i = 0; i < amount; i++)
         {
-            var currentId = reader.ReadInt();
+            var currentId = reader.ReadInteger();
             removedIds.Add(currentId);
 
             if (_playerRepository.TryGetPlayerById(currentId, out var target) && target != null)

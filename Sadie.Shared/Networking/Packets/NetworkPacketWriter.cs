@@ -28,7 +28,7 @@ public class NetworkPacketWriter
         WriteBytes(BitConverter.GetBytes(data), true);
     }
 
-    protected void WriteInt(int data)
+    protected void WriteInteger(int data)
     {
         WriteBytes(BitConverter.GetBytes(data), true);
     }
@@ -38,7 +38,7 @@ public class NetworkPacketWriter
         WriteBytes(BitConverter.GetBytes((int) data), true);
     }
 
-    protected void WriteBoolean(bool boolean)
+    protected void WriteBool(bool boolean)
     {
         WriteBytes(new[] {(byte) (boolean ? 1 : 0)});
     }

@@ -9,17 +9,17 @@ public class RoomCategoriesWriter : NetworkPacketWriter
     public RoomCategoriesWriter(List<RoomCategory> categories)
     {
         WriteShort(ServerPacketId.RoomCategories);
-        WriteInt(categories.Count);
+        WriteInteger(categories.Count);
 
         foreach (var category in categories)
         {
-            WriteInt(category.Id);
+            WriteInteger(category.Id);
             WriteString(category.Caption);
-            WriteBoolean(category.Visible);
-            WriteBoolean(false); // unknown
+            WriteBool(category.Visible);
+            WriteBool(false); // unknown
             WriteString(category.Caption);
             WriteString(category.Caption.StartsWith("${") ? "" : category.Caption);
-            WriteBoolean(false); // unknown
+            WriteBool(false); // unknown
         }
     }
 }

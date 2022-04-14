@@ -67,4 +67,13 @@ public class ServerPacketId
     public const short PlayerFriendRequest = 2219;
     public const short PlayerRemoveFriends = 2800;
     public const short PlayerUpdateFriend = 2800;
+    public const short RoomCreated = 1304;
+    public const short HabboClubData = 2405;
+    public const short HabboClubGifts = 619;
+    public const short HabboClubCenter = 3277;
+    public const short RoomScore = 482;
+    public const short RoomPromotion = 1840;
+    public const short PlayerSearchResult = 973;
+    public const short PlayerStalkError = 3048;
+    public const short RoomForwardEntry = 160;
 }

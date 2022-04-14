@@ -1,5 +1,7 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
+using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -7,10 +9,12 @@ namespace Sadie.Game.Players;
 public class PlayerDataDao : BaseDao, IPlayerDataDao
 {
     private readonly IPlayerDataFactory _playerDataFactory;
+    private readonly IPlayerFriendshipRepository _friendshipRepository;
 
-    public PlayerDataDao(IDatabaseProvider databaseProvider, IPlayerDataFactory playerDataFactory) : base(databaseProvider)
+    public PlayerDataDao(IDatabaseProvider databaseProvider, IPlayerDataFactory playerDataFactory, IPlayerFriendshipRepository friendshipRepository) : base(databaseProvider)
     {
         _playerDataFactory = playerDataFactory;
+        _friendshipRepository = friendshipRepository;
     }
     
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
@@ -24,7 +28,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
         if (success && record != null)
         {
-            var playerData = CreateFromRecord(record);
+            var playerData = await CreateFromRecordAsync(record);
             return new Tuple<bool, IPlayerData?>(true, playerData);
         }
 
@@ -42,14 +46,61 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
         if (success && record != null)
         {
-            var playerData = CreateFromRecord(record);
+            var playerData = await CreateFromRecordAsync(record);
             return new Tuple<bool, IPlayerData?>(true, playerData);
         }
 
         return new Tuple<bool, IPlayerData?>(false, null);
     }
 
-    private IPlayerData CreateFromRecord(DatabaseRecord @record)
+    public async Task<List<IPlayerData>> GetPlayerDataForSearch(string searchQuery, int[] excludedIds)
+    {
+        var reader = await GetReaderAsync(@$"
+            SELECT 
+                   `players`.`id`, 
+                   `players`.`username`, 
+                   `players`.`created_at`, 
+            
+                   `player_data`.`home_room_id`,
+                   `player_data`.`respect_points`,
+                   `player_data`.`respect_points_pet`,
+                   `player_data`.`last_online`,
+                   `player_data`.`achievement_score`,
+                   `player_data`.`allow_friend_requests`,
+                   
+                   `player_avatar_data`.`figure_code`, 
+                   `player_avatar_data`.`motto`, 
+                   `player_avatar_data`.`gender`,
+                   `player_avatar_data`.`chat_bubble_id`
+            
+            FROM `players` 
+                INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
+                INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
+            WHERE `players`.`id` NOT IN ({string.Join(",", excludedIds)}) AND `players`.`username` LIKE  @searchQuery LIMIT 100;", new Dictionary<string, object>
+        {
+            { "searchQuery", $"%{searchQuery}%" }
+        });
+        
+        var data = new List<IPlayerData>();
+        
+        while (true)
+        {
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            var playerData = await CreateFromRecordAsync(record);
+            
+            data.Add(playerData);
+        }
+        
+        return data;
+    }
+
+    private async Task<IPlayerData> CreateFromRecordAsync(DatabaseRecord record)
     {
         return _playerDataFactory.Create(
             record.Get<int>("id"),
@@ -71,9 +122,10 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
             record.Get<long>("achievement_score"),
             new List<string>(), // tags
             new List<PlayerBadge>(), // badges
-            null, // friendship component
-            record.Get<int>("chat_bubble"),
-            record.Get<int>("allow_friend_requests") == 1
+            await _friendshipRepository.GetAllRecordsForPlayerAsync(record.Get<int>("id")), // friendship component
+            record.Get<int>("chat_bubble_id"),
+            record.Get<int>("allow_friend_requests") == 1,
+            new List<IPlayerSubscription>() // subscriptions
         );
     }
 
@@ -95,7 +147,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
                    `player_avatar_data`.`figure_code`, 
                    `player_avatar_data`.`motto`, 
                    `player_avatar_data`.`gender`,
-                   `player_avatar_data`.`chat_bubble`
+                   `player_avatar_data`.`chat_bubble_id`
             
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 

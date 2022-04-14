@@ -9,16 +9,16 @@ public class PlayerEffectListWriter : NetworkPacketWriter
     public PlayerEffectListWriter(List<PlayerEffect> effects)
     {
         WriteShort(ServerPacketId.PlayerEffectList);
-        WriteInt(effects.Count);
+        WriteInteger(effects.Count);
 
         foreach (var effect in effects)
         {
-            WriteInt(effect.Id);
-            WriteInt(0);
-            WriteInt(effect.Duration);
-            WriteInt(-1);
-            WriteInt(0); // ??
-            WriteBoolean(effect.Duration == -1);
+            WriteInteger(effect.Id);
+            WriteInteger(0);
+            WriteInteger(effect.Duration);
+            WriteInteger(-1);
+            WriteInteger(0); // ??
+            WriteBool(effect.Duration == -1);
         }
     }
 }

@@ -59,4 +59,10 @@ public class ClientPacketId
     public const short PlayerRemoveFriend = 1689;
     public const short PlayerChangeRelation = 3768;
     public const short PlayerCreateRoom = 2752;
+    public const short HabboClubData = 3285;
+    public const short HabboClubCenter = 869;
+    public const short HabboClubGifts = 487;
+    public const short RoomUserGoToHotelView = 105;
+    public const short PlayerSearch = 1210;
+    public const short PlayerStalk = 3997;
 }

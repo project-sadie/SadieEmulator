@@ -9,11 +9,11 @@ public class PlayerNavigatorSettingsWriter : NetworkPacketWriter
     public PlayerNavigatorSettingsWriter(PlayerNavigatorSettings navigatorSettings)
     {
         WriteShort(ServerPacketId.NavigatorSettings);
-        WriteInt(navigatorSettings.WindowX);
-        WriteInt(navigatorSettings.WindowY);
-        WriteInt(navigatorSettings.WindowWidth);
-        WriteInt(navigatorSettings.WindowHeight);
-        WriteBoolean(navigatorSettings.OpenSearches);
-        WriteInt(navigatorSettings.Unknown1);
+        WriteInteger(navigatorSettings.WindowX);
+        WriteInteger(navigatorSettings.WindowY);
+        WriteInteger(navigatorSettings.WindowWidth);
+        WriteInteger(navigatorSettings.WindowHeight);
+        WriteBool(navigatorSettings.OpenSearches);
+        WriteInteger(navigatorSettings.Unknown1);
     }
 }

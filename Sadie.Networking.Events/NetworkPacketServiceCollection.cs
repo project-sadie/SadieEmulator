@@ -7,6 +7,7 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Respect;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
+using Sadie.Networking.Events.Club;
 using Sadie.Networking.Events.GameCenter;
 using Sadie.Networking.Events.Generic;
 using Sadie.Networking.Events.Handshake;
@@ -15,6 +16,7 @@ using Sadie.Networking.Events.Navigator;
 using Sadie.Networking.Events.Players;
 using Sadie.Networking.Events.Players.Club;
 using Sadie.Networking.Events.Players.Friendships;
+using Sadie.Networking.Events.Players.Messenger;
 using Sadie.Networking.Events.Rooms;
 using Sadie.Networking.Events.Rooms.Users;
 using Sadie.Networking.Events.Rooms.Users.Chat;
@@ -38,6 +40,12 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerWearingBadgesEvent>();
         serviceCollection.AddSingleton<PlayerChangeRelationEvent>();
         serviceCollection.AddSingleton<PlayerCreateRoomEvent>();
+        serviceCollection.AddSingleton<HabboClubDataEvent>();
+        serviceCollection.AddSingleton<PlayerClubCenterDataEvent>();
+        serviceCollection.AddSingleton<HabboClubGiftsEvent>();
+        serviceCollection.AddSingleton<RoomUserGoToHotelViewEvent>();
+        serviceCollection.AddSingleton<PlayerSearchEvent>();
+        serviceCollection.AddSingleton<PlayerStalkEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -54,7 +62,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerClubMembership] = new PlayerClubMembershipEvent(),
             [ClientPacketId.NavigatorData] = new NavigatorDataEvent(),
             [ClientPacketId.PlayerFriendsList] = new PlayerFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.PlayerMessengerInit] = new PlayerMessengerInitEvent(),
+            [ClientPacketId.PlayerMessengerInit] = new PlayerMessengerInitEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>(), provider.GetRequiredService<PlayerConstants>()),
             [ClientPacketId.PlayerPing] = new PlayerPingEvent(),
             [ClientPacketId.HotelViewData] = new HotelViewDataEvent(),
             [ClientPacketId.PlayerUsername] = new PlayerUsernameEvent(),
@@ -105,6 +113,12 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerRemoveFriend] = new PlayerRemoveFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IPlayerFriendshipRepository>()),
             [ClientPacketId.PlayerChangeRelation] = provider.GetRequiredService<PlayerChangeRelationEvent>(),
             [ClientPacketId.PlayerCreateRoom] = provider.GetRequiredService<PlayerCreateRoomEvent>(),
+            [ClientPacketId.HabboClubData] = provider.GetRequiredService<HabboClubDataEvent>(),
+            [ClientPacketId.HabboClubCenter] = provider.GetRequiredService<PlayerClubCenterDataEvent>(),
+            [ClientPacketId.HabboClubGifts] = provider.GetRequiredService<HabboClubGiftsEvent>(),
+            [ClientPacketId.RoomUserGoToHotelView] = provider.GetRequiredService<RoomUserGoToHotelViewEvent>(),
+            [ClientPacketId.PlayerSearch] = provider.GetRequiredService<PlayerSearchEvent>(),
+            [ClientPacketId.PlayerStalk] = provider.GetRequiredService<PlayerStalkEvent>(),
         });
     }
 }

@@ -1,7 +1,9 @@
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
+using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -28,7 +30,11 @@ public interface IPlayerDataFactory
         long achievementScore,
         List<string> tags,
         List<PlayerBadge> badges,
-        PlayerFriendshipComponent friendshipComponent,
+        List<PlayerFriendship> friendships,
         int chatBubble,
-        bool allowFriendRequests);
+        bool allowFriendRequests, 
+        List<IPlayerSubscription> subscriptions);
+
+    PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId,
+        List<PlayerFriendship> friendships);
 }

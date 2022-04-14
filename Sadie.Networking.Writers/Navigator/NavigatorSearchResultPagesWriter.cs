@@ -13,19 +13,19 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
         WriteString(tabName);
         WriteString(searchQuery);
         
-        WriteInt(resultCategories.Count);
+        WriteInteger(resultCategories.Count);
 
         foreach (var result in resultCategories)
         {
             WriteString(result.CodeName);
             WriteString(result.Name);
-            WriteInt((int) 0); // TODO: SEARCH ACTION?
-            WriteBoolean(false); // TODO: is it collapsed?
-            WriteInt(0); // TODO: Show thumbnail? display mode
+            WriteInteger((int) 0); // TODO: SEARCH ACTION?
+            WriteBool(false); // TODO: is it collapsed?
+            WriteInteger(0); // TODO: Show thumbnail? display mode
 
             var rooms = roomProvider.GetRoomsForCategoryName(result.CodeName);
             
-            WriteInt(rooms.Count);
+            WriteInteger(rooms.Count);
             
             foreach (var room in rooms)
             {
@@ -33,22 +33,22 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
                 WriteString(room.Name);
                 WriteLong(room.OwnerId);
                 WriteString(room.OwnerName);
-                WriteInt(0); // TODO: state 
-                WriteInt(room.UserRepository.Count);
-                WriteInt(room.MaxUsers);
+                WriteInteger(0); // TODO: state 
+                WriteInteger(room.UserRepository.Count);
+                WriteInteger(room.MaxUsers);
                 WriteString(room.Description);
-                WriteInt(0); // unknown
-                WriteInt(room.Score);
-                WriteInt(0); // unknown
-                WriteInt(1); // TODO: category
-                WriteInt(room.Tags.Count);
+                WriteInteger(0); // unknown
+                WriteInteger(room.Score);
+                WriteInteger(0); // unknown
+                WriteInteger(1); // TODO: category
+                WriteInteger(room.Tags.Count);
 
                 foreach (var tag in room.Tags)
                 {
                     WriteString(tag);
                 }
                 
-                WriteInt(0 | 8); // TODO: base
+                WriteInteger(0 | 8); // TODO: base
             }
         }
     }

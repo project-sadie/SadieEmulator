@@ -9,8 +9,8 @@ public class RoomRelativeMapWriter : NetworkPacketWriter
     public RoomRelativeMapWriter(RoomLayoutData layout)
     {
         WriteShort(ServerPacketId.RoomRelativeMap);
-        WriteInt(layout.Size / layout.SizeY);
-        WriteInt(layout.Size);
+        WriteInteger(layout.Size / layout.SizeY);
+        WriteInteger(layout.Size);
 
         for (var y = 0; y < layout.SizeY; y++)
         {

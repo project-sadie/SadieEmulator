@@ -8,13 +8,13 @@ public class PlayerRemoveFriendsWriter : NetworkPacketWriter
     public PlayerRemoveFriendsWriter(List<int> playerIds)
     {
         WriteShort(ServerPacketId.PlayerRemoveFriends);
-        WriteInt(0);
-        WriteInt(playerIds.Count);
+        WriteInteger(0);
+        WriteInteger(playerIds.Count);
 
         foreach (var playerId in playerIds)
         {
-            WriteInt(-1);
-            WriteInt(playerId);
+            WriteInteger(-1);
+            WriteInteger(playerId);
         }
     }
 }

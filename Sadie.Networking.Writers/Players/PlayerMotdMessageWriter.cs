@@ -8,7 +8,7 @@ public class PlayerMotdMessageWriter : NetworkPacketWriter
     public PlayerMotdMessageWriter(List<string> paragraphs)
     {
         WriteShort(ServerPacketId.PlayerMessage);
-        WriteInt(paragraphs.Count);
+        WriteInteger(paragraphs.Count);
 
         foreach (var message in paragraphs)
         {

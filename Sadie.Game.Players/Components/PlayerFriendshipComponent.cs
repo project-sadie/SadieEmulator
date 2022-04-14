@@ -1,4 +1,6 @@
-namespace Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Friendships;
+
+namespace Sadie.Game.Players.Components;
 
 public class PlayerFriendshipComponent
 {

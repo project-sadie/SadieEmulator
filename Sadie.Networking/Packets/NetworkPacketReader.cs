@@ -19,7 +19,7 @@ public class NetworkPacketReader : INetworkPacketReader
         return Encoding.Default.GetString(ReadBytes(packetLength));
     }
 
-    public int ReadInt()
+    public int ReadInteger()
     {
         return BinaryPrimitives.ReadInt32BigEndian(ReadBytes(4));
     }

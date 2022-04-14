@@ -16,7 +16,7 @@ public class RoomForwardDataEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var roomId = reader.ReadInt();
+        var roomId = reader.ReadInteger();
 
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
         
@@ -25,8 +25,8 @@ public class RoomForwardDataEvent : INetworkPacketEvent
             return;
         }
         
-        var unknown1 = reader.ReadInt();
-        var unknown2 = reader.ReadInt();
+        var unknown1 = reader.ReadInteger();
+        var unknown2 = reader.ReadInteger();
         var unknown3 = !(unknown1 == 0 && unknown2 == 1);
         
         await client.WriteToStreamAsync(new RoomForwardDataWriter(room!, true, unknown3).GetAllBytes());

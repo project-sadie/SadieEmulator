@@ -8,6 +8,9 @@ public class PlayerClubMembershipEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerClubMembershipWriter(reader.ReadString()).GetAllBytes());
+        var subscriptionName = reader.ReadString();
+        var subscription = client.Player.Data.Subscriptions.FirstOrDefault(x => x.Name == subscriptionName);
+        
+        await client.WriteToStreamAsync(new PlayerClubMembershipWriter(subscriptionName, subscription).GetAllBytes());
     }
 }

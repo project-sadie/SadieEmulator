@@ -26,9 +26,9 @@ public class RoomLoadedEvent : INetworkPacketEvent
         var player = client.Player;
         var playerData = player.Data;
         
-        var (roomId, password) = (reader.ReadInt(), reader.ReadString());
+        var (roomId, password) = (reader.ReadInteger(), reader.ReadString());
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
-        var lastRoomId = player.Data.LastRoomLoaded;
+        var lastRoomId = player.Data.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
@@ -46,9 +46,9 @@ public class RoomLoadedEvent : INetworkPacketEvent
             return;
         }
 
-        playerData.LastRoomLoaded = roomId;
+        playerData.CurrentRoomId = roomId;
 
-        var avatarData = (IAvatarData) player;
+        var avatarData = (IAvatarData) player.Data;
         
         var roomUser = _roomUserFactory.Create(
             room,
@@ -70,5 +70,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
         await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Layout.Name).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
+        await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, true).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
     }
 }

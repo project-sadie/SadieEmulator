@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Sadie.Game.Rooms.Chat;
 
 namespace Sadie.Game.Rooms;
 
@@ -48,6 +49,26 @@ public class RoomRepository : IRoomRepository
 
     public int Count => _rooms.Count;
     public IEnumerable<IRoom> GetAllRooms() => _rooms.Values;
+
+    public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
+    {
+        return await _dao.CreateRoomAsync(name, layoutId, ownerId, maxUsers, description);
+    }
+
+    public async Task<int> CreateRoomSettings(int roomId)
+    {
+        return await _dao.CreateRoomSettings(roomId);
+    }
+
+    public async Task<int> GetLayoutIdFromNameAsync(string name)
+    {
+        return await _dao.GetLayoutIdFromNameAsync(name);
+    }
+
+    public async Task<int> CreateChatMessages(List<RoomChatMessage> messages)
+    {
+        return await _dao.CreateChatMessages(messages);
+    }
 
     public async ValueTask DisposeAsync()
     {

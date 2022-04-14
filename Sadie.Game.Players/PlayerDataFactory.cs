@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
+using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -36,12 +38,14 @@ public class PlayerDataFactory : IPlayerDataFactory
         long achievementScore,
         List<string> tags,
         List<PlayerBadge> badges, 
-        PlayerFriendshipComponent friendshipComponent,
+        List<PlayerFriendship> friendships,
         int chatBubble, 
-        bool allowFriendRequests)
+        bool allowFriendRequests,
+        List<IPlayerSubscription> subscriptions)
     {
-        return ActivatorUtilities.CreateInstance<PlayerData>(
-            _serviceProvider,
+        
+        var friendshipComponent = CreatePlayerFriendshipComponent(id, friendships);
+        return new PlayerData(
             id,
             username,
             createdAt,
@@ -63,6 +67,15 @@ public class PlayerDataFactory : IPlayerDataFactory
             badges,
             friendshipComponent,
             chatBubble,
-            allowFriendRequests);
+            allowFriendRequests,
+            subscriptions);
+    }
+    
+    public PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
+    {
+        return ActivatorUtilities.CreateInstance<PlayerFriendshipComponent>(
+            _serviceProvider,
+            playerId,
+            friendships);
     }
 }

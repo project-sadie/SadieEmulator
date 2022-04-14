@@ -8,19 +8,19 @@ public class NavigatorPromotedRoomsWriter : NetworkPacketWriter
     public NavigatorPromotedRoomsWriter()
     {
         WriteShort(ServerPacketId.NavigatorPromotedRooms);
-        WriteInt(2);
+        WriteInteger(2);
         WriteString("");
-        WriteInt(0);
-        WriteBoolean(true);
-        WriteInt(0);
+        WriteInteger(0);
+        WriteBool(true);
+        WriteInteger(0);
         WriteString("A");
         WriteString("B");
-        WriteInt(1);
+        WriteInteger(1);
         WriteString("C");
         WriteString("D");
-        WriteInt(1);
-        WriteInt(1);
-        WriteInt(1);
+        WriteInteger(1);
+        WriteInteger(1);
+        WriteInteger(1);
         WriteString("E");
     }
 }

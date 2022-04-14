@@ -2,7 +2,6 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players.Friends;
 using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Players.Friendships;
@@ -48,7 +47,7 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
         }
         else
         {
-            var (found, offlineData) = await _playerRepository.TryGetPlayerDataByUsername(targetUsername);
+            var (found, offlineData) = await _playerRepository.TryGetPlayerDataByUsernameAsync(targetUsername);
 
             if (found)
             {

@@ -8,11 +8,11 @@ public class PlayerActivityPointsBalanceWriter : NetworkPacketWriter
     public PlayerActivityPointsBalanceWriter(Dictionary<int, long> currencyMap)
     {
         WriteShort(ServerPacketId.PlayerActivityPointsBalance);
-        WriteInt(currencyMap.Count);
+        WriteInteger(currencyMap.Count);
 
         foreach (var (currency, value) in currencyMap)
         {
-            WriteInt(currency);
+            WriteInteger(currency);
             WriteLong(value);
         }
     }

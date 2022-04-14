@@ -18,7 +18,7 @@ internal static class PacketEventHelpers
             return false;
         }
         
-        var roomId = player.Data.LastRoomLoaded;
+        var roomId = player.Data.CurrentRoomId;
         var (result, roomObject) = roomRepository.TryGetRoomById(roomId);
 
         if (!result || roomObject == null || client.RoomUser == null)

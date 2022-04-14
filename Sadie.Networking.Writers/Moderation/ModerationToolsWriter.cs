@@ -8,16 +8,16 @@ public class ModerationToolsWriter : NetworkPacketWriter
     public ModerationToolsWriter()
     {
         WriteShort(ServerPacketId.ModerationTools);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteBoolean(true);
-        WriteBoolean(true);
-        WriteBoolean(true);
-        WriteBoolean(true);
-        WriteBoolean(true);
-        WriteBoolean(true);
-        WriteBoolean(true);
-        WriteInt(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteBool(true);
+        WriteBool(true);
+        WriteBool(true);
+        WriteBool(true);
+        WriteBool(true);
+        WriteBool(true);
+        WriteBool(true);
+        WriteInteger(0);
     }
 }

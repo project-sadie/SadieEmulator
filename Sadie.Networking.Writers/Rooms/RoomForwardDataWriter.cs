@@ -9,39 +9,39 @@ public class RoomForwardDataWriter : NetworkPacketWriter
     public RoomForwardDataWriter(IRoom room, bool roomForward, bool unknown1)
     {
         WriteShort(ServerPacketId.RoomForwardData);
-        WriteBoolean(unknown1);
+        WriteBool(unknown1);
         WriteLong(room.Id);
         WriteString(room.Name);
         WriteLong(room.OwnerId);
         WriteString(room.OwnerName);
-        WriteInt(0); // state
-        WriteInt(room.UserRepository.Count);
-        WriteInt(room.MaxUsers);
+        WriteInteger(0); // state
+        WriteInteger(room.UserRepository.Count);
+        WriteInteger(room.MaxUsers);
         WriteString(room.Description);
-        WriteInt(0); // trade mode?
-        WriteInt(2); // unknown
-        WriteInt(room.Score);
-        WriteInt(0); // category
-        WriteInt(room.Tags.Count);
+        WriteInteger(0); // trade mode?
+        WriteInteger(2); // unknown
+        WriteInteger(room.Score);
+        WriteInteger(0); // category
+        WriteInteger(room.Tags.Count);
 
         foreach (var tag in room.Tags)
         {
             WriteString(tag);
         }
         
-        WriteInt(0 | 8); // TODO: base
-        WriteBoolean(roomForward);
-        WriteBoolean(false); // TODO: staff picked?
-        WriteBoolean(false); // TODO: is group member?
-        WriteBoolean(room.Settings.Muted);
-        WriteInt(0); // TODO: mute option
-        WriteInt(0); // TODO: kick option
-        WriteInt(0); // TODO: ban option
-        WriteBoolean(false); // TODO: current user has rights | gets mute all button
-        WriteInt(0); // TODO: chat mode
-        WriteInt(0); // TODO: chat weight
-        WriteInt(0); // TODO: chat speed
-        WriteInt(0); // TODO: chat distance
-        WriteInt(0); // TODO: chat protection
+        WriteInteger(0 | 8); // TODO: base
+        WriteBool(roomForward);
+        WriteBool(false); // TODO: staff picked?
+        WriteBool(false); // TODO: is group member?
+        WriteBool(room.Settings.Muted);
+        WriteInteger(0); // TODO: mute option
+        WriteInteger(0); // TODO: kick option
+        WriteInteger(0); // TODO: ban option
+        WriteBool(false); // TODO: current user has rights | gets mute all button
+        WriteInteger(0); // TODO: chat mode
+        WriteInteger(0); // TODO: chat weight
+        WriteInteger(0); // TODO: chat speed
+        WriteInteger(0); // TODO: chat distance
+        WriteInteger(0); // TODO: chat protection
     }
 }

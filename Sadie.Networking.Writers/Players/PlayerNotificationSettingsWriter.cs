@@ -8,6 +8,6 @@ public class PlayerNotificationSettingsWriter : NetworkPacketWriter
     public PlayerNotificationSettingsWriter(bool showNotifications)
     {
         WriteShort(ServerPacketId.NotificationSettings);
-        WriteBoolean(showNotifications);
+        WriteBool(showNotifications);
     }
 }

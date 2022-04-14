@@ -8,8 +8,8 @@ public class PlayerPermissionsWriter : NetworkPacketWriter
     public PlayerPermissionsWriter(int club, int rank, bool ambassador)
     {
         WriteShort(ServerPacketId.PlayerPermissions);
-        WriteInt(club);
-        WriteInt(rank);
-        WriteBoolean(ambassador);
+        WriteInteger(club);
+        WriteInteger(rank);
+        WriteBool(ambassador);
     }
 }

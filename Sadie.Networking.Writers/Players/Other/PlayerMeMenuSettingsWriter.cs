@@ -16,13 +16,13 @@ public class PlayerMeMenuSettingsWriter : NetworkPacketWriter
         int chatColor)
     {
         WriteShort(ServerPacketId.PlayerMeMenuSettings);
-        WriteInt(systemVolume);
-        WriteInt(furnitureVolume);
-        WriteInt(traxVolume);
-        WriteBoolean(oldChat);
-        WriteBoolean(blockRoomInvites);
-        WriteBoolean(blockCameraFollow);
-        WriteInt(uiFlags);
-        WriteInt(chatColor);
+        WriteInteger(systemVolume);
+        WriteInteger(furnitureVolume);
+        WriteInteger(traxVolume);
+        WriteBool(oldChat);
+        WriteBool(blockRoomInvites);
+        WriteBool(blockCameraFollow);
+        WriteInteger(uiFlags);
+        WriteInteger(chatColor);
     }
 }

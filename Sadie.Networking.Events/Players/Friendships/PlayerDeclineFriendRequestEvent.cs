@@ -31,11 +31,11 @@ public class PlayerDeclineFriendRequestEvent : INetworkPacketEvent
         }
         else
         {
-            var amount = reader.ReadInt();
+            var amount = reader.ReadInteger();
 
             for (var i = 0; i < amount && i < limit; i++)
             {
-                var originId = reader.ReadInt();
+                var originId = reader.ReadInteger();
                 var targetId = playerId;
 
                 await _friendshipRepository.DeclineFriendRequestAsync(originId, targetId);

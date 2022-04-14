@@ -28,8 +28,8 @@ public class RoomUserLookAtEvent : INetworkPacketEvent
         }
 
         var currentPoint = roomUser.Point;
-        var x = reader.ReadInt();
-        var y = reader.ReadInt();
+        var x = reader.ReadInteger();
+        var y = reader.ReadInteger();
 
         if (currentPoint.X == x && currentPoint.Y == y)
         {

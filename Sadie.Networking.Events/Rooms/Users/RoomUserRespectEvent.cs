@@ -30,13 +30,13 @@ public class RoomUserRespectEvent : INetworkPacketEvent
         
         var player = client.Player!;
         var playerData = player.Data;
-        var targetId = reader.ReadInt();
-        var lastRoom = player.Data.LastRoomLoaded;
+        var targetId = reader.ReadInteger();
+        var lastRoom = player.Data.CurrentRoomId;
         
         if (playerData.RespectPoints < 1 || 
             playerData.Id == targetId || 
             !_playerRepository.TryGetPlayerById(targetId, out var targetPlayer) || 
-            targetPlayer!.Data.LastRoomLoaded != 0 && lastRoom != targetPlayer.Data.LastRoomLoaded)
+            targetPlayer!.Data.CurrentRoomId != 0 && lastRoom != targetPlayer.Data.CurrentRoomId)
         {
             return;
         }

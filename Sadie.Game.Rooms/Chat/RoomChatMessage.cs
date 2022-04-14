@@ -9,6 +9,7 @@ public class RoomChatMessage
     public IRoom Room { get; }
     public RoomChatBubble Bubble { get; }
     public int EmotionId { get; }
+    public DateTime SentAt { get; }
 
     public RoomChatMessage(RoomUser sender, string message, IRoom room, RoomChatBubble bubble, int emotionId)
     {
@@ -17,5 +18,6 @@ public class RoomChatMessage
         Room = room;
         Bubble = bubble;
         EmotionId = emotionId;
+        SentAt = DateTime.Now;
     }
 }

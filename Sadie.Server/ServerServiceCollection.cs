@@ -21,8 +21,9 @@ public class ServerServiceCollection
         serviceCollection.AddSingleton(provider => new List<IServerTask>
         {
             new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
+            new StoreChatMessagesTask(provider.GetRequiredService<IRoomRepository>()),
             new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
-            new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>())
+            new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
         });
         
         serviceCollection.AddSingleton<IServer, Server>();

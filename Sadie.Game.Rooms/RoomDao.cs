@@ -1,4 +1,5 @@
 ﻿using Sadie.Database;
+using Sadie.Game.Rooms.Chat;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
@@ -80,5 +81,55 @@ public class RoomDao : BaseDao, IRoomDao
             new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
             record.Get<int>("max_users_allowed"),
             settings));
+    }
+
+    public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
+    {
+        return await QueryScalarAsync(@"INSERT INTO `rooms` (`name`, `layout_id`, `owner_id`, `max_users_allowed`, `description`) 
+            VALUES (@name, @layoutId, @ownerId, @maxUsers, @description);
+            SELECT LAST_INSERT_ID();", new Dictionary<string, object>
+        {
+            {"name", name},
+            {"layoutId", layoutId},
+            {"ownerId", ownerId},
+            {"maxUsers", maxUsers},
+            {"description", description}
+        });
+    }
+
+    public async Task<int> CreateRoomSettings(int roomId)
+    {
+        return await QueryAsync(@"INSERT INTO `room_settings` (`room_id`) VALUES (@roomId);", new Dictionary<string, object>
+        {
+            {"roomId", roomId},
+        });
+    }
+
+    public async Task<int> GetLayoutIdFromNameAsync(string name)
+    {
+        return await QueryScalarAsync("SELECT `id` FROM `room_layouts` WHERE `name` = @name", new Dictionary<string, object>
+        {
+            {"name", name}
+        });
+    }
+
+    public async Task<int> CreateChatMessages(List<RoomChatMessage> messages)
+    {
+        var parameters = new Dictionary<string, object>();
+        var query = "INSERT INTO `room_chat_messages` (`room_id`, `player_id`, `message`, `chat_bubble_id`, `sent_at`) VALUES ";
+
+        for (var i = 0; i < messages.Count; i++)
+        {
+            query += $"(@roomId{i}, @playerId{i}, @message{i}, @bubbleId{i}, @sentAt{i})";
+            query += i + 1 >= messages.Count ? ";" : ",";
+            
+            parameters.Add($"roomId{i}", messages[i].Room.Id);
+            parameters.Add($"playerId{i}", messages[i].Sender.Id);
+            parameters.Add($"message{i}", messages[i].Message);
+            parameters.Add($"bubbleId{i}", (int) messages[i].Bubble);
+            parameters.Add($"sentAt{i}", messages[i].SentAt);
+        }
+        
+        return await QueryAsync(query, parameters);
     }
 }

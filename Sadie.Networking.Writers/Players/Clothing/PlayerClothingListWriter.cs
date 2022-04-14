@@ -10,7 +10,7 @@ public class PlayerClothingListWriter : NetworkPacketWriter
     public PlayerClothingListWriter()
     {
         WriteShort(ServerPacketId.PlayerClothingList);
-        WriteInt(0);
-        WriteInt(0);
+        WriteInteger(0);
+        WriteInteger(0);
     }
 }

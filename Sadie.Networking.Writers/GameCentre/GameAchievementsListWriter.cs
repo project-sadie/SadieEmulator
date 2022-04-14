@@ -8,20 +8,20 @@ public class GameAchievementsListWriter : NetworkPacketWriter
     public GameAchievementsListWriter()
     {
         WriteShort(ServerPacketId.GameCentreConfig);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(0);
-        WriteInt(3);
-        WriteInt(1);
-        WriteInt(1);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(0);
+        WriteInteger(3);
+        WriteInteger(1);
+        WriteInteger(1);
         WriteString("BaseJumpBigParachute");
-        WriteInt(1);
+        WriteInteger(1);
     }
 }

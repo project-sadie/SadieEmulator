@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using Sadie.Game.Players.Friendships;
+using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
@@ -47,11 +49,30 @@ public class PlayerRepository : IPlayerRepository
         }
         
         await MarkPlayerAsOfflineAsync(player.Data);
+        await UpdateMessengerStatusForFriends(player.Data.Id, player.Data.FriendshipComponent.Friendships, false, false);
         await player!.DisposeAsync();
 
         return result;
     }
 
+    public async Task UpdateMessengerStatusForFriends(int playerId, IEnumerable<PlayerFriendship> friendships, bool isOnline, bool inRoom)
+    {
+        foreach (var friendId in friendships.Select(x => x.TargetData.Id).Distinct())
+        {
+            if (!TryGetPlayerById(friendId, out var friend) || friend == null)
+            {
+                continue;
+            }
+         
+            var friendship = friend.Data.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
+
+            if (friendship != null)
+            {
+                await friend.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(friendship, isOnline, inRoom).GetAllBytes());
+            }
+        }
+    }
+    
     public async Task MarkPlayerAsOnlineAsync(int id)
     {
         await _playerDataDao.MarkPlayerAsOnlineAsync(id);
@@ -72,14 +93,19 @@ public class PlayerRepository : IPlayerRepository
         return _players.Count;
     }
 
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(int playerId)
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataAsync(int playerId)
     {
         return await _playerDataDao.TryGetPlayerData(playerId);
     }
 
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username)
+    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsernameAsync(string username)
     {
         return await _playerDataDao.TryGetPlayerDataByUsername(username);
+    }
+
+    public async Task<List<IPlayerData>> GetPlayerDataForSearchAsync(string searchQuery, int[] excludeIds)
+    {
+        return await _playerDataDao.GetPlayerDataForSearch(searchQuery, excludeIds);
     }
 
     public async ValueTask DisposeAsync()

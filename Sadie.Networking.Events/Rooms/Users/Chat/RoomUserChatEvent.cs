@@ -31,7 +31,9 @@ public class RoomUserChatEvent : INetworkPacketEvent
             return;
         }
         
-        var chatMessage = new RoomChatMessage(roomUser, message, room, (RoomChatBubble) reader.ReadInt(), 0);
+        var chatMessage = new RoomChatMessage(roomUser, message, room, (RoomChatBubble) reader.ReadInteger(), 0);
+        room.ChatMessages.Add(chatMessage);
+        
         await room!.UserRepository.BroadcastDataAsync(new RoomUserChatWriter(chatMessage, 0).GetAllBytes());
     }
 }

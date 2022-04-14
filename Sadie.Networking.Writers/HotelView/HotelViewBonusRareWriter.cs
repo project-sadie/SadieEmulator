@@ -9,8 +9,8 @@ public class HotelViewBonusRareWriter : NetworkPacketWriter
     {
         WriteShort(ServerPacketId.HotelViewBonusRare);
         WriteString("throne");
-        WriteInt(0);
-        WriteInt(1000);
-        WriteInt(0); // ?
+        WriteInteger(0);
+        WriteInteger(1000);
+        WriteInteger(0); // ?
     }
 }

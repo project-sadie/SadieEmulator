@@ -22,7 +22,7 @@ public class RoomUserActionEvent : INetworkPacketEvent
             return;
         }
         
-        var action = (RoomUserAction) reader.ReadInt();
+        var action = (RoomUserAction) reader.ReadInteger();
 
         if (action == RoomUserAction.Idle)
         {

@@ -9,13 +9,13 @@ public class NavigatorEventCategoriesWriter : NetworkPacketWriter
     public NavigatorEventCategoriesWriter(List<RoomCategory> categories)
     {
         WriteShort(ServerPacketId.NavigatorEventCategories);
-        WriteInt(categories.Count);
+        WriteInteger(categories.Count);
 
         foreach (var category in categories)
         {
             WriteLong(category.Id);
             WriteString(category.Caption);
-            WriteBoolean(category.Visible);
+            WriteBool(category.Visible);
         }
     }
 }

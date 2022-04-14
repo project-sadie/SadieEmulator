@@ -8,8 +8,8 @@ public class RoomHeightMapWriter : NetworkPacketWriter
     public RoomHeightMapWriter(bool unknown1, int wallHeight, string relativeHeightmap)
     {
         WriteShort(ServerPacketId.RoomHeightMap);
-        WriteBoolean(unknown1);
-        WriteInt(wallHeight);
+        WriteBool(unknown1);
+        WriteInteger(wallHeight);
         WriteString(relativeHeightmap);
     }
 }

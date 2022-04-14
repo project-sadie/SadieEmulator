@@ -8,6 +8,6 @@ public class NoobnessLevelWriter : NetworkPacketWriter
     public NoobnessLevelWriter(int level)
     {
         WriteShort(ServerPacketId.NoobnessLevel);
-        WriteInt(level);
+        WriteInteger(level);
     }
 }

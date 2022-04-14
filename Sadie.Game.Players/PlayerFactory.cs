@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Game.Avatar;
@@ -47,7 +48,8 @@ public class PlayerFactory : IPlayerFactory
             windowY,
             windowWidth,
             windowHeight,
-            openSearches);
+            openSearches,
+            0);
     }
 
     public PlayerSettings CreateSettings(int systemVolume,
@@ -69,13 +71,5 @@ public class PlayerFactory : IPlayerFactory
             blockCameraFollow,
             uiFlag,
             showNotifications);
-    }
-
-    public PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
-    {
-        return ActivatorUtilities.CreateInstance<PlayerFriendshipComponent>(
-            _serviceProvider,
-            playerId,
-            friendships);
     }
 }

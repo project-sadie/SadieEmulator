@@ -9,6 +9,6 @@ public class RoomUserTypingWriter : NetworkPacketWriter
     {
         WriteShort(ServerPacketId.RoomUserTyping);
         WriteLong(userId);
-        WriteInt(isTyping ? 1 : 0);
+        WriteInteger(isTyping ? 1 : 0);
     }
 }

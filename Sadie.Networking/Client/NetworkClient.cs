@@ -68,8 +68,8 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 
         if (RoomUser != null)
         {
-            var (foundRoom, lastRoom) = _roomRepository.TryGetRoomById(RoomUser.AvatarData.LastRoomLoaded);
-
+            var (foundRoom, lastRoom) = _roomRepository.TryGetRoomById(RoomUser.AvatarData.CurrentRoomId);
+            
             if (foundRoom && lastRoom != null)
             {
                 await lastRoom.UserRepository.TryRemoveAsync(RoomUser.Id);

@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms.Users;
+﻿using Sadie.Game.Rooms.Chat;
+using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
@@ -16,4 +17,5 @@ public interface IRoom : IAsyncDisposable
     public int MaxUsers { get; }
     IRoomUserRepository UserRepository { get; }
     public IRoomSettings Settings { get; }
+    List<RoomChatMessage> ChatMessages { get; }
 }

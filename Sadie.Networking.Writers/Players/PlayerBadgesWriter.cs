@@ -9,12 +9,12 @@ public class PlayerBadgesWriter : NetworkPacketWriter
     public PlayerBadgesWriter(int playerId, List<PlayerBadge> badges)
     {
         WriteShort(ServerPacketId.PlayerBadges);
-        WriteInt(playerId);
-        WriteInt(badges.Count);
+        WriteInteger(playerId);
+        WriteInteger(badges.Count);
 
         foreach (var item in badges)
         {
-            WriteInt(item.Slot);
+            WriteInteger(item.Slot);
             WriteString(item.Code);
         }
     }

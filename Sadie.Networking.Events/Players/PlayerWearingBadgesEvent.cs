@@ -22,7 +22,7 @@ public class PlayerWearingBadgesEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
-        var playerId = reader.ReadInt();
+        var playerId = reader.ReadInteger();
         var isPlayerOnline = _playerRepository.TryGetPlayerById(playerId, out var player);
         
         var playerBadges = isPlayerOnline ? 

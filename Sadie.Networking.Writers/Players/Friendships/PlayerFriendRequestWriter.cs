@@ -8,7 +8,7 @@ public class PlayerFriendRequestWriter : NetworkPacketWriter
     public PlayerFriendRequestWriter(int id, string username, string figureCode)
     {
         WriteShort(ServerPacketId.PlayerFriendRequest);
-        WriteInt(id);
+        WriteInteger(id);
         WriteString(username);
         WriteString(figureCode);
     }

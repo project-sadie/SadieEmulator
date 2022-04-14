@@ -68,6 +68,9 @@ public class SecureLoginEvent : INetworkPacketEvent
         _logger.LogInformation($"Player '{playerData.Username}' has logged in");
         await _playerRepository.MarkPlayerAsOnlineAsync(playerId);
 
+        await _playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
+            playerData.FriendshipComponent.Friendships, true, false);
+
         player.Data.LastOnline = DateTime.Now;
         player.Authenticated = true;
 
@@ -86,8 +89,8 @@ public class SecureLoginEvent : INetworkPacketEvent
         await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(playerData.NavigatorSettings).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(playerData.Settings.ShowNotifications).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore).GetAllBytes());
-            
-        if (playerData.HasPermission("moderation_tools"))
+
+        if (playerData.Permissions.Contains("moderation_tools"))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
         }

@@ -19,12 +19,12 @@ public class RoomFactory : IRoomFactory
         HPoint doorPoint,
         HDirection doorDirection)
     {
-        return ActivatorUtilities.CreateInstance<RoomLayout>(_serviceProvider, id, name, heightmap, doorDirection, doorDirection);
+        return ActivatorUtilities.CreateInstance<RoomLayout>(_serviceProvider, id, name, heightmap, doorPoint, doorDirection);
     }
 
     public IRoomSettings CreateSettings(bool walkDiagonal, bool muted)
     {
-        return ActivatorUtilities.CreateInstance<IRoomSettings>(_serviceProvider, walkDiagonal, muted);
+        return ActivatorUtilities.CreateInstance<RoomSettings>(_serviceProvider, walkDiagonal, muted);
     }
 
     public IRoom Create(int id,

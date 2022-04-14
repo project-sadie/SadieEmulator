@@ -6,7 +6,7 @@ public interface IAvatarData
     string FigureCode { get; set; }
     string Motto { get; set; }
     AvatarGender Gender { get; set; }
-    long LastRoomLoaded { get; set; }
+    int CurrentRoomId { get; set; }
     long AchievementScore { get; set; }
     List<string> Tags { get; set; }
     public int ChatBubble { get; }

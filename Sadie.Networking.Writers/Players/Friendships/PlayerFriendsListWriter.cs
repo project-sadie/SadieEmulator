@@ -5,16 +5,16 @@ using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Players.Friends;
+namespace Sadie.Networking.Writers.Players.Friendships;
 
 public class PlayerFriendsListWriter : NetworkPacketWriter
 {
     public PlayerFriendsListWriter(int pages, int index, List<PlayerFriendship> friends, IPlayerRepository playerRepository, IRoomRepository roomRepository)
     {
         WriteShort(ServerPacketId.PlayerFriendsList);
-        WriteInt(pages);
-        WriteInt(index);
-        WriteInt(friends.Count);
+        WriteInteger(pages);
+        WriteInteger(index);
+        WriteInteger(friends.Count);
 
         foreach (var friend in friends)
         {
@@ -24,7 +24,7 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
 
             if (isOnline && onlineFriend != null)
             {
-                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(onlineFriend.Data.LastRoomLoaded);
+                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(onlineFriend.Data.CurrentRoomId);
 
                 if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(onlineFriend.Data.Id, out _))
                 {
@@ -32,19 +32,19 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
                 }
             }
 
-            WriteInt(friendData.Id);
+            WriteInteger(friendData.Id);
             WriteString(friendData.Username);
-            WriteInt(friendData.Gender == AvatarGender.Male ? 0 : 1);
-            WriteBoolean(isOnline);
-            WriteBoolean(inRoom);
+            WriteInteger(friendData.Gender == AvatarGender.Male ? 0 : 1);
+            WriteBool(isOnline);
+            WriteBool(inRoom);
             WriteString(friendData.FigureCode);
-            WriteInt(0); // unknown
+            WriteInteger(0); // unknown
             WriteString(friendData.Motto);
             WriteString(""); // unknown
             WriteString(""); // unknown
-            WriteBoolean(false); // TODO: offline messaging
-            WriteBoolean(false); // unknown
-            WriteBoolean(false); // unknown
+            WriteBool(false); // TODO: offline messaging
+            WriteBool(false); // unknown
+            WriteBool(false); // unknown
             WriteShort((short) friend.Type);
         }
     }

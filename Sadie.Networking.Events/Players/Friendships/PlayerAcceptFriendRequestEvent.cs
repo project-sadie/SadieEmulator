@@ -25,14 +25,14 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
         var player = client.Player;
         var playerId = player.Data.Id;
         
-        var amount = reader.ReadInt();
+        var amount = reader.ReadInteger();
         const int limit = 100;
 
         var friendshipComponent = player.Data.FriendshipComponent;
         
         for (var i = 0; i < amount && i < limit; i++)
         {
-            var originId = reader.ReadInt();
+            var originId = reader.ReadInteger();
             var request = friendshipComponent.Friendships.FirstOrDefault(x => x.OriginId == originId && x.Status == PlayerFriendshipStatus.Pending);
 
             if (request == null)
@@ -57,14 +57,40 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
 
                 if (targetRequest != null)
                 {
-                    await origin.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(targetRequest, _playerRepository, _roomRepository).GetAllBytes());    
+                    var isOnline = true;
+                    var inRoom = false;
+
+                    if (isOnline)
+                    {
+                        var (roomFound, lastRoom) = _roomRepository.TryGetRoomById(origin.Data.CurrentRoomId);
+
+                        if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Data.Id, out _))
+                        {
+                            inRoom = true;
+                        }
+                    }
+                    
+                    await origin.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(targetRequest, isOnline, inRoom).GetAllBytes());    
                 }
             }
 
             await _friendshipRepository.AcceptFriendRequestAsync(originId, playerId);
             friendshipComponent.AcceptIncomingRequest(originId);
+
+            var targetOnline = origin != null;
+            var targetInRoom = false;
+
+            if (targetOnline && origin != null)
+            {
+                var (roomFound, lastRoom) = _roomRepository.TryGetRoomById(origin.Data.CurrentRoomId);
+
+                if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Data.Id, out _))
+                {
+                    targetInRoom = true;
+                }
+            }
             
-            await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(request, _playerRepository, _roomRepository).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(request, targetOnline, targetInRoom).GetAllBytes());
         }
     }
 }

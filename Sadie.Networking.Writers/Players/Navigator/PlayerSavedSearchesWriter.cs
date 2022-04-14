@@ -9,7 +9,7 @@ public class PlayerSavedSearchesWriter : NetworkPacketWriter
     public PlayerSavedSearchesWriter(List<PlayerSavedSearch> searches)
     {
         WriteShort(ServerPacketId.NavigatorSavedSearches);
-        WriteInt(searches.Count);
+        WriteInteger(searches.Count);
 
         foreach (var search in searches)
         {

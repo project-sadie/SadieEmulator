@@ -8,8 +8,8 @@ public class RoomUserTagsWriter : NetworkPacketWriter
     public RoomUserTagsWriter(int userId, List<string> tags)
     {
         WriteShort(ServerPacketId.RoomUserTags);
-        WriteInt(userId);
-        WriteInt(tags.Count);
+        WriteInteger(userId);
+        WriteInteger(tags.Count);
 
         foreach (var tag in tags)
         {

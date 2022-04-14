@@ -8,12 +8,12 @@ public class NavigatorMetaDataWriter : NetworkPacketWriter
     public NavigatorMetaDataWriter(Dictionary<string, int> metaData)
     {
         WriteShort(ServerPacketId.NavigatorMetaData);
-        WriteInt(metaData.Count);
+        WriteInteger(metaData.Count);
 
         foreach (var (key, value) in metaData)
         {
             WriteString(key);
-            WriteInt(value);
+            WriteInteger(value);
         }
     }
 }

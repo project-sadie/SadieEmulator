@@ -9,7 +9,7 @@ public class RoomUserIdleWriter : NetworkPacketWriter
     public RoomUserIdleWriter(IRoomUser user)
     {
         WriteShort(ServerPacketId.RoomUserIdle);
-        WriteInt(user.Id);
-        WriteBoolean(user.IsIdle);
+        WriteInteger(user.Id);
+        WriteBool(user.IsIdle);
     }
 }

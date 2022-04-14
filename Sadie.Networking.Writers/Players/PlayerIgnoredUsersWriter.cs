@@ -8,6 +8,6 @@ public class PlayerIgnoredUsersWriter : NetworkPacketWriter
     public PlayerIgnoredUsersWriter()
     {
         WriteShort(ServerPacketId.PlayerIgnoredUsers);
-        WriteInt(0);
+        WriteInteger(0);
     }
 }

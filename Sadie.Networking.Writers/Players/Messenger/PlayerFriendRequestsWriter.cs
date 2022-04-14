@@ -9,8 +9,8 @@ public class PlayerFriendRequestsWriter : NetworkPacketWriter
     public PlayerFriendRequestsWriter(List<PlayerFriendshipData> requests)
     {
         WriteShort(ServerPacketId.PlayerFriendRequests);
-        WriteInt(requests.Count);
-        WriteInt(requests.Count);
+        WriteInteger(requests.Count);
+        WriteInteger(requests.Count);
 
         foreach (var request in requests)
         {

@@ -21,7 +21,7 @@ public class RoomUserSignEvent : INetworkPacketEvent
             return Task.CompletedTask;
         }
 
-        roomUser!.StatusMap[RoomUserStatus.Sign] = reader.ReadInt().ToString();
+        roomUser!.StatusMap[RoomUserStatus.Sign] = reader.ReadInteger().ToString();
         
         return Task.CompletedTask;
     }

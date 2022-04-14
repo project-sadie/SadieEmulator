@@ -10,6 +10,6 @@ public class PlayerPingEvent : INetworkPacketEvent
     {
         client.LastPing = DateTime.Now;
         
-        await client.WriteToStreamAsync(new PlayerPongWriter(reader.ReadInt()).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerPongWriter(reader.ReadInteger()).GetAllBytes());
     }
 }

@@ -17,7 +17,7 @@ public class RoomHeightmapEvent : INetworkPacketEvent
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var (found, room) = _roomRepository.TryGetRoomById(client.Player.Data.LastRoomLoaded);
+        var (found, room) = _roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
         
         if (!found || room == null)
         {
@@ -30,7 +30,9 @@ public class RoomHeightmapEvent : INetworkPacketEvent
         await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomLayout).GetAllBytes());
         await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, roomLayout.HeightMap.Replace("\n", "\r")).GetAllBytes());
         
-        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
         await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
+        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
+        
+        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter(room, false, true).GetAllBytes());
     }
 }

@@ -7,17 +7,17 @@ namespace Sadie.Game.Rooms.Users;
 public class RoomUserRepository : IRoomUserRepository
 {
     private readonly ILogger<RoomUserRepository> _logger;
-    private readonly ConcurrentDictionary<long, IRoomUser> _users;
+    private readonly ConcurrentDictionary<int, IRoomUser> _users;
 
     public RoomUserRepository(ILogger<RoomUserRepository> logger)
     {
         _logger = logger;
-        _users = new ConcurrentDictionary<long, IRoomUser>();
+        _users = new ConcurrentDictionary<int, IRoomUser>();
     }
 
     public ICollection<IRoomUser> GetAll() => _users.Values;
     public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Id, user);
-    public bool TryGet(long id, out IRoomUser? user) => _users.TryGetValue(id, out user);
+    public bool TryGet(int id, out IRoomUser? user) => _users.TryGetValue(id, out user);
 
     public bool TryGetByUsername(string username, out IRoomUser? user)
     {
@@ -25,22 +25,18 @@ public class RoomUserRepository : IRoomUserRepository
         return user != null;
     }
 
-    public async Task TryRemoveAsync(long id, bool hotelView = false)
+    public async Task TryRemoveAsync(int id, bool hotelView = false)
     {
+        await BroadcastDataAsync(new RoomUserLeftWriter(id).GetAllBytes());
+
         var result = _users.TryRemove(id, out var roomUser);
 
-        if (!result)
+        if (!result || roomUser == null)
         {
             _logger.LogError($"Failed to remove a room user");
-        }
-
-        if (roomUser == null)
-        {
             return;
         }
         
-        await BroadcastDataAsync(new RoomUserLeftWriter(roomUser.Id).GetAllBytes());
-
         if (hotelView)
         {
             await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter().GetAllBytes());

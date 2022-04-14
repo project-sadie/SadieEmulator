@@ -10,27 +10,27 @@ public class RoomUserDataWriter : NetworkPacketWriter
     public RoomUserDataWriter(ICollection<IRoomUser> users)
     {
         WriteShort(ServerPacketId.RoomUserData);
-        WriteInt(users.Count);
+        WriteInteger(users.Count);
 
         foreach (var user in users)
         {
-            WriteInt(user.Id);
+            WriteInteger(user.Id);
             WriteString(user.AvatarData.Username);
             WriteString(user.AvatarData.Motto);
             WriteString(user.AvatarData.FigureCode);
-            WriteInt(user.Id);
-            WriteInt(user.Point.X);
-            WriteInt(user.Point.Y);
+            WriteInteger(user.Id);
+            WriteInteger(user.Point.X);
+            WriteInteger(user.Point.Y);
             WriteString(user.Point.Z + "");
-            WriteInt(3);
-            WriteInt(1);
+            WriteInteger(3);
+            WriteInteger(1);
             WriteString(user.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
-            WriteInt(-1);
-            WriteInt(-1);
+            WriteInteger(-1);
+            WriteInteger(-1);
             WriteString("");
             WriteString("");
             WriteLong(user.AvatarData.AchievementScore);
-            WriteBoolean(true);
+            WriteBool(true);
         }
     }
 }

@@ -8,6 +8,6 @@ public class PlayerPongWriter : NetworkPacketWriter
     public PlayerPongWriter(int id)
     {
         WriteShort(ServerPacketId.PlayerPong);
-        WriteInt(id);
+        WriteInteger(id);
     }
 }
