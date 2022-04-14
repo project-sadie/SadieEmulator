@@ -76,7 +76,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
             FROM `players` 
                 INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
                 INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
-            WHERE `players`.`id` NOT IN ({string.Join(",", excludedIds)}) AND `players`.`username` LIKE  @searchQuery LIMIT 100;", new Dictionary<string, object>
+            WHERE {(excludedIds.Length > 0 ? $"`players`.`id` NOT IN ({string.Join(",", excludedIds)}) AND " : "")}`players`.`username` LIKE  @searchQuery LIMIT 100;", new Dictionary<string, object>
         {
             { "searchQuery", $"%{searchQuery}%" }
         });

@@ -66,6 +66,6 @@ public class PlayerFriendshipRepository : IPlayerFriendshipRepository
 
     public async Task DeleteFriendshipAsync(int playerId1, int playerId2)
     {
-        await _friendshipDao.DeclineFriendRequestAsync(playerId1, playerId2);
+        await _friendshipDao.DeleteFriendshipAsync(playerId1, playerId2);
     }
 }

@@ -61,7 +61,7 @@ public class ServerPacketId
     public const short PlayerProfile = 3898;
     public const short PlayerBadges = 1087;
     public const short PlayerAlert = 3801;
-    public const short PlayerMessage = 2035;
+    public const short PlayerMotdMessage = 2035;
     public const short RoomUserRespect = 2815;
     public const short PlayerFriendshipError = 892;
     public const short PlayerFriendRequest = 2219;
@@ -76,4 +76,5 @@ public class ServerPacketId
     public const short PlayerSearchResult = 973;
     public const short PlayerStalkError = 3048;
     public const short RoomForwardEntry = 160;
+    public const short PlayerMessage = 1587;
 }

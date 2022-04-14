@@ -46,6 +46,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserGoToHotelViewEvent>();
         serviceCollection.AddSingleton<PlayerSearchEvent>();
         serviceCollection.AddSingleton<PlayerStalkEvent>();
+        serviceCollection.AddSingleton<PlayerSendMessageEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -119,6 +120,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserGoToHotelView] = provider.GetRequiredService<RoomUserGoToHotelViewEvent>(),
             [ClientPacketId.PlayerSearch] = provider.GetRequiredService<PlayerSearchEvent>(),
             [ClientPacketId.PlayerStalk] = provider.GetRequiredService<PlayerStalkEvent>(),
+            [ClientPacketId.PlayerSendMessage] = provider.GetRequiredService<PlayerSendMessageEvent>(),
         });
     }
 }

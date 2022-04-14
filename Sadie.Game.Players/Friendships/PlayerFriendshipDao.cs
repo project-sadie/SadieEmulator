@@ -286,10 +286,19 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 
     public async Task DeleteFriendshipAsync(int playerId1, int playerId2)
     {
-        await QueryAsync("DELETE FROM `player_friendships` WHERE ((`origin_player_id` = @playerId1 AND `target_player_id` = @playerId2) OR (`origin_player_id` = @playerId2 AND `target_player_id` = @playerId1)) AND `status` = 2 LIMIT 1;", new Dictionary<string, object>
+        try
         {
-            {"playerId1", playerId1},
-            {"playerId2", playerId2},
-        });
+            await QueryAsync(
+                "DELETE FROM `player_friendships` WHERE ((`origin_player_id` = @playerId1 AND `target_player_id` = @playerId2) OR (`origin_player_id` = @playerId2 AND `target_player_id` = @playerId1)) AND `status` = 2 LIMIT 1;",
+                new Dictionary<string, object>
+                {
+                    {"playerId1", playerId1},
+                    {"playerId2", playerId2},
+                });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 }

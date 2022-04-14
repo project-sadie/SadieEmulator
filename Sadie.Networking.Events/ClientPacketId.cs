@@ -65,4 +65,5 @@ public class ClientPacketId
     public const short RoomUserGoToHotelView = 105;
     public const short PlayerSearch = 1210;
     public const short PlayerStalk = 3997;
+    public const short PlayerSendMessage = 3567;
 }
