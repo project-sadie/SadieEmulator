@@ -46,6 +46,23 @@ public class BaseDao
         return await dbConnection.ExecuteScalarAsync<int>() == 1;
     }
 
+    protected async Task<int> QueryScalarAsync(string commandText, Dictionary<string, object> parameters = null!)
+    {
+        using var dbConnection = _databaseProvider.GetConnection();
+        dbConnection.SetQuery(commandText);
+
+        AddOptionalParameters(dbConnection, parameters);
+
+        try
+        {
+            return await dbConnection.ExecuteScalarAsync<int>();
+        }
+        catch (InvalidCastException)
+        {
+            return -1;
+        }
+    }
+
     private static void AddOptionalParameters(IDatabaseConnection connection, Dictionary<string, object> parameters)
     {
         if (parameters is {Count: > 0})
