@@ -72,5 +72,16 @@ public class RoomLoadedEvent : INetworkPacketEvent
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
         await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, true).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
+
+        var owner = room.OwnerId == playerData.Id;
+        var rightLevel = owner ? RoomRightLevel.Admin : RoomRightLevel.None;
+        
+        await client.WriteToStreamAsync(new RoomPaneWriter(roomId, owner).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomRightsWriter(rightLevel).GetAllBytes());
+        
+        if (owner)
+        {
+            await client.WriteToStreamAsync(new RoomOwnerWriter().GetAllBytes());
+        }
     }
 }

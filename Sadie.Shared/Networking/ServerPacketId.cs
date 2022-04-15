@@ -78,4 +78,7 @@ public class ServerPacketId
     public const short RoomForwardEntry = 160;
     public const short PlayerMessage = 1587;
     public const short PlayerMessageError = 3359;
+    public const short RoomOwner = 339;
+    public const short RoomRights = 780;
+    public const short RoomPane = 749;
 }
