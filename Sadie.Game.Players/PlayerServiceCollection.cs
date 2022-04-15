@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Messenger;
 using Sadie.Game.Players.Respect;
@@ -13,6 +14,8 @@ public class PlayerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        serviceCollection.AddTransient<PlayerFriendshipComponent>();
+        serviceCollection.AddTransient<IPlayerState, PlayerState>();
         serviceCollection.AddSingleton<IPlayerMessageDao, PlayerMessageDao>();
         serviceCollection.AddSingleton<IPlayerSubscription, PlayerSubscription>();
         serviceCollection.AddSingleton<IPlayerSubscriptionFactory, PlayerSubscriptionFactory>();
