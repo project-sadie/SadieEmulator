@@ -47,7 +47,10 @@ public class NetworkClientRepository : INetworkClientRepository
 
         foreach (var client in idleClients)
         {
-            await client.DisposeAsync();
+            if (!await TryRemoveAsync(client.Guid))
+            {
+                _logger.LogError("Failed to dispose of network client");
+            }
         }
     }
 }

@@ -24,12 +24,13 @@ public class ClientPacketHandler : INetworkPacketHandler
             return;
         }
 
-        _logger.LogDebug($"Executing packet '{packetEvent.GetType().Name}'");
         await ExecuteAsync(client, packet, packetEvent);
     }
 
     private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEvent @event)
     {
+        _logger.LogDebug($"Executing packet '{@event.GetType().Name}'");
+        
         try
         {
             await @event.HandleAsync(client, packet);
