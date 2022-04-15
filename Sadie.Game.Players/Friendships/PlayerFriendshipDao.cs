@@ -206,11 +206,12 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 
     public async Task CreateFriendRequestAsync(int originId, int targetId)
     {
-        await QueryAsync("INSERT INTO `player_friendships` (`origin_player_id`, `target_player_id`, `status`, `type_id`) VALUES (@originId, @targetId, @status, 0);", new Dictionary<string, object>
+        await QueryAsync("INSERT INTO `player_friendships` (`origin_player_id`, `target_player_id`, `status`, `type_id`, `created_at`) VALUES (@originId, @targetId, @status, 0, @createdAt);", new Dictionary<string, object>
         {
             { "originId", originId },
             { "targetId", targetId },
             { "status", (int) PlayerFriendshipStatus.Pending },
+            { "createdAt", DateTime.Now },
         });
     }
 
