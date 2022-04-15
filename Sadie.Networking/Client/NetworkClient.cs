@@ -9,12 +9,13 @@ namespace Sadie.Networking.Client;
 
 public class NetworkClient : NetworkClientProcessComponent, INetworkClient
 {
-    private readonly Guid _guid;
+    public Guid Guid { get; }
+    
     private readonly ILogger<NetworkClient> _logger;
     private readonly TcpClient _tcpClient;
     private readonly IPlayerRepository _playerRepository;
     private readonly IRoomRepository _roomRepository;
-    private readonly INetworkClientRepository _clientRepository;
+    private readonly Stream _stream;
 
     public NetworkClient(
         Guid guid, 
@@ -25,14 +26,15 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         NetworkingConstants constants,
         IPlayerRepository playerRepository, 
         IRoomRepository roomRepository,
-        INetworkClientRepository clientRepository) : base(baseLogger, tcpClient, packetHandler, constants)
+        INetworkClientRepository clientRepository) : base(baseLogger, tcpClient, packetHandler, constants, clientRepository)
     {
-        _guid = guid;
+        Guid = guid;
+        
         _logger = logger;
         _tcpClient = tcpClient;
         _playerRepository = playerRepository;
         _roomRepository = roomRepository;
-        _clientRepository = clientRepository;
+        _stream = tcpClient.GetStream();
 
         SetClient(this);
     }
@@ -53,7 +55,18 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     }
 
     public DateTime LastPing { get; set; }
-
+    
+    public async Task WriteToStreamAsync(byte[] data)
+    {
+        try
+        {
+            await _stream.WriteAsync(data);
+        }
+        catch (Exception)
+        {
+            await DisposeAsync();
+        }
+    }
 
     private bool _disposed;
     
@@ -77,14 +90,9 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
             }
         }
 
-        if (Player != null && await _playerRepository.TryRemovePlayerAsync(Player.Data.Id))
+        if (!await _playerRepository.TryRemovePlayerAsync(Player.Data.Id))
         {
-            Player = null;
-        }
-
-        if (!await _clientRepository.TryRemoveAsync(_guid))
-        {
-            _logger.LogError("Failed to dispose of network client");
+            _logger.LogError("Failed to dispose of player");
         }
 
         if (_tcpClient.Connected)

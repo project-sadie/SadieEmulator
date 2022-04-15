@@ -21,12 +21,14 @@ public class SecureLoginEvent : INetworkPacketEvent
     private readonly ILogger<SecureLoginEvent> _logger;
     private readonly IPlayerRepository _playerRepository;
     private readonly PlayerConstants _constants;
+    private readonly NetworkClientRepository _networkClientRepository;
 
-    public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository, PlayerConstants constants)
+    public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository, PlayerConstants constants, NetworkClientRepository networkClientRepository)
     {
         _logger = logger;
         _playerRepository = playerRepository;
         _constants = constants;
+        _networkClientRepository = networkClientRepository;
     }
         
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -36,8 +38,7 @@ public class SecureLoginEvent : INetworkPacketEvent
         if (!ValidateSso(sso)) 
         {
             _logger.LogWarning("Rejected an insecure sso token");
-                
-            await client.DisposeAsync();
+            await DisconnectAsync(client.Guid);
             return;
         }
             
@@ -46,8 +47,11 @@ public class SecureLoginEvent : INetworkPacketEvent
         if (!foundPlayer || player == null) // put the second check to shut my IDE up about nullable markings.
         {
             _logger.LogWarning("Failed to resolve player from their provided sso");
-                
-            await client.DisposeAsync();
+            
+            if (!await _networkClientRepository.TryRemoveAsync(client.Guid))
+            {
+                _logger.LogError("Failed to remove network client");
+            }
             return;
         }
 
@@ -61,7 +65,7 @@ public class SecureLoginEvent : INetworkPacketEvent
         if (!_playerRepository.TryAddPlayer(player))
         {
             _logger.LogError($"Player {playerId} could not be registered");
-            await client.DisposeAsync();
+            await DisconnectAsync(client.Guid);
             return;
         }
             
@@ -98,4 +102,12 @@ public class SecureLoginEvent : INetworkPacketEvent
 
     private bool ValidateSso(string sso) => 
         !string.IsNullOrEmpty(sso) && sso.Length >= _constants.MinSsoLength;
+
+    public async Task DisconnectAsync(Guid guid)
+    {
+        if (!await _networkClientRepository.TryRemoveAsync(guid))
+        {
+            _logger.LogError("Failed to remove network client");
+        }
+    }
 }

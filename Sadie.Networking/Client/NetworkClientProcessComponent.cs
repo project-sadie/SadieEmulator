@@ -9,18 +9,18 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
 {
     private readonly ILogger<NetworkClientProcessComponent> _logger;
     private readonly TcpClient _client;
-    private readonly NetworkStream _stream;
     
     private readonly INetworkPacketHandler _packetHandler;
+    private readonly INetworkClientRepository _clientRepository;
     private readonly byte[] _buffer;
 
-    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler, NetworkingConstants constants) : base(constants)
+    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler, NetworkingConstants constants, INetworkClientRepository clientRepository) : base(constants)
     {
         _logger = logger;
         _client = client;
-        _stream = client.GetStream();
         
         _packetHandler = packetHandler;
+        _clientRepository = clientRepository;
         _buffer = new byte[constants.BufferByteSize];
     }
 
@@ -42,9 +42,9 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
         {
             _logger.LogError(e.ToString());
             
-            if (_networkClient != null)
+            if (_networkClient != null && !await _clientRepository.TryRemoveAsync(_networkClient.Guid))
             {
-                await _networkClient.DisposeAsync();
+                _logger.LogError("Failed to dispose of network client");
             }
         }
     }
@@ -55,55 +55,28 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
 
     private async Task OnReceivedAsync(int bytesReceived)
     {
-        try
-        {
-            var data = new byte[bytesReceived];
-            Buffer.BlockCopy(_buffer, 0, data, 0, bytesReceived);
+        var data = new byte[bytesReceived];
+        Buffer.BlockCopy(_buffer, 0, data, 0, bytesReceived);
 
-            if (data[0] == 60)
-            {
-                await OnReceivedPolicyRequest();
-            }
-            else if (_networkClient != null)
-            {
-                foreach (var packet in DecodePacketsFromBytes(data))
-                {
-                    _packetHandler.HandleAsync(_networkClient, packet);
-                }
-            }
-        }
-        catch (Exception e)
+        if (data[0] == 60)
         {
-            _logger.LogError(e.ToString());
-            
-            if (_networkClient != null)
+            await OnReceivedPolicyRequest();
+        }
+        else if (_networkClient != null)
+        {
+            foreach (var packet in DecodePacketsFromBytes(data))
             {
-                await _networkClient.DisposeAsync();
+                _packetHandler.HandleAsync(_networkClient, packet);
             }
         }
     }
 
     private async Task OnReceivedPolicyRequest()
     {
-        await WriteToStreamAsync(Encoding.Default.GetBytes("<?xml version=\"1.0\"?>\r\n" +
-                                                           "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">\r\n" +
-                                                           "<cross-domain-policy>\r\n" +
-                                                           "<allow-access-from domain=\"*\" to-ports=\"1-31111\" />\r\n" +
-                                                           "</cross-domain-policy>\x0"));
-    }
-
-    public async Task WriteToStreamAsync(byte[] data)
-    {
-        try
-        {
-            await _stream.WriteAsync(data);
-        }
-        catch (Exception)
-        {
-            if (_networkClient != null)
-            {
-                await _networkClient.DisposeAsync();
-            }
-        }
+        await _networkClient?.WriteToStreamAsync(Encoding.Default.GetBytes("<?xml version=\"1.0\"?>\r\n" +
+           "<!DOCTYPE cross-domain-policy SYSTEM \"/xml/dtds/cross-domain-policy.dtd\">\r\n" +
+           "<cross-domain-policy>\r\n" +
+           "<allow-access-from domain=\"*\" to-ports=\"1-31111\" />\r\n" +
+           "</cross-domain-policy>\x0"))!;
     }
 }

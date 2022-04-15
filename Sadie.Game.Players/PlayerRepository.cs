@@ -41,18 +41,26 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task<bool> TryRemovePlayerAsync(int playerId)
     {
-        var result = _players.TryRemove(playerId, out var player);
-
-        if (player == null)
+        try
         {
+            var result = _players.TryRemove(playerId, out var player);
+
+            if (player == null)
+            {
+                return result;
+            }
+
+            await MarkPlayerAsOfflineAsync(player.Data, player.State);
+            await UpdateMessengerStatusForFriends(player.Data.Id, player.Data.FriendshipComponent.Friendships, false, false);
+            await player!.DisposeAsync();
+
             return result;
         }
-        
-        await MarkPlayerAsOfflineAsync(player.Data, player.State);
-        await UpdateMessengerStatusForFriends(player.Data.Id, player.Data.FriendshipComponent.Friendships, false, false);
-        await player!.DisposeAsync();
-
-        return result;
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return false;
+        }
     }
 
     public async Task UpdateMessengerStatusForFriends(int playerId, IEnumerable<PlayerFriendship> friendships, bool isOnline, bool inRoom)
