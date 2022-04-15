@@ -4,9 +4,9 @@ using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerBadgesWriter : NetworkPacketWriter
+public class PlayerWearingBadgesWriter : NetworkPacketWriter
 {
-    public PlayerBadgesWriter(int playerId, List<PlayerBadge> badges)
+    public PlayerWearingBadgesWriter(int playerId, List<PlayerBadge> badges)
     {
         WriteShort(ServerPacketId.PlayerBadges);
         WriteInteger(playerId);

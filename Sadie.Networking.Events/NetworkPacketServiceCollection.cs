@@ -16,6 +16,7 @@ using Sadie.Networking.Events.Navigator;
 using Sadie.Networking.Events.Players;
 using Sadie.Networking.Events.Players.Club;
 using Sadie.Networking.Events.Players.Friendships;
+using Sadie.Networking.Events.Players.Inventory;
 using Sadie.Networking.Events.Players.Messenger;
 using Sadie.Networking.Events.Rooms;
 using Sadie.Networking.Events.Rooms.Users;
@@ -49,6 +50,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerSendMessageEvent>();
         serviceCollection.AddSingleton<RoomSettingsEvent>();
         serviceCollection.AddSingleton<RoomSettingsSaveEvent>();
+        serviceCollection.AddSingleton<PlayerInventoryBadgesEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -125,6 +127,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerSendMessage] = provider.GetRequiredService<PlayerSendMessageEvent>(),
             [ClientPacketId.RoomSettings] = provider.GetRequiredService<RoomSettingsEvent>(),
             [ClientPacketId.RoomSettingsSave] = provider.GetRequiredService<RoomSettingsSaveEvent>(),
+            [ClientPacketId.PlayerInventoryBadges] = provider.GetRequiredService<PlayerInventoryBadgesEvent>(),
         });
     }
 }

@@ -36,10 +36,10 @@ public class PlayerWearingBadgesEvent : INetworkPacketEvent
         
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, networkClient, out var room, out _))
         {
-            await networkClient.WriteToStreamAsync(new PlayerBadgesWriter(playerId, playerBadges).GetAllBytes());
+            await networkClient.WriteToStreamAsync(new PlayerWearingBadgesWriter(playerId, playerBadges).GetAllBytes());
             return;
         }
         
-        await networkClient.WriteToStreamAsync(new PlayerBadgesWriter(playerId, playerBadges).GetAllBytes());
+        await networkClient.WriteToStreamAsync(new PlayerWearingBadgesWriter(playerId, playerBadges).GetAllBytes());
     }
 }

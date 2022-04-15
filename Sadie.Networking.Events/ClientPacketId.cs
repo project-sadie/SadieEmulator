@@ -68,4 +68,5 @@ public class ClientPacketId
     public const short PlayerSendMessage = 3567;
     public const short RoomSettings = 3129;
     public const short RoomSettingsSave = 1969;
+    public const short PlayerInventoryBadges = 2769;
 }

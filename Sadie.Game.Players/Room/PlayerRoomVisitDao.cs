@@ -4,7 +4,7 @@ namespace Sadie.Game.Players.Room;
 
 public class PlayerRoomVisitDao : BaseDao, IPlayerRoomVisitDao
 {
-    protected PlayerRoomVisitDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
+    public PlayerRoomVisitDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
     {
     }
 

@@ -6,6 +6,7 @@ using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Messenger;
 using Sadie.Game.Players.Respect;
+using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
 
 namespace Sadie.Game.Players;
@@ -14,6 +15,7 @@ public class PlayerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        serviceCollection.AddSingleton<IPlayerRoomVisitDao, PlayerRoomVisitDao>();
         serviceCollection.AddTransient<PlayerFriendshipComponent>();
         serviceCollection.AddTransient<IPlayerState, PlayerState>();
         serviceCollection.AddSingleton<IPlayerMessageDao, PlayerMessageDao>();

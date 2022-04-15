@@ -82,4 +82,5 @@ public class ServerPacketId
     public const short RoomRights = 780;
     public const short RoomPane = 749;
     public const short RoomSettings = 1498;
+    public const short PlayerInventoryBadges = 717;
 }
