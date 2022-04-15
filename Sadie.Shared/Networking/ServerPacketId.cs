@@ -77,4 +77,5 @@ public class ServerPacketId
     public const short PlayerStalkError = 3048;
     public const short RoomForwardEntry = 160;
     public const short PlayerMessage = 1587;
+    public const short PlayerMessageError = 3359;
 }

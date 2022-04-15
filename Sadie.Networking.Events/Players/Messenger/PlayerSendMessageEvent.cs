@@ -10,10 +10,12 @@ namespace Sadie.Networking.Events.Players.Messenger;
 public class PlayerSendMessageEvent : INetworkPacketEvent
 {
     private readonly IPlayerRepository _playerRepository;
+    private readonly IPlayerMessageDao _playerMessageDao;
 
-    public PlayerSendMessageEvent(IPlayerRepository playerRepository)
+    public PlayerSendMessageEvent(IPlayerRepository playerRepository, IPlayerMessageDao playerMessageDao)
     {
         _playerRepository = playerRepository;
+        _playerMessageDao = playerMessageDao;
     }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -32,13 +34,13 @@ public class PlayerSendMessageEvent : INetworkPacketEvent
         {
             message = message.Truncate(500);
         }
-        
-        var friend =
-            client.Player.Data.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
+
+        var friendships = client.Player.Data.FriendshipComponent.Friendships;
+        var friend = friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
 
         if (friend == null)
         {
-            // GetClient().SendPacket(new InstantMessageErrorComposer(MessengerMessageErrors.NotFriends, ToId));
+            await client.WriteToStreamAsync(new PlayerMessageErrorWriter(PlayerMessageError.NotFriends, playerId).GetAllBytes());
             return;
         }
 
@@ -49,9 +51,8 @@ public class PlayerSendMessageEvent : INetworkPacketEvent
         }
 
         var playerMessage = new PlayerMessage(client.Player.Data.Id, targetPlayer.Data.Id, message);
-        
-        // TODO: Store it in database
-        
+
+        await _playerMessageDao.CreateMessageAsync(playerMessage);
         await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerMessageWriter(playerMessage).GetAllBytes());
     }
 }
