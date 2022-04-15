@@ -48,7 +48,7 @@ public class PlayerRepository : IPlayerRepository
             return result;
         }
         
-        await MarkPlayerAsOfflineAsync(player.Data);
+        await MarkPlayerAsOfflineAsync(player.Data, player.State);
         await UpdateMessengerStatusForFriends(player.Data.Id, player.Data.FriendshipComponent.Friendships, false, false);
         await player!.DisposeAsync();
 
@@ -78,9 +78,9 @@ public class PlayerRepository : IPlayerRepository
         await _playerDataDao.MarkPlayerAsOnlineAsync(id);
     }
 
-    private async Task MarkPlayerAsOfflineAsync(IPlayerData playerData)
+    private async Task MarkPlayerAsOfflineAsync(IPlayerData data, IPlayerState state)
     {
-        await _playerDataDao.MarkPlayerAsOfflineAsync(playerData);
+        await _playerDataDao.MarkPlayerAsOfflineAsync(data, state);
     }
 
     public async Task ResetSsoTokenForPlayerAsync(int id)

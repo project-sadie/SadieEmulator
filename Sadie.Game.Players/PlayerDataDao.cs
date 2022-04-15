@@ -1,6 +1,7 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game.Avatar;
 
@@ -8,13 +9,18 @@ namespace Sadie.Game.Players;
 
 public class PlayerDataDao : BaseDao, IPlayerDataDao
 {
-    private readonly IPlayerDataFactory _playerDataFactory;
+    private readonly IPlayerDataFactory _factory;
     private readonly IPlayerFriendshipRepository _friendshipRepository;
+    private readonly IPlayerRoomVisitDao _roomVisitDao;
 
-    public PlayerDataDao(IDatabaseProvider databaseProvider, IPlayerDataFactory playerDataFactory, IPlayerFriendshipRepository friendshipRepository) : base(databaseProvider)
+    public PlayerDataDao(IDatabaseProvider databaseProvider, 
+        IPlayerDataFactory factory, 
+        IPlayerFriendshipRepository friendshipRepository,
+        IPlayerRoomVisitDao roomVisitDao) : base(databaseProvider)
     {
-        _playerDataFactory = playerDataFactory;
+        _factory = factory;
         _friendshipRepository = friendshipRepository;
+        _roomVisitDao = roomVisitDao;
     }
     
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
@@ -102,7 +108,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
     private async Task<IPlayerData> CreateFromRecordAsync(DatabaseRecord record)
     {
-        return _playerDataFactory.Create(
+        return _factory.Create(
             record.Get<int>("id"),
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
@@ -164,7 +170,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
         });
     }
 
-    public async Task MarkPlayerAsOfflineAsync(IPlayerData playerData)
+    public async Task MarkPlayerAsOfflineAsync(IPlayerData playerData, IPlayerState playerState)
     {
         await QueryAsync(@"UPDATE `player_data` 
             SET 
@@ -200,5 +206,10 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
             { "gender", playerData.Gender == AvatarGender.Male ? "M" : "F" },
             { "playerId", playerData.Id }
         });
+
+        if (playerState.RoomVisits.Count > 0)
+        {
+            await _roomVisitDao.CreateAsync(playerState.RoomVisits);
+        }
     }
 }

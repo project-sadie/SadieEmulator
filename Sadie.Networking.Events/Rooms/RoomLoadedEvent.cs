@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -25,6 +26,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
     {
         var player = client.Player;
         var playerData = player.Data;
+        var playerState = player.State;
         
         var (roomId, password) = (reader.ReadInteger(), reader.ReadString());
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
@@ -47,6 +49,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         }
 
         playerData.CurrentRoomId = roomId;
+        playerState.RoomVisits.Add(new PlayerRoomVisit(playerData.Id, roomId));
 
         var avatarData = (IAvatarData) player.Data;
         
