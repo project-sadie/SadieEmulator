@@ -17,8 +17,15 @@ public class PlayerSearchEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var searchQuery = reader.ReadString();
+        if ((DateTime.Now - client.Player.State.LastSearch).TotalSeconds < 1)
+        {
+            return;
+        }
         
+        client.Player.State.LastSearch = DateTime.Now;
+        
+        var searchQuery = reader.ReadString();
+
         if (string.IsNullOrEmpty(searchQuery))
         {
             return;

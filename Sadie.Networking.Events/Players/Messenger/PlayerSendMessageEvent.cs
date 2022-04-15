@@ -20,10 +20,15 @@ public class PlayerSendMessageEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        if ((DateTime.Now - client.Player.State.LastMessage).TotalSeconds < 1)
+        {
+            return;
+        }
+        
+        client.Player.State.LastMessage = DateTime.Now;
+        
         var playerId = reader.ReadInteger();
         var message = reader.ReadString();
-        
-        // TODO: Cooldown
 
         if (string.IsNullOrEmpty(message))
         {

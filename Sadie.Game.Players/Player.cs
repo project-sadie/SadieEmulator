@@ -9,6 +9,7 @@ public class Player : IPlayer
     
     public INetworkObject NetworkObject { get; }
     public IPlayerData Data { get; }
+    public IPlayerState State { get; } = new PlayerState();
 
     public Player(
         ILogger<Player> logger,
