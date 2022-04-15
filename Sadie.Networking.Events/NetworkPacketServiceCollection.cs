@@ -47,6 +47,8 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerSearchEvent>();
         serviceCollection.AddSingleton<PlayerStalkEvent>();
         serviceCollection.AddSingleton<PlayerSendMessageEvent>();
+        serviceCollection.AddSingleton<RoomSettingsEvent>();
+        serviceCollection.AddSingleton<RoomSettingsSaveEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -121,6 +123,8 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerSearch] = provider.GetRequiredService<PlayerSearchEvent>(),
             [ClientPacketId.PlayerStalk] = provider.GetRequiredService<PlayerStalkEvent>(),
             [ClientPacketId.PlayerSendMessage] = provider.GetRequiredService<PlayerSendMessageEvent>(),
+            [ClientPacketId.RoomSettings] = provider.GetRequiredService<RoomSettingsEvent>(),
+            [ClientPacketId.RoomSettingsSave] = provider.GetRequiredService<RoomSettingsSaveEvent>(),
         });
     }
 }
