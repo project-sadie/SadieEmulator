@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Networking.Events.Rooms;
@@ -48,6 +51,27 @@ public class RoomLoadedEvent : INetworkPacketEvent
             return;
         }
 
+        var isOwner = room.OwnerId == playerData.Id;
+
+        if (room.UserRepository.Count > room.MaxUsers && !isOwner)
+        {
+            await client.WriteToStreamAsync(new RoomEnterErrorWriter(RoomEnterError.NoCapacity).GetAllBytes());
+            return;
+        }
+
+        if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
+            !isOwner &&
+            !playerData.Permissions.Contains("enter_guarded_rooms"))
+        {
+            if (room.Settings.AccessType == RoomAccessType.Password && password != room.Settings.Password)
+            {
+                await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword).GetAllBytes());
+                await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
+                
+                return;
+            }
+        }
+
         playerData.CurrentRoomId = roomId;
         playerState.RoomVisits.Add(new PlayerRoomVisit(playerData.Id, roomId));
 
@@ -70,7 +94,6 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         client.RoomUser = roomUser;
         
-        await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
         await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Layout.Name).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
         await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, true).GetAllBytes());
@@ -86,5 +109,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         {
             await client.WriteToStreamAsync(new RoomOwnerWriter().GetAllBytes());
         }
+        
+        await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
     }
 }

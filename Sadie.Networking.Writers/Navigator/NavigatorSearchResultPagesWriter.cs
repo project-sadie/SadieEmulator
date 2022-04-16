@@ -33,7 +33,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
                 WriteString(room.Name);
                 WriteLong(room.OwnerId);
                 WriteString(room.OwnerName);
-                WriteInteger(0); // TODO: state 
+                WriteInteger((int) room.Settings.AccessType);
                 WriteInteger(room.UserRepository.Count);
                 WriteInteger(room.MaxUsers);
                 WriteString(room.Description);

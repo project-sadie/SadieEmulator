@@ -12,7 +12,7 @@ public class RoomSettingsWriter : NetworkPacketWriter
         WriteInteger(room.Id);
         WriteString(room.Name);
         WriteString(room.Description);
-        WriteInteger(0); // locked/open/etc
+        WriteInteger((int) room.Settings.AccessType);
         WriteInteger(0); // category
         WriteInteger(room.MaxUsers);
         WriteInteger(room.MaxUsers);

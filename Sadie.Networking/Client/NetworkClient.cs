@@ -15,6 +15,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     private readonly TcpClient _tcpClient;
     private readonly IPlayerRepository _playerRepository;
     private readonly IRoomRepository _roomRepository;
+    private readonly INetworkClientRepository _clientRepository;
     private readonly Stream _stream;
 
     public NetworkClient(
@@ -34,6 +35,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         _tcpClient = tcpClient;
         _playerRepository = playerRepository;
         _roomRepository = roomRepository;
+        _clientRepository = clientRepository;
         _stream = tcpClient.GetStream();
 
         SetClient(this);
@@ -60,11 +62,19 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
     {
         try
         {
+            if (!_stream.CanWrite || _disposed)
+            {
+                return;
+            }
+            
             await _stream.WriteAsync(data);
         }
-        catch (Exception)
+        catch (IOException e)
         {
-            await DisposeAsync();
+            if (!await _clientRepository.TryRemoveAsync(Guid))
+            {
+                _logger.LogError("Failed to dispose of client");
+            }
         }
     }
 

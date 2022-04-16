@@ -3,5 +3,6 @@ namespace Sadie.Game.Rooms;
 public interface IRoomSettings
 {
     bool CanWalkDiagonal { get; }
-    bool Muted { get; }
+    RoomAccessType AccessType { get; }
+    string Password { get; }
 }

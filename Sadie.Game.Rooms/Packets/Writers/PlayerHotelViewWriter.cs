@@ -3,9 +3,9 @@ using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets;
 
-public class RoomUserHotelViewWriter : NetworkPacketWriter
+public class PlayerHotelViewWriter : NetworkPacketWriter
 {
-    public RoomUserHotelViewWriter()
+    public PlayerHotelViewWriter()
     {
         WriteShort(ServerPacketId.RoomUserHotelView);
     }

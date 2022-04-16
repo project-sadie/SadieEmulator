@@ -83,4 +83,6 @@ public class ServerPacketId
     public const short RoomPane = 749;
     public const short RoomSettings = 1498;
     public const short PlayerInventoryBadges = 717;
+    public const short RoomEnterError = 899;
+    public const short GenericError = 1600;
 }

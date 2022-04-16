@@ -21,9 +21,9 @@ public class SecureLoginEvent : INetworkPacketEvent
     private readonly ILogger<SecureLoginEvent> _logger;
     private readonly IPlayerRepository _playerRepository;
     private readonly PlayerConstants _constants;
-    private readonly NetworkClientRepository _networkClientRepository;
+    private readonly INetworkClientRepository _networkClientRepository;
 
-    public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository, PlayerConstants constants, NetworkClientRepository networkClientRepository)
+    public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository, PlayerConstants constants, INetworkClientRepository networkClientRepository)
     {
         _logger = logger;
         _playerRepository = playerRepository;

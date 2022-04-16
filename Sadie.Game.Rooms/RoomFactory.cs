@@ -22,9 +22,9 @@ public class RoomFactory : IRoomFactory
         return ActivatorUtilities.CreateInstance<RoomLayout>(_serviceProvider, id, name, heightmap, doorPoint, doorDirection);
     }
 
-    public IRoomSettings CreateSettings(bool walkDiagonal, bool muted)
+    public IRoomSettings CreateSettings(bool walkDiagonal, RoomAccessType accessType, string password)
     {
-        return ActivatorUtilities.CreateInstance<RoomSettings>(_serviceProvider, walkDiagonal, muted);
+        return ActivatorUtilities.CreateInstance<RoomSettings>(_serviceProvider, walkDiagonal, accessType, password);
     }
 
     public IRoom Create(int id,

@@ -23,6 +23,7 @@ public class RoomDao : BaseDao, IRoomDao
                    `rooms`.`owner_id`,
                    `rooms`.`description`,
                    `rooms`.`score`,
+                   `rooms`.`is_muted`, 
                    `rooms`.`max_users_allowed`,
                    
                    (SELECT `username` FROM `players` WHERE `id` = `rooms`.`owner_id`) AS `owner_name`,
@@ -33,7 +34,9 @@ public class RoomDao : BaseDao, IRoomDao
                     GROUP BY `room_id`) AS `comma_seperated_tags`,
                    
                    `room_settings`.`walk_diagonal`, 
-                   `room_settings`.`is_muted`, 
+                   `room_settings`.`access_type`, 
+                   `room_settings`.`password`, 
+                   
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,
                    `room_layouts`.`door_x`,
@@ -58,7 +61,8 @@ public class RoomDao : BaseDao, IRoomDao
         
         var settings = _factory.CreateSettings(
             record.Get<bool>("walk_diagonal"),
-            record.Get<bool>("is_muted"));
+            (RoomAccessType) record.Get<int>("access_type"),
+            record.Get<string>("password"));
         
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),

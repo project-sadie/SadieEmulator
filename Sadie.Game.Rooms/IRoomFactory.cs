@@ -11,8 +11,7 @@ public interface IRoomFactory
         HPoint doorPoint,
         HDirection doorDirection);
     
-    IRoomSettings CreateSettings(bool walkDiagonal,
-        bool muted);
+    IRoomSettings CreateSettings(bool walkDiagonal, RoomAccessType accessType, string password);
     
     IRoom Create(int id,
         string name,

@@ -14,7 +14,7 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         WriteString(room.Name);
         WriteLong(room.OwnerId);
         WriteString(room.OwnerName);
-        WriteInteger(0); // state
+        WriteInteger((int) room.Settings.AccessType);
         WriteInteger(room.UserRepository.Count);
         WriteInteger(room.MaxUsers);
         WriteString(room.Description);
@@ -33,7 +33,7 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         WriteBool(roomForward);
         WriteBool(false); // TODO: staff picked?
         WriteBool(false); // TODO: is group member?
-        WriteBool(room.Settings.Muted);
+        WriteBool(room.Muted);
         WriteInteger(0); // TODO: mute option
         WriteInteger(0); // TODO: kick option
         WriteInteger(0); // TODO: ban option

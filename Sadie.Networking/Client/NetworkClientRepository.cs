@@ -21,20 +21,28 @@ public class NetworkClientRepository : INetworkClientRepository
 
     public async Task<bool> TryRemoveAsync(Guid guid)
     {
-        var result = _clients.TryRemove(guid, out var client);
-        
-        if (client != null)
+        try
         {
-            await client.DisposeAsync();
-        }
+            var result = _clients.TryRemove(guid, out var client);
 
-        return result;
+            if (client != null)
+            {
+                await client.DisposeAsync();
+            }
+
+            return result;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.ToString());
+            return false;
+        }
     }
 
     public async Task DisconnectIdleClientsAsync()
     {
         var idleClients = _clients.Values
-            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 60)
+            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 40)
             .Take(50)
             .ToList();
 
@@ -48,6 +56,17 @@ public class NetworkClientRepository : INetworkClientRepository
         foreach (var client in idleClients)
         {
             if (!await TryRemoveAsync(client.Guid))
+            {
+                _logger.LogError("Failed to dispose of network client");
+            }
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var client in _clients.Keys)
+        {
+            if (!await TryRemoveAsync(client))
             {
                 _logger.LogError("Failed to dispose of network client");
             }

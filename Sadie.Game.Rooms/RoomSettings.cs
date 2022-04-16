@@ -2,12 +2,17 @@
 
 public class RoomSettings : IRoomSettings
 {
-    public RoomSettings(bool walkDiagonal, bool muted)
+    public RoomSettings(
+        bool walkDiagonal, 
+        RoomAccessType accessType,
+        string password)
     {
         CanWalkDiagonal = walkDiagonal;
-        Muted = muted;
+        AccessType = accessType;
+        Password = password;
     }
 
     public bool CanWalkDiagonal { get; }
-    public bool Muted { get; }
+    public RoomAccessType AccessType { get; }
+    public string Password { get; }
 }

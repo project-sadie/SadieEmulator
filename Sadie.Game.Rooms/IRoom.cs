@@ -3,19 +3,7 @@ using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
-public interface IRoom : IAsyncDisposable
+public interface IRoom : IRoomData, IAsyncDisposable
 {
     Task RunPeriodicCheckAsync();
-    int Id { get; }
-    string Name { get; }
-    RoomLayout Layout { get; }
-    int OwnerId { get; }
-    string OwnerName { get; }
-    public string Description { get; }
-    public int Score { get; }
-    public List<string> Tags { get; }
-    public int MaxUsers { get; }
-    IRoomUserRepository UserRepository { get; }
-    public IRoomSettings Settings { get; }
-    List<RoomChatMessage> ChatMessages { get; }
 }

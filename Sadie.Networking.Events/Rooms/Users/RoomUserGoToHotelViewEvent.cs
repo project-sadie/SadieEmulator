@@ -24,7 +24,7 @@ public class RoomUserGoToHotelViewEvent : INetworkPacketEvent
 
             if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Data.Id, out var oldUser) && oldUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id, true);
             }
         }
     }

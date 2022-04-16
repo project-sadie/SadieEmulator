@@ -3,7 +3,7 @@ using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomData
+public class RoomData : IRoomData
 {
     public int Id { get; }
     public string Name { get; }
@@ -14,6 +14,8 @@ public class RoomData
     public int Score { get; }
     public List<string> Tags { get; }
     public int MaxUsers { get; }
+    
+    public bool Muted { get; }
     public IRoomUserRepository UserRepository { get; }
     public IRoomSettings Settings { get; }
     public List<RoomChatMessage> ChatMessages { get; }

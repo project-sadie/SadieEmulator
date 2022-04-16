@@ -40,11 +40,19 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
         }
         catch (Exception e)
         {
-            _logger.LogError(e.ToString());
-            
-            if (_networkClient != null && !await _clientRepository.TryRemoveAsync(_networkClient.Guid))
+            try
             {
-                _logger.LogError("Failed to dispose of network client");
+                _logger.LogError(e.ToString());
+
+                if (_networkClient != null && !await _clientRepository.TryRemoveAsync(_networkClient.Guid))
+                {
+                    _logger.LogError("Failed to dispose of network client");
+                }
+            }
+            catch (Exception inner)
+            {
+                _logger.LogError("yooooo walkINdaPartyMandemARMY");
+                _logger.LogError(inner.ToString());
             }
         }
     }

@@ -39,7 +39,7 @@ public class RoomUserRepository : IRoomUserRepository
         
         if (hotelView)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter().GetAllBytes());
+            await roomUser.NetworkObject.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
         }
         
         await roomUser.DisposeAsync();
