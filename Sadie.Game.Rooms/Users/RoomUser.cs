@@ -72,6 +72,11 @@ public class RoomUser : RoomUserData, IRoomUser
         }
     }
 
+    public bool HasRights()
+    {
+        return _room.OwnerId == Id || _room.PlayersWithRights.Contains(Id);
+    }
+
     private async Task ProcessMovementAsync() // 2bMoved
     {
         SetNextPosition();

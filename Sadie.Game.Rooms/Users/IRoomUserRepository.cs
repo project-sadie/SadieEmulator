@@ -9,4 +9,5 @@ public interface IRoomUserRepository : IAsyncDisposable
     Task TryRemoveAsync(int id, bool hotelView = false);
     int Count { get; }
     Task BroadcastDataAsync(byte[] data);
+    ICollection<IRoomUser> GetAllWithRights();
 }

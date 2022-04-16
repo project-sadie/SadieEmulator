@@ -28,10 +28,15 @@ public class RoomDao : BaseDao, IRoomDao
                    
                    (SELECT `username` FROM `players` WHERE `id` = `rooms`.`owner_id`) AS `owner_name`,
                    
-                   (SELECT GROUP_CONCAT(`name`) AS `comma_seperated_tags`
+                   (SELECT GROUP_CONCAT(`player_id`) AS `comma_separated_rights`
+                    FROM `room_player_rights`
+                    WHERE `room_id` = `rooms`.`id`
+                    GROUP BY `room_id`) AS `comma_separated_rights`,
+                   
+                   (SELECT GROUP_CONCAT(`name`) AS `comma_separated_tags`
                     FROM `room_tags`
                     WHERE `room_id` = `rooms`.`id`
-                    GROUP BY `room_id`) AS `comma_seperated_tags`,
+                    GROUP BY `room_id`) AS `comma_separated_tags`,
                    
                    `room_settings`.`walk_diagonal`, 
                    `room_settings`.`access_type`, 
@@ -75,6 +80,12 @@ public class RoomDao : BaseDao, IRoomDao
             doorPoint,
             (HDirection) record.Get<int>("door_direction"));
 
+        var commaSeparatedRights = record.Get<string>("comma_separated_rights");
+        
+        var playersWithRights = commaSeparatedRights.Contains(",") ? 
+            new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
+            new List<int>();
+
         return new Tuple<bool, IRoom?>(true, _factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
             layout,
@@ -82,9 +93,10 @@ public class RoomDao : BaseDao, IRoomDao
             record.Get<string>("owner_name"),
             record.Get<string>("description"),
             record.Get<int>("score"),
-            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
+            new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
             record.Get<int>("max_users_allowed"),
-            settings));
+            settings,
+            playersWithRights));
     }
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)

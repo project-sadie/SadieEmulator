@@ -56,7 +56,12 @@ public class RoomUserRepository : IRoomUserRepository
 
         return Task.CompletedTask;
     }
-    
+
+    public ICollection<IRoomUser> GetAllWithRights()
+    {
+        return _users.Values.Where(x => x.HasRights()).ToList();
+    }
+
     public async ValueTask DisposeAsync()
     {
         foreach (var user in _users.Values)

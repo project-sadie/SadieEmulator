@@ -19,6 +19,7 @@ using Sadie.Networking.Events.Players.Friendships;
 using Sadie.Networking.Events.Players.Inventory;
 using Sadie.Networking.Events.Players.Messenger;
 using Sadie.Networking.Events.Rooms;
+using Sadie.Networking.Events.Rooms.Access;
 using Sadie.Networking.Events.Rooms.Users;
 using Sadie.Networking.Events.Rooms.Users.Chat;
 using Sadie.Networking.Events.Tracking;
@@ -51,6 +52,8 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomSettingsEvent>();
         serviceCollection.AddSingleton<RoomSettingsSaveEvent>();
         serviceCollection.AddSingleton<PlayerInventoryBadgesEvent>();
+        serviceCollection.AddSingleton<RoomDoorbellAnswerEvent>();
+        serviceCollection.AddSingleton<RoomDoorbellAcceptedEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -128,6 +131,8 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomSettings] = provider.GetRequiredService<RoomSettingsEvent>(),
             [ClientPacketId.RoomSettingsSave] = provider.GetRequiredService<RoomSettingsSaveEvent>(),
             [ClientPacketId.PlayerInventoryBadges] = provider.GetRequiredService<PlayerInventoryBadgesEvent>(),
+            [ClientPacketId.RoomDoorbellAnswer] = provider.GetRequiredService<RoomDoorbellAnswerEvent>(),
+            [ClientPacketId.RoomDoorbellAccepted] = provider.GetRequiredService<RoomDoorbellAcceptedEvent>(),
         });
     }
 }

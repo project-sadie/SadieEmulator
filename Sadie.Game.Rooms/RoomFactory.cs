@@ -36,7 +36,8 @@ public class RoomFactory : IRoomFactory
         int score,
         List<string> tags,
         int maxUsersAllowed,
-        IRoomSettings settings)
+        IRoomSettings settings,
+        List<int> playersWithRights)
     {
         return ActivatorUtilities.CreateInstance<Room>(
             _serviceProvider,
@@ -49,6 +50,7 @@ public class RoomFactory : IRoomFactory
             score,
             tags,
             maxUsersAllowed,
-            settings);
+            settings,
+            playersWithRights);
     }
 }

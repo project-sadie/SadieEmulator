@@ -16,7 +16,8 @@ public class Room : RoomData, IRoom
         List<string> tags, 
         int maxUsers,
         IRoomUserRepository userRepository, 
-        IRoomSettings settings) : base(id, name, layout, ownerId, ownerName, description, score, tags, maxUsers, userRepository, settings)
+        IRoomSettings settings,
+        List<int> playersWithRights) : base(id, name, layout, ownerId, ownerName, description, score, tags, maxUsers, userRepository, settings, playersWithRights)
     {
     }
 

@@ -13,4 +13,5 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     HDirection Direction { get; }
     void WalkToPoint(Point point, bool useDiagonal);
     Task RunPeriodicCheckAsync();
+    bool HasRights();
 }

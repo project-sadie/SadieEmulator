@@ -55,10 +55,10 @@ public class PlayerDao : BaseDao, IPlayerDao
                    `player_avatar_data`.`gender`, 
                    `player_avatar_data`.`chat_bubble_id`,
                    
-                   (SELECT GROUP_CONCAT(`name`) AS `comma_seperated_tags`
+                   (SELECT GROUP_CONCAT(`name`) AS `comma_separated_tags`
                     FROM `player_tags`
                     WHERE `player_id` = `players`.`id`
-                    GROUP BY `player_id`) AS `comma_seperated_tags`,
+                    GROUP BY `player_id`) AS `comma_separated_tags`,
             
                     `player_navigator_settings`.`window_x`,
                     `player_navigator_settings`.`window_y`,
@@ -138,7 +138,7 @@ public class PlayerDao : BaseDao, IPlayerDao
             savedSearches,
             permissions,
             record.Get<int>("achievement_score"),
-            new List<string>(record.Get<string>("comma_seperated_tags").Split(",")),
+            new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
             badges,
             friendships,
             record.Get<int>("chat_bubble_id"),

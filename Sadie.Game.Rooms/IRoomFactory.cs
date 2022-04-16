@@ -22,5 +22,6 @@ public interface IRoomFactory
         int score,
         List<string> tags,
         int maxUsersAllowed,
-        IRoomSettings settings);
+        IRoomSettings settings,
+        List<int> playersWithRights);
 }

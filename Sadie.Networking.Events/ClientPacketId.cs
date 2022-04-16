@@ -69,4 +69,6 @@ public class ClientPacketId
     public const short RoomSettings = 3129;
     public const short RoomSettingsSave = 1969;
     public const short PlayerInventoryBadges = 2769;
+    public const short RoomDoorbellAnswer = 1644;
+    public const short RoomDoorbellAccepted = 685;
 }

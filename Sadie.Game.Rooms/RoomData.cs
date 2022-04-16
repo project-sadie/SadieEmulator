@@ -14,11 +14,11 @@ public class RoomData : IRoomData
     public int Score { get; }
     public List<string> Tags { get; }
     public int MaxUsers { get; }
-    
     public bool Muted { get; }
     public IRoomUserRepository UserRepository { get; }
     public IRoomSettings Settings { get; }
     public List<RoomChatMessage> ChatMessages { get; }
+    public List<int> PlayersWithRights { get; }
 
     protected RoomData(int id,
         string name,
@@ -30,7 +30,8 @@ public class RoomData : IRoomData
         List<string> tags,
         int maxUsers,
         IRoomUserRepository userRepository,
-        IRoomSettings settings) 
+        IRoomSettings settings,
+        List<int> playersWithRights) 
     {
         Id = id;
         Name = name;
@@ -44,5 +45,6 @@ public class RoomData : IRoomData
         UserRepository = userRepository;
         Settings = settings;
         ChatMessages = new List<RoomChatMessage>();
+        PlayersWithRights = playersWithRights;
     }
 }

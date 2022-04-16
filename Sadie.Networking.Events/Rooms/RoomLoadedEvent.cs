@@ -7,6 +7,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Access;
 using Sadie.Shared;
 using Sadie.Shared.Game.Avatar;
 
@@ -63,53 +64,36 @@ public class RoomLoadedEvent : INetworkPacketEvent
             !isOwner &&
             !playerData.Permissions.Contains("enter_guarded_rooms"))
         {
-            if (room.Settings.AccessType == RoomAccessType.Password && password != room.Settings.Password)
+            switch (room.Settings.AccessType)
             {
-                await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword).GetAllBytes());
-                await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
+                case RoomAccessType.Password when password != room.Settings.Password:
+                    await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword).GetAllBytes());
+                    await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
+                    return;
+                case RoomAccessType.Doorbell:
+                {
+                    var usersWithRights = room.UserRepository.GetAllWithRights();
                 
-                return;
+                    if (usersWithRights.Count < 1)
+                    {
+                        await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Data.Username).GetAllBytes());
+                    }
+                    else
+                    {
+                        foreach (var user in usersWithRights)
+                        {
+                            await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(playerData.Username)
+                                .GetAllBytes());
+                        }
+
+                        await client.WriteToStreamAsync(new RoomDoorbellWriter().GetAllBytes());
+                    }
+
+                    return;
+                }
             }
         }
-
-        playerData.CurrentRoomId = roomId;
-        playerState.RoomVisits.Add(new PlayerRoomVisit(playerData.Id, roomId));
-
-        var avatarData = (IAvatarData) player.Data;
         
-        var roomUser = _roomUserFactory.Create(
-            room,
-            client,
-            playerData.Id,
-            room.Layout.DoorPoint,
-            room.Layout.DoorDirection,
-            room.Layout.DoorDirection,
-            avatarData);
-
-        if (!room.UserRepository.TryAdd(roomUser))
-        {
-            _logger.LogError($"Failed to add user {playerData.Id} to room {roomId}");
-            return;
-        }
-
-        client.RoomUser = roomUser;
-        
-        await client.WriteToStreamAsync(new RoomDataWriter(roomId, room.Layout.Name).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
-        await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, true).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
-
-        var owner = room.OwnerId == playerData.Id;
-        var rightLevel = owner ? RoomRightLevel.Admin : RoomRightLevel.None;
-        
-        await client.WriteToStreamAsync(new RoomPaneWriter(roomId, owner).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomRightsWriter(rightLevel).GetAllBytes());
-        
-        if (owner)
-        {
-            await client.WriteToStreamAsync(new RoomOwnerWriter().GetAllBytes());
-        }
-        
-        await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
+        await PacketEventHelpers.EnterRoomAsync(client, room, _logger, _roomUserFactory);
     }
 }

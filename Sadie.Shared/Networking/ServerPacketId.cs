@@ -85,4 +85,7 @@ public class ServerPacketId
     public const short PlayerInventoryBadges = 717;
     public const short RoomEnterError = 899;
     public const short GenericError = 1600;
+    public const short RoomDoorbellNoAnswer = 878;
+    public const short RoomDoorbell = 2309;
+    public const short RoomDoorbellAccept = 3783;
 }
