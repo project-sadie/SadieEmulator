@@ -21,11 +21,8 @@ public class RoomDoorbellAnswerEvent : INetworkPacketEvent
 
         if (!_playerRepository.TryGetPlayerByUsername(username, out var player) || player == null)
         {
-            Console.WriteLine("cant find " + username);
             return;
         }
-        
-        Console.WriteLine("found " + username);
 
         await player.NetworkObject.WriteToStreamAsync(accept
             ? new RoomDoorbellAcceptWriter("").GetAllBytes()

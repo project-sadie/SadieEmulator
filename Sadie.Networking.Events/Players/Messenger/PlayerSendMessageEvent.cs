@@ -51,7 +51,6 @@ public class PlayerSendMessageEvent : INetworkPacketEvent
 
         if (!_playerRepository.TryGetPlayerById(playerId, out var targetPlayer) || targetPlayer == null)
         {
-            Console.WriteLine("cant find target");
             return;
         }
 

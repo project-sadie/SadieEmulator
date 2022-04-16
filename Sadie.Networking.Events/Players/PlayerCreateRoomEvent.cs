@@ -26,7 +26,6 @@ public class PlayerCreateRoomEvent : INetworkPacketEvent
         
         if (layoutId == -1)
         {
-            Console.WriteLine(layoutName);
             return;
         }
 

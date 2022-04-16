@@ -33,7 +33,6 @@ public class StoreChatMessagesTask : IServerTask
                 Console.WriteLine(e);
             }
 
-            Console.WriteLine("We saved " + room.ChatMessages.Count + " messages");
             room.ChatMessages.Clear();
         }
     }
