@@ -22,12 +22,14 @@ public class RoomSettingsWriter : NetworkPacketWriter
         {
             WriteString(tag);
         }
+
+        var settings = roomData.Settings;
         
         WriteInteger(0); // TODO: trade mode
-        WriteInteger(1); // TODO: allow pets
-        WriteInteger(1); // TODO: allow pets eat
-        WriteInteger(1); // TODO: allow walk through
-        WriteInteger(0); // TODO: hiding wall
+        WriteInteger(settings.AllowPets ? 1 : 0);
+        WriteInteger(settings.CanPetsEat ? 1 : 0);
+        WriteInteger(settings.CanUsersOverlap ? 1 : 0); // TODO: allow walk through
+        WriteInteger(settings.HideWalls ? 1 : 0);
         WriteInteger(0); // TODO: wall size
         WriteInteger(0); // TODO: floor size
         WriteInteger(0); // TODO: chat mode
@@ -36,8 +38,8 @@ public class RoomSettingsWriter : NetworkPacketWriter
         WriteInteger(0); // TODO: chat distance
         WriteInteger(0); // TODO: chat protection
         WriteBool(false); // TODO: unknown
-        WriteInteger(0); // TODO: mute option
-        WriteInteger(0); // TODO: kick option
-        WriteInteger(0); // TODO: ban option
+        WriteInteger(settings.WhoCanMute);
+        WriteInteger(settings.WhoCanKick);
+        WriteInteger(settings.WhoCanBan);
     }
 }
