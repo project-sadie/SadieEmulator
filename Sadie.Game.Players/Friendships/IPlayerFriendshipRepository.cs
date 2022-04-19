@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace Sadie.Game.Players.Friendships;
 
 public interface IPlayerFriendshipRepository
