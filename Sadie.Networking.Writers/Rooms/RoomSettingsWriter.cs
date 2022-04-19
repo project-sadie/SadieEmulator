@@ -6,19 +6,19 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomSettingsWriter : NetworkPacketWriter
 {
-    public RoomSettingsWriter(IRoom room)
+    public RoomSettingsWriter(IRoomData roomData)
     {
         WriteShort(ServerPacketId.RoomSettings);
-        WriteInteger(room.Id);
-        WriteString(room.Name);
-        WriteString(room.Description);
-        WriteInteger((int) room.Settings.AccessType);
+        WriteInteger(roomData.Id);
+        WriteString(roomData.Name);
+        WriteString(roomData.Description);
+        WriteInteger((int) roomData.Settings.AccessType);
         WriteInteger(0); // TODO: category
-        WriteInteger(room.MaxUsers);
-        WriteInteger(room.MaxUsers);
-        WriteInteger(room.Tags.Count);
+        WriteInteger(roomData.MaxUsers);
+        WriteInteger(roomData.MaxUsers);
+        WriteInteger(roomData.Tags.Count);
 
-        foreach (var tag in room.Tags)
+        foreach (var tag in roomData.Tags)
         {
             WriteString(tag);
         }
