@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Sadie.Game.Rooms.Chat;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Game.Avatar;
@@ -9,14 +8,14 @@ namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser : RoomUserData, IRoomUser
 {
-    private readonly Room _room;
+    private readonly IRoom _room;
     private readonly RoomConstants _constants;
     
     public int Id { get; }
     public INetworkObject NetworkObject { get; }
 
     public RoomUser(
-        Room room,
+        IRoom room,
         INetworkObject networkObject, 
         int id, 
         HPoint point, 

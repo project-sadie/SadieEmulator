@@ -28,15 +28,15 @@ public class RoomSettingsWriter : NetworkPacketWriter
         WriteInteger(0); // TODO: trade mode
         WriteInteger(settings.AllowPets ? 1 : 0);
         WriteInteger(settings.CanPetsEat ? 1 : 0);
-        WriteInteger(settings.CanUsersOverlap ? 1 : 0); // TODO: allow walk through
+        WriteInteger(settings.CanUsersOverlap ? 1 : 0);
         WriteInteger(settings.HideWalls ? 1 : 0);
         WriteInteger(0); // TODO: wall size
         WriteInteger(0); // TODO: floor size
-        WriteInteger(0); // TODO: chat mode
-        WriteInteger(0); // TODO: chat weight
-        WriteInteger(0); // TODO: chat speed
-        WriteInteger(0); // TODO: chat distance
-        WriteInteger(0); // TODO: chat protection
+        WriteInteger(settings.ChatType); 
+        WriteInteger(settings.ChatWeight); 
+        WriteInteger(settings.ChatSpeed); 
+        WriteInteger(settings.ChatDistance); 
+        WriteInteger(settings.ChatProtection); 
         WriteBool(false); // TODO: unknown
         WriteInteger(settings.WhoCanMute);
         WriteInteger(settings.WhoCanKick);

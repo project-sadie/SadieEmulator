@@ -12,4 +12,9 @@ public interface IRoomSettings
     public bool CanPetsEat { get; }
     public bool HideWalls { get; }
     public bool CanUsersOverlap { get; }
+    public int ChatType { get; }
+    public int ChatWeight { get; }
+    public int ChatSpeed { get; }
+    public int ChatDistance { get; }
+    public int ChatProtection { get; }
 }

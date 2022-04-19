@@ -48,6 +48,11 @@ public class RoomDao : BaseDao, IRoomDao
                    `room_settings`.`can_pets_eat`, 
                    `room_settings`.`hide_walls`, 
                    `room_settings`.`can_users_overlap`, 
+                   `room_settings`.`chat_type`, 
+                   `room_settings`.`chat_weight`, 
+                   `room_settings`.`chat_speed`, 
+                   `room_settings`.`chat_distance`, 
+                   `room_settings`.`chat_protection`, 
                    
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,
@@ -70,7 +75,7 @@ public class RoomDao : BaseDao, IRoomDao
         {
             return new Tuple<bool, IRoom?>(false, null);
         }
-        
+
         var settings = _factory.CreateSettings(
             record.Get<bool>("walk_diagonal"),
             (RoomAccessType) record.Get<int>("access_type"),
@@ -81,7 +86,12 @@ public class RoomDao : BaseDao, IRoomDao
             record.Get<int>("allow_pets") == 1,
             record.Get<int>("can_pets_eat") == 1,
             record.Get<int>("hide_walls") == 1,
-            record.Get<int>("can_users_overlap") == 1);
+            record.Get<int>("can_users_overlap") == 1,
+            record.Get<int>("chat_type"),
+            record.Get<int>("chat_weight"),
+            record.Get<int>("chat_speed"),
+            record.Get<int>("chat_distance"),
+            record.Get<int>("chat_protection"));
         
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),

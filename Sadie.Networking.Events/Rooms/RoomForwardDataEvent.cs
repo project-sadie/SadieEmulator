@@ -28,7 +28,8 @@ public class RoomForwardDataEvent : INetworkPacketEvent
         var unknown1 = reader.ReadInteger();
         var unknown2 = reader.ReadInteger();
         var unknown3 = !(unknown1 == 0 && unknown2 == 1);
+        var isOwner = room.OwnerId == client.Player.Data.Id;
         
-        await client.WriteToStreamAsync(new RoomForwardDataWriter(room!, true, unknown3).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomForwardDataWriter(room!, true, unknown3, isOwner).GetAllBytes());
     }
 }

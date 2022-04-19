@@ -18,4 +18,5 @@ public interface IRoomData
     IRoomUserRepository UserRepository { get; }
     IRoomSettings Settings { get; }
     List<RoomChatMessage> ChatMessages { get; }
+    public List<int> PlayersWithRights { get; }
 }

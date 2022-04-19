@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.Database;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;

@@ -1,4 +1,3 @@
-using Sadie.Database;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
@@ -11,7 +10,9 @@ public interface IRoomFactory
         HPoint doorPoint,
         HDirection doorDirection);
     
-    IRoomSettings CreateSettings(bool walkDiagonal, RoomAccessType accessType, string password,  int whoCanMute, int whoCanKick, int whoCanBan, bool allowPets, bool canPetsEat, bool hideWalls, bool canUsersOverlap);
+    IRoomSettings CreateSettings(bool walkDiagonal, RoomAccessType accessType, string password,  
+        int whoCanMute, int whoCanKick, int whoCanBan, bool allowPets, bool canPetsEat, bool hideWalls, bool canUsersOverlap,
+        int chatType, int chatWeight, int chatSpeed, int chatDistance, int chatProtection);
     
     IRoom Create(int id,
         string name,

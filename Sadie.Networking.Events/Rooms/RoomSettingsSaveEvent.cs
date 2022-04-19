@@ -1,7 +1,6 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Rooms;
 

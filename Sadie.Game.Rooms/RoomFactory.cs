@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.Database;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
@@ -22,9 +21,20 @@ public class RoomFactory : IRoomFactory
         return ActivatorUtilities.CreateInstance<RoomLayout>(_serviceProvider, id, name, heightmap, doorPoint, doorDirection);
     }
 
-    public IRoomSettings CreateSettings(bool walkDiagonal, RoomAccessType accessType, string password, int whoCanMute, int whoCanKick, int whoCanBan, bool allowPets, bool canPetsEat, bool hideWalls, bool canUsersOverlap)
+    public IRoomSettings CreateSettings(bool walkDiagonal, RoomAccessType accessType, string password, int whoCanMute, int whoCanKick, int whoCanBan, 
+        bool allowPets, bool canPetsEat, bool hideWalls, bool canUsersOverlap, 
+        int chatType, int chatWeight, int chatSpeed, int chatDistance, int chatProtection)
     {
-        return ActivatorUtilities.CreateInstance<RoomSettings>(_serviceProvider, walkDiagonal, accessType, password, whoCanMute, whoCanKick, whoCanBan, allowPets, canPetsEat, hideWalls, canUsersOverlap);
+        return ActivatorUtilities.CreateInstance<RoomSettings>(
+            _serviceProvider, 
+            walkDiagonal, 
+            accessType, 
+            password, 
+            whoCanMute, 
+            whoCanKick, 
+            whoCanBan, 
+            allowPets, canPetsEat, hideWalls, canUsersOverlap,
+            chatType, chatWeight, chatSpeed, chatDistance, chatProtection);
     }
 
     public IRoom Create(int id,
