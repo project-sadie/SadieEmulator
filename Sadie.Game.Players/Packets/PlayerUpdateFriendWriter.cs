@@ -1,4 +1,3 @@
-using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;

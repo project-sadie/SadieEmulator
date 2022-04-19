@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets;
 using Sadie.Game.Rooms.Users;
@@ -9,7 +8,6 @@ using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Access;
 using Sadie.Shared;
-using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Networking.Events.Rooms;
 

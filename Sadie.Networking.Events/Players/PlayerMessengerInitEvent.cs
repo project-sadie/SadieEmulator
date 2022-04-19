@@ -1,7 +1,6 @@
 ﻿using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Players.Friendships;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Friendships;
 
