@@ -41,6 +41,13 @@ public class RoomDao : BaseDao, IRoomDao
                    `room_settings`.`walk_diagonal`, 
                    `room_settings`.`access_type`, 
                    `room_settings`.`password`, 
+                   `room_settings`.`who_can_mute`, 
+                   `room_settings`.`who_can_kick`, 
+                   `room_settings`.`who_can_ban`, 
+                   `room_settings`.`allow_pets`, 
+                   `room_settings`.`can_pets_eat`, 
+                   `room_settings`.`hide_walls`, 
+                   `room_settings`.`can_users_overlap`, 
                    
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,
@@ -67,7 +74,14 @@ public class RoomDao : BaseDao, IRoomDao
         var settings = _factory.CreateSettings(
             record.Get<bool>("walk_diagonal"),
             (RoomAccessType) record.Get<int>("access_type"),
-            record.Get<string>("password"));
+            record.Get<string>("password"),
+            record.Get<int>("who_can_mute"),
+            record.Get<int>("who_can_kick"),
+            record.Get<int>("who_can_ban"),
+            record.Get<int>("allow_pets") == 1,
+            record.Get<int>("can_pets_eat") == 1,
+            record.Get<int>("hide_walls") == 1,
+            record.Get<int>("can_users_overlap") == 1);
         
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),

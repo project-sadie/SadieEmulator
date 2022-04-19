@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomForwardDataWriter : NetworkPacketWriter
 {
-    public RoomForwardDataWriter(IRoom room, bool roomForward, bool unknown1)
+    public RoomForwardDataWriter(IRoomData room, bool roomForward, bool unknown1)
     {
         WriteShort(ServerPacketId.RoomForwardData);
         WriteBool(unknown1);
@@ -28,15 +28,17 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         {
             WriteString(tag);
         }
+
+        var settings = room.Settings;
         
         WriteInteger(0 | 8); // TODO: base
         WriteBool(roomForward);
         WriteBool(false); // TODO: staff picked?
         WriteBool(false); // TODO: is group member?
         WriteBool(room.Muted);
-        WriteInteger(0); // TODO: mute option
-        WriteInteger(0); // TODO: kick option
-        WriteInteger(0); // TODO: ban option
+        WriteInteger(settings.WhoCanMute);
+        WriteInteger(settings.WhoCanKick);
+        WriteInteger(settings.WhoCanBan);
         WriteBool(false); // TODO: current user has rights | gets mute all button
         WriteInteger(0); // TODO: chat mode
         WriteInteger(0); // TODO: chat weight
