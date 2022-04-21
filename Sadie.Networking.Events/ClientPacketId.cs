@@ -71,4 +71,5 @@ public class ClientPacketId
     public const short PlayerInventoryBadges = 2769;
     public const short RoomDoorbellAnswer = 1644;
     public const short RoomDoorbellAccepted = 685;
+    public const short CameraPrice = 796;
 }

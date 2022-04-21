@@ -93,4 +93,6 @@ public class ServerPacketId
     public const short RoomChatSettings = 1191;
     public const short RoomSettingsUpdated = 3297;
     public const short RoomSettingsSaved = 948;
+    public const short PlayerAchievements = 305;
+    public const short CameraPrice = 3878;
 }
