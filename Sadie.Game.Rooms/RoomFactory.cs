@@ -18,12 +18,34 @@ public class RoomFactory : IRoomFactory
         HPoint doorPoint,
         HDirection doorDirection)
     {
-        return ActivatorUtilities.CreateInstance<RoomLayout>(_serviceProvider, id, name, heightmap, doorPoint, doorDirection);
+        return ActivatorUtilities.CreateInstance<RoomLayout>(
+            _serviceProvider, 
+            id, 
+            name, 
+            heightmap, 
+            doorPoint, 
+            doorDirection);
     }
 
-    public IRoomSettings CreateSettings(bool walkDiagonal, RoomAccessType accessType, string password, int whoCanMute, int whoCanKick, int whoCanBan, 
-        bool allowPets, bool canPetsEat, bool hideWalls, bool canUsersOverlap, 
-        int chatType, int chatWeight, int chatSpeed, int chatDistance, int chatProtection)
+    public IRoomSettings CreateSettings(
+        bool walkDiagonal, 
+        RoomAccessType accessType, 
+        string password, 
+        int whoCanMute, 
+        int whoCanKick, 
+        int whoCanBan, 
+        bool allowPets, 
+        bool canPetsEat, 
+        bool hideWalls, 
+        int wallThickness, 
+        int floorThickness,
+        bool canUsersOverlap, 
+        int chatType, 
+        int chatWeight, 
+        int chatSpeed, 
+        int chatDistance, 
+        int chatProtection, 
+        int tradeOption)
     {
         return ActivatorUtilities.CreateInstance<RoomSettings>(
             _serviceProvider, 
@@ -33,8 +55,18 @@ public class RoomFactory : IRoomFactory
             whoCanMute, 
             whoCanKick, 
             whoCanBan, 
-            allowPets, canPetsEat, hideWalls, canUsersOverlap,
-            chatType, chatWeight, chatSpeed, chatDistance, chatProtection);
+            allowPets, 
+            canPetsEat, 
+            hideWalls, 
+            wallThickness,
+            floorThickness,
+            canUsersOverlap,
+            chatType, 
+            chatWeight, 
+            chatSpeed,
+            chatDistance, 
+            chatProtection, 
+            tradeOption);
     }
 
     public IRoom Create(int id,

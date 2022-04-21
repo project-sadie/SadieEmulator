@@ -25,7 +25,7 @@ public class RoomSettingsWriter : NetworkPacketWriter
 
         var settings = roomData.Settings;
         
-        WriteInteger(0); // TODO: trade mode
+        WriteInteger(settings.TradeOption);
         WriteInteger(settings.AllowPets ? 1 : 0);
         WriteInteger(settings.CanPetsEat ? 1 : 0);
         WriteInteger(settings.CanUsersOverlap ? 1 : 0);

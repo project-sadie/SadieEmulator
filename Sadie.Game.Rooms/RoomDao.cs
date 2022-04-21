@@ -47,12 +47,15 @@ public class RoomDao : BaseDao, IRoomDao
                    `room_settings`.`allow_pets`, 
                    `room_settings`.`can_pets_eat`, 
                    `room_settings`.`hide_walls`, 
+                   `room_settings`.`wall_thickness`, 
+                   `room_settings`.`floor_thickness`, 
                    `room_settings`.`can_users_overlap`, 
                    `room_settings`.`chat_type`, 
                    `room_settings`.`chat_weight`, 
                    `room_settings`.`chat_speed`, 
                    `room_settings`.`chat_distance`, 
                    `room_settings`.`chat_protection`, 
+                   `room_settings`.`trade_option`, 
                    
                    `room_layouts`.`name` AS `layout_name`, 
                    `room_layouts`.`heightmap`,
@@ -86,12 +89,15 @@ public class RoomDao : BaseDao, IRoomDao
             record.Get<int>("allow_pets") == 1,
             record.Get<int>("can_pets_eat") == 1,
             record.Get<int>("hide_walls") == 1,
+            record.Get<int>("wall_thickness"),
+            record.Get<int>("floor_thickness"),
             record.Get<int>("can_users_overlap") == 1,
             record.Get<int>("chat_type"),
             record.Get<int>("chat_weight"),
             record.Get<int>("chat_speed"),
             record.Get<int>("chat_distance"),
-            record.Get<int>("chat_protection"));
+            record.Get<int>("chat_protection"),
+            record.Get<int>("trade_option"));
         
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
@@ -171,5 +177,60 @@ public class RoomDao : BaseDao, IRoomDao
         }
         
         return await QueryAsync(query, parameters);
+    }
+
+    public Task<int> SaveRoomAsync(IRoom room)
+    {
+        var settings = room.Settings;
+        
+        return QueryAsync(@"
+            UPDATE `rooms` SET 
+                `name` = @newName, 
+                `description` = @newDescription, 
+                `max_users_allowed` = @newMaxUsers 
+            WHERE `id` = @roomId LIMIT 1;
+
+            UPDATE `room_settings` SET 
+                `access_type` = @accessType,
+                `password` = @password,
+                `trade_option` = @tradeOption,   
+                `allow_pets` = @allowPets,
+                `can_pets_eat` = @canPetsEat,
+                `can_users_overlap` = @canUsersOverlap,
+                `hide_walls` = @hideWalls,
+                `wall_thickness` = @wallThickness,
+                `floor_thickness` = @floorThickness,
+                `who_can_mute` = @whoCanMute,
+                `who_can_kick` = @whoCanKick,
+                `who_can_ban` = @whoCanBan,
+                `chat_type` = @chatType,
+                `chat_weight` = @chatWeight,
+                `chat_speed` = @chatSpeed,
+                `chat_distance` = @chatDistance,
+                `chat_protection` = @chatProtection
+            WHERE `room_id` = @roomId LIMIT 1;", new Dictionary<string, object>
+        {
+            {"newName", room.Name},
+            {"newDescription", room.Description},
+            {"newMaxUsers", room.MaxUsers},
+            {"accessType", settings.AccessType},
+            {"password", settings.Password},
+            {"tradeOption", settings.TradeOption},
+            {"allowPets", settings.AllowPets ? 1 : 0},
+            {"canPetsEat", settings.CanPetsEat ? 1 : 0},
+            {"canUsersOverlap", settings.CanUsersOverlap ? 1 : 0},
+            {"hideWalls", settings.HideWalls ? 1 : 0},
+            {"wallThickness", settings.WallThickness},
+            {"floorThickness", settings.FloorThickness},
+            {"whoCanMute", settings.WhoCanMute},           
+            {"whoCanKick", settings.WhoCanKick},           
+            {"whoCanBan", settings.WhoCanBan},
+            {"chatType", settings.ChatType},    
+            {"chatWeight", settings.ChatWeight},    
+            {"chatSpeed", settings.ChatSpeed},    
+            {"chatDistance", settings.ChatDistance},    
+            {"chatProtection", settings.ChatProtection},
+            {"roomId", room.Id}
+        });
     }
 }

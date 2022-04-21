@@ -6,10 +6,12 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomForwardDataWriter : NetworkPacketWriter
 {
-    public RoomForwardDataWriter(IRoomData room, bool roomForward, bool unknown1, bool isOwner)
+    public RoomForwardDataWriter(IRoomData room, bool roomForward, bool enterRoom, bool isOwner)
     {
+        var settings = room.Settings;
+        
         WriteShort(ServerPacketId.RoomForwardData);
-        WriteBool(unknown1);
+        WriteBool(enterRoom);
         WriteLong(room.Id);
         WriteString(room.Name);
         WriteLong(room.OwnerId);
@@ -18,7 +20,7 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         WriteInteger(room.UserRepository.Count);
         WriteInteger(room.MaxUsers);
         WriteString(room.Description);
-        WriteInteger(0); // trade mode?
+        WriteInteger(settings.TradeOption);
         WriteInteger(2); // unknown
         WriteInteger(room.Score);
         WriteInteger(0); // category
@@ -28,8 +30,6 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         {
             WriteString(tag);
         }
-
-        var settings = room.Settings;
         
         WriteInteger(0 | 8); // TODO: base
         WriteBool(roomForward);
@@ -39,7 +39,7 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         WriteInteger(settings.WhoCanMute);
         WriteInteger(settings.WhoCanKick);
         WriteInteger(settings.WhoCanBan);
-        WriteBool(isOwner);
+        WriteBool(isOwner); // mute all button
         WriteInteger(settings.ChatType); 
         WriteInteger(settings.ChatWeight); 
         WriteInteger(settings.ChatSpeed); 

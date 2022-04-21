@@ -13,4 +13,5 @@ public interface IRoomRepository : IAsyncDisposable
     Task<int> CreateRoomSettings(int roomId);
     Task<int> GetLayoutIdFromNameAsync(string name);
     Task<int> CreateChatMessages(List<RoomChatMessage> messages);
+    Task SaveRoomAsync(IRoom room);
 }

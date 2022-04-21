@@ -70,6 +70,11 @@ public class RoomRepository : IRoomRepository
         return await _dao.CreateChatMessages(messages);
     }
 
+    public async Task SaveRoomAsync(IRoom room)
+    {
+        await _dao.SaveRoomAsync(room);
+    }
+
     public async ValueTask DisposeAsync()
     {
         foreach (var room in _rooms.Values)

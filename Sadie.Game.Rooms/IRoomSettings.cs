@@ -3,18 +3,21 @@ namespace Sadie.Game.Rooms;
 public interface IRoomSettings
 {
     bool CanWalkDiagonal { get; }
-    RoomAccessType AccessType { get; }
-    string Password { get; }
-    public int WhoCanMute { get; }
-    public int WhoCanKick { get; }
-    public int WhoCanBan { get; }
-    public bool AllowPets { get; }
-    public bool CanPetsEat { get; }
-    public bool HideWalls { get; }
-    public bool CanUsersOverlap { get; }
-    public int ChatType { get; }
-    public int ChatWeight { get; }
-    public int ChatSpeed { get; }
-    public int ChatDistance { get; }
-    public int ChatProtection { get; }
+    RoomAccessType AccessType { get; set; }
+    string Password { get; set; }
+    public int WhoCanMute { get; set; }
+    public int WhoCanKick { get; set; }
+    public int WhoCanBan { get; set; }
+    public bool AllowPets { get; set; }
+    public bool CanPetsEat { get; set; }
+    public bool HideWalls { get; set; }
+    public int WallThickness { get; set; }
+    public int FloorThickness { get; set; }
+    public bool CanUsersOverlap { get; set; }
+    public int ChatType { get; set; }
+    public int ChatWeight { get; set; }
+    public int ChatSpeed { get; set; }
+    public int ChatDistance { get; set; }
+    public int ChatProtection { get; set; }
+    public int TradeOption { get; set; }
 }

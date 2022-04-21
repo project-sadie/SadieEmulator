@@ -6,14 +6,14 @@ namespace Sadie.Game.Rooms;
 public interface IRoomData
 {
     int Id { get; }
-    string Name { get; }
+    string Name { get; set; }
     RoomLayout Layout { get; }
     int OwnerId { get; }
     string OwnerName { get; }
-    string Description { get; }
+    string Description { get; set; }
     int Score { get; }
-    List<string> Tags { get; }
-    int MaxUsers { get; }
+    List<string> Tags { get; set; }
+    int MaxUsers { get; set; }
     bool Muted { get; }
     IRoomUserRepository UserRepository { get; }
     IRoomSettings Settings { get; }

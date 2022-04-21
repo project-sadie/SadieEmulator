@@ -9,4 +9,5 @@ public interface IRoomDao
     Task<int> CreateRoomSettings(int roomId);
     Task<int> GetLayoutIdFromNameAsync(string name);
     Task<int> CreateChatMessages(List<RoomChatMessage> messages);
+    Task<int> SaveRoomAsync(IRoom room);
 }

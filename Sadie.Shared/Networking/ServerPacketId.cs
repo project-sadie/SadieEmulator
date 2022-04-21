@@ -88,4 +88,9 @@ public class ServerPacketId
     public const short RoomDoorbellNoAnswer = 878;
     public const short RoomDoorbell = 2309;
     public const short RoomDoorbellAccept = 3783;
+    public const short RoomSettingsError = 1555;
+    public const short RoomWallFloorSettings = 3547;
+    public const short RoomChatSettings = 1191;
+    public const short RoomSettingsUpdated = 3297;
+    public const short RoomSettingsSaved = 948;
 }
