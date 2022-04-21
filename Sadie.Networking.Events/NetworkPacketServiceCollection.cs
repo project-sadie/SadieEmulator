@@ -8,6 +8,7 @@ using Sadie.Game.Players.Respect;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking.Events.Camera;
+using Sadie.Networking.Events.Catalog;
 using Sadie.Networking.Events.Club;
 using Sadie.Networking.Events.GameCenter;
 using Sadie.Networking.Events.Generic;
@@ -57,6 +58,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomDoorbellAcceptedEvent>();
         serviceCollection.AddSingleton<PlayerAchievementsEvent>();
         serviceCollection.AddSingleton<CameraPriceEvent>();
+        serviceCollection.AddSingleton<CatalogIndexEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -138,6 +140,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomDoorbellAccepted] = provider.GetRequiredService<RoomDoorbellAcceptedEvent>(),
             [ClientPacketId.PlayerAchievements] = provider.GetRequiredService<PlayerAchievementsEvent>(),
             [ClientPacketId.CameraPrice] = provider.GetRequiredService<CameraPriceEvent>(),
+            [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
         });
     }
 }

@@ -95,4 +95,5 @@ public class ServerPacketId
     public const short RoomSettingsSaved = 948;
     public const short PlayerAchievements = 305;
     public const short CameraPrice = 3878;
+    public const short CatalogIndex = 3828;
 }
