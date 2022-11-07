@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Navigator", "Sad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Console", "Sadie.Console\Sadie.Console.csproj", "{75350F5E-7D10-45A1-A995-115C2C45AF51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Tests", "Sadie.Tests\Sadie.Tests.csproj", "{9280AA15-E4EC-4496-B8B1-7BAD8D770061}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{75350F5E-7D10-45A1-A995-115C2C45AF51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75350F5E-7D10-45A1-A995-115C2C45AF51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75350F5E-7D10-45A1-A995-115C2C45AF51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9280AA15-E4EC-4496-B8B1-7BAD8D770061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9280AA15-E4EC-4496-B8B1-7BAD8D770061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9280AA15-E4EC-4496-B8B1-7BAD8D770061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9280AA15-E4EC-4496-B8B1-7BAD8D770061}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
