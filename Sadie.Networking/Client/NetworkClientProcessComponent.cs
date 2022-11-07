@@ -31,29 +31,23 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
             while (_client.Connected)
             {
                 var bytes = await _client.Client.ReceiveAsync(_buffer, SocketFlags.None);
-                
+
                 if (bytes > 0)
                 {
                     await OnReceivedAsync(bytes);
                 }
             }
         }
+        catch (SocketException)
+        {
+            if (_networkClient != null && !await _clientRepository.TryRemoveAsync(_networkClient.Guid))
+            {
+                _logger.LogError("Failed to dispose of network client");
+            }
+        }
         catch (Exception e)
         {
-            try
-            {
-                _logger.LogError(e.ToString());
-
-                if (_networkClient != null && !await _clientRepository.TryRemoveAsync(_networkClient.Guid))
-                {
-                    _logger.LogError("Failed to dispose of network client");
-                }
-            }
-            catch (Exception inner)
-            {
-                _logger.LogError("yooooo walkINdaPartyMandemARMY");
-                _logger.LogError(inner.ToString());
-            }
+            _logger.LogError(e.ToString());
         }
     }
     

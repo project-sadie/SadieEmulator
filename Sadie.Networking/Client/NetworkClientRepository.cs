@@ -34,7 +34,7 @@ public class NetworkClientRepository : INetworkClientRepository
         }
         catch (Exception e)
         {
-            _logger.LogError(e.ToString());
+            _logger.LogError($"Failed to remove network client: {e.Message}");
             return false;
         }
     }
