@@ -28,7 +28,10 @@ public class NavigatorSearchEvent : INetworkPacketEvent
 
         if (!_navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
         {
-            await client.WriteToStreamAsync(new NavigatorSearchResultPagesWriter(tabName, searchQuery, new List<NavigatorCategory>(), _navigatorRoomProvider).GetAllBytes());
+            var writer = new NavigatorSearchResultPagesWriter(tabName, searchQuery, new List<NavigatorCategory>(),
+                _navigatorRoomProvider);
+            
+            await client.WriteToStreamAsync(writer.GetAllBytes());
             return;
         }
 
