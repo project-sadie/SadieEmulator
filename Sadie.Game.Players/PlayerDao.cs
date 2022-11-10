@@ -3,6 +3,7 @@ using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 
@@ -141,7 +142,7 @@ public class PlayerDao : BaseDao, IPlayerDao
             new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
             badges,
             friendships,
-            record.Get<int>("chat_bubble_id"),
+            (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
             subscriptions);
         

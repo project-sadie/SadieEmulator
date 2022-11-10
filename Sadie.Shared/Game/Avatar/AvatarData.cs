@@ -2,7 +2,7 @@
 
 public class AvatarData : IAvatarData
 {
-    public AvatarData(string username, string figureCode, string motto, AvatarGender gender, long achievementScore, List<string> tags, int chatBubble)
+    public AvatarData(string username, string figureCode, string motto, AvatarGender gender, long achievementScore, List<string> tags, ChatBubble chatBubble)
     {
         Username = username;
         FigureCode = figureCode;
@@ -21,5 +21,5 @@ public class AvatarData : IAvatarData
     public int CurrentRoomId { get; set; }
     public long AchievementScore { get; set; }
     public List<string> Tags { get; set; }
-    public int ChatBubble { get; }
+    public ChatBubble ChatBubble { get; set; }
 }

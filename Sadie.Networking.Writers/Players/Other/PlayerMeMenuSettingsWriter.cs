@@ -1,4 +1,5 @@
-﻿using Sadie.Shared.Networking;
+﻿using Sadie.Shared.Game;
+using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
@@ -13,7 +14,7 @@ public class PlayerMeMenuSettingsWriter : NetworkPacketWriter
         bool blockRoomInvites, 
         bool blockCameraFollow, 
         int uiFlags, 
-        int chatColor)
+        ChatBubble chatBubble)
     {
         WriteShort(ServerPacketId.PlayerMeMenuSettings);
         WriteInteger(systemVolume);
@@ -23,6 +24,6 @@ public class PlayerMeMenuSettingsWriter : NetworkPacketWriter
         WriteBool(blockRoomInvites);
         WriteBool(blockCameraFollow);
         WriteInteger(uiFlags);
-        WriteInteger(chatColor);
+        WriteInteger((int) chatBubble);
     }
 }

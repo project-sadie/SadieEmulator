@@ -1,6 +1,6 @@
-﻿namespace Sadie.Game.Rooms.Chat;
+﻿namespace Sadie.Shared.Game;
 
-public enum RoomChatBubble
+public enum ChatBubble
 {
     Default = 0,
     Respect = 1,

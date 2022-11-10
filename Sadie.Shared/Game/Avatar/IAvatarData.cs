@@ -9,5 +9,5 @@ public interface IAvatarData
     int CurrentRoomId { get; set; }
     long AchievementScore { get; set; }
     List<string> Tags { get; set; }
-    public int ChatBubble { get; }
+    public ChatBubble ChatBubble { get; set; }
 }

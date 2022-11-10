@@ -3,6 +3,7 @@ using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -30,7 +31,7 @@ public class PlayerData : AvatarData, IPlayerData
         List<string> tags,
         List<PlayerBadge> badges, 
         PlayerFriendshipComponent friendshipComponent,
-        int chatBubble, 
+        ChatBubble chatBubble, 
         bool allowFriendRequests,
         List<IPlayerSubscription> subscriptions) : base(username, figureCode, motto, gender, achievementScore, tags, chatBubble)
     {

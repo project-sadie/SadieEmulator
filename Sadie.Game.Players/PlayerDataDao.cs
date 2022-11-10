@@ -3,6 +3,7 @@ using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -129,7 +130,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
             new List<string>(), // tags
             new List<PlayerBadge>(), // badges
             await _friendshipRepository.GetAllRecordsForPlayerAsync(record.Get<int>("id")), // friendship component
-            record.Get<int>("chat_bubble_id"),
+            (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
             new List<IPlayerSubscription>() // subscriptions
         );

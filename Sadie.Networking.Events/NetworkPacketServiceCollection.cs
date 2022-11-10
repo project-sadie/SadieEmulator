@@ -141,6 +141,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerAchievements] = provider.GetRequiredService<PlayerAchievementsEvent>(),
             [ClientPacketId.CameraPrice] = provider.GetRequiredService<CameraPriceEvent>(),
             [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
+            [ClientPacketId.ChangeChatBubble] = provider.GetRequiredService<RoomUserChangeChatBubbleEvent>(),
         });
     }
 }

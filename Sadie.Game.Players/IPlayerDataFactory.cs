@@ -4,6 +4,7 @@ using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -31,7 +32,7 @@ public interface IPlayerDataFactory
         List<string> tags,
         List<PlayerBadge> badges,
         List<PlayerFriendship> friendships,
-        int chatBubble,
+        ChatBubble chatBubble,
         bool allowFriendRequests, 
         List<IPlayerSubscription> subscriptions);
 

@@ -3,6 +3,7 @@ using Sadie.Game.Rooms.Chat;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
+using Sadie.Shared.Game;
 
 namespace Sadie.Networking.Events.Rooms.Users.Chat;
 
@@ -38,7 +39,7 @@ public class RoomUserWhisperEvent : INetworkPacketEvent
             return;
         }
 
-        var chatMessage = new RoomChatMessage(roomUser, whisperMessage, room, (RoomChatBubble) reader.ReadInteger(), 0);
+        var chatMessage = new RoomChatMessage(roomUser, whisperMessage, room, (ChatBubble) reader.ReadInteger(), 0);
         room.ChatMessages.Add(chatMessage);
         
         var packetBytes = new RoomUserWhisperWriter(chatMessage).GetAllBytes();
