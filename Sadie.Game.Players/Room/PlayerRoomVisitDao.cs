@@ -11,7 +11,7 @@ public class PlayerRoomVisitDao : BaseDao, IPlayerRoomVisitDao
     public async Task<int> CreateAsync(List<PlayerRoomVisit> roomVisits)
     {
         var parameters = new Dictionary<string, object>();
-        var query = "INSERT INTO `player_room_visits` (`player_id`, `room_id`, `created_at`) VALUES ";
+        var query = "INSERT INTO player_room_visits (player_id, room_id, created_at) VALUES ";
 
         for (var i = 0; i < roomVisits.Count; i++)
         {

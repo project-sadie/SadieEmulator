@@ -17,56 +17,56 @@ public class RoomDao : BaseDao, IRoomDao
     {
         var reader = await GetReaderAsync(@"
             SELECT 
-                   `rooms`.`id`, 
-                   `rooms`.`name`, 
-                   `rooms`.`layout_id`, 
-                   `rooms`.`owner_id`,
-                   `rooms`.`description`,
-                   `rooms`.`score`,
-                   `rooms`.`is_muted`, 
-                   `rooms`.`max_users_allowed`,
+                   rooms.id, 
+                   rooms.name, 
+                   rooms.layout_id, 
+                   rooms.owner_id,
+                   rooms.description,
+                   rooms.score,
+                   rooms.is_muted, 
+                   rooms.max_users_allowed,
                    
-                   (SELECT `username` FROM `players` WHERE `id` = `rooms`.`owner_id`) AS `owner_name`,
+                   (SELECT username FROM players WHERE id = rooms.owner_id) AS owner_name,
                    
-                   (SELECT GROUP_CONCAT(`player_id`) AS `comma_separated_rights`
-                    FROM `room_player_rights`
-                    WHERE `room_id` = `rooms`.`id`
-                    GROUP BY `room_id`) AS `comma_separated_rights`,
+                   (SELECT GROUP_CONCAT(player_id) AS comma_separated_rights
+                    FROM room_player_rights
+                    WHERE room_id = rooms.id
+                    GROUP BY room_id) AS comma_separated_rights,
                    
-                   (SELECT GROUP_CONCAT(`name`) AS `comma_separated_tags`
-                    FROM `room_tags`
-                    WHERE `room_id` = `rooms`.`id`
-                    GROUP BY `room_id`) AS `comma_separated_tags`,
+                   (SELECT GROUP_CONCAT(name) AS comma_separated_tags
+                    FROM room_tags
+                    WHERE room_id = rooms.id
+                    GROUP BY room_id) AS comma_separated_tags,
                    
-                   `room_settings`.`walk_diagonal`, 
-                   `room_settings`.`access_type`, 
-                   `room_settings`.`password`, 
-                   `room_settings`.`who_can_mute`, 
-                   `room_settings`.`who_can_kick`, 
-                   `room_settings`.`who_can_ban`, 
-                   `room_settings`.`allow_pets`, 
-                   `room_settings`.`can_pets_eat`, 
-                   `room_settings`.`hide_walls`, 
-                   `room_settings`.`wall_thickness`, 
-                   `room_settings`.`floor_thickness`, 
-                   `room_settings`.`can_users_overlap`, 
-                   `room_settings`.`chat_type`, 
-                   `room_settings`.`chat_weight`, 
-                   `room_settings`.`chat_speed`, 
-                   `room_settings`.`chat_distance`, 
-                   `room_settings`.`chat_protection`, 
-                   `room_settings`.`trade_option`, 
+                   room_settings.walk_diagonal, 
+                   room_settings.access_type, 
+                   room_settings.password, 
+                   room_settings.who_can_mute, 
+                   room_settings.who_can_kick, 
+                   room_settings.who_can_ban, 
+                   room_settings.allow_pets, 
+                   room_settings.can_pets_eat, 
+                   room_settings.hide_walls, 
+                   room_settings.wall_thickness, 
+                   room_settings.floor_thickness, 
+                   room_settings.can_users_overlap, 
+                   room_settings.chat_type, 
+                   room_settings.chat_weight, 
+                   room_settings.chat_speed, 
+                   room_settings.chat_distance, 
+                   room_settings.chat_protection, 
+                   room_settings.trade_option, 
                    
-                   `room_layouts`.`name` AS `layout_name`, 
-                   `room_layouts`.`heightmap`,
-                   `room_layouts`.`door_x`,
-                   `room_layouts`.`door_y`,
-                   `room_layouts`.`door_z`,
-                   `room_layouts`.`door_direction`
-            FROM `rooms` 
-                INNER JOIN `room_settings` ON `room_settings`.`room_id` = `rooms`.`id`
-                INNER JOIN `room_layouts` ON `room_layouts`.`id` = `rooms`.`layout_id`
-            WHERE `rooms`.`id` = @roomId
+                   room_layouts.name AS layout_name, 
+                   room_layouts.heightmap,
+                   room_layouts.door_x,
+                   room_layouts.door_y,
+                   room_layouts.door_z,
+                   room_layouts.door_direction
+            FROM rooms 
+                INNER JOIN room_settings ON room_settings.room_id = rooms.id
+                INNER JOIN room_layouts ON room_layouts.id = rooms.layout_id
+            WHERE rooms.id = @roomId
             LIMIT 1;", new Dictionary<string, object>
         {
             { "roomId", roomId }
@@ -131,7 +131,7 @@ public class RoomDao : BaseDao, IRoomDao
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
     {
-        return await QueryScalarAsync(@"INSERT INTO `rooms` (`name`, `layout_id`, `owner_id`, `max_users_allowed`, `description`) 
+        return await QueryScalarAsync(@"INSERT INTO rooms (name, layout_id, owner_id, max_users_allowed, description) 
             VALUES (@name, @layoutId, @ownerId, @maxUsers, @description);
             SELECT LAST_INSERT_ID();", new Dictionary<string, object>
         {
@@ -145,7 +145,7 @@ public class RoomDao : BaseDao, IRoomDao
 
     public async Task<int> CreateRoomSettings(int roomId)
     {
-        return await QueryAsync(@"INSERT INTO `room_settings` (`room_id`) VALUES (@roomId);", new Dictionary<string, object>
+        return await QueryAsync(@"INSERT INTO room_settings (room_id) VALUES (@roomId);", new Dictionary<string, object>
         {
             {"roomId", roomId},
         });
@@ -153,7 +153,7 @@ public class RoomDao : BaseDao, IRoomDao
 
     public async Task<int> GetLayoutIdFromNameAsync(string name)
     {
-        return await QueryScalarAsync("SELECT `id` FROM `room_layouts` WHERE `name` = @name", new Dictionary<string, object>
+        return await QueryScalarAsync("SELECT id FROM room_layouts WHERE name = @name", new Dictionary<string, object>
         {
             {"name", name}
         });
@@ -162,7 +162,7 @@ public class RoomDao : BaseDao, IRoomDao
     public async Task<int> CreateChatMessages(List<RoomChatMessage> messages)
     {
         var parameters = new Dictionary<string, object>();
-        var query = "INSERT INTO `room_chat_messages` (`room_id`, `player_id`, `message`, `chat_bubble_id`, `created_at`) VALUES ";
+        var query = "INSERT INTO room_chat_messages (room_id, player_id, message, chat_bubble_id, created_at) VALUES ";
 
         for (var i = 0; i < messages.Count; i++)
         {
@@ -184,31 +184,31 @@ public class RoomDao : BaseDao, IRoomDao
         var settings = room.Settings;
         
         return QueryAsync(@"
-            UPDATE `rooms` SET 
-                `name` = @newName, 
-                `description` = @newDescription, 
-                `max_users_allowed` = @newMaxUsers 
-            WHERE `id` = @roomId LIMIT 1;
+            UPDATE rooms SET 
+                name = @newName, 
+                description = @newDescription, 
+                max_users_allowed = @newMaxUsers 
+            WHERE id = @roomId LIMIT 1;
 
-            UPDATE `room_settings` SET 
-                `access_type` = @accessType,
-                `password` = @password,
-                `trade_option` = @tradeOption,   
-                `allow_pets` = @allowPets,
-                `can_pets_eat` = @canPetsEat,
-                `can_users_overlap` = @canUsersOverlap,
-                `hide_walls` = @hideWalls,
-                `wall_thickness` = @wallThickness,
-                `floor_thickness` = @floorThickness,
-                `who_can_mute` = @whoCanMute,
-                `who_can_kick` = @whoCanKick,
-                `who_can_ban` = @whoCanBan,
-                `chat_type` = @chatType,
-                `chat_weight` = @chatWeight,
-                `chat_speed` = @chatSpeed,
-                `chat_distance` = @chatDistance,
-                `chat_protection` = @chatProtection
-            WHERE `room_id` = @roomId LIMIT 1;", new Dictionary<string, object>
+            UPDATE room_settings SET 
+                access_type = @accessType,
+                password = @password,
+                trade_option = @tradeOption,   
+                allow_pets = @allowPets,
+                can_pets_eat = @canPetsEat,
+                can_users_overlap = @canUsersOverlap,
+                hide_walls = @hideWalls,
+                wall_thickness = @wallThickness,
+                floor_thickness = @floorThickness,
+                who_can_mute = @whoCanMute,
+                who_can_kick = @whoCanKick,
+                who_can_ban = @whoCanBan,
+                chat_type = @chatType,
+                chat_weight = @chatWeight,
+                chat_speed = @chatSpeed,
+                chat_distance = @chatDistance,
+                chat_protection = @chatProtection
+            WHERE room_id = @roomId LIMIT 1;", new Dictionary<string, object>
         {
             {"newName", room.Name},
             {"newDescription", room.Description},

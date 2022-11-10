@@ -14,11 +14,11 @@ public class PlayerBadgeDao : BaseDao, IPlayerBadgeDao
     public async Task<List<PlayerBadge>> GetBadgesForPlayerAsync(int profileId)
     {
         var reader = await GetReaderAsync(@"SELECT 
-            `badges`.`id`,
-            `badges`.`code`,
-            `player_badges`.`slot` FROM `player_badges` 
-            INNER JOIN `badges` ON `player_badges`.`badge_id` = `badges`.`id` 
-            WHERE `player_badges`.`player_id` = @profileId", new Dictionary<string, object>
+            badges.id,
+            badges.code,
+            player_badges.slot FROM player_badges
+            INNER JOIN badges ON player_badges.badge_id = badges.id
+            WHERE player_badges.player_id = @profileId", new Dictionary<string, object>
         {
             { "profileId", profileId }
         });

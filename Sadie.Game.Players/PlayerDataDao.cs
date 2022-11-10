@@ -63,26 +63,26 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
     {
         var reader = await GetReaderAsync(@$"
             SELECT 
-                   `players`.`id`, 
-                   `players`.`username`, 
-                   `players`.`created_at`, 
+                   players.id, 
+                   players.username, 
+                   players.created_at, 
             
-                   `player_data`.`home_room_id`,
-                   `player_data`.`respect_points`,
-                   `player_data`.`respect_points_pet`,
-                   `player_data`.`last_online`,
-                   `player_data`.`achievement_score`,
-                   `player_data`.`allow_friend_requests`,
+                   player_data.home_room_id,
+                   player_data.respect_points,
+                   player_data.respect_points_pet,
+                   player_data.last_online,
+                   player_data.achievement_score,
+                   player_data.allow_friend_requests,
                    
-                   `player_avatar_data`.`figure_code`, 
-                   `player_avatar_data`.`motto`, 
-                   `player_avatar_data`.`gender`,
-                   `player_avatar_data`.`chat_bubble_id`
+                   player_avatar_data.figure_code, 
+                   player_avatar_data.motto, 
+                   player_avatar_data.gender,
+                   player_avatar_data.chat_bubble_id
             
-            FROM `players` 
-                INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
-                INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
-            WHERE {(excludedIds.Length > 0 ? $"`players`.`id` NOT IN ({string.Join(",", excludedIds)}) AND " : "")}`players`.`username` LIKE  @searchQuery LIMIT 100;", new Dictionary<string, object>
+            FROM players 
+                INNER JOIN player_data ON player_data.player_id = players.id 
+                INNER JOIN player_avatar_data ON player_avatar_data.player_id = players.id 
+            WHERE {(excludedIds.Length > 0 ? $"players.id NOT IN ({string.Join(",", excludedIds)}) AND " : "")}players.username LIKE  @searchQuery LIMIT 100;", new Dictionary<string, object>
         {
             { "searchQuery", $"%{searchQuery}%" }
         });
@@ -139,31 +139,31 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
     {
         return await GetReaderAsync(@$"
             SELECT 
-                   `players`.`id`, 
-                   `players`.`username`, 
-                   `players`.`created_at`, 
+                   players.id, 
+                   players.username, 
+                   players.created_at, 
             
-                   `player_data`.`home_room_id`,
-                   `player_data`.`respect_points`,
-                   `player_data`.`respect_points_pet`,
-                   `player_data`.`last_online`,
-                   `player_data`.`achievement_score`,
-                   `player_data`.`allow_friend_requests`,
+                   player_data.home_room_id,
+                   player_data.respect_points,
+                   player_data.respect_points_pet,
+                   player_data.last_online,
+                   player_data.achievement_score,
+                   player_data.allow_friend_requests,
                    
-                   `player_avatar_data`.`figure_code`, 
-                   `player_avatar_data`.`motto`, 
-                   `player_avatar_data`.`gender`,
-                   `player_avatar_data`.`chat_bubble_id`
+                   player_avatar_data.figure_code, 
+                   player_avatar_data.motto, 
+                   player_avatar_data.gender,
+                   player_avatar_data.chat_bubble_id
             
-            FROM `players` 
-                INNER JOIN `player_data` ON `player_data`.`player_id` = `players`.`id` 
-                INNER JOIN `player_avatar_data` ON `player_avatar_data`.`player_id` = `players`.`id` 
-            WHERE `players`.`{column}` = @value LIMIT 1;", parameters);
+            FROM players 
+                INNER JOIN player_data ON player_data.player_id = players.id 
+                INNER JOIN player_avatar_data ON player_avatar_data.player_id = players.id 
+            WHERE players.{column} = @value LIMIT 1;", parameters);
     }
 
     public async Task MarkPlayerAsOnlineAsync(long id)
     {
-        await QueryAsync("UPDATE `player_data` SET `is_online` = 1, `last_online` = @lastOnline WHERE `player_id` = @profileId", new Dictionary<string, object>
+        await QueryAsync("UPDATE player_data SET is_online = 1, last_online = @lastOnline WHERE player_id = @profileId", new Dictionary<string, object>
         {
             { "lastOnline", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "profileId", id }
@@ -172,17 +172,17 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
     public async Task MarkPlayerAsOfflineAsync(IPlayerData playerData, IPlayerState playerState)
     {
-        await QueryAsync(@"UPDATE `player_data` 
+        await QueryAsync(@"UPDATE player_data 
             SET 
-                `is_online` = 0, 
-                `credit_balance` = @creditBalance, 
-                `pixel_balance` = @pixelBalance,
-                `seasonal_balance` = @seasonalBalance,
-                `gotw_points` = @gotwPoints,
-                `respect_points` = @respectPoints,
-                `respect_points_pet` = @respectPointsPet,
-                `achievement_score` = @achievementScore
-            WHERE `player_id` = @playerId", new Dictionary<string, object>
+                is_online = 0, 
+                credit_balance = @creditBalance, 
+                pixel_balance = @pixelBalance,
+                seasonal_balance = @seasonalBalance,
+                gotw_points = @gotwPoints,
+                respect_points = @respectPoints,
+                respect_points_pet = @respectPointsPet,
+                achievement_score = @achievementScore
+            WHERE player_id = @playerId", new Dictionary<string, object>
         {
             { "creditBalance", playerData.Balance.Credits },
             { "pixelBalance", playerData.Balance.Pixels },
@@ -194,12 +194,12 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
             { "playerId", playerData.Id }
         });
 
-        await QueryAsync(@"UPDATE `player_avatar_data` 
+        await QueryAsync(@"UPDATE player_avatar_data 
             SET 
-                `figure_code` = @figureCode, 
-                `motto` = @motto, 
-                `gender` = @gender
-            WHERE `player_id` = @playerId", new Dictionary<string, object>
+                figure_code = @figureCode, 
+                motto = @motto, 
+                gender = @gender
+            WHERE player_id = @playerId", new Dictionary<string, object>
         {
             { "figureCode", playerData.FigureCode },
             { "motto", playerData.Motto },
