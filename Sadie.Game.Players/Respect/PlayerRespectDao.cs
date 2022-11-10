@@ -10,7 +10,7 @@ public class PlayerRespectDao : BaseDao, IPlayerRespectDao
 
     public async Task CreateAsync(int originId, int targetId)
     {
-        await QueryAsync("INSERT INTO `player_respects` (`origin_player_id`,`target_player_id`, `created_at`) VALUES (@originId, @targetId, @createdAt);", new Dictionary<string, object>()
+        await QueryAsync("INSERT INTO player_respects (origin_player_id,target_player_id, created_at) VALUES (@originId, @targetId, @createdAt);", new Dictionary<string, object>()
         {
             { "originId", originId },
             { "targetId", targetId },
