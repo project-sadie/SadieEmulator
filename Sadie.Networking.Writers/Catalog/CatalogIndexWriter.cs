@@ -1,5 +1,3 @@
-using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 

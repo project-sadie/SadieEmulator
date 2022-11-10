@@ -2,7 +2,7 @@
 
 public class AvatarData : IAvatarData
 {
-    public AvatarData(string username, string figureCode, string motto, AvatarGender gender, long achievementScore, List<string> tags, ChatBubble chatBubble)
+    protected AvatarData(string username, string figureCode, string motto, AvatarGender gender, long achievementScore, List<string> tags, ChatBubble chatBubble)
     {
         Username = username;
         FigureCode = figureCode;
