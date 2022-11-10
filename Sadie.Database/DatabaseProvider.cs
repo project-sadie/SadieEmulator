@@ -1,4 +1,3 @@
-using System.Data.Common;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 

@@ -35,7 +35,7 @@ public class NetworkPacketWriter
 
     protected void WriteLong(long data)
     {
-        WriteBytes(BitConverter.GetBytes((int) data), true);
+        WriteBytes(BitConverter.GetBytes(data), true);
     }
 
     protected void WriteBool(bool boolean)
