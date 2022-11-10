@@ -15,14 +15,14 @@ public class PlayerSubscriptionDao : BaseDao, IPlayerSubscriptionDao
     {
         var reader = await GetReaderAsync(@"
             SELECT
-                `subscriptions`.`name`,
-                `player_subscriptions`.`subscription_id`,
-                `player_subscriptions`.`created_at`,
-                `player_subscriptions`.`expires_at`
+                subscriptions.name,
+                player_subscriptions.subscription_id,
+                player_subscriptions.created_at,
+                player_subscriptions.expires_at`
 
             FROM player_subscriptions
-                INNER JOIN `subscriptions` ON `subscriptions`.`id` = `subscription_id`
-            WHERE `player_id` = @playerId AND `expires_at` < NOW()", new Dictionary<string, object>
+                INNER JOIN subscriptions ON subscriptions.id = subscription_id
+            WHERE player_id = @playerId AND expires_at < NOW()", new Dictionary<string, object>
         {
             {"playerId", playerId}
         });

@@ -14,7 +14,7 @@ public class RoomCategoryDao : BaseDao, IRoomCategoryDao
     public async Task<List<RoomCategory>> GetAllCategoriesAsync()
     {
         var categories = new List<RoomCategory>();
-        var reader = await GetReaderAsync("SELECT `id`,`caption`,`is_visible` FROM `room_categories`;", new Dictionary<string, object>());
+        var reader = await GetReaderAsync("SELECT id,caption,is_visible FROM room_categories;", new Dictionary<string, object>());
 
         while (true)
         {
