@@ -59,6 +59,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerAchievementsEvent>();
         serviceCollection.AddSingleton<CameraPriceEvent>();
         serviceCollection.AddSingleton<CatalogIndexEvent>();
+        serviceCollection.AddSingleton<RoomUserChangeChatBubbleEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
