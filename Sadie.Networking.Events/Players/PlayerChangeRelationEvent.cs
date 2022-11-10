@@ -1,9 +1,9 @@
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Players;
 

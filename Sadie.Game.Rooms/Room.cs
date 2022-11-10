@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Rooms.Packets;
+﻿using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;

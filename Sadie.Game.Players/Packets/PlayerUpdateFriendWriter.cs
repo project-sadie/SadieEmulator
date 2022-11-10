@@ -3,7 +3,7 @@ using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Players.Friendships;
+namespace Sadie.Game.Players.Packets;
 
 public class PlayerUpdateFriendWriter : NetworkPacketWriter
 {
