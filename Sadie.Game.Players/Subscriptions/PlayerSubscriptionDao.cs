@@ -18,7 +18,7 @@ public class PlayerSubscriptionDao : BaseDao, IPlayerSubscriptionDao
                 subscriptions.name,
                 player_subscriptions.subscription_id,
                 player_subscriptions.created_at,
-                player_subscriptions.expires_at`
+                player_subscriptions.expires_at
 
             FROM player_subscriptions
                 INNER JOIN subscriptions ON subscriptions.id = subscription_id
