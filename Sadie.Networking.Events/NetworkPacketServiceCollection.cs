@@ -59,6 +59,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerAchievementsEvent>();
         serviceCollection.AddSingleton<CameraPriceEvent>();
         serviceCollection.AddSingleton<CatalogIndexEvent>();
+        serviceCollection.AddSingleton<CatalogMarketplaceConfigEvent>();
         serviceCollection.AddSingleton<RoomUserChangeChatBubbleEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
@@ -78,6 +79,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerFriendsList] = new PlayerFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerMessengerInit] = new PlayerMessengerInitEvent(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>(), provider.GetRequiredService<PlayerConstants>()),
             [ClientPacketId.PlayerPing] = new PlayerPingEvent(),
+            [ClientPacketId.PlayerPong] = new PlayerPongEvent(),
             [ClientPacketId.HotelViewData] = new HotelViewDataEvent(),
             [ClientPacketId.PlayerUsername] = new PlayerUsernameEvent(),
             [ClientPacketId.PlayerMeMenuSettings] = new PlayerMeMenuSettingsEvent(),
@@ -142,6 +144,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.PlayerAchievements] = provider.GetRequiredService<PlayerAchievementsEvent>(),
             [ClientPacketId.CameraPrice] = provider.GetRequiredService<CameraPriceEvent>(),
             [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
+            [ClientPacketId.CatalogMarketplaceConfig] = provider.GetRequiredService<CatalogMarketplaceConfigEvent>(),
             [ClientPacketId.ChangeChatBubble] = provider.GetRequiredService<RoomUserChangeChatBubbleEvent>(),
         });
     }

@@ -75,5 +75,6 @@ public class ClientPacketId
     public const short PlayerAchievements = 219;
     public const short CameraPrice = 796;
     public const short CatalogIndex = 1195;
+    public const short CatalogMarketplaceConfig = 2597;
     public const short ChangeChatBubble = 1030;
 }
