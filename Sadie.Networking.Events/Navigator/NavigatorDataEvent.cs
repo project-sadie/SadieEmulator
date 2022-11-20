@@ -70,7 +70,7 @@ public class NavigatorDataEvent : INetworkPacketEvent
         var savedSearches = client.Player.Data.SavedSearches;
         
         await client.WriteToStreamAsync(new NavigatorMetaDataWriter(metaData).GetAllBytes());
-        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter(new List<Room>()).GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter(new List<IRoom>()).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(categories).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerSavedSearchesWriter(savedSearches).GetAllBytes());
     }
