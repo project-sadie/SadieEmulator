@@ -15,6 +15,7 @@ public class ClientPacketId
     public const short PlayerFriendsList = 1523;
     public const short PlayerMessengerInit = 2781;
     public const short PlayerPing = 295;
+    public const short PlayerPong = 2596;
     public const short HotelViewData = 2912;
     public const short PlayerUsername = 3878;
     public const short PlayerMeMenuSettings = 2388;
