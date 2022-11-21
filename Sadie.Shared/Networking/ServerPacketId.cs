@@ -97,4 +97,5 @@ public class ServerPacketId
     public const short CameraPrice = 3878;
     public const short CatalogIndex = 3828;
     public const short CatalogMarketplaceConfig = 1823;
+    public const short CatalogGiftConfig = 2234;
 }

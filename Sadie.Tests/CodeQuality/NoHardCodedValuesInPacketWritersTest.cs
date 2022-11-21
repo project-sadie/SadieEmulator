@@ -4,7 +4,6 @@ public class NoHardCodedValuesInPacketWritersTest
 {
     private readonly List<string> _excludedFiles = new()
     {
-        "PlayerUpdateFriendWriter.cs",
         "GameAchievementsListWriter.cs",
         "HotelViewBonusRareWriter.cs",
         "ModerationToolsWriter.cs",
@@ -30,6 +29,7 @@ public class NoHardCodedValuesInPacketWritersTest
         "PlayerClubMembershipWriter.cs",
         "PlayerDataWriter.cs",
         "PlayerPerksWriter.cs",
+        "CatalogGiftConfigWriter.cs",
     };
     
     /// <summary>
@@ -47,7 +47,6 @@ public class NoHardCodedValuesInPacketWritersTest
                 continue;
             }
             
-            Console.WriteLine(file);
             Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteBool(true);"));
             Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteBool(false);"));
             Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteString(\\"));
@@ -61,6 +60,16 @@ public class NoHardCodedValuesInPacketWritersTest
             Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteInteger(7"));
             Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteInteger(8"));
             Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteInteger(9"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(0"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(1"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(2"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(3"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(4"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(5"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(6"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(7"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(8"));
+            Assert.That(File.ReadAllText(file), Does.Not.Contain("WriteShort(9"));
         }
         
         return Task.CompletedTask;

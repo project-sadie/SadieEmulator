@@ -1,0 +1,18 @@
+﻿using Sadie.Shared.Networking;
+using Sadie.Shared.Networking.Packets;
+
+namespace Sadie.Networking.Writers.Catalog;
+
+public class CatalogGiftConfigWriter : NetworkPacketWriter
+{
+    public CatalogGiftConfigWriter()
+    {
+        WriteShort(ServerPacketId.CatalogGiftConfig);
+        WriteBool(true);
+        WriteInteger(3); // special price?
+        WriteInteger(0); // giftWrappers count
+        WriteInteger(0); // BOX_TYPES count
+        WriteInteger(0); // RIBBON_TYPES count
+        WriteInteger(0); // giftFurnis count
+    }
+}

@@ -60,6 +60,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<CameraPriceEvent>();
         serviceCollection.AddSingleton<CatalogIndexEvent>();
         serviceCollection.AddSingleton<CatalogMarketplaceConfigEvent>();
+        serviceCollection.AddSingleton<CatalogGiftConfigEvent>();
         serviceCollection.AddSingleton<RoomUserChangeChatBubbleEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
@@ -145,6 +146,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.CameraPrice] = provider.GetRequiredService<CameraPriceEvent>(),
             [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
             [ClientPacketId.CatalogMarketplaceConfig] = provider.GetRequiredService<CatalogMarketplaceConfigEvent>(),
+            [ClientPacketId.CatalogGiftConfig] = provider.GetRequiredService<CatalogGiftConfigEvent>(),
             [ClientPacketId.ChangeChatBubble] = provider.GetRequiredService<RoomUserChangeChatBubbleEvent>(),
         });
     }

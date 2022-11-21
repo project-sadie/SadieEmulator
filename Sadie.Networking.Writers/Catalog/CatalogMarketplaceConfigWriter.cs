@@ -15,6 +15,6 @@ public class CatalogMarketplaceConfigWriter : NetworkPacketWriter
         WriteInteger(minPrice);
         WriteInteger(maxPrice);
         WriteInteger(hoursInMarketplace);
-        WriteInteger(daysToDisplay); 
+        WriteInteger(daysToDisplay);
     }
 }
