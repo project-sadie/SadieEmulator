@@ -70,7 +70,7 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                         }
                     }
                     
-                    await origin.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(targetRequest, isOnline, inRoom).GetAllBytes());    
+                    await origin.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 1, 0, targetRequest, isOnline, inRoom, 0, "", "",false, false, false).GetAllBytes());    
                 }
             }
 
@@ -90,7 +90,7 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                 }
             }
             
-            await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(request, targetOnline, targetInRoom).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 1, 0, request, targetOnline, targetInRoom, 0, "", "",false, false, false).GetAllBytes());
         }
     }
 }

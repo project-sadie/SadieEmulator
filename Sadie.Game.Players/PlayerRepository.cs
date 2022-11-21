@@ -68,7 +68,7 @@ public class PlayerRepository : IPlayerRepository
 
             if (friendship != null)
             {
-                await friend.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(friendship, isOnline, inRoom).GetAllBytes());
+                await friend.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 1, 0, friendship, isOnline, inRoom, 0, "", "",false, false, false).GetAllBytes());
             }
         }
     }
