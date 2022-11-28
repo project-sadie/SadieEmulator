@@ -1,13 +1,12 @@
-namespace Sadie.Game.Rooms.PathFinding.Heuristics
+namespace Sadie.Game.Rooms.PathFinding.Heuristics;
+
+public class Euclidean : ICalculateHeuristic
 {
-    public class Euclidean : ICalculateHeuristic
+    public int Calculate(Position source, Position destination)
     {
-        public int Calculate(Position source, Position destination)
-        {
-            var heuristicEstimate = 2;
-            var h = (int)(heuristicEstimate * Math.Sqrt(Math.Pow((source.Row - destination.Row), 2) + Math.Pow((source.Column - destination.Column), 2)));
+        var heuristicEstimate = 2;
+        var h = (int)(heuristicEstimate * Math.Sqrt(Math.Pow((source.Row - destination.Row), 2) + Math.Pow((source.Column - destination.Column), 2)));
             
-            return h;
-        }
+        return h;
     }
 }

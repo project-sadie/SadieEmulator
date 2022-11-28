@@ -1,12 +1,11 @@
-﻿namespace Sadie.Game.Rooms.PathFinding.Collections.PriorityQueue
+﻿namespace Sadie.Game.Rooms.PathFinding.Collections.PriorityQueue;
+
+internal interface IModelAPriorityQueue<T>
 {
-    internal interface IModelAPriorityQueue<T>
-    {
-        int Push(T item);
-        T Pop();
-        T Peek();
+    int Push(T item);
+    T Pop();
+    T Peek();
         
-        void Clear();
-        int Count { get; }
-    }
+    void Clear();
+    int Count { get; }
 }

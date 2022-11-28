@@ -1,18 +1,17 @@
-namespace Sadie.Game.Rooms.PathFinding.Heuristics
+namespace Sadie.Game.Rooms.PathFinding.Heuristics;
+
+public static class HeuristicFactory
 {
-    public static class HeuristicFactory
+    public static ICalculateHeuristic Create(HeuristicFormula heuristicFormula)
     {
-        public static ICalculateHeuristic Create(HeuristicFormula heuristicFormula)
+        return heuristicFormula switch
         {
-            return heuristicFormula switch
-            {
-                HeuristicFormula.Manhattan => new Manhattan(),
-                HeuristicFormula.MaxDXDY => new MaxDXDY(),
-                HeuristicFormula.DiagonalShortCut => new DiagonalShortcut(),
-                HeuristicFormula.Euclidean => new Euclidean(),
-                HeuristicFormula.EuclideanNoSQR => new EuclideanNoSQR(),
-                _ => throw new ArgumentOutOfRangeException(nameof(heuristicFormula), heuristicFormula, null)
-            };
-        }
+            HeuristicFormula.Manhattan => new Manhattan(),
+            HeuristicFormula.MaxDXDY => new MaxDXDY(),
+            HeuristicFormula.DiagonalShortCut => new DiagonalShortcut(),
+            HeuristicFormula.Euclidean => new Euclidean(),
+            HeuristicFormula.EuclideanNoSQR => new EuclideanNoSQR(),
+            _ => throw new ArgumentOutOfRangeException(nameof(heuristicFormula), heuristicFormula, null)
+        };
     }
 }
