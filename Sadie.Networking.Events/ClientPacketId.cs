@@ -74,8 +74,11 @@ public class ClientPacketId
     public const short RoomDoorbellAccepted = 685;
     public const short PlayerAchievements = 219;
     public const short CameraPrice = 796;
-    public const short CatalogIndex = 1195;
+    public const short CatalogMode = 1195;
     public const short CatalogMarketplaceConfig = 2597;
+    public const short CatalogRecyclerLogic = 398;
     public const short CatalogGiftConfig = 418;
     public const short ChangeChatBubble = 1030;
+    public const short CatalogDiscount = 223;
+    public const short CatalogIndex = 2529;
 }

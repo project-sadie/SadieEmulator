@@ -58,10 +58,13 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomDoorbellAcceptedEvent>();
         serviceCollection.AddSingleton<PlayerAchievementsEvent>();
         serviceCollection.AddSingleton<CameraPriceEvent>();
-        serviceCollection.AddSingleton<CatalogIndexEvent>();
+        serviceCollection.AddSingleton<CatalogModeEvent>();
         serviceCollection.AddSingleton<CatalogMarketplaceConfigEvent>();
+        serviceCollection.AddSingleton<CatalogRecyclerLogicEvent>();
         serviceCollection.AddSingleton<CatalogGiftConfigEvent>();
         serviceCollection.AddSingleton<RoomUserChangeChatBubbleEvent>();
+        serviceCollection.AddSingleton<CatalogDiscountEvent>();
+        serviceCollection.AddSingleton<CatalogIndexEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -144,10 +147,13 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomDoorbellAccepted] = provider.GetRequiredService<RoomDoorbellAcceptedEvent>(),
             [ClientPacketId.PlayerAchievements] = provider.GetRequiredService<PlayerAchievementsEvent>(),
             [ClientPacketId.CameraPrice] = provider.GetRequiredService<CameraPriceEvent>(),
-            [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
+            [ClientPacketId.CatalogMode] = provider.GetRequiredService<CatalogModeEvent>(),
             [ClientPacketId.CatalogMarketplaceConfig] = provider.GetRequiredService<CatalogMarketplaceConfigEvent>(),
+            [ClientPacketId.CatalogRecyclerLogic] = provider.GetRequiredService<CatalogRecyclerLogicEvent>(),
             [ClientPacketId.CatalogGiftConfig] = provider.GetRequiredService<CatalogGiftConfigEvent>(),
             [ClientPacketId.ChangeChatBubble] = provider.GetRequiredService<RoomUserChangeChatBubbleEvent>(),
+            [ClientPacketId.CatalogDiscount] = provider.GetRequiredService<CatalogDiscountEvent>(),
+            [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
         });
     }
 }

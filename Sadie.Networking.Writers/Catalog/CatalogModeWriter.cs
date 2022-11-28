@@ -3,11 +3,11 @@ using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogIndexWriter : NetworkPacketWriter
+public class CatalogModeWriter : NetworkPacketWriter
 {
-    public CatalogIndexWriter(int type)
+    public CatalogModeWriter(int type)
     {
-        WriteShort(ServerPacketId.CatalogIndex);
+        WriteShort(ServerPacketId.CatalogMode);
         WriteInteger(type);
     }
 }
