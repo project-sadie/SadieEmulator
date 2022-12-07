@@ -52,8 +52,8 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                 targetFriendshipComponent.OutgoingRequestAccepted(playerId);
                 
                 var targetRequest = targetFriendshipComponent.
-                        Friendships.
-                        FirstOrDefault(x => x.OriginId == originId && x.TargetId == playerId);
+                    Friendships.
+                    FirstOrDefault(x => x.OriginId == originId && x.TargetId == playerId);
 
                 if (targetRequest != null)
                 {
