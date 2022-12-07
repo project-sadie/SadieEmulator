@@ -100,4 +100,5 @@ public class ServerPacketId
     public const short CatalogGiftConfig = 2234;
     public const short CatalogRecyclerLogic = 3164;
     public const short CatalogDiscount = 2347;
+    public const short CatalogPages = 1032;
 }

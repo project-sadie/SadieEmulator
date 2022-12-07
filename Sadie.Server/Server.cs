@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game.Catalog;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -71,6 +72,10 @@ public class Server : IServer
         var navigatorTabRepo = _serviceProvider.GetRequiredService<NavigatorTabRepository>();
         await navigatorTabRepo.LoadInitialDataAsync();
         _logger.LogTrace("Loaded navigator tabs");
+
+        var catalogPagesRepo = _serviceProvider.GetRequiredService<CatalogPageRepository>();
+        await catalogPagesRepo.LoadInitialDataAsync();
+        _logger.LogTrace("Loaded catalog pages");
     }
     
     private void WriteHeaderToConsole()

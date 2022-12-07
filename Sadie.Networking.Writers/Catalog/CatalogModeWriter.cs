@@ -5,9 +5,9 @@ namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogModeWriter : NetworkPacketWriter
 {
-    public CatalogModeWriter(int type)
+    public CatalogModeWriter(int mode)
     {
         WriteShort(ServerPacketId.CatalogMode);
-        WriteInteger(type);
+        WriteInteger(mode);
     }
 }

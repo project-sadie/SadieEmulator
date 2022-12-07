@@ -7,7 +7,5 @@ namespace Sadie.Networking.Events.Catalog;
 public class CatalogIndexEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
-    {
-        //await client.WriteToStreamAsync(new CatalogIndexWriter().GetAllBytes());
-    }
+    {}
 }

@@ -36,5 +36,6 @@ public class ServerServiceCollection
         NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
+        CatalogServiceProvider.AddServices(serviceCollection);
     }
 }
