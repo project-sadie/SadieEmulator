@@ -37,7 +37,7 @@ public class NoHardCodedValuesInPacketWritersTest
     };
     
     /// <summary>
-    /// Ensures all classes don't exceed X lines of code
+    /// Ensures no writer classes are passing hard coded values and that all data is passed through by the caller.
     /// </summary>
     [Test]
     public Task Check_All_Writers()
