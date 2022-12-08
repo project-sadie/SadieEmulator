@@ -10,10 +10,9 @@ public class CatalogItem
     public bool CanGift { get; }
     public bool RequiresClubMembership { get; }
     public int Amount { get; }
-    public int StackLimit { get; }
     public int SellLimit { get; }
 
-    public CatalogItem(int id, string name, int costCredits, int costPoints, int costPointsType, bool canGift, bool requiresClubMembership, int amount, int stackLimit, int sellLimit)
+    public CatalogItem(int id, string name, int costCredits, int costPoints, int costPointsType, bool canGift, bool requiresClubMembership, int amount, int sellLimit)
     {
         Id = id;
         Name = name;
@@ -23,7 +22,6 @@ public class CatalogItem
         CanGift = canGift;
         RequiresClubMembership = requiresClubMembership;
         Amount = amount;
-        StackLimit = stackLimit;
         SellLimit = sellLimit;
     }
 }

@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Sadie.Game.Catalog;
 
 public class CatalogPageFactory
@@ -23,8 +25,8 @@ public class CatalogPageFactory
         List<CatalogPage> pages,
         List<CatalogItem> items)
     {
-
-        return new CatalogPage(
+        return ActivatorUtilities.CreateInstance<CatalogPage>(
+            _serviceProvider, 
             id, 
             name, 
             caption, 
