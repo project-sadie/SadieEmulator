@@ -15,18 +15,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
     public async Task<List<PlayerFriendship>> GetIncomingFriendRequestsForPlayerAsync(int playerId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT
-                player_friendships.id AS request_id,
-                player_friendships.origin_player_id,
-                player_friendships.target_player_id,
-                player_friendships.status,
-                player_friendships.type_id,
-                (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
-                player_avatar_data.player_id AS target_id,
-                player_avatar_data.figure_code,
-                player_avatar_data.motto,
-                player_avatar_data.gender
-
+            SELECT " + GetDefaultSelectClause() + @"
             FROM player_friendships
                 INNER JOIN player_avatar_data ON player_avatar_data.player_id = origin_player_id
             WHERE target_player_id = @playerId AND status = 1;", new Dictionary<string, object>
@@ -67,18 +56,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
     public async Task<List<PlayerFriendship>> GetOutgoingFriendRequestsForPlayerAsync(int playerId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT
-                player_friendships.id AS request_id,
-                player_friendships.origin_player_id,
-                player_friendships.target_player_id,
-                player_friendships.status,
-                player_friendships.type_id,
-                (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
-                player_avatar_data.player_id AS target_id,
-                player_avatar_data.figure_code,
-                player_avatar_data.motto,
-                player_avatar_data.gender
-
+            SELECT " + GetDefaultSelectClause() + @"
             FROM player_friendships
                 INNER JOIN player_avatar_data ON player_avatar_data.player_id = target_player_id
             WHERE origin_player_id = @playerId AND status = 1;", new Dictionary<string, object>
@@ -119,18 +97,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
     public async Task<List<PlayerFriendship>> GetFriendsForPlayerAsync(int playerId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT
-                player_friendships.id AS request_id,
-                player_friendships.origin_player_id,
-                player_friendships.target_player_id,
-                player_friendships.status,
-                player_friendships.type_id,
-                (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
-                player_avatar_data.player_id AS target_id,
-                player_avatar_data.figure_code,
-                player_avatar_data.motto,
-                player_avatar_data.gender
-
+            SELECT " + GetDefaultSelectClause() + @"
             FROM player_friendships
                 INNER JOIN player_avatar_data ON player_avatar_data.player_id = target_player_id = if(@playerId = target_player_id, origin_player_id, target_player_id)
             WHERE (origin_player_id = @playerId OR target_player_id = @playerId) AND status = 2;", new Dictionary<string, object>
@@ -215,7 +182,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
         });
     }
 
-    public async Task<bool> DoesRequestExist(int playerId1, int playerId2)
+    public async Task<bool> DoesFriendRequestExist(int playerId1, int playerId2)
     {
         return await Exists("SELECT NULL FROM player_friendships WHERE ((origin_player_id = @playerId1 AND target_player_id = @playerId2) OR (origin_player_id = @playerId2 AND target_player_id = @playerId1)) AND status = 1;", new Dictionary<string, object>()
         {
@@ -233,21 +200,26 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
         });
     }
 
+    private static string GetDefaultSelectClause()
+    {
+        return @"
+            player_friendships.id AS request_id,
+            player_friendships.origin_player_id,
+            player_friendships.target_player_id,
+            player_friendships.status,
+            player_friendships.type_id,
+            (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
+            player_avatar_data.player_id AS target_id,
+            player_avatar_data.figure_code,
+            player_avatar_data.motto,
+            player_avatar_data.gender
+        ";
+    }
+
     public async Task<List<PlayerFriendship>> GetAllRecordsForPlayerAsync(int playerId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT
-                player_friendships.id AS request_id,
-                player_friendships.origin_player_id,
-                player_friendships.target_player_id,
-                player_friendships.status,
-                player_friendships.type_id,
-                (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
-                player_avatar_data.player_id AS target_id,
-                player_avatar_data.figure_code,
-                player_avatar_data.motto,
-                player_avatar_data.gender
-
+            SELECT " + GetDefaultSelectClause() + @"
             FROM player_friendships
                 INNER JOIN player_avatar_data ON player_avatar_data.player_id = if(@playerId = target_player_id, origin_player_id, target_player_id)
             WHERE (origin_player_id = @playerId OR target_player_id = @playerId);", new Dictionary<string, object>
@@ -287,19 +259,12 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 
     public async Task DeleteFriendshipAsync(int playerId1, int playerId2)
     {
-        try
-        {
-            await QueryAsync(
-                "DELETE FROM player_friendships WHERE ((origin_player_id = @playerId1 AND target_player_id = @playerId2) OR (origin_player_id = @playerId2 AND target_player_id = @playerId1)) AND status = 2 LIMIT 1;",
-                new Dictionary<string, object>
-                {
-                    {"playerId1", playerId1},
-                    {"playerId2", playerId2},
-                });
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        await QueryAsync(
+            "DELETE FROM player_friendships WHERE ((origin_player_id = @playerId1 AND target_player_id = @playerId2) OR (origin_player_id = @playerId2 AND target_player_id = @playerId1)) AND status = 2 LIMIT 1;",
+            new Dictionary<string, object>
+            {
+                {"playerId1", playerId1},
+                {"playerId2", playerId2},
+            });
     }
 }
