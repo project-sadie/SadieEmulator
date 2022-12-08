@@ -34,7 +34,13 @@ public class PlayerFactory : IPlayerFactory
             data);
     }
 
-    public PlayerNavigatorSettings CreateNavigatorSettings(int windowX, int windowY, int windowWidth, int windowHeight, bool openSearches, int unknown1)
+    public PlayerNavigatorSettings CreateNavigatorSettings(
+        int windowX, 
+        int windowY, 
+        int windowWidth, 
+        int windowHeight, 
+        bool openSearches, 
+        int unknown1)
     {
         return ActivatorUtilities.CreateInstance<PlayerNavigatorSettings>(
             _serviceProvider,

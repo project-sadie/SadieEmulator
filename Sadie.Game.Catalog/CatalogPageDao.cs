@@ -15,7 +15,19 @@ public class CatalogPageDao : BaseDao
     public async Task<List<CatalogPage>> GetAllAsync()
     {
         var pages = new List<CatalogPage>();
-        var reader = await GetReaderAsync("SELECT id, `name`, caption, layout, role_id, parent_page_id, order_id, icon_id, enabled, visible FROM catalog_pages;");
+        var reader = await GetReaderAsync(@"
+            SELECT 
+                id, 
+                `name`, 
+                caption, 
+                layout, 
+                role_id, 
+                parent_page_id, 
+                order_id, 
+                icon_id, 
+                enabled, 
+                visible 
+            FROM catalog_pages;");
 
         while (true)
         {

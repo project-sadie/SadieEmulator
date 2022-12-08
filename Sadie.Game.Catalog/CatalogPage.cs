@@ -15,7 +15,19 @@ public class CatalogPage
     public List<CatalogPage> Pages { get; }
     public List<CatalogItem> Items { get; }
 
-    public CatalogPage(int id, string name, string caption, string layout, int roleId, int parentId, int orderId, int icon, bool enabled, bool visible, List<CatalogPage> pages, List<CatalogItem> items)
+    public CatalogPage(
+        int id, 
+        string name, 
+        string caption, 
+        string layout, 
+        int roleId, 
+        int parentId, 
+        int orderId, 
+        int icon, 
+        bool enabled, 
+        bool visible, 
+        List<CatalogPage> pages, 
+        List<CatalogItem> items)
     {
         Id = id;
         Name = name;

@@ -9,7 +9,13 @@ public class PlayerFriendship
     public int TargetId { get; }
     public PlayerFriendshipData TargetData { get; }
 
-    public PlayerFriendship(int id, int originId, int targetId, PlayerFriendshipStatus status, PlayerFriendshipType type, PlayerFriendshipData targetData)
+    public PlayerFriendship(
+        int id, 
+        int originId, 
+        int targetId, 
+        PlayerFriendshipStatus status, 
+        PlayerFriendshipType type, 
+        PlayerFriendshipData targetData)
     {
         Id = id;       
         Status = status;

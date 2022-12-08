@@ -55,7 +55,14 @@ public class PlayerProfileEvent : INetworkPacketEvent
         var friendCount = onlineData.FriendshipComponent.Friendships.Count;
         var friendshipExists = await _friendshipRepository.DoesFriendshipExist(playerId, profileId);
         var friendshipRequestExists = await _friendshipRepository.DoesRequestExist(playerId, profileId);
+
+        var profileWriter = new PlayerProfileWriter(
+                onlineData, 
+                profileOnline, 
+                friendCount, 
+                friendshipExists, 
+                friendshipRequestExists).GetAllBytes();
         
-        await client.WriteToStreamAsync(new PlayerProfileWriter(onlineData, profileOnline, friendCount, friendshipExists, friendshipRequestExists).GetAllBytes());
+        await client.WriteToStreamAsync(profileWriter);
     }
 }

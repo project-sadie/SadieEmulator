@@ -9,8 +9,21 @@ public class CatalogPageFactory
         _serviceProvider = serviceProvider;
     }
 
-    public CatalogPage Create(int id, string name, string caption, string layout, int roleId, int parentId, int orderId, int icon, bool enabled, bool visible, List<CatalogPage> childPages, List<CatalogItem> items)
+    public CatalogPage Create(
+        int id,
+        string name,
+        string caption,
+        string layout,
+        int roleId,
+        int parentId,
+        int orderId,
+        int icon,
+        bool enabled,
+        bool visible,
+        List<CatalogPage> pages,
+        List<CatalogItem> items)
     {
+
         return new CatalogPage(
             id, 
             name, 
@@ -22,7 +35,7 @@ public class CatalogPageFactory
             icon, 
             enabled, 
             visible, 
-            childPages,
+            pages,
             items);
     }
 }

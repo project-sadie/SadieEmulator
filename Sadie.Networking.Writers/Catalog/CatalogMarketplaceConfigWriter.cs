@@ -5,7 +5,15 @@ namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogMarketplaceConfigWriter : NetworkPacketWriter
 {
-    public CatalogMarketplaceConfigWriter(bool unknown, int commissionPercent, int credits, int advertisements, int minPrice, int maxPrice, int hoursInMarketplace, int daysToDisplay)
+    public CatalogMarketplaceConfigWriter(
+        bool unknown, 
+        int commissionPercent,
+        int credits, 
+        int advertisements,
+        int minPrice, 
+        int maxPrice, 
+        int hoursInMarketplace, 
+        int daysToDisplay)
     {
         WriteShort(ServerPacketId.CatalogMarketplaceConfig);
         WriteBool(unknown);

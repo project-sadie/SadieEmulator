@@ -12,7 +12,11 @@ public class NetworkListener : INetworkListener
     private readonly INetworkClientRepository _clientRepository;
     private readonly INetworkClientFactory _clientFactory;
 
-    public NetworkListener(ILogger<NetworkListener> logger, TcpListener listener, INetworkClientRepository clientRepository, INetworkClientFactory clientFactory)
+    public NetworkListener(
+        ILogger<NetworkListener> logger, 
+        TcpListener listener, 
+        INetworkClientRepository clientRepository, 
+        INetworkClientFactory clientFactory)
     {
         _logger = logger;
         _listener = listener;
