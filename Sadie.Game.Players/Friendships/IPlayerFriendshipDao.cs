@@ -10,7 +10,7 @@ public interface IPlayerFriendshipDao
     Task DeclineFriendRequestAsync(int originId, int targetId);
     Task DeclineAllFriendRequestsAsync(int targetId);
     Task CreateFriendRequestAsync(int originId, int targetId);
-    Task<bool> DoesRequestExist(int playerId1, int playerId2);
+    Task<bool> DoesFriendRequestExist(int playerId1, int playerId2);
     Task<bool> DoesFriendshipExist(int playerId1, int playerId2);
     Task<List<PlayerFriendship>> GetAllRecordsForPlayerAsync(int playerId);
     Task DeleteFriendshipAsync(int playerId1, int playerId2);

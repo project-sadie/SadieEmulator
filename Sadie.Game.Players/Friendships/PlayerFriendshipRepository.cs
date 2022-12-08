@@ -51,7 +51,7 @@ public class PlayerFriendshipRepository : IPlayerFriendshipRepository
 
     public async Task<bool> DoesRequestExist(int playerId1, int playerId2)
     {
-        return await _friendshipDao.DoesRequestExist(playerId1, playerId2);
+        return await _friendshipDao.DoesFriendRequestExist(playerId1, playerId2);
     }
 
     public async Task<bool> DoesFriendshipExist(int playerId1, int playerId2)
