@@ -155,7 +155,13 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     private async Task<List<PlayerSavedSearch>> GetSavedSearchesAsync(long id)
     {
-        var reader = await GetReaderAsync("SELECT id,search,filter FROM player_saved_searches WHERE player_id = @profileId", new Dictionary<string, object>
+        var reader = await GetReaderAsync(@"
+            SELECT 
+                id,
+                search,
+                filter 
+            FROM player_saved_searches 
+            WHERE player_id = @profileId", new Dictionary<string, object>
         {
             { "profileId", id }
         });
@@ -182,10 +188,14 @@ public class PlayerDao : BaseDao, IPlayerDao
 
     private async Task<List<string>> GetPermissionsAsync(long roleId)
     {
-        var reader = await GetReaderAsync("SELECT name FROM player_permissions WHERE id IN (SELECT permission_id FROM player_role_permissions WHERE player_role_permissions.role_id = @roleId)", new Dictionary<string, object>
-        {
-            { "roleId", roleId }
-        });
+        var reader = await GetReaderAsync(@"
+            SELECT name 
+            FROM player_permissions 
+            WHERE id IN (SELECT permission_id FROM player_role_permissions WHERE player_role_permissions.role_id = @roleId)", 
+            new Dictionary<string, object>
+            {
+                { "roleId", roleId }
+            });
         
         var data = new List<string>();
         

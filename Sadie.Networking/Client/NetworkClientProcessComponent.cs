@@ -14,7 +14,12 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
     private readonly INetworkClientRepository _clientRepository;
     private readonly byte[] _buffer;
 
-    protected NetworkClientProcessComponent(ILogger<NetworkClientProcessComponent> logger, TcpClient client, INetworkPacketHandler packetHandler, NetworkingConstants constants, INetworkClientRepository clientRepository) : base(constants)
+    protected NetworkClientProcessComponent(
+        ILogger<NetworkClientProcessComponent> logger, 
+        TcpClient client, 
+        INetworkPacketHandler packetHandler, 
+        NetworkingConstants constants, 
+        INetworkClientRepository clientRepository) : base(constants)
     {
         _logger = logger;
         _client = client;

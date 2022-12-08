@@ -14,7 +14,10 @@ public class NavigatorSearchEvent : INetworkPacketEvent
     private readonly NavigatorTabRepository _navigatorTabRepository;
     private readonly NavigatorRoomProvider _navigatorRoomProvider;
 
-    public NavigatorSearchEvent(IRoomRepository roomRepository, NavigatorTabRepository navigatorTabRepository, NavigatorRoomProvider navigatorRoomProvider)
+    public NavigatorSearchEvent(
+        IRoomRepository roomRepository, 
+        NavigatorTabRepository navigatorTabRepository, 
+        NavigatorRoomProvider navigatorRoomProvider)
     {
         _roomRepository = roomRepository;
         _navigatorTabRepository = navigatorTabRepository;
@@ -28,8 +31,7 @@ public class NavigatorSearchEvent : INetworkPacketEvent
 
         if (!_navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
         {
-            var writer = new NavigatorSearchResultPagesWriter(tabName, searchQuery, new List<NavigatorCategory>(),
-                _navigatorRoomProvider);
+            var writer = new NavigatorSearchResultPagesWriter(tabName, searchQuery, new List<NavigatorCategory>(), _navigatorRoomProvider);
             
             await client.WriteToStreamAsync(writer.GetAllBytes());
             return;
@@ -40,6 +42,12 @@ public class NavigatorSearchEvent : INetworkPacketEvent
             OrderBy(x => x.OrderId).
             ToList();
 
-        await client.WriteToStreamAsync(new NavigatorSearchResultPagesWriter(tabName, searchQuery, categories, _navigatorRoomProvider).GetAllBytes());
+        var searchResultPagesWriter = new NavigatorSearchResultPagesWriter(
+                tabName, 
+                searchQuery, 
+                categories, 
+                _navigatorRoomProvider).GetAllBytes();
+        
+        await client.WriteToStreamAsync(searchResultPagesWriter);
     }
 }
