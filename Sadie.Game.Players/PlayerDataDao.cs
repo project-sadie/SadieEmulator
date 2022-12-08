@@ -62,31 +62,33 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
     public async Task<List<IPlayerData>> GetPlayerDataForSearch(string searchQuery, int[] excludedIds)
     {
+        var parameters = new Dictionary<string, object>
+        {
+            { "searchQuery", $"%{searchQuery}%" }
+        };
+
+        var whereClause =
+            $"{(excludedIds.Length > 0 ? $"players.id NOT IN ({string.Join(",", excludedIds)}) AND " : "")}players.username LIKE  @searchQuery";
+        
         var reader = await GetReaderAsync(@$"
             SELECT 
                    players.id, 
                    players.username, 
                    players.created_at, 
-            
                    player_data.home_room_id,
                    player_data.respect_points,
                    player_data.respect_points_pet,
                    player_data.last_online,
                    player_data.achievement_score,
                    player_data.allow_friend_requests,
-                   
                    player_avatar_data.figure_code, 
                    player_avatar_data.motto, 
                    player_avatar_data.gender,
                    player_avatar_data.chat_bubble_id
-            
             FROM players 
                 INNER JOIN player_data ON player_data.player_id = players.id 
                 INNER JOIN player_avatar_data ON player_avatar_data.player_id = players.id 
-            WHERE {(excludedIds.Length > 0 ? $"players.id NOT IN ({string.Join(",", excludedIds)}) AND " : "")}players.username LIKE  @searchQuery LIMIT 100;", new Dictionary<string, object>
-        {
-            { "searchQuery", $"%{searchQuery}%" }
-        });
+            WHERE {whereClause} LIMIT 100;", parameters);
         
         var data = new List<IPlayerData>();
         
@@ -164,7 +166,9 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
     public async Task MarkPlayerAsOnlineAsync(long id)
     {
-        await QueryAsync("UPDATE player_data SET is_online = 1, last_online = @lastOnline WHERE player_id = @profileId", new Dictionary<string, object>
+        await QueryAsync(@"
+            UPDATE player_data SET is_online = 1, last_online = @lastOnline 
+            WHERE player_id = @profileId", new Dictionary<string, object>
         {
             { "lastOnline", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") },
             { "profileId", id }
