@@ -7,7 +7,19 @@ namespace Sadie.Game.Players.Packets;
 
 public class PlayerUpdateFriendWriter : NetworkPacketWriter
 {
-    public PlayerUpdateFriendWriter(int unknown1, int unknown2, int unknown3, PlayerFriendship friendship, bool isOnline, bool inRoom, int unknown4, string unknown5, string unknown6, bool unknown7, bool unknown8, bool unknown9)
+    public PlayerUpdateFriendWriter(
+        int unknown1, 
+        int unknown2, 
+        int unknown3, 
+        PlayerFriendship friendship, 
+        bool isOnline, 
+        bool inRoom, 
+        int unknown4, 
+        string unknown5, 
+        string unknown6, 
+        bool unknown7, 
+        bool unknown8, 
+        bool unknown9)
     {
         var targetData = friendship.TargetData;
         

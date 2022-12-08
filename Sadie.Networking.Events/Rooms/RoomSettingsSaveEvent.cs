@@ -116,9 +116,23 @@ public class RoomSettingsSaveEvent : INetworkPacketEvent
         
         await _roomRepository.SaveRoomAsync(room);
 
-        await room.UserRepository.BroadcastDataAsync(new RoomWallFloorSettingsWriter(settings.HideWalls, settings.WallThickness, settings.FloorThickness).GetAllBytes());
-        await room.UserRepository.BroadcastDataAsync(new RoomChatSettingsWriter(settings.ChatType, settings.ChatWeight, settings.ChatSpeed, settings.ChatDistance, settings.ChatProtection).GetAllBytes());
-        await room.UserRepository.BroadcastDataAsync(new RoomSettingsUpdatedWriter(roomId).GetAllBytes());
+        var floorSettingsWriter = new RoomWallFloorSettingsWriter(
+                settings.HideWalls, 
+                settings.WallThickness, 
+                settings.FloorThickness).GetAllBytes();
+
+        var settingsWriter = new RoomChatSettingsWriter(
+            settings.ChatType, 
+            settings.ChatWeight, 
+            settings.ChatSpeed,
+            settings.ChatDistance, 
+            settings.ChatProtection).GetAllBytes();
+
+        var settingsUpdatedWriter = new RoomSettingsUpdatedWriter(roomId).GetAllBytes();
+
+        await room.UserRepository.BroadcastDataAsync(floorSettingsWriter);
+        await room.UserRepository.BroadcastDataAsync(settingsWriter);
+        await room.UserRepository.BroadcastDataAsync(settingsUpdatedWriter);
         
         await client.WriteToStreamAsync(new RoomSettingsSavedWriter(roomId).GetAllBytes());
     }

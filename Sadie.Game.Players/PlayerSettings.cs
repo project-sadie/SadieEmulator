@@ -11,7 +11,15 @@ public class PlayerSettings
     public int UiFlags { get; }
     public bool ShowNotifications { get; }
     
-    public PlayerSettings(int systemVolume, int furnitureVolume, int traxVolume, bool oldChat, bool blockRoomInvites, bool blockCameraFollow, int uiFlags, bool showNotifications)
+    public PlayerSettings(
+        int systemVolume, 
+        int furnitureVolume, 
+        int traxVolume, 
+        bool oldChat, 
+        bool blockRoomInvites, 
+        bool blockCameraFollow, 
+        int uiFlags, 
+        bool showNotifications)
     {
         SystemVolume = systemVolume;
         FurnitureVolume = furnitureVolume;

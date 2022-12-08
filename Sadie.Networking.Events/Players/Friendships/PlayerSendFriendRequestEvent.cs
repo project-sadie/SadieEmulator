@@ -105,8 +105,13 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
 
         if (targetOnline && targetPlayer != null)
         {
+            var friendRequestWriter = new PlayerFriendRequestWriter(
+                playerData.Id,
+                playerData.Username, 
+                playerData.FigureCode).GetAllBytes();
+            
             targetPlayer.Data.FriendshipComponent.Friendships = await _friendshipRepository.GetAllRecordsForPlayerAsync(targetData.Id);
-            await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerFriendRequestWriter(playerData.Id, playerData.Username, playerData.FigureCode).GetAllBytes());
+            await targetPlayer.NetworkObject.WriteToStreamAsync(friendRequestWriter);
         }
     }
 }
