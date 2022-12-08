@@ -81,4 +81,5 @@ public class ClientPacketId
     public const short ChangeChatBubble = 1030;
     public const short CatalogDiscount = 223;
     public const short CatalogIndex = 2529;
+    public const short CatalogPage = 412;
 }

@@ -101,4 +101,5 @@ public class ServerPacketId
     public const short CatalogRecyclerLogic = 3164;
     public const short CatalogDiscount = 2347;
     public const short CatalogPages = 1032;
+    public const short CatalogPage = 804;
 }

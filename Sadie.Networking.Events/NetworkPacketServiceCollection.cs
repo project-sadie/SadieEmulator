@@ -65,6 +65,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserChangeChatBubbleEvent>();
         serviceCollection.AddSingleton<CatalogDiscountEvent>();
         serviceCollection.AddSingleton<CatalogIndexEvent>();
+        serviceCollection.AddSingleton<CatalogPageEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -154,6 +155,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.ChangeChatBubble] = provider.GetRequiredService<RoomUserChangeChatBubbleEvent>(),
             [ClientPacketId.CatalogDiscount] = provider.GetRequiredService<CatalogDiscountEvent>(),
             [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
+            [ClientPacketId.CatalogPage] = provider.GetRequiredService<CatalogPageEvent>(),
         });
     }
 }

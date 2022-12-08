@@ -15,7 +15,7 @@ public class CatalogPageDao : BaseDao
     public async Task<List<CatalogPage>> GetAllAsync()
     {
         var pages = new List<CatalogPage>();
-        var reader = await GetReaderAsync("SELECT id, `name`, caption, layout, role_id, parent_page_id, order_id, icon_number, enabled, visible FROM catalog_pages;");
+        var reader = await GetReaderAsync("SELECT id, `name`, caption, layout, role_id, parent_page_id, order_id, icon_id, enabled, visible FROM catalog_pages;");
 
         while (true)
         {
@@ -37,7 +37,7 @@ public class CatalogPageDao : BaseDao
                 record.Get<int>("role_id"),
                 record.Get<int>("parent_page_id"),
                 record.Get<int>("order_id"),
-                record.Get<int>("icon_number"),
+                record.Get<int>("icon_id"),
                 record.Get<int>("enabled") == 1,
                 record.Get<int>("visible") == 1, 
                 childPages, 

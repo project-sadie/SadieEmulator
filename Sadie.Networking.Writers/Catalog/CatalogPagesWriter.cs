@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogPagesWriter : NetworkPacketWriter
 {
-    public CatalogPagesWriter(int mode, List<CatalogPage> pages)
+    public CatalogPagesWriter(string mode, List<CatalogPage> pages)
     {
         WriteShort(ServerPacketId.CatalogPages);
         WriteBool(true);
@@ -23,7 +23,7 @@ public class CatalogPagesWriter : NetworkPacketWriter
         }
         
         WriteBool(false);
-        WriteInteger(mode);
+        WriteString(mode);
     }
 
     private void AppendPage(CatalogPage page)
