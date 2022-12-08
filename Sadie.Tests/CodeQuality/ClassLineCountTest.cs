@@ -3,11 +3,8 @@ namespace Sadie.Tests.Other;
 public class ClassLineCountTest
 {
     private const int MaxLinesForClass = 250;
-    
-    private readonly List<string> _excludedFiles = new()
-    {
-        "PlayerFriendshipDao.cs"
-    };
+
+    private readonly List<string> _excludedFiles = new();
     
     /// <summary>
     /// Ensures all classes don't exceed X lines of code

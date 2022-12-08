@@ -11,6 +11,40 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
     {
         _friendshipFactory = friendshipFactory;
     }
+
+    private static string GetDefaultSelectClause()
+    {
+        return @"
+            player_friendships.id AS request_id,
+            player_friendships.origin_player_id,
+            player_friendships.target_player_id,
+            player_friendships.status,
+            player_friendships.type_id,
+            (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
+            player_avatar_data.player_id AS target_id,
+            player_avatar_data.figure_code,
+            player_avatar_data.motto,
+            player_avatar_data.gender
+        ";
+    }
+
+    private PlayerFriendship CreateFriendshipFromRecord(DatabaseRecord record)
+    {
+        var targetData = _friendshipFactory.CreateFriendshipData(
+            record.Get<int>("target_id"),
+            record.Get<string>("username"),
+            record.Get<string>("figure_code"),
+            record.Get<string>("motto"),
+            record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
+        
+        return _friendshipFactory.CreateFriendship(
+            record.Get<int>("request_id"),
+            record.Get<int>("origin_player_id"),
+            record.Get<int>("target_player_id"),
+            (PlayerFriendshipStatus)record.Get<int>("status"),
+            (PlayerFriendshipType)record.Get<int>("request_id"),
+            targetData);
+    }
     
     public async Task<List<PlayerFriendship>> GetIncomingFriendRequestsForPlayerAsync(int playerId)
     {
@@ -34,20 +68,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
             
-            var targetData = _friendshipFactory.CreateFriendshipData(
-                record.Get<int>("target_id"),
-                record.Get<string>("username"),
-                record.Get<string>("figure_code"),
-                record.Get<string>("motto"),
-                record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
-            
-            data.Add(_friendshipFactory.CreateFriendship(
-                record.Get<int>("request_id"),
-                record.Get<int>("origin_player_id"),
-                record.Get<int>("target_player_id"),
-                (PlayerFriendshipStatus) record.Get<int>("status"),
-                (PlayerFriendshipType) record.Get<int>("request_id"),
-                targetData));
+            data.Add(CreateFriendshipFromRecord(record));
         }
         
         return data;
@@ -75,20 +96,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
 
-            var targetData = _friendshipFactory.CreateFriendshipData(
-                record.Get<int>("target_id"),
-                record.Get<string>("username"),
-                record.Get<string>("figure_code"),
-                record.Get<string>("motto"),
-                record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
-            
-            data.Add(_friendshipFactory.CreateFriendship(
-                record.Get<int>("request_id"),
-                record.Get<int>("origin_player_id"),
-                record.Get<int>("target_player_id"),
-                (PlayerFriendshipStatus) record.Get<int>("status"),
-                (PlayerFriendshipType) record.Get<int>("request_id"),
-                targetData));
+            data.Add(CreateFriendshipFromRecord(record));
         }
         
         return data;
@@ -116,20 +124,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
             
-            var targetData = _friendshipFactory.CreateFriendshipData(
-                record.Get<int>("target_id"),
-                record.Get<string>("username"),
-                record.Get<string>("figure_code"),
-                record.Get<string>("motto"),
-                record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
-            
-            data.Add(_friendshipFactory.CreateFriendship(
-                record.Get<int>("request_id"),
-                record.Get<int>("origin_player_id"),
-                record.Get<int>("target_player_id"),
-                (PlayerFriendshipStatus) record.Get<int>("status"),
-                (PlayerFriendshipType) record.Get<int>("request_id"),
-                targetData));
+            data.Add(CreateFriendshipFromRecord(record));
         }
         
         return data;
@@ -200,22 +195,6 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
         });
     }
 
-    private static string GetDefaultSelectClause()
-    {
-        return @"
-            player_friendships.id AS request_id,
-            player_friendships.origin_player_id,
-            player_friendships.target_player_id,
-            player_friendships.status,
-            player_friendships.type_id,
-            (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
-            player_avatar_data.player_id AS target_id,
-            player_avatar_data.figure_code,
-            player_avatar_data.motto,
-            player_avatar_data.gender
-        ";
-    }
-
     public async Task<List<PlayerFriendship>> GetAllRecordsForPlayerAsync(int playerId)
     {
         var reader = await GetReaderAsync(@"
@@ -238,20 +217,7 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 break;
             }
             
-            var targetData = _friendshipFactory.CreateFriendshipData(
-                record.Get<int>("target_id"),
-                record.Get<string>("username"),
-                record.Get<string>("figure_code"),
-                record.Get<string>("motto"),
-                record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
-            
-            data.Add(_friendshipFactory.CreateFriendship(
-                record.Get<int>("request_id"),
-                record.Get<int>("origin_player_id"),
-                record.Get<int>("target_player_id"),
-                (PlayerFriendshipStatus) record.Get<int>("status"),
-                (PlayerFriendshipType) record.Get<int>("request_id"),
-                targetData));
+            data.Add(CreateFriendshipFromRecord(record));
         }
         
         return data;
