@@ -30,6 +30,10 @@ public class NoHardCodedValuesInPacketWritersTest
         "PlayerDataWriter.cs",
         "PlayerPerksWriter.cs",
         "CatalogGiftConfigWriter.cs",
+        "CatalogDiscountWriter.cs",
+        "CatalogPagesWriter.cs",
+        "CatalogPageWriter.cs",
+        "CatalogRecyclerLogicWriter.cs",
     };
     
     /// <summary>
