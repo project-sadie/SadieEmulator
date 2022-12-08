@@ -23,7 +23,11 @@ public class SecureLoginEvent : INetworkPacketEvent
     private readonly PlayerConstants _constants;
     private readonly INetworkClientRepository _networkClientRepository;
 
-    public SecureLoginEvent(ILogger<SecureLoginEvent> logger, IPlayerRepository playerRepository, PlayerConstants constants, INetworkClientRepository networkClientRepository)
+    public SecureLoginEvent(
+        ILogger<SecureLoginEvent> logger, 
+        IPlayerRepository playerRepository, 
+        PlayerConstants constants, 
+        INetworkClientRepository networkClientRepository)
     {
         _logger = logger;
         _playerRepository = playerRepository;

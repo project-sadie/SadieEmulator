@@ -13,7 +13,10 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
     private readonly IPlayerFriendshipRepository _friendshipRepository;
     private readonly IRoomRepository _roomRepository;
 
-    public PlayerAcceptFriendRequestEvent(IPlayerRepository playerRepository, IPlayerFriendshipRepository friendshipRepository, IRoomRepository roomRepository)
+    public PlayerAcceptFriendRequestEvent(
+        IPlayerRepository playerRepository, 
+        IPlayerFriendshipRepository friendshipRepository, 
+        IRoomRepository roomRepository)
     {
         _playerRepository = playerRepository;
         _friendshipRepository = friendshipRepository;
@@ -33,7 +36,10 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
         for (var i = 0; i < amount && i < limit; i++)
         {
             var originId = reader.ReadInteger();
-            var request = friendshipComponent.Friendships.FirstOrDefault(x => x.OriginId == originId && x.Status == PlayerFriendshipStatus.Pending);
+            
+            var request = friendshipComponent
+                .Friendships
+                .FirstOrDefault(x => x.OriginId == originId && x.Status == PlayerFriendshipStatus.Pending);
 
             if (request == null)
             {
@@ -69,8 +75,22 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                             inRoom = true;
                         }
                     }
+
+                    var updateFriendWriter = new PlayerUpdateFriendWriter(
+                        0, 
+                        1, 
+                        0, 
+                        targetRequest, 
+                        isOnline, 
+                        inRoom, 
+                        0,
+                        "", 
+                        "", 
+                        false, 
+                        false, 
+                        false).GetAllBytes();
                     
-                    await origin.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 1, 0, targetRequest, isOnline, inRoom, 0, "", "",false, false, false).GetAllBytes());    
+                    await origin.NetworkObject.WriteToStreamAsync(updateFriendWriter);    
                 }
             }
 
@@ -89,8 +109,22 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                     targetInRoom = true;
                 }
             }
+
+            var updateFriendWriter2 = new PlayerUpdateFriendWriter(
+                    0, 
+                    1, 
+                    0, 
+                    request, 
+                    targetOnline,
+                    targetInRoom, 
+                    0, 
+                    "", 
+                    "", 
+                    false, 
+                    false,
+                    false).GetAllBytes();
             
-            await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 1, 0, request, targetOnline, targetInRoom, 0, "", "",false, false, false).GetAllBytes());
+            await client.WriteToStreamAsync(updateFriendWriter2);
         }
     }
 }
