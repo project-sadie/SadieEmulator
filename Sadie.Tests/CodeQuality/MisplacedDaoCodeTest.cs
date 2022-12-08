@@ -9,8 +9,7 @@ public class MisplacedDaoCodeTest
         "IDatabaseConnection.cs",
         "DatabaseConnection.cs",
         "DatabaseServiceCollection.cs",
-        "Server.cs",
-        "MisplacedDaoCodeTest.cs",
+        "MisplacedDaoCodeTest.cs"
     };
     
     /// <summary>
@@ -25,9 +24,10 @@ public class MisplacedDaoCodeTest
         {
             foreach (var line in File.ReadAllLines(file))
             {
-                Assert.That(line, Does.Not.Contain("IDatabaseProvider"));
-                Assert.That(line, Does.Not.Contain("ExecuteReader"));
+                Assert.That(line, Does.Not.Contain("IDatabaseProvider "));
+                Assert.That(line, Does.Not.Contain("ExecuteReader("));
                 Assert.That(line, Does.Not.Contain("\"SELECT"));
+                Assert.That(line, Does.Not.Contain("\"INSERT INTO"));
             }
         }
         
