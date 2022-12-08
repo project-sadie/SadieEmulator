@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
+using Sadie.Game.Furniture;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -37,5 +38,6 @@ public class ServerServiceCollection
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         CatalogServiceProvider.AddServices(serviceCollection);
+        FurnitureServiceProvider.AddServices(serviceCollection);
     }
 }

@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Tests", "Sadie.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Catalog", "Sadie.Game.Catalog\Sadie.Game.Catalog.csproj", "{7B791022-B51E-4724-A062-E2802C8D7F52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Furniture", "Sadie.Game.Furniture\Sadie.Game.Furniture.csproj", "{5CF75332-EC1D-4E23-9737-475A54A570A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,5 +80,9 @@ Global
 		{7B791022-B51E-4724-A062-E2802C8D7F52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B791022-B51E-4724-A062-E2802C8D7F52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B791022-B51E-4724-A062-E2802C8D7F52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CF75332-EC1D-4E23-9737-475A54A570A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CF75332-EC1D-4E23-9737-475A54A570A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CF75332-EC1D-4E23-9737-475A54A570A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CF75332-EC1D-4E23-9737-475A54A570A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
