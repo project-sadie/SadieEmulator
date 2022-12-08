@@ -20,7 +20,10 @@ public class MisplacedDaoCodeTest
     {
         var path = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent.Parent.FullName;
         
-        foreach (var file in Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories).Where(x => !x.EndsWith("Dao.cs") && !ignoredFiles.Contains(Path.GetFileName(x))))
+        var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories)
+            .Where(x => !x.EndsWith("Dao.cs") && !ignoredFiles.Contains(Path.GetFileName(x)));
+        
+        foreach (var file in files)
         {
             foreach (var line in File.ReadAllLines(file))
             {
