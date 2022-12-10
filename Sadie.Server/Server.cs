@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Catalog;
+using Sadie.Game.Furniture;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -76,6 +77,10 @@ public class Server : IServer
         var catalogPagesRepo = _serviceProvider.GetRequiredService<CatalogPageRepository>();
         await catalogPagesRepo.LoadInitialDataAsync();
         _logger.LogTrace("Loaded catalog pages");
+
+        var furnitureItemRepository = _serviceProvider.GetRequiredService<FurnitureItemRepository>();
+        await furnitureItemRepository.LoadInitialDataAsync();
+        _logger.LogTrace("Loaded furniture items");
     }
     
     private void WriteHeaderToConsole()
