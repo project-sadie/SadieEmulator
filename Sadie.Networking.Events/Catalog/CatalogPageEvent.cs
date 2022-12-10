@@ -1,4 +1,5 @@
 using Sadie.Game.Catalog;
+using Sadie.Game.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
@@ -17,9 +18,9 @@ public class CatalogPageEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var pageId = reader.ReadInteger();
-        var unknown1 = reader.ReadInteger(); // parent page id?
+        var unknown1 = reader.ReadInteger();
         var catalogMode = reader.ReadString();
-
+        
         var (exists, page) = _catalogPageRepo.TryGet(pageId);
 
         if (!exists)
