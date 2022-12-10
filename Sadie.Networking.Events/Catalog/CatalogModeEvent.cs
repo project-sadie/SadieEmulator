@@ -17,9 +17,13 @@ public class CatalogModeEvent : INetworkPacketEvent
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var mode = reader.ReadString();
-        var pages = _catalogPageRepository.GetAll();
+        
+        var pages = _catalogPageRepository
+            .GetAll()
+            .Where(x => x.ParentId == -1)
+            .ToList();
         
         await client.WriteToStreamAsync(new CatalogModeWriter(mode == "BUILDERS_CLUB" ? 1 : 0).GetAllBytes());
-        await client.WriteToStreamAsync(new CatalogPagesWriter(mode, pages).GetAllBytes());
+        await client.WriteToStreamAsync(new CatalogTabsWriter(mode, pages).GetAllBytes());
     }
 }
