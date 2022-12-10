@@ -7,7 +7,11 @@ namespace Sadie.Networking.Writers.Navigator;
 
 public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
 {
-    public NavigatorSearchResultPagesWriter(string tabName, string searchQuery, List<NavigatorCategory> resultCategories, NavigatorRoomProvider roomProvider)
+    public NavigatorSearchResultPagesWriter(
+        string tabName, 
+        string searchQuery, 
+        List<NavigatorCategory> resultCategories, 
+        NavigatorRoomProvider roomProvider)
     {
         WriteShort(ServerPacketId.NavigatorRooms);
         WriteString(tabName);

@@ -46,8 +46,23 @@ public class PlayerChangeRelationEvent : INetworkPacketEvent
                     inRoom = true;
                 }
             }
+
+            var updateFriendWriter = new PlayerUpdateFriendWriter(
+                    0, 
+                    1, 
+                    0, 
+                    friendship, 
+                    isOnline, 
+                    inRoom, 
+                    0, 
+                    "", 
+                    "", 
+                    false, 
+                    false, 
+                    false)
+                    .GetAllBytes();
             
-            await client.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 1, 0, friendship, isOnline, inRoom, 0, "", "",false, false, false).GetAllBytes());
+            await client.WriteToStreamAsync(updateFriendWriter);
         }
     }
 }

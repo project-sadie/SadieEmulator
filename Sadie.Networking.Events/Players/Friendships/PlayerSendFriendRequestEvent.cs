@@ -12,7 +12,10 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
     private readonly IPlayerFriendshipRepository _friendshipRepository;
     private readonly PlayerConstants _playerConstants;
 
-    public PlayerSendFriendRequestEvent(IPlayerRepository playerRepository, IPlayerFriendshipRepository friendshipRepository, PlayerConstants playerConstants)
+    public PlayerSendFriendRequestEvent(
+        IPlayerRepository playerRepository, 
+        IPlayerFriendshipRepository friendshipRepository, 
+        PlayerConstants playerConstants)
     {
         _playerRepository = playerRepository;
         _friendshipRepository = friendshipRepository;

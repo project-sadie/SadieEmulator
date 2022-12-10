@@ -34,6 +34,7 @@ public class NoHardCodedValuesInPacketWritersTest
         "CatalogPagesWriter.cs",
         "CatalogPageWriter.cs",
         "CatalogRecyclerLogicWriter.cs",
+        "CatalogTabsWriter.cs",
     };
     
     /// <summary>

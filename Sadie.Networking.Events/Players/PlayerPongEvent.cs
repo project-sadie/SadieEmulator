@@ -1,6 +1,5 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Players;
 

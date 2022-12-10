@@ -9,7 +9,12 @@ namespace Sadie.Networking.Writers.Players.Friendships;
 
 public class PlayerFriendsListWriter : NetworkPacketWriter
 {
-    public PlayerFriendsListWriter(int pages, int index, List<PlayerFriendship> friends, IPlayerRepository playerRepository, IRoomRepository roomRepository)
+    public PlayerFriendsListWriter(
+        int pages, 
+        int index, 
+        List<PlayerFriendship> friends, 
+        IPlayerRepository playerRepository, 
+        IRoomRepository roomRepository)
     {
         WriteShort(ServerPacketId.PlayerFriendsList);
         WriteInteger(pages);
