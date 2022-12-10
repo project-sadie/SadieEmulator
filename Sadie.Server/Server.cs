@@ -74,13 +74,13 @@ public class Server : IServer
         await navigatorTabRepo.LoadInitialDataAsync();
         _logger.LogTrace("Loaded navigator tabs");
 
-        var catalogPagesRepo = _serviceProvider.GetRequiredService<CatalogPageRepository>();
-        await catalogPagesRepo.LoadInitialDataAsync();
-        _logger.LogTrace("Loaded catalog pages");
-
         var furnitureItemRepository = _serviceProvider.GetRequiredService<FurnitureItemRepository>();
         await furnitureItemRepository.LoadInitialDataAsync();
         _logger.LogTrace("Loaded furniture items");
+
+        var catalogPagesRepo = _serviceProvider.GetRequiredService<CatalogPageRepository>();
+        await catalogPagesRepo.LoadInitialDataAsync();
+        _logger.LogTrace("Loaded catalog pages");
     }
     
     private void WriteHeaderToConsole()
