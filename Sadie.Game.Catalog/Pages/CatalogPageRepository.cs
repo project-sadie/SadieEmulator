@@ -5,12 +5,12 @@ namespace Sadie.Game.Catalog;
 public class CatalogPageRepository
 {
     private readonly CatalogPageDao _pageDao;
-    private List<CatalogPage> _pages; // TODO: make dictionary so we can lookup by id faster
+    private Dictionary<int, CatalogPage> _pages; // TODO: make dictionary so we can lookup by id faster
 
     public CatalogPageRepository(CatalogPageDao pageDao)
     {
         _pageDao = pageDao;
-        _pages = new List<CatalogPage>();
+        _pages = new Dictionary<int, CatalogPage>();
     }
 
     public async Task LoadInitialDataAsync()
@@ -18,11 +18,10 @@ public class CatalogPageRepository
         _pages = await _pageDao.GetAllAsync();
     }
 
-    public List<CatalogPage> GetAll() => _pages;
+    public Dictionary<int, CatalogPage>.ValueCollection GetAll() => _pages.Values;
 
     public Tuple<bool, CatalogPage?> TryGet(int pageId)
     {
-        var page = _pages.FirstOrDefault(x => x.Id == pageId);
-        return new Tuple<bool, CatalogPage?>(page != default, page);
+        return new Tuple<bool, CatalogPage?>(_pages.ContainsKey(pageId), _pages[pageId]);
     }
 }

@@ -68,9 +68,9 @@ public class CatalogPageDao : BaseDao
         return pages;
     }
 
-    public async Task<List<CatalogPage>> GetAllAsync()
+    public async Task<Dictionary<int, CatalogPage>> GetAllAsync()
     {
-        var pages = new List<CatalogPage>();
+        var pages = new Dictionary<int, CatalogPage>();
         
         var reader = await GetReaderAsync(@"
             SELECT 
@@ -112,7 +112,7 @@ public class CatalogPageDao : BaseDao
                 childPages, 
                 items);
 
-            pages.Add(page);
+            pages.Add(record.Get<int>("id"), page);
         }
 
         return pages;
