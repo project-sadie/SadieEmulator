@@ -4,7 +4,8 @@ namespace Sadie.Game.Players;
 
 public interface IPlayerState
 {
-    DateTime LastSearch { get; set; }
-    DateTime LastMessage { get; set; }
+    DateTime LastPlayerSearch { get; set; }
+    DateTime LastDirectMessage { get; set; }
     List<PlayerRoomVisit> RoomVisits { get; }
+    DateTime LastCatalogPurchase { get; set; }
 }

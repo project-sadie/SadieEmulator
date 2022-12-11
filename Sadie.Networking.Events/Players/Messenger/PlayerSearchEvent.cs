@@ -2,6 +2,7 @@ using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
+using Sadie.Shared;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Players.Messenger;
@@ -17,12 +18,12 @@ public class PlayerSearchEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if ((DateTime.Now - client.Player.State.LastSearch).TotalSeconds < 1)
+        if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.PlayerSearch)
         {
             return;
         }
         
-        client.Player.State.LastSearch = DateTime.Now;
+        client.Player.State.LastPlayerSearch = DateTime.Now;
         
         var searchQuery = reader.ReadString();
 

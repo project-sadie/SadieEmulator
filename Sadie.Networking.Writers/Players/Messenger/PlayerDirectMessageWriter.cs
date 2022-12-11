@@ -5,9 +5,9 @@ using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerMessageWriter : NetworkPacketWriter
+public class PlayerDirectMessageWriter : NetworkPacketWriter
 {
-    public PlayerMessageWriter(PlayerMessage message)
+    public PlayerDirectMessageWriter(PlayerMessage message)
     {
         WriteShort(ServerPacketId.PlayerMessage);
         WriteInteger(message.OriginId);

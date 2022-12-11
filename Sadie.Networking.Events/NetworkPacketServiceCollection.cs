@@ -50,7 +50,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserGoToHotelViewEvent>();
         serviceCollection.AddSingleton<PlayerSearchEvent>();
         serviceCollection.AddSingleton<PlayerStalkEvent>();
-        serviceCollection.AddSingleton<PlayerSendMessageEvent>();
+        serviceCollection.AddSingleton<PlayerSendDirectMessageEvent>();
         serviceCollection.AddSingleton<RoomSettingsEvent>();
         serviceCollection.AddSingleton<RoomSettingsSaveEvent>();
         serviceCollection.AddSingleton<PlayerInventoryBadgesEvent>();
@@ -66,6 +66,7 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<CatalogDiscountEvent>();
         serviceCollection.AddSingleton<CatalogIndexEvent>();
         serviceCollection.AddSingleton<CatalogPageEvent>();
+        serviceCollection.AddSingleton<CatalogPurchaseEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -169,7 +170,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserGoToHotelView] = provider.GetRequiredService<RoomUserGoToHotelViewEvent>(),
             [ClientPacketId.PlayerSearch] = provider.GetRequiredService<PlayerSearchEvent>(),
             [ClientPacketId.PlayerStalk] = provider.GetRequiredService<PlayerStalkEvent>(),
-            [ClientPacketId.PlayerSendMessage] = provider.GetRequiredService<PlayerSendMessageEvent>(),
+            [ClientPacketId.PlayerSendMessage] = provider.GetRequiredService<PlayerSendDirectMessageEvent>(),
             [ClientPacketId.RoomSettings] = provider.GetRequiredService<RoomSettingsEvent>(),
             [ClientPacketId.RoomSettingsSave] = provider.GetRequiredService<RoomSettingsSaveEvent>(),
             [ClientPacketId.PlayerInventoryBadges] = provider.GetRequiredService<PlayerInventoryBadgesEvent>(),
@@ -185,6 +186,7 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.CatalogDiscount] = provider.GetRequiredService<CatalogDiscountEvent>(),
             [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
             [ClientPacketId.CatalogPage] = provider.GetRequiredService<CatalogPageEvent>(),
+            [ClientPacketId.CatalogPurchase] = provider.GetRequiredService<CatalogPurchaseEvent>(),
         });
     }
 }

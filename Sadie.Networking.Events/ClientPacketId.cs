@@ -82,4 +82,5 @@ public class ClientPacketId
     public const short CatalogDiscount = 223;
     public const short CatalogIndex = 2529;
     public const short CatalogPage = 412;
+    public const short CatalogPurchase = 3492;
 }

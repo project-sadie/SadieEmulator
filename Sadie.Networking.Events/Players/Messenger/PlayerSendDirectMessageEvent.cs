@@ -7,12 +7,12 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Players.Messenger;
 
-public class PlayerSendMessageEvent : INetworkPacketEvent
+public class PlayerSendDirectMessageEvent : INetworkPacketEvent
 {
     private readonly IPlayerRepository _playerRepository;
     private readonly IPlayerMessageDao _playerMessageDao;
 
-    public PlayerSendMessageEvent(IPlayerRepository playerRepository, IPlayerMessageDao playerMessageDao)
+    public PlayerSendDirectMessageEvent(IPlayerRepository playerRepository, IPlayerMessageDao playerMessageDao)
     {
         _playerRepository = playerRepository;
         _playerMessageDao = playerMessageDao;
@@ -20,12 +20,12 @@ public class PlayerSendMessageEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if ((DateTime.Now - client.Player.State.LastMessage).TotalSeconds < 1)
+        if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalSeconds < 1)
         {
             return;
         }
         
-        client.Player.State.LastMessage = DateTime.Now;
+        client.Player.State.LastDirectMessage = DateTime.Now;
         
         var playerId = reader.ReadInteger();
         var message = reader.ReadString();
@@ -57,6 +57,6 @@ public class PlayerSendMessageEvent : INetworkPacketEvent
         var playerMessage = new PlayerMessage(client.Player.Data.Id, targetPlayer.Data.Id, message);
 
         await _playerMessageDao.CreateMessageAsync(playerMessage);
-        await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerMessageWriter(playerMessage).GetAllBytes());
+        await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter(playerMessage).GetAllBytes());
     }
 }

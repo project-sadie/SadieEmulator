@@ -102,4 +102,5 @@ public class ServerPacketId
     public const short CatalogDiscount = 2347;
     public const short CatalogPages = 1032;
     public const short CatalogPage = 804;
+    public const short CatalogPurchaseFailed = 1404;
 }
