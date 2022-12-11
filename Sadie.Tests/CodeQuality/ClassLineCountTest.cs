@@ -7,7 +7,7 @@ public class ClassLineCountTest
     private readonly List<string> _excludedFiles = new();
     
     /// <summary>
-    /// Ensures all classes don't exceed X lines of code
+    /// Ensures no classes exceed MaxLinesForClass lines of code
     /// </summary>
     [Test]
     public Task Check_All_Classes_Line_Count()

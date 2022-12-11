@@ -6,6 +6,10 @@ public class ClassLineLengthTest
  
     private readonly List<string> _excludedFiles = new();
     
+    /// <summary>
+    /// Ensures no line of code exceeds MaxLengthForLine characters
+    /// </summary>
+    /// <returns></returns>
     [Test]
     public Task Check_All_Classes_Line_Length()
     {
