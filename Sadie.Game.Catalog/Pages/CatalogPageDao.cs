@@ -1,5 +1,6 @@
 using Sadie.Database;
 using Sadie.Game.Catalog;
+using Sadie.Game.Catalog.Items;
 
 namespace Sadie.Game.Navigator.Tabs;
 

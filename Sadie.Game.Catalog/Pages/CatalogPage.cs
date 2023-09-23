@@ -1,3 +1,5 @@
+using Sadie.Game.Catalog.Items;
+
 namespace Sadie.Game.Catalog;
 
 public class CatalogPage

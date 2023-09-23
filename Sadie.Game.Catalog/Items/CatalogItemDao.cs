@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Furniture;
 
-namespace Sadie.Game.Catalog;
+namespace Sadie.Game.Catalog.Items;
 
 public class CatalogItemDao : BaseDao
 {
@@ -33,7 +33,7 @@ public class CatalogItemDao : BaseDao
                 cost_points,
                 cost_points_type,
                 requires_club_membership,
-                furniture_item_id,
+                furniture_item_ids,
                 meta_data,
                 catalog_page_id,
                 amount,
@@ -53,7 +53,9 @@ public class CatalogItemDao : BaseDao
                 break;
             }
 
-            var (found, furnitureItem) = _furnitureItemRepository.TryGetById(record.Get<int>("furniture_item_id"));
+            var definitions = record.Get<string>("furniture_item_ids").Split(";");
+            var furnitureItemId = int.Parse(definitions.First().Split(":")[0]);
+            var (found, furnitureItem) = _furnitureItemRepository.TryGetById(furnitureItemId);
 
             if (!found)
             {

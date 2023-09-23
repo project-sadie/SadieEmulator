@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Catalog;
+using Sadie.Game.Catalog.Items;
 using Sadie.Game.Navigator.Tabs;
 
 namespace Sadie.Game.Navigator;

@@ -1,6 +1,6 @@
 using Sadie.Game.Furniture;
 
-namespace Sadie.Game.Catalog;
+namespace Sadie.Game.Catalog.Items;
 
 public class CatalogItem
 {

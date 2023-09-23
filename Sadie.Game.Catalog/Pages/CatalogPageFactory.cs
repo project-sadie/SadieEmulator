@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Game.Catalog.Items;
 
 namespace Sadie.Game.Catalog;
 
