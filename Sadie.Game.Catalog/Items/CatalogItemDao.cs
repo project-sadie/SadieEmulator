@@ -54,10 +54,20 @@ public class CatalogItemDao : BaseDao
             }
 
             var definitions = record.Get<string>("furniture_item_ids").Split(";");
-            var furnitureItemId = int.Parse(definitions.First().Split(":")[0]);
-            var (found, furnitureItem) = _furnitureItemRepository.TryGetById(furnitureItemId);
+            var furnitureItemIds = definitions.Select(x => int.Parse(x.Split(":")[0]));
+            var furnitureItems = new List<FurnitureItem>();
 
-            if (!found)
+            foreach (var itemId in furnitureItemIds)
+            {
+                var result = _furnitureItemRepository.TryGetById(itemId);
+
+                if (result is { Item1: true, Item2: not null })
+                {
+                    furnitureItems.Add(result.Item2);
+                }
+            }
+
+            if (!furnitureItems.Any())
             {
                 continue;
             }
@@ -68,7 +78,7 @@ public class CatalogItemDao : BaseDao
                 record.Get<int>("cost_credits"),
                 record.Get<int>("cost_points"),
                 record.Get<int>("cost_points_type"),
-                furnitureItem,
+                furnitureItems,
                 record.Get<bool>("requires_club_membership"),
                 record.Get<string>("meta_data"),
                 record.Get<int>("amount"),

@@ -12,13 +12,17 @@ public class CatalogItemFactory
         _serviceProvider = serviceProvider;
     }
     
-    public CatalogItem Create(int id, 
+    public CatalogItem Create(
+        int id, 
         string name, 
         int costCredits, 
         int costPoints, 
         int costPointsType, 
-        FurnitureItem furnitureItem, 
-        bool requiresClubMembership, string metadata, int amount, int sellLimit)
+        List<FurnitureItem> furnitureItems, 
+        bool requiresClubMembership, 
+        string metadata, 
+        int amount, 
+        int sellLimit)
     {
         return ActivatorUtilities.CreateInstance<CatalogItem>(
             _serviceProvider, 
@@ -27,7 +31,7 @@ public class CatalogItemFactory
             costCredits,
             costPoints,
             costPointsType,
-            furnitureItem,
+            furnitureItems,
             requiresClubMembership, 
             metadata, 
             amount, 

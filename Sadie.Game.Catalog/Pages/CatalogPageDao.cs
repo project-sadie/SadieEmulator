@@ -29,7 +29,14 @@ public class CatalogPageDao : BaseDao
                 order_id, 
                 icon_id, 
                 enabled, 
-                visible 
+                visible,
+                header_image,
+                teaser_image,
+                special_image,
+                primary_text,
+                secondary_text,
+                details_text,
+                teaser_text
             FROM catalog_pages 
             WHERE parent_page_id = @parentPageId;", new Dictionary<string, object>
         {
@@ -90,7 +97,14 @@ public class CatalogPageDao : BaseDao
                 order_id, 
                 icon_id, 
                 enabled, 
-                visible 
+                visible,
+                header_image,
+                teaser_image,
+                special_image,
+                primary_text,
+                secondary_text,
+                details_text,
+                teaser_text
             FROM catalog_pages;");
 
         while (true)

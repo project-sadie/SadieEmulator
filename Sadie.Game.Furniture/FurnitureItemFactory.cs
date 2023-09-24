@@ -37,7 +37,7 @@ public class FurnitureItemFactory
             id, 
             name,
             assetName,
-            type,
+            (FurnitureItemType) type,
             assetId,
             tileSpanX,
             tileSpanY,
