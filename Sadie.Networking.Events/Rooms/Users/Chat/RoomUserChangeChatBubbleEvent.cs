@@ -2,7 +2,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Shared.Game;
 
-namespace Sadie.Networking.Events.Catalog;
+namespace Sadie.Networking.Events.Rooms.Users.Chat;
 
 public class RoomUserChangeChatBubbleEvent : INetworkPacketEvent
 {

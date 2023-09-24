@@ -1,4 +1,4 @@
-namespace Sadie.Game.Navigator;
+namespace Sadie.Game.Catalog;
 
 public enum CatalogPurchaseError
 {

@@ -6,7 +6,7 @@ public class FurnitureItem
         int id, 
         string name, 
         string assetName, 
-        char type, 
+        FurnitureItemType type, 
         int assetId, 
         int tileSpanX, 
         int tileSpanY, 
@@ -47,7 +47,7 @@ public class FurnitureItem
     public int Id { get; }
     public string Name { get; }
     public string AssetName { get; }
-    public char Type { get; }
+    public FurnitureItemType Type { get; }
     public int AssetId { get; }
     public int TileSpanX { get; }
     public int TileSpanY { get; }

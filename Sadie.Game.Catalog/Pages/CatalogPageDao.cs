@@ -1,8 +1,7 @@
 using Sadie.Database;
-using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Items;
 
-namespace Sadie.Game.Navigator.Tabs;
+namespace Sadie.Game.Catalog.Pages;
 
 public class CatalogPageDao : BaseDao
 {
@@ -60,7 +59,14 @@ public class CatalogPageDao : BaseDao
                 record.Get<int>("icon_id"),
                 record.Get<int>("enabled") == 1,
                 record.Get<int>("visible") == 1, 
-                childPages, 
+                record.Get<string>("header_image"),
+                record.Get<string>("teaser_image"),
+                record.Get<string>("special_image"),
+                record.Get<string>("primary_text"),
+                record.Get<string>("secondary_text"),
+                record.Get<string>("details_text"),
+                record.Get<string>("teaser_text"),
+                childPages,
                 items);
 
             pages.Add(page);
@@ -109,7 +115,14 @@ public class CatalogPageDao : BaseDao
                 record.Get<int>("order_id"),
                 record.Get<int>("icon_id"),
                 record.Get<int>("enabled") == 1,
-                record.Get<int>("visible") == 1, 
+                record.Get<int>("visible") == 1,
+                record.Get<string>("header_image"),
+                record.Get<string>("teaser_image"),
+                record.Get<string>("special_image"),
+                record.Get<string>("primary_text"),
+                record.Get<string>("secondary_text"),
+                record.Get<string>("details_text"),
+                record.Get<string>("teaser_text"),
                 childPages, 
                 items);
 

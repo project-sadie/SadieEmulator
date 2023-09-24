@@ -1,4 +1,5 @@
 using Sadie.Game.Catalog;
+using Sadie.Game.Catalog.Pages;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;

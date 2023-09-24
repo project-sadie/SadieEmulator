@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Catalog.Items;
 
-namespace Sadie.Game.Catalog;
+namespace Sadie.Game.Catalog.Pages;
 
 public class CatalogPageFactory
 {
@@ -23,6 +23,13 @@ public class CatalogPageFactory
         int icon,
         bool enabled,
         bool visible,
+        string headerImage,
+        string teaserImage,
+        string specialImage,
+        string primaryText,
+        string secondaryText,
+        string detailsText,
+        string teaserText,
         List<CatalogPage> pages,
         List<CatalogItem> items)
     {
@@ -38,6 +45,13 @@ public class CatalogPageFactory
             icon, 
             enabled, 
             visible, 
+            headerImage,
+            teaserImage, 
+            specialImage, 
+            primaryText, 
+            secondaryText, 
+            detailsText, 
+            teaserText,
             pages,
             items);
     }

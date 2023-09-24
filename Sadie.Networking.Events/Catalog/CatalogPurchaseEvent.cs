@@ -1,4 +1,6 @@
 using Sadie.Game.Catalog;
+using Sadie.Game.Catalog.Pages;
+using Sadie.Game.Furniture;
 using Sadie.Game.Navigator;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -48,13 +50,12 @@ public class CatalogPurchaseEvent : INetworkPacketEvent
             return;
         }
 
-        var furnitureItem = item.FurnitureItem;
+        var furnitureItem = item.FurnitureItems.First();
         
-        if (furnitureItem.Type is 'p' or 'e')
+        if (furnitureItem.Type == FurnitureItemType.Pet || furnitureItem.Type == FurnitureItemType.Effect)
         {
             await client.WriteToStreamAsync(new PlayerMotdMessageWriter(new List<string> { "Purchasing pets and/or effects is coming soon" }).GetAllBytes());
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
-            return;
         }
 
         // TODO: validate amount

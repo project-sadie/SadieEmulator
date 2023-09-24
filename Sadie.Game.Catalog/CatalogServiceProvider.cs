@@ -1,9 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Items;
-using Sadie.Game.Navigator.Tabs;
+using Sadie.Game.Catalog.Pages;
 
-namespace Sadie.Game.Navigator;
+namespace Sadie.Game.Catalog;
 
 public class CatalogServiceProvider
 {

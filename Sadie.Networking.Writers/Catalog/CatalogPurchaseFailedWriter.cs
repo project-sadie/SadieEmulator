@@ -1,3 +1,4 @@
+using Sadie.Game.Catalog;
 using Sadie.Game.Navigator;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;

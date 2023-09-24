@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
+using Sadie.Game.Catalog;
 using Sadie.Game.Furniture;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;

@@ -1,4 +1,4 @@
-namespace Sadie.Tests.Other;
+namespace Sadie.Tests.CodeQuality;
 
 public class NoHardCodedValuesInPacketWritersTest
 {

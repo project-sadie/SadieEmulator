@@ -9,7 +9,7 @@ public class CatalogItem
     public int CostCredits { get; }
     public int CostPoints { get; }
     public int CostPointsType { get; }
-    public FurnitureItem FurnitureItem { get; }
+    public List<FurnitureItem> FurnitureItems { get; }
     public bool RequiresClubMembership { get; }
     public string Metadata { get; }
     public int Amount { get; }
@@ -21,7 +21,7 @@ public class CatalogItem
         int costCredits, 
         int costPoints, 
         int costPointsType, 
-        FurnitureItem furnitureItem, 
+        List<FurnitureItem> furnitureItems, 
         bool requiresClubMembership, 
         string metadata, 
         int amount, 
@@ -33,7 +33,7 @@ public class CatalogItem
         CostCredits = costCredits;
         CostPoints = costPoints;
         CostPointsType = costPointsType;
-        FurnitureItem = furnitureItem;
+        FurnitureItems = furnitureItems;
         RequiresClubMembership = requiresClubMembership;
         Metadata = metadata;
         Amount = amount;

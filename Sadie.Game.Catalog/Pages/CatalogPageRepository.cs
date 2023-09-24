@@ -1,6 +1,4 @@
-using Sadie.Game.Navigator.Tabs;
-
-namespace Sadie.Game.Catalog;
+namespace Sadie.Game.Catalog.Pages;
 
 public class CatalogPageRepository
 {
