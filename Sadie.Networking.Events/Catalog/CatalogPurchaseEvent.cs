@@ -6,6 +6,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Catalog;
@@ -65,15 +66,14 @@ public class CatalogPurchaseEvent : INetworkPacketEvent
 
         var balance = client.Player.Data.Balance;
         
-        // CostPointsType: 0 = pixels = 0?, diamond = 5, shell = 4
-
         if (balance.Credits < costInCredits || 
             (item.CostPointsType == 0 && balance.Pixels < costInPoints) ||
             (item.CostPointsType != 0 && balance.Seasonal < costInPoints))
         {
+            return;
         }
 
-        // TODO: validate amount
-        // TODO: validate can afford
+        await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(item).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
     }
 }
