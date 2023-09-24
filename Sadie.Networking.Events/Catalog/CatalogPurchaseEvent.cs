@@ -21,7 +21,9 @@ public class CatalogPurchaseEvent : INetworkPacketEvent
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.CatalogPurchase)
+        var player = client.Player;
+
+        if ((DateTime.Now - player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.CatalogPurchase)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
             return;
@@ -36,7 +38,7 @@ public class CatalogPurchaseEvent : INetworkPacketEvent
 
         var (found, page) = _pageRepository.TryGet(pageId);
 
-        if (!found)
+        if (!found || page == null)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
             return;
@@ -52,10 +54,23 @@ public class CatalogPurchaseEvent : INetworkPacketEvent
 
         var furnitureItem = item.FurnitureItems.First();
         
-        if (furnitureItem.Type == FurnitureItemType.Pet || furnitureItem.Type == FurnitureItemType.Effect)
+        if (furnitureItem.Type is FurnitureItemType.Pet or FurnitureItemType.Effect)
         {
             await client.WriteToStreamAsync(new PlayerMotdMessageWriter(new List<string> { "Purchasing pets and/or effects is coming soon" }).GetAllBytes());
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
+        }
+
+        var costInCredits = item.CostCredits * amount;
+        var costInPoints = item.CostPoints * amount;
+
+        var balance = client.Player.Data.Balance;
+        
+        // CostPointsType: 0 = pixels = 0?, diamond = 5, shell = 4
+
+        if (balance.Credits < costInCredits || 
+            (item.CostPointsType == 0 && balance.Pixels < costInPoints) ||
+            (item.CostPointsType != 0 && balance.Seasonal < costInPoints))
+        {
         }
 
         // TODO: validate amount
