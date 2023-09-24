@@ -23,7 +23,7 @@ public class CatalogPageEvent : INetworkPacketEvent
         
         var (exists, page) = _catalogPageRepo.TryGet(pageId);
 
-        if (!exists)
+        if (!exists || page is not { Enabled: true } || !page.Visible)
         {
             return;
         }

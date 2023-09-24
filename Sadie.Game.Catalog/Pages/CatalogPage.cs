@@ -42,7 +42,6 @@ public class CatalogPage
         string secondaryText,
         string detailsText,
         string teaserText,
-        List<CatalogPage> pages, 
         List<CatalogItem> items)
     {
         Id = id;
@@ -62,7 +61,7 @@ public class CatalogPage
         SecondaryText = secondaryText;
         DetailsText = detailsText;
         TeaserText = teaserText;
-        Pages = pages;
+        Pages = new List<CatalogPage>();
         Items = items;
     }
 }

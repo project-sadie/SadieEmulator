@@ -23,7 +23,7 @@ public class CatalogTabsWriter : NetworkPacketWriter
             AppendPage(page);
         }
         
-        WriteBool(true);
+        WriteBool(false);
         WriteString(mode);
     }
 
@@ -33,7 +33,7 @@ public class CatalogTabsWriter : NetworkPacketWriter
         WriteInteger(page.Icon);
         WriteInteger(page.Enabled ? page.Id : -1);
         WriteString(page.Caption);
-        WriteString(page.Name);
+        WriteString(page.Caption);
         WriteInteger(0); // TODO: offer id count
         WriteInteger(page.Pages.Count);
         

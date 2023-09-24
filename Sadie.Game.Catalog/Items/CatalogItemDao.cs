@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Furniture;
 
@@ -6,17 +5,14 @@ namespace Sadie.Game.Catalog.Items;
 
 public class CatalogItemDao : BaseDao
 {
-    private readonly ILogger<CatalogItemDao> _logger;
     private readonly CatalogItemFactory _factory;
     private readonly FurnitureItemRepository _furnitureItemRepository;
 
     public CatalogItemDao(
-        ILogger<CatalogItemDao> logger,
         IDatabaseProvider databaseProvider, 
         CatalogItemFactory factory,
         FurnitureItemRepository furnitureItemRepository) : base(databaseProvider)
     {
-        _logger = logger;
         _factory = factory;
         _furnitureItemRepository = furnitureItemRepository;
     }

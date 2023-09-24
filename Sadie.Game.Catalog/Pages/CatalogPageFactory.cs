@@ -30,7 +30,6 @@ public class CatalogPageFactory
         string secondaryText,
         string detailsText,
         string teaserText,
-        List<CatalogPage> pages,
         List<CatalogItem> items)
     {
         return ActivatorUtilities.CreateInstance<CatalogPage>(
@@ -52,7 +51,6 @@ public class CatalogPageFactory
             secondaryText, 
             detailsText, 
             teaserText,
-            pages,
             items);
     }
 }

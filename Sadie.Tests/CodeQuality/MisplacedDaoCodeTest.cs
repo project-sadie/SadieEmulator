@@ -2,7 +2,7 @@ namespace Sadie.Tests.CodeQuality;
 
 public class MisplacedDaoCodeTest
 {
-    private readonly List<string> ignoredFiles = new()
+    private readonly List<string> _ignoredFiles = new()
     {
         "IDatabaseProvider.cs",
         "DatabaseProvider.cs",
@@ -21,7 +21,7 @@ public class MisplacedDaoCodeTest
         var path = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent.Parent.FullName;
         
         var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories)
-            .Where(x => !x.EndsWith("Dao.cs") && !ignoredFiles.Contains(Path.GetFileName(x)));
+            .Where(x => !x.EndsWith("Dao.cs") && !_ignoredFiles.Contains(Path.GetFileName(x)));
         
         foreach (var file in files)
         {

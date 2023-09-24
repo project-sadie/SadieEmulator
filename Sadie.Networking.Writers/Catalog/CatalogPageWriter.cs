@@ -13,11 +13,11 @@ public class CatalogPageWriter : NetworkPacketWriter
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(page.Id);
         WriteString(catalogMode);
+        WriteString(page.Layout);
 
         switch (page.Layout)
         {
             case "frontpage":
-                WriteString("frontpage4");
                 WriteInteger(2);
                 WriteString(page.HeaderImage);
                 WriteString(page.TeaserImage);
@@ -27,7 +27,6 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(page.TeaserText);
                 break;
             default:
-                WriteString("default_3x3");
                 WriteInteger(3);
                 WriteString(page.HeaderImage);
                 WriteString(page.TeaserImage);
@@ -96,9 +95,13 @@ public class CatalogPageWriter : NetworkPacketWriter
         WriteInteger(0);
         WriteBool(false);
 
-        if (page.Layout is "frontpage" or "frontpage_featured")
+        if (page.Layout is "frontpage4")
         {
             // TODO: serialize extra?
+        }
+        else
+        {
+            WriteInteger(0);
         }
     }
 }
