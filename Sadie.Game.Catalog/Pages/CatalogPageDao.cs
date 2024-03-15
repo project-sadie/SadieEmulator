@@ -50,12 +50,16 @@ public class CatalogPageDao : BaseDao
 
             var items = await _itemDao.GetItemsForPageAsync(record.Get<int>("id"));
 
+            var roleId = record.Get<object>("role_id") == DBNull.Value ? 
+                0 : 
+                record.Get<int>("role_id");
+            
             var page = _factory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("name"),
                 record.Get<string>("caption"),
                 record.Get<string>("layout"),
-                record.Get<int>("role_id"),
+                roleId,
                 record.Get<int>("parent_page_id"),
                 record.Get<int>("order_id"),
                 record.Get<int>("icon_id"),
