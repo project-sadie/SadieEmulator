@@ -1,4 +1,3 @@
-using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Networking;

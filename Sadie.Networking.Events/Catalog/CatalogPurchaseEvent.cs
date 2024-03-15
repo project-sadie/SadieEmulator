@@ -1,7 +1,6 @@
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
-using Sadie.Game.Navigator;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
