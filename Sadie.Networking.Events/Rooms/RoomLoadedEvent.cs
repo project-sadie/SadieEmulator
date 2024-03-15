@@ -47,6 +47,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
         if (!found || room == null)
         {
             _logger.LogError($"Failed to load room {roomId}");
+            await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
             return;
         }
 
