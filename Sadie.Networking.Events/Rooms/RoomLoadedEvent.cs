@@ -28,7 +28,6 @@ public class RoomLoadedEvent : INetworkPacketEvent
     {
         var player = client.Player;
         var playerData = player.Data;
-        var playerState = player.State;
         
         var (roomId, password) = (reader.ReadInteger(), reader.ReadString());
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
@@ -46,7 +45,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         if (!found || room == null)
         {
-            _logger.LogError($"Failed to load room {roomId}");
+            _logger.LogError($"Failed to load room {roomId} for player '{playerData.Username}'");
             await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
             return;
         }
