@@ -25,9 +25,9 @@ public class NetworkListener : INetworkListener
         _clientFactory = clientFactory;
     }
 
-    public void Start(int backlog = 100)
+    public void Start()
     {
-        _listener.Start(backlog);
+        _listener.Start();
     }
 
     private bool _listening = true;
