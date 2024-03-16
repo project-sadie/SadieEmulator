@@ -1,5 +1,4 @@
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms;
@@ -21,7 +20,12 @@ public class RoomForwardDataEvent : INetworkPacketEvent
 
         var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
         
-        if (!found)
+        if (!found || room == null)
+        {
+            return;
+        }
+
+        if (client.Player == null || client.Player.Data == null)
         {
             return;
         }
