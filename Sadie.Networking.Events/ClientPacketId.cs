@@ -84,4 +84,6 @@ public class ClientPacketId
     public const short CatalogPage = 412;
     public const short CatalogPurchase = 3492;
     public const short PlayerFriendListUpdate = 1419;
+    public const short HotelViewPromotions = 1827;
+    public const short RoomLike = 3582;
 }
