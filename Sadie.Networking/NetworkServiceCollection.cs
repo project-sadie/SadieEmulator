@@ -25,7 +25,7 @@ public class NetworkServiceCollection
             listener.Prefixes.Add($"http://{host}:{port}/");
             
             serviceCollection.AddSingleton(listener);
-            serviceCollection.AddTransient<INetworkClient, WsNetworkNetworkClient>();
+            serviceCollection.AddTransient<INetworkClient, WsNetworkClient>();
             serviceCollection.AddSingleton<INetworkListener, WsNetworkListener>();
         }
         else

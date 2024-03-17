@@ -14,6 +14,6 @@ public class NetworkClientFactory(IServiceProvider serviceProvider) : INetworkCl
 
     public INetworkClient CreateClient(Guid guid, WebSocket tcpClient)
     {
-        return ActivatorUtilities.CreateInstance<WsNetworkNetworkClient>(serviceProvider, guid, tcpClient);
+        return ActivatorUtilities.CreateInstance<WsNetworkClient>(serviceProvider, guid, tcpClient);
     }
 }

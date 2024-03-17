@@ -8,7 +8,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.WebSockets;
 
-public class WsNetworkNetworkClient : WsNetworkClientProcessComponent, INetworkClient
+public class WsNetworkClient : WsNetworkClientProcessComponent, INetworkClient
 {
     public Guid Guid { get; private set; }
 
@@ -17,14 +17,15 @@ public class WsNetworkNetworkClient : WsNetworkClientProcessComponent, INetworkC
     private readonly IPlayerRepository _playerRepository;
     private readonly IRoomRepository _roomRepository;
 
-    public WsNetworkNetworkClient(
+    public WsNetworkClient(
         ILogger<NetworkClient> logger, 
         Guid guid, 
         WebSocket webSocket, 
         INetworkPacketHandler packetHandler, 
         NetworkingConstants constants,
         IPlayerRepository playerRepository, 
-        IRoomRepository roomRepository) : base(webSocket, packetHandler, constants)
+        IRoomRepository roomRepository,
+        INetworkClientRepository clientRepository) : base(webSocket, packetHandler, constants, clientRepository)
     {
         Guid = guid;
 

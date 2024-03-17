@@ -8,12 +8,15 @@ public class WsNetworkClientProcessComponent : NetworkPacketDecoder
 {
     private readonly WebSocket _webSocket;
     private readonly INetworkPacketHandler _packetHandler;
+    private readonly INetworkClientRepository _clientRepository;
     private readonly byte[] _buffer;
 
-    protected WsNetworkClientProcessComponent(WebSocket webSocket, INetworkPacketHandler packetHandler, NetworkingConstants constants) : base(constants)
+    protected WsNetworkClientProcessComponent(WebSocket webSocket, INetworkPacketHandler packetHandler, NetworkingConstants constants, 
+        INetworkClientRepository clientRepository) : base(constants)
     {
         _webSocket = webSocket;
         _packetHandler = packetHandler;
+        _clientRepository = clientRepository;
         _buffer = new byte[constants.BufferByteSize];
     }
 
@@ -27,15 +30,9 @@ public class WsNetworkClientProcessComponent : NetworkPacketDecoder
             {
                 var result = await _webSocket.ReceiveAsync(seg, CancellationToken.None).ConfigureAwait(false);
                 
-                if (result.CloseStatus != null)
+                if (result.CloseStatus != null || _webSocket.State != WebSocketState.Open)
                 {
-                    await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
-                    throw new WebSocketException("Websocket closed.");
-                }
-
-                if (_webSocket.State != WebSocketState.Open)
-                {
-                    throw new WebSocketException("Websocket no longer open.");
+                    throw new WebSocketException();
                 }
 
                 if (result.Count > 0)
@@ -55,8 +52,15 @@ public class WsNetworkClientProcessComponent : NetworkPacketDecoder
     {
         while (true)
         {
-            var data = await MessageReadAsync().ConfigureAwait(false);
-            await OnReceivedAsync(data.ToArray());
+            try
+            {
+                var data = await MessageReadAsync().ConfigureAwait(false);
+                await OnReceivedAsync(data.ToArray());
+            }
+            catch (WebSocketException)
+            {
+                await _clientRepository.TryRemoveAsync(_networkClient.Guid);
+            }
         }
     }
     
