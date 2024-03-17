@@ -232,59 +232,6 @@ public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) :
         var excludeClause = @"AND rooms.id NOT IN (" +
                             string.Join(",", excludeIds.Select(n => n.ToString()).ToArray()).TrimEnd(',') + @") ";
         
-        Console.WriteLine(@"
-            SELECT 
-                   rooms.id, 
-                   rooms.name, 
-                   rooms.layout_id, 
-                   rooms.owner_id,
-                   rooms.description,
-                   rooms.score,
-                   rooms.is_muted, 
-                   rooms.max_users_allowed,
-                   
-                   (SELECT username FROM players WHERE id = rooms.owner_id) AS owner_name,
-                   
-                   (SELECT GROUP_CONCAT(player_id) AS comma_separated_rights
-                    FROM room_player_rights
-                    WHERE room_id = rooms.id
-                    GROUP BY room_id) AS comma_separated_rights,
-                   
-                   (SELECT GROUP_CONCAT(name) AS comma_separated_tags
-                    FROM room_tags
-                    WHERE room_id = rooms.id
-                    GROUP BY room_id) AS comma_separated_tags,
-                   
-                   room_settings.walk_diagonal, 
-                   room_settings.access_type, 
-                   room_settings.password, 
-                   room_settings.who_can_mute, 
-                   room_settings.who_can_kick, 
-                   room_settings.who_can_ban, 
-                   room_settings.allow_pets, 
-                   room_settings.can_pets_eat, 
-                   room_settings.hide_walls, 
-                   room_settings.wall_thickness, 
-                   room_settings.floor_thickness, 
-                   room_settings.can_users_overlap, 
-                   room_settings.chat_type, 
-                   room_settings.chat_weight, 
-                   room_settings.chat_speed, 
-                   room_settings.chat_distance, 
-                   room_settings.chat_protection, 
-                   room_settings.trade_option, 
-                   
-                   room_layouts.name AS layout_name, 
-                   room_layouts.heightmap,
-                   room_layouts.door_x,
-                   room_layouts.door_y,
-                   room_layouts.door_z,
-                   room_layouts.door_direction
-            FROM rooms 
-                INNER JOIN room_settings ON room_settings.room_id = rooms.id
-                INNER JOIN room_layouts ON room_layouts.id = rooms.layout_id
-            WHERE rooms.owner_id = @ownerId " + (excludeIds.Count > 0 ? excludeClause : "") + @" 
-            LIMIT " + limit + ";");
         var reader = await GetReaderAsync(@"
             SELECT 
                    rooms.id, 
