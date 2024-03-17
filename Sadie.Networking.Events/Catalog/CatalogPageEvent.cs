@@ -20,6 +20,16 @@ public class CatalogPageEvent(CatalogPageRepository catalogPageRepo) : INetworkP
             return;
         }
 
-        await client.WriteToStreamAsync(new CatalogPageWriter(page, catalogMode).GetAllBytes());
+        await client.WriteToStreamAsync(new CatalogPageWriter(
+            page.Id,
+            page.Layout, 
+            page.HeaderImage,
+            page.TeaserImage, 
+            page.SpecialImage, 
+            page.PrimaryText, 
+            page.SecondaryText, 
+            page.TeaserText, 
+            page.Items, 
+            catalogMode).GetAllBytes());
     }
 }

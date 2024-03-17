@@ -18,7 +18,7 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetwo
 
         if ((DateTime.Now - player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.CatalogPurchase)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
             return;
         }
         
@@ -33,7 +33,7 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetwo
 
         if (!found || page == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
             return;
         }
 
@@ -41,7 +41,7 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetwo
 
         if (item == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
             return;
         }
 
@@ -50,7 +50,7 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetwo
         if (furnitureItem.Type is FurnitureItemType.Pet or FurnitureItemType.Effect)
         {
             await client.WriteToStreamAsync(new PlayerMotdMessageWriter(new List<string> { "Purchasing pets and/or effects is coming soon" }).GetAllBytes());
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter(CatalogPurchaseError.Server).GetAllBytes());
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
         }
 
         var costInCredits = item.CostCredits * amount;
