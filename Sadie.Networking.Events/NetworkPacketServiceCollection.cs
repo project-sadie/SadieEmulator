@@ -136,7 +136,6 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
             
             [ClientPacketId.NavigatorSearch] = new NavigatorSearchEvent(
-                provider.GetRequiredService<IRoomRepository>(), 
                 provider.GetRequiredService<NavigatorTabRepository>(), 
                 provider.GetRequiredService<NavigatorRoomProvider>()),
             

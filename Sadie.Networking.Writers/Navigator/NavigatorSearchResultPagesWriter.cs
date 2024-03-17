@@ -8,6 +8,7 @@ namespace Sadie.Networking.Writers.Navigator;
 public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
 {
     public NavigatorSearchResultPagesWriter(
+        int playerId,
         string tabName, 
         string searchQuery, 
         List<NavigatorCategory> resultCategories, 
@@ -27,7 +28,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
             WriteBool(false); // TODO: is it collapsed?
             WriteInteger(0); // TODO: Show thumbnail? display mode
 
-            var rooms = roomProvider.GetRoomsForCategoryName(result.CodeName);
+            var rooms = roomProvider.GetRoomsForCategoryName(playerId, result.CodeName);
             
             WriteInteger(rooms.Count);
             
