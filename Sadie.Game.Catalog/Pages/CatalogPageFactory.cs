@@ -3,15 +3,8 @@ using Sadie.Game.Catalog.Items;
 
 namespace Sadie.Game.Catalog.Pages;
 
-public class CatalogPageFactory
+public class CatalogPageFactory(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public CatalogPageFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public CatalogPage Create(
         int id,
         string name,
@@ -33,7 +26,7 @@ public class CatalogPageFactory
         List<CatalogItem> items)
     {
         return ActivatorUtilities.CreateInstance<CatalogPage>(
-            _serviceProvider, 
+            serviceProvider, 
             id, 
             name, 
             caption, 

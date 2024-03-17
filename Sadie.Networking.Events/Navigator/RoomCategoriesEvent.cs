@@ -5,19 +5,12 @@ using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Navigator;
 
-public class RoomCategoriesEvent : INetworkPacketEvent
+public class RoomCategoriesEvent(IRoomCategoryRepository roomCategoryRepository) : INetworkPacketEvent
 {
-    private readonly IRoomCategoryRepository _roomCategoryRepository;
-
-    public RoomCategoriesEvent(IRoomCategoryRepository roomCategoryRepository)
-    {
-        _roomCategoryRepository = roomCategoryRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         await client.WriteToStreamAsync(new RoomCategoriesWriter(
-            _roomCategoryRepository.GetAllCategories()
+            roomCategoryRepository.GetAllCategories()
         ).GetAllBytes());
     }
 }

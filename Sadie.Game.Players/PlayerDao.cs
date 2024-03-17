@@ -9,28 +9,15 @@ using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
 
-public class PlayerDao : BaseDao, IPlayerDao
+public class PlayerDao(
+    IDatabaseProvider databaseProvider,
+    IPlayerFactory playerFactory,
+    IPlayerDataFactory playerDataFactory,
+    IPlayerBadgeDao badgeDao,
+    IPlayerFriendshipDao friendshipDao,
+    IPlayerSubscriptionDao subscriptionDao)
+    : BaseDao(databaseProvider), IPlayerDao
 {
-    private readonly IPlayerFactory _playerFactory;
-    private readonly IPlayerDataFactory _playerDataFactory;
-    private readonly IPlayerBadgeDao _badgeDao;
-    private readonly IPlayerFriendshipDao _friendshipDao;
-    private readonly IPlayerSubscriptionDao _subscriptionDao;
-
-    public PlayerDao(IDatabaseProvider databaseProvider, 
-        IPlayerFactory playerFactory, 
-        IPlayerDataFactory playerDataFactory, 
-        IPlayerBadgeDao badgeDao, 
-        IPlayerFriendshipDao friendshipDao,
-        IPlayerSubscriptionDao subscriptionDao) : base(databaseProvider)
-    {
-        _playerFactory = playerFactory;
-        _playerDataFactory = playerDataFactory;
-        _badgeDao = badgeDao;
-        _friendshipDao = friendshipDao;
-        _subscriptionDao = subscriptionDao;
-    }
-
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
     {
         var reader = await GetReaderAsync(@"
@@ -96,19 +83,19 @@ public class PlayerDao : BaseDao, IPlayerDao
         
         var savedSearches = await GetSavedSearchesAsync(record.Get<int>("id"));
         
-        var balance = _playerFactory.CreateBalance(record.Get<long>("credit_balance"),
+        var balance = playerFactory.CreateBalance(record.Get<long>("credit_balance"),
             record.Get<long>("pixel_balance"),
             record.Get<long>("seasonal_balance"),
             record.Get<long>("gotw_points"));
 
-        var navigatorSettings = _playerFactory.CreateNavigatorSettings(record.Get<int>("window_x"),
+        var navigatorSettings = playerFactory.CreateNavigatorSettings(record.Get<int>("window_x"),
             record.Get<int>("window_y"),
             record.Get<int>("window_width"),
             record.Get<int>("window_height"),
             record.Get<int>("open_searches") == 1,
             0);
 
-        var settings = _playerFactory.CreateSettings(record.Get<int>("system_volume"),
+        var settings = playerFactory.CreateSettings(record.Get<int>("system_volume"),
             record.Get<int>("furniture_volume"),
             record.Get<int>("trax_volume"),
             record.Get<int>("prefer_old_chat") == 1,
@@ -118,11 +105,11 @@ public class PlayerDao : BaseDao, IPlayerDao
             record.Get<int>("show_notifications") == 1);
         
         var permissions = await GetPermissionsAsync(record.Get<int>("role_id"));
-        var badges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
-        var friendships = await _friendshipDao.GetAllRecordsForPlayerAsync(record.Get<int>("id"));
-        var subscriptions = await _subscriptionDao.GetSubscriptionsForPlayerAsync(record.Get<int>("id"));
+        var badges = await badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
+        var friendships = await friendshipDao.GetAllRecordsForPlayerAsync(record.Get<int>("id"));
+        var subscriptions = await subscriptionDao.GetSubscriptionsForPlayerAsync(record.Get<int>("id"));
 
-        var playerData = _playerDataFactory.Create(
+        var playerData = playerDataFactory.Create(
             record.Get<int>("id"),
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
@@ -146,7 +133,7 @@ public class PlayerDao : BaseDao, IPlayerDao
             record.Get<int>("allow_friend_requests") == 1,
             subscriptions);
         
-        var player = _playerFactory.Create(
+        var player = playerFactory.Create(
             networkObject,
             playerData);
             

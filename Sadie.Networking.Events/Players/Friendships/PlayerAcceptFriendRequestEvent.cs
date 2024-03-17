@@ -7,22 +7,12 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Players.Friendships;
 
-public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
+public class PlayerAcceptFriendRequestEvent(
+    IPlayerRepository playerRepository,
+    IPlayerFriendshipRepository friendshipRepository,
+    IRoomRepository roomRepository)
+    : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerFriendshipRepository _friendshipRepository;
-    private readonly IRoomRepository _roomRepository;
-
-    public PlayerAcceptFriendRequestEvent(
-        IPlayerRepository playerRepository, 
-        IPlayerFriendshipRepository friendshipRepository, 
-        IRoomRepository roomRepository)
-    {
-        _playerRepository = playerRepository;
-        _friendshipRepository = friendshipRepository;
-        _roomRepository = roomRepository;
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
@@ -51,7 +41,7 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                 continue;
             }
 
-            if (_playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
+            if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
             {
                 var targetFriendshipComponent = origin.Data.FriendshipComponent;
                 
@@ -68,7 +58,7 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
 
                     if (isOnline)
                     {
-                        var (roomFound, lastRoom) = _roomRepository.TryGetRoomById(origin.Data.CurrentRoomId);
+                        var (roomFound, lastRoom) = roomRepository.TryGetRoomById(origin.Data.CurrentRoomId);
 
                         if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Data.Id, out _))
                         {
@@ -94,7 +84,7 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
                 }
             }
 
-            await _friendshipRepository.AcceptFriendRequestAsync(originId, playerId);
+            await friendshipRepository.AcceptFriendRequestAsync(originId, playerId);
             friendshipComponent.AcceptIncomingRequest(originId);
 
             var targetOnline = origin != null;
@@ -102,7 +92,7 @@ public class PlayerAcceptFriendRequestEvent : INetworkPacketEvent
 
             if (targetOnline && origin != null)
             {
-                var (roomFound, lastRoom) = _roomRepository.TryGetRoomById(origin.Data.CurrentRoomId);
+                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(origin.Data.CurrentRoomId);
 
                 if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Data.Id, out _))
                 {

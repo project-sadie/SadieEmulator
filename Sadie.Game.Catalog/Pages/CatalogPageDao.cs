@@ -3,17 +3,9 @@ using Sadie.Game.Catalog.Items;
 
 namespace Sadie.Game.Catalog.Pages;
 
-public class CatalogPageDao : BaseDao
+public class CatalogPageDao(IDatabaseProvider databaseProvider, CatalogItemDao itemDao, CatalogPageFactory factory)
+    : BaseDao(databaseProvider)
 {
-    private readonly CatalogItemDao _itemDao;
-    private readonly CatalogPageFactory _factory;
-
-    public CatalogPageDao(IDatabaseProvider databaseProvider, CatalogItemDao itemDao, CatalogPageFactory factory) : base(databaseProvider)
-    {
-        _itemDao = itemDao;
-        _factory = factory;
-    }
-
     public async Task<Dictionary<int, CatalogPage>> GetAllAsync()
     {
         var pages = new Dictionary<int, CatalogPage>();
@@ -48,13 +40,13 @@ public class CatalogPageDao : BaseDao
                 break;
             }
 
-            var items = await _itemDao.GetItemsForPageAsync(record.Get<int>("id"));
+            var items = await itemDao.GetItemsForPageAsync(record.Get<int>("id"));
 
             var roleId = record.Get<object>("role_id") == DBNull.Value ? 
                 0 : 
                 record.Get<int>("role_id");
             
-            var page = _factory.Create(
+            var page = factory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("name"),
                 record.Get<string>("caption"),

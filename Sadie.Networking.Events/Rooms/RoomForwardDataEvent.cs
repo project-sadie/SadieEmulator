@@ -5,20 +5,13 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Rooms;
 
-public class RoomForwardDataEvent : INetworkPacketEvent
+public class RoomForwardDataEvent(IRoomRepository roomRepository) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public RoomForwardDataEvent(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var roomId = reader.ReadInteger();
 
-        var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
+        var (found, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
         
         if (!found || room == null)
         {

@@ -1,15 +1,8 @@
 ﻿namespace Sadie.Game.Rooms.Categories;
 
-public class RoomCategory
+public class RoomCategory(int id, string caption, bool visible)
 {
-    public int Id { get; }
-    public string Caption { get; }
-    public bool Visible { get; }
-    
-    public RoomCategory(int id, string caption, bool visible)
-    {
-        Id = id;
-        Caption = caption;
-        Visible = visible;
-    }
+    public int Id { get; } = id;
+    public string Caption { get; } = caption;
+    public bool Visible { get; } = visible;
 }

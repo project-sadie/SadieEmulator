@@ -4,16 +4,9 @@ using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserRepository : IRoomUserRepository
+public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserRepository
 {
-    private readonly ILogger<RoomUserRepository> _logger;
-    private readonly ConcurrentDictionary<int, IRoomUser> _users;
-
-    public RoomUserRepository(ILogger<RoomUserRepository> logger)
-    {
-        _logger = logger;
-        _users = new ConcurrentDictionary<int, IRoomUser>();
-    }
+    private readonly ConcurrentDictionary<int, IRoomUser> _users = new();
 
     public ICollection<IRoomUser> GetAll() => _users.Values;
     public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Id, user);
@@ -33,7 +26,7 @@ public class RoomUserRepository : IRoomUserRepository
 
         if (!result || roomUser == null)
         {
-            _logger.LogError($"Failed to remove a room user");
+            logger.LogError($"Failed to remove a room user");
             return;
         }
         

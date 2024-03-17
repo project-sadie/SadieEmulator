@@ -6,18 +6,11 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Rooms;
 
-public class RoomHeightmapEvent : INetworkPacketEvent
+public class RoomHeightmapEvent(IRoomRepository roomRepository) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public RoomHeightmapEvent(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var (found, room) = _roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
+        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
         
         if (!found || room == null)
         {

@@ -10,15 +10,8 @@ using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Catalog;
 
-public class CatalogPurchaseEvent : INetworkPacketEvent
+public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetworkPacketEvent
 {
-    private readonly CatalogPageRepository _pageRepository;
-
-    public CatalogPurchaseEvent(CatalogPageRepository pageRepository)
-    {
-        _pageRepository = pageRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
@@ -36,7 +29,7 @@ public class CatalogPurchaseEvent : INetworkPacketEvent
         var extraData = reader.ReadString();
         var amount = reader.ReadInteger();
 
-        var (found, page) = _pageRepository.TryGet(pageId);
+        var (found, page) = pageRepository.TryGet(pageId);
 
         if (!found || page == null)
         {

@@ -7,27 +7,19 @@ using Sadie.Shared.Game;
 
 namespace Sadie.Networking.Events.Rooms.Users.Chat;
 
-public class RoomUserChatEvent : INetworkPacketEvent
+public class RoomUserChatEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
+    : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-    private readonly RoomConstants _roomConstants;
-
-    public RoomUserChatEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
-    {
-        _roomRepository = roomRepository;
-        _roomConstants = roomConstants;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var message = reader.ReadString();
         
-        if (string.IsNullOrEmpty(message) || message.Length > _roomConstants.MaxChatMessageLength)
+        if (string.IsNullOrEmpty(message) || message.Length > roomConstants.MaxChatMessageLength)
         {
             return;
         }
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }

@@ -3,20 +3,12 @@ using Sadie.Game.Navigator.Categories;
 
 namespace Sadie.Game.Navigator.Tabs;
 
-public class NavigatorTabDao : BaseDao
+public class NavigatorTabDao(
+    IDatabaseProvider databaseProvider,
+    NavigatorTabFactory tabFactory,
+    NavigatorCategoryDao navigatorCategoryDao)
+    : BaseDao(databaseProvider)
 {
-    private readonly NavigatorTabFactory _tabFactory;
-    private readonly NavigatorCategoryDao _navigatorCategoryDao;
-
-    public NavigatorTabDao(
-        IDatabaseProvider databaseProvider, 
-        NavigatorTabFactory tabFactory, 
-        NavigatorCategoryDao navigatorCategoryDao) : base(databaseProvider)
-    {
-        _tabFactory = tabFactory;
-        _navigatorCategoryDao = navigatorCategoryDao;
-    }
-
     public async Task<List<NavigatorTab>> GetAllAsync()
     {
         var tabs = new List<NavigatorTab>();
@@ -31,9 +23,9 @@ public class NavigatorTabDao : BaseDao
                 break;
             }
 
-            var categories = await _navigatorCategoryDao.GetAllForTabAsync(record.Get<int>("id"));
+            var categories = await navigatorCategoryDao.GetAllForTabAsync(record.Get<int>("id"));
 
-            var tab = _tabFactory.Create(
+            var tab = tabFactory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("name"), 
                 categories);

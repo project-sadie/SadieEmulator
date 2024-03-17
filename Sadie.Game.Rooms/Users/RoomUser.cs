@@ -6,31 +6,22 @@ using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUser : RoomUserData, IRoomUser
+public class RoomUser(
+    IRoom room,
+    INetworkObject networkObject,
+    int id,
+    HPoint point,
+    HDirection directionHead,
+    HDirection direction,
+    AvatarData avatarData,
+    RoomConstants constants)
+    : RoomUserData(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
+        IRoomUser
 {
-    private readonly IRoom _room;
-    private readonly RoomConstants _constants;
+    private readonly RoomConstants _constants = constants;
     
-    public int Id { get; }
-    public INetworkObject NetworkObject { get; }
-
-    public RoomUser(
-        IRoom room,
-        INetworkObject networkObject, 
-        int id, 
-        HPoint point, 
-        HDirection directionHead, 
-        HDirection direction,
-        AvatarData avatarData,
-        RoomConstants constants) : 
-        base(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle))
-    {
-        _room = room;
-        _constants = constants;
-        
-        Id = id;
-        NetworkObject = networkObject;
-    }
+    public int Id { get; } = id;
+    public INetworkObject NetworkObject { get; } = networkObject;
 
     private void SetNextPosition()
     {
@@ -43,7 +34,7 @@ public class RoomUser : RoomUserData, IRoomUser
         
         SetNextPosition();
         
-        GoalSteps = RoomHelpers.BuildPathForWalk(_room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
+        GoalSteps = RoomHelpers.BuildPathForWalk(room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
         IsWalking = true;
     }
 
@@ -73,7 +64,7 @@ public class RoomUser : RoomUserData, IRoomUser
 
     public bool HasRights()
     {
-        return _room.OwnerId == Id || _room.PlayersWithRights.Contains(Id);
+        return room.OwnerId == Id || room.PlayersWithRights.Contains(Id);
     }
 
     private async Task ProcessMovementAsync() // 2bMoved

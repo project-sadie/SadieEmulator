@@ -6,17 +6,11 @@ using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Players.Friendships;
 
-public class PlayerRemoveFriendsEvent : INetworkPacketEvent
+public class PlayerRemoveFriendsEvent(
+    IPlayerRepository playerRepository,
+    IPlayerFriendshipRepository friendshipRepository)
+    : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerFriendshipRepository _friendshipRepository;
-
-    public PlayerRemoveFriendsEvent(IPlayerRepository playerRepository, IPlayerFriendshipRepository friendshipRepository)
-    {
-        _playerRepository = playerRepository;
-        _friendshipRepository = friendshipRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = client.Player.Data.Id;
@@ -29,13 +23,13 @@ public class PlayerRemoveFriendsEvent : INetworkPacketEvent
             var currentId = reader.ReadInteger();
             removedIds.Add(currentId);
 
-            if (_playerRepository.TryGetPlayerById(currentId, out var target) && target != null)
+            if (playerRepository.TryGetPlayerById(currentId, out var target) && target != null)
             {
                 target.Data.FriendshipComponent.RemoveFriend(playerId);
                 await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter(new List<int> { playerId }).GetAllBytes());
             }
 
-            await _friendshipRepository.DeleteFriendshipAsync(playerId, currentId);
+            await friendshipRepository.DeleteFriendshipAsync(playerId, currentId);
         }
 
         client.Player.Data.FriendshipComponent.RemoveFriends(removedIds);

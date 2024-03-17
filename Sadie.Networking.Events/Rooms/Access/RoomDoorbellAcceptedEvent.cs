@@ -6,30 +6,23 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Rooms.Access;
 
-public class RoomDoorbellAcceptedEvent : INetworkPacketEvent
+public class RoomDoorbellAcceptedEvent(
+    IRoomRepository roomRepository,
+    ILogger<RoomDoorbellAcceptedEvent> logger,
+    IRoomUserFactory roomUserFactory)
+    : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-    private readonly ILogger<RoomDoorbellAcceptedEvent> _logger;
-    private readonly IRoomUserFactory _roomUserFactory;
-
-    public RoomDoorbellAcceptedEvent(IRoomRepository roomRepository, ILogger<RoomDoorbellAcceptedEvent> logger, IRoomUserFactory roomUserFactory)
-    {
-        _roomRepository = roomRepository;
-        _logger = logger;
-        _roomUserFactory = roomUserFactory;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var roomId = reader.ReadInteger();
 
-        var (roomFound, room) = _roomRepository.TryGetRoomById(roomId);
+        var (roomFound, room) = roomRepository.TryGetRoomById(roomId);
 
         if (!roomFound || room == null)
         {
             return;
         }
         
-        await PacketEventHelpers.EnterRoomAsync(client, room, _logger, _roomUserFactory);
+        await PacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
     }
 }

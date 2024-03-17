@@ -3,15 +3,9 @@ using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;
 
-public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
+public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFriendshipFactory friendshipFactory)
+    : BaseDao(databaseProvider), IPlayerFriendshipDao
 {
-    private readonly PlayerFriendshipFactory _friendshipFactory;
-
-    public PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFriendshipFactory friendshipFactory) : base(databaseProvider)
-    {
-        _friendshipFactory = friendshipFactory;
-    }
-
     private static string GetDefaultSelectClause()
     {
         return @"
@@ -30,14 +24,14 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 
     private PlayerFriendship CreateFriendshipFromRecord(DatabaseRecord record)
     {
-        var targetData = _friendshipFactory.CreateFriendshipData(
+        var targetData = friendshipFactory.CreateFriendshipData(
             record.Get<int>("target_id"),
             record.Get<string>("username"),
             record.Get<string>("figure_code"),
             record.Get<string>("motto"),
             record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
         
-        return _friendshipFactory.CreateFriendship(
+        return friendshipFactory.CreateFriendship(
             record.Get<int>("request_id"),
             record.Get<int>("origin_player_id"),
             record.Get<int>("target_player_id"),

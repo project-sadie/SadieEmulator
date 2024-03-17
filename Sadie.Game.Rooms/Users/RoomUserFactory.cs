@@ -5,15 +5,8 @@ using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserFactory : IRoomUserFactory
+public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public RoomUserFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public RoomUser Create(
         IRoom room,
         INetworkObject networkObject, 
@@ -24,7 +17,7 @@ public class RoomUserFactory : IRoomUserFactory
         IAvatarData avatarData)
     {
         return ActivatorUtilities.CreateInstance<RoomUser>(
-            _serviceProvider,
+            serviceProvider,
             room,
             networkObject, 
             id, 

@@ -3,20 +3,12 @@ using Sadie.Game.Furniture;
 
 namespace Sadie.Game.Catalog.Items;
 
-public class CatalogItemDao : BaseDao
+public class CatalogItemDao(
+    IDatabaseProvider databaseProvider,
+    CatalogItemFactory factory,
+    FurnitureItemRepository furnitureItemRepository)
+    : BaseDao(databaseProvider)
 {
-    private readonly CatalogItemFactory _factory;
-    private readonly FurnitureItemRepository _furnitureItemRepository;
-
-    public CatalogItemDao(
-        IDatabaseProvider databaseProvider, 
-        CatalogItemFactory factory,
-        FurnitureItemRepository furnitureItemRepository) : base(databaseProvider)
-    {
-        _factory = factory;
-        _furnitureItemRepository = furnitureItemRepository;
-    }
-
     public async Task<List<CatalogItem>> GetItemsForPageAsync(int pageId)
     {
         var items = new List<CatalogItem>();
@@ -55,7 +47,7 @@ public class CatalogItemDao : BaseDao
 
             foreach (var itemId in furnitureItemIds)
             {
-                var result = _furnitureItemRepository.TryGetById(itemId);
+                var result = furnitureItemRepository.TryGetById(itemId);
 
                 if (result is { Item1: true, Item2: not null })
                 {
@@ -68,7 +60,7 @@ public class CatalogItemDao : BaseDao
                 continue;
             }
 
-            var item = _factory.Create(
+            var item = factory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("name"),
                 record.Get<int>("cost_credits"),

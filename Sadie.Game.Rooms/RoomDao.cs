@@ -4,15 +4,8 @@ using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomDao : BaseDao, IRoomDao
+public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) : BaseDao(databaseProvider), IRoomDao
 {
-    private readonly IRoomFactory _factory;
-
-    public RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) : base(databaseProvider)
-    {
-        _factory = factory;
-    }
-
     public async Task<Tuple<bool, IRoom?>> TryGetRoomById(long roomId)
     {
         var reader = await GetReaderAsync(@"
@@ -79,7 +72,7 @@ public class RoomDao : BaseDao, IRoomDao
             return new Tuple<bool, IRoom?>(false, null);
         }
 
-        var settings = _factory.CreateSettings(
+        var settings = factory.CreateSettings(
             record.Get<bool>("walk_diagonal"),
             (RoomAccessType) record.Get<int>("access_type"),
             record.Get<string>("password"),
@@ -103,7 +96,7 @@ public class RoomDao : BaseDao, IRoomDao
             record.Get<int>("door_y"),
             record.Get<float>("door_z"));
         
-        var layout = _factory.CreateLayout(
+        var layout = factory.CreateLayout(
             record.Get<int>("layout_id"),
             record.Get<string>("layout_name"),
             record.Get<string>("heightmap"),
@@ -116,7 +109,7 @@ public class RoomDao : BaseDao, IRoomDao
             new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
             new List<int>();
 
-        return new Tuple<bool, IRoom?>(true, _factory.Create(record.Get<int>("id"),
+        return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
             layout,
             record.Get<int>("owner_id"),

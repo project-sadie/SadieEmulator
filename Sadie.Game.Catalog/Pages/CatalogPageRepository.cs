@@ -1,19 +1,12 @@
 namespace Sadie.Game.Catalog.Pages;
 
-public class CatalogPageRepository
+public class CatalogPageRepository(CatalogPageDao pageDao)
 {
-    private readonly CatalogPageDao _pageDao;
-    private Dictionary<int, CatalogPage> _pages; // TODO: make dictionary so we can lookup by id faster
-
-    public CatalogPageRepository(CatalogPageDao pageDao)
-    {
-        _pageDao = pageDao;
-        _pages = new Dictionary<int, CatalogPage>();
-    }
+    private Dictionary<int, CatalogPage> _pages = new(); // TODO: make dictionary so we can lookup by id faster
 
     public async Task LoadInitialDataAsync()
     {
-        _pages = await _pageDao.GetAllAsync();
+        _pages = await pageDao.GetAllAsync();
 
         foreach (var page in _pages.Values)
         {

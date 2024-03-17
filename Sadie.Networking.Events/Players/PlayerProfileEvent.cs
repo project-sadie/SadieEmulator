@@ -6,17 +6,9 @@ using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events.Players;
 
-public class PlayerProfileEvent : INetworkPacketEvent
+public class PlayerProfileEvent(IPlayerRepository playerRepository, IPlayerFriendshipRepository friendshipRepository)
+    : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerFriendshipRepository _friendshipRepository;
-
-    public PlayerProfileEvent(IPlayerRepository playerRepository, IPlayerFriendshipRepository friendshipRepository)
-    {
-        _playerRepository = playerRepository;
-        _friendshipRepository = friendshipRepository;
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
@@ -32,14 +24,14 @@ public class PlayerProfileEvent : INetworkPacketEvent
             onlineData = client.Player.Data;
             profileOnline = true;
         }
-        else if (_playerRepository.TryGetPlayerById(profileId, out var onlinePlayer))
+        else if (playerRepository.TryGetPlayerById(profileId, out var onlinePlayer))
         {
             onlineData = onlinePlayer.Data;
             profileOnline = true;
         }
         else
         {
-            var (found, fetchedPlayerData) = await _playerRepository.TryGetPlayerDataAsync(profileId);
+            var (found, fetchedPlayerData) = await playerRepository.TryGetPlayerDataAsync(profileId);
 
             if (found)
             {
@@ -53,8 +45,8 @@ public class PlayerProfileEvent : INetworkPacketEvent
         }
 
         var friendCount = onlineData.FriendshipComponent.Friendships.Count;
-        var friendshipExists = await _friendshipRepository.DoesFriendshipExist(playerId, profileId);
-        var friendshipRequestExists = await _friendshipRepository.DoesRequestExist(playerId, profileId);
+        var friendshipExists = await friendshipRepository.DoesFriendshipExist(playerId, profileId);
+        var friendshipRequestExists = await friendshipRepository.DoesRequestExist(playerId, profileId);
 
         var profileWriter = new PlayerProfileWriter(
                 onlineData, 

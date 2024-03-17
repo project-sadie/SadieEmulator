@@ -1,19 +1,12 @@
 ﻿namespace Sadie.Game.Rooms.Categories;
 
-public class RoomCategoryRepository : IRoomCategoryRepository
+public class RoomCategoryRepository(IRoomCategoryDao categoryDao) : IRoomCategoryRepository
 {
-    private List<RoomCategory> _categories;
-    private readonly IRoomCategoryDao _categoryDao;
-
-    public RoomCategoryRepository(IRoomCategoryDao categoryDao)
-    {
-        _categories = new List<RoomCategory>();
-        _categoryDao = categoryDao;
-    }
+    private List<RoomCategory> _categories = new();
 
     public async Task LoadInitialDataAsync()
     {
-        _categories = await _categoryDao.GetAllCategoriesAsync();
+        _categories = await categoryDao.GetAllCategoriesAsync();
     }
 
     public List<RoomCategory> GetAllCategories()

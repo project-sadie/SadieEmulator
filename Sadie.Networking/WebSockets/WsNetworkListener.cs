@@ -4,43 +4,33 @@ using Sadie.Networking.Client;
 
 namespace Sadie.Networking.WebSockets
 {
-    public class WsNetworkListener : INetworkListener
+    public class WsNetworkListener(
+        INetworkClientRepository clientRepository,
+        INetworkClientFactory clientFactory,
+        HttpListener httpListener)
+        : INetworkListener
     {
-        private readonly INetworkClientRepository _clientRepository;
-        private readonly INetworkClientFactory _clientFactory;
-        private readonly HttpListener _httpListener;
-
-        public WsNetworkListener(
-            INetworkClientRepository clientRepository, 
-            INetworkClientFactory clientFactory, 
-            HttpListener httpListener)
-        {
-            _clientRepository = clientRepository;
-            _clientFactory = clientFactory;
-            _httpListener = httpListener;
-        }
-
         public void Dispose()
         {
-            if (_httpListener.IsListening)
+            if (httpListener.IsListening)
             {
-                _httpListener.Stop();
+                httpListener.Stop();
             }
             
-            _httpListener.Close();
+            httpListener.Close();
         }
         
         public void Start()
         {
             ServicePointManager.ServerCertificateValidationCallback += (_, _, _, _) => true;
-            _httpListener.Start();
+            httpListener.Start();
         }
 
         public async Task ListenAsync()
         {
             while (true)
             {
-                var context = await _httpListener.GetContextAsync();
+                var context = await httpListener.GetContextAsync();
 
                 if (!context.Request.IsWebSocketRequest)
                 {
@@ -52,8 +42,8 @@ namespace Sadie.Networking.WebSockets
                 WebSocketContext wsContext = await context.AcceptWebSocketAsync(subProtocol: null);
                 var ws = wsContext.WebSocket;
 
-                var client = _clientFactory.CreateClient(guid, ws);
-                _clientRepository.AddClient(guid, client);
+                var client = clientFactory.CreateClient(guid, ws);
+                clientRepository.AddClient(guid, client);
                 await client.ListenAsync();
             }
         }

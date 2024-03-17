@@ -6,15 +6,8 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Players.Messenger;
 
-public class PlayerStalkEvent : INetworkPacketEvent
+public class PlayerStalkEvent(IPlayerRepository playerRepository) : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-
-    public PlayerStalkEvent(IPlayerRepository playerRepository)
-    {
-        _playerRepository = playerRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient client,
         INetworkPacketReader reader)
     {
@@ -29,7 +22,7 @@ public class PlayerStalkEvent : INetworkPacketEvent
             return;
         }
 
-        if (!_playerRepository.TryGetPlayerById(playerId, out var targetPlayer))
+        if (!playerRepository.TryGetPlayerById(playerId, out var targetPlayer))
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetOffline).GetAllBytes());
             return;

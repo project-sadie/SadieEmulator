@@ -2,24 +2,16 @@ using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;
 
-public class PlayerFriendshipData
+public class PlayerFriendshipData(
+    int id,
+    string username,
+    string figureCode,
+    string motto,
+    AvatarGender gender)
 {
-    public int Id { get; }
-    public string Username { get; }
-    public string FigureCode { get; }
-    public string Motto { get; }
-    public AvatarGender Gender { get; }
-    
-    public PlayerFriendshipData(int id,
-        string username,
-        string figureCode,
-        string motto,
-        AvatarGender gender)
-    {
-        Id = id;
-        Username = username;
-        FigureCode = figureCode;
-        Motto = motto;
-        Gender = gender;
-    }
+    public int Id { get; } = id;
+    public string Username { get; } = username;
+    public string FigureCode { get; } = figureCode;
+    public string Motto { get; } = motto;
+    public AvatarGender Gender { get; } = gender;
 }

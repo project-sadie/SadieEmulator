@@ -8,15 +8,8 @@ using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Networking.Events.Players;
 
-public class PlayerChangedAppearanceEvent : INetworkPacketEvent
+public class PlayerChangedAppearanceEvent(IRoomRepository roomRepository) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public PlayerChangedAppearanceEvent(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
@@ -33,7 +26,7 @@ public class PlayerChangedAppearanceEvent : INetworkPacketEvent
         playerData.Gender = gender;
         playerData.FigureCode = figureCode;
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }

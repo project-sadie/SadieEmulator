@@ -2,17 +2,10 @@
 
 namespace Sadie.Game.Rooms.Categories;
 
-public class RoomCategoryFactory
+public class RoomCategoryFactory(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public RoomCategoryFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public RoomCategory CreateFromRecord(int id, string caption, bool isVisible)
     {
-        return ActivatorUtilities.CreateInstance<RoomCategory>(_serviceProvider, id, caption, isVisible);
+        return ActivatorUtilities.CreateInstance<RoomCategory>(serviceProvider, id, caption, isVisible);
     }
 }

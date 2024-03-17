@@ -7,17 +7,9 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Players.Messenger;
 
-public class PlayerSendDirectMessageEvent : INetworkPacketEvent
+public class PlayerSendDirectMessageEvent(IPlayerRepository playerRepository, IPlayerMessageDao playerMessageDao)
+    : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerMessageDao _playerMessageDao;
-
-    public PlayerSendDirectMessageEvent(IPlayerRepository playerRepository, IPlayerMessageDao playerMessageDao)
-    {
-        _playerRepository = playerRepository;
-        _playerMessageDao = playerMessageDao;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalSeconds < 1)
@@ -49,14 +41,14 @@ public class PlayerSendDirectMessageEvent : INetworkPacketEvent
             return;
         }
 
-        if (!_playerRepository.TryGetPlayerById(playerId, out var targetPlayer) || targetPlayer == null)
+        if (!playerRepository.TryGetPlayerById(playerId, out var targetPlayer) || targetPlayer == null)
         {
             return;
         }
 
         var playerMessage = new PlayerMessage(client.Player.Data.Id, targetPlayer.Data.Id, message);
 
-        await _playerMessageDao.CreateMessageAsync(playerMessage);
+        await playerMessageDao.CreateMessageAsync(playerMessage);
         await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter(playerMessage).GetAllBytes());
     }
 }

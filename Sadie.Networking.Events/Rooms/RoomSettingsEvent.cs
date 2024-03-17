@@ -5,19 +5,12 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Rooms;
 
-public class RoomSettingsEvent : INetworkPacketEvent
+public class RoomSettingsEvent(IRoomRepository roomRepository) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public RoomSettingsEvent(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var roomId = reader.ReadInteger();
-        var (foundRoom, room) = _roomRepository.TryGetRoomById(roomId);
+        var (foundRoom, room) = roomRepository.TryGetRoomById(roomId);
         
         if (foundRoom)
         {

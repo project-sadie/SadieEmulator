@@ -1,17 +1,10 @@
 namespace Sadie.Game.Furniture;
 
-public class FurnitureItemRepository
+public class FurnitureItemRepository(FurnitureItemDao furnitureItemDao)
 {
-    private readonly FurnitureItemDao _furnitureItemDao;
-
-    public FurnitureItemRepository(FurnitureItemDao furnitureItemDao)
-    {
-        _furnitureItemDao = furnitureItemDao;
-    }
-
     public async Task LoadInitialDataAsync()
     {
-        _items = await _furnitureItemDao.GetAllAsync();
+        _items = await furnitureItemDao.GetAllAsync();
     }
 
     private Dictionary<int, FurnitureItem> _items;

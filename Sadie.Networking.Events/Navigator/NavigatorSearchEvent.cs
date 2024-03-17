@@ -8,30 +8,22 @@ using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Navigator;
 
-public class NavigatorSearchEvent : INetworkPacketEvent
+public class NavigatorSearchEvent(
+    IRoomRepository roomRepository,
+    NavigatorTabRepository navigatorTabRepository,
+    NavigatorRoomProvider navigatorRoomProvider)
+    : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-    private readonly NavigatorTabRepository _navigatorTabRepository;
-    private readonly NavigatorRoomProvider _navigatorRoomProvider;
+    private readonly IRoomRepository _roomRepository = roomRepository;
 
-    public NavigatorSearchEvent(
-        IRoomRepository roomRepository, 
-        NavigatorTabRepository navigatorTabRepository, 
-        NavigatorRoomProvider navigatorRoomProvider)
-    {
-        _roomRepository = roomRepository;
-        _navigatorTabRepository = navigatorTabRepository;
-        _navigatorRoomProvider = navigatorRoomProvider;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var tabName = reader.ReadString();
         var searchQuery = reader.ReadString();
 
-        if (!_navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
+        if (!navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
         {
-            var writer = new NavigatorSearchResultPagesWriter(tabName, searchQuery, new List<NavigatorCategory>(), _navigatorRoomProvider);
+            var writer = new NavigatorSearchResultPagesWriter(tabName, searchQuery, new List<NavigatorCategory>(), navigatorRoomProvider);
             
             await client.WriteToStreamAsync(writer.GetAllBytes());
             return;
@@ -46,7 +38,7 @@ public class NavigatorSearchEvent : INetworkPacketEvent
                 tabName, 
                 searchQuery, 
                 categories, 
-                _navigatorRoomProvider).GetAllBytes();
+                navigatorRoomProvider).GetAllBytes();
         
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }

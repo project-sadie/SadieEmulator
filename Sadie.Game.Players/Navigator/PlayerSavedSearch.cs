@@ -1,17 +1,9 @@
 namespace Sadie.Game.Players.Navigator;
 
-public class PlayerSavedSearch
+public class PlayerSavedSearch(long id, string search, string filter)
 {
-    public PlayerSavedSearch(long id, string search, string filter)
-    {
-        Id = id;
-        Search = search;
-        Filter = filter;
-        Unknown1 = "";
-    }
-
-    public long Id { get; }
-    public string Search { get; }
-    public string Filter { get; }
-    public string Unknown1 { get; }
+    public long Id { get; } = id;
+    public string Search { get; } = search;
+    public string Filter { get; } = filter;
+    public string Unknown1 { get; } = "";
 }

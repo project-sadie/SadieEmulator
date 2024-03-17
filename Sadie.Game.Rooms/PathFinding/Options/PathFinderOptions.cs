@@ -4,18 +4,11 @@ namespace Sadie.Game.Rooms.PathFinding.Options;
 
 public class PathFinderOptions
 {
-    public HeuristicFormula HeuristicFormula { get; }
+    public HeuristicFormula HeuristicFormula { get; } = HeuristicFormula.Manhattan;
 
-    public bool UseDiagonals { get; set; }
+    public bool UseDiagonals { get; set; } = true;
 
     public bool PunishChangeDirection { get; set; }
 
-    public int SearchLimit { get; }
-
-    public PathFinderOptions()
-    {
-        HeuristicFormula = HeuristicFormula.Manhattan;
-        UseDiagonals = true;
-        SearchLimit = 2000;
-    }
+    public int SearchLimit { get; } = 2000;
 }

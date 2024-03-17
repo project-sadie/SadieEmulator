@@ -5,22 +5,15 @@ using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Catalog;
 
-public class CatalogPageEvent : INetworkPacketEvent
+public class CatalogPageEvent(CatalogPageRepository catalogPageRepo) : INetworkPacketEvent
 {
-    private readonly CatalogPageRepository _catalogPageRepo;
-
-    public CatalogPageEvent(CatalogPageRepository catalogPageRepo)
-    {
-        _catalogPageRepo = catalogPageRepo;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var pageId = reader.ReadInteger();
         var unknown1 = reader.ReadInteger();
         var catalogMode = reader.ReadString();
         
-        var (exists, page) = _catalogPageRepo.TryGet(pageId);
+        var (exists, page) = catalogPageRepo.TryGet(pageId);
 
         if (!exists || page is not { Enabled: true } || !page.Visible)
         {

@@ -10,15 +10,8 @@ using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
-public class PlayerDataFactory : IPlayerDataFactory
+public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public PlayerDataFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public IPlayerData Create(
         int id, 
         string username, 
@@ -75,7 +68,7 @@ public class PlayerDataFactory : IPlayerDataFactory
     public PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
     {
         return ActivatorUtilities.CreateInstance<PlayerFriendshipComponent>(
-            _serviceProvider,
+            serviceProvider,
             playerId,
             friendships);
     }

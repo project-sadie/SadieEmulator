@@ -7,20 +7,12 @@ using Sadie.Shared.Game;
 
 namespace Sadie.Networking.Events.Rooms.Users.Chat;
 
-public class RoomUserWhisperEvent : INetworkPacketEvent
+public class RoomUserWhisperEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
+    : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-    private readonly RoomConstants _roomConstants;
-
-    public RoomUserWhisperEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
-    {
-        _roomRepository = roomRepository;
-        _roomConstants = roomConstants;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
@@ -34,7 +26,7 @@ public class RoomUserWhisperEvent : INetworkPacketEvent
             return;
         }
         
-        if (string.IsNullOrEmpty(whisperMessage) || whisperMessage.Length > _roomConstants.MaxChatMessageLength)
+        if (string.IsNullOrEmpty(whisperMessage) || whisperMessage.Length > roomConstants.MaxChatMessageLength)
         {
             return;
         }

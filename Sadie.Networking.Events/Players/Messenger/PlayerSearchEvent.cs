@@ -7,15 +7,8 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Players.Messenger;
 
-public class PlayerSearchEvent : INetworkPacketEvent
+public class PlayerSearchEvent(IPlayerRepository playerRepository) : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-
-    public PlayerSearchEvent(IPlayerRepository playerRepository)
-    {
-        _playerRepository = playerRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.PlayerSearch)
@@ -44,7 +37,7 @@ public class PlayerSearchEvent : INetworkPacketEvent
             Select(x => x.TargetData).
             ToList();
 
-        var strangers = await _playerRepository.GetPlayerDataForSearchAsync(searchQuery, friendships.Select(x => x.Id).ToArray());
+        var strangers = await playerRepository.GetPlayerDataForSearchAsync(searchQuery, friendships.Select(x => x.Id).ToArray());
 
         await client.WriteToStreamAsync(new PlayerSearchResultWriter(friendsList, strangers).GetAllBytes());
     }

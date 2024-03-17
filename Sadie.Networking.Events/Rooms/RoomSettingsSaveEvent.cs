@@ -6,19 +6,12 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Rooms;
 
-public class RoomSettingsSaveEvent : INetworkPacketEvent
+public class RoomSettingsSaveEvent(IRoomRepository roomRepository) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public RoomSettingsSaveEvent(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var roomId = reader.ReadInteger();
-        var (roomFound, room) = _roomRepository.TryGetRoomById(roomId);
+        var (roomFound, room) = roomRepository.TryGetRoomById(roomId);
 
         if (!roomFound || room == null)
         {
@@ -114,7 +107,7 @@ public class RoomSettingsSaveEvent : INetworkPacketEvent
         settings.ChatDistance = newChatDistance;
         settings.ChatProtection = newChatProtection;
         
-        await _roomRepository.SaveRoomAsync(room);
+        await roomRepository.SaveRoomAsync(room);
 
         var floorSettingsWriter = new RoomWallFloorSettingsWriter(
                 settings.HideWalls, 

@@ -7,34 +7,27 @@ using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events.Players;
 
-public class PlayerWearingBadgesEvent : INetworkPacketEvent
+public class PlayerWearingBadgesEvent(
+    IPlayerRepository playerRepository,
+    IRoomRepository roomRepository,
+    IPlayerBadgeRepository badgeRepository)
+    : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IRoomRepository _roomRepository;
-    private readonly IPlayerBadgeRepository _badgeRepository;
-
-    public PlayerWearingBadgesEvent(IPlayerRepository playerRepository, IRoomRepository roomRepository, IPlayerBadgeRepository badgeRepository)
-    {
-        _playerRepository = playerRepository;
-        _roomRepository = roomRepository;
-        _badgeRepository = badgeRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
         var playerId = reader.ReadInteger();
-        var isPlayerOnline = _playerRepository.TryGetPlayerById(playerId, out var player);
+        var isPlayerOnline = playerRepository.TryGetPlayerById(playerId, out var player);
         
         var playerBadges = isPlayerOnline ? 
             player!.Data.Badges : 
-            await _badgeRepository.GetBadgesForPlayerAsync(playerId);
+            await badgeRepository.GetBadgesForPlayerAsync(playerId);
 
         playerBadges = playerBadges.
             Where(x => x.Slot != 0 && x.Slot <= 5).
             DistinctBy(x => x.Slot).
             ToList();
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, networkClient, out var room, out _))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, networkClient, out var room, out _))
         {
             await networkClient.WriteToStreamAsync(new PlayerWearingBadgesWriter(playerId, playerBadges).GetAllBytes());
             return;

@@ -4,41 +4,27 @@ using Sadie.Networking.Client;
 
 namespace Sadie.Networking;
 
-public class NetworkListener : INetworkListener
+public class NetworkListener(
+    ILogger<NetworkListener> logger,
+    TcpListener listener,
+    INetworkClientRepository clientRepository,
+    INetworkClientFactory clientFactory)
+    : INetworkListener
 {
-    private readonly ILogger<NetworkListener> _logger;
-    private readonly TcpListener _listener;
-        
-    private readonly INetworkClientRepository _clientRepository;
-    private readonly INetworkClientFactory _clientFactory;
-
-    public NetworkListener(
-        ILogger<NetworkListener> logger, 
-        TcpListener listener, 
-        INetworkClientRepository clientRepository, 
-        INetworkClientFactory clientFactory)
-    {
-        _logger = logger;
-        _listener = listener;
-            
-        _clientRepository = clientRepository;
-        _clientFactory = clientFactory;
-    }
-
     public void Start()
     {
-        _listener.Start();
+        listener.Start();
     }
 
     private bool _listening = true;
         
     public async Task ListenAsync()
     {
-        _logger.LogInformation("Networking is listening for connections");
+        logger.LogInformation("Networking is listening for connections");
             
         while (_listening)
         {
-            var client = await _listener.AcceptTcpClientAsync();
+            var client = await listener.AcceptTcpClientAsync();
             await AcceptClient(client);
         }
     }
@@ -46,9 +32,9 @@ public class NetworkListener : INetworkListener
     private async Task AcceptClient(TcpClient client)
     {
         var clientId = Guid.NewGuid();
-        var networkClient = _clientFactory.CreateClient(clientId, client);
+        var networkClient = clientFactory.CreateClient(clientId, client);
         
-        _clientRepository.AddClient(clientId, networkClient);
+        clientRepository.AddClient(clientId, networkClient);
                 
         await networkClient.ListenAsync();
     }
@@ -57,7 +43,7 @@ public class NetworkListener : INetworkListener
     {
         _listening = false;
             
-        _listener.Server.Shutdown(SocketShutdown.Both);
-        _listener.Server.Close();
+        listener.Server.Shutdown(SocketShutdown.Both);
+        listener.Server.Close();
     }
 }

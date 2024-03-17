@@ -5,18 +5,11 @@ using Sadie.Networking.Writers.Players.Messenger;
 
 namespace Sadie.Networking.Events.Players.Friendships;
 
-public class PlayerFriendRequestsEvent : INetworkPacketEvent
+public class PlayerFriendRequestsEvent(IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEvent
 {
-    private readonly IPlayerFriendshipRepository _friendshipRepository;
-
-    public PlayerFriendRequestsEvent(IPlayerFriendshipRepository friendshipRepository)
-    {
-        _friendshipRepository = friendshipRepository;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var pendingFriends = await _friendshipRepository.GetIncomingFriendRequestsForPlayerAsync(client.Player!.Data.Id);
+        var pendingFriends = await friendshipRepository.GetIncomingFriendRequestsForPlayerAsync(client.Player!.Data.Id);
         await client.WriteToStreamAsync(new PlayerFriendRequestsWriter(pendingFriends.Select(x => x.TargetData).ToList()).GetAllBytes());
     }
 }

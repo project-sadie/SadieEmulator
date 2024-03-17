@@ -3,22 +3,15 @@ using Sadie.Game.Navigator.Categories;
 
 namespace Sadie.Game.Navigator.Tabs;
 
-public class NavigatorTabFactory
+public class NavigatorTabFactory(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public NavigatorTabFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public NavigatorTab Create(
         int id,
         string name, 
         List<NavigatorCategory> categories)
     {
         return ActivatorUtilities.CreateInstance<NavigatorTab>(
-            _serviceProvider,
+            serviceProvider,
             id, 
             name,
             categories);

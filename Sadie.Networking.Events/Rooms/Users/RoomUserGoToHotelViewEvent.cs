@@ -4,14 +4,8 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Rooms.Users;
 
-public class RoomUserGoToHotelViewEvent : INetworkPacketEvent
+public class RoomUserGoToHotelViewEvent(IRoomRepository roomRepository) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public RoomUserGoToHotelViewEvent(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
@@ -19,7 +13,7 @@ public class RoomUserGoToHotelViewEvent : INetworkPacketEvent
         
         if (lastRoomId != 0)
         {
-            var (foundLast, lastRoom) = await _roomRepository.TryLoadRoomByIdAsync(lastRoomId);
+            var (foundLast, lastRoom) = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
 
             if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Data.Id, out var oldUser) && oldUser != null)
             {

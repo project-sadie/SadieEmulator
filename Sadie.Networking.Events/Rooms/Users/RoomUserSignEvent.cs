@@ -5,18 +5,11 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Rooms.Users;
 
-public class RoomUserSignEvent : INetworkPacketEvent
+public class RoomUserSignEvent(IRoomRepository roomRepository) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public RoomUserSignEvent(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return Task.CompletedTask;
         }

@@ -3,17 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace SadieEmulator.Tasks;
 
-public class ServerTaskWorker : IServerTaskWorker
+public class ServerTaskWorker(ILogger<ServerTaskWorker> logger, List<IServerTask> tasks) : IServerTaskWorker
 {
-    private readonly ILogger<ServerTaskWorker> _logger;
-    private readonly List<IServerTask> _tasks;
-
-    public ServerTaskWorker(ILogger<ServerTaskWorker> logger, List<IServerTask> tasks)
-    {
-        _logger = logger;
-        _tasks = tasks;
-    }
-
     public void Start()
     {
         var serverWorkerThread = new Thread(Work)
@@ -36,7 +27,7 @@ public class ServerTaskWorker : IServerTaskWorker
     {
         while (!_cancelled)
         {
-            foreach (var task in _tasks.Where(task => task.WaitingToExecute()))
+            foreach (var task in tasks.Where(task => task.WaitingToExecute()))
             {
                 task.LastExecuted = DateTime.Now;
                 ProcessTaskAsync(task);
@@ -54,7 +45,7 @@ public class ServerTaskWorker : IServerTaskWorker
 
         if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 2)
         {
-            _logger.LogWarning($"Task '{task.Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
+            logger.LogWarning($"Task '{task.Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
         }
     }
 }

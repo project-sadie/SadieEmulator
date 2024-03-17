@@ -6,22 +6,12 @@ using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Players.Friendships;
 
-public class PlayerSendFriendRequestEvent : INetworkPacketEvent
+public class PlayerSendFriendRequestEvent(
+    IPlayerRepository playerRepository,
+    IPlayerFriendshipRepository friendshipRepository,
+    PlayerConstants playerConstants)
+    : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IPlayerFriendshipRepository _friendshipRepository;
-    private readonly PlayerConstants _playerConstants;
-
-    public PlayerSendFriendRequestEvent(
-        IPlayerRepository playerRepository, 
-        IPlayerFriendshipRepository friendshipRepository, 
-        PlayerConstants playerConstants)
-    {
-        _playerRepository = playerRepository;
-        _friendshipRepository = friendshipRepository;
-        _playerConstants = playerConstants;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
@@ -29,7 +19,7 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
         
         var targetUsername = reader.ReadString();
         
-        if (playerData.FriendshipComponent.Friendships.Count >= _playerConstants.MaxFriendships)
+        if (playerData.FriendshipComponent.Friendships.Count >= playerConstants.MaxFriendships)
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TooManyFriends).GetAllBytes());
             return;
@@ -43,14 +33,14 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
         IPlayerData? targetData = null;
         var targetOnline = false;
 
-        if (_playerRepository.TryGetPlayerByUsername(targetUsername, out var targetPlayer) && targetPlayer != null)
+        if (playerRepository.TryGetPlayerByUsername(targetUsername, out var targetPlayer) && targetPlayer != null)
         {
             targetData = targetPlayer.Data;
             targetOnline = true;
         }
         else
         {
-            var (found, offlineData) = await _playerRepository.TryGetPlayerDataByUsernameAsync(targetUsername);
+            var (found, offlineData) = await playerRepository.TryGetPlayerDataByUsernameAsync(targetUsername);
 
             if (found)
             {
@@ -71,7 +61,7 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
             return;
         }
         
-        if (targetData.FriendshipComponent.Friendships.Count >= _playerConstants.MaxFriendships)
+        if (targetData.FriendshipComponent.Friendships.Count >= playerConstants.MaxFriendships)
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetTooManyFriends).GetAllBytes());
         }
@@ -92,7 +82,7 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
                 case PlayerFriendshipStatus.Accepted:
                     return;
                 case PlayerFriendshipStatus.Pending:
-                    await _friendshipRepository.AcceptFriendRequestAsync(playerData.Id, targetData.Id);
+                    await friendshipRepository.AcceptFriendRequestAsync(playerData.Id, targetData.Id);
                     friendshipComponent.AcceptIncomingRequest(targetData.Id);
 
                     if (targetOnline && targetPlayer != null)
@@ -103,8 +93,8 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
             }
         }
         
-        await _friendshipRepository.CreateFriendRequestAsync(playerData.Id, targetData.Id);
-        friendshipComponent.Friendships = await _friendshipRepository.GetAllRecordsForPlayerAsync(playerData.Id);
+        await friendshipRepository.CreateFriendRequestAsync(playerData.Id, targetData.Id);
+        friendshipComponent.Friendships = await friendshipRepository.GetAllRecordsForPlayerAsync(playerData.Id);
 
         if (targetOnline && targetPlayer != null)
         {
@@ -113,7 +103,7 @@ public class PlayerSendFriendRequestEvent : INetworkPacketEvent
                 playerData.Username, 
                 playerData.FigureCode).GetAllBytes();
             
-            targetPlayer.Data.FriendshipComponent.Friendships = await _friendshipRepository.GetAllRecordsForPlayerAsync(targetData.Id);
+            targetPlayer.Data.FriendshipComponent.Friendships = await friendshipRepository.GetAllRecordsForPlayerAsync(targetData.Id);
             await targetPlayer.NetworkObject.WriteToStreamAsync(friendRequestWriter);
         }
     }

@@ -2,17 +2,9 @@ using Sadie.Game.Players.Friendships;
 
 namespace Sadie.Game.Players.Components;
 
-public class PlayerFriendshipComponent
+public class PlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
 {
-    private readonly int _playerId;
-
-    public PlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
-    {
-        _playerId = playerId;
-        Friendships = friendships;
-    }
-
-    public List<PlayerFriendship> Friendships { get; set; }
+    public List<PlayerFriendship> Friendships { get; set; } = friendships;
 
     public bool IsFriendsWith(int playerId)
     {
@@ -21,7 +13,7 @@ public class PlayerFriendshipComponent
 
     public void AcceptIncomingRequest(int originId)
     {
-        var request = Friendships.FirstOrDefault(x => x.TargetId == _playerId && x.OriginId == originId);
+        var request = Friendships.FirstOrDefault(x => x.TargetId == playerId && x.OriginId == originId);
 
         if (request == null)
         {
@@ -33,12 +25,12 @@ public class PlayerFriendshipComponent
 
     public void DeclineIncomingRequest(int originId)
     {
-        Friendships.RemoveAll(x => x.TargetId == _playerId && x.OriginId == originId);
+        Friendships.RemoveAll(x => x.TargetId == playerId && x.OriginId == originId);
     }
 
     public void OutgoingRequestAccepted(int targetId)
     {
-        var request = Friendships.FirstOrDefault(x => x.OriginId == _playerId && x.TargetId == targetId);
+        var request = Friendships.FirstOrDefault(x => x.OriginId == playerId && x.TargetId == targetId);
 
         if (request == null)
         {
@@ -50,7 +42,7 @@ public class PlayerFriendshipComponent
 
     public void OutgoingRequestDeclined(int targetId)
     {
-        Friendships.RemoveAll(x => x.OriginId == _playerId && x.TargetId == targetId);
+        Friendships.RemoveAll(x => x.OriginId == playerId && x.TargetId == targetId);
     }
 
     public void RemoveFriend(int targetId)

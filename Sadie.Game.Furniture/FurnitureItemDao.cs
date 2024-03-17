@@ -2,15 +2,9 @@ using Sadie.Database;
 
 namespace Sadie.Game.Furniture;
 
-public class FurnitureItemDao : BaseDao
+public class FurnitureItemDao(IDatabaseProvider databaseProvider, FurnitureItemFactory factory)
+    : BaseDao(databaseProvider)
 {
-    private readonly FurnitureItemFactory _factory;
-
-    public FurnitureItemDao(IDatabaseProvider databaseProvider, FurnitureItemFactory factory) : base(databaseProvider)
-    {
-        _factory = factory;
-    }
-    
     public async Task<Dictionary<int, FurnitureItem>> GetAllAsync()
     {
         var furnitureItems = new Dictionary<int, FurnitureItem>();
@@ -47,7 +41,7 @@ public class FurnitureItemDao : BaseDao
                 break;
             }
 
-            var item = _factory.Create(
+            var item = factory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("name"),
                 record.Get<string>("asset_name"),

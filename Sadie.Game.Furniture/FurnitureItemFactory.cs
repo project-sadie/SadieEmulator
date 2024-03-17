@@ -2,15 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Sadie.Game.Furniture;
 
-public class FurnitureItemFactory
+public class FurnitureItemFactory(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public FurnitureItemFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public FurnitureItem Create(
         int id, 
         string name, 
@@ -33,7 +26,7 @@ public class FurnitureItemFactory
         int interactionModes)
     {
         return ActivatorUtilities.CreateInstance<FurnitureItem>(
-            _serviceProvider, 
+            serviceProvider, 
             id, 
             name,
             assetName,

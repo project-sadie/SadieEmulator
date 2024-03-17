@@ -7,16 +7,9 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Players;
 
-public class PlayerChangeRelationEvent : INetworkPacketEvent
+public class PlayerChangeRelationEvent(IPlayerRepository playerRepository, IRoomRepository roomRepository)
+    : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IRoomRepository _roomRepository;
-
-    public PlayerChangeRelationEvent(IPlayerRepository playerRepository, IRoomRepository roomRepository)
-    {
-        _playerRepository = playerRepository;
-        _roomRepository = roomRepository;
-    }
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = reader.ReadInteger();
@@ -33,13 +26,13 @@ public class PlayerChangeRelationEvent : INetworkPacketEvent
             friendshipComponent.UpdateRelation(playerId, (PlayerFriendshipType) relationId);
             // TODO: Persist the update
             
-            var isOnline = _playerRepository.TryGetPlayerById(playerId, out var onlineFriend) && onlineFriend != null;
+            var isOnline = playerRepository.TryGetPlayerById(playerId, out var onlineFriend) && onlineFriend != null;
             var inRoom = false;
 
             if (isOnline && onlineFriend != null)
             {
                 var onlineData = onlineFriend.Data;
-                var (roomFound, lastRoom) = _roomRepository.TryGetRoomById(onlineData.CurrentRoomId);
+                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(onlineData.CurrentRoomId);
 
                 if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(onlineData.Id, out _))
                 {

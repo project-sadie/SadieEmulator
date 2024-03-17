@@ -11,31 +11,24 @@ using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Rooms;
 
-public class RoomLoadedEvent : INetworkPacketEvent
+public class RoomLoadedEvent(
+    ILogger<RoomLoadedEvent> logger,
+    IRoomRepository roomRepository,
+    IRoomUserFactory roomUserFactory)
+    : INetworkPacketEvent
 {
-    private readonly ILogger<RoomLoadedEvent> _logger;
-    private readonly IRoomRepository _roomRepository;
-    private readonly IRoomUserFactory _roomUserFactory;
-
-    public RoomLoadedEvent(ILogger<RoomLoadedEvent> logger, IRoomRepository roomRepository, IRoomUserFactory roomUserFactory)
-    {
-        _logger = logger;
-        _roomRepository = roomRepository;
-        _roomUserFactory = roomUserFactory;
-    }
-    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
         var playerData = player.Data;
         
         var (roomId, password) = (reader.ReadInteger(), reader.ReadString());
-        var (found, room) = await _roomRepository.TryLoadRoomByIdAsync(roomId);
+        var (found, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
         var lastRoomId = player.Data.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
-            var (foundLast, lastRoom) = await _roomRepository.TryLoadRoomByIdAsync(lastRoomId);
+            var (foundLast, lastRoom) = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
 
             if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(playerData.Id, out var oldUser) && oldUser != null)
             {
@@ -45,7 +38,7 @@ public class RoomLoadedEvent : INetworkPacketEvent
 
         if (!found || room == null)
         {
-            _logger.LogError($"Failed to load room {roomId} for player '{playerData.Username}'");
+            logger.LogError($"Failed to load room {roomId} for player '{playerData.Username}'");
             await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
             return;
         }
@@ -92,6 +85,6 @@ public class RoomLoadedEvent : INetworkPacketEvent
             }
         }
         
-        await PacketEventHelpers.EnterRoomAsync(client, room, _logger, _roomUserFactory);
+        await PacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
     }
 }

@@ -3,15 +3,8 @@ using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomFactory : IRoomFactory
+public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public RoomFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public RoomLayout CreateLayout(int id,
         string name,
         string heightmap,
@@ -19,7 +12,7 @@ public class RoomFactory : IRoomFactory
         HDirection doorDirection)
     {
         return ActivatorUtilities.CreateInstance<RoomLayout>(
-            _serviceProvider, 
+            serviceProvider, 
             id, 
             name, 
             heightmap, 
@@ -48,7 +41,7 @@ public class RoomFactory : IRoomFactory
         int tradeOption)
     {
         return ActivatorUtilities.CreateInstance<RoomSettings>(
-            _serviceProvider, 
+            serviceProvider, 
             walkDiagonal, 
             accessType, 
             password, 
@@ -82,7 +75,7 @@ public class RoomFactory : IRoomFactory
         List<int> playersWithRights)
     {
         return ActivatorUtilities.CreateInstance<Room>(
-            _serviceProvider,
+            serviceProvider,
             id, 
             name,
             layout,

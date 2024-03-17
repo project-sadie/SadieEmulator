@@ -8,30 +8,21 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Players;
 
-public class PlayerChangedMottoEvent : INetworkPacketEvent
+public class PlayerChangedMottoEvent(IRoomRepository roomRepository, PlayerConstants constants) : INetworkPacketEvent
 {
-    private readonly IRoomRepository _roomRepository;
-    private readonly PlayerConstants _constants;
-
-    public PlayerChangedMottoEvent(IRoomRepository roomRepository, PlayerConstants constants)
-    {
-        _roomRepository = roomRepository;
-        _constants = constants;
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
         var newMotto = reader.ReadString();
 
-        if (newMotto.Length >= _constants.MaxMottoLength)
+        if (newMotto.Length >= constants.MaxMottoLength)
         {
-            newMotto = newMotto.Truncate(_constants.MaxMottoLength);
+            newMotto = newMotto.Truncate(constants.MaxMottoLength);
         }
 
         player.Data.Motto = newMotto;
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(_roomRepository, client, out var room, out var roomUser))
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }

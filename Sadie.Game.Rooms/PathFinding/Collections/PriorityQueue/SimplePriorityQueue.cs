@@ -1,14 +1,9 @@
 ﻿namespace Sadie.Game.Rooms.PathFinding.Collections.PriorityQueue;
 
-internal class SimplePriorityQueue<T> : IModelAPriorityQueue<T>
+internal class SimplePriorityQueue<T>(IComparer<T>? comparer = null) : IModelAPriorityQueue<T>
 {
     private readonly List<T> _innerList = new List<T>();
-    private readonly IComparer<T> _comparer;
-
-    public SimplePriorityQueue(IComparer<T>? comparer = null)
-    {
-        _comparer = comparer ?? Comparer<T>.Default;;
-    }
+    private readonly IComparer<T> _comparer = comparer ?? Comparer<T>.Default;
 
     public T Peek()
     {

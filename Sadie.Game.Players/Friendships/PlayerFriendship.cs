@@ -1,27 +1,17 @@
 ﻿namespace Sadie.Game.Players.Friendships;
 
-public class PlayerFriendship
+public class PlayerFriendship(
+    int id,
+    int originId,
+    int targetId,
+    PlayerFriendshipStatus status,
+    PlayerFriendshipType type,
+    PlayerFriendshipData targetData)
 {
-    public int Id { get; }
-    public PlayerFriendshipStatus Status { get; set; }
-    public PlayerFriendshipType Type { get; set; }
-    public int OriginId { get; }
-    public int TargetId { get; }
-    public PlayerFriendshipData TargetData { get; }
-
-    public PlayerFriendship(
-        int id, 
-        int originId, 
-        int targetId, 
-        PlayerFriendshipStatus status, 
-        PlayerFriendshipType type, 
-        PlayerFriendshipData targetData)
-    {
-        Id = id;       
-        Status = status;
-        Type = type;
-        OriginId = originId;
-        TargetId = targetId;
-        TargetData = targetData;
-    }
+    public int Id { get; } = id;
+    public PlayerFriendshipStatus Status { get; set; } = status;
+    public PlayerFriendshipType Type { get; set; } = type;
+    public int OriginId { get; } = originId;
+    public int TargetId { get; } = targetId;
+    public PlayerFriendshipData TargetData { get; } = targetData;
 }
