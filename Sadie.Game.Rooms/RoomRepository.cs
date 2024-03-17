@@ -40,6 +40,15 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
             ToList();
     }
 
+    public List<IRoom> GetByOwnerId(int ownerId, int amount)
+    {
+        return _rooms.Values.
+            Where(x => x.OwnerId == ownerId).
+            OrderBy(x => x.Name).
+            Take(amount).
+            ToList();
+    }
+
     public int Count => _rooms.Count;
     public IEnumerable<IRoom> GetAllRooms() => _rooms.Values;
 
