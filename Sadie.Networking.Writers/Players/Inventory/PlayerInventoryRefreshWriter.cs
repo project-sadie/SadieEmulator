@@ -7,6 +7,6 @@ public class PlayerInventoryRefreshWriter : NetworkPacketWriter
 {
     public PlayerInventoryRefreshWriter()
     {
-        WriteInteger(ServerPacketId.PlayerInventoryRefresh);
+        WriteShort(ServerPacketId.PlayerInventoryRefresh);
     }
 }
