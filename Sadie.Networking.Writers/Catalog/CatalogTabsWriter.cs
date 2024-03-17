@@ -31,7 +31,7 @@ public class CatalogTabsWriter : NetworkPacketWriter
         WriteBool(page.Visible);
         WriteInteger(page.Icon);
         WriteInteger(page.Enabled ? page.Id : -1);
-        WriteString(page.Caption);
+        WriteString(page.Name);
         WriteString(page.Caption);
         WriteInteger(0); // TODO: offer id count
         WriteInteger(page.Pages.Count);

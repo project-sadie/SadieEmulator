@@ -107,6 +107,7 @@ public class CatalogPageWriter : NetworkPacketWriter
         if (pageLayout is "frontpage4")
         {
             // TODO: serialize extra?
+            WriteInteger(0);
         }
         else
         {

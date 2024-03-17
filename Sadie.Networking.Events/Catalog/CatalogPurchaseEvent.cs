@@ -65,6 +65,9 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetwo
             return;
         }
 
+        // TODO: Create records 
+        
+        await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(item).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
     }
