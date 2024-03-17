@@ -9,7 +9,7 @@ public class CatalogPurchaseOkWriter : NetworkPacketWriter
 {
     public CatalogPurchaseOkWriter(CatalogItem? item)
     {
-        WriteInteger(ServerPacketId.CatalogPurchaseOk);
+        WriteShort(ServerPacketId.CatalogPurchaseOk);
 
         if (item == null)
         {
