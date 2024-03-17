@@ -10,4 +10,5 @@ public interface IRoomDao
     Task<int> GetLayoutIdFromNameAsync(string name);
     Task<int> CreateChatMessages(List<RoomChatMessage> messages);
     Task<int> SaveRoomAsync(IRoom room);
+    Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int limit, ICollection<long> excludeIds);
 }

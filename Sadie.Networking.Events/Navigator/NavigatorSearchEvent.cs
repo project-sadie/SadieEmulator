@@ -1,6 +1,7 @@
 using Sadie.Game.Navigator;
 using Sadie.Game.Navigator.Categories;
 using Sadie.Game.Navigator.Tabs;
+using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Navigator;
@@ -26,11 +27,9 @@ public class NavigatorSearchEvent(
         if (!navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
         {
             var writer = new NavigatorSearchResultPagesWriter(
-                playerId, 
                 tabName, 
                 searchQuery, 
-                new List<NavigatorCategory>(), 
-                navigatorRoomProvider);
+                new Dictionary<NavigatorCategory, List<IRoom>>());
             
             await client.WriteToStreamAsync(writer.GetAllBytes());
             return;
@@ -41,12 +40,17 @@ public class NavigatorSearchEvent(
             OrderBy(x => x.OrderId).
             ToList();
 
+        var categoryRoomMap = new Dictionary<NavigatorCategory, List<IRoom>>();
+
+        foreach (var category in categories)
+        {
+            categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(playerId, category.CodeName));
+        }
+        
         var searchResultPagesWriter = new NavigatorSearchResultPagesWriter(
-            playerId,
             tabName, 
             searchQuery, 
-            categories, 
-            navigatorRoomProvider).GetAllBytes();
+            categoryRoomMap).GetAllBytes();
         
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }

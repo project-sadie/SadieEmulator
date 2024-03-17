@@ -40,13 +40,12 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
             ToList();
     }
 
-    public List<IRoom> GetByOwnerId(int ownerId, int amount)
+    public async Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int amount)
     {
-        return _rooms.Values.
-            Where(x => x.OwnerId == ownerId).
-            OrderBy(x => x.Name).
-            Take(amount).
-            ToList();
+        var offlineRooms = await dao.GetByOwnerIdAsync(ownerId, amount, _rooms.Keys);
+        var inMemoryRooms = _rooms.Values.Where(x => x.OwnerId == ownerId).ToList();
+        
+        return offlineRooms.Concat(inMemoryRooms).ToList();
     }
 
     public int Count => _rooms.Count;
