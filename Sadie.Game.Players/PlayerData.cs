@@ -1,6 +1,7 @@
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Components;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game;
@@ -31,7 +32,8 @@ public class PlayerData(
     PlayerFriendshipComponent friendshipComponent,
     ChatBubble chatBubble,
     bool allowFriendRequests,
-    List<IPlayerSubscription> subscriptions)
+    List<IPlayerSubscription> subscriptions,
+    PlayerInventoryRepository inventoryRepository)
     : AvatarData(username, figureCode, motto, gender, achievementScore, tags, chatBubble), IPlayerData
 {
     public int Id { get; } = id;
@@ -50,7 +52,8 @@ public class PlayerData(
     public PlayerFriendshipComponent FriendshipComponent { get; } = friendshipComponent;
     public bool AllowFriendRequests { get; } = allowFriendRequests;
     public List<IPlayerSubscription> Subscriptions { get; } = subscriptions;
-
+    public IPlayerInventoryRepository Inventory { get; } = inventoryRepository;
+    
     public ValueTask DisposeAsync()
     {
         throw new NotImplementedException();

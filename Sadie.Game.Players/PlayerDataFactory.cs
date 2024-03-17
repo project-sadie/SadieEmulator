@@ -3,6 +3,7 @@ using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game;
@@ -35,7 +36,8 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
         List<PlayerFriendship> friendships,
         ChatBubble chatBubble, 
         bool allowFriendRequests,
-        List<IPlayerSubscription> subscriptions)
+        List<IPlayerSubscription> subscriptions,
+        PlayerInventoryRepository inventoryRepository)
     {
         
         var friendshipComponent = CreatePlayerFriendshipComponent(id, friendships);
@@ -62,7 +64,8 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
             friendshipComponent,
             chatBubble,
             allowFriendRequests,
-            subscriptions);
+            subscriptions,
+            inventoryRepository);
     }
     
     public PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)

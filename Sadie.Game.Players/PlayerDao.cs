@@ -1,6 +1,7 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game;
@@ -15,7 +16,8 @@ public class PlayerDao(
     IPlayerDataFactory playerDataFactory,
     IPlayerBadgeDao badgeDao,
     IPlayerFriendshipDao friendshipDao,
-    IPlayerSubscriptionDao subscriptionDao)
+    IPlayerSubscriptionDao subscriptionDao,
+    IPlayerInventoryDao inventoryDao)
     : BaseDao(databaseProvider), IPlayerDao
 {
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
@@ -109,6 +111,9 @@ public class PlayerDao(
         var friendships = await friendshipDao.GetAllRecordsForPlayerAsync(record.Get<int>("id"));
         var subscriptions = await subscriptionDao.GetSubscriptionsForPlayerAsync(record.Get<int>("id"));
 
+        var inventoryItems = await inventoryDao.GetAllAsync(record.Get<long>("id"));
+        var inventoryRepository = new PlayerInventoryRepository(inventoryItems);
+            
         var playerData = playerDataFactory.Create(
             record.Get<int>("id"),
             record.Get<string>("username"),
@@ -131,7 +136,8 @@ public class PlayerDao(
             friendships,
             (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
-            subscriptions);
+            subscriptions,
+            inventoryRepository);
         
         var player = playerFactory.Create(
             networkObject,
@@ -140,17 +146,17 @@ public class PlayerDao(
         return new Tuple<bool, IPlayer?>(true, player);
     }
 
-    private async Task<List<PlayerSavedSearch>> GetSavedSearchesAsync(long id)
+    private async Task<List<PlayerSavedSearch>> GetSavedSearchesAsync(long playerId)
     {
         var reader = await GetReaderAsync(@"
             SELECT 
-                id,
+                player_id,
                 search,
                 filter 
             FROM player_saved_searches 
-            WHERE player_id = @profileId", new Dictionary<string, object>
+            WHERE player_id = @playerId", new Dictionary<string, object>
         {
-            { "profileId", id }
+            { "playerId", playerId }
         });
         
         var data = new List<PlayerSavedSearch>();
@@ -165,7 +171,7 @@ public class PlayerDao(
             }
             
             data.Add(new PlayerSavedSearch(
-                record.Get<long>("id"),
+                record.Get<long>("playerId"),
                 record.Get<string>("search"),
                 record.Get<string>("filter")));
         }

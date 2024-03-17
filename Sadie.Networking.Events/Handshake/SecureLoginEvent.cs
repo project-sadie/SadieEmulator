@@ -36,7 +36,7 @@ public class SecureLoginEvent(
             
         var (foundPlayer, player) = await playerRepository.TryGetPlayerBySsoAsync(client, sso);
 
-        if (!foundPlayer || player == null) // put the second check to shut my IDE up about nullable markings.
+        if (!foundPlayer || player == null)
         {
             logger.LogWarning("Failed to resolve player from their provided sso");
             

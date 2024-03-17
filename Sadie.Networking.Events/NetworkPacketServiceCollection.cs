@@ -72,6 +72,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerFriendListUpdateEvent>();
         serviceCollection.AddSingleton<HotelViewPromotionsEvent>();
         serviceCollection.AddSingleton<RoomLikeEvent>();
+        serviceCollection.AddSingleton<PlayerInventoryFurnitureItemsEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -192,6 +193,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.PlayerFriendListUpdate] = provider.GetRequiredService<PlayerFriendListUpdateEvent>(),
             [ClientPacketId.HotelViewPromotions] = provider.GetRequiredService<HotelViewPromotionsEvent>(),
             [ClientPacketId.RoomLike] = provider.GetRequiredService<RoomLikeEvent>(),
+            [ClientPacketId.PlayerInventoryFurnitureItems] = provider.GetRequiredService<PlayerInventoryFurnitureItemsEvent>(),
         });
     }
 }

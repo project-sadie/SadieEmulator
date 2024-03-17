@@ -1,6 +1,7 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Shared.Game;
@@ -125,7 +126,8 @@ public class PlayerDataDao(
             await friendshipRepository.GetAllRecordsForPlayerAsync(record.Get<int>("id")), // friendship component
             (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
-            new List<IPlayerSubscription>() // subscriptions
+            new List<IPlayerSubscription>(),
+            new PlayerInventoryRepository(new List<PlayerInventoryFurnitureItem>())
         );
     }
 
