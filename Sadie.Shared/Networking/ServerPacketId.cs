@@ -105,4 +105,5 @@ public class ServerPacketId
     public const short CatalogPurchaseFailed = 1404;
     public const short CatalogPurchaseOk = 869;
     public const short PlayerInventoryRefresh = 3151;
+    public const short PlayerInventoryFurnitureItems = 994;
 }
