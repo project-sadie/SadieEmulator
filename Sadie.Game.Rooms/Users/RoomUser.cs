@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Sadie.Game.Rooms.Chat;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Game.Avatar;
@@ -85,6 +86,11 @@ public class RoomUser(
         {
             StopWalking();
         }
+    }
+
+    public async Task OnTalkAsync(RoomChatMessage message)
+    {
+        room.ChatMessages.Add(message);
     }
 
     public async ValueTask DisposeAsync()

@@ -6,10 +6,10 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserIdleWriter : NetworkPacketWriter
 {
-    public RoomUserIdleWriter(IRoomUser user)
+    public RoomUserIdleWriter(int userId, bool isIdle)
     {
         WriteShort(ServerPacketId.RoomUserIdle);
-        WriteInteger(user.Id);
-        WriteBool(user.IsIdle);
+        WriteInteger(userId);
+        WriteBool(isIdle);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Sadie.Game.Rooms.Chat;
 using Sadie.Shared.Game.Rooms;
 using Sadie.Shared.Networking;
 
@@ -12,6 +13,8 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     HDirection DirectionHead { get; }
     HDirection Direction { get; }
     void WalkToPoint(Point point, bool useDiagonal);
+    void LookAtPoint(Point point);
     Task RunPeriodicCheckAsync();
     bool HasRights();
+    Task OnTalkAsync(RoomChatMessage message);
 }

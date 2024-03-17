@@ -30,7 +30,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events;
 
-public class NetworkPacketServiceCollection
+public static class NetworkPacketServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
@@ -67,6 +67,8 @@ public class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<CatalogIndexEvent>();
         serviceCollection.AddSingleton<CatalogPageEvent>();
         serviceCollection.AddSingleton<CatalogPurchaseEvent>();
+        serviceCollection.AddSingleton<RoomUserChatEvent>();
+        serviceCollection.AddSingleton<RoomUserShoutEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -115,11 +117,9 @@ public class NetworkPacketServiceCollection
             [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomHeightmap2] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
             
-            [ClientPacketId.RoomUserChat] = new RoomUserChatEvent(provider.GetRequiredService<IRoomRepository>(), 
-                provider.GetRequiredService<RoomConstants>()),
+            [ClientPacketId.RoomUserChat] = provider.GetRequiredService<RoomUserChatEvent>(),
             
-            [ClientPacketId.RoomUserShout] = new RoomUserShoutEvent(provider.GetRequiredService<IRoomRepository>(), 
-                provider.GetRequiredService<RoomConstants>()),
+            [ClientPacketId.RoomUserShout] = provider.GetRequiredService<RoomUserShoutEvent>(),
             
             [ClientPacketId.RoomUserWalk] = new RoomUserWalkEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.RoomUserDance] = new RoomUserDanceEvent(provider.GetRequiredService<IRoomRepository>()),

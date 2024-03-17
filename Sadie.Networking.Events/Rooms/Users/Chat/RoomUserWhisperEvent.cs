@@ -21,7 +21,7 @@ public class RoomUserWhisperEvent(IRoomRepository roomRepository, RoomConstants 
         var whisperUsername = whisperData.First();
         var whisperMessage = string.Join("", whisperData.Skip(1));
 
-        if (!room.UserRepository.TryGetByUsername(whisperUsername, out var targetUser))
+        if (!room.UserRepository.TryGetByUsername(whisperUsername, out var targetUser) || targetUser == null)
         {
             return;
         }
@@ -31,10 +31,15 @@ public class RoomUserWhisperEvent(IRoomRepository roomRepository, RoomConstants 
             return;
         }
 
-        var chatMessage = new RoomChatMessage(roomUser, whisperMessage, room, (ChatBubble) reader.ReadInteger(), 0);
-        room.ChatMessages.Add(chatMessage);
+        var chatMessage = new RoomChatMessage(roomUser, whisperMessage, room, (ChatBubble) reader.ReadInteger(), 0, RoomChatMessageType.Whisper);
+
+        await roomUser.OnTalkAsync(chatMessage);
         
-        var packetBytes = new RoomUserWhisperWriter(chatMessage).GetAllBytes();
+        var packetBytes = new RoomUserWhisperWriter(
+            chatMessage.Sender.Id,
+            chatMessage.Message,
+            chatMessage.EmotionId,
+            (int) chatMessage.Bubble).GetAllBytes();
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);

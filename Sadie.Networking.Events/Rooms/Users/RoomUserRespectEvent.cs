@@ -42,6 +42,6 @@ public class RoomUserRespectEvent(
         await respectDao.CreateAsync(playerData.Id, targetId);
 
         await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(targetId, targetData.RespectsReceived).GetAllBytes());
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, RoomUserAction.ThumbsUp).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp).GetAllBytes());
     }
 }

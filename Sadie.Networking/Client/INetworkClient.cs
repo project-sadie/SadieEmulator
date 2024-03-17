@@ -1,4 +1,3 @@
-using System.Net.WebSockets;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Networking;

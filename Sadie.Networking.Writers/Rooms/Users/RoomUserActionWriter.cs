@@ -6,10 +6,10 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserActionWriter : NetworkPacketWriter
 {
-    public RoomUserActionWriter(int userId, RoomUserAction action)
+    public RoomUserActionWriter(int userId, int action)
     {
         WriteShort(ServerPacketId.RoomUserAction);
         WriteLong(userId);
-        WriteLong((int) action);
+        WriteLong(action);
     }
 }

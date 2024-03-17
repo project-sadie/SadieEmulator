@@ -1,4 +1,3 @@
-using Sadie.Game.Navigator;
 using Sadie.Game.Navigator.Categories;
 using Sadie.Game.Rooms;
 using Sadie.Shared.Networking;

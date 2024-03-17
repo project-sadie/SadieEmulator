@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Rooms.Categories;
+using Sadie.Game.Rooms.Chat.Commands;
+using Sadie.Game.Rooms.Chat.Commands.General;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -22,5 +24,12 @@ public class RoomServiceCollection
         var roomConstants = new RoomConstants();
         config.GetSection("Constants:Room").Bind(roomConstants);
         serviceCollection.AddSingleton(roomConstants);
+
+        serviceCollection.AddSingleton(new Dictionary<string, IRoomChatCommand>
+        {
+            { "about", new AboutCommand() }
+        });
+        
+        serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
     }
 }

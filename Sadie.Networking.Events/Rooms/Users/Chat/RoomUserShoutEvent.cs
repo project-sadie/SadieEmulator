@@ -1,5 +1,6 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat;
+using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -7,7 +8,7 @@ using Sadie.Shared.Game;
 
 namespace Sadie.Networking.Events.Rooms.Users.Chat;
 
-public class RoomUserShoutEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
+public class RoomUserShoutEvent(IRoomRepository roomRepository, RoomConstants roomConstants, IRoomChatCommandRepository commandRepository)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -24,9 +25,26 @@ public class RoomUserShoutEvent(IRoomRepository roomRepository, RoomConstants ro
             return;
         }
 
-        var chatMessage = new RoomChatMessage(roomUser, message, room, (ChatBubble) reader.ReadInteger(), 0);
-        room.ChatMessages.Add(chatMessage);
+        if (message.StartsWith(":"))
+        {
+            var (found, command) = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0].Substring(1));
+
+            if (found && command != null)
+            {
+                await command.ExecuteAsync();
+                return;
+            }
+        }
+
+        var chatMessage = new RoomChatMessage(
+            roomUser, 
+            message, 
+            room, 
+            (ChatBubble) reader.ReadInteger(), 
+            0, 
+            RoomChatMessageType.Shout);
         
+        await roomUser.OnTalkAsync(chatMessage);
         await room!.UserRepository.BroadcastDataAsync(new RoomUserShoutWriter(chatMessage!, 0).GetAllBytes());
     }
 }

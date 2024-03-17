@@ -24,10 +24,10 @@ public class RoomUserActionEvent(IRoomRepository roomRepository) : INetworkPacke
                 roomUser.LastAction -= roomUser.IdleTime;
             }
             
-            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(roomUser).GetAllBytes());
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(roomUser.Id, roomUser.IsIdle).GetAllBytes());
             return;
         }
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser.Id, action).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser.Id, (int) action).GetAllBytes());
     }
 }
