@@ -10,4 +10,9 @@ public class PlayerInventoryRepository : IPlayerInventoryRepository
     }
 
     public ICollection<PlayerInventoryFurnitureItem> Items => _items;
+    
+    public void AddItems(IEnumerable<PlayerInventoryFurnitureItem> items)
+    {
+        _items.AddRange(items);
+    }
 }

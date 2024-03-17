@@ -1,6 +1,7 @@
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
+using Sadie.Game.Players.Inventory;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
@@ -10,7 +11,7 @@ using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Catalog;
 
-public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetworkPacketEvent
+public class CatalogPurchaseEvent(CatalogPageRepository pageRepository, IPlayerInventoryDao inventoryDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -65,7 +66,20 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository) : INetwo
             return;
         }
 
-        // TODO: Create records 
+        var created = DateTime.Now;
+        var newItems = new List<PlayerInventoryFurnitureItem>();
+
+        for (var i = 0; i < amount; i++)
+        {
+            newItems.Add(new PlayerInventoryFurnitureItem(0, item.FurnitureItems.First(), item.Metadata, created));
+        }
+
+        foreach (var newItem in newItems)
+        {
+            newItem.Id = await inventoryDao.InsertItemAsync(client.Player.Data.Id, newItem);
+        }
+
+        client.Player.Data.Inventory.AddItems(newItems);
         
         await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(item).GetAllBytes());

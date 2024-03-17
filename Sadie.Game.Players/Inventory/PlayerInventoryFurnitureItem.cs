@@ -5,9 +5,11 @@ namespace Sadie.Game.Players.Inventory;
 public class PlayerInventoryFurnitureItem(
     long id,
     FurnitureItem item,
-    string metaData)
+    string metaData,
+    DateTime createdAt)
 {
-    public long Id { get; } = id;
+    public long Id { get; set; } = id;
     public FurnitureItem Item { get; } = item;
     public string MetaData { get; } = metaData;
+    public DateTime Created { get; } = createdAt;
 }

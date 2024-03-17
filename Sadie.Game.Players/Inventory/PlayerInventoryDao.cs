@@ -39,10 +39,24 @@ public class PlayerInventoryDao(IDatabaseProvider databaseProvider, FurnitureIte
         {
             throw new Exception("Unable to fetch furniture item for a players inventory item.");
         }
-        
+
         return new PlayerInventoryFurnitureItem(
             record.Get<long>("id"),
             furnitureItem,
-            record.Get<string>("extra_data"));
+            record.Get<string>("extra_data"),
+            record.Get<DateTime>("created_at"));
+    }
+
+    public async Task<int> InsertItemAsync(int playerId, PlayerInventoryFurnitureItem item)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "playerId", playerId },
+            { "furnitureId", item.Item.Id },
+            { "extraData", item.MetaData },
+            { "createdAt", item.Created }
+        };
+
+        return await QueryScalarAsync($"INSERT INTO player_furniture_items (player_id, furniture_item_id, extra_data, created_at) VALUES (@playerId, @furnitureId, @extraData, @createdAt); SELECT LAST_INSERT_ID();", parameters);
     }
 }
