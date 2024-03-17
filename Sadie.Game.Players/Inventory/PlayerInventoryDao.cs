@@ -8,7 +8,7 @@ public class PlayerInventoryDao(IDatabaseProvider databaseProvider, FurnitureIte
     public async Task<List<PlayerInventoryFurnitureItem>> GetAllAsync(long playerId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT id, player_id, furniture_item_id, extra_data FROM player_furniture_items
+            SELECT id, player_id, furniture_item_id, extra_data, created_at FROM player_furniture_items
             WHERE player_id = @playerId", new Dictionary<string, object>
         {
             { "playerId", playerId }
