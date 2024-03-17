@@ -1,3 +1,4 @@
+using System.Net.WebSockets;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Networking;
@@ -11,4 +12,5 @@ public interface INetworkClient : IAsyncDisposable, INetworkObject
     RoomUser? RoomUser { get; set; }
     Task ListenAsync();
     DateTime LastPing { get; set; }
+    Task OnReceivedAsync(byte[] data);
 }

@@ -39,7 +39,10 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
 
                 if (bytes > 0)
                 {
-                    await OnReceivedAsync(bytes);
+                    var data = new byte[bytes];
+                    Buffer.BlockCopy(_buffer, 0, data, 0, bytes);
+                    
+                    await OnReceivedAsync(data);
                 }
             }
         }
@@ -60,11 +63,8 @@ public class NetworkClientProcessComponent : NetworkPacketDecoder
 
     protected void SetClient(INetworkClient client) => _networkClient = client;
 
-    private async Task OnReceivedAsync(int bytesReceived)
+    public async Task OnReceivedAsync(byte[] data)
     {
-        var data = new byte[bytesReceived];
-        Buffer.BlockCopy(_buffer, 0, data, 0, bytesReceived);
-
         if (data[0] == 60)
         {
             await OnReceivedPolicyRequest();
