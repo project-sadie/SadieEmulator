@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Players;
+using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -6,12 +6,11 @@ using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Players.Friendships;
 
-public class PlayerFriendsEvent(IPlayerRepository playerRepository, IRoomRepository roomRepository)
+public class PlayerFriendListUpdateEvent(
+    IPlayerRepository playerRepository,
+    IRoomRepository roomRepository)
     : INetworkPacketEvent
 {
-    private readonly IPlayerRepository _playerRepository = playerRepository;
-    private readonly IRoomRepository _roomRepository = roomRepository;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player!;

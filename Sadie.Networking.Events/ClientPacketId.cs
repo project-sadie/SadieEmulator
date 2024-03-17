@@ -83,4 +83,5 @@ public class ClientPacketId
     public const short CatalogIndex = 2529;
     public const short CatalogPage = 412;
     public const short CatalogPurchase = 3492;
+    public const short PlayerFriendListUpdate = 1419;
 }

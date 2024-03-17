@@ -20,18 +20,5 @@ public class PlayerMessengerInitEvent(
             playerConstants.MaxFriendships,
             0
         ).GetAllBytes());
-
-        var player = client.Player!;
-        var friends = player.Data.FriendshipComponent.Friendships;
-        var pages = friends.Count / 500 + 1;
-        
-        for (var i = 0; i < pages; i++)
-        {
-            var batch = friends.Skip(i * 500).
-                Take(500).
-                ToList();
-            
-            await client.WriteToStreamAsync(new PlayerFriendsListWriter(pages, i, batch, playerRepository, roomRepository).GetAllBytes());
-        }
     }
 }

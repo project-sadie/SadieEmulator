@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Game.Rooms.Chat.Commands;
@@ -25,9 +26,9 @@ public class RoomServiceCollection
         config.GetSection("Constants:Room").Bind(roomConstants);
         serviceCollection.AddSingleton(roomConstants);
 
-        serviceCollection.AddSingleton(new Dictionary<string, IRoomChatCommand>
+        serviceCollection.AddSingleton(new ConcurrentDictionary<string, IRoomChatCommand>
         {
-            { "about", new AboutCommand() }
+            ["about"] = new AboutCommand(),
         });
         
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();

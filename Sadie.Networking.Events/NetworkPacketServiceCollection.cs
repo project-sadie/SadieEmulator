@@ -69,6 +69,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<CatalogPurchaseEvent>();
         serviceCollection.AddSingleton<RoomUserChatEvent>();
         serviceCollection.AddSingleton<RoomUserShoutEvent>();
+        serviceCollection.AddSingleton<PlayerFriendListUpdateEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -186,6 +187,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.CatalogIndex] = provider.GetRequiredService<CatalogIndexEvent>(),
             [ClientPacketId.CatalogPage] = provider.GetRequiredService<CatalogPageEvent>(),
             [ClientPacketId.CatalogPurchase] = provider.GetRequiredService<CatalogPurchaseEvent>(),
+            [ClientPacketId.PlayerFriendListUpdate] = provider.GetRequiredService<PlayerFriendListUpdateEvent>(),
         });
     }
 }
