@@ -26,17 +26,16 @@ public class WsNetworkClientProcessComponent : NetworkPacketDecoder
             while (true)
             {
                 var result = await _webSocket.ReceiveAsync(seg, CancellationToken.None).ConfigureAwait(false);
+                
                 if (result.CloseStatus != null)
                 {
-                    Console.WriteLine("close received");
                     await _webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                     throw new WebSocketException("Websocket closed.");
                 }
 
                 if (_webSocket.State != WebSocketState.Open)
                 {
-                    Console.WriteLine("websocket no longer open");
-                    throw new WebSocketException("Websocket closed.");
+                    throw new WebSocketException("Websocket no longer open.");
                 }
 
                 if (result.Count > 0)
@@ -67,6 +66,11 @@ public class WsNetworkClientProcessComponent : NetworkPacketDecoder
     
     public Task OnReceivedAsync(byte[] data)
     {
+        if (_networkClient == null)
+        {
+            return Task.CompletedTask;
+        }
+        
         foreach (var packet in DecodePacketsFromBytes(data))
         {
             _packetHandler.HandleAsync(_networkClient, packet);

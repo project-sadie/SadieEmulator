@@ -40,28 +40,21 @@ namespace Sadie.Networking.WebSockets
         {
             while (true)
             {
-                try
+                var context = await _httpListener.GetContextAsync();
+
+                if (!context.Request.IsWebSocketRequest)
                 {
-                    var context = await _httpListener.GetContextAsync();
+                    continue;
+                } 
 
-                    if (!context.Request.IsWebSocketRequest)
-                    {
-                        continue;
-                    } 
+                var guid = Guid.NewGuid();
 
-                    var guid = Guid.NewGuid();
+                WebSocketContext wsContext = await context.AcceptWebSocketAsync(subProtocol: null);
+                var ws = wsContext.WebSocket;
 
-                    WebSocketContext wsContext = await context.AcceptWebSocketAsync(subProtocol: null);
-                    var ws = wsContext.WebSocket;
-
-                    var client = _clientFactory.CreateClient(guid, ws);
-                    _clientRepository.AddClient(guid, client);
-                    await client.ListenAsync();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("listener exception:" + Environment.NewLine + e.ToString());
-                }
+                var client = _clientFactory.CreateClient(guid, ws);
+                _clientRepository.AddClient(guid, client);
+                await client.ListenAsync();
             }
         }
     }
