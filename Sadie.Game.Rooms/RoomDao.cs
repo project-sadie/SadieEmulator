@@ -1,10 +1,11 @@
 ﻿using Sadie.Database;
 using Sadie.Game.Rooms.Chat;
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) : BaseDao(databaseProvider), IRoomDao
+public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory, IRoomFurnitureItemDao furnitureItemDao) : BaseDao(databaseProvider), IRoomDao
 {
     public async Task<Tuple<bool, IRoom?>> TryGetRoomById(long roomId)
     {
@@ -109,6 +110,9 @@ public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) :
             new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
             new List<int>();
 
+        var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+        var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
+
         return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
             layout,
@@ -119,7 +123,8 @@ public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) :
             new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
             record.Get<int>("max_users_allowed"),
             settings,
-            playersWithRights));
+            playersWithRights,
+            furnitureItemRepository));
     }
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
@@ -337,6 +342,9 @@ public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) :
                 new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
                 new List<int>();
 
+            var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+            var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
+
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
                 layout,
@@ -347,7 +355,8 @@ public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) :
                 new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
                 record.Get<int>("max_users_allowed"),
                 settings,
-                playersWithRights);
+                playersWithRights,
+                furnitureItemRepository);
             
             rooms.Add(room);
         }

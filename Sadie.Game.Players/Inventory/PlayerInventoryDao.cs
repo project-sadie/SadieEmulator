@@ -8,7 +8,7 @@ public class PlayerInventoryDao(IDatabaseProvider databaseProvider, FurnitureIte
     public async Task<List<PlayerInventoryFurnitureItem>> GetAllAsync(long playerId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT id, player_id, furniture_item_id, extra_data, created_at FROM player_furniture_items
+            SELECT id, player_id, furniture_item_id, limited_data, meta_data, created_at FROM player_furniture_items
             WHERE player_id = @playerId", new Dictionary<string, object>
         {
             { "playerId", playerId }
@@ -43,7 +43,8 @@ public class PlayerInventoryDao(IDatabaseProvider databaseProvider, FurnitureIte
         return new PlayerInventoryFurnitureItem(
             record.Get<long>("id"),
             furnitureItem,
-            record.Get<string>("extra_data"),
+            record.Get<string>("limited_data"),
+            record.Get<string>("meta_data"),
             record.Get<DateTime>("created_at"));
     }
 
@@ -53,10 +54,15 @@ public class PlayerInventoryDao(IDatabaseProvider databaseProvider, FurnitureIte
         {
             { "playerId", playerId },
             { "furnitureId", item.Item.Id },
-            { "extraData", item.MetaData },
+            { "metaData", item.MetaData },
             { "createdAt", item.Created }
         };
 
-        return await QueryScalarAsync($"INSERT INTO player_furniture_items (player_id, furniture_item_id, extra_data, created_at) VALUES (@playerId, @furnitureId, @extraData, @createdAt); SELECT LAST_INSERT_ID();", parameters);
+        return await QueryScalarAsync($"INSERT INTO player_furniture_items (player_id, furniture_item_id, meta_data, created_at) VALUES (@playerId, @furnitureId, @metaData, @createdAt); SELECT LAST_INSERT_ID();", parameters);
+    }
+
+    public async Task DeleteItemsAsync(List<long> itemIds)
+    {
+        await QueryAsync($"DELETE FROM player_furniture_items WHERE id IN ({string.Join(",", itemIds)})");
     }
 }

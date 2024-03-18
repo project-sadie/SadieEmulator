@@ -15,4 +15,9 @@ public class PlayerInventoryRepository : IPlayerInventoryRepository
     {
         _items.AddRange(items);
     }
+
+    public void RemoveItems(List<long> itemIds)
+    {
+        _items = _items.Where(x => !itemIds.Contains(x.Id)).ToList();
+    }
 }

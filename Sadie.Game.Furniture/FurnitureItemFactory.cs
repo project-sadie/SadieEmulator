@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Shared.Helpers;
 
 namespace Sadie.Game.Furniture;
 
@@ -30,7 +31,7 @@ public class FurnitureItemFactory(IServiceProvider serviceProvider)
             id, 
             name,
             assetName,
-            (FurnitureItemType) type,
+            EnumHelpers.GetEnumValueFromDescription<FurnitureItemType>(type.ToString()),
             assetId,
             tileSpanX,
             tileSpanY,

@@ -1,3 +1,4 @@
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
@@ -40,5 +41,6 @@ public interface IRoomFactory
         List<string> tags,
         int maxUsersAllowed,
         IRoomSettings settings,
-        List<int> playersWithRights);
+        List<int> playersWithRights,
+        IRoomFurnitureItemRepository furnitureItemRepository);
 }

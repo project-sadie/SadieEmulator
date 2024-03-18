@@ -71,7 +71,8 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository, IPlayerI
 
         for (var i = 0; i < amount; i++)
         {
-            newItems.Add(new PlayerInventoryFurnitureItem(0, item.FurnitureItems.First(), item.Metadata, created));
+            var limitedData = $"1:1"; // TODO: maxStack:maxSell
+            newItems.Add(new PlayerInventoryFurnitureItem(0, item.FurnitureItems.First(), limitedData, item.Metadata, created));
         }
 
         foreach (var newItem in newItems)

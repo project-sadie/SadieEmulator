@@ -1,4 +1,5 @@
 ﻿using Sadie.Game.Rooms.Chat;
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -19,6 +20,7 @@ public class RoomData : IRoomData
     public IRoomSettings Settings { get; }
     public List<RoomChatMessage> ChatMessages { get; }
     public List<int> PlayersWithRights { get; }
+    public IRoomFurnitureItemRepository FurnitureItemRepository { get; }
 
     protected RoomData(int id,
         string name,
@@ -31,7 +33,8 @@ public class RoomData : IRoomData
         int maxUsers,
         IRoomUserRepository userRepository,
         IRoomSettings settings,
-        List<int> playersWithRights) 
+        List<int> playersWithRights,
+        IRoomFurnitureItemRepository furnitureItemRepository) 
     {
         Id = id;
         Name = name;
@@ -46,5 +49,6 @@ public class RoomData : IRoomData
         Settings = settings;
         ChatMessages = new List<RoomChatMessage>();
         PlayersWithRights = playersWithRights;
+        FurnitureItemRepository = furnitureItemRepository;
     }
 }

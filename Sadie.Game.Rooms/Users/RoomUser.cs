@@ -8,7 +8,7 @@ using Sadie.Shared.Game.Rooms;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser(
-    IRoom room,
+    IRoomData room,
     INetworkObject networkObject,
     int id,
     HPoint point,

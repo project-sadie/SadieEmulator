@@ -1,5 +1,6 @@
 using Sadie.Game.Furniture;
 using Sadie.Game.Players.Inventory;
+using Sadie.Shared.Helpers;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
@@ -13,6 +14,7 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         List<PlayerInventoryFurnitureItem> items)
     {
         WriteShort(ServerPacketId.PlayerInventoryFurnitureItems);
+        
         WriteInteger(pages);
         WriteInteger(currentPage);
         WriteInteger(items.Count);
@@ -26,46 +28,19 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
     private void WriteItem(PlayerInventoryFurnitureItem item)
     {
         var furnitureItem = item.Item;
-        WriteInteger(furnitureItem.Id);
-        WriteString(furnitureItem.Type.ToString());
+        WriteLong(item.Id);
+        WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type).ToUpper()); // has to be upper or fails
         WriteLong(item.Id);
         WriteInteger(furnitureItem.AssetId);
 
-        var names = new List<string>
-        {
-            "floor", "landscape", "wallpaper", "poster"
-        };
-
-        if (names.Contains(furnitureItem.Name))
-        {
-            switch (furnitureItem.Name)
-            {
-                case "landscape":
-                    WriteInteger(4);
-                    break;
-                case "floor":
-                    WriteInteger(3);
-                    break;
-                case "wallpaper":
-                    WriteInteger(2);
-                    break;
-                case "poster":
-                    WriteInteger(6);
-                    break;
-            }
-
-            WriteInteger(0);
-            WriteString(item.MetaData);
-        }
-        else
-        {
-            WriteInteger(furnitureItem.Name == "gnome_box" ? 13 : 1);
-        }
-
+        WriteInteger(1);
+        WriteInteger(0);
+        WriteString(item.MetaData);
+        
         WriteBool(furnitureItem.CanRecycle);
         WriteBool(furnitureItem.CanTrade);
         WriteBool(furnitureItem.CanInventoryStack);
-        WriteBool(false);
+        WriteBool(furnitureItem.CanMarketplaceSell);
         WriteInteger(-1);
         WriteBool(true);
         WriteInteger(-1);
@@ -76,6 +51,6 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         }
         
         WriteString(string.Empty);
-        WriteInteger(0);
+        WriteInteger(1);
     }
 }

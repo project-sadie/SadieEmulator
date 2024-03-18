@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms.Packets.Writers;
+﻿using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -14,6 +15,7 @@ public class Room(
     List<string> tags,
     int maxUsers,
     IRoomUserRepository userRepository,
+    IRoomFurnitureItemRepository furnitureItemRepository,
     IRoomSettings settings,
     List<int> playersWithRights)
     : RoomData(id,
@@ -27,7 +29,8 @@ public class Room(
         maxUsers,
         userRepository,
         settings,
-        playersWithRights), IRoom
+        playersWithRights,
+        furnitureItemRepository), IRoom
 {
     public async Task RunPeriodicCheckAsync()
     {
@@ -44,6 +47,8 @@ public class Room(
         await UserRepository.BroadcastDataAsync(statusWriter);
         await UserRepository.BroadcastDataAsync(dataWriter);
     }
+
+    public IRoomFurnitureItemRepository FurnitureItemRepository => furnitureItemRepository;
 
     public async ValueTask DisposeAsync()
     {

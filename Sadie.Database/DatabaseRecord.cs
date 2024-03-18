@@ -1,6 +1,6 @@
 ﻿namespace Sadie.Database;
 
-public class DatabaseRecord(Dictionary<string, object> data)
+public class DatabaseRecord(IDictionary<string, object> data)
 {
     public T Get<T>(string column)
     {

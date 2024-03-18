@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
@@ -72,7 +73,8 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
         List<string> tags,
         int maxUsersAllowed,
         IRoomSettings settings,
-        List<int> playersWithRights)
+        List<int> playersWithRights,
+        IRoomFurnitureItemRepository furnitureItemRepository)
     {
         return ActivatorUtilities.CreateInstance<Room>(
             serviceProvider,
@@ -86,6 +88,7 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
             tags,
             maxUsersAllowed,
             settings,
-            playersWithRights);
+            playersWithRights,
+            furnitureItemRepository);
     }
 }

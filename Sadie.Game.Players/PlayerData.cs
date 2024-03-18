@@ -33,7 +33,7 @@ public class PlayerData(
     ChatBubble chatBubble,
     bool allowFriendRequests,
     List<IPlayerSubscription> subscriptions,
-    PlayerInventoryRepository inventoryRepository)
+    IPlayerInventoryRepository inventoryRepository)
     : AvatarData(username, figureCode, motto, gender, achievementScore, tags, chatBubble), IPlayerData
 {
     public int Id { get; } = id;

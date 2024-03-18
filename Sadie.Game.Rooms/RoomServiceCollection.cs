@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Chat.Commands.General;
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -32,5 +33,8 @@ public class RoomServiceCollection
         });
         
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
+        
+        serviceCollection.AddSingleton<IRoomFurnitureItemRepository, RoomFurnitureItemRepository>();
+        serviceCollection.AddSingleton<IRoomFurnitureItemDao, RoomFurnitureItemDao>();
     }
 }
