@@ -40,14 +40,12 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     
     public int Count => _users.Count;
     
-    public Task BroadcastDataAsync(byte[] data)
+    public async Task BroadcastDataAsync(byte[] data)
     {
         foreach (var roomUser in _users.Values)
         {
-            roomUser.NetworkObject.WriteToStreamAsync(data);
+            await roomUser.NetworkObject.WriteToStreamAsync(data);
         }
-
-        return Task.CompletedTask;
     }
 
     public ICollection<IRoomUser> GetAllWithRights()
