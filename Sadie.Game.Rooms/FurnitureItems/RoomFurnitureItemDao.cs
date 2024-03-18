@@ -5,7 +5,9 @@ using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.FurnitureItems;
 
-public class RoomFurnitureItemDao(IDatabaseProvider databaseProvider, FurnitureItemRepository furnitureRepository)
+public class RoomFurnitureItemDao(
+    IDatabaseProvider databaseProvider, 
+    FurnitureItemRepository furnitureRepository)
     : BaseDao(databaseProvider), IRoomFurnitureItemDao
 {
 
@@ -26,15 +28,40 @@ public class RoomFurnitureItemDao(IDatabaseProvider databaseProvider, FurnitureI
             { "createdAt", item.Created }
         };
 
-        return await QueryScalarAsync($"INSERT INTO room_furniture_items " +
-                                      $"(room_id, owner_player_id, owner_player_username, furniture_item_id, position_x, position_y, position_z, direction, limited_data, meta_data, created_at) " +
-                                      $"VALUES (@roomId, @ownerId, @ownerUsername, @furnitureId, @positionX, @positionY, @positionZ, @direction, @limitedData, @extraData, @createdAt); SELECT LAST_INSERT_ID();", parameters);
+        return await QueryScalarAsync(@"INSERT INTO room_furniture_items (
+              room_id, 
+              owner_player_id, 
+              owner_player_username, 
+              furniture_item_id, 
+              position_x, 
+              position_y, 
+              position_z, 
+              direction, limited_data, meta_data, created_at
+            )
+            VALUES (
+                    @roomId, 
+                    @ownerId, 
+                    @ownerUsername, 
+                    @furnitureId, 
+                    @positionX, 
+                    @positionY, 
+                    @positionZ, 
+                    @direction, 
+                    @limitedData, 
+                    @extraData, 
+                    @createdAt); 
+            SELECT LAST_INSERT_ID();", parameters);
     }
 
     public async Task<List<RoomFurnitureItem>> GetItemsForRoomAsync(int roomId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT id, room_id, owner_player_id, owner_player_username, furniture_item_id, position_x, position_y, position_z, direction, limited_data, meta_data, created_at FROM room_furniture_items
+            SELECT 
+                id, 
+                room_id, 
+                owner_player_id, owner_player_username, furniture_item_id, 
+                position_x, position_y, position_z, direction, limited_data, 
+                meta_data, created_at FROM room_furniture_items
             WHERE room_id = @roomId", new Dictionary<string, object>
         {
             { "roomId", roomId }
