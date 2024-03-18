@@ -5,7 +5,11 @@ using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory, IRoomFurnitureItemDao furnitureItemDao) : BaseDao(databaseProvider), IRoomDao
+public class RoomDao(
+    IDatabaseProvider databaseProvider, 
+    IRoomFactory factory, 
+    IRoomFurnitureItemDao furnitureItemDao) 
+    : BaseDao(databaseProvider), IRoomDao
 {
     public async Task<Tuple<bool, IRoom?>> TryGetRoomById(long roomId)
     {

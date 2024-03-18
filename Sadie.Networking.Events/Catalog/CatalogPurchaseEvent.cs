@@ -11,7 +11,9 @@ using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Catalog;
 
-public class CatalogPurchaseEvent(CatalogPageRepository pageRepository, IPlayerInventoryDao inventoryDao) : INetworkPacketEvent
+public class CatalogPurchaseEvent(
+    CatalogPageRepository pageRepository, 
+    IPlayerInventoryDao inventoryDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -19,7 +21,9 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository, IPlayerI
 
         if ((DateTime.Now - player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.CatalogPurchase)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
+            var bytes = new CatalogPurchaseFailedWriter((int)CatalogPurchaseError.Server).GetAllBytes();
+            
+            await client.WriteToStreamAsync(bytes);
             return;
         }
         
@@ -50,7 +54,9 @@ public class CatalogPurchaseEvent(CatalogPageRepository pageRepository, IPlayerI
         
         if (furnitureItem.Type is FurnitureItemType.Pet or FurnitureItemType.Effect)
         {
-            await client.WriteToStreamAsync(new PlayerMotdMessageWriter(new List<string> { "Purchasing pets and/or effects is coming soon" }).GetAllBytes());
+            var messages = new List<string> { "Purchasing pets and/or effects is coming soon" };
+            
+            await client.WriteToStreamAsync(new PlayerMotdMessageWriter(messages).GetAllBytes());
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
         }
 

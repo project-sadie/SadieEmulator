@@ -3,12 +3,17 @@ using Sadie.Game.Furniture;
 
 namespace Sadie.Game.Players.Inventory;
 
-public class PlayerInventoryDao(IDatabaseProvider databaseProvider, FurnitureItemRepository furnitureRepository) : BaseDao(databaseProvider), IPlayerInventoryDao
+public class PlayerInventoryDao(
+    IDatabaseProvider databaseProvider, 
+    FurnitureItemRepository furnitureRepository) : BaseDao(databaseProvider), IPlayerInventoryDao
 {
     public async Task<List<PlayerInventoryFurnitureItem>> GetAllAsync(long playerId)
     {
         var reader = await GetReaderAsync(@"
-            SELECT id, player_id, furniture_item_id, limited_data, meta_data, created_at FROM player_furniture_items
+            SELECT 
+                id, 
+                player_id, 
+                furniture_item_id, limited_data, meta_data, created_at FROM player_furniture_items
             WHERE player_id = @playerId", new Dictionary<string, object>
         {
             { "playerId", playerId }
@@ -58,7 +63,10 @@ public class PlayerInventoryDao(IDatabaseProvider databaseProvider, FurnitureIte
             { "createdAt", item.Created }
         };
 
-        return await QueryScalarAsync($"INSERT INTO player_furniture_items (player_id, furniture_item_id, meta_data, created_at) VALUES (@playerId, @furnitureId, @metaData, @createdAt); SELECT LAST_INSERT_ID();", parameters);
+        return await QueryScalarAsync(@"
+            INSERT INTO player_furniture_items (
+                player_id, furniture_item_id, meta_data, created_at
+            ) VALUES (@playerId, @furnitureId, @metaData, @createdAt); SELECT LAST_INSERT_ID();", parameters);
     }
 
     public async Task DeleteItemsAsync(List<long> itemIds)
