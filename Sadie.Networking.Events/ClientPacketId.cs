@@ -90,4 +90,5 @@ public class ClientPacketId
     public const short RoomFurnitureItemPlaced = 1258;
     public const short RoomFurnitureItemEjected = 3456;
     public const short RoomFurnitureItemMoved = 248;
+    public const short RoomFurnitureItemToggle = 99;
 }

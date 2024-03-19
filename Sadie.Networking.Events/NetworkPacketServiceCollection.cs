@@ -77,6 +77,8 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomFurnitureItemPlacedEvent>();
         serviceCollection.AddSingleton<RoomFurnitureItemEjectedEvent>();
         serviceCollection.AddSingleton<RoomFurnitureItemMovedEvent>();
+        serviceCollection.AddSingleton<RoomFurnitureItemUseEvent>();
+        serviceCollection.AddSingleton<PlayerMessengerInitEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -97,11 +99,7 @@ public static class NetworkPacketServiceCollection
                 provider.GetRequiredService<IPlayerRepository>(), 
                 provider.GetRequiredService<IRoomRepository>()),
             
-            [ClientPacketId.PlayerMessengerInit] = new PlayerMessengerInitEvent(
-                provider.GetRequiredService<IPlayerRepository>(), 
-                provider.GetRequiredService<IRoomRepository>(), 
-                provider.GetRequiredService<PlayerConstants>()),
-            
+            [ClientPacketId.PlayerMessengerInit] = provider.GetRequiredService<PlayerMessengerInitEvent>(),
             [ClientPacketId.PlayerPing] = new PlayerPingEvent(),
             [ClientPacketId.PlayerPong] = new PlayerPongEvent(),
             [ClientPacketId.HotelViewData] = new HotelViewDataEvent(),
@@ -201,6 +199,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.RoomFurnitureItemPlaced] = provider.GetRequiredService<RoomFurnitureItemPlacedEvent>(),
             [ClientPacketId.RoomFurnitureItemEjected] = provider.GetRequiredService<RoomFurnitureItemEjectedEvent>(),
             [ClientPacketId.RoomFurnitureItemMoved] = provider.GetRequiredService<RoomFurnitureItemMovedEvent>(),
+            [ClientPacketId.RoomFurnitureItemToggle] = provider.GetRequiredService<RoomFurnitureItemUseEvent>(),
         });
     }
 }

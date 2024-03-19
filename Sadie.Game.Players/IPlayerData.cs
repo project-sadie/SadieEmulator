@@ -28,4 +28,5 @@ public interface IPlayerData : IAvatarData, IAsyncDisposable
     bool AllowFriendRequests { get; }
     List<IPlayerSubscription> Subscriptions { get; }
     IPlayerInventoryRepository Inventory { get; }
+    List<long> LikedRoomIds { get; }
 }

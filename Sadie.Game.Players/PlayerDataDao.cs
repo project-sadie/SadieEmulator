@@ -127,8 +127,10 @@ public class PlayerDataDao(
             (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
             new List<IPlayerSubscription>(),
-            new PlayerInventoryRepository(new List<PlayerInventoryFurnitureItem>())
-        );
+            new PlayerInventoryRepository(
+                new List<PlayerInventoryFurnitureItem>()),
+                new List<long>()
+            );
     }
 
     private async Task<DatabaseReader> GetReaderForPlayerData(string column, Dictionary<string, object> parameters)

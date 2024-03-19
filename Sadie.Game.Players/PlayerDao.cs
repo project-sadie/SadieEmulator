@@ -105,14 +105,17 @@ public class PlayerDao(
             record.Get<int>("block_camera_follow") == 1,
             record.Get<int>("ui_flags"),
             record.Get<int>("show_notifications") == 1);
-        
-        var permissions = await GetPermissionsAsync(record.Get<int>("role_id"));
-        var badges = await badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
-        var friendships = await friendshipDao.GetAllRecordsForPlayerAsync(record.Get<int>("id"));
-        var subscriptions = await subscriptionDao.GetSubscriptionsForPlayerAsync(record.Get<int>("id"));
 
-        var inventoryItems = await inventoryDao.GetAllAsync(record.Get<long>("id"));
+        var playerId = record.Get<int>("id");
+        var permissions = await GetPermissionsAsync(record.Get<int>("role_id"));
+        var badges = await badgeDao.GetBadgesForPlayerAsync(playerId);
+        var friendships = await friendshipDao.GetAllRecordsForPlayerAsync(playerId);
+        var subscriptions = await subscriptionDao.GetSubscriptionsForPlayerAsync(playerId);
+
+        var inventoryItems = await inventoryDao.GetAllAsync(playerId);
         var inventoryRepository = new PlayerInventoryRepository(inventoryItems);
+
+        var likedRoomIds = await GetLikedRoomsAsync(playerId);
             
         var playerData = playerDataFactory.Create(
             record.Get<int>("id"),
@@ -137,7 +140,8 @@ public class PlayerDao(
             (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
             subscriptions,
-            inventoryRepository);
+            inventoryRepository,
+            likedRoomIds);
         
         var player = playerFactory.Create(
             networkObject,
@@ -206,12 +210,47 @@ public class PlayerDao(
 
         return data;
     }
+    
+    private async Task<List<long>> GetLikedRoomsAsync(long playerId)
+    {
+        var reader = await GetReaderAsync(@"
+            SELECT room_id FROM player_room_likes WHERE player_id = @playerId", 
+            new Dictionary<string, object>
+            {
+                { "playerId", playerId }
+            });
+        
+        var data = new List<long>();
+        
+        while (true)
+        {
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            data.Add(record.Get<long>("id"));
+        }
+
+        return data;
+    }
 
     public async Task ResetSsoTokenForPlayerAsync(long id)
     {
         await QueryAsync("UPDATE players SET sso_token = '' WHERE id = @playerId", new Dictionary<string, object>
         {
             { "playerId", id }
+        });
+    }
+
+    public async Task CreatePlayerRoomLikeAsync(long playerId, long roomId)
+    {
+        await QueryAsync("INSERT INTO player_room_likes (player_id, room_id) VALUES (@playerId, @roomId);", new Dictionary<string, object>
+        {
+            { "playerId", playerId },
+            { "roomId", roomId }
         });
     }
 }

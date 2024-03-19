@@ -36,7 +36,8 @@ public interface IPlayerDataFactory
         ChatBubble chatBubble,
         bool allowFriendRequests, 
         List<IPlayerSubscription> subscriptions, 
-        PlayerInventoryRepository inventoryRepository);
+        PlayerInventoryRepository inventoryRepository,
+        List<long> votedRoomIds);
 
     PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId,
         List<PlayerFriendship> friendships);

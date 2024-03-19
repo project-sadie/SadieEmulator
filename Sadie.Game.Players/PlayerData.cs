@@ -33,7 +33,8 @@ public class PlayerData(
     ChatBubble chatBubble,
     bool allowFriendRequests,
     List<IPlayerSubscription> subscriptions,
-    IPlayerInventoryRepository inventoryRepository)
+    IPlayerInventoryRepository inventoryRepository,
+    List<long> votedRoomIds)
     : AvatarData(username, figureCode, motto, gender, achievementScore, tags, chatBubble), IPlayerData
 {
     public int Id { get; } = id;
@@ -53,7 +54,8 @@ public class PlayerData(
     public bool AllowFriendRequests { get; } = allowFriendRequests;
     public List<IPlayerSubscription> Subscriptions { get; } = subscriptions;
     public IPlayerInventoryRepository Inventory { get; } = inventoryRepository;
-    
+    public List<long> LikedRoomIds { get; } = votedRoomIds;
+
     public ValueTask DisposeAsync()
     {
         throw new NotImplementedException();

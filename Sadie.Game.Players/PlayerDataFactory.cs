@@ -37,10 +37,12 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
         ChatBubble chatBubble, 
         bool allowFriendRequests,
         List<IPlayerSubscription> subscriptions,
-        PlayerInventoryRepository inventoryRepository)
+        PlayerInventoryRepository inventoryRepository,
+        List<long> votedRoomIds)
     {
         
         var friendshipComponent = CreatePlayerFriendshipComponent(id, friendships);
+        
         return new PlayerData(
             id,
             username,
@@ -65,7 +67,8 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
             chatBubble,
             allowFriendRequests,
             subscriptions,
-            inventoryRepository);
+            inventoryRepository,
+            votedRoomIds);
     }
     
     public PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
