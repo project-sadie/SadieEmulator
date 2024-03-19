@@ -57,6 +57,7 @@ public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository,
         roomFurnitureItem.SetPosition(position);
         roomFurnitureItem.SetDirection(direction);
         
+        await roomFurnitureItemDao.UpdateItemAsync(roomFurnitureItem);
         await room.UserRepository.BroadcastDataAsync(new RoomFurnitureItemMovedWriter(roomFurnitureItem).GetAllBytes());
     }
 

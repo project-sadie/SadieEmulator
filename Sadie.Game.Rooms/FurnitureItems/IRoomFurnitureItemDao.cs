@@ -5,4 +5,5 @@ public interface IRoomFurnitureItemDao
     Task<int> CreateItemAsync(RoomFurnitureItem item);
     Task<List<RoomFurnitureItem>> GetItemsForRoomAsync(int roomId);
     Task DeleteItemsAsync(List<long> itemIds);
+    Task UpdateItemAsync(RoomFurnitureItem item);
 }

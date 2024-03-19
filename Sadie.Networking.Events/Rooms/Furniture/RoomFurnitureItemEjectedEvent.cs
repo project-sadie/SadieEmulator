@@ -32,6 +32,13 @@ public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository,
             return;
         }
 
+        var hasRights = true; // TODO: rights
+        
+        if (!hasRights)
+        {
+            return;
+        }
+
         var roomFurnitureItem = room.FurnitureItemRepository.Items.FirstOrDefault(x => x.Id == itemId);
 
         if (roomFurnitureItem == null)

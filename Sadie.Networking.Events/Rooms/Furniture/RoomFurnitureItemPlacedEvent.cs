@@ -5,6 +5,7 @@ using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
+using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared;
 using Sadie.Shared.Game.Rooms;
@@ -99,9 +100,9 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
         roomFurnitureItem.Id = await roomFurnitureItemDao.CreateItemAsync(roomFurnitureItem);
 
         room.FurnitureItemRepository.AddItems([roomFurnitureItem]);
-        //player.Data.Inventory.RemoveItems([itemId]);
+        player.Data.Inventory.RemoveItems([itemId]);
         
-        //await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
         await room.UserRepository.BroadcastDataAsync(new RoomFurnitureItemPlacedWriter(roomFurnitureItem).GetAllBytes());
     }
 

@@ -89,6 +89,19 @@ public class RoomFurnitureItemDao(
         await QueryAsync($"DELETE FROM room_furniture_items WHERE id IN ({string.Join(",", itemIds)});");
     }
 
+    public async Task UpdateItemAsync(RoomFurnitureItem item)
+    {
+        await QueryAsync(@"UPDATE room_furniture_items 
+            SET position_x = @x, position_y = @y, position_z = @z, direction = @direction WHERE id = @id LIMIT 1;", new Dictionary<string, object>
+        {
+            { "id", item.Id },
+            { "x", item.Position.X },
+            { "y", item.Position.Y },
+            { "z", item.Position.Z },
+            { "direction", (int) item.Direction },
+        });
+    }
+
     private RoomFurnitureItem CreateItemFromRecord(DatabaseRecord record)
     {
         var point = new HPoint(
