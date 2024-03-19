@@ -6,9 +6,9 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomRightsWriter : NetworkPacketWriter
 {
-    public RoomRightsWriter(RoomRightLevel rightLevel)
+    public RoomRightsWriter(RoomControllerLevel controllerLevel)
     {
         WriteShort(ServerPacketId.RoomRights);
-        WriteInteger((int) rightLevel);
+        WriteInteger((int) controllerLevel);
     }
 }

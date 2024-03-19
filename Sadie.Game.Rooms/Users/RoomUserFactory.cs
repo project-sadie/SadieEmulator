@@ -14,7 +14,8 @@ public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactor
         HPoint point, 
         HDirection directionHead,
         HDirection direction, 
-        IAvatarData avatarData)
+        IAvatarData avatarData,
+        RoomControllerLevel controllerLevel)
     {
         return ActivatorUtilities.CreateInstance<RoomUser>(
             serviceProvider,
@@ -24,6 +25,7 @@ public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactor
             point, 
             directionHead, 
             direction, 
-            avatarData);
+            avatarData,
+            controllerLevel);
     }
 }

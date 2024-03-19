@@ -49,6 +49,18 @@ internal static class PacketEventHelpers
         playerState.RoomVisits.Add(new PlayerRoomVisit(playerData.Id, room.Id));
 
         var avatarData = (IAvatarData) player.Data;
+
+        var controllerLevel = RoomControllerLevel.None;
+        
+        if (room.PlayersWithRights.Contains(playerData.Id))
+        {
+            controllerLevel = RoomControllerLevel.Rights;
+        }
+
+        if (room.OwnerId == player.Data.Id)
+        {
+            controllerLevel = RoomControllerLevel.Owner;
+        }
         
         var roomUser = roomUserFactory.Create(
             room,
@@ -57,7 +69,8 @@ internal static class PacketEventHelpers
             room.Layout.DoorPoint,
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
-            avatarData);
+            avatarData,
+            controllerLevel);
 
         if (!room.UserRepository.TryAdd(roomUser))
         {
@@ -73,10 +86,9 @@ internal static class PacketEventHelpers
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
 
         var owner = room.OwnerId == playerData.Id;
-        var rightLevel = owner ? RoomRightLevel.Admin : RoomRightLevel.None;
         
         await client.WriteToStreamAsync(new RoomPaneWriter(room.Id, owner).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomRightsWriter(rightLevel).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
         
         if (owner)
         {

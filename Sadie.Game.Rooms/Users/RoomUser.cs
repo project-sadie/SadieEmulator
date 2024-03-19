@@ -15,13 +15,15 @@ public class RoomUser(
     HDirection directionHead,
     HDirection direction,
     AvatarData avatarData,
-    RoomConstants constants)
+    RoomConstants constants,
+    RoomControllerLevel controllerLevel)
     : RoomUserData(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
 {
     private readonly RoomConstants _constants = constants;
     
     public int Id { get; } = id;
+    public RoomControllerLevel ControllerLevel { get; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 
     private void SetNextPosition()

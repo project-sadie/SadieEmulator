@@ -12,5 +12,6 @@ public interface IRoomUserFactory
         int id, HPoint point, 
         HDirection directionHead,
         HDirection direction, 
-        IAvatarData avatarData);
+        IAvatarData avatarData,
+        RoomControllerLevel controllerLevel);
 }

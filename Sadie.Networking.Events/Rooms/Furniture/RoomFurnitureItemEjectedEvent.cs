@@ -32,9 +32,7 @@ public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository,
             return;
         }
 
-        var hasRights = true; // TODO: rights
-        
-        if (!hasRights)
+        if (!client.RoomUser.HasRights())
         {
             return;
         }

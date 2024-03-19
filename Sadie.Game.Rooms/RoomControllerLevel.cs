@@ -1,6 +1,6 @@
 namespace Sadie.Game.Rooms;
 
-public enum RoomRightLevel
+public enum RoomControllerLevel
 {
     None = 0,
     Rights = 1,
