@@ -53,7 +53,7 @@ public class PlayerInventoryDao(
             record.Get<DateTime>("created_at"));
     }
 
-    public async Task<int> InsertItemAsync(int playerId, PlayerInventoryFurnitureItem item)
+    public async Task<int> CreateItemAsync(long playerId, PlayerInventoryFurnitureItem item)
     {
         var parameters = new Dictionary<string, object>
         {

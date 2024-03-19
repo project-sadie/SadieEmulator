@@ -83,7 +83,7 @@ public class CatalogPurchaseEvent(
 
         foreach (var newItem in newItems)
         {
-            newItem.Id = await inventoryDao.InsertItemAsync(client.Player.Data.Id, newItem);
+            newItem.Id = await inventoryDao.CreateItemAsync(client.Player.Data.Id, newItem);
         }
 
         client.Player.Data.Inventory.AddItems(newItems);

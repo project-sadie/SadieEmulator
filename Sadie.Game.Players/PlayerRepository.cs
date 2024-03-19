@@ -9,9 +9,9 @@ namespace Sadie.Game.Players;
 public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playerDao, IPlayerDataDao playerDataDao)
     : IPlayerRepository
 {
-    private readonly ConcurrentDictionary<int, IPlayer> _players = new();
+    private readonly ConcurrentDictionary<long, IPlayer> _players = new();
 
-    public bool TryGetPlayerById(int id, out IPlayer? player)
+    public bool TryGetPlayerById(long id, out IPlayer? player)
     {
         return _players.TryGetValue(id, out player);
     }

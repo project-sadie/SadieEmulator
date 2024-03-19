@@ -5,15 +5,14 @@ using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
-using Sadie.Networking.Writers.Players.Inventory;
-using Sadie.Networking.Writers.Rooms.Users.Furniture;
+using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared;
 using Sadie.Shared.Game.Rooms;
 using Sadie.Shared.Networking;
 
-namespace Sadie.Networking.Events.Rooms.Users.Furniture;
+namespace Sadie.Networking.Events.Rooms.Furniture;
 
-public class RoomUserPlacedFurnitureItemEvent(IRoomRepository roomRepository, 
+public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
     IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEvent
 {
@@ -21,7 +20,7 @@ public class RoomUserPlacedFurnitureItemEvent(IRoomRepository roomRepository,
     {
         if (client.Player == null || client.RoomUser == null)
         {
-            await SendError(client, FurniturePlacementError.CantSetItem);
+            await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
         
@@ -30,7 +29,7 @@ public class RoomUserPlacedFurnitureItemEvent(IRoomRepository roomRepository,
         
         if (!int.TryParse(placementData[0], out var itemId))
         {
-            await SendError(client, FurniturePlacementError.CantSetItem);
+            await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -38,7 +37,7 @@ public class RoomUserPlacedFurnitureItemEvent(IRoomRepository roomRepository,
 
         if (playerItem == null)
         {
-            await SendError(client, FurniturePlacementError.CantSetItem);
+            await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
         
@@ -46,7 +45,7 @@ public class RoomUserPlacedFurnitureItemEvent(IRoomRepository roomRepository,
         
         if (!found || room == null)
         {
-            await SendError(client, FurniturePlacementError.CantSetItem);
+            await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -58,23 +57,20 @@ public class RoomUserPlacedFurnitureItemEvent(IRoomRepository roomRepository,
                 !int.TryParse(placementData[2], out var y) || 
                 !int.TryParse(placementData[3], out var direction))
             {
+                await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
                 return;
             }
 
-            var z = 1; // TODO: check this
             var tile = room.Layout.FindTile(x, y);
 
-            if (tile == null)
+            if (tile == null || tile.State == RoomTileState.Closed)
             {
+                await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
                 return;
-            }
-
-            if (tile.State == RoomTileState.Closed)
-            {
-                return; 
             }
             
             var created = DateTime.Now;
+            var z = 1; // TODO: check this
             
             roomFurnitureItem = new RoomFurnitureItem(
                 0, 
@@ -95,24 +91,27 @@ public class RoomUserPlacedFurnitureItemEvent(IRoomRepository roomRepository,
 
         if (roomFurnitureItem == null)
         {
+            await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);
-        await roomFurnitureItemDao.CreateItemAsync(roomFurnitureItem);
+        roomFurnitureItem.Id = await roomFurnitureItemDao.CreateItemAsync(roomFurnitureItem);
 
         room.FurnitureItemRepository.AddItems([roomFurnitureItem]);
-        player.Data.Inventory.RemoveItems([itemId]);
+        //player.Data.Inventory.RemoveItems([itemId]);
         
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
-        await room.UserRepository.BroadcastDataAsync(new RoomUserPlacedFloorItemWriter(roomFurnitureItem).GetAllBytes());
+        //await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomFurnitureItemPlacedWriter(roomFurnitureItem).GetAllBytes());
     }
 
-    private static async Task SendError(INetworkObject client, FurniturePlacementError error)
+    private static async Task SendErrorAsync(INetworkObject client, FurniturePlacementError error)
     {
-        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError, new Dictionary<string, string>()
-        {
-            {"message", error.ToString() }
-        }).GetAllBytes());
+        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
+            new Dictionary<string, string>()
+            {
+                { "message", error.ToString() }
+            }).GetAllBytes());
     }
 }
+    

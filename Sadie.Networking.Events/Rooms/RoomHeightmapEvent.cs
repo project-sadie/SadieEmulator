@@ -1,8 +1,10 @@
-﻿using Sadie.Game.Rooms;
+﻿using Sadie.Game.Furniture;
+using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Rooms;
 
@@ -26,6 +28,25 @@ public class RoomHeightmapEvent(IRoomRepository roomRepository) : INetworkPacket
         
         await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
         await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
+        
+        var floorItems = room.FurnitureItemRepository
+            .Items
+            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
+            .ToList();
+        
+        var wallItems = room.FurnitureItemRepository
+            .Items
+            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
+            .ToList();
+
+        var furnitureOwners = 
+            floorItems
+                .Select(item => new { Key = item.OwnerId, Value = item.OwnerUsername })
+                .Distinct()
+                .ToDictionary(x => x.Key, x => x.Value);
+
+        await client.WriteToStreamAsync(new RoomFloorItemsWriter(floorItems, furnitureOwners).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems).GetAllBytes());
         
         await userRepository.BroadcastDataAsync(new RoomForwardDataWriter(room, false, true, isOwner).GetAllBytes());
     }

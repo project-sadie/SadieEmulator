@@ -87,5 +87,7 @@ public class ClientPacketId
     public const short HotelViewPromotions = 1827;
     public const short RoomLike = 3582;
     public const short PlayerInventoryFurnitureItems = 3150;
-    public const short UserPlacedFurnitureItem = 1258;
+    public const short RoomFurnitureItemPlaced = 1258;
+    public const short RoomFurnitureItemEjected = 3456;
+    public const short RoomFurnitureItemMoved = 248;
 }

@@ -29,7 +29,7 @@ public class RoomUserDataWriter : NetworkPacketWriter
             WriteInteger(-1);
             WriteString("");
             WriteString("");
-            WriteLong(user.AvatarData.AchievementScore);
+            WriteInteger((int)user.AvatarData.AchievementScore);
             WriteBool(true);
         }
     }

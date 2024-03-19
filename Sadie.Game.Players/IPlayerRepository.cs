@@ -5,7 +5,7 @@ namespace Sadie.Game.Players;
 
 public interface IPlayerRepository : IAsyncDisposable
 {
-    bool TryGetPlayerById(int id, out IPlayer? player);
+    bool TryGetPlayerById(long id, out IPlayer? player);
     bool TryGetPlayerByUsername(string username, out IPlayer? player);
     Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso);
     bool TryAddPlayer(IPlayer player);

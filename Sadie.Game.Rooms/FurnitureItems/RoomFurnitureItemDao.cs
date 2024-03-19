@@ -84,6 +84,11 @@ public class RoomFurnitureItemDao(
         return data;
     }
 
+    public async Task DeleteItemsAsync(List<long> itemIds)
+    {
+        await QueryAsync($"DELETE FROM room_furniture_items WHERE id IN ({string.Join(",", itemIds)});");
+    }
+
     private RoomFurnitureItem CreateItemFromRecord(DatabaseRecord record)
     {
         var point = new HPoint(

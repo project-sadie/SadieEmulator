@@ -22,9 +22,9 @@ using Sadie.Networking.Events.Players.Inventory;
 using Sadie.Networking.Events.Players.Messenger;
 using Sadie.Networking.Events.Rooms;
 using Sadie.Networking.Events.Rooms.Access;
+using Sadie.Networking.Events.Rooms.Furniture;
 using Sadie.Networking.Events.Rooms.Users;
 using Sadie.Networking.Events.Rooms.Users.Chat;
-using Sadie.Networking.Events.Rooms.Users.Furniture;
 using Sadie.Networking.Events.Tracking;
 using Sadie.Networking.Events.Unknown;
 using Sadie.Networking.Packets;
@@ -74,7 +74,9 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<HotelViewPromotionsEvent>();
         serviceCollection.AddSingleton<RoomLikeEvent>();
         serviceCollection.AddSingleton<PlayerInventoryFurnitureItemsEvent>();
-        serviceCollection.AddSingleton<RoomUserPlacedFurnitureItemEvent>();
+        serviceCollection.AddSingleton<RoomFurnitureItemPlacedEvent>();
+        serviceCollection.AddSingleton<RoomFurnitureItemEjectedEvent>();
+        serviceCollection.AddSingleton<RoomFurnitureItemMovedEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -196,7 +198,9 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.HotelViewPromotions] = provider.GetRequiredService<HotelViewPromotionsEvent>(),
             [ClientPacketId.RoomLike] = provider.GetRequiredService<RoomLikeEvent>(),
             [ClientPacketId.PlayerInventoryFurnitureItems] = provider.GetRequiredService<PlayerInventoryFurnitureItemsEvent>(),
-            [ClientPacketId.UserPlacedFurnitureItem] = provider.GetRequiredService<RoomUserPlacedFurnitureItemEvent>(),
+            [ClientPacketId.RoomFurnitureItemPlaced] = provider.GetRequiredService<RoomFurnitureItemPlacedEvent>(),
+            [ClientPacketId.RoomFurnitureItemEjected] = provider.GetRequiredService<RoomFurnitureItemEjectedEvent>(),
+            [ClientPacketId.RoomFurnitureItemMoved] = provider.GetRequiredService<RoomFurnitureItemMovedEvent>(),
         });
     }
 }
