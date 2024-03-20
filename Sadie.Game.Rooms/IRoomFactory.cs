@@ -42,6 +42,6 @@ public interface IRoomFactory
         List<string> tags,
         int maxUsersAllowed,
         IRoomSettings settings,
-        List<int> playersWithRights,
+        List<long> playersWithRights,
         IRoomFurnitureItemRepository furnitureItemRepository);
 }

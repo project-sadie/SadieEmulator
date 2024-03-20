@@ -19,7 +19,7 @@ public class RoomData : IRoomData
     public IRoomUserRepository UserRepository { get; }
     public IRoomSettings Settings { get; }
     public List<RoomChatMessage> ChatMessages { get; }
-    public List<int> PlayersWithRights { get; }
+    public List<long> PlayersWithRights { get; }
     public IRoomFurnitureItemRepository FurnitureItemRepository { get; }
 
     protected RoomData(int id,
@@ -33,7 +33,7 @@ public class RoomData : IRoomData
         int maxUsers,
         IRoomUserRepository userRepository,
         IRoomSettings settings,
-        List<int> playersWithRights,
+        List<long> playersWithRights,
         IRoomFurnitureItemRepository furnitureItemRepository) 
     {
         Id = id;

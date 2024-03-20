@@ -75,7 +75,7 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
         List<string> tags,
         int maxUsersAllowed,
         IRoomSettings settings,
-        List<int> playersWithRights,
+        List<long> playersWithRights,
         IRoomFurnitureItemRepository furnitureItemRepository)
     {
         return ActivatorUtilities.CreateInstance<Room>(

@@ -11,6 +11,11 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     public ICollection<IRoomUser> GetAll() => _users.Values;
     public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Id, user);
     public bool TryGet(int id, out IRoomUser? user) => _users.TryGetValue(id, out user);
+    public bool TryGetById(long id, out IRoomUser? user)
+    {
+        user = _users.Values.FirstOrDefault(x => x.Id == id);
+        return user != null;
+    }
 
     public bool TryGetByUsername(string username, out IRoomUser? user)
     {

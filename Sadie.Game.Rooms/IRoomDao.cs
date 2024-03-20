@@ -11,6 +11,6 @@ public interface IRoomDao
     Task<int> CreateChatMessages(List<RoomChatMessage> messages);
     Task<int> SaveRoomAsync(IRoom room);
     Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int limit, ICollection<long> excludeIds);
-    Task InsertRightsAsync(int roomId, int playerId);
-    Task DeleteRightsAsync(int roomId, int playerId);
+    Task InsertRightsAsync(long roomId, long playerId);
+    Task DeleteRightsAsync(long roomId, long playerId);
 }

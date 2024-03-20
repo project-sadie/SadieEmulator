@@ -72,6 +72,8 @@ internal static class PacketEventHelpers
             avatarData,
             controllerLevel);
 
+        roomUser.ApplyFlatCtrlStatus();
+        
         if (!room.UserRepository.TryAdd(roomUser))
         {
             logger.LogError($"Failed to add user {playerData.Id} to room {room.Id}");
@@ -94,7 +96,7 @@ internal static class PacketEventHelpers
         {
             await client.WriteToStreamAsync(new RoomOwnerWriter().GetAllBytes());
         }
-        
+
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
     }
 }

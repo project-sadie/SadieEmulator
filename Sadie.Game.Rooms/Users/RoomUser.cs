@@ -21,7 +21,7 @@ public class RoomUser(
         IRoomUser
 {
     public int Id { get; } = id;
-    public RoomControllerLevel ControllerLevel { get; } = controllerLevel;
+    public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 
     private void SetNextPosition()
@@ -31,7 +31,7 @@ public class RoomUser(
     
     public void WalkToPoint(Point point, bool useDiagonal)
     {
-        StatusMap.Clear();
+        StatusMap.Remove(RoomUserStatus.FlatCtrl);
         
         SetNextPosition();
         
@@ -45,6 +45,7 @@ public class RoomUser(
         IsWalking = false;
 
         StatusMap.Remove(RoomUserStatus.Move);
+        ApplyFlatCtrlStatus();
     }
 
     public void LookAtPoint(Point point)
@@ -53,6 +54,11 @@ public class RoomUser(
 
         Direction = direction;
         DirectionHead = direction;
+    }
+
+    public void ApplyFlatCtrlStatus()
+    {
+        StatusMap[RoomUserStatus.FlatCtrl] = ((int) controllerLevel).ToString();
     }
 
     public async Task RunPeriodicCheckAsync()

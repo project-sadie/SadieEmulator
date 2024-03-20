@@ -117,8 +117,8 @@ public class RoomDao(
         var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
         var playersWithRights = commaSeparatedRights.Contains(",") ? 
-            new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
-            new List<int>();
+            new List<long>(commaSeparatedRights.Split(",").Select(long.Parse)) : 
+            new List<long>();
 
         return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
@@ -352,8 +352,8 @@ public class RoomDao(
             var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
             var playersWithRights = commaSeparatedRights.Contains(",") ? 
-                new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
-                new List<int>();
+                new List<long>(commaSeparatedRights.Split(",").Select(long.Parse)) : 
+                new List<long>();
 
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
@@ -374,21 +374,22 @@ public class RoomDao(
         return rooms;
     }
 
-    public async Task InsertRightsAsync(int roomId, int playerId)
+    public async Task InsertRightsAsync(long roomId, long playerId)
     {
-        await QueryAsync("INSERT INTO room_player_rights (room_id, player_id) VALUES (@roomId, @playerId)", new Dictionary<string, object>()
+        await QueryAsync("INSERT INTO room_player_rights (room_id, player_id, created_at) VALUES (@roomId, @playerId, @created)", new Dictionary<string, object>()
         {
             { "roomId", roomId },
-            { "playerIdId", playerId },
+            { "playerId", playerId },
+            { "created", DateTime.Now },
         });
     }
 
-    public async Task DeleteRightsAsync(int roomId, int playerId)
+    public async Task DeleteRightsAsync(long roomId, long playerId)
     {
         await QueryAsync("DELETE FROM room_player_rights WHERE room_id = @roomId AND player_id = @playerId LIMIT 1;", new Dictionary<string, object>()
         {
             { "roomId", roomId },
-            { "playerIdId", playerId },
+            { "playerId", playerId },
         });
     }
 }

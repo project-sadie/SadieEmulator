@@ -89,7 +89,7 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
 
     public async Task ResetSsoTokenForPlayerAsync(int id)
     {
-        await playerDao.ResetSsoTokenForPlayerAsync(id);
+        // await playerDao.ResetSsoTokenForPlayerAsync(id);
     }
 
     public int Count()

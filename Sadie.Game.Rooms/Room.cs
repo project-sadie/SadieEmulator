@@ -17,7 +17,7 @@ public class Room(
     IRoomUserRepository userRepository,
     IRoomFurnitureItemRepository furnitureItemRepository,
     IRoomSettings settings,
-    List<int> playersWithRights)
+    List<long> playersWithRights)
     : RoomData(id,
         name,
         layout,

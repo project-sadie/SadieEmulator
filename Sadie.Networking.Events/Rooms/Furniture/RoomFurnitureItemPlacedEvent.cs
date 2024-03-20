@@ -50,6 +50,12 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
             return;
         }
 
+        if (!client.RoomUser.HasRights())
+        {
+            await SendErrorAsync(client, FurniturePlacementError.MissingRights);
+            return;
+        }
+
         RoomFurnitureItem roomFurnitureItem = null;
 
         if (playerItem.Item.Type == FurnitureItemType.Floor)

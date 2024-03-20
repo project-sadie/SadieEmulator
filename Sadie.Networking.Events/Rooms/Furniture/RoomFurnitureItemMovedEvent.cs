@@ -28,8 +28,14 @@ public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository,
         
         var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
         
-        if (!found || room == null)
+        if (!found || room == null || !client.RoomUser.HasRights())
         {
+            return;
+        }
+
+        if (!client.RoomUser.HasRights())
+        {
+            await SendErrorAsync(client, FurniturePlacementError.MissingRights);
             return;
         }
 
