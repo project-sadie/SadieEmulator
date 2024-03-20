@@ -100,22 +100,25 @@ public class RoomDao(
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
             record.Get<float>("door_z"));
+
+        var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+        var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
+
+        var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItemRepository);
         
         var layout = factory.CreateLayout(
             record.Get<int>("layout_id"),
             record.Get<string>("layout_name"),
             record.Get<string>("heightmap"),
             doorPoint,
-            (HDirection) record.Get<int>("door_direction"));
+            (HDirection) record.Get<int>("door_direction"), 
+            tiles);
 
         var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
         var playersWithRights = commaSeparatedRights.Contains(",") ? 
             new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
             new List<int>();
-
-        var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
-        var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
 
         return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
@@ -332,22 +335,25 @@ public class RoomDao(
             var doorPoint = new HPoint(record.Get<int>("door_x"),
                 record.Get<int>("door_y"),
                 record.Get<float>("door_z"));
+
+            var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+            var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
+
+            var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItemRepository);
         
             var layout = factory.CreateLayout(
                 record.Get<int>("layout_id"),
                 record.Get<string>("layout_name"),
                 record.Get<string>("heightmap"),
                 doorPoint,
-                (HDirection) record.Get<int>("door_direction"));
+                (HDirection) record.Get<int>("door_direction"),
+                tiles);
 
             var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
             var playersWithRights = commaSeparatedRights.Contains(",") ? 
                 new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
                 new List<int>();
-
-            var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
-            var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
 
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),

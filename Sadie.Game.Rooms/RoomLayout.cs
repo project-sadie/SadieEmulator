@@ -9,7 +9,13 @@ public class RoomLayout : RoomLayoutData
     public string HeightMap { get; }
     public short[,] TileMap { get; }
     
-    public RoomLayout(int id, string name, string heightMap, HPoint doorPoint, HDirection doorDirection) : base(heightMap, doorPoint, doorDirection)
+    public RoomLayout(
+        int id, 
+        string name, 
+        string heightMap, 
+        HPoint doorPoint, 
+        HDirection doorDirection, 
+        List<RoomTile> tiles) : base(heightMap, doorPoint, doorDirection, tiles)
     {
         Id = id;
         Name = name;
@@ -19,7 +25,10 @@ public class RoomLayout : RoomLayoutData
         foreach (var tile in Tiles)
         {
             var point = tile.Point;
-            TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open ? 1 : 0);
+            var topLevelItem = tile.Items.MaxBy(x => x.Position.Z);
+            var canWalkOnItems = topLevelItem == null || topLevelItem.FurnitureItem.CanWalk;
+            
+            TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open && canWalkOnItems ? 1 : 0);
         }
     }
 }

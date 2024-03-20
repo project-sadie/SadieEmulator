@@ -43,6 +43,15 @@ public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository,
         {
             return;
         }
+        
+        var currentTile = room.Layout.FindTile(
+            roomFurnitureItem.Position.X, roomFurnitureItem.Position.Y);
+
+        if (currentTile != null)
+        {
+            currentTile.Items.Remove(roomFurnitureItem);
+            RoomHelpers.UpdateTileMapForTile(currentTile, room.Layout);
+        }
 
         var ownsItem = roomFurnitureItem.OwnerId == player.Data.Id;
         var created = DateTime.Now;

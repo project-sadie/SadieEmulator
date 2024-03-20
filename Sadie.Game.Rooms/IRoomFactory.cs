@@ -9,7 +9,8 @@ public interface IRoomFactory
         string name,
         string heightmap,
         HPoint doorPoint,
-        HDirection doorDirection);
+        HDirection doorDirection,
+        List<RoomTile> tiles);
     
     IRoomSettings CreateSettings(
         bool walkDiagonal, 

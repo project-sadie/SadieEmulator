@@ -39,6 +39,16 @@ public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository,
         {
             return;
         }
+        
+        var currentTile = room.Layout.FindTile(
+            roomFurnitureItem.Position.X, roomFurnitureItem.Position.Y);
+
+        currentTile?.Items.Remove(roomFurnitureItem);
+        
+        if (currentTile != null)
+        {
+            RoomHelpers.UpdateTileMapForTile(currentTile, room.Layout);
+        }
 
         var position = new HPoint(
             reader.ReadInteger(),
@@ -53,6 +63,9 @@ public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository,
             await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
+
+        tile.Items.Add(roomFurnitureItem);
+        RoomHelpers.UpdateTileMapForTile(tile, room.Layout);
 
         roomFurnitureItem.SetPosition(position);
         roomFurnitureItem.SetDirection(direction);

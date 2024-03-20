@@ -71,7 +71,7 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
             }
             
             var created = DateTime.Now;
-            var z = 1; // TODO: check this
+            var z = 0; // TODO: check this
             
             roomFurnitureItem = new RoomFurnitureItem(
                 0, 
@@ -84,6 +84,9 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
                 playerItem.LimitedData,
                 playerItem.MetaData,
                 created);
+
+            tile.Items.Add(roomFurnitureItem);
+            RoomHelpers.UpdateTileMapForTile(tile, room.Layout);
         }
         else if (playerItem.Item.Type == FurnitureItemType.Wall)
         {

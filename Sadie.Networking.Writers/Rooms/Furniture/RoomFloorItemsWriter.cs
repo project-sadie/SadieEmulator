@@ -26,13 +26,15 @@ public class RoomFloorItemsWriter : NetworkPacketWriter
 
         foreach (var item in floorItems)
         {
+            var height = -1; // TODO: height
+            
             WriteLong(item.Id);
             WriteInteger(item.FurnitureItem.AssetId);
             WriteInteger(item.Position.X);
             WriteInteger(item.Position.Y);
             WriteInteger((int) item.Direction);
             WriteString($"{item.Position.Z.ToString():0.00}");
-            WriteString($"0"); // TODO: height
+            WriteString(height.ToString());
 
             switch (item.FurnitureItem.InteractionType)
             {

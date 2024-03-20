@@ -20,8 +20,6 @@ public class RoomUser(
     : RoomUserData(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
 {
-    private readonly RoomConstants _constants = constants;
-    
     public int Id { get; } = id;
     public RoomControllerLevel ControllerLevel { get; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
@@ -65,6 +63,26 @@ public class RoomUser(
         }
     }
 
+    private void CheckStatusForCurrentTile()
+    {
+        var currentTile = room.Layout.FindTile(Point.X, Point.Y);
+        
+        var seat = currentTile?
+            .Items
+            .OrderByDescending(item => item.Position.Z)
+            .FirstOrDefault(x => x.FurnitureItem.CanSit);
+
+        if (seat == null)
+        {
+            return;
+        }
+        
+        Direction = seat.Direction;
+        DirectionHead = seat.Direction;
+        
+        StatusMap[RoomUserStatus.Sit] = seat.Position.Z + "";
+    }
+
     public bool HasRights()
     {
         return room.OwnerId == Id || room.PlayersWithRights.Contains(Id);
@@ -87,6 +105,7 @@ public class RoomUser(
         else
         {
             StopWalking();
+            CheckStatusForCurrentTile();
         }
     }
 

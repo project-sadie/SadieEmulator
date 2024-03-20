@@ -10,7 +10,8 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
         string name,
         string heightmap,
         HPoint doorPoint,
-        HDirection doorDirection)
+        HDirection doorDirection,
+        List<RoomTile> tiles)
     {
         return ActivatorUtilities.CreateInstance<RoomLayout>(
             serviceProvider, 
@@ -18,7 +19,8 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
             name, 
             heightmap, 
             doorPoint, 
-            doorDirection);
+            doorDirection,
+            tiles);
     }
 
     public IRoomSettings CreateSettings(

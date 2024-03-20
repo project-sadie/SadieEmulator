@@ -12,17 +12,16 @@ public class RoomLayoutData
     public HPoint DoorPoint { get; }
     public HDirection DoorDirection { get; }
 
-    protected RoomLayoutData(string heightmap, HPoint doorPoint, HDirection doorDirection)
+    protected RoomLayoutData(string heightmap, HPoint doorPoint, HDirection doorDirection, List<RoomTile> tiles)
     {
         HeightmapRows = heightmap.Split("\n").ToList();
         SizeX = HeightmapRows.First().Length;
         SizeY = HeightmapRows.Count;
         Size = SizeY * SizeX;
-        Tiles = RoomHelpers.BuildTileListFromHeightMap(HeightmapRows);
+        Tiles = tiles;
         DoorPoint = doorPoint;
         DoorDirection = doorDirection;
     }
 
-    public RoomTile? FindTile(int x, int y) => 
-        Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);
+    public RoomTile? FindTile(int x, int y) => Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);
 }

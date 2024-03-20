@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.PathFinding.Options;
 using Sadie.Shared.Game.Rooms;
@@ -7,8 +8,10 @@ namespace Sadie.Game.Rooms;
 
 public static class RoomHelpers
 {
-    public static List<RoomTile> BuildTileListFromHeightMap(List<string> heightmapLines)
+    public static List<RoomTile> BuildTileListFromHeightMap(string heightMap, 
+        IRoomFurnitureItemRepository furnitureItemRepository)
     {
+        var heightmapLines = heightMap.Split("\n").ToList();
         var tiles = new List<RoomTile>();
         
         for (var y = 0; y < heightmapLines.Count; y++)
@@ -22,8 +25,13 @@ public static class RoomHelpers
                 var state = zResult ? 
                     RoomTileState.Open : 
                     RoomTileState.Closed;
+
+                var items = furnitureItemRepository
+                    .Items
+                    .Where(item => item.Position.X == x && item.Position.Y == y)
+                    .ToList();
                 
-                var tile = new RoomTile(x, y, zResult ? z : 33, state);
+                var tile = new RoomTile(x, y, zResult ? z : 33, state, items);
                 
                 tiles.Add(tile);
             }
@@ -85,5 +93,21 @@ public static class RoomHelpers
         }
 
         return rotation;
+    }
+
+    public static void UpdateTileMapForTile(RoomTile tile, RoomLayout layout)
+    {
+        var topLevelItem = tile.Items.MaxBy(x => x.Position.Z);
+
+        if (topLevelItem == null)
+        {
+            layout.TileMap[tile.Point.Y, tile.Point.X] = 1;
+        }
+        else
+        {
+            var furnitureItem = topLevelItem.FurnitureItem;
+            
+            layout.TileMap[tile.Point.Y, tile.Point.X] = (short)(furnitureItem.CanWalk ? 1 : 0);
+        }
     }
 }
