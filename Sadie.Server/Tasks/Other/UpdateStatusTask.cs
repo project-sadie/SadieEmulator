@@ -1,5 +1,6 @@
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
+using Sadie.Shared;
 
 namespace SadieEmulator.Tasks.Other;
 
@@ -15,7 +16,7 @@ public class UpdateStatusTask(IPlayerRepository playerRepository, IRoomRepositor
         var usersOnline = playerRepository.Count();
         var roomCount = roomRepository.Count;
         
-        Console.Title = $"Sadie {Server.Version} - Players Online: {usersOnline} - Rooms Loaded: {roomCount}";
+        Console.Title = $"Sadie {GlobalState.Version} - Players Online: {usersOnline} - Rooms Loaded: {roomCount}";
         
         return Task.CompletedTask;
     }

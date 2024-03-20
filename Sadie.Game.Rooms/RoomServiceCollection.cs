@@ -23,13 +23,15 @@ public class RoomServiceCollection
         serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();
         serviceCollection.AddSingleton<IRoomCategoryRepository, RoomCategoryRepository>();
         
+        serviceCollection.AddSingleton<AboutCommand>();
+        
         var roomConstants = new RoomConstants();
         config.GetSection("Constants:Room").Bind(roomConstants);
         serviceCollection.AddSingleton(roomConstants);
 
-        serviceCollection.AddSingleton(new ConcurrentDictionary<string, IRoomChatCommand>
+        serviceCollection.AddSingleton(provider => new ConcurrentDictionary<string, IRoomChatCommand>
         {
-            ["about"] = new AboutCommand(),
+            ["about"] = provider.GetRequiredService<AboutCommand>()
         });
         
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();

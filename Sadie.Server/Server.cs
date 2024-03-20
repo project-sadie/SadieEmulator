@@ -9,14 +9,13 @@ using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
+using Sadie.Shared;
 using SadieEmulator.Tasks;
 
 namespace SadieEmulator;
 
 public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : IServer
 {
-    public static readonly Version Version = new(0, 6);
-
     public async Task RunAsync()
     {
         var stopwatch = Stopwatch.StartNew();
@@ -91,7 +90,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         
         Console.ForegroundColor = ConsoleColor.White;
         
-        Console.WriteLine($"         You are running version {Version}");
+        Console.WriteLine($"         You are running version {GlobalState.Version}");
         Console.WriteLine(@"");
         
         logger.LogTrace("Booting up...");

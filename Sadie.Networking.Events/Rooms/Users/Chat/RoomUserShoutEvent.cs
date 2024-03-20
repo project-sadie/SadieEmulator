@@ -31,7 +31,7 @@ public class RoomUserShoutEvent(IRoomRepository roomRepository, RoomConstants ro
 
             if (found && command != null)
             {
-                await command.ExecuteAsync();
+                await command.ExecuteAsync(roomUser!);
                 return;
             }
         }

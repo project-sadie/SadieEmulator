@@ -116,4 +116,5 @@ public class ServerPacketId
     public const short RoomFurnitureItemMoved = 3776;
     public const short RoomGiveUserRights = 2088;
     public const short RoomRemoveUserRights = 1327;
+    public const short ModeratorMessage = 2030;
 }

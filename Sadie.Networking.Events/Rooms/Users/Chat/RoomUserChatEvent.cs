@@ -36,7 +36,7 @@ public class RoomUserChatEvent(
 
             if (found && command != null)
             {
-                await command.ExecuteAsync();
+                await command.ExecuteAsync(roomUser!);
                 return;
             }
         }
