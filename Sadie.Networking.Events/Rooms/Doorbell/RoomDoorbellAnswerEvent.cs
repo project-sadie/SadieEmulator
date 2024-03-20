@@ -3,7 +3,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Access;
 
-namespace Sadie.Networking.Events.Rooms.Access;
+namespace Sadie.Networking.Events.Rooms.Doorbell;
 
 public class RoomDoorbellAnswerEvent(IPlayerRepository playerRepository) : INetworkPacketEvent
 {

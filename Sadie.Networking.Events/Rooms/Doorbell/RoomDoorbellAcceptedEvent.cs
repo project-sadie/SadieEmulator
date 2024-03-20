@@ -4,7 +4,7 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Events.Rooms.Access;
+namespace Sadie.Networking.Events.Rooms.Doorbell;
 
 public class RoomDoorbellAcceptedEvent(
     IRoomRepository roomRepository,
