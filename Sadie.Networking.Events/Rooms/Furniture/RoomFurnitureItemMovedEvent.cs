@@ -77,7 +77,7 @@ public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository,
         roomFurnitureItem.SetDirection(direction);
         
         await roomFurnitureItemDao.UpdateItemAsync(roomFurnitureItem);
-        await room.UserRepository.BroadcastDataAsync(new RoomFurnitureItemMovedWriter(roomFurnitureItem).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(roomFurnitureItem).GetAllBytes());
     }
 
     private static async Task SendErrorAsync(INetworkObject client, FurniturePlacementError error)

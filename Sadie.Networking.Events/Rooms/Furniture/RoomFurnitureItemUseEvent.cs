@@ -1,6 +1,7 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Rooms.Furniture;
 
@@ -31,6 +32,6 @@ public class RoomFurnitureItemUseEvent(
             return;
         }
         
-        // 
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(roomFurnitureItem).GetAllBytes());
     }
 }

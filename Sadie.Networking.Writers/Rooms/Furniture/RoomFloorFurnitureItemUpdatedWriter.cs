@@ -4,9 +4,9 @@ using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomFurnitureItemMovedWriter : NetworkPacketWriter
+public class RoomFloorFurnitureItemUpdatedWriter : NetworkPacketWriter
 {
-    public RoomFurnitureItemMovedWriter(RoomFurnitureItem item)
+    public RoomFloorFurnitureItemUpdatedWriter(RoomFurnitureItem item)
     {
         WriteShort(ServerPacketId.RoomFurnitureItemMoved);
         WriteLong(item.Id);
