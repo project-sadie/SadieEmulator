@@ -32,14 +32,14 @@ public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository,
             return;
         }
 
-        if (!client.RoomUser.HasRights())
+        var roomFurnitureItem = room.FurnitureItemRepository.Items.FirstOrDefault(x => x.Id == itemId);
+
+        if (roomFurnitureItem == null)
         {
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItemRepository.Items.FirstOrDefault(x => x.Id == itemId);
-
-        if (roomFurnitureItem == null)
+        if (roomFurnitureItem.OwnerId != player.Data.Id)
         {
             return;
         }
