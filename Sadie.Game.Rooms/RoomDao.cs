@@ -367,4 +367,22 @@ public class RoomDao(
 
         return rooms;
     }
+
+    public async Task InsertRightsAsync(int roomId, int playerId)
+    {
+        await QueryAsync("INSERT INTO room_player_rights (room_id, player_id) VALUES (@roomId, @playerId)", new Dictionary<string, object>()
+        {
+            { "roomId", roomId },
+            { "playerIdId", playerId },
+        });
+    }
+
+    public async Task DeleteRightsAsync(int roomId, int playerId)
+    {
+        await QueryAsync("DELETE FROM room_player_rights WHERE room_id = @roomId AND player_id = @playerId LIMIT 1;", new Dictionary<string, object>()
+        {
+            { "roomId", roomId },
+            { "playerIdId", playerId },
+        });
+    }
 }
