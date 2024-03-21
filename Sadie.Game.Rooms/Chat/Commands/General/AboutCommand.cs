@@ -21,7 +21,7 @@ public class AboutCommand(
         message.AppendLine("");
         message.AppendLine($"Players Online: {playerRepository.Count()}");
         message.AppendLine($"Rooms Loaded: {roomRepository.Count}");
-        message.AppendLine($"Memory Used: {memoryMb}mb");
+        message.AppendLine($"Memory Used: {memoryMb} MB");
         message.AppendLine("");
         message.AppendLine("Credits:");
         message.AppendLine("Habtard - Solo Developer");
