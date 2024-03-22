@@ -93,4 +93,6 @@ public class ClientPacketId
     public const short RoomFurnitureItemToggle = 99;
     public const short RoomGiveUserRights = 808;
     public const short RoomRemoveUserRights = 2064;
+    public const short PlayerWardrobe = 2742;
+    public const short PlayerWardrobeSave = 800;
 }

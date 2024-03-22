@@ -36,8 +36,8 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
     public async Task DisconnectIdleClientsAsync()
     {
         var idleClients = _clients.Values
-            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 40)
-            .Take(50)
+            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 60)
+            .Take(100)
             .ToList();
 
         if (idleClients.Count < 1)

@@ -4,6 +4,7 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 
@@ -36,8 +37,8 @@ public interface IPlayerDataFactory
         bool allowFriendRequests, 
         List<IPlayerSubscription> subscriptions, 
         PlayerInventoryRepository inventoryRepository,
-        List<long> votedRoomIds);
+        List<long> likedRoomIds,
+        Dictionary<int, PlayerWardrobeItem> wardrobeItems);
 
-    PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId,
-        List<PlayerFriendship> friendships);
+    PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships);
 }

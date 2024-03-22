@@ -20,6 +20,7 @@ using Sadie.Networking.Events.Players.Club;
 using Sadie.Networking.Events.Players.Friendships;
 using Sadie.Networking.Events.Players.Inventory;
 using Sadie.Networking.Events.Players.Messenger;
+using Sadie.Networking.Events.Players.Wardrobe;
 using Sadie.Networking.Events.Rooms;
 using Sadie.Networking.Events.Rooms.Doorbell;
 using Sadie.Networking.Events.Rooms.Furniture;
@@ -82,6 +83,8 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerMessengerInitEvent>();
         serviceCollection.AddSingleton<RoomGiveUserRightsEvent>();
         serviceCollection.AddSingleton<RoomRemoveUserRightsEvent>();
+        serviceCollection.AddSingleton<PlayerWardrobeEvent>();
+        serviceCollection.AddSingleton<PlayerWardrobeSaveEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -205,6 +208,8 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.RoomFurnitureItemToggle] = provider.GetRequiredService<RoomFurnitureItemUseEvent>(),
             [ClientPacketId.RoomGiveUserRights] = provider.GetRequiredService<RoomGiveUserRightsEvent>(),
             [ClientPacketId.RoomRemoveUserRights] = provider.GetRequiredService<RoomRemoveUserRightsEvent>(),
+            [ClientPacketId.PlayerWardrobe] = provider.GetRequiredService<PlayerWardrobeEvent>(),
+            [ClientPacketId.PlayerWardrobeSave] = provider.GetRequiredService<PlayerWardrobeSaveEvent>(),
         });
     }
 }

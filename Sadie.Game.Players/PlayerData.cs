@@ -4,6 +4,7 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 
@@ -34,7 +35,8 @@ public class PlayerData(
     bool allowFriendRequests,
     List<IPlayerSubscription> subscriptions,
     IPlayerInventoryRepository inventoryRepository,
-    List<long> votedRoomIds)
+    List<long> likedRoomIds,
+    PlayerWardrobeComponent wardrobeComponent)
     : AvatarData(username, figureCode, motto, gender, achievementScore, tags, chatBubble), IPlayerData
 {
     public int Id { get; } = id;
@@ -54,7 +56,8 @@ public class PlayerData(
     public bool AllowFriendRequests { get; } = allowFriendRequests;
     public List<IPlayerSubscription> Subscriptions { get; } = subscriptions;
     public IPlayerInventoryRepository Inventory { get; } = inventoryRepository;
-    public List<long> LikedRoomIds { get; } = votedRoomIds;
+    public List<long> LikedRoomIds { get; } = likedRoomIds;
+    public PlayerWardrobeComponent WardrobeComponent { get; } = wardrobeComponent;
 
     public ValueTask DisposeAsync()
     {

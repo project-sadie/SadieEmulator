@@ -4,6 +4,7 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 
@@ -129,7 +130,8 @@ public class PlayerDataDao(
             new List<IPlayerSubscription>(),
             new PlayerInventoryRepository(
                 new List<PlayerInventoryFurnitureItem>()),
-                new List<long>()
+                new List<long>(),
+            new Dictionary<int, PlayerWardrobeItem>()
             );
     }
 

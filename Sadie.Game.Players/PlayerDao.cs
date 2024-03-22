@@ -4,6 +4,7 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Game;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
@@ -17,7 +18,8 @@ public class PlayerDao(
     IPlayerBadgeDao badgeDao,
     IPlayerFriendshipDao friendshipDao,
     IPlayerSubscriptionDao subscriptionDao,
-    IPlayerInventoryDao inventoryDao)
+    IPlayerInventoryDao inventoryDao,
+    IPlayerWardrobeDao wardrobeDao)
     : BaseDao(databaseProvider), IPlayerDao
 {
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
@@ -116,6 +118,7 @@ public class PlayerDao(
         var inventoryRepository = new PlayerInventoryRepository(inventoryItems);
 
         var likedRoomIds = await GetLikedRoomsAsync(playerId);
+        var wardrobeItems = await wardrobeDao.GetAllRecordsForPlayerAsync(playerId);
             
         var playerData = playerDataFactory.Create(
             record.Get<int>("id"),
@@ -141,7 +144,8 @@ public class PlayerDao(
             record.Get<int>("allow_friend_requests") == 1,
             subscriptions,
             inventoryRepository,
-            likedRoomIds);
+            likedRoomIds,
+            wardrobeItems);
         
         var player = playerFactory.Create(
             networkObject,

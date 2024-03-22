@@ -4,6 +4,7 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players;
@@ -29,4 +30,5 @@ public interface IPlayerData : IAvatarData, IAsyncDisposable
     List<IPlayerSubscription> Subscriptions { get; }
     IPlayerInventoryRepository Inventory { get; }
     List<long> LikedRoomIds { get; }
+    PlayerWardrobeComponent WardrobeComponent { get; }
 }
