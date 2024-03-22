@@ -14,6 +14,7 @@ public class CatalogItemFactory(IServiceProvider serviceProvider)
         List<FurnitureItem> furnitureItems, 
         bool requiresClubMembership, 
         string metadata, 
+        long catalogPageId,
         int amount, 
         int sellLimit)
     {
@@ -26,7 +27,8 @@ public class CatalogItemFactory(IServiceProvider serviceProvider)
             costPointsType,
             furnitureItems,
             requiresClubMembership, 
-            metadata, 
+            metadata,
+            catalogPageId,
             amount, 
             sellLimit);
     }

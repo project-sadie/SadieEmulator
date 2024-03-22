@@ -11,6 +11,7 @@ public class CatalogItem(
     List<FurnitureItem> furnitureItems,
     bool requiresClubMembership,
     string metadata,
+    long catalogPageId,
     int amount,
     int sellLimit)
 {
@@ -22,6 +23,7 @@ public class CatalogItem(
     public List<FurnitureItem> FurnitureItems { get; } = furnitureItems;
     public bool RequiresClubMembership { get; } = requiresClubMembership;
     public string Metadata { get; } = metadata;
+    public long CatalogPageId { get; } = catalogPageId;
     public int Amount { get; } = amount;
     public int SellLimit { get; } = sellLimit;
 }

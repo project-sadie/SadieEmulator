@@ -8,6 +8,7 @@ public class CatalogPageDao(IDatabaseProvider databaseProvider, CatalogItemDao i
 {
     public async Task<Dictionary<int, CatalogPage>> GetAllAsync()
     {
+        var catalogItems = await itemDao.GetAllAsync();
         var pages = new Dictionary<int, CatalogPage>();
         
         var reader = await GetReaderAsync(@"
@@ -40,7 +41,9 @@ public class CatalogPageDao(IDatabaseProvider databaseProvider, CatalogItemDao i
                 break;
             }
 
-            var items = await itemDao.GetItemsForPageAsync(record.Get<int>("id"));
+            var items = catalogItems
+                .Where(x => x.CatalogPageId == record.Get<long>("id"))
+                .ToList();
 
             var roleId = record.Get<object>("role_id") == DBNull.Value ? 
                 0 : 

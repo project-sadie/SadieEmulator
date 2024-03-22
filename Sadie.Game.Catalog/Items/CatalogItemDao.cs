@@ -9,7 +9,7 @@ public class CatalogItemDao(
     FurnitureItemRepository furnitureItemRepository)
     : BaseDao(databaseProvider)
 {
-    public async Task<List<CatalogItem>> GetItemsForPageAsync(int pageId)
+    public async Task<List<CatalogItem>> GetAllAsync()
     {
         var items = new List<CatalogItem>();
         
@@ -26,11 +26,7 @@ public class CatalogItemDao(
                 catalog_page_id,
                 amount,
                 sell_limit
-            FROM catalog_items
-            WHERE catalog_page_id = @pageId;", new Dictionary<string, object>
-        {
-            { "pageId", pageId }
-        });
+            FROM catalog_items;");
 
         while (true)
         {
@@ -69,6 +65,7 @@ public class CatalogItemDao(
                 furnitureItems,
                 record.Get<bool>("requires_club_membership"),
                 record.Get<string>("meta_data"),
+                record.Get<long>("catalog_page_id"),
                 record.Get<int>("amount"),
                 record.Get<int>("sell_limit"));
                 
