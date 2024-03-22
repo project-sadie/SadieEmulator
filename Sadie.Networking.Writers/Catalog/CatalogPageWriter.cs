@@ -96,7 +96,7 @@ public class CatalogPageWriter : NetworkPacketWriter
             }
 
             WriteInteger(item.RequiresClubMembership ? 1 : 0);
-            WriteBool(false); // has offer
+            WriteBool(item.Amount != 1);
             WriteBool(false); // unknown
             WriteString($"{item.FurnitureItems.First().AssetName}.png");
         }
