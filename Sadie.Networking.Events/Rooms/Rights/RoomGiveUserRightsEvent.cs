@@ -28,17 +28,15 @@ public class RoomGiveUserRightsEvent(IRoomRepository roomRepository, IRoomDao ro
         await room.UserRepository.BroadcastDataAsync(
             new RoomGiveUserRightsWriter(room.Id, playerId, playerData.Username).GetAllBytes()
         );
-        
-        var roomUser = client.RoomUser;
 
-        if (roomUser != null)
+        if (room.UserRepository.TryGetById(playerId, out var targetRoomUser))
         {
-            roomUser.ControllerLevel = RoomControllerLevel.Rights;
-            roomUser.ApplyFlatCtrlStatus();
+            targetRoomUser!.ControllerLevel = RoomControllerLevel.Rights;
+            targetRoomUser.ApplyFlatCtrlStatus();
             
-            await roomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
+            await targetRoomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(targetRoomUser.ControllerLevel).GetAllBytes());
         }
-
+        
         room.PlayersWithRights.Add(playerId);
         await roomDao.InsertRightsAsync(room.Id, playerId);
     }
