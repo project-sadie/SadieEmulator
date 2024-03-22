@@ -41,7 +41,7 @@ public class PlayerWardrobeDao : BaseDao, IPlayerWardrobeDao
         return data;
     }
 
-    public async Task UpdateWardrobeItemAsync(long playerId, PlayerWardrobeItem wardrobeItem)
+    public async Task UpdateWardrobeItemAsync(long playerId, PlayerWardrobeItem wardrobeItem, bool newRecord)
     {
         var parameters = new Dictionary<string, object>()
         {
@@ -50,14 +50,19 @@ public class PlayerWardrobeDao : BaseDao, IPlayerWardrobeDao
             { "figureCode", wardrobeItem.FigureCode},
             { "gender", wardrobeItem.Gender == AvatarGender.Male ? "M" : "F" },
         };
-        
-        await QueryAsync(@"
-        IF EXISTS (SELECT * FROM player_wardrobe_items WHERE player_id = @playerId AND slot_id = @slotId)
-            UPDATE player_wardrobe_items
-            SET figure_code = @figureCode, gender = @gender 
-            WHERE player_id = @playerId
-        ELSE
+
+        if (newRecord)
+        {
+            await QueryAsync(@"
             INSERT INTO player_wardrobe_items (player_id, slot_id, figure_code, gender) 
-            VALUES (@playerId, @slotId, @figureCode, @gender)", parameters);
+                VALUES (@playerId, @slotId, @figureCode, @gender)", parameters);
+        }
+        else
+        {
+            await QueryAsync(@"
+            UPDATE player_wardrobe_items
+                SET figure_code = @figureCode, gender = @gender 
+                WHERE player_id = @playerId AND slot_id = @slotId", parameters);
+        }
     }
 }

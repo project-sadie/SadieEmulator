@@ -20,12 +20,18 @@ public class PlayerWardrobeSaveEvent(IPlayerWardrobeDao wardrobeDao) : INetworkP
             return;
         }
 
+        var newRecord = !player
+            .Data
+            .WardrobeComponent
+            .WardrobeItems
+            .ContainsKey(slotId);
+        
         var wardrobeItem = new PlayerWardrobeItem(
             slotId,
             figureCode, 
             gender == "M" ? AvatarGender.Male : AvatarGender.Female);
 
-        await wardrobeDao.UpdateWardrobeItemAsync(player.Data.Id, wardrobeItem);
+        await wardrobeDao.UpdateWardrobeItemAsync(player.Data.Id, wardrobeItem, newRecord);
 
         player.Data.WardrobeComponent.WardrobeItems[slotId] = wardrobeItem;
     }
