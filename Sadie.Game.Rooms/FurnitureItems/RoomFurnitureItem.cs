@@ -1,5 +1,4 @@
 using Sadie.Game.Furniture;
-using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Game.Rooms;
 
 namespace Sadie.Game.Rooms.FurnitureItems;

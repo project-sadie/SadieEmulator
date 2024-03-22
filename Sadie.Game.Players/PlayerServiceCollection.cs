@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
-using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Messenger;

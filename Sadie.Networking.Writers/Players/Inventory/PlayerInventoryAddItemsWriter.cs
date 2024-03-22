@@ -1,4 +1,3 @@
-using Sadie.Game.Catalog.Items;
 using Sadie.Game.Players.Inventory;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;

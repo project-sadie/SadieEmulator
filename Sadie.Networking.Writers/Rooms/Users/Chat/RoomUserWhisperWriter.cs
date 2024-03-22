@@ -1,4 +1,3 @@
-using Sadie.Game.Rooms.Chat;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 

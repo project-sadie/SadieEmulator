@@ -1,9 +1,8 @@
 using System.ComponentModel;
-using System.Reflection;
 
 namespace Sadie.Shared.Helpers;
 
-public class EnumHelpers
+public static class EnumHelpers
 {
     public static T GetEnumValueFromDescription<T>(string description)
     {

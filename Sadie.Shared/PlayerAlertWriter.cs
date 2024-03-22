@@ -1,7 +1,7 @@
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Players;
+namespace Sadie.Shared;
 
 public class PlayerAlertWriter : NetworkPacketWriter
 {

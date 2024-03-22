@@ -1,7 +1,7 @@
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Rights;
 
 namespace Sadie.Networking.Events.Rooms.Rights;
@@ -35,6 +35,8 @@ public class RoomGiveUserRightsEvent(IRoomRepository roomRepository, IRoomDao ro
         {
             roomUser.ControllerLevel = RoomControllerLevel.Rights;
             roomUser.ApplyFlatCtrlStatus();
+            
+            await roomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
         }
 
         room.PlayersWithRights.Add(playerId);

@@ -1,5 +1,4 @@
 using Sadie.Game.Catalog.Items;
-using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
@@ -27,6 +26,7 @@ public class CatalogPageWriter : NetworkPacketWriter
         switch (pageLayout)
         {
             case "frontpage":
+            case "club_buy":
                 WriteInteger(2);
                 WriteString(headerImage);
                 WriteString(teaserImage);
@@ -98,7 +98,7 @@ public class CatalogPageWriter : NetworkPacketWriter
             WriteInteger(item.RequiresClubMembership ? 1 : 0);
             WriteBool(false); // has offer
             WriteBool(false); // unknown
-            WriteString($"{item.Name}.png");
+            WriteString($"{item.FurnitureItems.First().AssetName}.png");
         }
         
         WriteInteger(0);

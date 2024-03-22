@@ -1,6 +1,4 @@
-using Sadie.Game.Players.Friendships;
-
-namespace Sadie.Game.Players.Components;
+namespace Sadie.Game.Players.Friendships;
 
 public class PlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
 {

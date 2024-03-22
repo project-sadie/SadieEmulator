@@ -1,5 +1,3 @@
-using System.Collections;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
