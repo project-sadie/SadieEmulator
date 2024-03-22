@@ -4,6 +4,7 @@ using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Extensions;
 using Sadie.Shared.Game;
 
 namespace Sadie.Networking.Events.Rooms.Users.Chat;
@@ -20,9 +21,14 @@ public class RoomUserChatEvent(
     {
         var message = reader.ReadString();
         
-        if (string.IsNullOrEmpty(message) || message.Length > roomConstants.MaxChatMessageLength)
+        if (string.IsNullOrEmpty(message))
         {
             return;
+        }
+
+        if (message.Length > roomConstants.MaxChatMessageLength)
+        {
+            message = message.Truncate(roomConstants.MaxChatMessageLength - 1) + "...";
         }
         
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))

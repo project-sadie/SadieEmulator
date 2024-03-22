@@ -6,7 +6,7 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Rooms;
 
-public class RoomSettingsSaveEvent(IRoomRepository roomRepository) : INetworkPacketEvent
+public class RoomSettingsSaveEvent(IRoomRepository roomRepository, RoomConstants roomConstants) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -30,23 +30,9 @@ public class RoomSettingsSaveEvent(IRoomRepository roomRepository) : INetworkPac
         var newMaxUsers = reader.ReadInteger();
         var newCategoryId = reader.ReadInteger();
         var newTagsCount = reader.ReadInteger();
-        var newTradeOption = reader.ReadInteger();
-        var newAllowPets = reader.ReadBool();
-        var newCanPetsEat = reader.ReadBool();
-        var newCanUsersOverlap = reader.ReadBool();
-        var newHideWall = reader.ReadBool();
-        var newWallSize = reader.ReadInteger();
-        var newFloorSize = reader.ReadInteger();
-        var newWhoCanMute = reader.ReadInteger();
-        var newWhoCanKick = reader.ReadInteger();
-        var newWhoCanBan = reader.ReadInteger();
-        var newChatType = reader.ReadInteger();
-        var newChatWeight = reader.ReadInteger();
-        var newChatSpeed = reader.ReadInteger();
-        var newChatDistance = reader.ReadInteger();
-        var newChatProtection = reader.ReadInteger();
         
         var newTags = new List<string>();
+        
         for (var i = 0; i < newTagsCount; i++)
         {
             var label = reader.ReadString();
@@ -66,14 +52,14 @@ public class RoomSettingsSaveEvent(IRoomRepository roomRepository) : INetworkPac
             return;
         }
         
-        if (newName.Length > 60)
+        if (newName.Length > roomConstants.MaxNameLength)
         {
-            newName = newName.Truncate(60);
+            newName = newName.Truncate(roomConstants.MaxNameLength);
         }
 
-        if (newDescription.Length > 250)
+        if (newDescription.Length > roomConstants.MaxDescriptionLength)
         {
-            newDescription = newDescription.Truncate(250);
+            newDescription = newDescription.Truncate(roomConstants.MaxDescriptionLength);
         }
 
         if (newAccessType == RoomAccessType.Password && string.IsNullOrEmpty(newPassword))
@@ -81,6 +67,22 @@ public class RoomSettingsSaveEvent(IRoomRepository roomRepository) : INetworkPac
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.PasswordRequired).GetAllBytes());
             return;
         }
+        
+        var newTradeOption = reader.ReadInteger();
+        var newAllowPets = reader.ReadBool();
+        var newCanPetsEat = reader.ReadBool();
+        var newCanUsersOverlap = reader.ReadBool();
+        var newHideWall = reader.ReadBool();
+        var newWallSize = reader.ReadInteger();
+        var newFloorSize = reader.ReadInteger();
+        var newWhoCanMute = reader.ReadInteger();
+        var newWhoCanKick = reader.ReadInteger();
+        var newWhoCanBan = reader.ReadInteger();
+        var newChatType = reader.ReadInteger();
+        var newChatWeight = reader.ReadInteger();
+        var newChatSpeed = reader.ReadInteger();
+        var newChatDistance = reader.ReadInteger();
+        var newChatProtection = reader.ReadInteger();
         
         room.Name = newName;
         room.Description = newDescription;
