@@ -1,9 +1,10 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
+using Fleck;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Networking.Client;
-using Sadie.Networking.WebSockets;
 
 namespace Sadie.Networking;
 
@@ -16,27 +17,20 @@ public class NetworkServiceCollection
             
         serviceCollection.AddSingleton<INetworkClientFactory, NetworkClientFactory>();
         serviceCollection.AddSingleton<INetworkClientRepository, NetworkClientRepository>();
-
-        var useNitroWebSockets = config.GetValue<bool>("Networking:UseWebSockets");
-
-        if (useNitroWebSockets)
-        {
-            var listener = new HttpListener();
-            listener.Prefixes.Add($"http://{host}:{port}/");
             
-            serviceCollection.AddSingleton(listener);
-            serviceCollection.AddTransient<INetworkClient, WsNetworkClient>();
-            serviceCollection.AddSingleton<INetworkListener, WsNetworkListener>();
-        }
-        else
-        {
-            serviceCollection.AddSingleton(new TcpListener(
-                IPAddress.Parse(host), port
-            ));
+        var certificateLocation = config["Networking:CertificateFile"];
             
-            serviceCollection.AddTransient<INetworkClient, NetworkClient>();
-            serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
+        if (certificateLocation != null)
+        {
+            var certificate = new X509Certificate2(certificateLocation, "");
+            serviceCollection.AddSingleton<X509Certificate2>(provider => certificate);
         }
+
+        serviceCollection.AddSingleton<WebSocketServer>(provider => new WebSocketServer($"wss://{host}:{port}"));
+        serviceCollection.AddTransient<INetworkClient, NetworkClient>();
+            
+        serviceCollection.AddTransient<INetworkClient, NetworkClient>();
+        serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
 
         var networkConstants = new NetworkingConstants();
         config.GetSection("Constants:Networking").Bind(networkConstants);

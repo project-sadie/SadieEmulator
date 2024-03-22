@@ -1,19 +1,13 @@
 using System.Net.Sockets;
-using System.Net.WebSockets;
+using Fleck;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.Networking.WebSockets;
 
 namespace Sadie.Networking.Client;
 
 public class NetworkClientFactory(IServiceProvider serviceProvider) : INetworkClientFactory
 {
-    public INetworkClient CreateClient(Guid guid, TcpClient tcpClient)
+    public INetworkClient CreateClient(Guid guid, IWebSocketConnection tcpClient)
     {
         return ActivatorUtilities.CreateInstance<NetworkClient>(serviceProvider, guid, tcpClient);
-    }
-
-    public INetworkClient CreateClient(Guid guid, WebSocket tcpClient)
-    {
-        return ActivatorUtilities.CreateInstance<WsNetworkClient>(serviceProvider, guid, tcpClient);
     }
 }

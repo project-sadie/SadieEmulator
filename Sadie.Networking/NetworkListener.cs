@@ -1,49 +1,67 @@
-﻿using System.Net.Sockets;
+﻿using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+using Fleck;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
 
-namespace Sadie.Networking;
-
-public class NetworkListener(
-    ILogger<NetworkListener> logger,
-    TcpListener listener,
-    INetworkClientRepository clientRepository,
-    INetworkClientFactory clientFactory)
-    : INetworkListener
+namespace Sadie.Networking
 {
-    public void Start()
+    public class NetworkListener(
+        ILogger<NetworkListener> logger,
+        INetworkClientRepository clientRepository,
+        INetworkClientFactory clientFactory,
+        X509Certificate2 certificate,
+        WebSocketServer server)
+        : INetworkListener
     {
-        listener.Start();
-    }
-
-    private bool _listening = true;
-        
-    public async Task ListenAsync()
-    {
-        logger.LogInformation("Networking is listening for connections");
-            
-        while (_listening)
+        public void Start()
         {
-            var client = await listener.AcceptTcpClientAsync();
-            await AcceptClient(client);
+            server.Certificate = certificate;
+            server.EnabledSslProtocols = SslProtocols.Tls12;
         }
-    }
-        
-    private async Task AcceptClient(TcpClient client)
-    {
-        var clientId = Guid.NewGuid();
-        var networkClient = clientFactory.CreateClient(clientId, client);
-        
-        clientRepository.AddClient(clientId, networkClient);
-                
-        await networkClient.ListenAsync();
-    }
 
-    public void Dispose()
-    {
-        _listening = false;
+        public Task ListenAsync()
+        {
+            server.Start(socket =>
+            {
+                socket.OnOpen = () => OnOpen(socket);
+                socket.OnClose = () => OnClose(socket);
+                socket.OnBinary = message => OnBinary(socket, message);
+            });
             
-        listener.Server.Shutdown(SocketShutdown.Both);
-        listener.Server.Close();
+            logger.LogInformation("Networking is listening for connections");
+            return Task.CompletedTask;
+        }
+
+        private void OnOpen(IWebSocketConnection connection)
+        {
+            var client = clientFactory.CreateClient(connection.ConnectionInfo.Id, connection);
+            clientRepository.AddClient(connection.ConnectionInfo.Id, client);
+        }
+
+        private async void OnClose(IWebSocketConnection connection)
+        {
+            if (!await clientRepository.TryRemoveAsync(connection.ConnectionInfo.Id))
+            {
+                logger.LogError("Failed to resolve client from connection information.");
+            }
+        }
+
+        private void OnBinary(IWebSocketConnection connection, byte[] message)
+        {
+            if (!clientRepository.TryGetClientByGuid(connection.ConnectionInfo.Id, out var client))
+            {
+                logger.LogError("Failed to resolve client from connection information.");
+            }
+            else
+            {
+                client!.OnReceivedAsync(message);
+            }
+        }
+        
+        public void Dispose()
+        {
+            server.Dispose();
+        }
     }
 }

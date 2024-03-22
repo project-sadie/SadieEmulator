@@ -24,6 +24,7 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
             }
 
             return result;
+            
         }
         catch (Exception e)
         {
@@ -53,6 +54,11 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
                 logger.LogError("Failed to dispose of network client");
             }
         }
+    }
+    
+    public bool TryGetClientByGuid(Guid guid, out INetworkClient? client)
+    {
+        return _clients.TryGetValue(guid, out client);
     }
 
     public async ValueTask DisposeAsync()
