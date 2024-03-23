@@ -7,6 +7,7 @@ using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Inventory;
+using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Catalog;
@@ -19,7 +20,7 @@ public class CatalogPurchaseEvent(
     {
         var player = client.Player;
 
-        if ((DateTime.Now - player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.CatalogPurchase)
+        if ((DateTime.Now - player!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
         {
             var bytes = new CatalogPurchaseFailedWriter((int)CatalogPurchaseError.Server).GetAllBytes();
             
@@ -27,7 +28,7 @@ public class CatalogPurchaseEvent(
             return;
         }
         
-        client.Player.State.LastPlayerSearch = DateTime.Now;
+        player.State.LastPlayerSearch = DateTime.Now;
 
         var pageId = reader.ReadInteger();
         var itemId = reader.ReadInteger();
@@ -72,6 +73,35 @@ public class CatalogPurchaseEvent(
             return;
         }
 
+        balance.Credits -= costInCredits;
+
+        if (item.CostPointsType == 0)
+        {
+            balance.Pixels -= costInPoints;
+        }
+        else
+        {
+            balance.Seasonal -= costInPoints;
+        }
+
+        var currencies = new Dictionary<int, long>
+        {
+            {0, balance.Pixels},
+            {1, 0}, // snowflakes
+            {2, 0}, // hearts
+            {3, 0}, // gift points
+            {4, 0}, // shells
+            {5, balance.Seasonal},
+            {101, 0}, // snowflakes
+            {102, 0}, // unknown
+            {103, balance.Gotw},
+            {104, 0}, // unknown
+            {105, 0} // unknown
+        };
+        
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(balance.Credits).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
+        
         var created = DateTime.Now;
         var newItems = new List<PlayerInventoryFurnitureItem>();
 

@@ -3,6 +3,7 @@ using Sadie.Game.Players.Messenger;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
+using Sadie.Shared;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Players.Messenger;
@@ -12,7 +13,7 @@ public class PlayerSendDirectMessageEvent(IPlayerRepository playerRepository, IP
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalSeconds < 1)
+        if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalMilliseconds < CooldownIntervals.PlayerDirectMessage)
         {
             return;
         }

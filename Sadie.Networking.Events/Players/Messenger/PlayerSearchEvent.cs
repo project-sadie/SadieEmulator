@@ -11,7 +11,7 @@ public class PlayerSearchEvent(IPlayerRepository playerRepository) : INetworkPac
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownSeconds.PlayerSearch)
+        if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownIntervals.PlayerSearch)
         {
             return;
         }

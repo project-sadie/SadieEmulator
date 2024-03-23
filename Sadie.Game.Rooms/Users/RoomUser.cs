@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Sadie.Game.Rooms.Chat;
+using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Game.Avatar;
@@ -54,6 +55,7 @@ public class RoomUser(
 
         Direction = direction;
         DirectionHead = direction;
+        LastAction = DateTime.Now;
     }
 
     public void ApplyFlatCtrlStatus()
@@ -67,6 +69,24 @@ public class RoomUser(
         {
             await ProcessMovementAsync();
         }
+
+        await UpdateIdleStatusAsync();
+    }
+
+    private async Task UpdateIdleStatusAsync()
+    {
+        var shouldBeIdle = (DateTime.Now - LastAction) > IdleTime;
+
+        if (shouldBeIdle && !IsIdle || !shouldBeIdle && IsIdle)
+        {
+            IsIdle = shouldBeIdle;
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(Id, IsIdle).GetAllBytes());
+        }
+    }
+
+    public void UpdateLastAction()
+    {
+        LastAction = DateTime.Now;
     }
 
     private void CheckStatusForCurrentTile()
@@ -118,6 +138,8 @@ public class RoomUser(
     public async Task OnTalkAsync(RoomChatMessage message)
     {
         room.ChatMessages.Add(message);
+
+        UpdateLastAction();
     }
 
     public async ValueTask DisposeAsync()
