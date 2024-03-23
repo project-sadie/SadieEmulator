@@ -13,6 +13,8 @@ public class RoomUserStartTypingEvent(IRoomRepository roomRepository) : INetwork
         {
             return;
         }
+
+        roomUser.UpdateLastAction();
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter(roomUser.Id, true).GetAllBytes());
     }

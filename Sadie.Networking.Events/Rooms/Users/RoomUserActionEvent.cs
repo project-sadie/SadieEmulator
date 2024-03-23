@@ -27,6 +27,8 @@ public class RoomUserActionEvent(IRoomRepository roomRepository) : INetworkPacke
             await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(roomUser.Id, roomUser.IsIdle).GetAllBytes());
             return;
         }
+        
+        roomUser.UpdateLastAction();
 
         await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser.Id, (int) action).GetAllBytes());
     }

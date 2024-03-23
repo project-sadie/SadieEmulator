@@ -14,6 +14,8 @@ public class RoomUserWalkEvent(IRoomRepository roomRepository) : INetworkPacketE
             return Task.CompletedTask;
         }
         
+        roomUser.LastAction = DateTime.Now;
+        
         var x = reader.ReadInteger();
         var y = reader.ReadInteger();
         

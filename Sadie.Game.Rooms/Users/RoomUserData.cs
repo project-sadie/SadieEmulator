@@ -12,7 +12,7 @@ public class RoomUserData : IRoomUserData
     public Dictionary<string, string> StatusMap { get; }
     public DateTime LastAction { get; set; }
     public TimeSpan IdleTime { get; }
-    public bool IsIdle => DateTime.Now - LastAction >= IdleTime;
+    public bool IsIdle { get; set; }
     
     protected RoomUserData(HPoint point, HDirection directionHead, HDirection direction, AvatarData avatarData, TimeSpan idleTime)
     {
@@ -21,6 +21,7 @@ public class RoomUserData : IRoomUserData
         Direction = direction;
         AvatarData = avatarData;
         StatusMap = new Dictionary<string, string>();
+        LastAction = DateTime.Now;
         IdleTime = idleTime;
     }
     

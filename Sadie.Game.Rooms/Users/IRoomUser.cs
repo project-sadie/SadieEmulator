@@ -17,6 +17,7 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();
     Task RunPeriodicCheckAsync();
+    void UpdateLastAction();
     bool HasRights();
     Task OnTalkAsync(RoomChatMessage message);
 }
