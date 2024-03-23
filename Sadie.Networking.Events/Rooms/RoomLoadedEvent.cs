@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
@@ -14,7 +15,8 @@ namespace Sadie.Networking.Events.Rooms;
 public class RoomLoadedEvent(
     ILogger<RoomLoadedEvent> logger,
     IRoomRepository roomRepository,
-    IRoomUserFactory roomUserFactory)
+    IRoomUserFactory roomUserFactory,
+    IPlayerRepository playerRepository)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -86,5 +88,8 @@ public class RoomLoadedEvent(
         }
         
         await PacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
+        
+        await playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
+            playerData.FriendshipComponent.Friendships, true, true);
     }
 }

@@ -64,16 +64,13 @@ public class SecureLoginEvent(
         logger.LogInformation($"Player '{playerData.Username}' has logged in");
         await playerRepository.MarkPlayerAsOnlineAsync(playerId);
 
-        await playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
-            playerData.FriendshipComponent.Friendships, true, false);
-
         player.Data.LastOnline = DateTime.Now;
         player.Authenticated = true;
 
         await SendExtraPacketsAsync(client, player.Data);
     }
 
-    private static async Task SendExtraPacketsAsync(INetworkObject networkObject, IPlayerData playerData)
+    private async Task SendExtraPacketsAsync(INetworkObject networkObject, IPlayerData playerData)
     {
         await networkObject.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
@@ -90,6 +87,9 @@ public class SecureLoginEvent(
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
         }
+        
+        await playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
+            playerData.FriendshipComponent.Friendships, true, playerData.CurrentRoomId != 0);
     }
 
     private bool ValidateSso(string sso) => 
