@@ -21,20 +21,10 @@ public class RoomFurnitureItem(
     public long OwnerId { get; } = ownerId;
     public string OwnerUsername { get; } = ownerUsername;
     public FurnitureItem FurnitureItem { get; } = furnitureItem;
-    public HPoint Position { get; private set; } = position;
-    public string WallPosition { get; private set; } = wallPosition;
-    public HDirection Direction { get; private set; } = direction;
+    public HPoint Position { get; set; } = position;
+    public string WallPosition { get; set; } = wallPosition;
+    public HDirection Direction { get; set; } = direction;
     public string LimitedData { get; } = limitedData;
     public string MetaData { get; } = metaData;
     public DateTime Created { get; } = createdAt;
-
-    public void SetPosition(HPoint point)
-    {
-        Position = point;
-    }
-
-    public void SetDirection(HDirection direction)
-    {
-        Direction = direction;
-    }
 }

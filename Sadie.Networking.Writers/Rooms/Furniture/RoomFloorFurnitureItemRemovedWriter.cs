@@ -4,14 +4,14 @@ using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomFurnitureItemRemovedWriter : NetworkPacketWriter
+public class RoomFloorFurnitureItemRemovedWriter : NetworkPacketWriter
 {
-    public RoomFurnitureItemRemovedWriter(RoomFurnitureItem roomFurnitureItem)
+    public RoomFloorFurnitureItemRemovedWriter(RoomFurnitureItem item)
     {
         WriteShort(ServerPacketId.RoomFurnitureItemRemoved);
-        WriteString(roomFurnitureItem.Id.ToString());
+        WriteString(item.Id.ToString());
         WriteBool(false); // TODO: check
-        WriteLong(roomFurnitureItem.OwnerId);
+        WriteLong(item.OwnerId);
         WriteInteger(0); // TODO: check
     }
 }

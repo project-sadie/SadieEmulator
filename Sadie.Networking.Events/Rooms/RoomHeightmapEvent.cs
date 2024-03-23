@@ -36,17 +36,23 @@ public class RoomHeightmapEvent(IRoomRepository roomRepository) : INetworkPacket
         
         var wallItems = room.FurnitureItemRepository
             .Items
-            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
+            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Wall)
             .ToList();
 
-        var furnitureOwners = 
+        var floorFurnitureOwners = 
             floorItems
                 .Select(item => new { Key = item.OwnerId, Value = item.OwnerUsername })
                 .Distinct()
                 .ToDictionary(x => x.Key, x => x.Value);
 
-        await client.WriteToStreamAsync(new RoomFloorItemsWriter(floorItems, furnitureOwners).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems).GetAllBytes());
+        var wallFurnitureOwners = 
+            wallItems
+                .Select(item => new { Key = item.OwnerId, Value = item.OwnerUsername })
+                .Distinct()
+                .ToDictionary(x => x.Key, x => x.Value);
+
+        await client.WriteToStreamAsync(new RoomFloorItemsWriter(floorItems, floorFurnitureOwners).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems, wallFurnitureOwners).GetAllBytes());
         
         await userRepository.BroadcastDataAsync(new RoomForwardDataWriter(room, false, true, isOwner).GetAllBytes());
     }

@@ -8,7 +8,7 @@ public class RoomFloorFurnitureItemUpdatedWriter : NetworkPacketWriter
 {
     public RoomFloorFurnitureItemUpdatedWriter(RoomFurnitureItem item)
     {
-        WriteShort(ServerPacketId.RoomFurnitureItemMoved);
+        WriteShort(ServerPacketId.RoomFloorFurnitureItemMoved);
         WriteLong(item.Id);
         WriteInteger(item.FurnitureItem.AssetId);
         WriteInteger(item.Position.X);

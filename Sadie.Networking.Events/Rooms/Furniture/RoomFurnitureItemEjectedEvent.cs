@@ -1,3 +1,4 @@
+using Sadie.Game.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
@@ -43,14 +44,23 @@ public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository,
         {
             return;
         }
-        
-        var currentTile = room.Layout.FindTile(
-            roomFurnitureItem.Position.X, roomFurnitureItem.Position.Y);
 
-        if (currentTile != null)
+        if (roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
         {
-            currentTile.Items.Remove(roomFurnitureItem);
-            RoomHelpers.UpdateTileMapForTile(currentTile, room.Layout);
+            var currentTile = room.Layout.FindTile(
+                roomFurnitureItem.Position.X, roomFurnitureItem.Position.Y);
+
+            if (currentTile != null)
+            {
+                currentTile.Items.Remove(roomFurnitureItem);
+                RoomHelpers.UpdateTileMapForTile(currentTile, room.Layout);
+            }
+            
+            await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(roomFurnitureItem).GetAllBytes());
+        }
+        else
+        {
+            await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter(roomFurnitureItem).GetAllBytes());
         }
 
         var ownsItem = roomFurnitureItem.OwnerId == player.Data.Id;
@@ -64,8 +74,6 @@ public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository,
         await roomFurnitureItemDao.DeleteItemsAsync([roomFurnitureItem.Id]);
         room.FurnitureItemRepository.RemoveItems([roomFurnitureItem.Id]);
         
-        await room.UserRepository.BroadcastDataAsync(new RoomFurnitureItemRemovedWriter(roomFurnitureItem).GetAllBytes());
-
         if (ownsItem)
         {
             player.Data.Inventory.AddItems([playerItem]);

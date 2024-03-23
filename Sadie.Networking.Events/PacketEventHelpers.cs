@@ -3,8 +3,11 @@ using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
+using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared;
 using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Networking;
 
 namespace Sadie.Networking.Events;
 
@@ -98,5 +101,14 @@ internal static class PacketEventHelpers
         }
 
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
+    }
+
+    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
+    {
+        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
+            new Dictionary<string, string>()
+            {
+                { "message", error.ToString() }
+            }).GetAllBytes());
     }
 }

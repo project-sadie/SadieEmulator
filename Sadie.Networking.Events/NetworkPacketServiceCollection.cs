@@ -78,13 +78,14 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerInventoryFurnitureItemsEvent>();
         serviceCollection.AddSingleton<RoomFurnitureItemPlacedEvent>();
         serviceCollection.AddSingleton<RoomFurnitureItemEjectedEvent>();
-        serviceCollection.AddSingleton<RoomFurnitureItemMovedEvent>();
+        serviceCollection.AddSingleton<RoomFloorFurnitureItemUpdatedEvent>();
         serviceCollection.AddSingleton<RoomFurnitureItemUseEvent>();
         serviceCollection.AddSingleton<PlayerMessengerInitEvent>();
         serviceCollection.AddSingleton<RoomGiveUserRightsEvent>();
         serviceCollection.AddSingleton<RoomRemoveUserRightsEvent>();
         serviceCollection.AddSingleton<PlayerWardrobeEvent>();
         serviceCollection.AddSingleton<PlayerWardrobeSaveEvent>();
+        serviceCollection.AddSingleton<RoomWallFurnitureItemUpdatedEvent>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         
@@ -204,12 +205,13 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.PlayerInventoryFurnitureItems] = provider.GetRequiredService<PlayerInventoryFurnitureItemsEvent>(),
             [ClientPacketId.RoomFurnitureItemPlaced] = provider.GetRequiredService<RoomFurnitureItemPlacedEvent>(),
             [ClientPacketId.RoomFurnitureItemEjected] = provider.GetRequiredService<RoomFurnitureItemEjectedEvent>(),
-            [ClientPacketId.RoomFurnitureItemMoved] = provider.GetRequiredService<RoomFurnitureItemMovedEvent>(),
+            [ClientPacketId.RoomFloorFurnitureItemUpdated] = provider.GetRequiredService<RoomFloorFurnitureItemUpdatedEvent>(),
             [ClientPacketId.RoomFurnitureItemToggle] = provider.GetRequiredService<RoomFurnitureItemUseEvent>(),
             [ClientPacketId.RoomGiveUserRights] = provider.GetRequiredService<RoomGiveUserRightsEvent>(),
             [ClientPacketId.RoomRemoveUserRights] = provider.GetRequiredService<RoomRemoveUserRightsEvent>(),
             [ClientPacketId.PlayerWardrobe] = provider.GetRequiredService<PlayerWardrobeEvent>(),
             [ClientPacketId.PlayerWardrobeSave] = provider.GetRequiredService<PlayerWardrobeSaveEvent>(),
+            [ClientPacketId.RoomWallFurnitureItemUpdated] = provider.GetRequiredService<RoomWallFurnitureItemUpdatedEvent>(),
         });
     }
 }

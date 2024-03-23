@@ -12,7 +12,7 @@ using Sadie.Shared.Networking;
 
 namespace Sadie.Networking.Events.Rooms.Furniture;
 
-public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository, 
+public class RoomFloorFurnitureItemUpdatedEvent(IRoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
     IRoomFurnitureItemDao roomFurnitureItemDao,
     IPlayerRepository playerRepository) : INetworkPacketEvent
@@ -35,7 +35,7 @@ public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository,
 
         if (!client.RoomUser.HasRights())
         {
-            await SendErrorAsync(client, FurniturePlacementError.MissingRights);
+            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
             return;
         }
 
@@ -66,26 +66,17 @@ public class RoomFurnitureItemMovedEvent(IRoomRepository roomRepository,
 
         if (tile == null || tile.State == RoomTileState.Closed)
         {
-            await SendErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
         tile.Items.Add(roomFurnitureItem);
         RoomHelpers.UpdateTileMapForTile(tile, room.Layout);
 
-        roomFurnitureItem.SetPosition(position);
-        roomFurnitureItem.SetDirection(direction);
+        roomFurnitureItem.Position = position;
+        roomFurnitureItem.Direction = direction;
         
         await roomFurnitureItemDao.UpdateItemAsync(roomFurnitureItem);
         await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(roomFurnitureItem).GetAllBytes());
-    }
-
-    private static async Task SendErrorAsync(INetworkObject client, FurniturePlacementError error)
-    {
-        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
-            new Dictionary<string, string>()
-            {
-                { "message", error.ToString() }
-            }).GetAllBytes());
     }
 }

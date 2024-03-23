@@ -21,6 +21,7 @@ public class RoomFurnitureItemDao(
             { "positionX", item.Position.X },
             { "positionY", item.Position.Y },
             { "positionZ", item.Position.Z },
+            { "wallPosition", item.WallPosition },
             { "direction", item.Direction },
             { "limitedData", item.LimitedData },
             { "extraData", item.MetaData },
@@ -35,6 +36,7 @@ public class RoomFurnitureItemDao(
               position_x, 
               position_y, 
               position_z, 
+              wall_position,
               direction, limited_data, meta_data, created_at
             )
             VALUES (
@@ -45,6 +47,7 @@ public class RoomFurnitureItemDao(
                     @positionX, 
                     @positionY, 
                     @positionZ, 
+                    @wallPOsition,
                     @direction, 
                     @limitedData, 
                     @extraData, 
@@ -99,12 +102,13 @@ public class RoomFurnitureItemDao(
     public async Task UpdateItemAsync(RoomFurnitureItem item)
     {
         await QueryAsync(@"UPDATE room_furniture_items 
-            SET position_x = @x, position_y = @y, position_z = @z, direction = @direction WHERE id = @id LIMIT 1;", new Dictionary<string, object>
+            SET position_x = @x, position_y = @y, position_z = @z, wall_position = @wallPosition, direction = @direction WHERE id = @id LIMIT 1;", new Dictionary<string, object>
         {
             { "id", item.Id },
             { "x", item.Position.X },
             { "y", item.Position.Y },
             { "z", item.Position.Z },
+            { "wallPosition", item.WallPosition },
             { "direction", (int) item.Direction },
         });
     }

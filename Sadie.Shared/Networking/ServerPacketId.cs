@@ -113,10 +113,12 @@ public class ServerPacketId
     public const short RoomFloorItems = 1778;
     public const short RoomWallItems = 1369;
     public const short RoomFurnitureItemRemoved = 2703;
-    public const short RoomFurnitureItemMoved = 3776;
+    public const short RoomFloorFurnitureItemMoved = 3776;
     public const short RoomGiveUserRights = 2088;
     public const short RoomRemoveUserRights = 1327;
     public const short ModeratorMessage = 2030;
     public const short PlayerWardrobe = 3315;
     public const short RoomWallFurnitureItemPlaced = 2187;
+    public const short RoomWallFurnitureItemUpdated = 2009;
+    public const short RoomWallFurnitureItemRemoved = 3208;
 }
