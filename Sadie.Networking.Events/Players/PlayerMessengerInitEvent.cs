@@ -7,8 +7,6 @@ using Sadie.Networking.Writers.Players.Friendships;
 namespace Sadie.Networking.Events.Players;
 
 public class PlayerMessengerInitEvent(
-    IPlayerRepository playerRepository,
-    IRoomRepository roomRepository,
     PlayerConstants playerConstants)
     : INetworkPacketEvent
 {

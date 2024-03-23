@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
+using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Handshake;
@@ -90,6 +91,25 @@ public class SecureLoginEvent(
         
         await playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
             playerData.FriendshipComponent.Friendships, true, playerData.CurrentRoomId != 0);
+
+        foreach (var friend in playerData.FriendshipComponent.Friendships)
+        {
+            var isOnline = playerRepository.TryGetPlayerById(friend.TargetData.Id, out var friendPlayer) && friendPlayer != null;
+            var isInRoom = isOnline && friendPlayer!.Data.CurrentRoomId != 0;
+            
+            await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 
+                1, 
+                0,
+                friend, 
+                isOnline, 
+                isInRoom, 
+                0, 
+                "", 
+                "", 
+                false, 
+                false, 
+                false).GetAllBytes());   
+        }
     }
 
     private bool ValidateSso(string sso) => 
