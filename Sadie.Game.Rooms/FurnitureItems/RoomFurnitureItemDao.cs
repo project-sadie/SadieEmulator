@@ -58,9 +58,17 @@ public class RoomFurnitureItemDao(
             SELECT 
                 id, 
                 room_id, 
-                owner_player_id, owner_player_username, furniture_item_id, 
-                position_x, position_y, position_z, direction, limited_data, 
-                meta_data, created_at FROM room_furniture_items
+                owner_player_id, 
+                owner_player_username, 
+                furniture_item_id, 
+                position_x, 
+                position_y, 
+                position_z, 
+                wall_position,
+                direction, 
+                limited_data, 
+                meta_data, 
+                created_at FROM room_furniture_items
             WHERE room_id = @roomId", new Dictionary<string, object>
         {
             { "roomId", roomId }
@@ -123,6 +131,7 @@ public class RoomFurnitureItemDao(
             record.Get<string>("owner_player_username"),
             furnitureItem,
             point,
+            record.Get<string>("wall_position"),
             (HDirection)record.Get<int>("direction"),
             record.Get<string>("limited_data"),
             record.Get<string>("meta_data"),

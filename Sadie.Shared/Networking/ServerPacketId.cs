@@ -108,7 +108,7 @@ public class ServerPacketId
     public const short PlayerInventoryFurnitureItems = 994;
     public const short PlayerInventoryAddItems = 2103;
     public const short PlayerInventoryRemoveItem = 159;
-    public const short RoomFurnitureItemPlaced = 1534;
+    public const short RoomFloorFurnitureItemPlaced = 1534;
     public const short NotificationWriter = 1992;
     public const short RoomFloorItems = 1778;
     public const short RoomWallItems = 1369;
@@ -118,4 +118,5 @@ public class ServerPacketId
     public const short RoomRemoveUserRights = 1327;
     public const short ModeratorMessage = 2030;
     public const short PlayerWardrobe = 3315;
+    public const short RoomWallFurnitureItemPlaced = 2187;
 }

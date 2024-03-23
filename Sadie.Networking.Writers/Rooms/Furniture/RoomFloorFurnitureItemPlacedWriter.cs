@@ -4,11 +4,11 @@ using Sadie.Shared.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomFurnitureItemPlacedWriter : NetworkPacketWriter
+public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
 {
-    public RoomFurnitureItemPlacedWriter(RoomFurnitureItem roomFurnitureItem)
+    public RoomFloorFurnitureItemPlacedWriter(RoomFurnitureItem roomFurnitureItem)
     {
-        WriteShort(ServerPacketId.RoomFurnitureItemPlaced);
+        WriteShort(ServerPacketId.RoomFloorFurnitureItemPlaced);
         WriteLong(roomFurnitureItem.Id);
         WriteInteger(roomFurnitureItem.FurnitureItem.AssetId);
         WriteInteger(roomFurnitureItem.Position.X);

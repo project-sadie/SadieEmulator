@@ -10,6 +10,7 @@ public class RoomFurnitureItem(
     string ownerUsername,
     FurnitureItem furnitureItem,
     HPoint position,
+    string wallPosition,
     HDirection direction,
     string limitedData,
     string metaData,
@@ -21,6 +22,7 @@ public class RoomFurnitureItem(
     public string OwnerUsername { get; } = ownerUsername;
     public FurnitureItem FurnitureItem { get; } = furnitureItem;
     public HPoint Position { get; private set; } = position;
+    public string WallPosition { get; private set; } = wallPosition;
     public HDirection Direction { get; private set; } = direction;
     public string LimitedData { get; } = limitedData;
     public string MetaData { get; } = metaData;
