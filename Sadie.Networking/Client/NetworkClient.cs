@@ -47,6 +47,11 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public async Task WriteToStreamAsync(byte[] data)
     {
+        if (_disposed)
+        {
+            return;
+        }
+        
         try
         {
             await _webSocket.Send(data);
