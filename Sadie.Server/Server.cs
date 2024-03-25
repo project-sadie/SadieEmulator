@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
+using Sadie.Game.Navigator.Filters;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -70,6 +71,10 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         var navigatorTabRepo = serviceProvider.GetRequiredService<NavigatorTabRepository>();
         await navigatorTabRepo.LoadInitialDataAsync();
         logger.LogTrace("Loaded navigator tabs");
+        
+        var navigatorFilterRepo = serviceProvider.GetRequiredService<NavigatorFilterRepository>();
+        await navigatorFilterRepo.LoadInitialDataAsync();
+        logger.LogTrace("Loaded navigator search filters");
 
         var furnitureItemRepository = serviceProvider.GetRequiredService<FurnitureItemRepository>();
         await furnitureItemRepository.LoadInitialDataAsync();
