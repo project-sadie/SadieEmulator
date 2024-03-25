@@ -98,7 +98,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     public async ValueTask DisposeAsync()
     {
-        logger.LogWarning("Service is about to shut down...");
+        logger.LogWarning("Server is about to shut down...");
         
         var roomRepository = serviceProvider.GetRequiredService<IRoomRepository>();
         var playerRepository = serviceProvider.GetRequiredService<IPlayerRepository>();
