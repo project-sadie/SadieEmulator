@@ -15,6 +15,8 @@ internal static class Program
         var host = Startup.CreateHost();
         _server = host.Services.GetRequiredService<IServer>();
         await _server.RunAsync();
+
+        System.Console.ReadKey(true);
     }
 
     private static void SetEventHandlers()

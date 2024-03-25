@@ -3,37 +3,26 @@ using Microsoft.Extensions.Logging;
 
 namespace SadieEmulator.Tasks;
 
-public class ServerTaskWorker(ILogger<ServerTaskWorker> logger, List<IServerTask> tasks) : IServerTaskWorker
+public class ServerTaskWorker(
+    ILogger<ServerTaskWorker> logger, 
+    List<IServerTask> tasks) : IServerTaskWorker
 {
     public void Start()
     {
-        var serverWorkerThread = new Thread(Work)
-        {
-            Name = "Server Worker",
-            Priority = ThreadPriority.AboveNormal
-        };
-        
-        serverWorkerThread.Start();
+        Task.Run(WorkAsync);
     }
 
-    private bool _cancelled;
-    
-    public void Stop()
+    private async Task WorkAsync()
     {
-        _cancelled = true;
-    }
-
-    private void Work()
-    {
-        while (!_cancelled)
+        while (true)
         {
             foreach (var task in tasks.Where(task => task.WaitingToExecute()))
             {
                 task.LastExecuted = DateTime.Now;
-                ProcessTaskAsync(task);
+                await ProcessTaskAsync(task);
             }
 
-            Thread.Sleep(10);
+            await Task.Delay(50);
         }
     }
 
