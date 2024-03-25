@@ -22,7 +22,8 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         
         WriteHeaderToConsole();
         TestDatabaseConnection();
-        
+
+        await CleanUpDataAsync();
         await LoadInitialDataAsync();
         
         serviceProvider.GetRequiredService<IServerTaskWorker>().Start();
@@ -52,6 +53,12 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         }
 
         logger.LogTrace("Database connection is working!");
+    }
+
+    private async Task CleanUpDataAsync()
+    {
+        var playerDao = serviceProvider.GetRequiredService<IPlayerDao>();
+        await playerDao.CleanDataAsync();
     }
 
     private async Task LoadInitialDataAsync()

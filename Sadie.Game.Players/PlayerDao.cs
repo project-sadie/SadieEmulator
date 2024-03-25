@@ -257,4 +257,9 @@ public class PlayerDao(
             { "roomId", roomId }
         });
     }
+
+    public async Task CleanDataAsync()
+    {
+        await QueryAsync("UPDATE players SET sso_token = ''; UPDATE player_data SET is_online = 0;");
+    }
 }
