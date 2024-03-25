@@ -6,7 +6,12 @@ namespace Sadie.Networking.Writers.Players;
 
 public class PlayerProfileWriter : NetworkPacketWriter
 {
-    public PlayerProfileWriter(IPlayerData playerData, bool online, int friendshipCount, bool friendshipExists, bool friendshipRequestExists)
+    public PlayerProfileWriter(
+        IPlayerData playerData, 
+        bool online, 
+        int friendshipCount, 
+        bool friendshipExists, 
+        bool friendshipRequestExists)
     {
         WriteShort(ServerPacketId.PlayerProfile);
         WriteLong(playerData.Id);

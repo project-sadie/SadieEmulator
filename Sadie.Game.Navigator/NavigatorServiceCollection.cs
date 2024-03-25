@@ -11,6 +11,7 @@ public class NavigatorServiceCollection
     {
         serviceCollection.AddSingleton<NavigatorFilterDao>();
         serviceCollection.AddSingleton<NavigatorFilterFactory>();
+        serviceCollection.AddSingleton<NavigatorFilterRepository>();
         serviceCollection.AddTransient<NavigatorFilter>();
         
         serviceCollection.AddSingleton<NavigatorCategoryDao>();
