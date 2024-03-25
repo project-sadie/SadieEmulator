@@ -27,18 +27,7 @@ public class PlayerChangeRelationEvent(IPlayerRepository playerRepository, IRoom
             // TODO: Persist the update
             
             var isOnline = playerRepository.TryGetPlayerById(playerId, out var onlineFriend) && onlineFriend != null;
-            var inRoom = false;
-
-            if (isOnline && onlineFriend != null)
-            {
-                var onlineData = onlineFriend.Data;
-                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(onlineData.CurrentRoomId);
-
-                if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(onlineData.Id, out _))
-                {
-                    inRoom = true;
-                }
-            }
+            var inRoom = isOnline && onlineFriend != null && onlineFriend.Data.CurrentRoomId != 0;
 
             var updateFriendWriter = new PlayerUpdateFriendWriter(
                     0, 
