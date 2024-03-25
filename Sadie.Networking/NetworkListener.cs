@@ -43,7 +43,7 @@ namespace Sadie.Networking
         {
             if (!await clientRepository.TryRemoveAsync(connection.ConnectionInfo.Id))
             {
-                logger.LogError("Failed to resolve client from connection information.");
+                logger.LogError("Failed to remove client from connection information.");
             }
         }
 

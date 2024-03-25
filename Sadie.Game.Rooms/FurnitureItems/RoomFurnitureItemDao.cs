@@ -101,8 +101,12 @@ public class RoomFurnitureItemDao(
 
     public async Task UpdateItemAsync(RoomFurnitureItem item)
     {
-        await QueryAsync(@"UPDATE room_furniture_items 
-            SET position_x = @x, position_y = @y, position_z = @z, wall_position = @wallPosition, direction = @direction WHERE id = @id LIMIT 1;", new Dictionary<string, object>
+        await QueryAsync(@"UPDATE room_furniture_items SET 
+                position_x = @x, 
+                position_y = @y, 
+                position_z = @z, 
+                wall_position = @wallPosition, 
+                direction = @direction WHERE id = @id LIMIT 1;", new Dictionary<string, object>
         {
             { "id", item.Id },
             { "x", item.Position.X },
