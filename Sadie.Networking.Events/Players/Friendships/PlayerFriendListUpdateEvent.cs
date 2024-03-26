@@ -23,7 +23,11 @@ public class PlayerFriendListUpdateEvent(
                 Take(500).
                 ToList();
             
-            await client.WriteToStreamAsync(new PlayerFriendsListWriter(pages, i, batch, playerRepository, roomRepository).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerFriendsListWriter(
+                pages, i, batch, 
+                playerRepository, 
+                roomRepository,
+                player.Data.Relationships).GetAllBytes());
         }
     }
 }

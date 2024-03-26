@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Relationships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Handshake;
@@ -96,7 +97,13 @@ public class SecureLoginEvent(
         {
             var isOnline = playerRepository.TryGetPlayerById(friend.TargetData.Id, out var friendPlayer) && friendPlayer != null;
             var isInRoom = isOnline && friendPlayer!.Data.CurrentRoomId != 0;
-            
+                    
+            var relationship = isOnline
+                ? friendPlayer!
+                    .Data
+                    .Relationships
+                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginId || x.TargetPlayerId == friend.TargetId) : null;
+
             await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 
                 1, 
                 0,
@@ -108,7 +115,8 @@ public class SecureLoginEvent(
                 "", 
                 false, 
                 false, 
-                false).GetAllBytes());   
+                false,
+                relationship?.Type ?? PlayerRelationshipType.None).GetAllBytes());   
         }
     }
 

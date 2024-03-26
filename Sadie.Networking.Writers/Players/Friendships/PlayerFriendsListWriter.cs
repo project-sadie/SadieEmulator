@@ -1,5 +1,6 @@
 ﻿using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Relationships;
 using Sadie.Game.Rooms;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
@@ -14,7 +15,8 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
         int index, 
         List<PlayerFriendship> friends, 
         IPlayerRepository playerRepository, 
-        IRoomRepository roomRepository)
+        IRoomRepository roomRepository,
+        List<PlayerRelationship> relationships)
     {
         WriteShort(ServerPacketId.PlayerFriendsList);
         WriteInteger(pages);
@@ -25,17 +27,8 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
         {
             var friendData = friend.TargetData;
             var isOnline = playerRepository.TryGetPlayerById(friendData.Id, out var onlineFriend) && onlineFriend != null;
-            var inRoom = false;
-
-            if (isOnline && onlineFriend != null)
-            {
-                var (roomFound, lastRoom) = roomRepository.TryGetRoomById(onlineFriend.Data.CurrentRoomId);
-
-                if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(onlineFriend.Data.Id, out _))
-                {
-                    inRoom = true;
-                }
-            }
+            var inRoom = isOnline && onlineFriend != null && onlineFriend.Data.CurrentRoomId != 0;
+            var relationshipType = relationships.FirstOrDefault(x => x.TargetPlayerId == friendData.Id)?.Type ?? PlayerRelationshipType.None;
 
             WriteInteger(friendData.Id);
             WriteString(friendData.Username);
@@ -50,7 +43,7 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
             WriteBool(false); // TODO: offline messaging
             WriteBool(false); // unknown
             WriteBool(false); // unknown
-            WriteShort((short) friend.Type);
+            WriteShort((short) relationshipType);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Relationships;
 using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
@@ -19,7 +20,8 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         string unknown6, 
         bool unknown7, 
         bool unknown8, 
-        bool unknown9)
+        bool unknown9,
+        PlayerRelationshipType relationshipType)
     {
         var targetData = friendship.TargetData;
         
@@ -40,6 +42,6 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         WriteBool(unknown7);
         WriteBool(unknown8);
         WriteBool(unknown9);
-        WriteShort((short) friendship.Type);
+        WriteShort((short) relationshipType);
     }
 }

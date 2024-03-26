@@ -1,4 +1,5 @@
 ﻿using Sadie.Database;
+using Sadie.Game.Players.Relationships;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;
@@ -13,7 +14,6 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             player_friendships.origin_player_id,
             player_friendships.target_player_id,
             player_friendships.status,
-            player_friendships.type_id,
             (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
             player_avatar_data.player_id AS target_id,
             player_avatar_data.figure_code,
@@ -36,7 +36,6 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             record.Get<int>("origin_player_id"),
             record.Get<int>("target_player_id"),
             (PlayerFriendshipStatus)record.Get<int>("status"),
-            (PlayerFriendshipType)record.Get<int>("request_id"),
             targetData);
     }
     
@@ -183,10 +182,9 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
                 origin_player_id, 
                 target_player_id, 
                 status, 
-                type_id, 
                 created_at
             ) 
-            VALUES (@originId, @targetId, @status, 0, @createdAt);", new Dictionary<string, object>
+            VALUES (@originId, @targetId, @status, @createdAt);", new Dictionary<string, object>
         {
             { "originId", originId },
             { "targetId", targetId },

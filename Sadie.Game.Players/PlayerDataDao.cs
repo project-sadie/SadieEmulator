@@ -2,6 +2,7 @@ using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
+using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Game.Players.Wardrobe;
@@ -131,7 +132,8 @@ public class PlayerDataDao(
             new PlayerInventoryRepository(
                 new List<PlayerInventoryFurnitureItem>()),
                 new List<long>(),
-            new Dictionary<int, PlayerWardrobeItem>()
+            new Dictionary<int, PlayerWardrobeItem>(),
+            new List<PlayerRelationship>()
             );
     }
 

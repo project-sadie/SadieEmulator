@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Relationships;
 using Sadie.Shared.Networking;
 
 namespace Sadie.Game.Players;
@@ -58,6 +59,12 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
 
             if (friendship != null)
             {
+                var relationship = friend
+                    .Data
+                    .Relationships
+                    .FirstOrDefault(x =>
+                        x.TargetPlayerId == friendship.OriginId || x.TargetPlayerId == friendship.TargetId);
+
                 var updateFriendWriter = new PlayerUpdateFriendWriter(
                         0, 
                         1, 
@@ -70,7 +77,8 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
                         "", 
                         false, 
                         false, 
-                        false).GetAllBytes();
+                        false,
+                        relationship?.Type ?? PlayerRelationshipType.None).GetAllBytes();
                 
                 await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
             }

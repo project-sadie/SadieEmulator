@@ -1,3 +1,4 @@
+using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -5,20 +6,26 @@ using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Generic;
 
-public class PlayerRelationshipsEvent(IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEvent
+public class PlayerRelationshipsEvent(
+    IPlayerRepository playerRepository,
+    IPlayerDao playerDao,
+    IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = reader.ReadInteger();
-        var playerFriends = await friendshipRepository.GetFriendsForPlayerAsync(playerId);
+        var isOnline = playerRepository.TryGetPlayerById(playerId, out var player);
         
-        var playerRelations = new Dictionary<int, List<PlayerFriendshipData>>
-        {
-            {1, playerFriends.Where(x => x.Type == PlayerFriendshipType.Lover).Select(x => x.TargetData).ToList()},
-            {2, playerFriends.Where(x => x.Type == PlayerFriendshipType.Friend).Select(x => x.TargetData).ToList()},
-            {3, playerFriends.Where(x => x.Type == PlayerFriendshipType.Hater).Select(x => x.TargetData).ToList()}
-        };
+        var relationships = isOnline ? 
+            player!.Data.Relationships : 
+            await playerDao.GetRelationshipsAsync(playerId);
 
-        await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, playerRelations).GetAllBytes());
+        var playerFriends = isOnline
+            ? player!.Data.FriendshipComponent.Friendships
+            : await friendshipRepository.GetFriendsForPlayerAsync(playerId);
+        
+        await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, 
+            relationships, 
+            playerFriends).GetAllBytes());
     }
 }

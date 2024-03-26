@@ -52,14 +52,4 @@ public class PlayerFriendshipComponent(int playerId, List<PlayerFriendship> frie
     {
         targetIds.ForEach(RemoveFriend);
     }
-
-    public void UpdateRelation(int targetId, PlayerFriendshipType friendshipType)
-    {
-        var friendship = Friendships.FirstOrDefault(x => x.OriginId == targetId || x.TargetId == targetId);
-
-        if (friendship != null)
-        {
-            friendship.Type = friendshipType;
-        }
-    }
 }

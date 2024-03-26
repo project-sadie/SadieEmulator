@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Game.Players.Relationships;
 using Sadie.Shared.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;
@@ -22,7 +23,6 @@ public class PlayerFriendshipFactory(IServiceProvider serviceProvider)
         int originId, 
         int targetId, 
         PlayerFriendshipStatus status, 
-        PlayerFriendshipType type, 
         PlayerFriendshipData data)
     {
         return ActivatorUtilities.CreateInstance<PlayerFriendship>(
@@ -31,7 +31,6 @@ public class PlayerFriendshipFactory(IServiceProvider serviceProvider)
             originId,
             targetId,
             status, 
-            type,
             data);
     }
 }

@@ -45,7 +45,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomForwardDataEvent>();
         serviceCollection.AddSingleton<PlayerProfileEvent>();
         serviceCollection.AddSingleton<PlayerWearingBadgesEvent>();
-        serviceCollection.AddSingleton<PlayerChangeRelationEvent>();
+        serviceCollection.AddSingleton<PlayerChangeRelationshipEvent>();
         serviceCollection.AddSingleton<PlayerCreateRoomEvent>();
         serviceCollection.AddSingleton<HabboClubDataEvent>();
         serviceCollection.AddSingleton<PlayerClubCenterDataEvent>();
@@ -174,7 +174,7 @@ public static class NetworkPacketServiceCollection
                 provider.GetRequiredService<IPlayerFriendshipRepository>()),
             [ClientPacketId.PlayerRemoveFriend] = new PlayerRemoveFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), 
                 provider.GetRequiredService<IPlayerFriendshipRepository>()),
-            [ClientPacketId.PlayerChangeRelation] = provider.GetRequiredService<PlayerChangeRelationEvent>(),
+            [ClientPacketId.PlayerChangeRelation] = provider.GetRequiredService<PlayerChangeRelationshipEvent>(),
             [ClientPacketId.PlayerCreateRoom] = provider.GetRequiredService<PlayerCreateRoomEvent>(),
             [ClientPacketId.HabboClubData] = provider.GetRequiredService<HabboClubDataEvent>(),
             [ClientPacketId.HabboClubCenter] = provider.GetRequiredService<PlayerClubCenterDataEvent>(),
