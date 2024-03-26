@@ -72,6 +72,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<CatalogPurchaseEvent>();
         serviceCollection.AddSingleton<RoomUserChatEvent>();
         serviceCollection.AddSingleton<RoomUserShoutEvent>();
+        serviceCollection.AddSingleton<NavigatorSearchEvent>();
         serviceCollection.AddSingleton<PlayerFriendListUpdateEvent>();
         serviceCollection.AddSingleton<HotelViewPromotionsEvent>();
         serviceCollection.AddSingleton<RoomLikeEvent>();
@@ -148,9 +149,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.RoomUserSit] = new RoomUserSitEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
             
-            [ClientPacketId.NavigatorSearch] = new NavigatorSearchEvent(
-                provider.GetRequiredService<NavigatorTabRepository>(), 
-                provider.GetRequiredService<NavigatorRoomProvider>()),
+            [ClientPacketId.NavigatorSearch] = provider.GetRequiredService<NavigatorSearchEvent>(),
             
             [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
             [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
