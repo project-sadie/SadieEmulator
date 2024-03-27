@@ -16,7 +16,7 @@ using SadieEmulator.Tasks.Other;
 
 namespace SadieEmulator;
 
-public class ServerServiceCollection
+public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
@@ -25,7 +25,7 @@ public class ServerServiceCollection
             new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
             new StoreChatMessagesTask(provider.GetRequiredService<IRoomRepository>()),
             new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
-            new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
+            new UpdateConsoleTitleTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
         });
         
         serviceCollection.AddSingleton<IServer, Server>();

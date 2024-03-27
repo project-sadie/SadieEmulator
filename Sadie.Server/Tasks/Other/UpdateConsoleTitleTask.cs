@@ -4,10 +4,10 @@ using Sadie.Shared;
 
 namespace SadieEmulator.Tasks.Other;
 
-public class UpdateStatusTask(IPlayerRepository playerRepository, IRoomRepository roomRepository)
-    : IServerTask
+public class UpdateConsoleTitleTask(
+    IPlayerRepository playerRepository, 
+    IRoomRepository roomRepository) : IServerTask
 {
-    public string Name => "UpdateStatusTask";
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
     public DateTime LastExecuted { get; set; }
 

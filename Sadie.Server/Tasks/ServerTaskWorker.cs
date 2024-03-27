@@ -5,7 +5,7 @@ namespace SadieEmulator.Tasks;
 
 public class ServerTaskWorker(
     ILogger<ServerTaskWorker> logger, 
-    List<IServerTask> tasks) : IServerTaskWorker
+    IEnumerable<IServerTask> tasks) : IServerTaskWorker
 {
     public void Start()
     {
@@ -34,7 +34,7 @@ public class ServerTaskWorker(
 
         if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 2)
         {
-            logger.LogWarning($"Task '{task.Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
+            logger.LogWarning($"Task '{task.GetType().Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
         }
     }
 }
