@@ -106,8 +106,14 @@ public static class RoomHelpers
         else
         {
             var furnitureItem = topLevelItem.FurnitureItem;
+            var canWalkOnItem = furnitureItem.CanWalk || furnitureItem.CanSit;
+
+            if (tile.Users.Count > 0)
+            {
+                canWalkOnItem = false;
+            }
             
-            layout.TileMap[tile.Point.Y, tile.Point.X] = (short)(furnitureItem.CanWalk || furnitureItem.CanSit ? 1 : 0);
+            layout.TileMap[tile.Point.Y, tile.Point.X] = (short)(canWalkOnItem ? 1 : 0);
         }
     }
 }

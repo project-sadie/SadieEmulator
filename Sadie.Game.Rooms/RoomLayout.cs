@@ -31,6 +31,11 @@ public class RoomLayout : RoomLayoutData
                 topLevelItem.FurnitureItem.CanSit ||
                 topLevelItem.FurnitureItem.CanWalk ||
                 topLevelItem.FurnitureItem.CanLay;
+
+            if (tile.Users.Count > 0)
+            {
+                canWalkOnTile = false;
+            }
             
             TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open && canWalkOnTile ? 1 : 0);
         }

@@ -27,7 +27,20 @@ public class RoomUser(
 
     private void SetNextPosition()
     {
-        Point = NextPoint ?? Point;
+        if (NextPoint == null)
+        {
+            return;
+        }
+        
+        var currentTile = room.Layout.FindTile(Point.X, Point.Y);
+        currentTile?.Users.Remove(Id);
+        RoomHelpers.UpdateTileMapForTile(currentTile!, room.Layout);
+
+        var nextTile = room.Layout.FindTile(NextPoint.X, NextPoint.Y);
+        nextTile?.Users.Add(Id, this);
+        RoomHelpers.UpdateTileMapForTile(nextTile!, room.Layout);
+
+        Point = NextPoint;
     }
 
     public void WalkToPoint(Point point, bool useDiagonal)
@@ -93,23 +106,26 @@ public class RoomUser(
 
     private void CheckStatusForCurrentTile()
     {
-        var currentTile = room.Layout.FindTile(Point.X, Point.Y);
-        
-        var seat = currentTile?
-            .Items
-            .OrderByDescending(item => item.Position.Z)
-            .FirstOrDefault(x => x.FurnitureItem.CanSit);
-
-        if (seat == null)
+        if (!IsWalking)
         {
-            StatusMap.Remove(RoomUserStatus.Sit);
-            return;
+            var currentTile = room.Layout.FindTile(Point.X, Point.Y);
+        
+            var seat = currentTile?
+                .Items
+                .OrderByDescending(item => item.Position.Z)
+                .FirstOrDefault(x => x.FurnitureItem.CanSit);
+
+            if (seat == null)
+            {
+                StatusMap.Remove(RoomUserStatus.Sit);
+                return;
+            }
+        
+            Direction = seat.Direction;
+            DirectionHead = seat.Direction;
+        
+            StatusMap[RoomUserStatus.Sit] = (seat.Position.Z + seat.FurnitureItem.StackHeight) + "";
         }
-        
-        Direction = seat.Direction;
-        DirectionHead = seat.Direction;
-        
-        StatusMap[RoomUserStatus.Sit] = (seat.Position.Z + seat.FurnitureItem.StackHeight) + "";
     }
 
     public bool HasRights()
