@@ -1,5 +1,6 @@
 using Sadie.Game.Catalog.Items;
 using Sadie.Game.Furniture;
+using Sadie.Shared.Helpers;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
@@ -42,7 +43,7 @@ public class CatalogPurchaseOkWriter : NetworkPacketWriter
 
             foreach (var furnitureItem in item.FurnitureItems)
             {
-                WriteString(furnitureItem.Type.ToString());
+                WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
 
                 if (furnitureItem.Type == FurnitureItemType.Badge)
                 {

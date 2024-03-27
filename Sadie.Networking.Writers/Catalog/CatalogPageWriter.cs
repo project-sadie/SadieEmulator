@@ -1,5 +1,6 @@
 using Sadie.Game.Catalog.Items;
 using Sadie.Game.Furniture;
+using Sadie.Shared.Helpers;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 
@@ -62,7 +63,7 @@ public class CatalogPageWriter : NetworkPacketWriter
 
             foreach (var furnitureItem in item.FurnitureItems)
             {
-                WriteString(furnitureItem.Type.ToString());
+                WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
 
                 if (furnitureItem.Type == FurnitureItemType.Badge)
                 {
@@ -98,7 +99,7 @@ public class CatalogPageWriter : NetworkPacketWriter
             WriteInteger(item.RequiresClubMembership ? 1 : 0);
             WriteBool(item.Amount != 1);
             WriteBool(false); // unknown
-            WriteString($"{item.FurnitureItems.First().AssetName}.png");
+            WriteString($"{item.Name}.png");
         }
         
         WriteInteger(0);
@@ -107,10 +108,6 @@ public class CatalogPageWriter : NetworkPacketWriter
         if (pageLayout is "frontpage4")
         {
             // TODO: serialize extra?
-            WriteInteger(0);
-        }
-        else
-        {
             WriteInteger(0);
         }
     }
