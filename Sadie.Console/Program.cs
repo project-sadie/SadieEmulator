@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SadieEmulator;
 using Serilog;
 
@@ -12,7 +13,11 @@ internal static class Program
     {
         SetEventHandlers();
 
-        var host = Startup.CreateHost();
+        var host = Host.CreateDefaultBuilder()
+            .ConfigureServices((context, collection) => ServerServiceCollection.AddServices(collection, context.Configuration))
+            .UseSerilog((hostContext, _, logger) => logger.ReadFrom.Configuration(hostContext.Configuration))
+            .Build();
+        
         _server = host.Services.GetRequiredService<IServer>();
         await _server.RunAsync();
 
