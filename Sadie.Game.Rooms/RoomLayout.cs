@@ -26,9 +26,13 @@ public class RoomLayout : RoomLayoutData
         {
             var point = tile.Point;
             var topLevelItem = tile.Items.MaxBy(x => x.Position.Z);
-            var canWalkOnItems = topLevelItem == null || topLevelItem.FurnitureItem.CanWalk;
             
-            TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open && canWalkOnItems ? 1 : 0);
+            var canWalkOnTile = topLevelItem == null ||
+                topLevelItem.FurnitureItem.CanSit ||
+                topLevelItem.FurnitureItem.CanWalk ||
+                topLevelItem.FurnitureItem.CanLay;
+            
+            TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open && canWalkOnTile ? 1 : 0);
         }
     }
 }

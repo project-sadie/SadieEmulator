@@ -29,9 +29,10 @@ public class RoomUser(
     {
         Point = NextPoint ?? Point;
     }
-    
+
     public void WalkToPoint(Point point, bool useDiagonal)
     {
+        StatusMap.Remove(RoomUserStatus.Sit);
         StatusMap.Remove(RoomUserStatus.FlatCtrl);
         
         SetNextPosition();
@@ -70,6 +71,7 @@ public class RoomUser(
             await ProcessMovementAsync();
         }
 
+        CheckStatusForCurrentTile();
         await UpdateIdleStatusAsync();
     }
 
@@ -100,13 +102,14 @@ public class RoomUser(
 
         if (seat == null)
         {
+            StatusMap.Remove(RoomUserStatus.Sit);
             return;
         }
         
         Direction = seat.Direction;
         DirectionHead = seat.Direction;
         
-        StatusMap[RoomUserStatus.Sit] = seat.Position.Z + "";
+        StatusMap[RoomUserStatus.Sit] = (seat.Position.Z + seat.FurnitureItem.StackHeight) + "";
     }
 
     public bool HasRights()
@@ -131,7 +134,6 @@ public class RoomUser(
         else
         {
             StopWalking();
-            CheckStatusForCurrentTile();
         }
     }
 
