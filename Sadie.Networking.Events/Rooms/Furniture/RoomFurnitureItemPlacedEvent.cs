@@ -121,12 +121,12 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
     }
 
     private async Task OnWallItemAsync(
-        string[] placementData,
-        IRoom room,
+        IReadOnlyList<string> placementData,
+        IRoomData room,
         IPlayer player,
         PlayerInventoryFurnitureItem playerItem,
         int itemId,
-        INetworkClient client)
+        INetworkObject client)
     {
         var wallPosition = $"{placementData[1]} {placementData[2]} {placementData[3]}";
             
