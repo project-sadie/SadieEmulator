@@ -4,7 +4,7 @@ using MySqlConnector;
 
 namespace Sadie.Database;
 
-public class DatabaseServiceCollection
+public static class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
