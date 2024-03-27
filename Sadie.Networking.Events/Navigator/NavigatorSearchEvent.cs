@@ -1,5 +1,5 @@
 using Sadie.Game.Navigator;
-using Sadie.Game.Navigator.Categories;sea
+using Sadie.Game.Navigator.Categories;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;

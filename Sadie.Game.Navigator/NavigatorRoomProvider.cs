@@ -9,8 +9,8 @@ public class NavigatorRoomProvider(IRoomRepository roomRepository)
         return category switch
         {
             "popular" => roomRepository.GetPopularRooms(50),
-            "myrooms" => await roomRepository.GetByOwnerIdAsync(playerId, 500),
-            _ => new List<IRoom>()
+            "my_rooms" => await roomRepository.GetByOwnerIdAsync(playerId, 500),
+            _ => []
         };
     }
 }

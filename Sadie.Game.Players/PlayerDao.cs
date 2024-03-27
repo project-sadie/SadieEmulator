@@ -139,7 +139,7 @@ public class PlayerDao(
             savedSearches,
             permissions,
             record.Get<int>("achievement_score"),
-            new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
+            [..record.Get<string>("comma_separated_tags").Split(",")],
             badges,
             friendships,
             (ChatBubble) record.Get<int>("chat_bubble_id"),

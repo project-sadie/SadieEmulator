@@ -26,7 +26,7 @@ public class PlayerRemoveFriendsEvent(
             if (playerRepository.TryGetPlayerById(currentId, out var target) && target != null)
             {
                 target.Data.FriendshipComponent.RemoveFriend(playerId);
-                await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter(new List<int> { playerId }).GetAllBytes());
+                await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter([playerId]).GetAllBytes());
             }
 
             await friendshipRepository.DeleteFriendshipAsync(playerId, currentId);

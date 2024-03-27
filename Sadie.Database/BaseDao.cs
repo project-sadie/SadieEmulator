@@ -39,7 +39,7 @@ public class BaseDao
     protected async Task<bool> Exists(string commandText, Dictionary<string, object> parameters = null!)
     {
         using var dbConnection = _databaseProvider.GetConnection();
-        dbConnection.SetQuery($"SELECT CASE WHEN EXISTS({commandText.TrimEnd(new []{';'})}) THEN 1 ELSE 0 END");
+        dbConnection.SetQuery($"SELECT CASE WHEN EXISTS({commandText.TrimEnd([';'])}) THEN 1 ELSE 0 END");
 
         AddOptionalParameters(dbConnection, parameters);
 

@@ -116,8 +116,11 @@ public class RoomDao(
 
         var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
-        var playersWithRights = commaSeparatedRights.Contains(",") ? 
-            new List<long>(commaSeparatedRights.Split(",").Select(long.Parse)) : 
+        var playersWithRights = commaSeparatedRights.Contains(",") ?
+            [
+                ..commaSeparatedRights.Split(",").Select(long.Parse)
+            ]
+            : 
             new List<long>();
 
         return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
@@ -127,7 +130,7 @@ public class RoomDao(
             record.Get<string>("owner_name"),
             record.Get<string>("description"),
             record.Get<int>("score"),
-            new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
+            [..record.Get<string>("comma_separated_tags").Split(",")],
             record.Get<int>("max_users_allowed"),
             settings,
             playersWithRights,
@@ -351,8 +354,11 @@ public class RoomDao(
 
             var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
-            var playersWithRights = commaSeparatedRights.Contains(",") ? 
-                new List<long>(commaSeparatedRights.Split(",").Select(long.Parse)) : 
+            var playersWithRights = commaSeparatedRights.Contains(",") ?
+                [
+                    ..commaSeparatedRights.Split(",").Select(long.Parse)
+                ]
+                : 
                 new List<long>();
 
             var room = factory.Create(record.Get<int>("id"),
@@ -362,7 +368,7 @@ public class RoomDao(
                 record.Get<string>("owner_name"),
                 record.Get<string>("description"),
                 record.Get<int>("score"),
-                new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
+                [..record.Get<string>("comma_separated_tags").Split(",")],
                 record.Get<int>("max_users_allowed"),
                 settings,
                 playersWithRights,

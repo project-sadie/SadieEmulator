@@ -2,8 +2,8 @@ namespace Sadie.Tests.CodeQuality;
 
 public class NoHardCodedValuesInPacketWritersTest
 {
-    private readonly List<string> _excludedFiles = new()
-    {
+    private readonly List<string> _excludedFiles =
+    [
         "GameAchievementsListWriter.cs",
         "HotelViewBonusRareWriter.cs",
         "ModerationToolsWriter.cs",
@@ -34,8 +34,8 @@ public class NoHardCodedValuesInPacketWritersTest
         "CatalogPagesWriter.cs",
         "CatalogPageWriter.cs",
         "CatalogRecyclerLogicWriter.cs",
-        "CatalogTabsWriter.cs",
-    };
+        "CatalogTabsWriter.cs"
+    ];
     
     /// <summary>
     /// Ensures no writer classes are passing hard coded values and that all data is passed through by the caller.
