@@ -1,5 +1,4 @@
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;
 using Sadie.Game.Rooms;

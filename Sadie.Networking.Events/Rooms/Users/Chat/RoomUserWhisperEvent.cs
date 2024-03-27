@@ -3,7 +3,7 @@ using Sadie.Game.Rooms.Chat;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
-using Sadie.Shared.Game;
+using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Rooms.Users.Chat;
 

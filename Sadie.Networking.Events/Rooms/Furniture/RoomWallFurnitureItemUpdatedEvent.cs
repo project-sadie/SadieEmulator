@@ -3,7 +3,7 @@ using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Furniture;
-using Sadie.Shared;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Rooms.Furniture;
 

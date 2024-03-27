@@ -1,7 +1,7 @@
 ﻿using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 

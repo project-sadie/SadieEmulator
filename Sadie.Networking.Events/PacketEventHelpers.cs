@@ -5,9 +5,9 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Shared;
-using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events;
 

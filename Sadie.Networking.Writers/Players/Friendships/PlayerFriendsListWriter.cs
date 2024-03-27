@@ -2,9 +2,9 @@
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Relationships;
 using Sadie.Game.Rooms;
-using Sadie.Shared.Game.Avatar;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 

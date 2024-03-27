@@ -1,10 +1,10 @@
 ﻿using System.Drawing;
 using Sadie.Game.Rooms.Chat;
-using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Extensions;
-using Sadie.Shared.Game.Avatar;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
 

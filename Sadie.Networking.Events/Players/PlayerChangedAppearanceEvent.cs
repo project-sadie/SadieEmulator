@@ -4,7 +4,7 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Players;
 

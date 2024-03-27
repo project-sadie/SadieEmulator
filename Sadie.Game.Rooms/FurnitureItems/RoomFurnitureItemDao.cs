@@ -1,6 +1,6 @@
 using Sadie.Database;
 using Sadie.Game.Furniture;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.FurnitureItems;
 

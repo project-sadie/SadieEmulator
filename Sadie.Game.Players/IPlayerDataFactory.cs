@@ -6,8 +6,8 @@ using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Game.Players.Wardrobe;
-using Sadie.Shared.Game;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Unsorted.Game;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players;
 

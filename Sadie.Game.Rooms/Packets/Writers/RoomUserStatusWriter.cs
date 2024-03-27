@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Sadie.Game.Rooms.Users;
+﻿using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
 

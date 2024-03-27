@@ -1,4 +1,4 @@
-using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players.Wardrobe;
 

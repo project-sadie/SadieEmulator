@@ -2,7 +2,7 @@
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.PathFinding.Options;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 

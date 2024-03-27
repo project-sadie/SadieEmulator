@@ -1,5 +1,5 @@
-using Sadie.Shared.Game.Avatar;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
 

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;

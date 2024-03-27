@@ -1,6 +1,5 @@
 ﻿using Sadie.Database;
-using Sadie.Game.Players.Relationships;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;
 

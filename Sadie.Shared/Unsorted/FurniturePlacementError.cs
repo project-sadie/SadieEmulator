@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Sadie.Shared;
+namespace Sadie.Shared.Unsorted;
 
 public enum FurniturePlacementError
 {

@@ -1,5 +1,5 @@
 ﻿using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Game;
+using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Game.Rooms.Chat;
 

@@ -1,4 +1,4 @@
-﻿namespace Sadie.Shared.Game.Avatar;
+﻿namespace Sadie.Shared.Unsorted.Game.Avatar;
 
 public interface IAvatarData
 {

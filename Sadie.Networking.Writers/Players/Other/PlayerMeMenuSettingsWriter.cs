@@ -1,6 +1,6 @@
-﻿using Sadie.Shared.Game;
-using Sadie.Shared.Networking;
+﻿using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Writers.Players.Other;
 

@@ -5,12 +5,11 @@ using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
-using Sadie.Shared;
-using Sadie.Shared.Game.Rooms;
 using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Rooms.Furniture;
 
