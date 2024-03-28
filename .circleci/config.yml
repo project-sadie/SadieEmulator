@@ -1,0 +1,15 @@
+version: 2.1
+
+jobs:
+  run-unit-tests:
+    docker:
+      - image: microsoft-dotnet
+    steps:
+      - checkout
+      - run: 
+          name: RunUnitTests
+          command: dotnet test
+workflows:
+  database:
+    jobs:
+      - run-unit-tests
