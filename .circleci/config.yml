@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   run-unit-tests:
     docker:
-      - image: microsoft/dotnet
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
       - checkout
       - run: 
