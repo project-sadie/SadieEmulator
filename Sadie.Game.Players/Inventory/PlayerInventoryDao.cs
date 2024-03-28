@@ -58,7 +58,7 @@ public class PlayerInventoryDao(
         var parameters = new Dictionary<string, object>
         {
             { "playerId", playerId },
-            { "furnitureId", item.Item.Id },
+            { "furnitureId", item.FurnitureItem.Id },
             { "metaData", item.MetaData },
             { "createdAt", item.Created }
         };

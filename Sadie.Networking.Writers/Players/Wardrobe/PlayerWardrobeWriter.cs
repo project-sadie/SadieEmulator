@@ -7,10 +7,10 @@ namespace Sadie.Networking.Writers.Players.Wardrobe;
 
 public class PlayerWardrobeWriter : NetworkPacketWriter
 {
-    public PlayerWardrobeWriter(Dictionary<int, PlayerWardrobeItem> outfits)
+    public PlayerWardrobeWriter(int state, Dictionary<int, PlayerWardrobeItem> outfits)
     {
         WriteShort(ServerPacketId.PlayerWardrobe);
-        WriteInteger(1);
+        WriteInteger(state);
         WriteInteger(outfits.Count);
 
         foreach (var outfit in outfits)

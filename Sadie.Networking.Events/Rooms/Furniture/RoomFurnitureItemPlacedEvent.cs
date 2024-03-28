@@ -57,7 +57,7 @@ public class RoomFurnitureItemPlacedEvent(
             return;
         }
 
-        if (playerItem.Item.Type == FurnitureItemType.Floor)
+        if (playerItem.FurnitureItem.Type == FurnitureItemType.Floor)
         {
             await OnFloorItemAsync(
                 placementData, 
@@ -67,7 +67,7 @@ public class RoomFurnitureItemPlacedEvent(
                 playerItem,
                 itemId);
         }
-        else if (playerItem.Item.Type == FurnitureItemType.Wall)
+        else if (playerItem.FurnitureItem.Type == FurnitureItemType.Wall)
         {
             await OnWallItemAsync(placementData, room, player, playerItem, itemId, client);
         }
@@ -105,7 +105,7 @@ public class RoomFurnitureItemPlacedEvent(
             room.Id,
             player.Data.Id,
             player.Data.Username,
-            playerItem.Item, 
+            playerItem.FurnitureItem, 
             new HPoint(x, y, z), 
             string.Empty,
             (HDirection)direction,
@@ -156,7 +156,7 @@ public class RoomFurnitureItemPlacedEvent(
             room.Id,
             player.Data.Id,
             player.Data.Username,
-            playerItem.Item, 
+            playerItem.FurnitureItem, 
             new HPoint(0, 0, 0),
             wallPosition,
             0,

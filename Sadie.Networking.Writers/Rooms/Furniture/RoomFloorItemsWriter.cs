@@ -1,6 +1,7 @@
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
@@ -25,6 +26,7 @@ public class RoomFloorItemsWriter : NetworkPacketWriter
         foreach (var item in floorItems)
         {
             var height = -1; // TODO: height
+            var extra = 1;
             
             WriteLong(item.Id);
             WriteInteger(item.FurnitureItem.AssetId);
@@ -33,17 +35,28 @@ public class RoomFloorItemsWriter : NetworkPacketWriter
             WriteInteger((int) item.Direction);
             WriteString($"{item.Position.Z.ToString():0.00}");
             WriteString(height.ToString());
+            WriteInteger(extra);
 
+            var objectData = new Dictionary<string, string>();
+            
             switch (item.FurnitureItem.InteractionType)
             {
                 default:
-                    WriteInteger(1); 
-                    WriteInteger(0); 
-                    WriteString(item.MetaData);
+                    WriteInteger((int) ObjectDataKey.MapKey); 
+                    WriteInteger(objectData.Count);
+
+                    foreach (var dataPair in objectData)
+                    {
+                        WriteString(dataPair.Key);
+                        WriteString(dataPair.Value);
+                    }
                     break;
             }
+
+            var expires = -1; // TODO: Add to item
             
-            WriteInteger(-1); // TODO: check
+            WriteString(item.MetaData);
+            WriteInteger(expires);
             WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0); 
             WriteLong(item.OwnerId);
         }

@@ -8,10 +8,11 @@ public class PlayerInventoryAddItemsWriter : NetworkPacketWriter
 {
     public PlayerInventoryAddItemsWriter(List<PlayerInventoryFurnitureItem> items)
     {
+        var category = 1;
+        
         WriteShort(ServerPacketId.PlayerInventoryAddItems);
-
-        WriteInteger(1);
-        WriteInteger(1);
+        WriteInteger(items.Count);
+        WriteInteger(category);
         WriteInteger(items.Count);
 
         foreach (var item in items)
