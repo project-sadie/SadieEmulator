@@ -56,7 +56,11 @@ public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository,
                 RoomHelpers.UpdateTileMapForTile(currentTile, room.Layout);
             }
             
-            await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(roomFurnitureItem).GetAllBytes());
+            await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(
+                roomFurnitureItem.Id, 
+                false, 
+                roomFurnitureItem.OwnerId, 
+                0).GetAllBytes());
         }
         else
         {

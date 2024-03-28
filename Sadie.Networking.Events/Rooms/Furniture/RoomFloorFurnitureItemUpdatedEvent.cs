@@ -75,6 +75,19 @@ public class RoomFloorFurnitureItemUpdatedEvent(IRoomRepository roomRepository,
         roomFurnitureItem.Direction = direction;
         
         await roomFurnitureItemDao.UpdateItemAsync(roomFurnitureItem);
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(roomFurnitureItem).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(
+            roomFurnitureItem.Id,
+            roomFurnitureItem.FurnitureItem.AssetId,
+            roomFurnitureItem.Position,
+            (int) roomFurnitureItem.Direction,
+            0,
+            1,
+            (int) ObjectDataKey.MapKey,
+            new Dictionary<string, string>(),
+            roomFurnitureItem.FurnitureItem.InteractionType,
+            roomFurnitureItem.MetaData,
+            roomFurnitureItem.FurnitureItem.InteractionModes,
+            -1,
+            roomFurnitureItem.OwnerId).GetAllBytes());
     }
 }

@@ -6,12 +6,12 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 
 public class RoomFloorFurnitureItemRemovedWriter : NetworkPacketWriter
 {
-    public RoomFloorFurnitureItemRemovedWriter(RoomFurnitureItem item)
+    public RoomFloorFurnitureItemRemovedWriter(long id, bool expired, long ownerId, int delay)
     {
         WriteShort(ServerPacketId.RoomFurnitureItemRemoved);
-        WriteString(item.Id.ToString());
-        WriteBool(false); // TODO: check
-        WriteLong(item.OwnerId);
-        WriteInteger(0); // TODO: check
+        WriteString(id.ToString());
+        WriteBool(expired);
+        WriteLong(ownerId);
+        WriteInteger(delay);
     }
 }

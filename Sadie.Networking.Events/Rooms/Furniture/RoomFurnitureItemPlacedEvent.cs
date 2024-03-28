@@ -13,7 +13,8 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Rooms.Furniture;
 
-public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository, 
+public class RoomFurnitureItemPlacedEvent(
+    IRoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
     IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEvent
 {
@@ -72,7 +73,13 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
         }
     }
 
-    private async Task OnFloorItemAsync(string[] placementData, IRoom room, INetworkClient client, IPlayer player, PlayerInventoryFurnitureItem playerItem, int itemId)
+    private async Task OnFloorItemAsync(
+        string[] placementData, 
+        IRoom room, 
+        INetworkClient client, 
+        IPlayer player, 
+        PlayerInventoryFurnitureItem playerItem, 
+        int itemId)
     {
         if (!int.TryParse(placementData[1], out var x) ||
             !int.TryParse(placementData[2], out var y) || 
@@ -116,7 +123,22 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
         player.Data.Inventory.RemoveItems([itemId]);
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemPlacedWriter(roomFurnitureItem).GetAllBytes());
+        
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemPlacedWriter(
+            roomFurnitureItem.Id,
+            roomFurnitureItem.FurnitureItem.AssetId,
+            roomFurnitureItem.Position,
+            (int) roomFurnitureItem.Direction,
+            roomFurnitureItem.FurnitureItem.StackHeight,
+            1,
+            (int) ObjectDataKey.MapKey,
+            new Dictionary<string, string>(),
+            roomFurnitureItem.FurnitureItem.InteractionType,
+            roomFurnitureItem.MetaData,
+            roomFurnitureItem.FurnitureItem.InteractionModes,
+            -1,
+            roomFurnitureItem.OwnerId,
+            roomFurnitureItem.OwnerUsername).GetAllBytes());
     }
 
     private async Task OnWallItemAsync(
@@ -137,7 +159,7 @@ public class RoomFurnitureItemPlacedEvent(IRoomRepository roomRepository,
             playerItem.Item, 
             new HPoint(0, 0, 0),
             wallPosition,
-            (HDirection) 0,
+            0,
             playerItem.LimitedData,
             playerItem.MetaData,
             DateTime.Now);

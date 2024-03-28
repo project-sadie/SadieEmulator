@@ -6,7 +6,9 @@ using Sadie.Networking.Writers.Rooms.Rights;
 
 namespace Sadie.Networking.Events.Rooms.Rights;
 
-public class RoomGiveUserRightsEvent(IRoomRepository roomRepository, IRoomDao roomDao) : INetworkPacketEvent
+public class RoomGiveUserRightsEvent(
+    IRoomRepository roomRepository, 
+    IRoomRightsDao roomRightsDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -38,6 +40,6 @@ public class RoomGiveUserRightsEvent(IRoomRepository roomRepository, IRoomDao ro
         }
         
         room.PlayersWithRights.Add(playerId);
-        await roomDao.InsertRightsAsync(room.Id, playerId);
+        await roomRightsDao.InsertRightsAsync(room.Id, playerId);
     }
 }

@@ -1,33 +1,55 @@
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
 public class RoomFloorFurnitureItemUpdatedWriter : NetworkPacketWriter
 {
-    public RoomFloorFurnitureItemUpdatedWriter(RoomFurnitureItem item)
+    public RoomFloorFurnitureItemUpdatedWriter(
+        long id,
+        int assetId,
+        HPoint point,
+        int direction,
+        int stackHeight,
+        int extra,
+        int objectDataKey,
+        Dictionary<string, string> objectData,
+        string interactionType,
+        string metaData,
+        int interactionModes,
+        int expires,
+        long ownerId)
     {
         WriteShort(ServerPacketId.RoomFloorFurnitureItemMoved);
-        WriteLong(item.Id);
-        WriteInteger(item.FurnitureItem.AssetId);
-        WriteInteger(item.Position.X);
-        WriteInteger(item.Position.Y);
-        WriteInteger((int) item.Direction);
-        WriteString($"{item.Position.Z.ToString():0.00}");
-        WriteString($"0"); // TODO: height
+        WriteLong(id);
+        WriteInteger(assetId);
+        WriteInteger(point.X);
+        WriteInteger(point.Y);
+        WriteInteger(direction);
+        WriteString($"{point.Z.ToString():0.00}");
+        WriteString($"{stackHeight}");
+        WriteInteger(extra);
 
-        switch (item.FurnitureItem.InteractionType)
+        switch (interactionType)
         {
             default:
-                WriteInteger(1); 
-                WriteInteger(0); 
-                WriteString(item.MetaData);
+                WriteInteger(objectDataKey); 
+                WriteInteger(objectData.Count);
+
+                foreach (var dataPair in objectData)
+                {
+                    WriteString(dataPair.Key);
+                    WriteString(dataPair.Value);
+                }
                 break;
         }
-            
-        WriteInteger(-1); // TODO: check
-        WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0); 
-        WriteLong(item.OwnerId);
+
+        WriteString(metaData);
+        WriteInteger(expires);
+        WriteInteger(interactionModes > 1 ? 1 : 0); 
+        WriteLong(ownerId);
     }
 }

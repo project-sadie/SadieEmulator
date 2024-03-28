@@ -7,9 +7,9 @@ using Sadie.Networking.Writers.Rooms.Rights;
 
 namespace Sadie.Networking.Events.Rooms.Rights;
 
-public class RoomRemoveUserRightsEvent(IRoomRepository roomRepository, 
-    IRoomDao roomDao,
-    IPlayerRepository playerRepository) : INetworkPacketEvent
+public class RoomRemoveUserRightsEvent(
+    IRoomRepository roomRepository, 
+    IRoomRightsDao roomRightsDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -50,7 +50,7 @@ public class RoomRemoveUserRightsEvent(IRoomRepository roomRepository,
         }
         
         room.PlayersWithRights.Remove(playerId);
-        await roomDao.DeleteRightsAsync(room.Id, playerId);
+        await roomRightsDao.DeleteRightsAsync(room.Id, playerId);
 
         await room.UserRepository.BroadcastDataAsync(
             new RoomRemoveUserRightsWriter(room.Id, playerId).GetAllBytes()

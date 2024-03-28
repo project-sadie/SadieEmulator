@@ -1,26 +1,56 @@
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Networking;
 using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
 public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
 {
-    public RoomFloorFurnitureItemPlacedWriter(RoomFurnitureItem roomFurnitureItem)
+    public RoomFloorFurnitureItemPlacedWriter(
+        long id,
+        int assetId,
+        HPoint point,
+        int direction,
+        double stackHeight,
+        int extra,
+        int objectDataKey,
+        Dictionary<string, string> objectData,
+        string interactionType,
+        string metaData,
+        int interactionModes,
+        int expires,
+        long ownerId,
+        string ownerUsername)
     {
         WriteShort(ServerPacketId.RoomFloorFurnitureItemPlaced);
-        WriteLong(roomFurnitureItem.Id);
-        WriteInteger(roomFurnitureItem.FurnitureItem.AssetId);
-        WriteInteger(roomFurnitureItem.Position.X);
-        WriteInteger(roomFurnitureItem.Position.Y);
-        WriteInteger((int) roomFurnitureItem.Direction);
-        WriteString($"{roomFurnitureItem.Position.Z.ToString():0.00}");
-        WriteString($"0"); // TODO: height
-        WriteInteger(1);
-        WriteInteger(0);
-        WriteInteger(-1);
-        WriteInteger(1);
-        WriteLong(roomFurnitureItem.OwnerId);
-        WriteString(roomFurnitureItem.OwnerUsername);
+        WriteLong(id);
+        WriteInteger(assetId);
+        WriteInteger(point.X);
+        WriteInteger(point.Y);
+        WriteInteger(direction);
+        WriteString($"{point.Z.ToString():0.00}");
+        WriteString($"{stackHeight}");
+        WriteInteger(extra);
+
+        switch (interactionType)
+        {
+            default:
+                WriteInteger(objectDataKey); 
+                WriteInteger(objectData.Count);
+
+                foreach (var dataPair in objectData)
+                {
+                    WriteString(dataPair.Key);
+                    WriteString(dataPair.Value);
+                }
+                break;
+        }
+        
+        WriteString(metaData);
+        WriteInteger(expires);
+        WriteInteger(interactionModes > 1 ? 1 : 0); 
+        WriteLong(ownerId);
+        WriteString(ownerUsername);
     }
 }

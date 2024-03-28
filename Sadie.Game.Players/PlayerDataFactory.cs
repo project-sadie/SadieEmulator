@@ -77,15 +77,6 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
             relationships);
     }
 
-    public IPlayerData Create(int id, string username, DateTime createdAt, int homeRoom, string figureCode, string motto,
-        AvatarGender gender, IPlayerBalance balance, DateTime lastOnline, int respectsReceived, int respectPoints,
-        int respectPointsPet, PlayerNavigatorSettings navigatorSettings, PlayerSettings settings, List<PlayerSavedSearch> savedSearches,
-        List<string> permissions, long achievementScore, List<string> tags, List<PlayerBadge> badges, List<PlayerFriendship> friendships, ChatBubble chatBubble,
-        bool allowFriendRequests, List<IPlayerSubscription> subscriptions, PlayerInventoryRepository inventoryRepository, List<long> likedRoomIds)
-    {
-        throw new NotImplementedException();
-    }
-
     public PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
     {
         return ActivatorUtilities.CreateInstance<PlayerFriendshipComponent>(

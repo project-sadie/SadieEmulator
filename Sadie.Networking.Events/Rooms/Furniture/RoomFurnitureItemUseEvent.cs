@@ -2,6 +2,7 @@ using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Rooms.Furniture;
 
@@ -32,6 +33,19 @@ public class RoomFurnitureItemUseEvent(
             return;
         }
         
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(roomFurnitureItem).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(
+            roomFurnitureItem.Id,
+            roomFurnitureItem.FurnitureItem.AssetId,
+            roomFurnitureItem.Position,
+            (int) roomFurnitureItem.Direction,
+            0,
+            1,
+            (int) ObjectDataKey.MapKey,
+            new Dictionary<string, string>(),
+            roomFurnitureItem.FurnitureItem.InteractionType,
+            roomFurnitureItem.MetaData,
+            roomFurnitureItem.FurnitureItem.InteractionModes,
+            -1,
+            roomFurnitureItem.OwnerId).GetAllBytes());
     }
 }

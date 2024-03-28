@@ -119,7 +119,25 @@ public class CatalogPurchaseEvent(
         client.Player.Data.Inventory.AddItems(newItems);
         
         await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());
-        await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(item).GetAllBytes());
+        
+        await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(
+            item.Id,
+            item.Name,
+            false,
+            item.CostCredits,
+            item.CostPoints,
+            item.CostPointsType,
+            item.FurnitureItems.First().CanGift,
+            amount,
+            item.RequiresClubMembership ? 1 : 0,
+            item.Amount != 1,
+            item.Metadata,
+            false,
+            0,
+            0,
+            item.FurnitureItems
+            ).GetAllBytes());
+        
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
     }
 }
