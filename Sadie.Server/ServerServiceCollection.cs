@@ -20,7 +20,7 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddSingleton(provider => new List<IServerTask>
+        serviceCollection.AddSingleton<IEnumerable<IServerTask>>(provider => new List<IServerTask>
         {
             new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
             new StoreChatMessagesTask(provider.GetRequiredService<IRoomRepository>()),
