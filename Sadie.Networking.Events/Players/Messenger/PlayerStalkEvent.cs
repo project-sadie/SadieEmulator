@@ -1,4 +1,5 @@
 using Sadie.Game.Players;
+using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
@@ -16,7 +17,7 @@ public class PlayerStalkEvent(IPlayerRepository playerRepository) : INetworkPack
         var friend =
             client.Player.Data.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
 
-        if (friend == null)
+        if (friend == null || friend.Status != PlayerFriendshipStatus.Accepted)
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.NotFriends).GetAllBytes());
             return;
