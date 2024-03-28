@@ -7,7 +7,7 @@ using Sadie.Networking.Client;
 
 namespace Sadie.Networking;
 
-public class NetworkServiceCollection
+public static class NetworkServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {

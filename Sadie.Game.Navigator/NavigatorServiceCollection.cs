@@ -5,7 +5,7 @@ using Sadie.Game.Navigator.Tabs;
 
 namespace Sadie.Game.Navigator;
 
-public class NavigatorServiceCollection
+public static class NavigatorServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {

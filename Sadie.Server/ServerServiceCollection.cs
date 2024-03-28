@@ -20,13 +20,10 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddSingleton<IEnumerable<IServerTask>>(provider => new List<IServerTask>
-        {
-            new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
-            new StoreChatMessagesTask(provider.GetRequiredService<IRoomRepository>()),
-            new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
-            new UpdateConsoleTitleTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
-        });
+        serviceCollection.AddSingleton<IServerTask, ProcessRoomsTask>();
+        serviceCollection.AddSingleton<IServerTask, StoreChatMessagesTask>();
+        serviceCollection.AddSingleton<IServerTask, DisconnectIdleClientsTask>();
+        serviceCollection.AddSingleton<IServerTask, UpdateConsoleTitleTask>();
         
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();

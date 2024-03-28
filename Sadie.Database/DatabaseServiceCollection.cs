@@ -8,7 +8,14 @@ public static class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        var connectionStringBuilder = new MySqlConnectionStringBuilder(config.GetConnectionString("Default"));
+        var connectionString = config.GetConnectionString("Default");
+
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new Exception("Default connection string is missing");
+        }
+        
+        var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
         
         serviceCollection.AddSingleton(connectionStringBuilder);
         serviceCollection.AddTransient<IDatabaseConnection, DatabaseConnection>();
