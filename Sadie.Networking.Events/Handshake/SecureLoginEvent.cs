@@ -14,7 +14,7 @@ using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
-using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handshake;
 

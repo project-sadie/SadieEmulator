@@ -1,9 +1,9 @@
 using Sadie.Game.Furniture;
 using Sadie.Game.Players.Inventory;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
 using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Inventory;
 

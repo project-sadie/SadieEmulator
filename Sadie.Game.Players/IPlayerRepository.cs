@@ -1,5 +1,5 @@
 using Sadie.Game.Players.Friendships;
-using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 

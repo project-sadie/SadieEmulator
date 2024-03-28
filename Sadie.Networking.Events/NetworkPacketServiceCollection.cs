@@ -86,91 +86,64 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerWardrobeSaveEvent>();
         serviceCollection.AddSingleton<RoomWallFurnitureItemUpdatedEvent>();
         
-        serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
-        
         serviceCollection.AddSingleton(provider => new ConcurrentDictionary<int, INetworkPacketEvent>
         {
-            [ClientPacketId.ClientVersion] = new ClientVersionEvent(),
-            [ClientPacketId.ClientVariables] = new ClientVariablesEvent(),
-            [ClientPacketId.MachineId] = new MachineIdEvent(),
+            [ClientPacketId.ClientVersion] = provider.GetRequiredService<ClientVersionEvent>(),
+            [ClientPacketId.ClientVariables] = provider.GetRequiredService<ClientVariablesEvent>(),
+            [ClientPacketId.MachineId] = provider.GetRequiredService<MachineIdEvent>(),
             [ClientPacketId.SecureLogin] = provider.GetRequiredService<SecureLoginEvent>(),
-            [ClientPacketId.PerformanceLog] = new PerformanceLogEvent(),
+            [ClientPacketId.PerformanceLog] = provider.GetRequiredService<PerformanceLogEvent>(),
             [ClientPacketId.PlayerActivity] = provider.GetRequiredService<PlayerActivityEvent>(),
-            [ClientPacketId.PlayerData] = new PlayerDataEvent(),
-            [ClientPacketId.PlayerBalance] = new PlayerBalanceEvent(),
-            [ClientPacketId.PlayerClubMembership] = new PlayerClubMembershipEvent(),
-            [ClientPacketId.NavigatorData] = new NavigatorDataEvent(),
-            
-            [ClientPacketId.PlayerFriendsList] = new PlayerFriendsEvent(
-                provider.GetRequiredService<IPlayerRepository>(), 
-                provider.GetRequiredService<IRoomRepository>()),
-            
+            [ClientPacketId.PlayerData] = provider.GetRequiredService<PlayerDataEvent>(),
+            [ClientPacketId.PlayerBalance] = provider.GetRequiredService<PlayerBalanceEvent>(),
+            [ClientPacketId.PlayerClubMembership] = provider.GetRequiredService<PlayerClubMembershipEvent>(),
+            [ClientPacketId.NavigatorData] = provider.GetRequiredService<NavigatorDataEvent>(),
+            [ClientPacketId.PlayerFriendsList] = provider.GetRequiredService<PlayerFriendsEvent>(),
             [ClientPacketId.PlayerMessengerInit] = provider.GetRequiredService<PlayerMessengerInitEvent>(),
-            [ClientPacketId.PlayerPing] = new PlayerPingEvent(),
-            [ClientPacketId.PlayerPong] = new PlayerPongEvent(),
-            [ClientPacketId.HotelViewData] = new HotelViewDataEvent(),
-            [ClientPacketId.PlayerUsername] = new PlayerUsernameEvent(),
-            [ClientPacketId.PlayerMeMenuSettings] = new PlayerMeMenuSettingsEvent(),
-            [ClientPacketId.HotelViewBonusRare] = new HotelViewBonusRareEvent(),
-            [ClientPacketId.UnknownEvent1] = new UnknownEvent1(),
-            [ClientPacketId.GameCenterRequestGames] = new RequestGameCenterConfigEvent(),
-            [ClientPacketId.UnknownEvent4] = new UnknownEvent4(),
-            [ClientPacketId.PromotedRooms] = new PromotedRoomsEvent(),
-            [ClientPacketId.RoomCategories] = new RoomCategoriesEvent(provider.GetRequiredService<IRoomCategoryRepository>()),
-            [ClientPacketId.NavigatorEventCategories] = new NavigatorEventCategoriesEvent(),
-            
-            [ClientPacketId.PlayerFriendRequestsList] = new PlayerFriendRequestsEvent(
-                provider.GetRequiredService<IPlayerFriendshipRepository>()),
-            
-            [ClientPacketId.PlayerSanctionStatus] = new PlayerSanctionStatusEvent(),
-            [ClientPacketId.UnknownEvent2] = new UnknownEvent2(),
-            [ClientPacketId.RoomLoaded] = ActivatorUtilities.CreateInstance<RoomLoadedEvent>(provider),
-            [ClientPacketId.UnknownEvent3] = new UnknownEvent3(),
-            [ClientPacketId.RoomHeightmap] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomHeightmap2] = new RoomHeightmapEvent(provider.GetRequiredService<IRoomRepository>()),
-            
+            [ClientPacketId.PlayerPing] = provider.GetRequiredService<PlayerPingEvent>(),
+            [ClientPacketId.PlayerPong] = provider.GetRequiredService<PlayerPongEvent>(),
+            [ClientPacketId.HotelViewData] = provider.GetRequiredService<HotelViewDataEvent>(),
+            [ClientPacketId.PlayerUsername] = provider.GetRequiredService<PlayerUsernameEvent>(),
+            [ClientPacketId.PlayerMeMenuSettings] = provider.GetRequiredService<PlayerMeMenuSettingsEvent>(),
+            [ClientPacketId.HotelViewBonusRare] = provider.GetRequiredService<HotelViewBonusRareEvent>(),
+            [ClientPacketId.UnknownEvent1] = provider.GetRequiredService<UnknownEvent1>(),
+            [ClientPacketId.GameCenterRequestGames] = provider.GetRequiredService<RequestGameCenterConfigEvent>(),
+            [ClientPacketId.UnknownEvent4] = provider.GetRequiredService<UnknownEvent4>(),
+            [ClientPacketId.PromotedRooms] = provider.GetRequiredService<PromotedRoomsEvent>(),
+            [ClientPacketId.RoomCategories] = provider.GetRequiredService<RoomCategoriesEvent>(),
+            [ClientPacketId.NavigatorEventCategories] = provider.GetRequiredService<NavigatorEventCategoriesEvent>(),
+            [ClientPacketId.PlayerFriendRequestsList] = provider.GetRequiredService<PlayerFriendRequestsEvent>(),
+            [ClientPacketId.PlayerSanctionStatus] = provider.GetRequiredService<PlayerSanctionStatusEvent>(),
+            [ClientPacketId.UnknownEvent2] = provider.GetRequiredService<UnknownEvent2>(),
+            [ClientPacketId.RoomLoaded] = provider.GetRequiredService<RoomLoadedEvent>(),
+            [ClientPacketId.UnknownEvent3] = provider.GetRequiredService<UnknownEvent3>(),
+            [ClientPacketId.RoomHeightmap] = provider.GetRequiredService<RoomHeightmapEvent>(),
+            [ClientPacketId.RoomHeightmap2] = provider.GetRequiredService<RoomHeightmapEvent>(),
             [ClientPacketId.RoomUserChat] = provider.GetRequiredService<RoomUserChatEvent>(),
-            
             [ClientPacketId.RoomUserShout] = provider.GetRequiredService<RoomUserShoutEvent>(),
-            
-            [ClientPacketId.RoomUserWalk] = new RoomUserWalkEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomUserDance] = new RoomUserDanceEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomUserAction] = new RoomUserActionEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomUserStartTyping] = new RoomUserStartTypingEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomUserStopTyping] = new RoomUserStopTypingEvent(provider.GetRequiredService<IRoomRepository>()),
-            
-            [ClientPacketId.RoomUserWhisper] = new RoomUserWhisperEvent(provider.GetRequiredService<IRoomRepository>(), 
-                provider.GetRequiredService<RoomConstants>()),
-            
-            [ClientPacketId.RoomUserLookAt] = new RoomUserLookAtEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomUserSign] = new RoomUserSignEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.RoomUserSit] = new RoomUserSitEvent(provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.SaveNavigatorSettings] = new SaveNavigatorSettingsEvent(),
-            
+            [ClientPacketId.RoomUserWalk] = provider.GetRequiredService<RoomUserWalkEvent>(),
+            [ClientPacketId.RoomUserDance] = provider.GetRequiredService<RoomUserDanceEvent>(),
+            [ClientPacketId.RoomUserAction] = provider.GetRequiredService<RoomUserActionEvent>(),
+            [ClientPacketId.RoomUserStartTyping] = provider.GetRequiredService<RoomUserStartTypingEvent>(),
+            [ClientPacketId.RoomUserStopTyping] = provider.GetRequiredService<RoomUserStopTypingEvent>(),
+            [ClientPacketId.RoomUserWhisper] = provider.GetRequiredService<RoomUserWhisperEvent>(),
+            [ClientPacketId.RoomUserLookAt] = provider.GetRequiredService<RoomUserLookAtEvent>(),
+            [ClientPacketId.RoomUserSign] = provider.GetRequiredService<RoomUserSignEvent>(),
+            [ClientPacketId.RoomUserSit] = provider.GetRequiredService<RoomUserSitEvent>(),
+            [ClientPacketId.SaveNavigatorSettings] = provider.GetRequiredService<SaveNavigatorSettingsEvent>(),
             [ClientPacketId.NavigatorSearch] = provider.GetRequiredService<NavigatorSearchEvent>(),
-            
-            [ClientPacketId.PlayerChangedAppearance] = new PlayerChangedAppearanceEvent(provider.GetRequiredService<IRoomRepository>()),
+            [ClientPacketId.PlayerChangedAppearance] = provider.GetRequiredService<PlayerChangedAppearanceEvent>(),
             [ClientPacketId.PlayerChangedMotto] = provider.GetRequiredService<PlayerChangedMottoEvent>(),
             [ClientPacketId.PlayerRelationships] = provider.GetRequiredService<PlayerRelationshipsEvent>(),
             [ClientPacketId.RoomUserTags] = provider.GetRequiredService<RoomUserTagsEvent>(),
             [ClientPacketId.RoomForwardData] = provider.GetRequiredService<RoomForwardDataEvent>(),
             [ClientPacketId.PlayerProfile] = provider.GetRequiredService<PlayerProfileEvent>(),
             [ClientPacketId.PlayerBadges] = provider.GetRequiredService<PlayerWearingBadgesEvent>(),
-            
-            [ClientPacketId.RoomUserRespect] = new RoomUserRespectEvent(
-                provider.GetRequiredService<IPlayerRepository>(), 
-                provider.GetRequiredService<IRoomRepository>(), 
-                provider.GetRequiredService<IPlayerRespectDao>()),
-            
-            [ClientPacketId.PlayerFriendRequest] = new PlayerSendFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), 
-                
-                provider.GetRequiredService<IPlayerFriendshipRepository>(), provider.GetRequiredService<PlayerConstants>()),
-            [ClientPacketId.PlayerAcceptFriendRequest] = new PlayerAcceptFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), 
-                provider.GetRequiredService<IPlayerFriendshipRepository>(), provider.GetRequiredService<IRoomRepository>()),
-            [ClientPacketId.PlayerDeclineFriendRequest] = new PlayerDeclineFriendRequestEvent(provider.GetRequiredService<IPlayerRepository>(), 
-                provider.GetRequiredService<IPlayerFriendshipRepository>()),
-            [ClientPacketId.PlayerRemoveFriend] = new PlayerRemoveFriendsEvent(provider.GetRequiredService<IPlayerRepository>(), 
-                provider.GetRequiredService<IPlayerFriendshipRepository>()),
+            [ClientPacketId.RoomUserRespect] = provider.GetRequiredService<RoomUserRespectEvent>(),
+            [ClientPacketId.PlayerFriendRequest] = provider.GetRequiredService<PlayerSendFriendRequestEvent>(), 
+            [ClientPacketId.PlayerAcceptFriendRequest] = provider.GetRequiredService<PlayerAcceptFriendRequestEvent>(),
+            [ClientPacketId.PlayerDeclineFriendRequest] = provider.GetRequiredService<PlayerDeclineFriendRequestEvent>(),
+            [ClientPacketId.PlayerRemoveFriend] = provider.GetRequiredService<PlayerRemoveFriendsEvent>(),
             [ClientPacketId.PlayerChangeRelation] = provider.GetRequiredService<PlayerChangeRelationshipEvent>(),
             [ClientPacketId.PlayerCreateRoom] = provider.GetRequiredService<PlayerCreateRoomEvent>(),
             [ClientPacketId.HabboClubData] = provider.GetRequiredService<HabboClubDataEvent>(),
@@ -210,5 +183,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.PlayerWardrobeSave] = provider.GetRequiredService<PlayerWardrobeSaveEvent>(),
             [ClientPacketId.RoomWallFurnitureItemUpdated] = provider.GetRequiredService<RoomWallFurnitureItemUpdatedEvent>(),
         });
+        
+        serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
     }
 }

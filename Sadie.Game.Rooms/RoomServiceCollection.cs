@@ -9,7 +9,7 @@ using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomServiceCollection
+public static class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {

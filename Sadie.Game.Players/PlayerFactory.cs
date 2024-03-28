@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Navigator;
-using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
