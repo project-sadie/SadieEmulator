@@ -1,4 +1,5 @@
 using Sadie.Game.Players;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Messenger;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -36,7 +37,7 @@ public class PlayerSendDirectMessageEvent(IPlayerRepository playerRepository, IP
         var friendships = client.Player.Data.FriendshipComponent.Friendships;
         var friend = friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
 
-        if (friend == null)
+        if (friend == null || friend.Status != PlayerFriendshipStatus.Accepted)
         {
             await client.WriteToStreamAsync(new PlayerMessageErrorWriter(PlayerMessageError.NotFriends, playerId).GetAllBytes());
             return;
