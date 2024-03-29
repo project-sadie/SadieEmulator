@@ -3,26 +3,30 @@ using Sadie.Game.Navigator.Categories;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
 public class NavigatorSearchEvent(
+    NavigatorSearchParser parser,
     NavigatorTabRepository navigatorTabRepository,
     NavigatorRoomProvider navigatorRoomProvider)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         if (client.Player == null)
         {
             return;
         }
 
         var playerId = client.Player.Data.Id;
-        var tabName = reader.ReadString();
-        var searchQuery = reader.ReadString();
+        var tabName = parser.TabName;
+        var searchQuery = parser.SearchQuery;
 
         if (!navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
         {
@@ -65,7 +69,7 @@ public class NavigatorSearchEvent(
         {
             var searchQueryParts = searchQuery.Split(":");
             var filterName = searchQueryParts[0];
-            var filterValue = searchQuery.Substring(filterName.Length + 1);
+            var filterValue = searchQuery[(filterName.Length + 1)..];
 
             if (string.IsNullOrEmpty(filterValue))
             {
