@@ -1,5 +1,6 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Rights;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Rights;
@@ -7,11 +8,14 @@ using Sadie.Networking.Writers.Rooms.Rights;
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 public class RoomRemoveUserRightsEvent(
+    RoomRemoveUserRightsParser parser,
     IRoomRepository roomRepository, 
     IRoomRightsDao roomRightsDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+        
         if (client.Player == null)
         {
             return;
@@ -24,12 +28,10 @@ public class RoomRemoveUserRightsEvent(
         {
             return;
         }
-        
-        var amount = reader.ReadInteger();
 
-        for (var i = 0; i < amount; i++)
+        foreach (var playerId in parser.Ids)
         {
-            await RemoveForPlayerAsync(reader.ReadInteger(), room);
+            await RemoveForPlayerAsync(playerId, room);
         }
     }
 

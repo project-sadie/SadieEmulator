@@ -31,6 +31,7 @@ using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Events.Parsers.Players.Wardrobe;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Events.Parsers.Rooms.Doorbell;
+using Sadie.Networking.Events.Parsers.Rooms.Rights;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
@@ -66,6 +67,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerRelationshipsParser>();
         serviceCollection.AddSingleton<PlayerWardrobeSaveParser>();
         serviceCollection.AddSingleton<NavigatorSearchParser>();
+        serviceCollection.AddSingleton<RoomRemoveUserRightsParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
