@@ -24,6 +24,7 @@ using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Events.Handlers.Tracking;
 using Sadie.Networking.Events.Handlers.Unknown;
 using Sadie.Networking.Events.Parsers.Catalog;
+using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
@@ -47,6 +48,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomLoadedParser>();
         serviceCollection.AddSingleton<RoomUserWhisperParser>();
         serviceCollection.AddSingleton<CatalogPurchaseParser>();
+        serviceCollection.AddSingleton<PlayerRemoveFriendsParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
