@@ -80,6 +80,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomGiveUserRightsParser>();
         serviceCollection.AddSingleton<HabboClubDataParser>();
         serviceCollection.AddSingleton<PlayerSearchParser>();
+        serviceCollection.AddSingleton<RoomWallFurnitureItemUpdatedParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
