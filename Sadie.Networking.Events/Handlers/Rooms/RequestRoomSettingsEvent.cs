@@ -1,16 +1,20 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomSettingsEvent(IRoomRepository roomRepository) : INetworkPacketEvent
+public class RequestRoomSettingsEvent(
+    RequestRoomSettingsParser parser, 
+    IRoomRepository roomRepository) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var roomId = reader.ReadInteger();
-        var (foundRoom, room) = roomRepository.TryGetRoomById(roomId);
+        parser.Parse(reader);
+        
+        var (foundRoom, room) = roomRepository.TryGetRoomById(parser.RoomId);
         
         if (foundRoom)
         {

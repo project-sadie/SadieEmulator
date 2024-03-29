@@ -55,6 +55,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserChangeChatBubbleParser>();
         serviceCollection.AddSingleton<CatalogPageParser>();
         serviceCollection.AddSingleton<PlayerChangeRelationshipParser>();
+        serviceCollection.AddSingleton<RequestRoomSettingsParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
@@ -120,7 +121,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerSearchEvent>();
         serviceCollection.AddSingleton<PlayerStalkEvent>();
         serviceCollection.AddSingleton<PlayerSendDirectMessageEvent>();
-        serviceCollection.AddSingleton<RoomSettingsEvent>();
+        serviceCollection.AddSingleton<RequestRoomSettingsEvent>();
         serviceCollection.AddSingleton<RoomSettingsSaveEvent>();
         serviceCollection.AddSingleton<PlayerInventoryBadgesEvent>();
         serviceCollection.AddSingleton<RoomDoorbellAnswerEvent>();
@@ -221,7 +222,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.PlayerSearch] = provider.GetRequiredService<PlayerSearchEvent>(),
             [ClientPacketId.PlayerStalk] = provider.GetRequiredService<PlayerStalkEvent>(),
             [ClientPacketId.PlayerSendMessage] = provider.GetRequiredService<PlayerSendDirectMessageEvent>(),
-            [ClientPacketId.RoomSettings] = provider.GetRequiredService<RoomSettingsEvent>(),
+            [ClientPacketId.RoomSettings] = provider.GetRequiredService<RequestRoomSettingsEvent>(),
             [ClientPacketId.RoomSettingsSave] = provider.GetRequiredService<RoomSettingsSaveEvent>(),
             [ClientPacketId.PlayerInventoryBadges] = provider.GetRequiredService<PlayerInventoryBadgesEvent>(),
             [ClientPacketId.RoomDoorbellAnswer] = provider.GetRequiredService<RoomDoorbellAnswerEvent>(),
