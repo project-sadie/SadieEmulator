@@ -1,5 +1,6 @@
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players.Messenger;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Shared;
@@ -7,18 +8,20 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-public class PlayerSearchEvent(IPlayerRepository playerRepository) : INetworkPacketEvent
+public class PlayerSearchEvent(PlayerSearchParser parser, IPlayerRepository playerRepository) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownIntervals.PlayerSearch)
         {
             return;
         }
         
         client.Player.State.LastPlayerSearch = DateTime.Now;
-        
-        var searchQuery = reader.ReadString();
+
+        var searchQuery = parser.SearchQuery;
 
         if (string.IsNullOrEmpty(searchQuery))
         {

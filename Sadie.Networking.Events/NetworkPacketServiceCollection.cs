@@ -31,6 +31,7 @@ using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Events.Parsers.Players.Club;
 using Sadie.Networking.Events.Parsers.Players.Friendships;
+using Sadie.Networking.Events.Parsers.Players.Messenger;
 using Sadie.Networking.Events.Parsers.Players.Wardrobe;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Events.Parsers.Rooms.Doorbell;
@@ -78,6 +79,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerClubMembershipParser>();
         serviceCollection.AddSingleton<RoomGiveUserRightsParser>();
         serviceCollection.AddSingleton<HabboClubDataParser>();
+        serviceCollection.AddSingleton<PlayerSearchParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
