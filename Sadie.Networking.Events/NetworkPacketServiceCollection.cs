@@ -72,6 +72,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomRemoveUserRightsParser>();
         serviceCollection.AddSingleton<RoomFurnitureItemUseParser>();
         serviceCollection.AddSingleton<MachineIdParser>();
+        serviceCollection.AddSingleton<PlayerSendFriendRequestParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();

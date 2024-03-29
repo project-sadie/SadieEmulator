@@ -1,12 +1,14 @@
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerSendFriendRequestEvent(
+    PlayerSendFriendRequestParser parser,
     IPlayerRepository playerRepository,
     IPlayerFriendshipRepository friendshipRepository,
     PlayerConstants playerConstants)
@@ -14,10 +16,12 @@ public class PlayerSendFriendRequestEvent(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         var player = client.Player;
         var playerData = player.Data;
-        
-        var targetUsername = reader.ReadString();
+
+        var targetUsername = parser.TargetUsername;
         
         if (playerData.FriendshipComponent.Friendships.Count >= playerConstants.MaxFriendships)
         {
