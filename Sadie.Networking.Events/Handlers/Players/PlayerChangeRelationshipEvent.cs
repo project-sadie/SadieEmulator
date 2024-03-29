@@ -1,20 +1,24 @@
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-public class PlayerChangeRelationshipEvent(IPlayerRepository playerRepository, 
+public class PlayerChangeRelationshipEvent(
+    PlayerChangeRelationshipParser parser,
+    IPlayerRepository playerRepository, 
     IPlayerDao playerDao)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerId = reader.ReadInteger();
-        var relationId = reader.ReadInteger();
+        parser.Parse(reader);
+
+        var playerId = parser.PlayerId;
+        var relationId = parser.RelationId;
         
         var friendshipComponent = client.Player.Data.FriendshipComponent;
         
