@@ -85,6 +85,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerStalkParser>();
         serviceCollection.AddSingleton<PlayerDeclineFriendRequestParser>();
         serviceCollection.AddSingleton<PlayerPingParser>();
+        serviceCollection.AddSingleton<SecureLoginParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();

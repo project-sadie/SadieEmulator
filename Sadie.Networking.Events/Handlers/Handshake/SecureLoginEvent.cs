@@ -4,6 +4,7 @@ using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Handshake;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Networking.Writers.Moderation;
@@ -19,6 +20,7 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
 public class SecureLoginEvent(
+    SecureLoginParser parser,
     ILogger<SecureLoginEvent> logger,
     IPlayerRepository playerRepository,
     PlayerConstants constants,
@@ -27,16 +29,16 @@ public class SecureLoginEvent(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var sso = reader.ReadString();
+        parser.Parse(reader);
 
-        if (!ValidateSso(sso)) 
+        if (!ValidateSso(parser.Token)) 
         {
             logger.LogWarning("Rejected an insecure sso token");
             await DisconnectAsync(client.Guid);
             return;
         }
             
-        var (foundPlayer, player) = await playerRepository.TryGetPlayerBySsoAsync(client, sso);
+        var (foundPlayer, player) = await playerRepository.TryGetPlayerBySsoAsync(client, parser.Token);
 
         if (!foundPlayer || player == null)
         {
