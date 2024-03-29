@@ -2,11 +2,13 @@ using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Doorbell;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
 public class RoomDoorbellAcceptedEvent(
+    RoomDoorbellAcceptedParser parser,
     IRoomRepository roomRepository,
     ILogger<RoomDoorbellAcceptedEvent> logger,
     IRoomUserFactory roomUserFactory)
@@ -14,9 +16,9 @@ public class RoomDoorbellAcceptedEvent(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var roomId = reader.ReadInteger();
+        parser.Parse(reader);
 
-        var (roomFound, room) = roomRepository.TryGetRoomById(roomId);
+        var (roomFound, room) = roomRepository.TryGetRoomById(parser.RoomId);
 
         if (!roomFound || room == null)
         {

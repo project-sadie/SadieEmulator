@@ -58,6 +58,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RequestRoomSettingsParser>();
         serviceCollection.AddSingleton<PlayerCreateRoomParser>();
         serviceCollection.AddSingleton<PlayerWearingBadgesParser>();
+        serviceCollection.AddSingleton<RoomDoorbellAcceptedParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
