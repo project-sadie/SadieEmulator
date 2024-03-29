@@ -1,18 +1,20 @@
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players.Messenger;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-public class PlayerStalkEvent(IPlayerRepository playerRepository) : INetworkPacketEvent
+public class PlayerStalkEvent(PlayerStalkParser parser, IPlayerRepository playerRepository) : INetworkPacketEvent
 {
-    public async Task HandleAsync(INetworkClient client,
-        INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerId = reader.ReadInteger();
+        parser.Parse(reader);
+
+        var playerId = parser.PlayerId;
 
         var friend =
             client.Player.Data.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
