@@ -27,6 +27,7 @@ using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Events.Parsers.Rooms;
+using Sadie.Networking.Events.Parsers.Rooms.Doorbell;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
