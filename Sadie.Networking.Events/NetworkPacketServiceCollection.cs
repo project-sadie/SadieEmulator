@@ -44,6 +44,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserActionParser>();
         serviceCollection.AddSingleton<RoomUserDanceParser>();
         serviceCollection.AddSingleton<RoomUserLookAtParser>();
+        serviceCollection.AddSingleton<RoomUserSignParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
