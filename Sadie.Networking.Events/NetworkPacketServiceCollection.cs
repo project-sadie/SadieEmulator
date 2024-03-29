@@ -52,6 +52,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserShoutParser>();
         serviceCollection.AddSingleton<CatalogModeParser>();
         serviceCollection.AddSingleton<RoomUserChangeChatBubbleParser>();
+        serviceCollection.AddSingleton<CatalogPageParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
