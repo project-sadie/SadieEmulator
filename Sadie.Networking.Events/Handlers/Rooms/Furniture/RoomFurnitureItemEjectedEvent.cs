@@ -4,27 +4,31 @@ using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-public class RoomFurnitureItemEjectedEvent(IRoomRepository roomRepository, 
+public class RoomFurnitureItemEjectedEvent(
+    RoomFurnitureItemEjectedParser parser,
+    IRoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
     IRoomFurnitureItemDao roomFurnitureItemDao,
     IPlayerRepository playerRepository) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         if (client.Player == null || client.RoomUser == null)
         {
             return;
         }
 
         var player = client.Player;
-        var category = reader.ReadInteger();
-        var itemId = reader.ReadInteger();
+        var itemId = parser.ItemId;
         
         var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
         
