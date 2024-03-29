@@ -56,6 +56,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<CatalogPageParser>();
         serviceCollection.AddSingleton<PlayerChangeRelationshipParser>();
         serviceCollection.AddSingleton<RequestRoomSettingsParser>();
+        serviceCollection.AddSingleton<PlayerCreateRoomParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
