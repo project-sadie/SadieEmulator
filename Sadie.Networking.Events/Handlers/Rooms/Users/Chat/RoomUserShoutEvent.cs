@@ -10,7 +10,7 @@ using Sadie.Shared.Unsorted.Game;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 public class RoomUserShoutEvent(
-    RoomUserShoutParser parser,
+    RoomUserChatParser parser,
     IRoomRepository roomRepository, 
     RoomConstants roomConstants, 
     IRoomChatCommandRepository commandRepository)

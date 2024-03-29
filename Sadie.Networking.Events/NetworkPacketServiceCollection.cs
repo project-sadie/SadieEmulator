@@ -49,7 +49,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserWhisperParser>();
         serviceCollection.AddSingleton<CatalogPurchaseParser>();
         serviceCollection.AddSingleton<PlayerRemoveFriendsParser>();
-        serviceCollection.AddSingleton<RoomUserShoutParser>();
+        serviceCollection.AddSingleton<RoomUserChatParser>();
         serviceCollection.AddSingleton<CatalogModeParser>();
         serviceCollection.AddSingleton<RoomUserChangeChatBubbleParser>();
         serviceCollection.AddSingleton<CatalogPageParser>();
