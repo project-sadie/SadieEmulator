@@ -43,6 +43,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserRespectParser>();
         serviceCollection.AddSingleton<RoomUserActionParser>();
         serviceCollection.AddSingleton<RoomUserDanceParser>();
+        serviceCollection.AddSingleton<RoomUserLookAtParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
