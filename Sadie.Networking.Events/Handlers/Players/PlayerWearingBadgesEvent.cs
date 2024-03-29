@@ -2,12 +2,14 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerWearingBadgesEvent(
+    PlayerWearingBadgesParser parser,
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
     IPlayerBadgeRepository badgeRepository)
@@ -15,7 +17,9 @@ public class PlayerWearingBadgesEvent(
 {
     public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
-        var playerId = reader.ReadInteger();
+        parser.Parse(reader);
+
+        var playerId = parser.PlayerId;
         var isPlayerOnline = playerRepository.TryGetPlayerById(playerId, out var player);
         
         var playerBadges = isPlayerOnline ? 
