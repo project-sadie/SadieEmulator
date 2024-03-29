@@ -30,6 +30,7 @@ using Sadie.Networking.Events.Handlers.Tracking;
 using Sadie.Networking.Events.Handlers.Unknown;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
+using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events;
@@ -48,6 +49,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserTagsParser>();
         serviceCollection.AddSingleton<RoomForwardDataParser>();
         serviceCollection.AddSingleton<RoomLoadedParser>();
+        serviceCollection.AddSingleton<RoomUserWhisperParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();

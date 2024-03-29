@@ -1,23 +1,29 @@
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
 using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-public class RoomUserWhisperEvent(IRoomRepository roomRepository, RoomConstants roomConstants)
+public class RoomUserWhisperEvent(
+    RoomUserWhisperParser parser,
+    IRoomRepository roomRepository, 
+    RoomConstants roomConstants)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
 
-        var whisperData = reader.ReadString().Split(" ");
+        var whisperData = parser.Data.Split(" ");
         var whisperUsername = whisperData.First();
         var whisperMessage = string.Join("", whisperData.Skip(1));
 
