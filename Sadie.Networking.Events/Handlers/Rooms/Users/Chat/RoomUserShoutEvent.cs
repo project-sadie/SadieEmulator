@@ -2,18 +2,25 @@
 using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-public class RoomUserShoutEvent(IRoomRepository roomRepository, RoomConstants roomConstants, IRoomChatCommandRepository commandRepository)
+public class RoomUserShoutEvent(
+    RoomUserShoutParser parser,
+    IRoomRepository roomRepository, 
+    RoomConstants roomConstants, 
+    IRoomChatCommandRepository commandRepository)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var message = reader.ReadString();
+        parser.Parse(reader);
+
+        var message = parser.Message;
         
         if (string.IsNullOrEmpty(message) || message.Length > roomConstants.MaxChatMessageLength)
         {
@@ -40,7 +47,7 @@ public class RoomUserShoutEvent(IRoomRepository roomRepository, RoomConstants ro
             roomUser, 
             message, 
             room, 
-            (ChatBubble) reader.ReadInteger(), 
+            parser.Bubble, 
             0, 
             RoomChatMessageType.Shout);
         

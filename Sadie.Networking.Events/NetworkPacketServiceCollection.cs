@@ -49,6 +49,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomUserWhisperParser>();
         serviceCollection.AddSingleton<CatalogPurchaseParser>();
         serviceCollection.AddSingleton<PlayerRemoveFriendsParser>();
+        serviceCollection.AddSingleton<RoomUserShoutParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
