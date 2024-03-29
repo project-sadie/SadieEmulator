@@ -1,12 +1,15 @@
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-public class SaveNavigatorSettingsEvent : INetworkPacketEvent
+public class SaveNavigatorSettingsEvent(SaveNavigatorSettingsParser parser) : INetworkPacketEvent
 {
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         var player = client.Player;
 
         if (player == null)
@@ -16,12 +19,12 @@ public class SaveNavigatorSettingsEvent : INetworkPacketEvent
         
         var navigatorSettings = player.Data.NavigatorSettings;
 
-        navigatorSettings.WindowX = reader.ReadInteger();
-        navigatorSettings.WindowY = reader.ReadInteger();
-        navigatorSettings.WindowWidth = reader.ReadInteger();
-        navigatorSettings.WindowHeight = reader.ReadInteger();
-        navigatorSettings.OpenSearches = reader.ReadBool();
-        navigatorSettings.Unknown1 = reader.ReadInteger();
+        navigatorSettings.WindowX = parser.WindowX;
+        navigatorSettings.WindowY = parser.WindowY;
+        navigatorSettings.WindowWidth = parser.WindowWidth;
+        navigatorSettings.WindowHeight = parser.WindowHeight;
+        navigatorSettings.OpenSearches = parser.OpenSearches;
+        navigatorSettings.Unknown1 = parser.Unknown1;
 
         return Task.CompletedTask;
     }
