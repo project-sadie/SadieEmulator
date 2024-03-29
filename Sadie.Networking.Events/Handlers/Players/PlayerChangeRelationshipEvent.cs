@@ -8,8 +8,7 @@ using Sadie.Networking.Packets;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerChangeRelationshipEvent(IPlayerRepository playerRepository, 
-    IPlayerDao playerDao,
-    IRoomRepository roomRepository)
+    IPlayerDao playerDao)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)

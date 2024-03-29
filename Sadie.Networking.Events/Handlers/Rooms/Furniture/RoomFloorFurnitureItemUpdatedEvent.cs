@@ -11,9 +11,7 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomFloorFurnitureItemUpdatedEvent(IRoomRepository roomRepository, 
-    IPlayerInventoryDao playerInventoryDao,
-    IRoomFurnitureItemDao roomFurnitureItemDao,
-    IPlayerRepository playerRepository) : INetworkPacketEvent
+    IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {

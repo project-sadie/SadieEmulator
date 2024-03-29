@@ -3,7 +3,7 @@ using Sadie.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class ProcessRoomsTask(ILogger<ProcessRoomsTask> logger, IRoomRepository roomRepository) : IServerTask
+public class ProcessRoomsTask(IRoomRepository roomRepository) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
     public DateTime LastExecuted { get; set; }
