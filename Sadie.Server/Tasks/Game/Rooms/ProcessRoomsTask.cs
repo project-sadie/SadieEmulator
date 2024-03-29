@@ -10,7 +10,6 @@ public class ProcessRoomsTask(ILogger<ProcessRoomsTask> logger, IRoomRepository 
 
     public async Task ExecuteAsync()
     { 
-        logger.LogWarning("processing room");
         foreach (var room in roomRepository.GetAllRooms())
         {
             await room.RunPeriodicCheckAsync();
