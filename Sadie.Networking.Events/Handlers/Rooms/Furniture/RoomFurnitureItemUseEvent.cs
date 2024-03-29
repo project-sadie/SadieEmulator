@@ -1,5 +1,6 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
@@ -7,13 +8,13 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomFurnitureItemUseEvent(
+    RoomFurnitureItemUseParser parser,
     IRoomRepository roomRepository) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var itemId = reader.ReadInteger();
-        var state = reader.ReadInteger();
-        
+        // TODO: extract-to-parser
+
         if (client.Player == null || client.RoomUser == null)
         {
             return;
@@ -26,7 +27,7 @@ public class RoomFurnitureItemUseEvent(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItemRepository.Items.FirstOrDefault(x => x.Id == itemId);
+        var roomFurnitureItem = room.FurnitureItemRepository.Items.FirstOrDefault(x => x.Id == parser.ItemId);
 
         if (roomFurnitureItem == null)
         {
