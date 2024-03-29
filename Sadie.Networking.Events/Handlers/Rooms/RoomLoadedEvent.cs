@@ -4,6 +4,7 @@ using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms;
@@ -13,18 +14,21 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 public class RoomLoadedEvent(
+    RoomLoadedParser parser,
     ILogger<RoomLoadedEvent> logger,
     IRoomRepository roomRepository,
     IRoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository)
     : INetworkPacketEvent
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader readers)
     {
+        parser.Parse(readers);
+
         var player = client.Player;
         var playerData = player.Data;
-        
-        var (roomId, password) = (reader.ReadInteger(), reader.ReadString());
+
+        var (roomId, password) = (parser.RoomId, parser.Password);
         var (found, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
         var lastRoomId = player.Data.CurrentRoomId;
         
