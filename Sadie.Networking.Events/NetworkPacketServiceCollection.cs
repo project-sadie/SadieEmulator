@@ -89,6 +89,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerAcceptFriendRequestParser>();
         serviceCollection.AddSingleton<RoomFurnitureItemEjectedParser>();
         serviceCollection.AddSingleton<PlayerChangedAppearanceParser>();
+        serviceCollection.AddSingleton<RoomFloorFurnitureItemUpdatedParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
