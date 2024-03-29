@@ -8,6 +8,6 @@ public class HabboClubDataEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        client.WriteToStreamAsync(new HabboClubDataWriter(reader.ReadInteger()).GetAllBytes());
+        await client.WriteToStreamAsync(new HabboClubDataWriter(reader.ReadInteger()).GetAllBytes());
     }
 }
