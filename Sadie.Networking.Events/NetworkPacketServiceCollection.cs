@@ -28,6 +28,7 @@ using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Events.Handlers.Tracking;
 using Sadie.Networking.Events.Handlers.Unknown;
+using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events;
@@ -36,6 +37,8 @@ public static class NetworkPacketServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
+        serviceCollection.AddSingleton<RoomSettingsSaveParser>();
+        
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
         serviceCollection.AddSingleton<MachineIdEvent>();
