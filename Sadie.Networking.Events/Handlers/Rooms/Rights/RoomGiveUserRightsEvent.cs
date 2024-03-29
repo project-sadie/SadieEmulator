@@ -1,5 +1,6 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Rights;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Rights;
@@ -7,12 +8,15 @@ using Sadie.Networking.Writers.Rooms.Rights;
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 public class RoomGiveUserRightsEvent(
+    RoomGiveUserRightsParser parser,
     IRoomRepository roomRepository, 
     IRoomRightsDao roomRightsDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerId = reader.ReadInteger();
+        parser.Parse(reader);
+
+        var playerId = parser.PlayerId;
         var playerData = client.Player.Data;
         
         var (roomFound, room) = roomRepository.TryGetRoomById(playerData.CurrentRoomId);

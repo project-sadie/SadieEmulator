@@ -75,6 +75,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<MachineIdParser>();
         serviceCollection.AddSingleton<PlayerSendFriendRequestParser>();
         serviceCollection.AddSingleton<PlayerClubMembershipParser>();
+        serviceCollection.AddSingleton<RoomGiveUserRightsParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
