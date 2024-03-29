@@ -40,6 +40,7 @@ public static class NetworkPacketServiceCollection
     {
         serviceCollection.AddSingleton<RoomSettingsSaveParser>();
         serviceCollection.AddSingleton<RoomUserWalkParser>();
+        serviceCollection.AddSingleton<RoomUserRespectParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
