@@ -1,10 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Respect;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Categories;
 using Sadie.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers.Camera;
 using Sadie.Networking.Events.Handlers.Catalog;
@@ -28,6 +23,7 @@ using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Events.Handlers.Tracking;
 using Sadie.Networking.Events.Handlers.Unknown;
+using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
@@ -50,6 +46,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomForwardDataParser>();
         serviceCollection.AddSingleton<RoomLoadedParser>();
         serviceCollection.AddSingleton<RoomUserWhisperParser>();
+        serviceCollection.AddSingleton<CatalogPurchaseParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();

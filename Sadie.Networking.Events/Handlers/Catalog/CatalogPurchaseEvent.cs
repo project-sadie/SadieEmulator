@@ -3,6 +3,7 @@ using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Game.Players.Inventory;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players;
@@ -13,11 +14,14 @@ using Sadie.Shared;
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogPurchaseEvent(
+    CatalogPurchaseParser parser,
     CatalogPageRepository pageRepository, 
     IPlayerInventoryDao inventoryDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         var player = client.Player;
 
         if ((DateTime.Now - player!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
@@ -30,12 +34,7 @@ public class CatalogPurchaseEvent(
         
         player.State.LastPlayerSearch = DateTime.Now;
 
-        var pageId = reader.ReadInteger();
-        var itemId = reader.ReadInteger();
-        var extraData = reader.ReadString();
-        var amount = reader.ReadInteger();
-
-        var (found, page) = pageRepository.TryGet(pageId);
+        var (found, page) = pageRepository.TryGet(parser.PageId);
 
         if (!found || page == null)
         {
@@ -43,7 +42,7 @@ public class CatalogPurchaseEvent(
             return;
         }
 
-        var item = page.Items.FirstOrDefault(x => x.Id == itemId);
+        var item = page.Items.FirstOrDefault(x => x.Id == parser.ItemId);
 
         if (item == null)
         {
@@ -61,8 +60,8 @@ public class CatalogPurchaseEvent(
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
         }
 
-        var costInCredits = item.CostCredits * amount;
-        var costInPoints = item.CostPoints * amount;
+        var costInCredits = item.CostCredits * parser.Amount;
+        var costInPoints = item.CostPoints * parser.Amount;
 
         var balance = client.Player.Data.Balance;
         
@@ -105,7 +104,7 @@ public class CatalogPurchaseEvent(
         var created = DateTime.Now;
         var newItems = new List<PlayerInventoryFurnitureItem>();
 
-        for (var i = 0; i < amount; i++)
+        for (var i = 0; i < parser.Amount; i++)
         {
             var limitedData = $"1:1"; // TODO: maxStack:maxSell
             newItems.Add(new PlayerInventoryFurnitureItem(0, item.FurnitureItems.First(), limitedData, item.Metadata, created));
@@ -128,7 +127,7 @@ public class CatalogPurchaseEvent(
             item.CostPoints,
             item.CostPointsType,
             item.FurnitureItems.First().CanGift,
-            amount,
+            parser.Amount,
             item.RequiresClubMembership ? 1 : 0,
             item.Amount != 1,
             item.Metadata,
