@@ -51,6 +51,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerRemoveFriendsParser>();
         serviceCollection.AddSingleton<RoomUserShoutParser>();
         serviceCollection.AddSingleton<CatalogModeParser>();
+        serviceCollection.AddSingleton<RoomUserChangeChatBubbleParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
