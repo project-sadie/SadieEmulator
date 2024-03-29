@@ -9,6 +9,7 @@ public class MachineIdEvent(MachineIdParser parser) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
         await client.WriteToStreamAsync(new MachineIdWriter(parser.Fingerprint).GetAllBytes());
     }
 }
