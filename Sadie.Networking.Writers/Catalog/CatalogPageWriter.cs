@@ -22,12 +22,19 @@ public class CatalogPageWriter : NetworkPacketWriter
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(pageId);
         WriteString(catalogMode);
-        WriteString(pageLayout);
 
+        #region layout_dependent
         switch (pageLayout)
         {
-            case "frontpage":
             case "club_buy":
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(0);
+                break;
+            case "frontpage":
+                WriteString("frontpage4");
                 WriteInteger(2);
                 WriteString(headerImage);
                 WriteString(teaserImage);
@@ -36,7 +43,8 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(secondaryText);
                 WriteString(teaserText);
                 break;
-            default:
+            case "default_3x3":
+                WriteString(pageLayout);
                 WriteInteger(3);
                 WriteString(headerImage);
                 WriteString(teaserImage);
@@ -47,6 +55,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(teaserText);
                 break;
         }
+        #endregion
         
         WriteInteger(items.Count);
 
@@ -105,7 +114,7 @@ public class CatalogPageWriter : NetworkPacketWriter
         WriteInteger(0);
         WriteBool(false);
 
-        if (pageLayout is "frontpage4")
+        if (pageLayout is "frontpage")
         {
             // TODO: serialize extra?
             WriteInteger(0);

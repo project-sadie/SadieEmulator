@@ -31,8 +31,6 @@ public class CatalogPurchaseEvent(
             await client.WriteToStreamAsync(bytes);
             return;
         }
-        
-        player.State.LastCatalogPurchase = DateTime.Now;
 
         var (found, page) = pageRepository.TryGet(parser.PageId);
 
@@ -49,6 +47,8 @@ public class CatalogPurchaseEvent(
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
             return;
         }
+        
+        player.State.LastCatalogPurchase = DateTime.Now;
 
         var furnitureItem = item.FurnitureItems.First();
         

@@ -8,6 +8,15 @@ public class PlayerClubCenterDataEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerClubCenterDataWriter(DateTime.Now.Subtract(TimeSpan.FromDays(4)), 56).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerClubCenterDataWriter(
+            DateTime.Now.Subtract(TimeSpan.FromDays(4)),
+            56,
+            1,
+            2,
+            3,
+            4,
+            5,
+            200,
+            10).GetAllBytes());
     }
 }

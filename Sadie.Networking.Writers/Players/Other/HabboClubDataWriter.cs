@@ -8,7 +8,23 @@ public class HabboClubDataWriter : NetworkPacketWriter
     public HabboClubDataWriter(int windowId)
     {
         WriteShort(ServerPacketId.HabboClubData);
-        WriteInteger(0);
+        WriteInteger(1);
+
+        WriteInteger(1);
+        WriteString("Testing Offer");
+        WriteBool(false);
+        WriteInteger(1);
+        WriteInteger(1);
+        WriteInteger(1);
+        WriteBool(true);
+        WriteInteger(1);
+        WriteInteger(1);
+        WriteBool(false);
+        WriteInteger(1);
+        WriteInteger(2023);
+        WriteInteger(3);
+        WriteInteger(1);
+        
         WriteInteger(windowId);
     }
 }
