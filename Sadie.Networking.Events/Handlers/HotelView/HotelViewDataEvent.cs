@@ -1,14 +1,17 @@
 ﻿using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.HotelView;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.HotelView;
 
 namespace Sadie.Networking.Events.Handlers.HotelView;
 
-public class HotelViewDataEvent : INetworkPacketEvent
+public class HotelViewDataEvent(HotelViewDataParser parser) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var unknown1 = reader.ReadString();
+        parser.Parse(reader);
+
+        var unknown1 = parser.Unknown1;
         
         if (unknown1.Contains(';'))
         {

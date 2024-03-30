@@ -27,6 +27,7 @@ using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Events.Parsers.Club;
 using Sadie.Networking.Events.Parsers.Generic;
 using Sadie.Networking.Events.Parsers.Handshake;
+using Sadie.Networking.Events.Parsers.HotelView;
 using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Events.Parsers.Players.Club;
@@ -92,6 +93,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomFloorFurnitureItemUpdatedParser>();
         serviceCollection.AddSingleton<RoomFurnitureItemPlacedParser>();
         serviceCollection.AddSingleton<PlayerChangedMottoParser>();
+        serviceCollection.AddSingleton<HotelViewDataParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
