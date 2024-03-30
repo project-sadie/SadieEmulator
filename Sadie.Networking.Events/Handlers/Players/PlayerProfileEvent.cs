@@ -1,20 +1,26 @@
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-public class PlayerProfileEvent(IPlayerRepository playerRepository, IPlayerFriendshipRepository friendshipRepository)
+public class PlayerProfileEvent(
+    PlayerProfileParser parser,
+    IPlayerRepository playerRepository, 
+    IPlayerFriendshipRepository friendshipRepository)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         var player = client.Player;
         var playerId = player.Data.Id;
-        
-        var profileId = reader.ReadInteger();
+
+        var profileId = parser.ProfileId;
         var profileOnline = false;
 
         IPlayerData onlineData = null;
