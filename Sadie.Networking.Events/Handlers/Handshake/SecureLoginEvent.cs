@@ -87,6 +87,25 @@ public class SecureLoginEvent(
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(playerData.Settings.ShowNotifications).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore).GetAllBytes());
 
+        foreach (var subscription in playerData.Subscriptions)
+        {
+            var tillExpire = subscription.Expires - subscription.Started;
+            var daysLeft = (int) tillExpire.TotalDays;
+            var minutesLeft = (int) tillExpire.TotalMinutes;
+            
+            await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter(
+                subscription.Name,
+                daysLeft,
+                0, 
+                0, 
+                0, 
+                true, 
+                true, 
+                0, 
+                0, 
+                minutesLeft).GetAllBytes());
+        }
+
         if (playerData.Permissions.Contains("moderation_tools"))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());

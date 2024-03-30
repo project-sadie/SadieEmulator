@@ -11,9 +11,27 @@ public class PlayerClubMembershipEvent(PlayerClubMembershipParser parser) : INet
     {
         parser.Parse(reader);
 
-        var subscriptionName = parser.SubscriptionName;
-        var subscription = client.Player.Data.Subscriptions.FirstOrDefault(x => x.Name == subscriptionName);
+        var subscription = client.Player?.Data.Subscriptions.FirstOrDefault(x => x.Name == parser.SubscriptionName);
         
-        await client.WriteToStreamAsync(new PlayerClubMembershipWriter(subscriptionName, subscription).GetAllBytes());
+        if (subscription == null)
+        {
+            return;
+        }
+        
+        var tillExpire = subscription.Expires - subscription.Started;
+        var daysLeft = (int) tillExpire.TotalDays;
+        var minutesLeft = (int) tillExpire.TotalMinutes;
+            
+        await client.WriteToStreamAsync(new PlayerSubscriptionWriter(
+            subscription.Name,
+            daysLeft,
+            0, 
+            0, 
+            0, 
+            true, 
+            true, 
+            0, 
+            0, 
+            minutesLeft).GetAllBytes());
     }
 }
