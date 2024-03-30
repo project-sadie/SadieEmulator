@@ -4,11 +4,13 @@ using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerAcceptFriendRequestEvent(
+    PlayerAcceptFriendRequestParser parser,
     IPlayerRepository playerRepository,
     IPlayerFriendshipRepository friendshipRepository,
     IRoomRepository roomRepository)
@@ -16,22 +18,20 @@ public class PlayerAcceptFriendRequestEvent(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var amount = reader.ReadInteger();
-        const int limit = 100;
-
-        for (var i = 0; i < amount && i < limit; i++)
+        parser.Parse(reader);
+        
+        foreach (var originId in parser.Ids)
         {
-            await ProcessAsync(client, reader);
+            await ProcessAsync(client, originId);
         }
     }
 
-    private async Task ProcessAsync(INetworkClient client, INetworkPacketReader reader)
+    private async Task ProcessAsync(INetworkClient client, int originId)
     {
         var player = client.Player;
         var playerId = player.Data.Id;
         
         var friendshipComponent = player.Data.FriendshipComponent;
-        var originId = reader.ReadInteger();
             
         var request = friendshipComponent
             .Friendships
