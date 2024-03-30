@@ -13,7 +13,7 @@ public class RoomFurnitureItemUseEvent(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        // TODO: extract-to-parser
+        parser.Parse(reader);
 
         if (client.Player == null || client.RoomUser == null)
         {
