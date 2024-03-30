@@ -4,6 +4,7 @@ using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
@@ -14,12 +15,15 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomFurnitureItemPlacedEvent(
+    RoomFurnitureItemPlacedParser parser,
     IRoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
     IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         if (client.Player == null || client.RoomUser == null)
         {
             await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
@@ -27,7 +31,7 @@ public class RoomFurnitureItemPlacedEvent(
         }
         
         var player = client.Player;
-        var placementData = reader.ReadString().Split(" ");
+        var placementData = parser.PlacementData;
         
         if (!int.TryParse(placementData[0], out var itemId))
         {
