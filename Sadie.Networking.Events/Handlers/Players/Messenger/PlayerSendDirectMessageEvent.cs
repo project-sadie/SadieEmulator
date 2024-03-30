@@ -2,6 +2,7 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Messenger;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players.Messenger;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Shared;
@@ -9,20 +10,25 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-public class PlayerSendDirectMessageEvent(IPlayerRepository playerRepository, IPlayerMessageDao playerMessageDao)
+public class PlayerSendDirectMessageEvent(
+    PlayerSendDirectMessageParser parser,
+    IPlayerRepository playerRepository, 
+    IPlayerMessageDao playerMessageDao)
     : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        parser.Parse(reader);
+
         if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalMilliseconds < CooldownIntervals.PlayerDirectMessage)
         {
             return;
         }
         
         client.Player.State.LastDirectMessage = DateTime.Now;
-        
-        var playerId = reader.ReadInteger();
-        var message = reader.ReadString();
+
+        var playerId = parser.PlayerId;
+        var message = parser.Message;
 
         if (string.IsNullOrEmpty(message))
         {

@@ -94,6 +94,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomFurnitureItemPlacedParser>();
         serviceCollection.AddSingleton<PlayerChangedMottoParser>();
         serviceCollection.AddSingleton<HotelViewDataParser>();
+        serviceCollection.AddSingleton<PlayerSendDirectMessageParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
