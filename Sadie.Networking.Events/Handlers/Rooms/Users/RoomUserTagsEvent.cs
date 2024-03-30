@@ -17,7 +17,7 @@ public class RoomUserTagsEvent(RoomUserTagsParser parser, IRoomRepository roomRe
             return;
         }
 
-        if (room != null && room.UserRepository.TryGet(parser.UserId, out var specialUser))
+        if (room.UserRepository.TryGet(parser.UserId, out var specialUser))
         {        
             await specialUser!.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter(specialUser.Id, specialUser.AvatarData.Tags).GetAllBytes());
         }

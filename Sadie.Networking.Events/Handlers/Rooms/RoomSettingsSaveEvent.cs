@@ -45,16 +45,6 @@ public class RoomSettingsSaveEvent(RoomSettingsSaveParser parser, IRoomRepositor
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.NameRequired).GetAllBytes());
             return;
         }
-        
-        if (parser.Name.Length > roomConstants.MaxNameLength)
-        {
-            parser.Name = parser.Name.Truncate(roomConstants.MaxNameLength);
-        }
-
-        if (parser.Description.Length > roomConstants.MaxDescriptionLength)
-        {
-            parser.Description = parser.Description.Truncate(roomConstants.MaxDescriptionLength);
-        }
 
         if (parser.AccessType == RoomAccessType.Password && string.IsNullOrEmpty(parser.Password))
         {
@@ -62,8 +52,8 @@ public class RoomSettingsSaveEvent(RoomSettingsSaveParser parser, IRoomRepositor
             return;
         }
         
-        room.Name = parser.Name;
-        room.Description = parser.Description;
+        room.Name = parser.Name.Truncate(roomConstants.MaxNameLength);
+        room.Description = parser.Description.Truncate(roomConstants.MaxDescriptionLength);
         room.MaxUsers = parser.MaxUsers;
         room.Tags = newTags;
         

@@ -7,7 +7,6 @@ using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
-using Sadie.Networking.Client;
 using Sadie.Networking.Events;
 using SadieEmulator.Tasks;
 using SadieEmulator.Tasks.Game.Rooms;
