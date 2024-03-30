@@ -116,17 +116,17 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerUsernameEvent>();
         serviceCollection.AddSingleton<PlayerMeMenuSettingsEvent>();
         serviceCollection.AddSingleton<HotelViewBonusRareEvent>();
-        serviceCollection.AddSingleton<UnknownEvent1>();
+        serviceCollection.AddSingleton<GetBadgePointLimitsEvent>();
         serviceCollection.AddSingleton<RequestGameCenterConfigEvent>();
-        serviceCollection.AddSingleton<UnknownEvent4>();
+        serviceCollection.AddSingleton<GetGameAchievementsMessageEvent>();
         serviceCollection.AddSingleton<PromotedRoomsEvent>();
         serviceCollection.AddSingleton<RoomCategoriesEvent>();
         serviceCollection.AddSingleton<NavigatorEventCategoriesEvent>();
         serviceCollection.AddSingleton<PlayerFriendRequestsEvent>();
         serviceCollection.AddSingleton<PlayerSanctionStatusEvent>();
-        serviceCollection.AddSingleton<UnknownEvent2>();
+        serviceCollection.AddSingleton<GetTargetedOfferEvent>();
         serviceCollection.AddSingleton<RoomLoadedEvent>();
-        serviceCollection.AddSingleton<UnknownEvent3>();
+        serviceCollection.AddSingleton<GetInterstitialEvent>();
         serviceCollection.AddSingleton<RoomHeightmapEvent>();
         serviceCollection.AddSingleton<RoomUserChatEvent>();
         serviceCollection.AddSingleton<RoomUserShoutEvent>();
@@ -217,17 +217,17 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.PlayerUsername] = provider.GetRequiredService<PlayerUsernameEvent>(),
             [ClientPacketId.PlayerMeMenuSettings] = provider.GetRequiredService<PlayerMeMenuSettingsEvent>(),
             [ClientPacketId.HotelViewBonusRare] = provider.GetRequiredService<HotelViewBonusRareEvent>(),
-            [ClientPacketId.UnknownEvent1] = provider.GetRequiredService<UnknownEvent1>(),
+            [ClientPacketId.GetBadgePointLimits] = provider.GetRequiredService<GetBadgePointLimitsEvent>(),
             [ClientPacketId.GameCenterRequestGames] = provider.GetRequiredService<RequestGameCenterConfigEvent>(),
-            [ClientPacketId.UnknownEvent4] = provider.GetRequiredService<UnknownEvent4>(),
+            [ClientPacketId.GetGameAchievementsMessage] = provider.GetRequiredService<GetGameAchievementsMessageEvent>(),
             [ClientPacketId.PromotedRooms] = provider.GetRequiredService<PromotedRoomsEvent>(),
             [ClientPacketId.RoomCategories] = provider.GetRequiredService<RoomCategoriesEvent>(),
             [ClientPacketId.NavigatorEventCategories] = provider.GetRequiredService<NavigatorEventCategoriesEvent>(),
             [ClientPacketId.PlayerFriendRequestsList] = provider.GetRequiredService<PlayerFriendRequestsEvent>(),
             [ClientPacketId.PlayerSanctionStatus] = provider.GetRequiredService<PlayerSanctionStatusEvent>(),
-            [ClientPacketId.UnknownEvent2] = provider.GetRequiredService<UnknownEvent2>(),
+            [ClientPacketId.GetTargetedOffer] = provider.GetRequiredService<GetTargetedOfferEvent>(),
             [ClientPacketId.RoomLoaded] = provider.GetRequiredService<RoomLoadedEvent>(),
-            [ClientPacketId.UnknownEvent3] = provider.GetRequiredService<UnknownEvent3>(),
+            [ClientPacketId.GetInterstitial] = provider.GetRequiredService<GetInterstitialEvent>(),
             [ClientPacketId.RoomHeightmap] = provider.GetRequiredService<RoomHeightmapEvent>(),
             [ClientPacketId.RoomHeightmap2] = provider.GetRequiredService<RoomHeightmapEvent>(),
             [ClientPacketId.RoomUserChat] = provider.GetRequiredService<RoomUserChatEvent>(),
