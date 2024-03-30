@@ -2,7 +2,7 @@ namespace Sadie.Tests.CodeQuality;
 
 public class ClassLineCountTest
 {
-    private const int MaxLinesForClass = 380;
+    private const int MaxLinesForClass = 340;
  
     private readonly List<string> _excludedFiles = new();
     
