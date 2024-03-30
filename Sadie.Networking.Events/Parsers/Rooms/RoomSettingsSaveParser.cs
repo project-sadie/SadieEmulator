@@ -5,30 +5,6 @@ namespace Sadie.Networking.Events.Parsers.Rooms;
 
 public record RoomSettingsSaveParser
 {
-    public long RoomId { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public RoomAccessType AccessType { get; set; }
-    public string Password { get; set; }
-    public int MaxUsers { get; set; }
-    public int CategoryId { get; set; }
-    public int TagsCount { get; set; }
-    public int TradeOption { get; set; }
-    public bool AllowPets { get; set; }
-    public bool CanPetsEat { get; set; }
-    public bool CanUsersOverlap { get; set; }
-    public bool HideWall { get; set; }
-    public int WallSize { get; set; }
-    public int FloorSize { get; set; }
-    public int WhoCanMute { get; set; }
-    public int WhoCanKick { get; set; }
-    public int WhoCanBan { get; set; }
-    public int ChatType { get; set; }
-    public int ChatWeight { get; set; }
-    public int ChatSpeed { get; set; }
-    public int ChatDistance { get; set; }
-    public int ChatProtection { get; set; }
-
     public void Parse(INetworkPacketReader reader)
     {
         RoomId = reader.ReadInteger();
@@ -55,4 +31,29 @@ public record RoomSettingsSaveParser
         ChatDistance = reader.ReadInteger();
         ChatProtection = reader.ReadInteger();
     }
+    
+    public long RoomId { get; private set; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public RoomAccessType AccessType { get; private set; }
+    public string Password { get; private set; }
+    public int MaxUsers { get; private set; }
+    public int CategoryId { get; private set; }
+    public int TagsCount { get; private set; }
+    public int TradeOption { get; private set; }
+    public bool AllowPets { get; private set; }
+    public bool CanPetsEat { get; private set; }
+    public bool CanUsersOverlap { get; private set; }
+    public bool HideWall { get; private set; }
+    public int WallSize { get; private set; }
+    public int FloorSize { get; private set; }
+    public int WhoCanMute { get; private set; }
+    public int WhoCanKick { get; private set; }
+    public int WhoCanBan { get; private set; }
+    public int ChatType { get; private set; }
+    public int ChatWeight { get; private set; }
+    public int ChatSpeed { get; private set; }
+    public int ChatDistance { get; private set; }
+    public int ChatProtection { get; private set; }
+
 }
