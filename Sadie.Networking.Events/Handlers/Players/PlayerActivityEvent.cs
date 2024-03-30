@@ -1,19 +1,14 @@
 ﻿using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-public class PlayerActivityEvent : INetworkPacketEvent
+public class PlayerActivityEvent(PlayerActivityParser parser) : INetworkPacketEvent
 {
-    public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
-        if (networkClient.Player is {Authenticated: true})
-        {
-            return;
-        }
-        
-        var type = reader.ReadString();
-        var value = reader.ReadString();
-        var action = reader.ReadString();
+        parser.Parse(reader);
+        return Task.CompletedTask;
     }
 }

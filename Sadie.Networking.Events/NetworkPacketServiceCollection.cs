@@ -96,6 +96,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<HotelViewDataParser>();
         serviceCollection.AddSingleton<PlayerSendDirectMessageParser>();
         serviceCollection.AddSingleton<PlayerProfileParser>();
+        serviceCollection.AddSingleton<PlayerActivityParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
