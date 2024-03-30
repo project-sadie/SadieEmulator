@@ -97,6 +97,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerSendDirectMessageParser>();
         serviceCollection.AddSingleton<PlayerProfileParser>();
         serviceCollection.AddSingleton<PlayerActivityParser>();
+        serviceCollection.AddSingleton<RoomDoorbellAnswerParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
