@@ -78,9 +78,9 @@ public class RoomFurnitureItemPlacedEvent(
     }
 
     private async Task OnFloorItemAsync(
-        string[] placementData, 
-        IRoom room, 
-        INetworkClient client, 
+        IReadOnlyList<string> placementData, 
+        IRoomData room, 
+        INetworkObject client, 
         IPlayer player, 
         PlayerInventoryFurnitureItem playerItem, 
         int itemId)
@@ -102,7 +102,8 @@ public class RoomFurnitureItemPlacedEvent(
         }
             
         var created = DateTime.Now;
-        var z = 0; // TODO: check this
+        var highestItem = tile.Items.OrderByDescending(x => x.Position.Z).FirstOrDefault();
+        var z = (float)(highestItem != null ? highestItem.Position.Z + highestItem.FurnitureItem.StackHeight : 0);
             
         var roomFurnitureItem = new RoomFurnitureItem(
             0, 
