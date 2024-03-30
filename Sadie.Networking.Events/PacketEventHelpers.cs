@@ -13,7 +13,9 @@ namespace Sadie.Networking.Events;
 
 internal static class PacketEventHelpers
 {
-    internal static bool TryResolveRoomObjectsForClient(IRoomRepository roomRepository, INetworkClient client, out IRoom room, out IRoomUser user)
+    internal static bool TryResolveRoomObjectsForClient(
+        IRoomRepository roomRepository, 
+        INetworkClient client, out IRoom room, out IRoomUser user)
     {
         var player = client.Player;
         
@@ -42,7 +44,8 @@ internal static class PacketEventHelpers
         return true;
     }
 
-    internal static async Task EnterRoomAsync<T>(INetworkClient client, IRoom room, ILogger<T> logger, IRoomUserFactory roomUserFactory)
+    internal static async Task EnterRoomAsync<T>(INetworkClient client, IRoom room, ILogger<T> logger, 
+        IRoomUserFactory roomUserFactory)
     {
         var player = client.Player;
         var playerData = player.Data;

@@ -15,7 +15,13 @@ public interface IPlayerFactory
         INetworkObject networkObject, 
         IPlayerData data);
 
-    PlayerNavigatorSettings CreateNavigatorSettings(int windowX, int windowY, int windowWidth, int windowHeight, bool openSearches, int unknown1);
+    PlayerNavigatorSettings CreateNavigatorSettings(
+        int windowX, 
+        int windowY, 
+        int windowWidth, 
+        int windowHeight, 
+        bool openSearches,
+        int mode);
 
     PlayerSettings CreateSettings(int systemVolume,
         int furnitureVolume,

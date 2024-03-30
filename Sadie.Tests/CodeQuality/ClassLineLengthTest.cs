@@ -2,7 +2,7 @@ namespace Sadie.Tests.CodeQuality;
 
 public class ClassLineLengthTest
 {
-    private const int MaxLengthForLine = 155;
+    private const int MaxLengthForLine = 150;
  
     private readonly List<string> _excludedFiles = new();
     

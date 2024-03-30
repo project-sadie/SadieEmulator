@@ -33,7 +33,7 @@ public class PlayerFactory(IServiceProvider serviceProvider) : IPlayerFactory
         int windowWidth, 
         int windowHeight, 
         bool openSearches, 
-        int unknown1)
+        int mode)
     {
         return ActivatorUtilities.CreateInstance<PlayerNavigatorSettings>(
             serviceProvider,
