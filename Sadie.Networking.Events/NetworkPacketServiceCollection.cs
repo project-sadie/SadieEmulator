@@ -292,7 +292,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.RoomRemoveUserRights] = provider.GetRequiredService<RoomRemoveUserRightsEvent>(),
             [ClientPacketId.PlayerWardrobe] = provider.GetRequiredService<PlayerWardrobeEvent>(),
             [ClientPacketId.PlayerWardrobeSave] = provider.GetRequiredService<PlayerWardrobeSaveEvent>(),
-            [ClientPacketId.RoomWallFurnitureItemUpdated] = provider.GetRequiredService<RoomWallFurnitureItemUpdatedEvent>(),
+            [ClientPacketId.RoomWallFurnitureItemUpdated] = provider.GetRequiredService<RoomWallFurnitureItemUpdatedEvent>()
         });
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();

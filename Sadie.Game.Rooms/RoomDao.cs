@@ -109,7 +109,7 @@ public class RoomDao(
     {
         return await QueryAsync(@"INSERT INTO room_settings (room_id) VALUES (@roomId);", new Dictionary<string, object>
         {
-            {"roomId", roomId},
+            {"roomId", roomId}
         });
     }
 

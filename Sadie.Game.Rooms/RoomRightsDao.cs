@@ -10,7 +10,7 @@ public class RoomRightsDao(IDatabaseProvider databaseProvider) : BaseDao(databas
         {
             { "roomId", roomId },
             { "playerId", playerId },
-            { "created", DateTime.Now },
+            { "created", DateTime.Now }
         };
         
         await QueryAsync("INSERT INTO room_player_rights (room_id, player_id, created_at) VALUES (@roomId, @playerId, @created)", parameters);
@@ -21,7 +21,7 @@ public class RoomRightsDao(IDatabaseProvider databaseProvider) : BaseDao(databas
         var parameters = new Dictionary<string, object>
         {
             { "roomId", roomId },
-            { "playerId", playerId },
+            { "playerId", playerId }
         };
         
         await QueryAsync("DELETE FROM room_player_rights WHERE room_id = @roomId AND player_id = @playerId LIMIT 1;", parameters);

@@ -11,3 +11,9 @@ public class HabboClubDataParser
         WindowId = reader.ReadInteger();
     }
 }
+
+
+
+
+
+

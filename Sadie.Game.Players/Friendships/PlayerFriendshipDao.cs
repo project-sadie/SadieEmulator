@@ -137,7 +137,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
         {
             {"newStatus", (int) PlayerFriendshipStatus.Accepted},
             {"originId", originId},
-            {"targetId", targetId},
+            {"targetId", targetId}
         });
     }
 
@@ -146,7 +146,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
         await QueryAsync("UPDATE player_friendships SET status = @newStatus WHERE id = @requestId LIMIT 1;", new Dictionary<string, object>()
         {
             {"newStatus", (int) PlayerFriendshipStatus.Accepted},
-            {"requestId", requestId},
+            {"requestId", requestId}
         });
     }
 
@@ -160,7 +160,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             AND status = 1 LIMIT 1;", new Dictionary<string, object>
         {
             {"originId", originId},
-            {"targetId", targetId},
+            {"targetId", targetId}
         });
     }
 
@@ -170,7 +170,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             DELETE FROM player_friendships 
             WHERE target_player_id = @targetId AND status = 1", new Dictionary<string, object>
         {
-            {"targetId", targetId},
+            {"targetId", targetId}
         });
     }
 
@@ -188,7 +188,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             { "originId", originId },
             { "targetId", targetId },
             { "status", (int) PlayerFriendshipStatus.Pending },
-            { "createdAt", DateTime.Now },
+            { "createdAt", DateTime.Now }
         });
     }
 
@@ -203,7 +203,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             ) AND status = 1;", new Dictionary<string, object>()
         {
             {"playerId1", playerId1},
-            {"playerId2", playerId2},
+            {"playerId2", playerId2}
         });
     }
 
@@ -218,7 +218,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             ) AND status = 2;", new Dictionary<string, object>()
         {
             {"playerId1", playerId1},
-            {"playerId2", playerId2},
+            {"playerId2", playerId2}
         });
     }
 
@@ -261,7 +261,7 @@ public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFrien
             new Dictionary<string, object>
             {
                 {"playerId1", playerId1},
-                {"playerId2", playerId2},
+                {"playerId2", playerId2}
             });
     }
 }

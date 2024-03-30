@@ -9,5 +9,5 @@ public enum HDirection
     South = 4,
     SouthWest = 5,
     West = 6,
-    NorthWest = 7,
+    NorthWest = 7
 }

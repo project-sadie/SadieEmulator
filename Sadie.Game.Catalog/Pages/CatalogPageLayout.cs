@@ -40,5 +40,5 @@ public enum CatalogPageLayout
     VipBuy,
     BuildersClubAddons,
     BuildersClubFrontPage,
-    BuildersClubLoyalty,
+    BuildersClubLoyalty
 }

@@ -48,7 +48,7 @@ public class PlayerWardrobeDao : BaseDao, IPlayerWardrobeDao
             { "playerId", playerId },
             { "slotId", wardrobeItem.SlotId },
             { "figureCode", wardrobeItem.FigureCode},
-            { "gender", wardrobeItem.Gender == AvatarGender.Male ? "M" : "F" },
+            { "gender", wardrobeItem.Gender == AvatarGender.Male ? "M" : "F" }
         };
 
         if (newRecord)

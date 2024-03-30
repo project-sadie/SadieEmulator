@@ -113,7 +113,7 @@ public class RoomFurnitureItemDao(
             { "y", item.Position.Y },
             { "z", item.Position.Z },
             { "wallPosition", item.WallPosition },
-            { "direction", (int) item.Direction },
+            { "direction", (int) item.Direction }
         });
     }
 

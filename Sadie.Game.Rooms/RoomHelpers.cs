@@ -44,7 +44,7 @@ public static class RoomHelpers
     {
         var pathfinderOptions = new PathFinderOptions
         {
-            UseDiagonals = useDiagonal,
+            UseDiagonals = useDiagonal
         };
         
         var worldGrid = new WorldGrid(layout.TileMap);

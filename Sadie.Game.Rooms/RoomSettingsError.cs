@@ -8,5 +8,5 @@ public enum RoomSettingsError
     DescriptionBadWords = 10,
     TagsBadWords = 11,
     RestrictedTags = 12,
-    TagTooLong = 13,
+    TagTooLong = 13
 }
