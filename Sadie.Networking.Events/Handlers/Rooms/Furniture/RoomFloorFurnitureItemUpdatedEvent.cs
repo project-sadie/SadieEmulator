@@ -23,7 +23,7 @@ public class RoomFloorFurnitureItemUpdatedEvent(
             return;
         }
 
-        var itemId = reader.ReadInteger();
+        var itemId = parser.ItemId;
         
         var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
         
@@ -56,11 +56,11 @@ public class RoomFloorFurnitureItemUpdatedEvent(
         }
 
         var position = new HPoint(
-            reader.ReadInteger(),
-            reader.ReadInteger(),
+            parser.X,
+            parser.Y,
             roomFurnitureItem.Position.Z);
-        
-        var direction = (HDirection) reader.ReadInteger();
+
+        var direction = parser.Direction;
         var tile = room.Layout.FindTile(position.X, position.Y);
 
         if (tile == null || tile.State == RoomTileState.Closed)
