@@ -32,7 +32,7 @@ public class CatalogPurchaseEvent(
             return;
         }
         
-        player.State.LastPlayerSearch = DateTime.Now;
+        player.State.LastCatalogPurchase = DateTime.Now;
 
         var (found, page) = pageRepository.TryGet(parser.PageId);
 
