@@ -91,6 +91,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerChangedAppearanceParser>();
         serviceCollection.AddSingleton<RoomFloorFurnitureItemUpdatedParser>();
         serviceCollection.AddSingleton<RoomFurnitureItemPlacedParser>();
+        serviceCollection.AddSingleton<PlayerChangedMottoParser>();
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
