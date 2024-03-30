@@ -26,6 +26,7 @@ public class CatalogPageWriter : NetworkPacketWriter
         #region layout_dependent
         switch (pageLayout)
         {
+            case "vip_buy":
             case "club_buy":
                 WriteString(pageLayout);
                 WriteInteger(2);
