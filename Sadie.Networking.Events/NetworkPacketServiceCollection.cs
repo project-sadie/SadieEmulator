@@ -75,7 +75,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<NavigatorSearchParser>();
         serviceCollection.AddSingleton<RoomRemoveUserRightsParser>();
         serviceCollection.AddSingleton<RoomFurnitureItemUseParser>();
-        serviceCollection.AddSingleton<MachineIdParser>();
+        serviceCollection.AddSingleton<UniqueIdParser>();
         serviceCollection.AddSingleton<PlayerSendFriendRequestParser>();
         serviceCollection.AddSingleton<PlayerClubMembershipParser>();
         serviceCollection.AddSingleton<RoomGiveUserRightsParser>();
@@ -101,7 +101,7 @@ public static class NetworkPacketServiceCollection
         
         serviceCollection.AddSingleton<ClientVersionEvent>();
         serviceCollection.AddSingleton<ClientVariablesEvent>();
-        serviceCollection.AddSingleton<MachineIdEvent>();
+        serviceCollection.AddSingleton<UniqueIdEvent>();
         serviceCollection.AddSingleton<SecureLoginEvent>();
         serviceCollection.AddSingleton<PerformanceLogEvent>();
         serviceCollection.AddSingleton<PlayerActivityEvent>();
@@ -201,7 +201,7 @@ public static class NetworkPacketServiceCollection
         {
             [ClientPacketId.ClientVersion] = provider.GetRequiredService<ClientVersionEvent>(),
             [ClientPacketId.ClientVariables] = provider.GetRequiredService<ClientVariablesEvent>(),
-            [ClientPacketId.MachineId] = provider.GetRequiredService<MachineIdEvent>(),
+            [ClientPacketId.UniqueId] = provider.GetRequiredService<UniqueIdEvent>(),
             [ClientPacketId.SecureLogin] = provider.GetRequiredService<SecureLoginEvent>(),
             [ClientPacketId.PerformanceLog] = provider.GetRequiredService<PerformanceLogEvent>(),
             [ClientPacketId.PlayerActivity] = provider.GetRequiredService<PlayerActivityEvent>(),

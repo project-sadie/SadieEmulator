@@ -9,7 +9,7 @@ public class SaveNavigatorSettingsParser
     public int WindowWidth { get; private set; }
     public int WindowHeight { get; private set; }
     public bool OpenSearches { get; private set; }
-    public int Unknown1 { get; private set; }
+    public int Mode { get; private set; }
     
     public void Parse(INetworkPacketReader reader)
     {
@@ -18,6 +18,6 @@ public class SaveNavigatorSettingsParser
         WindowWidth = reader.ReadInteger();
         WindowHeight = reader.ReadInteger();
         OpenSearches = reader.ReadBool();
-        Unknown1 = reader.ReadInteger();
+        Mode = reader.ReadInteger();
     }
 }

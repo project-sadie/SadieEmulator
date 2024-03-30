@@ -4,7 +4,7 @@ public class ServerPacketId
 {
     public const short SecureLogin = 2491;
     public const short PlayerHomeRoom = 2875;
-    public const short UniqueMachineId = 1488;
+    public const short UniqueId = 1488;
     public const short PlayerEffectList = 340;
     public const short PlayerClothingList = 1450;
     public const short NoobnessLevel = 3738;

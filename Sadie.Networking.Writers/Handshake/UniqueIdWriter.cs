@@ -3,11 +3,11 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Handshake;
 
-public class MachineIdWriter : NetworkPacketWriter
+public class UniqueIdWriter : NetworkPacketWriter
 {
-    public MachineIdWriter(string machineId)
+    public UniqueIdWriter(string machineId)
     {
-        WriteShort(ServerPacketId.UniqueMachineId);
+        WriteShort(ServerPacketId.UniqueId);
         WriteString(machineId);
     }
 }

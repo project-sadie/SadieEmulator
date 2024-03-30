@@ -4,7 +4,7 @@ public class ClientPacketId
 {
     public const short ClientVersion = 4000;
     public const short ClientVariables = 1053;
-    public const short MachineId = 2490;
+    public const short UniqueId = 2490;
     public const short SecureLogin = 2419;
     public const short PerformanceLog = 3230;
     public const short PlayerActivity = 3457;

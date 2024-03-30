@@ -5,11 +5,11 @@ using Sadie.Networking.Writers.Handshake;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
-public class MachineIdEvent(MachineIdParser parser) : INetworkPacketEvent
+public class UniqueIdEvent(UniqueIdParser parser) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         parser.Parse(reader);
-        await client.WriteToStreamAsync(new MachineIdWriter(parser.Fingerprint).GetAllBytes());
+        await client.WriteToStreamAsync(new UniqueIdWriter(parser.Fingerprint).GetAllBytes());
     }
 }
