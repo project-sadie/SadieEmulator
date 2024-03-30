@@ -14,13 +14,13 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         int unknown3, 
         PlayerFriendship friendship, 
         bool isOnline, 
-        bool inRoom, 
-        int unknown4, 
-        string unknown5, 
-        string unknown6, 
-        bool unknown7, 
-        bool unknown8, 
-        bool unknown9,
+        bool canFollow, 
+        int categoryId, 
+        string realName, 
+        string lastAccess, 
+        bool persistedMessageUser, 
+        bool vipMember, 
+        bool pocketUser,
         PlayerRelationshipType relationshipType)
     {
         var targetData = friendship.TargetData;
@@ -33,15 +33,15 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         WriteString(targetData.Username);
         WriteInteger(targetData.Gender == AvatarGender.Male ? 0 : 1);
         WriteBool(isOnline);
-        WriteBool(inRoom);
+        WriteBool(canFollow);
         WriteString(targetData.FigureCode);
-        WriteInteger(unknown4);
+        WriteInteger(categoryId);
         WriteString(targetData.Motto);
-        WriteString(unknown5);
-        WriteString(unknown6);
-        WriteBool(unknown7);
-        WriteBool(unknown8);
-        WriteBool(unknown9);
+        WriteString(realName);
+        WriteString(lastAccess);
+        WriteBool(persistedMessageUser);
+        WriteBool(vipMember);
+        WriteBool(pocketUser);
         WriteShort((short) relationshipType);
     }
 }
