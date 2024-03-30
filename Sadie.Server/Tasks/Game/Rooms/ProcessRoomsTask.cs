@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;

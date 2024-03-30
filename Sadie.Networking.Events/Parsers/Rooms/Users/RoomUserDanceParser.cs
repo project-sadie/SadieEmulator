@@ -1,4 +1,3 @@
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Parsers.Rooms.Users;

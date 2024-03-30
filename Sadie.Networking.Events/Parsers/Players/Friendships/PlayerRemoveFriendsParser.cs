@@ -5,7 +5,7 @@ namespace Sadie.Networking.Events.Parsers.Players.Friendships;
 public class PlayerRemoveFriendsParser
 {
     public int Amount { get; private set; }
-    public List<int> Ids { get; } = new();
+    public List<int> Ids { get; } = [];
 
     public void Parse(INetworkPacketReader reader)
     {
