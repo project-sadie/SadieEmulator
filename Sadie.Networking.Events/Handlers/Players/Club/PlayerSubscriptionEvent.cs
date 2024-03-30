@@ -5,13 +5,13 @@ using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
-public class PlayerClubMembershipEvent(PlayerClubMembershipParser parser) : INetworkPacketEvent
+public class PlayerSubscriptionEvent(PlayerSubscriptionParser parser) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         parser.Parse(reader);
 
-        var subscription = client.Player?.Data.Subscriptions.FirstOrDefault(x => x.Name == parser.SubscriptionName);
+        var subscription = client.Player?.Data.Subscriptions.FirstOrDefault(x => x.Name == parser.Name);
         
         if (subscription == null)
         {
@@ -21,17 +21,21 @@ public class PlayerClubMembershipEvent(PlayerClubMembershipParser parser) : INet
         var tillExpire = subscription.Expires - subscription.Started;
         var daysLeft = (int) tillExpire.TotalDays;
         var minutesLeft = (int) tillExpire.TotalMinutes;
+        var lastMod = client.Player.State.LastSubscriptionModification;
             
         await client.WriteToStreamAsync(new PlayerSubscriptionWriter(
             subscription.Name,
             daysLeft,
-            0, 
-            0, 
+            1, 
+            2, 
             0, 
             true, 
             true, 
             0, 
             0, 
-            minutesLeft).GetAllBytes());
+            minutesLeft,
+            (int)(DateTime.Now - lastMod).TotalMinutes).GetAllBytes());
+
+        client.Player.State.LastSubscriptionModification = DateTime.Now;
     }
 }

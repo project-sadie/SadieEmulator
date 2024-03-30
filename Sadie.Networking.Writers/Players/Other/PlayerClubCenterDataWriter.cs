@@ -6,9 +6,9 @@ namespace Sadie.Networking.Writers.Players.Other;
 public class PlayerClubCenterDataWriter : NetworkPacketWriter
 {
     public PlayerClubCenterDataWriter(
-        DateTime firstJoined, 
+        string joinDateString, 
         int streakInDays,
-        int kickbackPercentage,
+        double kickbackPercentage,
         int totalCreditsMissed,
         int totalCreditsRewarded,
         int totalCreditsSpent,
@@ -18,8 +18,8 @@ public class PlayerClubCenterDataWriter : NetworkPacketWriter
     {
         WriteShort(ServerPacketId.HabboClubCenter);
         WriteInteger(streakInDays);
-        WriteString(firstJoined.ToString("dd/MM/yyyy"));
-        WriteInteger(kickbackPercentage);
+        WriteString(joinDateString);
+        WriteString(kickbackPercentage.ToString());
         WriteInteger(totalCreditsMissed);
         WriteInteger(totalCreditsRewarded);
         WriteInteger(totalCreditsSpent);

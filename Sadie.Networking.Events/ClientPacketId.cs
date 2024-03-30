@@ -10,7 +10,7 @@ public class ClientPacketId
     public const short PlayerActivity = 3457;
     public const short PlayerData = 357;
     public const short PlayerBalance = 273;
-    public const short PlayerClubMembership = 3166;
+    public const short PlayerSubscription = 3166;
     public const short NavigatorData = 2110;
     public const short PlayerFriendsList = 1523;
     public const short PlayerMessengerInit = 2781;

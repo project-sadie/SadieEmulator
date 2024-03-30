@@ -8,4 +8,5 @@ public interface IPlayerState
     DateTime LastDirectMessage { get; set; }
     List<PlayerRoomVisit> RoomVisits { get; }
     DateTime LastCatalogPurchase { get; set; }
+    DateTime LastSubscriptionModification { get; set; }
 }

@@ -12,7 +12,7 @@ public class ServerPacketId
     public const short PlayerStatus = 2033;
     public const short PlayerData = 2725;
     public const short PlayerPerks = 2586;
-    public const short PlayerClubMembership = 954;
+    public const short PlayerSubscription = 954;
     public const short NavigatorMetaData = 3052;
     public const short NavigatorLiftedRooms = 3104;
     public const short NavigatorCollapsedCategories = 1543;

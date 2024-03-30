@@ -71,11 +71,13 @@ public class SecureLoginEvent(
         player.Data.LastOnline = DateTime.Now;
         player.Authenticated = true;
 
-        await SendExtraPacketsAsync(client, player.Data);
+        await SendExtraPacketsAsync(client, player);
     }
 
-    private async Task SendExtraPacketsAsync(INetworkObject networkObject, IPlayerData playerData)
+    private async Task SendExtraPacketsAsync(INetworkObject networkObject, IPlayer player)
     {
+        var playerData = player.Data;
+        
         await networkObject.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoom, playerData.HomeRoom).GetAllBytes());
@@ -92,18 +94,22 @@ public class SecureLoginEvent(
             var tillExpire = subscription.Expires - subscription.Started;
             var daysLeft = (int) tillExpire.TotalDays;
             var minutesLeft = (int) tillExpire.TotalMinutes;
+            var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
             
             await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter(
                 subscription.Name,
                 daysLeft,
                 0, 
                 0, 
-                0, 
+                1, 
                 true, 
                 true, 
                 0, 
                 0, 
-                minutesLeft).GetAllBytes());
+                minutesLeft,
+                minutesSinceMod).GetAllBytes());
+            
+            player.State.LastSubscriptionModification = DateTime.Now;
         }
 
         if (playerData.Permissions.Contains("moderation_tools"))

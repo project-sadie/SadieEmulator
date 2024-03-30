@@ -77,7 +77,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomFurnitureItemUseParser>();
         serviceCollection.AddSingleton<UniqueIdParser>();
         serviceCollection.AddSingleton<PlayerSendFriendRequestParser>();
-        serviceCollection.AddSingleton<PlayerClubMembershipParser>();
+        serviceCollection.AddSingleton<PlayerSubscriptionParser>();
         serviceCollection.AddSingleton<RoomGiveUserRightsParser>();
         serviceCollection.AddSingleton<HabboClubDataParser>();
         serviceCollection.AddSingleton<PlayerSearchParser>();
@@ -107,7 +107,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerActivityEvent>();
         serviceCollection.AddSingleton<PlayerDataEvent>();
         serviceCollection.AddSingleton<PlayerBalanceEvent>();
-        serviceCollection.AddSingleton<PlayerClubMembershipEvent>();
+        serviceCollection.AddSingleton<PlayerSubscriptionEvent>();
         serviceCollection.AddSingleton<NavigatorDataEvent>();
         serviceCollection.AddSingleton<PlayerFriendsEvent>();
         serviceCollection.AddSingleton<PlayerPingEvent>();
@@ -207,7 +207,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.PlayerActivity] = provider.GetRequiredService<PlayerActivityEvent>(),
             [ClientPacketId.PlayerData] = provider.GetRequiredService<PlayerDataEvent>(),
             [ClientPacketId.PlayerBalance] = provider.GetRequiredService<PlayerBalanceEvent>(),
-            [ClientPacketId.PlayerClubMembership] = provider.GetRequiredService<PlayerClubMembershipEvent>(),
+            [ClientPacketId.PlayerSubscription] = provider.GetRequiredService<PlayerSubscriptionEvent>(),
             [ClientPacketId.NavigatorData] = provider.GetRequiredService<NavigatorDataEvent>(),
             [ClientPacketId.PlayerFriendsList] = provider.GetRequiredService<PlayerFriendsEvent>(),
             [ClientPacketId.PlayerMessengerInit] = provider.GetRequiredService<PlayerMessengerInitEvent>(),

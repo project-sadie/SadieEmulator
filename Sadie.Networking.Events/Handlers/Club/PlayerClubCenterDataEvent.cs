@@ -8,15 +8,33 @@ public class PlayerClubCenterDataEvent : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        var subscription = client.Player?.Data.Subscriptions.FirstOrDefault(x => x.Name == "HABBO_CLUB");
+        
+        if (subscription == null)
+        {
+            await client.WriteToStreamAsync(new PlayerClubCenterDataWriter(
+                "",
+                0,
+                0.1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0).GetAllBytes());
+            
+            return;
+        }
+        
         await client.WriteToStreamAsync(new PlayerClubCenterDataWriter(
-            DateTime.Now.Subtract(TimeSpan.FromDays(2)),
-            2,
+            subscription.Started.ToString("dd/MM/yyyy"),
+            0,
             0.1,
             0,
             0,
-            4,
-            5,
-            200,
-            28).GetAllBytes());
+            0,
+            0,
+            0,
+            0).GetAllBytes());
     }
 }

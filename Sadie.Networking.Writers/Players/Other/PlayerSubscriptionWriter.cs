@@ -1,5 +1,4 @@
-﻿using Sadie.Game.Players.Subscriptions;
-using Sadie.Shared.Unsorted.Networking;
+﻿using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
@@ -16,10 +15,11 @@ public class PlayerSubscriptionWriter : NetworkPacketWriter
         bool isVip,
         int pastClubDays,
         int pastVipDays,
-        int minutesTillExpire)
+        int minutesTillExpire,
+        int minutesSinceModified)
     {
-        WriteShort(ServerPacketId.PlayerClubMembership);
-        WriteString(name);
+        WriteShort(ServerPacketId.PlayerSubscription);
+        WriteString(name.ToLower());
         WriteInteger(daysLeft);
         WriteInteger(memberPeriods);
         WriteInteger(periodsSubscribedAhead);
@@ -29,5 +29,6 @@ public class PlayerSubscriptionWriter : NetworkPacketWriter
         WriteInteger(pastClubDays);
         WriteInteger(pastVipDays);
         WriteInteger(minutesTillExpire);
+        WriteInteger(minutesSinceModified);
     }
 }

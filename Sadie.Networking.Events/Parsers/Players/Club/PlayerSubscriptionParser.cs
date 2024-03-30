@@ -2,12 +2,12 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Parsers.Players.Club;
 
-public class PlayerClubMembershipParser
+public class PlayerSubscriptionParser
 {
-    public string SubscriptionName { get; private set; }
+    public string Name { get; private set; }
 
     public void Parse(INetworkPacketReader reader)
     {
-        SubscriptionName = reader.ReadString();
+        Name = reader.ReadString();
     }
 }
