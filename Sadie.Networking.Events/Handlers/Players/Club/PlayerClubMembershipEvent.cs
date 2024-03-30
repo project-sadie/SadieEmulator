@@ -11,7 +11,7 @@ public class PlayerClubMembershipEvent(PlayerClubMembershipParser parser) : INet
     {
         parser.Parse(reader);
 
-        var subscriptionName = reader.ReadString();
+        var subscriptionName = parser.SubscriptionName;
         var subscription = client.Player.Data.Subscriptions.FirstOrDefault(x => x.Name == subscriptionName);
         
         await client.WriteToStreamAsync(new PlayerClubMembershipWriter(subscriptionName, subscription).GetAllBytes());
