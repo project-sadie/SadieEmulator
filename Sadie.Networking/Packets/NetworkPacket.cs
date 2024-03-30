@@ -1,11 +1,6 @@
 ﻿namespace Sadie.Networking.Packets;
 
-public class NetworkPacket : NetworkPacketReader, INetworkPacket
+public class NetworkPacket(int packetId, byte[] packetData) : NetworkPacketReader(packetData), INetworkPacket
 {
-    public int PacketId { get; }
-
-    public NetworkPacket(int packetId, byte[] packetData) : base(packetData)
-    {
-        PacketId = packetId;
-    }
+    public int PacketId { get; } = packetId;
 }

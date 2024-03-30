@@ -2,12 +2,8 @@ using Sadie.Database;
 
 namespace Sadie.Game.Players.Messenger;
 
-public class PlayerMessageDao : BaseDao, IPlayerMessageDao
+public class PlayerMessageDao(IDatabaseProvider databaseProvider) : BaseDao(databaseProvider), IPlayerMessageDao
 {
-    public PlayerMessageDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
-    {
-    }
-    
     public async Task<int> CreateMessageAsync(PlayerMessage message)
     {
         return await QueryAsync(@"

@@ -1,9 +1,12 @@
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
-using Sadie.Game.Players.Components;
+using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
+using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Game.Players.Wardrobe;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
@@ -26,4 +29,8 @@ public interface IPlayerData : IAvatarData, IAsyncDisposable
     PlayerFriendshipComponent FriendshipComponent { get; }
     bool AllowFriendRequests { get; }
     List<IPlayerSubscription> Subscriptions { get; }
+    IPlayerInventoryRepository Inventory { get; }
+    List<long> LikedRoomIds { get; }
+    PlayerWardrobeComponent WardrobeComponent { get; }
+    List<PlayerRelationship> Relationships { get; }
 }

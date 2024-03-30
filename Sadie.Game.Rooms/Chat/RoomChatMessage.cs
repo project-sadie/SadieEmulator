@@ -1,24 +1,15 @@
 ﻿using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Game;
+using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Game.Rooms.Chat;
 
-public class RoomChatMessage
+public class RoomChatMessage(IRoomUser sender, string message, IRoom room, ChatBubble bubble, int emotionId, RoomChatMessageType type)
 {
-    public RoomUser Sender { get; }
-    public string Message { get; }
-    public IRoom Room { get; }
-    public ChatBubble Bubble { get; }
-    public int EmotionId { get; }
-    public DateTime CreatedAt { get; }
-
-    public RoomChatMessage(RoomUser sender, string message, IRoom room, ChatBubble bubble, int emotionId)
-    {
-        Sender = sender;
-        Message = message;
-        Room = room;
-        Bubble = bubble;
-        EmotionId = emotionId;
-        CreatedAt = DateTime.Now;
-    }
+    public IRoomUser Sender { get; } = sender;
+    public string Message { get; } = message;
+    public IRoom Room { get; } = room;
+    public ChatBubble Bubble { get; } = bubble;
+    public int EmotionId { get; } = emotionId;
+    public RoomChatMessageType Type { get; } = type;
+    public DateTime CreatedAt { get; } = DateTime.Now;
 }

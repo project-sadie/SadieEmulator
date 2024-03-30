@@ -7,7 +7,6 @@ using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
-using Sadie.Networking.Client;
 using Sadie.Networking.Events;
 using SadieEmulator.Tasks;
 using SadieEmulator.Tasks.Game.Rooms;
@@ -16,17 +15,14 @@ using SadieEmulator.Tasks.Other;
 
 namespace SadieEmulator;
 
-public class ServerServiceCollection
+public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddSingleton(provider => new List<IServerTask>
-        {
-            new ProcessRoomsTask(provider.GetRequiredService<IRoomRepository>()),
-            new StoreChatMessagesTask(provider.GetRequiredService<IRoomRepository>()),
-            new DisconnectIdleClientsTask(provider.GetRequiredService<INetworkClientRepository>()),
-            new UpdateStatusTask(provider.GetRequiredService<IPlayerRepository>(), provider.GetRequiredService<IRoomRepository>()),
-        });
+        serviceCollection.AddSingleton<IServerTask, ProcessRoomsTask>();
+        serviceCollection.AddSingleton<IServerTask, StoreChatMessagesTask>();
+        serviceCollection.AddSingleton<IServerTask, DisconnectIdleClientsTask>();
+        serviceCollection.AddSingleton<IServerTask, UpdateConsoleTitleTask>();
         
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();

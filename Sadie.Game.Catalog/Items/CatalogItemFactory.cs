@@ -3,15 +3,8 @@ using Sadie.Game.Furniture;
 
 namespace Sadie.Game.Catalog.Items;
 
-public class CatalogItemFactory
+public class CatalogItemFactory(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public CatalogItemFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public CatalogItem Create(
         int id, 
         string name, 
@@ -21,11 +14,12 @@ public class CatalogItemFactory
         List<FurnitureItem> furnitureItems, 
         bool requiresClubMembership, 
         string metadata, 
+        long catalogPageId,
         int amount, 
         int sellLimit)
     {
         return ActivatorUtilities.CreateInstance<CatalogItem>(
-            _serviceProvider, 
+            serviceProvider, 
             id, 
             name, 
             costCredits,
@@ -33,7 +27,8 @@ public class CatalogItemFactory
             costPointsType,
             furnitureItems,
             requiresClubMembership, 
-            metadata, 
+            metadata,
+            catalogPageId,
             amount, 
             sellLimit);
     }

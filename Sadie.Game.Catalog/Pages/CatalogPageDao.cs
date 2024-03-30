@@ -3,19 +3,12 @@ using Sadie.Game.Catalog.Items;
 
 namespace Sadie.Game.Catalog.Pages;
 
-public class CatalogPageDao : BaseDao
+public class CatalogPageDao(IDatabaseProvider databaseProvider, CatalogItemDao itemDao, CatalogPageFactory factory)
+    : BaseDao(databaseProvider)
 {
-    private readonly CatalogItemDao _itemDao;
-    private readonly CatalogPageFactory _factory;
-
-    public CatalogPageDao(IDatabaseProvider databaseProvider, CatalogItemDao itemDao, CatalogPageFactory factory) : base(databaseProvider)
-    {
-        _itemDao = itemDao;
-        _factory = factory;
-    }
-
     public async Task<Dictionary<int, CatalogPage>> GetAllAsync()
     {
+        var catalogItems = await itemDao.GetAllAsync();
         var pages = new Dictionary<int, CatalogPage>();
         
         var reader = await GetReaderAsync(@"
@@ -48,14 +41,20 @@ public class CatalogPageDao : BaseDao
                 break;
             }
 
-            var items = await _itemDao.GetItemsForPageAsync(record.Get<int>("id"));
+            var items = catalogItems
+                .Where(x => x.CatalogPageId == record.Get<long>("id"))
+                .ToList();
 
-            var page = _factory.Create(
+            var roleId = record.Get<object>("role_id") == DBNull.Value ? 
+                0 : 
+                record.Get<int>("role_id");
+            
+            var page = factory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("name"),
                 record.Get<string>("caption"),
                 record.Get<string>("layout"),
-                record.Get<int>("role_id"),
+                roleId,
                 record.Get<int>("parent_page_id"),
                 record.Get<int>("order_id"),
                 record.Get<int>("icon_id"),

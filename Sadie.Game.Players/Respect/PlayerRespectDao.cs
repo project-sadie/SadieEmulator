@@ -2,12 +2,8 @@ using Sadie.Database;
 
 namespace Sadie.Game.Players.Respect;
 
-public class PlayerRespectDao : BaseDao, IPlayerRespectDao
+public class PlayerRespectDao(IDatabaseProvider databaseProvider) : BaseDao(databaseProvider), IPlayerRespectDao
 {
-    public PlayerRespectDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
-    {
-    }
-
     public async Task CreateAsync(int originId, int targetId)
     {
         await QueryAsync(@"

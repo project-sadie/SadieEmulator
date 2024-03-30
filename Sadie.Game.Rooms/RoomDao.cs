@@ -1,68 +1,20 @@
 ﻿using Sadie.Database;
 using Sadie.Game.Rooms.Chat;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomDao : BaseDao, IRoomDao
+public class RoomDao(
+    IDatabaseProvider databaseProvider, 
+    IRoomFactory factory, 
+    IRoomFurnitureItemDao furnitureItemDao) 
+    : BaseDao(databaseProvider), IRoomDao
 {
-    private readonly IRoomFactory _factory;
-
-    public RoomDao(IDatabaseProvider databaseProvider, IRoomFactory factory) : base(databaseProvider)
-    {
-        _factory = factory;
-    }
-
     public async Task<Tuple<bool, IRoom?>> TryGetRoomById(long roomId)
     {
-        var reader = await GetReaderAsync(@"
-            SELECT 
-                   rooms.id, 
-                   rooms.name, 
-                   rooms.layout_id, 
-                   rooms.owner_id,
-                   rooms.description,
-                   rooms.score,
-                   rooms.is_muted, 
-                   rooms.max_users_allowed,
-                   
-                   (SELECT username FROM players WHERE id = rooms.owner_id) AS owner_name,
-                   
-                   (SELECT GROUP_CONCAT(player_id) AS comma_separated_rights
-                    FROM room_player_rights
-                    WHERE room_id = rooms.id
-                    GROUP BY room_id) AS comma_separated_rights,
-                   
-                   (SELECT GROUP_CONCAT(name) AS comma_separated_tags
-                    FROM room_tags
-                    WHERE room_id = rooms.id
-                    GROUP BY room_id) AS comma_separated_tags,
-                   
-                   room_settings.walk_diagonal, 
-                   room_settings.access_type, 
-                   room_settings.password, 
-                   room_settings.who_can_mute, 
-                   room_settings.who_can_kick, 
-                   room_settings.who_can_ban, 
-                   room_settings.allow_pets, 
-                   room_settings.can_pets_eat, 
-                   room_settings.hide_walls, 
-                   room_settings.wall_thickness, 
-                   room_settings.floor_thickness, 
-                   room_settings.can_users_overlap, 
-                   room_settings.chat_type, 
-                   room_settings.chat_weight, 
-                   room_settings.chat_speed, 
-                   room_settings.chat_distance, 
-                   room_settings.chat_protection, 
-                   room_settings.trade_option, 
-                   
-                   room_layouts.name AS layout_name, 
-                   room_layouts.heightmap,
-                   room_layouts.door_x,
-                   room_layouts.door_y,
-                   room_layouts.door_z,
-                   room_layouts.door_direction
+        var reader = await GetReaderAsync(@$"
+            SELECT {SelectColumns}
             FROM rooms 
                 INNER JOIN room_settings ON room_settings.room_id = rooms.id
                 INNER JOIN room_layouts ON room_layouts.id = rooms.layout_id
@@ -79,7 +31,7 @@ public class RoomDao : BaseDao, IRoomDao
             return new Tuple<bool, IRoom?>(false, null);
         }
 
-        var settings = _factory.CreateSettings(
+        var settings = factory.CreateSettings(
             record.Get<bool>("walk_diagonal"),
             (RoomAccessType) record.Get<int>("access_type"),
             record.Get<string>("password"),
@@ -102,31 +54,41 @@ public class RoomDao : BaseDao, IRoomDao
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
             record.Get<float>("door_z"));
+
+        var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+        var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
+
+        var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItemRepository);
         
-        var layout = _factory.CreateLayout(
+        var layout = factory.CreateLayout(
             record.Get<int>("layout_id"),
             record.Get<string>("layout_name"),
             record.Get<string>("heightmap"),
             doorPoint,
-            (HDirection) record.Get<int>("door_direction"));
+            (HDirection) record.Get<int>("door_direction"), 
+            tiles);
 
         var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
-        var playersWithRights = commaSeparatedRights.Contains(",") ? 
-            new List<int>(commaSeparatedRights.Split(",").Select(int.Parse)) : 
-            new List<int>();
+        var playersWithRights = commaSeparatedRights.Contains(",") ?
+            [
+                ..commaSeparatedRights.Split(",").Select(long.Parse)
+            ]
+            : 
+            new List<long>();
 
-        return new Tuple<bool, IRoom?>(true, _factory.Create(record.Get<int>("id"),
+        return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
             layout,
             record.Get<int>("owner_id"),
             record.Get<string>("owner_name"),
             record.Get<string>("description"),
             record.Get<int>("score"),
-            new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
+            [..record.Get<string>("comma_separated_tags").Split(",")],
             record.Get<int>("max_users_allowed"),
             settings,
-            playersWithRights));
+            playersWithRights,
+            furnitureItemRepository));
     }
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
@@ -233,4 +195,146 @@ public class RoomDao : BaseDao, IRoomDao
             {"roomId", room.Id}
         });
     }
+
+    public async Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int limit, ICollection<long> excludeIds)
+    {
+        var excludeClause = @$"AND rooms.id NOT IN (" +
+                            string.Join(",", excludeIds.Select(n => n.ToString()).ToArray()).TrimEnd(',') + @") ";
+        
+        var reader = await GetReaderAsync(@$"
+            SELECT 
+                   {SelectColumns}
+            FROM rooms 
+                INNER JOIN room_settings ON room_settings.room_id = rooms.id
+                INNER JOIN room_layouts ON room_layouts.id = rooms.layout_id
+            WHERE rooms.owner_id = @ownerId " + (excludeIds.Count > 0 ? excludeClause : "") + @" 
+            LIMIT " + limit + ";", new Dictionary<string, object>
+        {
+            { "ownerId", ownerId }
+        });
+
+        var rooms = new List<IRoom>();
+        
+        while (true)
+        {
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            var settings = factory.CreateSettings(
+                record.Get<bool>("walk_diagonal"),
+                (RoomAccessType) record.Get<int>("access_type"),
+                record.Get<string>("password"),
+                record.Get<int>("who_can_mute"),
+                record.Get<int>("who_can_kick"),
+                record.Get<int>("who_can_ban"),
+                record.Get<int>("allow_pets") == 1,
+                record.Get<int>("can_pets_eat") == 1,
+                record.Get<int>("hide_walls") == 1,
+                record.Get<int>("wall_thickness"),
+                record.Get<int>("floor_thickness"),
+                record.Get<int>("can_users_overlap") == 1,
+                record.Get<int>("chat_type"),
+                record.Get<int>("chat_weight"),
+                record.Get<int>("chat_speed"),
+                record.Get<int>("chat_distance"),
+                record.Get<int>("chat_protection"),
+                record.Get<int>("trade_option"));
+        
+            var doorPoint = new HPoint(record.Get<int>("door_x"),
+                record.Get<int>("door_y"),
+                record.Get<float>("door_z"));
+
+            var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+            var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
+
+            var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItemRepository);
+        
+            var layout = factory.CreateLayout(
+                record.Get<int>("layout_id"),
+                record.Get<string>("layout_name"),
+                record.Get<string>("heightmap"),
+                doorPoint,
+                (HDirection) record.Get<int>("door_direction"),
+                tiles);
+
+            var commaSeparatedRights = record.Get<string>("comma_separated_rights");
+        
+            var playersWithRights = commaSeparatedRights.Contains(",") ?
+                [
+                    ..commaSeparatedRights.Split(",").Select(long.Parse)
+                ]
+                : 
+                new List<long>();
+
+            var room = factory.Create(record.Get<int>("id"),
+                record.Get<string>("name"),
+                layout,
+                record.Get<int>("owner_id"),
+                record.Get<string>("owner_name"),
+                record.Get<string>("description"),
+                record.Get<int>("score"),
+                [..record.Get<string>("comma_separated_tags").Split(",")],
+                record.Get<int>("max_users_allowed"),
+                settings,
+                playersWithRights,
+                furnitureItemRepository);
+            
+            rooms.Add(room);
+        }
+
+        return rooms;
+    }
+
+    private const string SelectColumns = """
+        rooms.id,
+        rooms.name,
+        rooms.layout_id,
+        rooms.owner_id,
+        rooms.description,
+        rooms.score,
+        rooms.is_muted,
+        rooms.max_users_allowed,
+        
+        (SELECT username FROM players WHERE id = rooms.owner_id) AS owner_name,
+        
+        (SELECT GROUP_CONCAT(player_id) AS comma_separated_rights
+         FROM room_player_rights
+         WHERE room_id = rooms.id
+         GROUP BY room_id) AS comma_separated_rights,
+        
+        (SELECT GROUP_CONCAT(name) AS comma_separated_tags
+         FROM room_tags
+         WHERE room_id = rooms.id
+         GROUP BY room_id) AS comma_separated_tags,
+        
+        room_settings.walk_diagonal,
+        room_settings.access_type,
+        room_settings.password,
+        room_settings.who_can_mute,
+        room_settings.who_can_kick,
+        room_settings.who_can_ban,
+        room_settings.allow_pets,
+        room_settings.can_pets_eat,
+        room_settings.hide_walls,
+        room_settings.wall_thickness,
+        room_settings.floor_thickness,
+        room_settings.can_users_overlap,
+        room_settings.chat_type,
+        room_settings.chat_weight,
+        room_settings.chat_speed,
+        room_settings.chat_distance,
+        room_settings.chat_protection,
+        room_settings.trade_option,
+        
+        room_layouts.name AS layout_name,
+        room_layouts.heightmap,
+        room_layouts.door_x,
+        room_layouts.door_y,
+        room_layouts.door_z,
+        room_layouts.door_direction
+    """;
 }

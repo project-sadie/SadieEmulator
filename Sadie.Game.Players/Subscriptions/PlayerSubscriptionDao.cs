@@ -2,15 +2,11 @@ using Sadie.Database;
 
 namespace Sadie.Game.Players.Subscriptions;
 
-public class PlayerSubscriptionDao : BaseDao, IPlayerSubscriptionDao
+public class PlayerSubscriptionDao(
+    IDatabaseProvider databaseProvider,
+    IPlayerSubscriptionFactory playerSubscriptionFactory)
+    : BaseDao(databaseProvider), IPlayerSubscriptionDao
 {
-    private readonly IPlayerSubscriptionFactory _playerSubscriptionFactory;
-
-    public PlayerSubscriptionDao(IDatabaseProvider databaseProvider, IPlayerSubscriptionFactory playerSubscriptionFactory) : base(databaseProvider)
-    {
-        _playerSubscriptionFactory = playerSubscriptionFactory;
-    }
-
     public async Task<List<IPlayerSubscription>> GetSubscriptionsForPlayerAsync(int playerId)
     {
         var reader = await GetReaderAsync(@"
@@ -38,7 +34,7 @@ public class PlayerSubscriptionDao : BaseDao, IPlayerSubscriptionDao
                 break;
             }
             
-            data.Add(_playerSubscriptionFactory.Create(
+            data.Add(playerSubscriptionFactory.Create(
                 record.Get<string>("name"),
                 record.Get<DateTime>("created_at"),
                 record.Get<DateTime>("expires_at")));

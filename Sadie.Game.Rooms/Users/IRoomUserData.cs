@@ -1,5 +1,5 @@
-using Sadie.Shared.Game.Avatar;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -10,6 +10,7 @@ public interface IRoomUserData
     HDirection Direction { get; }
     AvatarData AvatarData { get; }
     Dictionary<string, string> StatusMap { get; }
-    DateTime LastAction { get; }
+    DateTime LastAction { get; set; }
+    TimeSpan IdleTime { get; }
     bool IsIdle { get; }
 }

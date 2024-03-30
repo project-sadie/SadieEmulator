@@ -2,15 +2,15 @@ namespace Sadie.Tests.CodeQuality;
 
 public class MisplacedDaoCodeTest
 {
-    private readonly List<string> _ignoredFiles = new()
-    {
+    private readonly List<string> _ignoredFiles =
+    [
         "IDatabaseProvider.cs",
         "DatabaseProvider.cs",
         "IDatabaseConnection.cs",
         "DatabaseConnection.cs",
         "DatabaseServiceCollection.cs",
         "MisplacedDaoCodeTest.cs"
-    };
+    ];
     
     /// <summary>
     /// Ensures no database queries are ran outside of dao classes

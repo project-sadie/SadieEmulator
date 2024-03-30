@@ -1,49 +1,56 @@
 ﻿using System.Drawing;
-using Sadie.Shared.Networking;
+using Sadie.Game.Rooms.Chat;
 using Sadie.Shared.Extensions;
-using Sadie.Shared.Game.Avatar;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Rooms;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUser : RoomUserData, IRoomUser
+public class RoomUser(
+    IRoomData room,
+    INetworkObject networkObject,
+    int id,
+    HPoint point,
+    HDirection directionHead,
+    HDirection direction,
+    AvatarData avatarData,
+    RoomConstants constants,
+    RoomControllerLevel controllerLevel)
+    : RoomUserData(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
+        IRoomUser
 {
-    private readonly IRoom _room;
-    private readonly RoomConstants _constants;
-    
-    public int Id { get; }
-    public INetworkObject NetworkObject { get; }
-
-    public RoomUser(
-        IRoom room,
-        INetworkObject networkObject, 
-        int id, 
-        HPoint point, 
-        HDirection directionHead, 
-        HDirection direction,
-        AvatarData avatarData,
-        RoomConstants constants) : 
-        base(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle))
-    {
-        _room = room;
-        _constants = constants;
-        
-        Id = id;
-        NetworkObject = networkObject;
-    }
+    public int Id { get; } = id;
+    public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
+    public INetworkObject NetworkObject { get; } = networkObject;
 
     private void SetNextPosition()
     {
-        Point = NextPoint ?? Point;
+        if (NextPoint == null)
+        {
+            return;
+        }
+        
+        var currentTile = room.Layout.FindTile(Point.X, Point.Y);
+        currentTile?.Users.Remove(Id);
+        RoomHelpers.UpdateTileMapForTile(currentTile!, room.Layout);
+
+        var nextTile = room.Layout.FindTile(NextPoint.X, NextPoint.Y);
+        nextTile?.Users.Add(Id, this);
+        RoomHelpers.UpdateTileMapForTile(nextTile!, room.Layout);
+
+        Point = NextPoint;
     }
-    
+
     public void WalkToPoint(Point point, bool useDiagonal)
     {
-        StatusMap.Clear();
+        StatusMap.Remove(RoomUserStatus.Sit);
+        StatusMap.Remove(RoomUserStatus.FlatCtrl);
         
         SetNextPosition();
         
-        GoalSteps = RoomHelpers.BuildPathForWalk(_room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
+        GoalSteps = RoomHelpers.BuildPathForWalk(room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
         IsWalking = true;
     }
 
@@ -53,6 +60,7 @@ public class RoomUser : RoomUserData, IRoomUser
         IsWalking = false;
 
         StatusMap.Remove(RoomUserStatus.Move);
+        ApplyFlatCtrlStatus();
     }
 
     public void LookAtPoint(Point point)
@@ -61,6 +69,12 @@ public class RoomUser : RoomUserData, IRoomUser
 
         Direction = direction;
         DirectionHead = direction;
+        LastAction = DateTime.Now;
+    }
+
+    public void ApplyFlatCtrlStatus()
+    {
+        StatusMap[RoomUserStatus.FlatCtrl] = ((int) controllerLevel).ToString();
     }
 
     public async Task RunPeriodicCheckAsync()
@@ -69,11 +83,54 @@ public class RoomUser : RoomUserData, IRoomUser
         {
             await ProcessMovementAsync();
         }
+
+        CheckStatusForCurrentTile();
+        await UpdateIdleStatusAsync();
+    }
+
+    private async Task UpdateIdleStatusAsync()
+    {
+        var shouldBeIdle = (DateTime.Now - LastAction) > IdleTime;
+
+        if (shouldBeIdle && !IsIdle || !shouldBeIdle && IsIdle)
+        {
+            IsIdle = shouldBeIdle;
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(Id, IsIdle).GetAllBytes());
+        }
+    }
+
+    public void UpdateLastAction()
+    {
+        LastAction = DateTime.Now;
+    }
+
+    private void CheckStatusForCurrentTile()
+    {
+        if (!IsWalking)
+        {
+            var currentTile = room.Layout.FindTile(Point.X, Point.Y);
+        
+            var seat = currentTile?
+                .Items
+                .OrderByDescending(item => item.Position.Z)
+                .FirstOrDefault(x => x.FurnitureItem.CanSit);
+
+            if (seat == null)
+            {
+                StatusMap.Remove(RoomUserStatus.Sit);
+                return;
+            }
+        
+            Direction = seat.Direction;
+            DirectionHead = seat.Direction;
+        
+            StatusMap[RoomUserStatus.Sit] = (seat.Position.Z + seat.FurnitureItem.StackHeight) + "";
+        }
     }
 
     public bool HasRights()
     {
-        return _room.OwnerId == Id || _room.PlayersWithRights.Contains(Id);
+        return room.OwnerId == Id || room.PlayersWithRights.Contains(Id);
     }
 
     private async Task ProcessMovementAsync() // 2bMoved
@@ -94,6 +151,13 @@ public class RoomUser : RoomUserData, IRoomUser
         {
             StopWalking();
         }
+    }
+
+    public async Task OnTalkAsync(RoomChatMessage message)
+    {
+        room.ChatMessages.Add(message);
+
+        UpdateLastAction();
     }
 
     public async ValueTask DisposeAsync()

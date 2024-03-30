@@ -1,17 +1,10 @@
 ﻿namespace Sadie.Game.Players.Balance;
 
-public class PlayerBalance : IPlayerBalance
+public class PlayerBalance(long credits, long pixels, long seasonal, long gotw)
+    : IPlayerBalance
 {
-    public long Credits { get; }
-    public long Pixels { get; }
-    public long Seasonal { get; }
-    public long Gotw { get; }
-    
-    public PlayerBalance(long credits, long pixels, long seasonal, long gotw)
-    {
-        Credits = credits;
-        Pixels = pixels;
-        Seasonal = seasonal;
-        Gotw = gotw;
-    }
+    public long Credits { get; set; } = credits;
+    public long Pixels { get; set; } = pixels;
+    public long Seasonal { get; set; } = seasonal;
+    public long Gotw { get; } = gotw;
 }

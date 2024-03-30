@@ -1,6 +1,6 @@
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Client;
 
@@ -11,4 +11,5 @@ public interface INetworkClient : IAsyncDisposable, INetworkObject
     RoomUser? RoomUser { get; set; }
     Task ListenAsync();
     DateTime LastPing { get; set; }
+    Task OnReceivedAsync(byte[] data);
 }

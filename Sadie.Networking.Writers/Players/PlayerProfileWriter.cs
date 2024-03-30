@@ -1,12 +1,17 @@
 using Sadie.Game.Players;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
 public class PlayerProfileWriter : NetworkPacketWriter
 {
-    public PlayerProfileWriter(IPlayerData playerData, bool online, int friendshipCount, bool friendshipExists, bool friendshipRequestExists)
+    public PlayerProfileWriter(
+        IPlayerData playerData, 
+        bool online, 
+        int friendshipCount, 
+        bool friendshipExists, 
+        bool friendshipRequestExists)
     {
         WriteShort(ServerPacketId.PlayerProfile);
         WriteLong(playerData.Id);

@@ -3,23 +3,17 @@ using MySqlConnector;
 
 namespace Sadie.Database;
 
-public class DatabaseProvider : IDatabaseProvider
+public class DatabaseProvider(MySqlConnectionStringBuilder connectionString, IServiceProvider serviceProvider)
+    : IDatabaseProvider
 {
-    private readonly string _connectionString;
-    private readonly IServiceProvider _serviceProvider;
-
-    public DatabaseProvider(MySqlConnectionStringBuilder connectionString, IServiceProvider serviceProvider)
-    {
-        _connectionString = connectionString.ToString();
-        _serviceProvider = serviceProvider;
-    }
+    private readonly string _connectionString = connectionString.ToString();
 
     public IDatabaseConnection GetConnection()
     {
         var connection = new MySqlConnection(_connectionString);
 
         return ActivatorUtilities.CreateInstance<DatabaseConnection>(
-            _serviceProvider, 
+            serviceProvider, 
             connection, 
             connection.CreateCommand());
     }

@@ -1,23 +1,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Navigator;
-using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
-public class PlayerFactory : IPlayerFactory
+public class PlayerFactory(IServiceProvider serviceProvider) : IPlayerFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public PlayerFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public IPlayerBalance CreateBalance(long credits, long pixels, long seasonal, long gotwPoints)
     {
         return ActivatorUtilities.CreateInstance<PlayerBalance>(
-            _serviceProvider, 
+            serviceProvider, 
             credits,
             pixels,
             seasonal,
@@ -29,7 +22,7 @@ public class PlayerFactory : IPlayerFactory
         IPlayerData data)
     {
         return ActivatorUtilities.CreateInstance<Player>(
-            _serviceProvider,
+            serviceProvider,
             networkObject,
             data);
     }
@@ -43,7 +36,7 @@ public class PlayerFactory : IPlayerFactory
         int unknown1)
     {
         return ActivatorUtilities.CreateInstance<PlayerNavigatorSettings>(
-            _serviceProvider,
+            serviceProvider,
             windowX,
             windowY,
             windowWidth,
@@ -62,7 +55,7 @@ public class PlayerFactory : IPlayerFactory
         bool showNotifications)
     {
         return ActivatorUtilities.CreateInstance<PlayerSettings>(
-            _serviceProvider,
+            serviceProvider,
             systemVolume,
             furnitureVolume,
             traxVolume,

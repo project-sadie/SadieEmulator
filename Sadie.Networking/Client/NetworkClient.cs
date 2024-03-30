@@ -1,4 +1,4 @@
-using System.Net.Sockets;
+using Fleck;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -7,74 +7,66 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Client;
 
-public class NetworkClient : NetworkClientProcessComponent, INetworkClient
+public class NetworkClient : NetworkPacketDecoder, INetworkClient
 {
-    public Guid Guid { get; }
-    
+    public Guid Guid { get; private set; }
+
     private readonly ILogger<NetworkClient> _logger;
-    private readonly TcpClient _tcpClient;
+    private readonly IWebSocketConnection _webSocket;
     private readonly IPlayerRepository _playerRepository;
     private readonly IRoomRepository _roomRepository;
-    private readonly INetworkClientRepository _clientRepository;
-    private readonly Stream _stream;
+    private readonly INetworkPacketHandler _packetHandler;
 
     public NetworkClient(
-        Guid guid, 
         ILogger<NetworkClient> logger, 
-        TcpClient tcpClient, 
-        INetworkPacketHandler packetHandler, 
-        ILogger<NetworkClientProcessComponent> baseLogger, 
-        NetworkingConstants constants,
+        Guid guid, 
+        IWebSocketConnection webSocket,
         IPlayerRepository playerRepository, 
         IRoomRepository roomRepository,
-        INetworkClientRepository clientRepository) : base(baseLogger, tcpClient, packetHandler, constants, clientRepository)
+        INetworkPacketHandler packetHandler,
+        NetworkingConstants constants) : base(constants)
     {
         Guid = guid;
-        
+
         _logger = logger;
-        _tcpClient = tcpClient;
+        _webSocket = webSocket;
         _playerRepository = playerRepository;
         _roomRepository = roomRepository;
-        _clientRepository = clientRepository;
-        _stream = tcpClient.GetStream();
-
-        SetClient(this);
+        _packetHandler = packetHandler;
     }
-        
+
     public IPlayer? Player { get; set; }
     public RoomUser? RoomUser { get; set; }
-
+    
     public Task ListenAsync()
     {
-        var listeningThread = new Thread(StartListening)
-        {
-            Name = "Client Listening Thread",
-            Priority = ThreadPriority.AboveNormal
-        };
-        
-        listeningThread.Start();
         return Task.CompletedTask;
     }
 
     public DateTime LastPing { get; set; }
-    
+
     public async Task WriteToStreamAsync(byte[] data)
     {
+        if (_disposed)
+        {
+            return;
+        }
+        
         try
         {
-            if (!_stream.CanWrite || _disposed)
-            {
-                return;
-            }
-            
-            await _stream.WriteAsync(data);
+            await _webSocket.Send(data);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            if (!await _clientRepository.TryRemoveAsync(Guid))
-            {
-                _logger.LogError("Failed to dispose of client");
-            }
+            _logger.LogError($"Error whilst writing to stream: {e.Message}");
+        }
+    }
+    
+    public async Task OnReceivedAsync(byte[] data)
+    {
+        foreach (var packet in DecodePacketsFromBytes(data))
+        {
+            await _packetHandler.HandleAsync(this, packet);
         }
     }
 
@@ -104,11 +96,7 @@ public class NetworkClient : NetworkClientProcessComponent, INetworkClient
         {
             _logger.LogError("Failed to dispose of player");
         }
-
-        if (_tcpClient.Connected)
-        {
-            _tcpClient.GetStream().Close();
-            _tcpClient.Close();
-        }
+        
+        _webSocket.Close();
     }
 }

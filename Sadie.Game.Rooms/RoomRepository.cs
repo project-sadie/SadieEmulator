@@ -3,17 +3,10 @@ using Sadie.Game.Rooms.Chat;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomRepository : IRoomRepository
+public class RoomRepository(IRoomDao dao) : IRoomRepository
 {
-    private readonly IRoomDao _dao;
-    private readonly ConcurrentDictionary<long, IRoom> _rooms;
+    private readonly ConcurrentDictionary<long, IRoom> _rooms = new();
 
-    public RoomRepository(IRoomDao dao)
-    {
-        _dao = dao;
-        _rooms = new ConcurrentDictionary<long, IRoom>();
-    }
-    
     public Tuple<bool, IRoom?> TryGetRoomById(long id)
     {
         return new Tuple<bool, IRoom?>(_rooms.TryGetValue(id, out var room), room);
@@ -28,7 +21,7 @@ public class RoomRepository : IRoomRepository
             return new Tuple<bool, IRoom?>(true, memoryValue);
         }
         
-        var (result, room) = await _dao.TryGetRoomById(id);
+        var (result, room) = await dao.TryGetRoomById(id);
 
         if (result && room != null)
         {
@@ -47,32 +40,40 @@ public class RoomRepository : IRoomRepository
             ToList();
     }
 
+    public async Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int amount)
+    {
+        var offlineRooms = await dao.GetByOwnerIdAsync(ownerId, amount, _rooms.Keys);
+        var inMemoryRooms = _rooms.Values.Where(x => x.OwnerId == ownerId).ToList();
+        
+        return offlineRooms.Concat(inMemoryRooms).ToList();
+    }
+
     public int Count => _rooms.Count;
     public IEnumerable<IRoom> GetAllRooms() => _rooms.Values;
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
     {
-        return await _dao.CreateRoomAsync(name, layoutId, ownerId, maxUsers, description);
+        return await dao.CreateRoomAsync(name, layoutId, ownerId, maxUsers, description);
     }
 
     public async Task<int> CreateRoomSettings(int roomId)
     {
-        return await _dao.CreateRoomSettings(roomId);
+        return await dao.CreateRoomSettings(roomId);
     }
 
     public async Task<int> GetLayoutIdFromNameAsync(string name)
     {
-        return await _dao.GetLayoutIdFromNameAsync(name);
+        return await dao.GetLayoutIdFromNameAsync(name);
     }
 
     public async Task<int> CreateChatMessages(List<RoomChatMessage> messages)
     {
-        return await _dao.CreateChatMessages(messages);
+        return await dao.CreateChatMessages(messages);
     }
 
     public async Task SaveRoomAsync(IRoom room)
     {
-        await _dao.SaveRoomAsync(room);
+        await dao.SaveRoomAsync(room);
     }
 
     public async ValueTask DisposeAsync()

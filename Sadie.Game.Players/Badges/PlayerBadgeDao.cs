@@ -2,15 +2,9 @@ using Sadie.Database;
 
 namespace Sadie.Game.Players.Badges;
 
-public class PlayerBadgeDao : BaseDao, IPlayerBadgeDao
+public class PlayerBadgeDao(IDatabaseProvider databaseProvider, IPlayerBadgeFactory badgeFactory)
+    : BaseDao(databaseProvider), IPlayerBadgeDao
 {
-    private readonly IPlayerBadgeFactory _badgeFactory;
-
-    public PlayerBadgeDao(IDatabaseProvider databaseProvider, IPlayerBadgeFactory badgeFactory) : base(databaseProvider)
-    {
-        _badgeFactory = badgeFactory;
-    }
-    
     public async Task<List<PlayerBadge>> GetBadgesForPlayerAsync(int profileId)
     {
         var reader = await GetReaderAsync(@"SELECT 
@@ -34,7 +28,7 @@ public class PlayerBadgeDao : BaseDao, IPlayerBadgeDao
                 break;
             }
             
-            data.Add(_badgeFactory.Create(
+            data.Add(badgeFactory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("code"),
                 record.Get<int>("slot")));

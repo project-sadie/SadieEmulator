@@ -9,6 +9,7 @@ public class PathFinder
 {
     private const int ClosedValue = 0;
     private const int DistanceBetweenNodes = 1;
+    
     private readonly PathFinderOptions _options;
     private readonly WorldGrid _world;
     private readonly ICalculateHeuristic _heuristic;
@@ -20,15 +21,13 @@ public class PathFinder
         _heuristic = HeuristicFactory.Create(_options.HeuristicFormula);
     }
         
-    ///<inheritdoc/>
     public IEnumerable<Point> FindPath(Point start, Point end)
     {
         return FindPath(new Position(start.Y, start.X), new Position(end.Y, end.X))
             .Select(position => new Point(position.Column, position.Row))
             .ToArray();
     }
-        
-    ///<inheritdoc/>
+
     public IEnumerable<Position> FindPath(Position start, Position end)
     {
         var nodesVisited = 0;
@@ -48,7 +47,7 @@ public class PathFinder
 
             if (nodesVisited > _options.SearchLimit)
             {
-                return new Position[0];
+                return Array.Empty<Position>();
             }
 
             foreach (var successor in graph.GetSuccessors(q))
@@ -80,7 +79,7 @@ public class PathFinder
             nodesVisited++;
         }
 
-        return new Position[0];
+        return Array.Empty<Position>();
     }
 
     private int CalculateModifierToG(PathFinderNode q, PathFinderNode successor, Position end)
@@ -131,13 +130,12 @@ public class PathFinder
         return 0;
     }
 
-    private bool IsStraightLine(Position a, Position b, Position c)
+    private static bool IsStraightLine(Position a, Position b, Position c)
     {
-        // area of triangle == 0
         return (a.Column * (b.Row - c.Row) + b.Column * (c.Row - a.Row) + c.Column * (a.Row - b.Row)) / 2 == 0;
     }
 
-    private bool BetterPathToSuccessorFound(PathFinderNode updateSuccessor, PathFinderNode currentSuccessor)
+    private static bool BetterPathToSuccessorFound(PathFinderNode updateSuccessor, PathFinderNode currentSuccessor)
     {
         return !currentSuccessor.HasBeenVisited ||
                (currentSuccessor.HasBeenVisited && updateSuccessor.F < currentSuccessor.F);

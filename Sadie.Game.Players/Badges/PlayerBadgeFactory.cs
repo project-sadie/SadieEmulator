@@ -2,19 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Sadie.Game.Players.Badges;
 
-public class PlayerBadgeFactory : IPlayerBadgeFactory
+public class PlayerBadgeFactory(IServiceProvider serviceProvider) : IPlayerBadgeFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public PlayerBadgeFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public PlayerBadge Create(int id, string code, int slot)
     {
         return ActivatorUtilities.CreateInstance<PlayerBadge>(
-            _serviceProvider,
+            serviceProvider,
             id,
             code,
             slot);

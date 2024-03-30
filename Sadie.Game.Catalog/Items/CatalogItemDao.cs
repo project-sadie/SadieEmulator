@@ -3,21 +3,13 @@ using Sadie.Game.Furniture;
 
 namespace Sadie.Game.Catalog.Items;
 
-public class CatalogItemDao : BaseDao
+public class CatalogItemDao(
+    IDatabaseProvider databaseProvider,
+    CatalogItemFactory factory,
+    FurnitureItemRepository furnitureItemRepository)
+    : BaseDao(databaseProvider)
 {
-    private readonly CatalogItemFactory _factory;
-    private readonly FurnitureItemRepository _furnitureItemRepository;
-
-    public CatalogItemDao(
-        IDatabaseProvider databaseProvider, 
-        CatalogItemFactory factory,
-        FurnitureItemRepository furnitureItemRepository) : base(databaseProvider)
-    {
-        _factory = factory;
-        _furnitureItemRepository = furnitureItemRepository;
-    }
-
-    public async Task<List<CatalogItem>> GetItemsForPageAsync(int pageId)
+    public async Task<List<CatalogItem>> GetAllAsync()
     {
         var items = new List<CatalogItem>();
         
@@ -34,11 +26,7 @@ public class CatalogItemDao : BaseDao
                 catalog_page_id,
                 amount,
                 sell_limit
-            FROM catalog_items
-            WHERE catalog_page_id = @pageId;", new Dictionary<string, object>
-        {
-            { "pageId", pageId }
-        });
+            FROM catalog_items;");
 
         while (true)
         {
@@ -55,7 +43,7 @@ public class CatalogItemDao : BaseDao
 
             foreach (var itemId in furnitureItemIds)
             {
-                var result = _furnitureItemRepository.TryGetById(itemId);
+                var result = furnitureItemRepository.TryGetById(itemId);
 
                 if (result is { Item1: true, Item2: not null })
                 {
@@ -68,7 +56,7 @@ public class CatalogItemDao : BaseDao
                 continue;
             }
 
-            var item = _factory.Create(
+            var item = factory.Create(
                 record.Get<int>("id"),
                 record.Get<string>("name"),
                 record.Get<int>("cost_credits"),
@@ -77,6 +65,7 @@ public class CatalogItemDao : BaseDao
                 furnitureItems,
                 record.Get<bool>("requires_club_membership"),
                 record.Get<string>("meta_data"),
+                record.Get<long>("catalog_page_id"),
                 record.Get<int>("amount"),
                 record.Get<int>("sell_limit"));
                 

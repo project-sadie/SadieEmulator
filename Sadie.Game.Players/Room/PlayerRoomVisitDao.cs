@@ -2,12 +2,8 @@ using Sadie.Database;
 
 namespace Sadie.Game.Players.Room;
 
-public class PlayerRoomVisitDao : BaseDao, IPlayerRoomVisitDao
+public class PlayerRoomVisitDao(IDatabaseProvider databaseProvider) : BaseDao(databaseProvider), IPlayerRoomVisitDao
 {
-    public PlayerRoomVisitDao(IDatabaseProvider databaseProvider) : base(databaseProvider)
-    {
-    }
-
     public async Task<int> CreateAsync(List<PlayerRoomVisit> roomVisits)
     {
         var parameters = new Dictionary<string, object>();

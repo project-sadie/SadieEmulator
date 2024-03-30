@@ -1,24 +1,19 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
-using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
+using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Shared.Game;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Game.Players.Wardrobe;
+using Sadie.Shared.Unsorted.Game;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
-public class PlayerDataFactory : IPlayerDataFactory
+public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public PlayerDataFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public IPlayerData Create(
         int id, 
         string username, 
@@ -42,10 +37,16 @@ public class PlayerDataFactory : IPlayerDataFactory
         List<PlayerFriendship> friendships,
         ChatBubble chatBubble, 
         bool allowFriendRequests,
-        List<IPlayerSubscription> subscriptions)
+        List<IPlayerSubscription> subscriptions,
+        PlayerInventoryRepository inventoryRepository,
+        List<long> likedRoomIds,
+        Dictionary<int, PlayerWardrobeItem> wardrobeItems,
+        List<PlayerRelationship> relationships)
     {
         
         var friendshipComponent = CreatePlayerFriendshipComponent(id, friendships);
+        var wardrobeComponent = CreatePlayerWardrobeComponent(wardrobeItems);
+        
         return new PlayerData(
             id,
             username,
@@ -69,14 +70,25 @@ public class PlayerDataFactory : IPlayerDataFactory
             friendshipComponent,
             chatBubble,
             allowFriendRequests,
-            subscriptions);
+            subscriptions,
+            inventoryRepository,
+            likedRoomIds,
+            wardrobeComponent,
+            relationships);
     }
-    
+
     public PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships)
     {
         return ActivatorUtilities.CreateInstance<PlayerFriendshipComponent>(
-            _serviceProvider,
+            serviceProvider,
             playerId,
             friendships);
+    }
+
+    private PlayerWardrobeComponent CreatePlayerWardrobeComponent(Dictionary<int, PlayerWardrobeItem> wardrobeItems)
+    {
+        return ActivatorUtilities.CreateInstance<PlayerWardrobeComponent>(
+            serviceProvider,
+            wardrobeItems);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Game.Avatar;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
@@ -29,7 +29,7 @@ public class RoomUserDataWriter : NetworkPacketWriter
             WriteInteger(-1);
             WriteString("");
             WriteString("");
-            WriteLong(user.AvatarData.AchievementScore);
+            WriteInteger((int)user.AvatarData.AchievementScore);
             WriteBool(true);
         }
     }

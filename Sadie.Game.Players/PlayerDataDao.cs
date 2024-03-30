@@ -1,29 +1,23 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
+using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Shared.Game;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Game.Players.Wardrobe;
+using Sadie.Shared.Unsorted.Game;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players;
 
-public class PlayerDataDao : BaseDao, IPlayerDataDao
+public class PlayerDataDao(
+    IDatabaseProvider databaseProvider,
+    IPlayerDataFactory factory,
+    IPlayerFriendshipRepository friendshipRepository,
+    IPlayerRoomVisitDao roomVisitDao)
+    : BaseDao(databaseProvider), IPlayerDataDao
 {
-    private readonly IPlayerDataFactory _factory;
-    private readonly IPlayerFriendshipRepository _friendshipRepository;
-    private readonly IPlayerRoomVisitDao _roomVisitDao;
-
-    public PlayerDataDao(IDatabaseProvider databaseProvider, 
-        IPlayerDataFactory factory, 
-        IPlayerFriendshipRepository friendshipRepository,
-        IPlayerRoomVisitDao roomVisitDao) : base(databaseProvider)
-    {
-        _factory = factory;
-        _friendshipRepository = friendshipRepository;
-        _roomVisitDao = roomVisitDao;
-    }
-    
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
     {
         var reader = await GetReaderForPlayerData("id", new Dictionary<string, object>
@@ -111,7 +105,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
     private async Task<IPlayerData> CreateFromRecordAsync(DatabaseRecord record)
     {
-        return _factory.Create(
+        return factory.Create(
             record.Get<int>("id"),
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
@@ -131,11 +125,16 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
             record.Get<long>("achievement_score"),
             new List<string>(), // tags
             new List<PlayerBadge>(), // badges
-            await _friendshipRepository.GetAllRecordsForPlayerAsync(record.Get<int>("id")), // friendship component
+            await friendshipRepository.GetAllRecordsForPlayerAsync(record.Get<int>("id")), // friendship component
             (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
-            new List<IPlayerSubscription>() // subscriptions
-        );
+            new List<IPlayerSubscription>(),
+            new PlayerInventoryRepository(
+                new List<PlayerInventoryFurnitureItem>()),
+                new List<long>(),
+            new Dictionary<int, PlayerWardrobeItem>(),
+            new List<PlayerRelationship>()
+            );
     }
 
     private async Task<DatabaseReader> GetReaderForPlayerData(string column, Dictionary<string, object> parameters)
@@ -214,7 +213,7 @@ public class PlayerDataDao : BaseDao, IPlayerDataDao
 
         if (playerState.RoomVisits.Count > 0)
         {
-            await _roomVisitDao.CreateAsync(playerState.RoomVisits);
+            await roomVisitDao.CreateAsync(playerState.RoomVisits);
         }
     }
 }

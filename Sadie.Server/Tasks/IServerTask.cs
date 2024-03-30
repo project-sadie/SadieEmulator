@@ -2,7 +2,6 @@ namespace SadieEmulator.Tasks;
 
 public interface IServerTask
 {
-    string Name { get; }
     TimeSpan PeriodicInterval { get; }
     DateTime LastExecuted { get; set; }
     

@@ -1,33 +1,21 @@
 ﻿namespace Sadie.Game.Players;
 
-public class PlayerSettings
+public class PlayerSettings(
+    int systemVolume,
+    int furnitureVolume,
+    int traxVolume,
+    bool oldChat,
+    bool blockRoomInvites,
+    bool blockCameraFollow,
+    int uiFlags,
+    bool showNotifications)
 {
-    public int SystemVolume { get; }
-    public int FurnitureVolume { get; }
-    public int TraxVolume { get; }
-    public bool OldChat { get; }
-    public bool BlockRoomInvites { get; }
-    public bool BlockCameraFollow { get; }
-    public int UiFlags { get; }
-    public bool ShowNotifications { get; }
-    
-    public PlayerSettings(
-        int systemVolume, 
-        int furnitureVolume, 
-        int traxVolume, 
-        bool oldChat, 
-        bool blockRoomInvites, 
-        bool blockCameraFollow, 
-        int uiFlags, 
-        bool showNotifications)
-    {
-        SystemVolume = systemVolume;
-        FurnitureVolume = furnitureVolume;
-        TraxVolume = traxVolume;
-        OldChat = oldChat;
-        BlockRoomInvites = blockRoomInvites;
-        BlockCameraFollow = blockCameraFollow;
-        UiFlags = uiFlags;
-        ShowNotifications = showNotifications;
-    }
+    public int SystemVolume { get; } = systemVolume;
+    public int FurnitureVolume { get; } = furnitureVolume;
+    public int TraxVolume { get; } = traxVolume;
+    public bool OldChat { get; } = oldChat;
+    public bool BlockRoomInvites { get; } = blockRoomInvites;
+    public bool BlockCameraFollow { get; } = blockCameraFollow;
+    public int UiFlags { get; } = uiFlags;
+    public bool ShowNotifications { get; } = showNotifications;
 }

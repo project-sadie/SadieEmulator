@@ -1,15 +1,13 @@
-using Sadie.Game.Catalog;
-using Sadie.Game.Navigator;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogPurchaseFailedWriter : NetworkPacketWriter
 {
-    public CatalogPurchaseFailedWriter(CatalogPurchaseError error)
+    public CatalogPurchaseFailedWriter(int error)
     {
         WriteShort(ServerPacketId.CatalogPurchaseFailed);
-        WriteInteger((int) error);
+        WriteInteger(error);
     }
 }

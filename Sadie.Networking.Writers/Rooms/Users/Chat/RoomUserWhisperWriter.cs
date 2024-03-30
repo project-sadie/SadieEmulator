@@ -1,19 +1,18 @@
-using Sadie.Game.Rooms.Chat;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Users.Chat;
 
 public class RoomUserWhisperWriter : NetworkPacketWriter
 {
-    public RoomUserWhisperWriter(RoomChatMessage message)
+    public RoomUserWhisperWriter(int senderId, string message, int emotionId, int bubble)
     {
         WriteShort(ServerPacketId.RoomUserWhisper);
-        WriteLong(message.Sender.Id);
-        WriteString(message.Message);
-        WriteLong(message.EmotionId);
-        WriteLong((int) message.Bubble);
+        WriteLong(senderId);
+        WriteString(message);
+        WriteLong(emotionId);
+        WriteLong(bubble);
         WriteLong(0);
-        WriteLong(message.Message.Length);
+        WriteLong(message.Length);
     }
 }

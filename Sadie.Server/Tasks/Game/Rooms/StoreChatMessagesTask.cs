@@ -2,37 +2,21 @@ using Sadie.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class StoreChatMessagesTask : IServerTask
+public class StoreChatMessagesTask(IRoomRepository roomRepository) : IServerTask
 {
-    public string Name => "StoreChatMessages";
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(30);
+    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
     public DateTime LastExecuted { get; set; }
-    
-    private readonly IRoomRepository _roomRepository;
-    
-    public StoreChatMessagesTask(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-    
+
     public async Task ExecuteAsync()
     {
-        foreach (var room in _roomRepository.GetAllRooms())
+        foreach (var room in roomRepository.GetAllRooms())
         {
             if (room.ChatMessages.Count <= 0)
             {
                 continue;
             }
 
-            try
-            {
-                await _roomRepository.CreateChatMessages(room.ChatMessages);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
+            await roomRepository.CreateChatMessages(room.ChatMessages);
             room.ChatMessages.Clear();
         }
     }

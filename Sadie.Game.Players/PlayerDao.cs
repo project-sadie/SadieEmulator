@@ -1,36 +1,28 @@
 using Sadie.Database;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
+using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Shared.Game;
-using Sadie.Shared.Game.Avatar;
-using Sadie.Shared.Networking;
+using Sadie.Game.Players.Wardrobe;
+using Sadie.Shared.Unsorted.Game;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
-public class PlayerDao : BaseDao, IPlayerDao
+public class PlayerDao(
+    IDatabaseProvider databaseProvider,
+    IPlayerFactory playerFactory,
+    IPlayerDataFactory playerDataFactory,
+    IPlayerBadgeDao badgeDao,
+    IPlayerFriendshipDao friendshipDao,
+    IPlayerSubscriptionDao subscriptionDao,
+    IPlayerInventoryDao inventoryDao,
+    IPlayerWardrobeDao wardrobeDao)
+    : BaseDao(databaseProvider), IPlayerDao
 {
-    private readonly IPlayerFactory _playerFactory;
-    private readonly IPlayerDataFactory _playerDataFactory;
-    private readonly IPlayerBadgeDao _badgeDao;
-    private readonly IPlayerFriendshipDao _friendshipDao;
-    private readonly IPlayerSubscriptionDao _subscriptionDao;
-
-    public PlayerDao(IDatabaseProvider databaseProvider, 
-        IPlayerFactory playerFactory, 
-        IPlayerDataFactory playerDataFactory, 
-        IPlayerBadgeDao badgeDao, 
-        IPlayerFriendshipDao friendshipDao,
-        IPlayerSubscriptionDao subscriptionDao) : base(databaseProvider)
-    {
-        _playerFactory = playerFactory;
-        _playerDataFactory = playerDataFactory;
-        _badgeDao = badgeDao;
-        _friendshipDao = friendshipDao;
-        _subscriptionDao = subscriptionDao;
-    }
-
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
     {
         var reader = await GetReaderAsync(@"
@@ -96,19 +88,19 @@ public class PlayerDao : BaseDao, IPlayerDao
         
         var savedSearches = await GetSavedSearchesAsync(record.Get<int>("id"));
         
-        var balance = _playerFactory.CreateBalance(record.Get<long>("credit_balance"),
+        var balance = playerFactory.CreateBalance(record.Get<long>("credit_balance"),
             record.Get<long>("pixel_balance"),
             record.Get<long>("seasonal_balance"),
             record.Get<long>("gotw_points"));
 
-        var navigatorSettings = _playerFactory.CreateNavigatorSettings(record.Get<int>("window_x"),
+        var navigatorSettings = playerFactory.CreateNavigatorSettings(record.Get<int>("window_x"),
             record.Get<int>("window_y"),
             record.Get<int>("window_width"),
             record.Get<int>("window_height"),
             record.Get<int>("open_searches") == 1,
             0);
 
-        var settings = _playerFactory.CreateSettings(record.Get<int>("system_volume"),
+        var settings = playerFactory.CreateSettings(record.Get<int>("system_volume"),
             record.Get<int>("furniture_volume"),
             record.Get<int>("trax_volume"),
             record.Get<int>("prefer_old_chat") == 1,
@@ -116,13 +108,21 @@ public class PlayerDao : BaseDao, IPlayerDao
             record.Get<int>("block_camera_follow") == 1,
             record.Get<int>("ui_flags"),
             record.Get<int>("show_notifications") == 1);
-        
-        var permissions = await GetPermissionsAsync(record.Get<int>("role_id"));
-        var badges = await _badgeDao.GetBadgesForPlayerAsync(record.Get<int>("id"));
-        var friendships = await _friendshipDao.GetAllRecordsForPlayerAsync(record.Get<int>("id"));
-        var subscriptions = await _subscriptionDao.GetSubscriptionsForPlayerAsync(record.Get<int>("id"));
 
-        var playerData = _playerDataFactory.Create(
+        var playerId = record.Get<int>("id");
+        var permissions = await GetPermissionsAsync(record.Get<int>("role_id"));
+        var badges = await badgeDao.GetBadgesForPlayerAsync(playerId);
+        var friendships = await friendshipDao.GetAllRecordsForPlayerAsync(playerId);
+        var subscriptions = await subscriptionDao.GetSubscriptionsForPlayerAsync(playerId);
+
+        var inventoryItems = await inventoryDao.GetAllAsync(playerId);
+        var inventoryRepository = new PlayerInventoryRepository(inventoryItems);
+
+        var likedRoomIds = await GetLikedRoomsAsync(playerId);
+        var wardrobeItems = await wardrobeDao.GetAllRecordsForPlayerAsync(playerId);
+        var relationships = await GetRelationshipsAsync(playerId);
+            
+        var playerData = playerDataFactory.Create(
             record.Get<int>("id"),
             record.Get<string>("username"),
             record.Get<DateTime>("created_at"),
@@ -139,31 +139,35 @@ public class PlayerDao : BaseDao, IPlayerDao
             savedSearches,
             permissions,
             record.Get<int>("achievement_score"),
-            new List<string>(record.Get<string>("comma_separated_tags").Split(",")),
+            [..record.Get<string>("comma_separated_tags").Split(",")],
             badges,
             friendships,
             (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
-            subscriptions);
+            subscriptions,
+            inventoryRepository,
+            likedRoomIds,
+            wardrobeItems,
+            relationships);
         
-        var player = _playerFactory.Create(
+        var player = playerFactory.Create(
             networkObject,
             playerData);
             
         return new Tuple<bool, IPlayer?>(true, player);
     }
 
-    private async Task<List<PlayerSavedSearch>> GetSavedSearchesAsync(long id)
+    private async Task<List<PlayerSavedSearch>> GetSavedSearchesAsync(long playerId)
     {
         var reader = await GetReaderAsync(@"
             SELECT 
-                id,
+                player_id,
                 search,
                 filter 
             FROM player_saved_searches 
-            WHERE player_id = @profileId", new Dictionary<string, object>
+            WHERE player_id = @playerId", new Dictionary<string, object>
         {
-            { "profileId", id }
+            { "playerId", playerId }
         });
         
         var data = new List<PlayerSavedSearch>();
@@ -178,7 +182,7 @@ public class PlayerDao : BaseDao, IPlayerDao
             }
             
             data.Add(new PlayerSavedSearch(
-                record.Get<long>("id"),
+                record.Get<long>("playerId"),
                 record.Get<string>("search"),
                 record.Get<string>("filter")));
         }
@@ -213,6 +217,32 @@ public class PlayerDao : BaseDao, IPlayerDao
 
         return data;
     }
+    
+    private async Task<List<long>> GetLikedRoomsAsync(long playerId)
+    {
+        var reader = await GetReaderAsync(@"
+            SELECT room_id FROM player_room_likes WHERE player_id = @playerId", 
+            new Dictionary<string, object>
+            {
+                { "playerId", playerId }
+            });
+        
+        var data = new List<long>();
+        
+        while (true)
+        {
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            data.Add(record.Get<long>("id"));
+        }
+
+        return data;
+    }
 
     public async Task ResetSsoTokenForPlayerAsync(long id)
     {
@@ -220,5 +250,82 @@ public class PlayerDao : BaseDao, IPlayerDao
         {
             { "playerId", id }
         });
+    }
+
+    public async Task CreatePlayerRoomLikeAsync(long playerId, long roomId)
+    {
+        await QueryAsync("INSERT INTO player_room_likes (player_id, room_id) VALUES (@playerId, @roomId);", new Dictionary<string, object>
+        {
+            { "playerId", playerId },
+            { "roomId", roomId }
+        });
+    }
+    
+    public async Task<List<PlayerRelationship>> GetRelationshipsAsync(long playerId)
+    {
+        var reader = await GetReaderAsync(@"
+            SELECT id, origin_player_id, target_player_id, type_id FROM player_relationships WHERE origin_player_id = @playerId", 
+            new Dictionary<string, object>
+            {
+                { "playerId", playerId }
+            });
+        
+        var data = new List<PlayerRelationship>();
+        
+        while (true)
+        {
+            var (success, record) = reader.Read();
+
+            if (!success || record == null)
+            {
+                break;
+            }
+            
+            data.Add(new PlayerRelationship(record.Get<int>("id"), 
+                record.Get<long>("origin_player_id"), 
+                record.Get<long>("target_player_id"), 
+                (PlayerRelationshipType) record.Get<int>("type_id")));
+        }
+
+        return data;
+    }
+
+    public async Task UpdateRelationshipTypeAsync(int id, PlayerRelationshipType type)
+    {
+        await QueryAsync("UPDATE player_relationships SET type_id = @type WHERE id = @id", new Dictionary<string, object>
+        {
+            { "type", (int) type },
+            { "id", id }
+        });
+    }
+
+    public async Task<PlayerRelationship> CreateRelationshipAsync(long playerId, long targetPlayerId, PlayerRelationshipType type)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "playerId", playerId },
+            { "targetPlayerId", targetPlayerId },
+            { "type", (int) type }
+        };
+
+        var id = await QueryScalarAsync(@"
+            INSERT INTO player_relationships (
+                origin_player_id, target_player_id, type_id
+            ) VALUES (@playerId, @targetPlayerId, @type); SELECT LAST_INSERT_ID();", parameters);
+
+        return new PlayerRelationship(id, playerId, targetPlayerId, type);
+    }
+
+    public async Task DeleteRelationshipAsync(int id)
+    {
+        await QueryAsync("DELETE FROM player_relationships WHERE id = @id", new Dictionary<string, object>()
+        {
+            {"id", id}
+        });
+    }
+
+    public async Task CleanDataAsync()
+    {
+        await QueryAsync("UPDATE players SET sso_token = ''; UPDATE player_data SET is_online = 0;");
     }
 }

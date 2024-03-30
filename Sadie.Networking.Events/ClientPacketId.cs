@@ -83,4 +83,17 @@ public class ClientPacketId
     public const short CatalogIndex = 2529;
     public const short CatalogPage = 412;
     public const short CatalogPurchase = 3492;
+    public const short PlayerFriendListUpdate = 1419;
+    public const short HotelViewPromotions = 1827;
+    public const short RoomLike = 3582;
+    public const short PlayerInventoryFurnitureItems = 3150;
+    public const short RoomFurnitureItemPlaced = 1258;
+    public const short RoomFurnitureItemEjected = 3456;
+    public const short RoomFloorFurnitureItemUpdated = 248;
+    public const short RoomFurnitureItemToggle = 99;
+    public const short RoomGiveUserRights = 808;
+    public const short RoomRemoveUserRights = 2064;
+    public const short PlayerWardrobe = 2742;
+    public const short PlayerWardrobeSave = 800;
+    public const short RoomWallFurnitureItemUpdated = 168;
 }

@@ -1,20 +1,13 @@
 namespace Sadie.Game.Navigator.Categories;
 
-public class NavigatorCategory
+public class NavigatorCategory(
+    int id,
+    string name,
+    string codeName,
+    int orderId)
 {
-    public int Id { get; }
-    public string Name { get; }
-    public string CodeName { get; }
-    public int OrderId { get; }
-    
-    public NavigatorCategory(int id,
-        string name,
-        string codeName,
-        int orderId)
-    {
-        Id = id;
-        Name = name;
-        CodeName = codeName;
-        OrderId = orderId;
-    }
+    public int Id { get; } = id;
+    public string Name { get; } = name;
+    public string CodeName { get; } = codeName;
+    public int OrderId { get; } = orderId;
 }

@@ -1,7 +1,6 @@
-using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
@@ -32,7 +31,7 @@ public class CatalogTabsWriter : NetworkPacketWriter
         WriteBool(page.Visible);
         WriteInteger(page.Icon);
         WriteInteger(page.Enabled ? page.Id : -1);
-        WriteString(page.Caption);
+        WriteString(page.Name);
         WriteString(page.Caption);
         WriteInteger(0); // TODO: offer id count
         WriteInteger(page.Pages.Count);

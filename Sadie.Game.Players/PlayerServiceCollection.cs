@@ -2,12 +2,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
-using Sadie.Game.Players.Components;
 using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Messenger;
 using Sadie.Game.Players.Respect;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
+using Sadie.Game.Players.Wardrobe;
 
 namespace Sadie.Game.Players;
 
@@ -37,6 +38,10 @@ public class PlayerServiceCollection
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
         serviceCollection.AddSingleton<PlayerFriendshipFactory>();
+        serviceCollection.AddSingleton<IPlayerInventoryDao, PlayerInventoryDao>();
+        serviceCollection.AddTransient<IPlayerInventoryRepository, PlayerInventoryRepository>();
+        serviceCollection.AddTransient<IPlayerWardrobeDao, PlayerWardrobeDao>();
+        serviceCollection.AddTransient<PlayerWardrobeComponent>();
         
         var playerConstants = new PlayerConstants();
         config.GetSection("Constants:Player").Bind(playerConstants);

@@ -2,26 +2,17 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
-using Sadie.Shared.Networking;
+using Sadie.Game.Players.Relationships;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
-public class PlayerRepository : IPlayerRepository
+public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playerDao, IPlayerDataDao playerDataDao)
+    : IPlayerRepository
 {
-    private readonly ILogger<PlayerRepository> _logger;
-    private readonly IPlayerDao _playerDao;
-    private readonly IPlayerDataDao _playerDataDao;
-    private readonly ConcurrentDictionary<int, IPlayer> _players;
+    private readonly ConcurrentDictionary<long, IPlayer> _players = new();
 
-    public PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playerDao, IPlayerDataDao playerDataDao)
-    {
-        _logger = logger;
-        _playerDao = playerDao;
-        _playerDataDao = playerDataDao;
-        _players = new ConcurrentDictionary<int, IPlayer>();
-    }
-
-    public bool TryGetPlayerById(int id, out IPlayer? player)
+    public bool TryGetPlayerById(long id, out IPlayer? player)
     {
         return _players.TryGetValue(id, out player);
     }
@@ -34,7 +25,7 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
     {
-        return await _playerDao.TryGetPlayerBySsoTokenAsync(networkObject, sso);
+        return await playerDao.TryGetPlayerBySsoTokenAsync(networkObject, sso);
     }
 
     public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Data.Id, player);
@@ -68,6 +59,12 @@ public class PlayerRepository : IPlayerRepository
 
             if (friendship != null)
             {
+                var relationship = friend
+                    .Data
+                    .Relationships
+                    .FirstOrDefault(x =>
+                        x.TargetPlayerId == friendship.OriginId || x.TargetPlayerId == friendship.TargetId);
+
                 var updateFriendWriter = new PlayerUpdateFriendWriter(
                         0, 
                         1, 
@@ -80,7 +77,8 @@ public class PlayerRepository : IPlayerRepository
                         "", 
                         false, 
                         false, 
-                        false).GetAllBytes();
+                        false,
+                        relationship?.Type ?? PlayerRelationshipType.None).GetAllBytes();
                 
                 await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
             }
@@ -89,17 +87,17 @@ public class PlayerRepository : IPlayerRepository
     
     public async Task MarkPlayerAsOnlineAsync(int id)
     {
-        await _playerDataDao.MarkPlayerAsOnlineAsync(id);
+        await playerDataDao.MarkPlayerAsOnlineAsync(id);
     }
 
     private async Task MarkPlayerAsOfflineAsync(IPlayerData data, IPlayerState state)
     {
-        await _playerDataDao.MarkPlayerAsOfflineAsync(data, state);
+        await playerDataDao.MarkPlayerAsOfflineAsync(data, state);
     }
 
     public async Task ResetSsoTokenForPlayerAsync(int id)
     {
-        await _playerDao.ResetSsoTokenForPlayerAsync(id);
+        await playerDao.ResetSsoTokenForPlayerAsync(id);
     }
 
     public int Count()
@@ -109,17 +107,17 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataAsync(int playerId)
     {
-        return await _playerDataDao.TryGetPlayerData(playerId);
+        return await playerDataDao.TryGetPlayerData(playerId);
     }
 
     public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsernameAsync(string username)
     {
-        return await _playerDataDao.TryGetPlayerDataByUsername(username);
+        return await playerDataDao.TryGetPlayerDataByUsername(username);
     }
 
     public async Task<List<IPlayerData>> GetPlayerDataForSearchAsync(string searchQuery, int[] excludeIds)
     {
-        return await _playerDataDao.GetPlayerDataForSearch(searchQuery, excludeIds);
+        return await playerDataDao.GetPlayerDataForSearch(searchQuery, excludeIds);
     }
 
     public async ValueTask DisposeAsync()
@@ -128,7 +126,7 @@ public class PlayerRepository : IPlayerRepository
         {
             if (!await TryRemovePlayerAsync(player.Data.Id))
             {
-                _logger.LogError("Failed to dispose of player");
+                logger.LogError("Failed to dispose of player");
             }
         }
     }

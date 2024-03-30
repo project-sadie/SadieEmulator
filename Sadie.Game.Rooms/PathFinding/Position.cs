@@ -3,24 +3,18 @@ namespace Sadie.Game.Rooms.PathFinding;
 /// <summary>
 /// A point in a matrix. P(row, column)
 /// </summary>
-public readonly struct Position
+public readonly struct Position(int row = 0, int column = 0)
 {
     /// <summary>
     /// The row in the matrix
     /// </summary>
-    public int Row { get; }
+    public int Row { get; } = row;
 
     /// <summary>
     /// The column in the matrix
     /// </summary>
-    public int Column { get; }
+    public int Column { get; } = column;
 
-    public Position(int row = 0, int column = 0)
-    {
-        Row = row;
-        Column = column;
-    }
-        
     public static bool operator ==(Position a, Position b)
     {
         return a.Equals(b);

@@ -1,0 +1,15 @@
+version: 2.1
+
+jobs:
+  run-unit-tests:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
+    steps:
+      - checkout
+      - run: 
+          name: RunUnitTests
+          command: dotnet test
+workflows:
+  main:
+    jobs:
+      - run-unit-tests

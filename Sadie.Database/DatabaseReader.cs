@@ -1,16 +1,9 @@
 ﻿namespace Sadie.Database;
 
-public class DatabaseReader
+public class DatabaseReader(Queue<DatabaseRecord> records)
 {
-    private readonly Queue<DatabaseRecord> _records;
-
-    public DatabaseReader(Queue<DatabaseRecord> records)
-    {
-        _records = records;
-    }
-
     public (bool, DatabaseRecord? record) Read()
     {
-        return (_records.TryDequeue(out var record), record);
+        return (records.TryDequeue(out var record), record);
     }
 }

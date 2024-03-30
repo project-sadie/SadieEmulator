@@ -1,21 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;
 
-public class PlayerFriendshipFactory
+public class PlayerFriendshipFactory(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public PlayerFriendshipFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public PlayerFriendshipData CreateFriendshipData(int id, string username, string figureCode, string motto, AvatarGender gender)
     {
         return ActivatorUtilities.CreateInstance<PlayerFriendshipData>(
-            _serviceProvider,
+            serviceProvider,
             id, 
             username,
             figureCode,
@@ -29,16 +22,14 @@ public class PlayerFriendshipFactory
         int originId, 
         int targetId, 
         PlayerFriendshipStatus status, 
-        PlayerFriendshipType type, 
         PlayerFriendshipData data)
     {
         return ActivatorUtilities.CreateInstance<PlayerFriendship>(
-            _serviceProvider,
+            serviceProvider,
             requestId,
             originId,
             targetId,
             status, 
-            type,
             data);
     }
 }

@@ -1,37 +1,33 @@
 using Sadie.Game.Players.Friendships;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Game.Players.Relationships;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Generic;
 
 public class PlayerRelationshipsWriter : NetworkPacketWriter
 {
-    public PlayerRelationshipsWriter(long playerId, Dictionary<int, List<PlayerFriendshipData>> relations)
+    public PlayerRelationshipsWriter(long playerId, List<PlayerRelationship> relationships, List<PlayerFriendship> friendships)
     {
         WriteShort(ServerPacketId.PlayerRelationships);
         WriteLong(playerId);
-        WriteInteger(relations.Values.Count(x => x.Count > 0));
+        WriteInteger(relationships.Count);
 
-        var i = 0;
-        var random = new Random();
-        
-        foreach (var currentRelations in relations.Values)
+        foreach (var relationship in relationships)
         {
-            if (currentRelations.Count < 1)
+            var friend = friendships
+                .FirstOrDefault(x => x.OriginId == relationship.TargetPlayerId || x.TargetId == relationship.TargetPlayerId);
+
+            if (friend == null)
             {
                 continue;
             }
             
-            i++;
-            
-            var index = random.Next(currentRelations.Count);
-            var randomRelation = currentRelations[index];
-            
-            WriteInteger(i);
-            WriteInteger(random.Next(currentRelations.Count));
-            WriteLong(randomRelation.Id);
-            WriteString(randomRelation.Username);
-            WriteString(randomRelation.FigureCode);
+            WriteInteger((int) relationship.Type);
+            WriteInteger(relationships.Count(x => x.Type == relationship.Type));
+            WriteLong(relationship.TargetPlayerId);
+            WriteString(friend.TargetData.Username);
+            WriteString(friend.TargetData.FigureCode);
         }
     }
 }

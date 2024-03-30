@@ -2,19 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Sadie.Game.Navigator.Categories;
 
-public class NavigatorCategoryFactory
+public class NavigatorCategoryFactory(IServiceProvider serviceProvider)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public NavigatorCategoryFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public NavigatorCategory Create(int id, string name, string codeName, int orderId)
     {
         return ActivatorUtilities.CreateInstance<NavigatorCategory>(
-            _serviceProvider,
+            serviceProvider,
             id, 
             name,
             codeName, 

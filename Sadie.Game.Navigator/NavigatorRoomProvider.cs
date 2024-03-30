@@ -2,21 +2,15 @@ using Sadie.Game.Rooms;
 
 namespace Sadie.Game.Navigator;
 
-public class NavigatorRoomProvider
+public class NavigatorRoomProvider(IRoomRepository roomRepository)
 {
-    private readonly IRoomRepository _roomRepository;
-
-    public NavigatorRoomProvider(IRoomRepository roomRepository)
-    {
-        _roomRepository = roomRepository;
-    }
-    
-    public List<IRoom> GetRoomsForCategoryName(string category)
+    public async Task<List<IRoom>> GetRoomsForCategoryNameAsync(int playerId, string category)
     {
         return category switch
         {
-            "popular" => _roomRepository.GetPopularRooms(50),
-            _ => new List<IRoom>()
+            "popular" => roomRepository.GetPopularRooms(50),
+            "my_rooms" => await roomRepository.GetByOwnerIdAsync(playerId, 500),
+            _ => []
         };
     }
 }

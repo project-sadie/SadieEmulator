@@ -1,0 +1,17 @@
+using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Events.Parsers.Catalog;
+
+public class CatalogPageParser
+{
+    public int PageId { get; private set; }
+    public int Unknown1 { get; private set; }
+    public string CatalogMode { get; private set; }
+
+    public void Parse(INetworkPacketReader reader)
+    {
+        PageId = reader.ReadInteger();
+        Unknown1 = reader.ReadInteger();
+        CatalogMode = reader.ReadString();
+    }
+}

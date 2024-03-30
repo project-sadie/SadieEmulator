@@ -1,4 +1,5 @@
-using Sadie.Shared.Game.Rooms;
+using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
@@ -8,7 +9,8 @@ public interface IRoomFactory
         string name,
         string heightmap,
         HPoint doorPoint,
-        HDirection doorDirection);
+        HDirection doorDirection,
+        List<RoomTile> tiles);
     
     IRoomSettings CreateSettings(
         bool walkDiagonal, 
@@ -40,5 +42,6 @@ public interface IRoomFactory
         List<string> tags,
         int maxUsersAllowed,
         IRoomSettings settings,
-        List<int> playersWithRights);
+        List<long> playersWithRights,
+        IRoomFurnitureItemRepository furnitureItemRepository);
 }

@@ -4,20 +4,18 @@ using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserRepository : IRoomUserRepository
+public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserRepository
 {
-    private readonly ILogger<RoomUserRepository> _logger;
-    private readonly ConcurrentDictionary<int, IRoomUser> _users;
-
-    public RoomUserRepository(ILogger<RoomUserRepository> logger)
-    {
-        _logger = logger;
-        _users = new ConcurrentDictionary<int, IRoomUser>();
-    }
+    private readonly ConcurrentDictionary<int, IRoomUser> _users = new();
 
     public ICollection<IRoomUser> GetAll() => _users.Values;
     public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Id, user);
     public bool TryGet(int id, out IRoomUser? user) => _users.TryGetValue(id, out user);
+    public bool TryGetById(long id, out IRoomUser? user)
+    {
+        user = _users.Values.FirstOrDefault(x => x.Id == id);
+        return user != null;
+    }
 
     public bool TryGetByUsername(string username, out IRoomUser? user)
     {
@@ -33,7 +31,7 @@ public class RoomUserRepository : IRoomUserRepository
 
         if (!result || roomUser == null)
         {
-            _logger.LogError($"Failed to remove a room user");
+            logger.LogError($"Failed to remove a room user");
             return;
         }
         
@@ -47,14 +45,12 @@ public class RoomUserRepository : IRoomUserRepository
     
     public int Count => _users.Count;
     
-    public Task BroadcastDataAsync(byte[] data)
+    public async Task BroadcastDataAsync(byte[] data)
     {
         foreach (var roomUser in _users.Values)
         {
-            roomUser.NetworkObject.WriteToStreamAsync(data);
+            await roomUser.NetworkObject.WriteToStreamAsync(data);
         }
-
-        return Task.CompletedTask;
     }
 
     public ICollection<IRoomUser> GetAllWithRights()

@@ -1,46 +1,56 @@
-using Sadie.Game.Catalog;
-using Sadie.Game.Catalog.Pages;
+using Sadie.Game.Catalog.Items;
 using Sadie.Game.Furniture;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Helpers;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogPageWriter : NetworkPacketWriter
 {
-    public CatalogPageWriter(CatalogPage page, string catalogMode)
+    public CatalogPageWriter(
+        int pageId, 
+        string pageLayout,
+        string headerImage,
+        string teaserImage,
+        string specialImage,
+        string primaryText,
+        string secondaryText,
+        string teaserText,
+        List<CatalogItem> items, string catalogMode)
     {
         WriteShort(ServerPacketId.CatalogPage);
-        WriteInteger(page.Id);
+        WriteInteger(pageId);
         WriteString(catalogMode);
-        WriteString(page.Layout);
+        WriteString(pageLayout);
 
-        switch (page.Layout)
+        switch (pageLayout)
         {
             case "frontpage":
+            case "club_buy":
                 WriteInteger(2);
-                WriteString(page.HeaderImage);
-                WriteString(page.TeaserImage);
+                WriteString(headerImage);
+                WriteString(teaserImage);
                 WriteInteger(3);
-                WriteString(page.PrimaryText);
-                WriteString(page.SecondaryText);
-                WriteString(page.TeaserText);
+                WriteString(primaryText);
+                WriteString(secondaryText);
+                WriteString(teaserText);
                 break;
             default:
                 WriteInteger(3);
-                WriteString(page.HeaderImage);
-                WriteString(page.TeaserImage);
-                WriteString(page.SpecialImage);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteString(specialImage);
                 WriteInteger(3);
-                WriteString(page.PrimaryText);
-                WriteString(page.SecondaryText);
-                WriteString(page.TeaserText);
+                WriteString(primaryText);
+                WriteString(secondaryText);
+                WriteString(teaserText);
                 break;
         }
         
-        WriteInteger(page.Items.Count);
+        WriteInteger(items.Count);
 
-        foreach (var item in page.Items)
+        foreach (var item in items)
         {
             WriteInteger(item.Id);
             WriteString(item.Name);
@@ -53,7 +63,7 @@ public class CatalogPageWriter : NetworkPacketWriter
 
             foreach (var furnitureItem in item.FurnitureItems)
             {
-                WriteString(furnitureItem.Type.ToString());
+                WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
 
                 if (furnitureItem.Type == FurnitureItemType.Badge)
                 {
@@ -87,7 +97,7 @@ public class CatalogPageWriter : NetworkPacketWriter
             }
 
             WriteInteger(item.RequiresClubMembership ? 1 : 0);
-            WriteBool(false); // has offer
+            WriteBool(item.Amount != 1);
             WriteBool(false); // unknown
             WriteString($"{item.Name}.png");
         }
@@ -95,12 +105,9 @@ public class CatalogPageWriter : NetworkPacketWriter
         WriteInteger(0);
         WriteBool(false);
 
-        if (page.Layout is "frontpage4")
+        if (pageLayout is "frontpage4")
         {
             // TODO: serialize extra?
-        }
-        else
-        {
             WriteInteger(0);
         }
     }

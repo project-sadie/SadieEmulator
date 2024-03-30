@@ -20,6 +20,7 @@ public class ClassLineCountTest
             {
                 continue;
             }
+            Console.WriteLine(file);
             
             Assert.That(File.ReadAllLines(file), Has.Length.LessThanOrEqualTo(MaxLinesForClass));
         }

@@ -1,30 +1,26 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.Shared.Game.Rooms;
+using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomFactory : IRoomFactory
+public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public RoomFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-    
     public RoomLayout CreateLayout(int id,
         string name,
         string heightmap,
         HPoint doorPoint,
-        HDirection doorDirection)
+        HDirection doorDirection,
+        List<RoomTile> tiles)
     {
         return ActivatorUtilities.CreateInstance<RoomLayout>(
-            _serviceProvider, 
+            serviceProvider, 
             id, 
             name, 
             heightmap, 
             doorPoint, 
-            doorDirection);
+            doorDirection,
+            tiles);
     }
 
     public IRoomSettings CreateSettings(
@@ -48,7 +44,7 @@ public class RoomFactory : IRoomFactory
         int tradeOption)
     {
         return ActivatorUtilities.CreateInstance<RoomSettings>(
-            _serviceProvider, 
+            serviceProvider, 
             walkDiagonal, 
             accessType, 
             password, 
@@ -79,10 +75,11 @@ public class RoomFactory : IRoomFactory
         List<string> tags,
         int maxUsersAllowed,
         IRoomSettings settings,
-        List<int> playersWithRights)
+        List<long> playersWithRights,
+        IRoomFurnitureItemRepository furnitureItemRepository)
     {
         return ActivatorUtilities.CreateInstance<Room>(
-            _serviceProvider,
+            serviceProvider,
             id, 
             name,
             layout,
@@ -93,6 +90,7 @@ public class RoomFactory : IRoomFactory
             tags,
             maxUsersAllowed,
             settings,
-            playersWithRights);
+            playersWithRights,
+            furnitureItemRepository);
     }
 }

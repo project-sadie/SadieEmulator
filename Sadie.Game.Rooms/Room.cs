@@ -1,37 +1,37 @@
-﻿using Sadie.Game.Rooms.Packets.Writers;
+﻿using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
-public class Room : RoomData, IRoom
+public class Room(
+    int id,
+    string name,
+    RoomLayout layout,
+    int ownerId,
+    string ownerName,
+    string description,
+    int score,
+    List<string> tags,
+    int maxUsers,
+    IRoomUserRepository userRepository,
+    IRoomFurnitureItemRepository furnitureItemRepository,
+    IRoomSettings settings,
+    List<long> playersWithRights)
+    : RoomData(id,
+        name,
+        layout,
+        ownerId,
+        ownerName,
+        description,
+        score,
+        tags,
+        maxUsers,
+        userRepository,
+        settings,
+        playersWithRights,
+        furnitureItemRepository), IRoom
 {
-    public Room(
-        int id, 
-        string name, 
-        RoomLayout layout, 
-        int ownerId, 
-        string ownerName, 
-        string description, 
-        int score, 
-        List<string> tags, 
-        int maxUsers,
-        IRoomUserRepository userRepository, 
-        IRoomSettings settings,
-        List<int> playersWithRights) : base(id, 
-        name, 
-        layout, 
-        ownerId, 
-        ownerName, 
-        description, 
-        score, 
-        tags, 
-        maxUsers, 
-        userRepository, 
-        settings, 
-        playersWithRights)
-    {
-    }
-
     public async Task RunPeriodicCheckAsync()
     {
         var users = UserRepository.GetAll();
@@ -47,6 +47,8 @@ public class Room : RoomData, IRoom
         await UserRepository.BroadcastDataAsync(statusWriter);
         await UserRepository.BroadcastDataAsync(dataWriter);
     }
+
+    public IRoomFurnitureItemRepository FurnitureItemRepository => furnitureItemRepository;
 
     public async ValueTask DisposeAsync()
     {

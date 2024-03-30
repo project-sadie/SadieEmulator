@@ -1,4 +1,5 @@
 using Sadie.Game.Rooms.Chat;
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -18,5 +19,6 @@ public interface IRoomData
     IRoomUserRepository UserRepository { get; }
     IRoomSettings Settings { get; }
     List<RoomChatMessage> ChatMessages { get; }
-    public List<int> PlayersWithRights { get; }
+    public List<long> PlayersWithRights { get; }
+    public IRoomFurnitureItemRepository FurnitureItemRepository { get; }
 }

@@ -1,17 +1,11 @@
 ﻿using Sadie.Database;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;
 
-public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
+public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFriendshipFactory friendshipFactory)
+    : BaseDao(databaseProvider), IPlayerFriendshipDao
 {
-    private readonly PlayerFriendshipFactory _friendshipFactory;
-
-    public PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFriendshipFactory friendshipFactory) : base(databaseProvider)
-    {
-        _friendshipFactory = friendshipFactory;
-    }
-
     private static string GetDefaultSelectClause()
     {
         return @"
@@ -19,7 +13,6 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
             player_friendships.origin_player_id,
             player_friendships.target_player_id,
             player_friendships.status,
-            player_friendships.type_id,
             (SELECT username FROM players WHERE id = player_avatar_data.player_id) AS username,
             player_avatar_data.player_id AS target_id,
             player_avatar_data.figure_code,
@@ -30,19 +23,18 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
 
     private PlayerFriendship CreateFriendshipFromRecord(DatabaseRecord record)
     {
-        var targetData = _friendshipFactory.CreateFriendshipData(
+        var targetData = friendshipFactory.CreateFriendshipData(
             record.Get<int>("target_id"),
             record.Get<string>("username"),
             record.Get<string>("figure_code"),
             record.Get<string>("motto"),
             record.Get<char>("gender") == 'M' ? AvatarGender.Male : AvatarGender.Female);
         
-        return _friendshipFactory.CreateFriendship(
+        return friendshipFactory.CreateFriendship(
             record.Get<int>("request_id"),
             record.Get<int>("origin_player_id"),
             record.Get<int>("target_player_id"),
             (PlayerFriendshipStatus)record.Get<int>("status"),
-            (PlayerFriendshipType)record.Get<int>("request_id"),
             targetData);
     }
     
@@ -189,10 +181,9 @@ public class PlayerFriendshipDao : BaseDao, IPlayerFriendshipDao
                 origin_player_id, 
                 target_player_id, 
                 status, 
-                type_id, 
                 created_at
             ) 
-            VALUES (@originId, @targetId, @status, 0, @createdAt);", new Dictionary<string, object>
+            VALUES (@originId, @targetId, @status, @createdAt);", new Dictionary<string, object>
         {
             { "originId", originId },
             { "targetId", targetId },

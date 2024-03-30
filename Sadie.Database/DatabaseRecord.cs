@@ -1,16 +1,9 @@
 ﻿namespace Sadie.Database;
 
-public class DatabaseRecord
+public class DatabaseRecord(IDictionary<string, object> data)
 {
-    private readonly Dictionary<string, object> _data;
-
-    public DatabaseRecord(Dictionary<string, object> data)
-    {
-        _data = data;
-    }
-
     public T Get<T>(string column)
     {
-        return (T) Convert.ChangeType(_data[column], typeof(T));
+        return (T) Convert.ChangeType(data[column], typeof(T));
     }
 }

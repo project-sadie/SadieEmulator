@@ -1,6 +1,6 @@
-using Sadie.Shared.Game.Avatar;
-using Sadie.Shared.Game.Rooms;
-using Sadie.Shared.Networking;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Game.Rooms;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -12,5 +12,6 @@ public interface IRoomUserFactory
         int id, HPoint point, 
         HDirection directionHead,
         HDirection direction, 
-        IAvatarData avatarData);
+        IAvatarData avatarData,
+        RoomControllerLevel controllerLevel);
 }

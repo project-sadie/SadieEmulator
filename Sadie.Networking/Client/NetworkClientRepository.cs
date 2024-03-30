@@ -3,16 +3,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Sadie.Networking.Client;
 
-public class NetworkClientRepository : INetworkClientRepository
+public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : INetworkClientRepository
 {
-    private readonly ILogger<NetworkClientRepository> _logger;
-    private readonly ConcurrentDictionary<Guid, INetworkClient> _clients;
-
-    public NetworkClientRepository(ILogger<NetworkClientRepository> logger)
-    {
-        _logger = logger;
-        _clients = new ConcurrentDictionary<Guid, INetworkClient>();
-    }
+    private readonly ConcurrentDictionary<Guid, INetworkClient> _clients = new();
 
     public void AddClient(Guid guid, INetworkClient client)
     {
@@ -31,10 +24,11 @@ public class NetworkClientRepository : INetworkClientRepository
             }
 
             return result;
+            
         }
         catch (Exception e)
         {
-            _logger.LogError($"Failed to remove network client: {e.Message}");
+            logger.LogError($"Failed to remove network client: {e.Message}");
             return false;
         }
     }
@@ -42,8 +36,8 @@ public class NetworkClientRepository : INetworkClientRepository
     public async Task DisconnectIdleClientsAsync()
     {
         var idleClients = _clients.Values
-            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 40)
-            .Take(50)
+            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 60)
+            .Take(100)
             .ToList();
 
         if (idleClients.Count < 1)
@@ -51,15 +45,20 @@ public class NetworkClientRepository : INetworkClientRepository
             return;
         }
         
-        _logger.LogWarning($"Disconnecting {idleClients.Count} idle players");
+        logger.LogWarning($"Disconnecting {idleClients.Count} idle players");
 
         foreach (var client in idleClients)
         {
             if (!await TryRemoveAsync(client.Guid))
             {
-                _logger.LogError("Failed to dispose of network client");
+                logger.LogError("Failed to dispose of network client");
             }
         }
+    }
+    
+    public bool TryGetClientByGuid(Guid guid, out INetworkClient? client)
+    {
+        return _clients.TryGetValue(guid, out client);
     }
 
     public async ValueTask DisposeAsync()
@@ -68,7 +67,7 @@ public class NetworkClientRepository : INetworkClientRepository
         {
             if (!await TryRemoveAsync(client))
             {
-                _logger.LogError("Failed to dispose of network client");
+                logger.LogError("Failed to dispose of network client");
             }
         }
     }

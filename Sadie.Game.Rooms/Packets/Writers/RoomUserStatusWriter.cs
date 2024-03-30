@@ -1,6 +1,6 @@
 ﻿using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Networking;
-using Sadie.Shared.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
@@ -23,7 +23,7 @@ public class RoomUserStatusWriter : NetworkPacketWriter
             WriteString(user.Point.Z + "");
             WriteInteger((int) user.DirectionHead);
             WriteInteger((int) user.Direction);
-            WriteString("/" + string.Join("", statusList));
+            WriteString("/" + string.Join("/", statusList).TrimEnd('/'));
         }
     }
 }

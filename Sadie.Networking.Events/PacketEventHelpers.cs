@@ -3,14 +3,17 @@ using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
+using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Shared.Game.Avatar;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events;
 
 internal static class PacketEventHelpers
 {
-    internal static bool TryResolveRoomObjectsForClient(IRoomRepository roomRepository, INetworkClient client, out IRoom room, out RoomUser user)
+    internal static bool TryResolveRoomObjectsForClient(IRoomRepository roomRepository, INetworkClient client, out IRoom room, out IRoomUser user)
     {
         var player = client.Player;
         
@@ -49,6 +52,18 @@ internal static class PacketEventHelpers
         playerState.RoomVisits.Add(new PlayerRoomVisit(playerData.Id, room.Id));
 
         var avatarData = (IAvatarData) player.Data;
+
+        var controllerLevel = RoomControllerLevel.None;
+        
+        if (room.PlayersWithRights.Contains(playerData.Id))
+        {
+            controllerLevel = RoomControllerLevel.Rights;
+        }
+
+        if (room.OwnerId == player.Data.Id)
+        {
+            controllerLevel = RoomControllerLevel.Owner;
+        }
         
         var roomUser = roomUserFactory.Create(
             room,
@@ -57,8 +72,11 @@ internal static class PacketEventHelpers
             room.Layout.DoorPoint,
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
-            avatarData);
+            avatarData,
+            controllerLevel);
 
+        roomUser.ApplyFlatCtrlStatus();
+        
         if (!room.UserRepository.TryAdd(roomUser))
         {
             logger.LogError($"Failed to add user {playerData.Id} to room {room.Id}");
@@ -73,16 +91,24 @@ internal static class PacketEventHelpers
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
 
         var owner = room.OwnerId == playerData.Id;
-        var rightLevel = owner ? RoomRightLevel.Admin : RoomRightLevel.None;
         
         await client.WriteToStreamAsync(new RoomPaneWriter(room.Id, owner).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomRightsWriter(rightLevel).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
         
         if (owner)
         {
             await client.WriteToStreamAsync(new RoomOwnerWriter().GetAllBytes());
         }
-        
+
         await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
+    }
+
+    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
+    {
+        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
+            new Dictionary<string, string>()
+            {
+                { "message", error.ToString() }
+            }).GetAllBytes());
     }
 }
