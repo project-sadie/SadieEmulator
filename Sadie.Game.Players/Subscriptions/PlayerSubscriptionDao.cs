@@ -18,7 +18,7 @@ public class PlayerSubscriptionDao(
 
             FROM player_subscriptions
                 INNER JOIN subscriptions ON subscriptions.id = subscription_id
-            WHERE player_id = @playerId AND expires_at < NOW()", new Dictionary<string, object>
+            WHERE player_id = @playerId AND expires_at > NOW()", new Dictionary<string, object>
         {
             {"playerId", playerId}
         });
