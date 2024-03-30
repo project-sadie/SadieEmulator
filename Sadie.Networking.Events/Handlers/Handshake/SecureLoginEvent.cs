@@ -77,19 +77,25 @@ public class SecureLoginEvent(
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, IPlayer player)
     {
         var playerData = player.Data;
+        var subscriptions = playerData.Subscriptions;
         
         await networkObject.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoom, playerData.HomeRoom).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(1, 2, true).GetAllBytes());
+        
+        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
+            subscriptions.Exists(x => x.Name == "HABBO_CLUB") ? 1 : 0,
+            2,
+            true).GetAllBytes());
+        
         await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(playerData.NavigatorSettings).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(playerData.Settings.ShowNotifications).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore).GetAllBytes());
 
-        foreach (var subscription in playerData.Subscriptions)
+        foreach (var subscription in subscriptions)
         {
             var tillExpire = subscription.Expires - subscription.Started;
             var daysLeft = (int) tillExpire.TotalDays;
