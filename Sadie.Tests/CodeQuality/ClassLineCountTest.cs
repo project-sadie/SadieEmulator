@@ -2,13 +2,6 @@ namespace Sadie.Tests.CodeQuality;
 
 public class ClassLineCountTest
 {
-    private const int MaxLinesForClass = 340;
- 
-    private readonly List<string> _excludedFiles = new();
-    
-    /// <summary>
-    /// Ensures no classes exceed MaxLinesForClass lines of code
-    /// </summary>
     [Test]
     public Task Check_All_Classes_Line_Count()
     {
@@ -16,13 +9,14 @@ public class ClassLineCountTest
         
         foreach (var file in Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories))
         {
-            if (_excludedFiles.Contains(Path.GetFileName(file)))
+            var lines = File.ReadAllLines(file);
+
+            if (lines.Length > TestSettings.MaxLinesForClass)
             {
-                continue;
+                Console.WriteLine(file);
             }
-            Console.WriteLine(file);
             
-            Assert.That(File.ReadAllLines(file), Has.Length.LessThanOrEqualTo(MaxLinesForClass));
+            Assert.That(lines, Has.Length.LessThanOrEqualTo(TestSettings.MaxLinesForClass));
         }
         
         return Task.CompletedTask;
