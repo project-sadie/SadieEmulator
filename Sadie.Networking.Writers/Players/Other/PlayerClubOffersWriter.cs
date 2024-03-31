@@ -1,20 +1,19 @@
 ﻿using Sadie.Game.Players.Club;
-using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class HabboClubOffersWriter : NetworkPacketWriter
+public class PlayerClubOffersWriter : NetworkPacketWriter
 {
-    public HabboClubOffersWriter(
+    public PlayerClubOffersWriter(
         IReadOnlyCollection<PlayerClubOffer> offers, 
         int windowId, 
         bool unused, 
         bool canGift,
         int remainingDays)
     {
-        WriteShort(ServerPacketId.HabboClubOffers);
+        WriteShort(ServerPacketId.PlayerClubOffers);
         WriteInteger(offers.Count);
 
         foreach (var offer in offers)

@@ -68,7 +68,7 @@ public class ServerPacketId
     public const short PlayerRemoveFriends = 2800;
     public const short PlayerUpdateFriend = 2800;
     public const short RoomCreated = 1304;
-    public const short HabboClubOffers = 2405;
+    public const short PlayerClubOffers = 2405;
     public const short HabboClubGifts = 619;
     public const short HabboClubCenter = 3277;
     public const short RoomScore = 482;

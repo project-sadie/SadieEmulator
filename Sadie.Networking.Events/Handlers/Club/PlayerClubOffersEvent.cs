@@ -3,11 +3,10 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Club;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Other;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
-public class HabboClubDataEvent(HabboClubDataParser parser, PlayerClubOfferRepository clubOfferRepository) : INetworkPacketEvent
+public class PlayerClubOffersEvent(HabboClubDataParser parser, PlayerClubOfferRepository clubOfferRepository) : INetworkPacketEvent
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -34,7 +33,7 @@ public class HabboClubDataEvent(HabboClubDataParser parser, PlayerClubOfferRepos
             daysRemaining = (int)(daysTotal - daysSinceStarted);
         }
 
-        await client.WriteToStreamAsync(new HabboClubOffersWriter(
+        await client.WriteToStreamAsync(new PlayerClubOffersWriter(
             clubOfferRepository.Offers,
             parser.WindowId,
             false,
