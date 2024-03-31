@@ -81,11 +81,17 @@ public class NavigatorSearchEventHandler(
             switch (filterName)
             {
                 case "roomname":
-                    return categoryRoomMap.Where(x => x.Value.Any(r => r.Name.Contains(filterValue))).ToDictionary();
+                    return categoryRoomMap
+                        .Where(x => x.Value.Any(r => r.Name.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
+                        .ToDictionary();
                 case "owner":
-                    return categoryRoomMap.Where(x => x.Value.Any(r => r.OwnerName.Contains(filterValue))).ToDictionary();
+                    return categoryRoomMap
+                        .Where(x => x.Value.Any(r => r.OwnerName.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
+                        .ToDictionary();
                 case "tag":
-                    return categoryRoomMap.Where(x => x.Value.Any(r => r.Tags.Any(t => t.Contains(filterValue)))).ToDictionary();
+                    return categoryRoomMap
+                        .Where(x => x.Value.Any(r => r.Tags.Any(t => t.Contains(filterValue, StringComparison.OrdinalIgnoreCase))))
+                        .ToDictionary();
             }
         }
         else if (!string.IsNullOrEmpty(searchQuery))
