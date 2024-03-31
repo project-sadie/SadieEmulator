@@ -1,0 +1,34 @@
+using Sadie.Game.Catalog.Pages;
+using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Catalog;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Catalog;
+
+namespace Sadie.Networking.Events.Handlers.Catalog;
+
+public class CatalogPageEventHandler(CatalogPageEventParser eventParser, CatalogPageRepository catalogPageRepo) : INetworkPacketEventHandler
+{
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    {
+        eventParser.Parse(reader);
+        
+        var (exists, page) = catalogPageRepo.TryGet(eventParser.PageId);
+
+        if (!exists || page is not { Enabled: true } || !page.Visible)
+        {
+            return;
+        }
+
+        await client.WriteToStreamAsync(new CatalogPageWriter(
+            page.Id,
+            page.Layout, 
+            page.HeaderImage,
+            page.TeaserImage, 
+            page.SpecialImage, 
+            page.PrimaryText, 
+            page.SecondaryText, 
+            page.TeaserText, 
+            page.Items, 
+            eventParser.CatalogMode).GetAllBytes());
+    }
+}

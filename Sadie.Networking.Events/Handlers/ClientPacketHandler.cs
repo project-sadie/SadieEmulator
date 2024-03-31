@@ -7,27 +7,27 @@ namespace Sadie.Networking.Events.Handlers;
 
 public class ClientPacketHandler(
     ILogger<ClientPacketHandler> logger,
-    ConcurrentDictionary<int, INetworkPacketEvent> packets)
+    ConcurrentDictionary<int, INetworkPacketEventHandler> packets)
     : INetworkPacketHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
         if (!packets.TryGetValue(packet.PacketId, out var packetEvent))
         {
-            logger.LogError($"Couldn't resolve packet event for header '{packet.PacketId}'");
+            logger.LogError($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
             return;
         }
 
         await ExecuteAsync(client, packet, packetEvent);
     }
 
-    private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEvent @event)
+    private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEventHandler eventHandler)
     {
-        logger.LogDebug($"Executing packet '{@event.GetType().Name}'");
+        logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
         
         try
         {
-            await @event.HandleAsync(client, packet);
+            await eventHandler.HandleAsync(client, packet);
         }
         catch (Exception e)
         {

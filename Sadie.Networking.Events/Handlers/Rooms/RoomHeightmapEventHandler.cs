@@ -1,0 +1,59 @@
+﻿using Sadie.Game.Furniture;
+using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Furniture;
+
+namespace Sadie.Networking.Events.Handlers.Rooms;
+
+public class RoomHeightmapEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+{
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    {
+        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
+        
+        if (!found || room == null)
+        {
+            return;
+        }
+
+        var roomLayout = room.Layout;
+        var userRepository = room.UserRepository;
+        var isOwner = room.OwnerId == client.Player.Data.Id;
+        
+        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomLayout).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, roomLayout.HeightMap.Replace("\r\n", "\r")).GetAllBytes());
+        
+        await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
+        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
+        
+        var floorItems = room.FurnitureItemRepository
+            .Items
+            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
+            .ToList();
+        
+        var wallItems = room.FurnitureItemRepository
+            .Items
+            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Wall)
+            .ToList();
+
+        var floorFurnitureOwners = 
+            floorItems
+                .Select(item => new { Key = item.OwnerId, Value = item.OwnerUsername })
+                .Distinct()
+                .ToDictionary(x => x.Key, x => x.Value);
+
+        var wallFurnitureOwners = 
+            wallItems
+                .Select(item => new { Key = item.OwnerId, Value = item.OwnerUsername })
+                .Distinct()
+                .ToDictionary(x => x.Key, x => x.Value);
+
+        await client.WriteToStreamAsync(new RoomFloorItemsWriter(floorItems, floorFurnitureOwners).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems, wallFurnitureOwners).GetAllBytes());
+        
+        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter(room, false, true, isOwner).GetAllBytes());
+    }
+}

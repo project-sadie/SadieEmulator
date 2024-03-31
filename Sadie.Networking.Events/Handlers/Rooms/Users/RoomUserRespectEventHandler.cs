@@ -1,0 +1,50 @@
+using Sadie.Game.Players;
+using Sadie.Game.Players.Respect;
+using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Users;
+using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Users;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Rooms.Users;
+
+namespace Sadie.Networking.Events.Handlers.Rooms.Users;
+
+public class RoomUserRespectEventHandler(
+    RoomUserRespectEventParser eventParser,
+    IPlayerRepository playerRepository,
+    IRoomRepository roomRepository,
+    IPlayerRespectDao respectDao)
+    : INetworkPacketEventHandler
+{
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    {
+        eventParser.Parse(reader);
+
+        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        {
+            return;
+        }
+        
+        var player = client.Player!;
+        var playerData = player.Data;
+        var lastRoom = player.Data.CurrentRoomId;
+        
+        if (playerData.RespectPoints < 1 || 
+            playerData.Id == eventParser.TargetId || 
+            !playerRepository.TryGetPlayerById(eventParser.TargetId, out var targetPlayer) || 
+            targetPlayer!.Data.CurrentRoomId != 0 && lastRoom != targetPlayer.Data.CurrentRoomId)
+        {
+            return;
+        }
+
+        var targetData = targetPlayer.Data;
+
+        playerData.RespectPoints--;
+        targetData.RespectsReceived++;
+        
+        await respectDao.CreateAsync(playerData.Id, eventParser.TargetId);
+
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetData.RespectsReceived).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp).GetAllBytes());
+    }
+}
