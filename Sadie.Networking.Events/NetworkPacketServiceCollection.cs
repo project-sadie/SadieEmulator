@@ -98,104 +98,12 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<PlayerProfileParser>();
         serviceCollection.AddSingleton<PlayerActivityParser>();
         serviceCollection.AddSingleton<RoomDoorbellAnswerParser>();
-        
-        serviceCollection.AddSingleton<ClientVersionEvent>();
-        serviceCollection.AddSingleton<ClientVariablesEvent>();
-        serviceCollection.AddSingleton<UniqueIdEvent>();
-        serviceCollection.AddSingleton<SecureLoginEvent>();
-        serviceCollection.AddSingleton<PerformanceLogEvent>();
-        serviceCollection.AddSingleton<PlayerActivityEvent>();
-        serviceCollection.AddSingleton<PlayerDataEvent>();
-        serviceCollection.AddSingleton<PlayerBalanceEvent>();
-        serviceCollection.AddSingleton<PlayerSubscriptionEvent>();
-        serviceCollection.AddSingleton<NavigatorDataEvent>();
-        serviceCollection.AddSingleton<PlayerFriendsEvent>();
-        serviceCollection.AddSingleton<PlayerPingEvent>();
-        serviceCollection.AddSingleton<PlayerPongEvent>();
-        serviceCollection.AddSingleton<HotelViewDataEvent>();
-        serviceCollection.AddSingleton<PlayerUsernameEvent>();
-        serviceCollection.AddSingleton<PlayerMeMenuSettingsEvent>();
-        serviceCollection.AddSingleton<HotelViewBonusRareEvent>();
-        serviceCollection.AddSingleton<GetBadgePointLimitsEvent>();
-        serviceCollection.AddSingleton<RequestGameCenterConfigEvent>();
-        serviceCollection.AddSingleton<GetGameAchievementsMessageEvent>();
-        serviceCollection.AddSingleton<PromotedRoomsEvent>();
-        serviceCollection.AddSingleton<RoomCategoriesEvent>();
-        serviceCollection.AddSingleton<NavigatorEventCategoriesEvent>();
-        serviceCollection.AddSingleton<PlayerFriendRequestsEvent>();
-        serviceCollection.AddSingleton<PlayerSanctionStatusEvent>();
-        serviceCollection.AddSingleton<GetTargetedOfferEvent>();
-        serviceCollection.AddSingleton<RoomLoadedEvent>();
-        serviceCollection.AddSingleton<GetInterstitialEvent>();
-        serviceCollection.AddSingleton<RoomHeightmapEvent>();
-        serviceCollection.AddSingleton<RoomUserChatEvent>();
-        serviceCollection.AddSingleton<RoomUserShoutEvent>();
-        serviceCollection.AddSingleton<RoomUserWalkEvent>();
-        serviceCollection.AddSingleton<RoomUserDanceEvent>();
-        serviceCollection.AddSingleton<RoomUserActionEvent>();
-        serviceCollection.AddSingleton<RoomUserActionEvent>();
-        serviceCollection.AddSingleton<RoomUserStartTypingEvent>();
-        serviceCollection.AddSingleton<RoomUserStopTypingEvent>();
-        serviceCollection.AddSingleton<RoomUserWhisperEvent>();
-        serviceCollection.AddSingleton<RoomUserLookAtEvent>();
-        serviceCollection.AddSingleton<RoomUserSignEvent>();
-        serviceCollection.AddSingleton<RoomUserSitEvent>();
-        serviceCollection.AddSingleton<SaveNavigatorSettingsEvent>();
-        serviceCollection.AddSingleton<NavigatorSearchEvent>();
-        serviceCollection.AddSingleton<PlayerChangedAppearanceEvent>();
-        serviceCollection.AddSingleton<PlayerChangedMottoEvent>();
-        serviceCollection.AddSingleton<PlayerRelationshipsEvent>();
-        serviceCollection.AddSingleton<RoomUserTagsEvent>();
-        serviceCollection.AddSingleton<RoomForwardDataEvent>();
-        serviceCollection.AddSingleton<PlayerProfileEvent>();
-        serviceCollection.AddSingleton<PlayerWearingBadgesEvent>();
-        serviceCollection.AddSingleton<RoomUserRespectEvent>();
-        serviceCollection.AddSingleton<PlayerSendFriendRequestEvent>();
-        serviceCollection.AddSingleton<PlayerAcceptFriendRequestEvent>();
-        serviceCollection.AddSingleton<PlayerDeclineFriendRequestEvent>();
-        serviceCollection.AddSingleton<PlayerRemoveFriendsEvent>();
-        serviceCollection.AddSingleton<PlayerChangeRelationshipEvent>();
-        serviceCollection.AddSingleton<PlayerCreateRoomEvent>();
-        serviceCollection.AddSingleton<HabboClubDataEvent>();
-        serviceCollection.AddSingleton<PlayerClubCenterDataEvent>();
-        serviceCollection.AddSingleton<HabboClubGiftsEvent>();
-        serviceCollection.AddSingleton<RoomUserGoToHotelViewEvent>();
-        serviceCollection.AddSingleton<PlayerSearchEvent>();
-        serviceCollection.AddSingleton<PlayerStalkEvent>();
-        serviceCollection.AddSingleton<PlayerSendDirectMessageEvent>();
-        serviceCollection.AddSingleton<RequestRoomSettingsEvent>();
-        serviceCollection.AddSingleton<RoomSettingsSaveEvent>();
-        serviceCollection.AddSingleton<PlayerInventoryBadgesEvent>();
-        serviceCollection.AddSingleton<RoomDoorbellAnswerEvent>();
-        serviceCollection.AddSingleton<RoomDoorbellAcceptedEvent>();
-        serviceCollection.AddSingleton<PlayerAchievementsEvent>();
-        serviceCollection.AddSingleton<CameraPriceEvent>();
-        serviceCollection.AddSingleton<CatalogModeEvent>();
-        serviceCollection.AddSingleton<CatalogMarketplaceConfigEvent>();
-        serviceCollection.AddSingleton<CatalogRecyclerLogicEvent>();
-        serviceCollection.AddSingleton<CatalogGiftConfigEvent>();
-        serviceCollection.AddSingleton<RoomUserChangeChatBubbleEvent>();
-        serviceCollection.AddSingleton<CatalogDiscountEvent>();
-        serviceCollection.AddSingleton<CatalogIndexEvent>();
-        serviceCollection.AddSingleton<CatalogPageEvent>();
-        serviceCollection.AddSingleton<CatalogPurchaseEvent>();
-        serviceCollection.AddSingleton<RoomUserChatEvent>();
-        serviceCollection.AddSingleton<RoomUserShoutEvent>();
-        serviceCollection.AddSingleton<NavigatorSearchEvent>();
-        serviceCollection.AddSingleton<PlayerFriendListUpdateEvent>();
-        serviceCollection.AddSingleton<HotelViewPromotionsEvent>();
-        serviceCollection.AddSingleton<RoomLikeEvent>();
-        serviceCollection.AddSingleton<PlayerInventoryFurnitureItemsEvent>();
-        serviceCollection.AddSingleton<RoomFurnitureItemPlacedEvent>();
-        serviceCollection.AddSingleton<RoomFurnitureItemEjectedEvent>();
-        serviceCollection.AddSingleton<RoomFloorFurnitureItemUpdatedEvent>();
-        serviceCollection.AddSingleton<RoomFurnitureItemUseEvent>();
-        serviceCollection.AddSingleton<PlayerMessengerInitEvent>();
-        serviceCollection.AddSingleton<RoomGiveUserRightsEvent>();
-        serviceCollection.AddSingleton<RoomRemoveUserRightsEvent>();
-        serviceCollection.AddSingleton<PlayerWardrobeEvent>();
-        serviceCollection.AddSingleton<PlayerWardrobeSaveEvent>();
-        serviceCollection.AddSingleton<RoomWallFurnitureItemUpdatedEvent>();
+
+        serviceCollection.Scan(scan => scan
+            .FromAssemblyOf<INetworkPacketEvent>()
+            .AddClasses(classes => classes.AssignableTo<INetworkPacketEvent>())
+            .AsSelf()
+            .WithSingletonLifetime());
         
         serviceCollection.AddSingleton(provider => new ConcurrentDictionary<int, INetworkPacketEvent>
         {
@@ -257,7 +165,7 @@ public static class NetworkPacketServiceCollection
             [ClientPacketId.PlayerRemoveFriend] = provider.GetRequiredService<PlayerRemoveFriendsEvent>(),
             [ClientPacketId.PlayerChangeRelation] = provider.GetRequiredService<PlayerChangeRelationshipEvent>(),
             [ClientPacketId.PlayerCreateRoom] = provider.GetRequiredService<PlayerCreateRoomEvent>(),
-            [ClientPacketId.HabboClubData] = provider.GetRequiredService<HabboClubDataEvent>(),
+            [ClientPacketId.HabboClubData] = provider.GetRequiredService<PlayerClubOffersEvent>(),
             [ClientPacketId.HabboClubCenter] = provider.GetRequiredService<PlayerClubCenterDataEvent>(),
             [ClientPacketId.HabboClubGifts] = provider.GetRequiredService<HabboClubGiftsEvent>(),
             [ClientPacketId.RoomUserGoToHotelView] = provider.GetRequiredService<RoomUserGoToHotelViewEvent>(),
