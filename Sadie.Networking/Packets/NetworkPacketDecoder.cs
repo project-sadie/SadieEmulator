@@ -38,6 +38,14 @@ public class NetworkPacketDecoder
 
             packets.AddRange(DecodePacketsFromBytes(extra));
         }
+
+        // For some reason Nitro sends a different header based on if its originating from a room.
+        // Just update it to the one our handler is registered too.
+        
+        if (packetId == 2300)
+        {
+            packetId = 3898;
+        }
         
         packets.Add(new NetworkPacket(packetId, content));
         return packets;

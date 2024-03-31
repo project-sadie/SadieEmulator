@@ -16,14 +16,16 @@ public class PlayerCreateRoomEventHandler(
     {
         eventParser.Parse(reader);
 
-        if (eventParser.LayoutId == -1)
+        var layoutId = await roomRepository.GetLayoutIdFromNameAsync(eventParser.LayoutName);
+        
+        if (layoutId == -1)
         {
             return;
         }
 
         var roomId = await roomRepository.CreateRoomAsync(
             eventParser.Name, 
-            eventParser.LayoutId, 
+            layoutId, 
             client.Player.Data.Id, 
             eventParser.MaxUsersAllowed, 
             eventParser.Description);

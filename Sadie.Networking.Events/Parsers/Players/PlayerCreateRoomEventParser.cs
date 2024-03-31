@@ -10,7 +10,6 @@ public class PlayerCreateRoomEventParser : INetworkPacketEventParser
     public int CategoryId { get; private set; }
     public int MaxUsersAllowed { get; private set; }
     public int TradingPermission { get; private set; }
-    public int LayoutId { get; private set; }
 
     public void Parse(INetworkPacketReader reader)
     {
@@ -20,6 +19,5 @@ public class PlayerCreateRoomEventParser : INetworkPacketEventParser
         CategoryId = reader.ReadInteger();
         MaxUsersAllowed = reader.ReadInteger();
         TradingPermission = reader.ReadInteger();
-        LayoutId = reader.ReadInteger();
     }
 }
