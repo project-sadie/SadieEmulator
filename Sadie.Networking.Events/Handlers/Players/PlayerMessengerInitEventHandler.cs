@@ -9,6 +9,8 @@ public class PlayerMessengerInitEventHandler(
     PlayerConstants playerConstants)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerMessengerInit;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         await client.WriteToStreamAsync(new PlayerMessengerInitWriter(

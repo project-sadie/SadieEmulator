@@ -5,6 +5,8 @@ namespace Sadie.Networking.Events.Handlers.Unknown;
 
 public class GetInterstitialEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.GetInterstitial;
+
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         return Task.CompletedTask;

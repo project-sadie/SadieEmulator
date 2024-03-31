@@ -16,6 +16,8 @@ public class PlayerSendDirectMessageEventHandler(
     IPlayerMessageDao playerMessageDao)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerSendDirectMessage;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

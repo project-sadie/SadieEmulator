@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerSanctionStatusEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerSanctionStatus;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         await client.WriteToStreamAsync(new PlayerSanctionStatusWriter(

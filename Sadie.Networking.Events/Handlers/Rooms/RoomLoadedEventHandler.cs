@@ -21,6 +21,8 @@ public class RoomLoadedEventHandler(
     IPlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomLoaded;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader readers)
     {
         eventParser.Parse(readers);
@@ -95,7 +97,7 @@ public class RoomLoadedEventHandler(
             }
         }
         
-        await PacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await NetworkPacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
         
         await playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
             playerData.FriendshipComponent.Friendships, true, true);

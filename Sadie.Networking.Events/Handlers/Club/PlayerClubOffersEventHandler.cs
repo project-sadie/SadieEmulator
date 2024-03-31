@@ -8,6 +8,8 @@ namespace Sadie.Networking.Events.Handlers.Club;
 
 public class PlayerClubOffersEventHandler(PlayerClubOffersEventParser eventParser, PlayerClubOfferRepository clubOfferRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.HabboClubData;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

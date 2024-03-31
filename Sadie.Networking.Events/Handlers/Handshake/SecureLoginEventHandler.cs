@@ -27,6 +27,8 @@ public class SecureLoginEventHandler(
     INetworkClientRepository networkClientRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.SecureLogin;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

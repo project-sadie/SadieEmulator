@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerBalanceEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerBalance;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;

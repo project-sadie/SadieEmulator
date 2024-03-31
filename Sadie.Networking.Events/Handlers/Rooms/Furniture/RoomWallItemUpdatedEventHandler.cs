@@ -14,6 +14,8 @@ public class RoomWallItemUpdatedEventHandler(
     IRoomFurnitureItemDao roomFurnitureItemDao)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomWallItemUpdated;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
@@ -32,7 +34,7 @@ public class RoomWallItemUpdatedEventHandler(
 
         if (!client.RoomUser.HasRights())
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
             return;
         }
 

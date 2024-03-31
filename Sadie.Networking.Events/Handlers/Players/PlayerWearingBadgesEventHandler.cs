@@ -15,6 +15,8 @@ public class PlayerWearingBadgesEventHandler(
     IPlayerBadgeRepository badgeRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerWearingBadges;
+
     public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
@@ -31,7 +33,7 @@ public class PlayerWearingBadgesEventHandler(
             DistinctBy(x => x.Slot).
             ToList();
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, networkClient, out var room, out _))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, networkClient, out var room, out _))
         {
             await networkClient.WriteToStreamAsync(new PlayerWearingBadgesWriter(playerId, playerBadges).GetAllBytes());
             return;

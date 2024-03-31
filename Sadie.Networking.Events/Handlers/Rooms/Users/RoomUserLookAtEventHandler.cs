@@ -9,11 +9,13 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomUserLookAt;
+
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
 
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }

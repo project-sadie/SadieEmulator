@@ -18,6 +18,8 @@ public class CatalogPurchaseEventHandler(
     CatalogPageRepository pageRepository, 
     IPlayerInventoryDao inventoryDao) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.CatalogPurchase;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

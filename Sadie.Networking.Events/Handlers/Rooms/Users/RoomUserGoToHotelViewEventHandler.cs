@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomUserGoToHotelView;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;

@@ -13,6 +13,8 @@ public class PlayerRelationshipsEventHandler(
     IPlayerDao playerDao,
     IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerRelationships;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

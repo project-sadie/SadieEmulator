@@ -7,6 +7,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Club;
 
 public class PlayerSubscriptionEventHandler(PlayerSubscriptionEventParser eventParser) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerSubscription;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

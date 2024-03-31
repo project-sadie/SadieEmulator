@@ -10,6 +10,8 @@ public class CatalogModeEventHandler(
     CatalogModeEventParser eventParser,
     CatalogPageRepository catalogPageRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.CatalogMode;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

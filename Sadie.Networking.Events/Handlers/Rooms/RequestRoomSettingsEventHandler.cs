@@ -10,6 +10,8 @@ public class RequestRoomSettingsEventHandler(
     RequestRoomSettingsEventParser eventParser, 
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomSettings;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

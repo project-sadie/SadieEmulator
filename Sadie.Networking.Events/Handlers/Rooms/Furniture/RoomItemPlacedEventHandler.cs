@@ -20,13 +20,15 @@ public class RoomItemPlacedEventHandler(
     IPlayerInventoryDao playerInventoryDao,
     IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomFurnitureItemPlaced;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
 
         if (client.Player == null || client.RoomUser == null)
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
         
@@ -35,7 +37,7 @@ public class RoomItemPlacedEventHandler(
         
         if (!int.TryParse(placementData[0], out var itemId))
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -43,7 +45,7 @@ public class RoomItemPlacedEventHandler(
 
         if (playerItem == null)
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
         
@@ -51,13 +53,13 @@ public class RoomItemPlacedEventHandler(
         
         if (!found || room == null)
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
         if (!client.RoomUser.HasRights())
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
             return;
         }
 
@@ -89,7 +91,7 @@ public class RoomItemPlacedEventHandler(
             !int.TryParse(placementData[2], out var y) || 
             !int.TryParse(placementData[3], out var direction))
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -97,7 +99,7 @@ public class RoomItemPlacedEventHandler(
 
         if (tile == null || tile.State == RoomTileState.Closed)
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
             

@@ -7,6 +7,8 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 
 public class UniqueIdEventHandler(UniqueIdEventParser eventParser) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.UniqueId;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

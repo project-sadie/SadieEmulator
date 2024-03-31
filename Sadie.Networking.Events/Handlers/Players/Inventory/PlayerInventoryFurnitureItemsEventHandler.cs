@@ -8,6 +8,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 
 public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerInventoryFurnitureItems;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var furnitureItems = client.Player.Data.Inventory.Items;

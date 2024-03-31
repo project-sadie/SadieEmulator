@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogGiftConfigEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.CatalogGiftConfig;
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         await client.WriteToStreamAsync(new CatalogGiftConfigWriter().GetAllBytes());

@@ -16,6 +16,8 @@ public class PlayerAcceptFriendRequestEventHandler(
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerAcceptFriendRequest;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

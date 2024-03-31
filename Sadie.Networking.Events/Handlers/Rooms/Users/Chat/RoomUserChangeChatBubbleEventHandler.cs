@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 public class RoomUserChangeChatBubbleEventHandler(RoomUserChangeChatBubbleEventParser eventParser) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomUserChangeChatBubble;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

@@ -12,6 +12,8 @@ public class RoomRemoveUserRightsEventHandler(
     IRoomRepository roomRepository, 
     IRoomRightsDao roomRightsDao) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomRemoveUserRights;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

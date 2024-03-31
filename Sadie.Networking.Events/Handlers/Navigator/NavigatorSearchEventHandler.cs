@@ -15,6 +15,8 @@ public class NavigatorSearchEventHandler(
     NavigatorRoomProvider navigatorRoomProvider)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.NavigatorSearch;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

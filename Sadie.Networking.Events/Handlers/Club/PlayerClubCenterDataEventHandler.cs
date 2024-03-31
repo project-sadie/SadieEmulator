@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Club;
 
 public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.HabboClubCenter;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var subscription = client.Player?.Data.Subscriptions.FirstOrDefault(x => x.Name == "HABBO_CLUB");

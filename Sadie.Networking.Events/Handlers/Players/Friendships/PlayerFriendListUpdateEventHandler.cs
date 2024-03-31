@@ -7,10 +7,11 @@ using Sadie.Networking.Writers.Players.Friendships;
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerFriendListUpdateEventHandler(
-    IPlayerRepository playerRepository,
-    IRoomRepository roomRepository)
+    IPlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerFriendListUpdate;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player!;

@@ -10,6 +10,8 @@ public class PlayerWardrobeSaveEventHandler(
     PlayerWardrobeSaveEventParser eventParser,
     IPlayerWardrobeDao wardrobeDao) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerWardrobeSave;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

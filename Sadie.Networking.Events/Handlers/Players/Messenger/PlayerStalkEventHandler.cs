@@ -10,6 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerStalk;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

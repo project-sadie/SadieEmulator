@@ -10,6 +10,8 @@ public class RoomDoorbellAnswerEventHandler(
     RoomDoorbellAnswerEventParser eventParser,
     IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomDoorbellAnswer;
+
     public async Task HandleAsync(
         INetworkClient client, 
         INetworkPacketReader reader)

@@ -7,6 +7,8 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 public class NavigatorDataEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.NavigatorData;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var metaData = new Dictionary<string, int>

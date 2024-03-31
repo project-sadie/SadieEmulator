@@ -1,20 +1,27 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers;
 
-public class ClientPacketHandler(
-    ILogger<ClientPacketHandler> logger,
-    ConcurrentDictionary<int, INetworkPacketEventHandler> packets)
-    : INetworkPacketHandler
+public class ClientPacketHandler : INetworkPacketHandler
 {
+    private readonly ILogger<ClientPacketHandler> _logger;
+    private readonly Dictionary<int, INetworkPacketEventHandler> _packets;
+
+    public ClientPacketHandler(
+        ILogger<ClientPacketHandler> logger, 
+        IEnumerable<INetworkPacketEventHandler> packetHandlers)
+    {
+        _logger = logger;
+        _packets = packetHandlers.ToDictionary(i => i.Id, h => h);
+    }
+
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
-        if (!packets.TryGetValue(packet.PacketId, out var packetEvent))
+        if (!_packets.TryGetValue(packet.PacketId, out var packetEvent))
         {
-            logger.LogError($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
+            _logger.LogError($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
             return;
         }
 
@@ -23,7 +30,7 @@ public class ClientPacketHandler(
 
     private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEventHandler eventHandler)
     {
-        logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
+        _logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
         
         try
         {
@@ -31,7 +38,7 @@ public class ClientPacketHandler(
         }
         catch (Exception e)
         {
-            logger.LogError(e.ToString());
+            _logger.LogError(e.ToString());
         }
     }
 }

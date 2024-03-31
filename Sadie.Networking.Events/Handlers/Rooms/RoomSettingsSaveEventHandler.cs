@@ -9,6 +9,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 public class RoomSettingsSaveEventHandler(RoomSettingsSaveEventParser eventParser, IRoomRepository roomRepository, RoomConstants roomConstants) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomSettingsSave;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

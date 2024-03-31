@@ -14,6 +14,8 @@ public class PlayerSendFriendRequestEventHandler(
     PlayerConstants playerConstants)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerFriendRequests;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

@@ -10,6 +10,8 @@ public class PlayerCreateRoomEventHandler(
     PlayerCreateRoomEventParser eventParser,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerCreateRoom;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

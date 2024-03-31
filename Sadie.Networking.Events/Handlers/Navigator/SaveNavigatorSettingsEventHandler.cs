@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 public class SaveNavigatorSettingsEventHandler(SaveNavigatorSettingsEventParser eventParser) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.SaveNavigatorSettings;
+
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

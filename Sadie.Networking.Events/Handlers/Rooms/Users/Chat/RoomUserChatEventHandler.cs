@@ -17,6 +17,8 @@ public class RoomUserChatEventHandler(
     IRoomChatCommandRepository commandRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomUserChat;
+
     public async Task HandleAsync(
         INetworkClient client, 
         INetworkPacketReader reader)
@@ -30,7 +32,7 @@ public class RoomUserChatEventHandler(
             return;
         }
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }

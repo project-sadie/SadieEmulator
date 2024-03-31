@@ -12,6 +12,8 @@ public class PlayerDeclineFriendRequestEventHandler(
     IPlayerFriendshipRepository friendshipRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerDeclineFriendRequest;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

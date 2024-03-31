@@ -10,6 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 public class RoomHeightmapEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomHeightmap;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);

@@ -8,6 +8,8 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogPageEventHandler(CatalogPageEventParser eventParser, CatalogPageRepository catalogPageRepo) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.CatalogPage;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

@@ -4,8 +4,11 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-public class PlayerActivityEventHandler(PlayerActivityEventParser eventParser) : INetworkPacketEventHandler
+public class PlayerActivityEventHandler(
+    PlayerActivityEventParser eventParser) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerActivity;
+
     public Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

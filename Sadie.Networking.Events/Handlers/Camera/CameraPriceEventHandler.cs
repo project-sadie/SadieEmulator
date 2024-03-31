@@ -6,6 +6,8 @@ namespace Sadie.Networking.Events.Handlers.Camera;
 
 public class CameraPriceEventHandler : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.CameraPrice;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var costCredits = 0;

@@ -13,6 +13,8 @@ public class PlayerRemoveFriendsEventHandler(
     IPlayerFriendshipRepository friendshipRepository)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerRemoveFriends;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

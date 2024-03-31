@@ -13,6 +13,8 @@ public class PlayerChangeRelationshipEventHandler(
     IPlayerDao playerDao)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerChangeRelationship;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

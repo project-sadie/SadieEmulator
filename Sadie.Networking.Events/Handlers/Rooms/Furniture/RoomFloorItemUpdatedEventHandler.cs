@@ -14,6 +14,8 @@ public class RoomFloorItemUpdatedEventHandler(
     IRoomRepository roomRepository, 
     IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomFloorFurnitureItemUpdated;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
@@ -34,7 +36,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
         if (!client.RoomUser.HasRights())
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
             return;
         }
 
@@ -65,7 +67,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
         if (tile == null || tile.State == RoomTileState.Closed)
         {
-            await PacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 

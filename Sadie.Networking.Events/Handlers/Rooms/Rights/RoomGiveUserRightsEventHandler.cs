@@ -12,6 +12,8 @@ public class RoomGiveUserRightsEventHandler(
     IRoomRepository roomRepository, 
     IRoomRightsDao roomRightsDao) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomGiveUserRights;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

@@ -11,6 +11,8 @@ public class RoomItemUseEventHandler(
     RoomFurnitureItemUseEventParser eventParser,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomFurnitureItemUse;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

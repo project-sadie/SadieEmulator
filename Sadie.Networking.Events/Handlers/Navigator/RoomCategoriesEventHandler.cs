@@ -7,6 +7,8 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 public class RoomCategoriesEventHandler(IRoomCategoryRepository roomCategoryRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomCategories;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         await client.WriteToStreamAsync(new RoomCategoriesWriter(

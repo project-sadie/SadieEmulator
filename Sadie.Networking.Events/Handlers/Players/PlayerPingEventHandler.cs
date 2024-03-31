@@ -7,6 +7,8 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerPingEventHandler(PlayerPingEventParser eventParser) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.PlayerPing;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

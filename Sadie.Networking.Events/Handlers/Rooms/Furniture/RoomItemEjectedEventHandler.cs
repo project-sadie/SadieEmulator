@@ -18,6 +18,8 @@ public class RoomItemEjectedEventHandler(
     IRoomFurnitureItemDao roomFurnitureItemDao,
     IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomFurnitureItemEjected;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

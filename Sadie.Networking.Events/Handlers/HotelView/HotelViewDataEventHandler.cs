@@ -7,6 +7,8 @@ namespace Sadie.Networking.Events.Handlers.HotelView;
 
 public class HotelViewDataEventHandler(HotelViewDataEventParser eventParser) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.HotelViewData;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

@@ -8,6 +8,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomForwardData;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

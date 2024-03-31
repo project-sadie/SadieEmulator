@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 
-public class RoomUserChangeChatBubbleEventParser
+public class RoomUserChangeChatBubbleEventParser : INetworkPacketEventParser
 {
     public ChatBubble Bubble { get; private set; }
 

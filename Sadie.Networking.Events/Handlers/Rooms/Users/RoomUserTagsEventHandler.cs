@@ -8,11 +8,13 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 public class RoomUserTagsEventHandler(RoomUserTagsEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomUserTags;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
         
-        if (!PacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }

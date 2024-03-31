@@ -14,6 +14,8 @@ public class RoomDoorbellAcceptedEventHandler(
     IRoomUserFactory roomUserFactory)
     : INetworkPacketEventHandler
 {
+    public int Id => EventHandlerIds.RoomDoorbellAccepted;
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
@@ -25,6 +27,6 @@ public class RoomDoorbellAcceptedEventHandler(
             return;
         }
         
-        await PacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await NetworkPacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
     }
 }
