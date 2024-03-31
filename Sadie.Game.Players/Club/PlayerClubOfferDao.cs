@@ -7,7 +7,15 @@ public class PlayerClubOfferDao(IDatabaseProvider databaseProvider, PlayerClubOf
     public async Task<List<PlayerClubOffer>> GetAllAsync()
     {
         var offers = new List<PlayerClubOffer>();
-        var reader = await GetReaderAsync("SELECT id, name, duration_days, cost_credits, cost_points, cost_points_type, is_vip FROM player_club_offers");
+        
+        var reader = await GetReaderAsync(@"SELECT 
+            id, 
+            name, 
+            duration_days, 
+            cost_credits, 
+            cost_points, 
+            cost_points_type, 
+            is_vip FROM player_club_offers");
 
         while (true)
         {

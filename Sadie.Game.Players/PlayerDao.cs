@@ -23,7 +23,7 @@ public class PlayerDao(
     IPlayerWardrobeDao wardrobeDao)
     : BaseDao(databaseProvider), IPlayerDao
 {
-    public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
+    private async Task<DatabaseRecord?> GetRecordAsync(string ssoToken)
     {
         var reader = await GetReaderAsync(@"
             SELECT 
@@ -82,6 +82,18 @@ public class PlayerDao(
         var (success, record) = reader.Read();
 
         if (!success || record == null)
+        {
+            return null;
+        }
+
+        return record;
+    }
+    
+    public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoTokenAsync(INetworkObject networkObject, string ssoToken)
+    {
+        var record = await GetRecordAsync(ssoToken);
+
+        if (record == null)
         {
             return new Tuple<bool, IPlayer?>(false, null);
         }
