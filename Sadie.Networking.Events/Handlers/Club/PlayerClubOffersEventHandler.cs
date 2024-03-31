@@ -6,7 +6,9 @@ using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
-public class PlayerClubOffersEventHandler(PlayerClubOffersEventParser eventParser, PlayerClubOfferRepository clubOfferRepository) : INetworkPacketEventHandler
+public class PlayerClubOffersEventHandler(
+    PlayerClubOffersEventParser eventParser, 
+    PlayerClubOfferRepository clubOfferRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.HabboClubData;
 

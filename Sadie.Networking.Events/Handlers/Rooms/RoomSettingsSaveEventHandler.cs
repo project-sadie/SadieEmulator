@@ -7,7 +7,10 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomSettingsSaveEventHandler(RoomSettingsSaveEventParser eventParser, IRoomRepository roomRepository, RoomConstants roomConstants) : INetworkPacketEventHandler
+public class RoomSettingsSaveEventHandler(
+    RoomSettingsSaveEventParser eventParser, 
+    IRoomRepository roomRepository, 
+    RoomConstants roomConstants) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomSettingsSave;
 
