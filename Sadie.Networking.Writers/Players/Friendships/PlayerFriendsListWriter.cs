@@ -1,7 +1,6 @@
 ﻿using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Relationships;
-using Sadie.Game.Rooms;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -15,7 +14,6 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
         int index, 
         List<PlayerFriendship> friends, 
         IPlayerRepository playerRepository, 
-        IRoomRepository roomRepository,
         List<PlayerRelationship> relationships)
     {
         WriteShort(ServerPacketId.PlayerFriendsList);
@@ -38,8 +36,8 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
             WriteString(friendData.FigureCode);
             WriteInteger(0); // unknown
             WriteString(friendData.Motto);
-            WriteString(""); // unknown
-            WriteString(""); // unknown
+            WriteString(friendData.Username); // real name
+            WriteString(""); // last access?
             WriteBool(false); // TODO: offline messaging
             WriteBool(false); // unknown
             WriteBool(false); // unknown

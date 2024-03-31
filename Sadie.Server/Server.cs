@@ -7,6 +7,7 @@ using Sadie.Game.Furniture;
 using Sadie.Game.Navigator.Filters;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Club;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
@@ -64,25 +65,29 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private async Task LoadInitialDataAsync()
     {
+        logger.LogTrace("Loading room categories...");
         var roomCategoryRepo = serviceProvider.GetRequiredService<IRoomCategoryRepository>();
         await roomCategoryRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded room categories");
         
+        logger.LogTrace("Loading navigator tabs...");
         var navigatorTabRepo = serviceProvider.GetRequiredService<NavigatorTabRepository>();
         await navigatorTabRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded navigator tabs");
         
+        logger.LogTrace("Loading navigator search filters...");
         var navigatorFilterRepo = serviceProvider.GetRequiredService<NavigatorFilterRepository>();
         await navigatorFilterRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded navigator search filters");
 
+        logger.LogTrace("Loading furniture items...");
         var furnitureItemRepository = serviceProvider.GetRequiredService<FurnitureItemRepository>();
         await furnitureItemRepository.LoadInitialDataAsync();
-        logger.LogTrace("Loaded furniture items");
 
+        logger.LogTrace("Loading catalog pages...");
         var catalogPagesRepo = serviceProvider.GetRequiredService<CatalogPageRepository>();
         await catalogPagesRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded catalog pages");
+
+        logger.LogTrace("Loading player club offers...");
+        var clubOfferRepo = serviceProvider.GetRequiredService<PlayerClubOfferRepository>();
+        await clubOfferRepo.LoadInitialDataAsync();
     }
     
     private void WriteHeaderToConsole()

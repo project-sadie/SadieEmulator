@@ -21,7 +21,11 @@ public class PlayerFriendsEvent(IPlayerRepository playerRepository, IRoomReposit
                 Take(500).
                 ToList();
             
-            await client.WriteToStreamAsync(new PlayerFriendsListWriter(pages, i, batch, playerRepository, roomRepository,
+            await client.WriteToStreamAsync(new PlayerFriendsListWriter(
+                pages, 
+                i, 
+                batch, 
+                playerRepository,
                 player.Data.Relationships).GetAllBytes());
         }
     }

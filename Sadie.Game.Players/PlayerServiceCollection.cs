@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Club;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Messenger;
@@ -46,5 +47,10 @@ public class PlayerServiceCollection
         var playerConstants = new PlayerConstants();
         config.GetSection("Constants:Player").Bind(playerConstants);
         serviceCollection.AddSingleton(playerConstants);
+        
+        serviceCollection.AddSingleton<PlayerClubOfferFactory>();
+        serviceCollection.AddSingleton<PlayerClubOfferRepository>();
+        serviceCollection.AddSingleton<PlayerClubOfferDao>();
+        serviceCollection.AddTransient<PlayerClubOffer>();
     }
 }

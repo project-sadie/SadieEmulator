@@ -22,7 +22,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
         {
             WriteString(category.CodeName);
             WriteString(category.Name);
-            WriteInteger((int) 0); // TODO: SEARCH ACTION?
+            WriteInteger(0); // TODO: SEARCH ACTION?
             WriteBool(false); // TODO: is it collapsed?
             WriteInteger(0); // TODO: Show thumbnail? display mode
 

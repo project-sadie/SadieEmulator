@@ -5,7 +5,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 

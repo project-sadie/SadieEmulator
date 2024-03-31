@@ -2,7 +2,7 @@ namespace Sadie.Game.Catalog.Pages;
 
 public class CatalogPageRepository(CatalogPageDao pageDao)
 {
-    private Dictionary<int, CatalogPage> _pages = new(); // TODO: make dictionary so we can lookup by id faster
+    private Dictionary<int, CatalogPage> _pages = new();
 
     public async Task LoadInitialDataAsync()
     {
