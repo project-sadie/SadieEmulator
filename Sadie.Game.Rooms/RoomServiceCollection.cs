@@ -13,6 +13,12 @@ public static class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        serviceCollection.Scan(scan => scan
+            .FromAssemblyOf<IRoomChatCommand>()
+            .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
+            .AsImplementedInterfaces()
+            .WithSingletonLifetime());
+        
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
@@ -30,11 +36,6 @@ public static class RoomServiceCollection
         config.GetSection("Constants:Room").Bind(roomConstants);
         serviceCollection.AddSingleton(roomConstants);
 
-        serviceCollection.AddSingleton(provider => new ConcurrentDictionary<string, IRoomChatCommand>
-        {
-            ["about"] = provider.GetRequiredService<AboutCommand>()
-        });
-        
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
         
         serviceCollection.AddSingleton<IRoomFurnitureItemRepository, RoomFurnitureItemRepository>();

@@ -58,7 +58,9 @@ public class RoomDao(
         var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
         var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
 
-        var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItemRepository);
+        var tiles = RoomHelpers.BuildTileListFromHeightMap(
+            record.Get<string>("heightmap"), 
+            furnitureItemRepository);
         
         var layout = factory.CreateLayout(
             record.Get<int>("layout_id"),

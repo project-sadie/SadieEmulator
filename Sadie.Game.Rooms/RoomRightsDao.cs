@@ -13,7 +13,13 @@ public class RoomRightsDao(IDatabaseProvider databaseProvider) : BaseDao(databas
             { "created", DateTime.Now }
         };
         
-        await QueryAsync("INSERT INTO room_player_rights (room_id, player_id, created_at) VALUES (@roomId, @playerId, @created)", parameters);
+        await QueryAsync(
+            @"INSERT INTO room_player_rights (
+                room_id, 
+                player_id, 
+                created_at) VALUES (
+                @roomId, @playerId, @created)",
+            parameters);
     }
 
     public async Task DeleteRightsAsync(long roomId, long playerId)
@@ -24,6 +30,7 @@ public class RoomRightsDao(IDatabaseProvider databaseProvider) : BaseDao(databas
             { "playerId", playerId }
         };
         
-        await QueryAsync("DELETE FROM room_player_rights WHERE room_id = @roomId AND player_id = @playerId LIMIT 1;", parameters);
+        await QueryAsync(@"DELETE FROM room_player_rights 
+            WHERE room_id = @roomId AND player_id = @playerId LIMIT 1;", parameters);
     }
 }

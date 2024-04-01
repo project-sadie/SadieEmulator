@@ -11,6 +11,8 @@ public class AboutCommand(
     IRoomRepository roomRepository, 
     IPlayerRepository playerRepository) : IRoomChatCommand
 {
+    public string Trigger => "about";
+
     public async Task ExecuteAsync(IRoomUser user)
     {
         var version = GlobalState.Version;
