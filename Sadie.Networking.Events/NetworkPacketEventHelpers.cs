@@ -1,10 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Chat;
+using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
@@ -113,5 +117,53 @@ internal static class NetworkPacketEventHelpers
             {
                 { "message", error.ToString() }
             }).GetAllBytes());
+    }
+
+    public static async Task ProcessChatMessageAsync(
+        INetworkClient client,
+        RoomUserChatEventParser parser,
+        bool shouting,
+        RoomConstants roomConstants,
+        IRoomRepository roomRepository,
+        IRoomChatCommandRepository commandRepository)
+    {
+        var message = parser.Message;
+        
+        if (string.IsNullOrEmpty(message) || message.Length > roomConstants.MaxChatMessageLength)
+        {
+            return;
+        }
+        
+        if (!TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        {
+            return;
+        }
+        
+        if (!shouting && message.StartsWith(":"))
+        {
+            var (found, command) = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0].Substring(1));
+
+            if (found && command != null)
+            {
+                await command.ExecuteAsync(roomUser!);
+                return;
+            }
+        }
+        
+        var chatMessage = new RoomChatMessage(
+            roomUser, 
+            message, 
+            room, 
+            parser.Bubble, 
+            0, 
+            RoomChatMessageType.Shout);
+        
+        await roomUser.OnTalkAsync(chatMessage);
+
+        await room!.UserRepository.BroadcastDataAsync(
+            shouting ? 
+            new RoomUserShoutWriter(chatMessage!, 0).GetAllBytes() : 
+            new RoomUserChatWriter(chatMessage!, 0).GetAllBytes()
+        );
     }
 }
