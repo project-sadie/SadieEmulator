@@ -14,7 +14,14 @@ public record RoomSettingsSaveEventParser : INetworkPacketEventParser
         Password = reader.ReadString();
         MaxUsers = reader.ReadInteger();
         CategoryId = reader.ReadInteger();
-        TagsCount = reader.ReadInteger();
+        
+        var tagCount = reader.ReadInteger();
+
+        for (var i = 0; i < tagCount; i++)
+        {
+            Tags.Add(reader.ReadString());
+        }
+        
         TradeOption = reader.ReadInteger();
         AllowPets = reader.ReadBool();
         CanPetsEat = reader.ReadBool();
@@ -39,7 +46,7 @@ public record RoomSettingsSaveEventParser : INetworkPacketEventParser
     public string Password { get; private set; }
     public int MaxUsers { get; private set; }
     public int CategoryId { get; private set; }
-    public int TagsCount { get; private set; }
+    public List<string> Tags { get; private set; } = [];
     public int TradeOption { get; private set; }
     public bool AllowPets { get; private set; }
     public bool CanPetsEat { get; private set; }

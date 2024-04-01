@@ -30,19 +30,10 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
         
-        var newTags = new List<string>();
-        
-        for (var i = 0; i < eventParser.TagsCount; i++)
+        if (eventParser.Tags.Any(x => string.IsNullOrEmpty(x) || x.Length > 20))
         {
-            var label = reader.ReadString();
-
-            if (string.IsNullOrEmpty(label) || label.Length > 20)
-            {
-                await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.TagTooLong).GetAllBytes());
-                return;
-            }
-            
-            newTags.Add(label);
+            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.TagTooLong).GetAllBytes());
+            return;
         }
         
         if (string.IsNullOrEmpty(eventParser.Name))
@@ -60,7 +51,7 @@ public class RoomSettingsSaveEventHandler(
         room.Name = eventParser.Name.Truncate(roomConstants.MaxNameLength);
         room.Description = eventParser.Description.Truncate(roomConstants.MaxDescriptionLength);
         room.MaxUsers = eventParser.MaxUsers;
-        room.Tags = newTags;
+        room.Tags = eventParser.Tags;
         
         var settings = room.Settings;
         
