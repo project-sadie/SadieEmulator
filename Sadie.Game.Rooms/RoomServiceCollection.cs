@@ -22,6 +22,7 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
         serviceCollection.AddSingleton<IRoomRightsDao, RoomRightsDao>();
+        serviceCollection.AddSingleton<IRoomChatMessageDao, RoomChatMessageDao>();
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
             

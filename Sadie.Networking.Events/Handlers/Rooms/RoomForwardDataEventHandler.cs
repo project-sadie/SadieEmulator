@@ -26,7 +26,7 @@ public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser,
             return;
         }
         
-        var unknown3 = !(eventParser.Unknown1 == 0 && eventParser.Unknown2 == 1);
+        var unknown3 = eventParser is not { Unknown1: 0, Unknown2: 1 };
         var isOwner = room.OwnerId == client.Player.Data.Id;
         
         await client.WriteToStreamAsync(new RoomForwardDataWriter(room!, true, unknown3, isOwner).GetAllBytes());

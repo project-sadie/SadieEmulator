@@ -3,7 +3,7 @@ using Sadie.Game.Rooms.Chat;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomRepository(IRoomDao dao) : IRoomRepository
+public class RoomRepository(IRoomDao dao, IRoomChatMessageDao chatMessageDao) : IRoomRepository
 {
     private readonly ConcurrentDictionary<long, IRoom> _rooms = new();
 
@@ -68,7 +68,7 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
 
     public async Task<int> CreateChatMessages(List<RoomChatMessage> messages)
     {
-        return await dao.CreateChatMessages(messages);
+        return await chatMessageDao.CreateChatMessages(messages);
     }
 
     public async Task SaveRoomAsync(IRoom room)
