@@ -1,4 +1,5 @@
 using Sadie.Game.Catalog;
+using Sadie.Game.Catalog.Items;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Game.Players.Inventory;
@@ -49,59 +50,13 @@ public class CatalogPurchaseEventHandler(
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
             return;
         }
-        
-        player.State.LastCatalogPurchase = DateTime.Now;
 
-        var furnitureItem = item.FurnitureItems.First();
-        
-        if (furnitureItem.Type is FurnitureItemType.Pet or FurnitureItemType.Effect)
-        {
-            var messages = new List<string> { "Purchasing pets and/or effects is coming soon" };
-            
-            await client.WriteToStreamAsync(new PlayerMotdMessageWriter(messages).GetAllBytes());
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
-        }
-
-        var costInCredits = item.CostCredits * eventParser.Amount;
-        var costInPoints = item.CostPoints * eventParser.Amount;
-
-        var balance = client.Player.Data.Balance;
-        
-        if (balance.Credits < costInCredits || 
-            (item.CostPointsType == 0 && balance.Pixels < costInPoints) ||
-            (item.CostPointsType != 0 && balance.Seasonal < costInPoints))
+        if (!await TryChargeForItemAsync(client, item))
         {
             return;
         }
-
-        balance.Credits -= costInCredits;
-
-        if (item.CostPointsType == 0)
-        {
-            balance.Pixels -= costInPoints;
-        }
-        else
-        {
-            balance.Seasonal -= costInPoints;
-        }
-
-        var currencies = new Dictionary<int, long>
-        {
-            {0, balance.Pixels},
-            {1, 0}, // snowflakes
-            {2, 0}, // hearts
-            {3, 0}, // gift points
-            {4, 0}, // shells
-            {5, balance.Seasonal},
-            {101, 0}, // snowflakes
-            {102, 0}, // unknown
-            {103, balance.Gotw},
-            {104, 0}, // unknown
-            {105, 0} // unknown
-        };
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(balance.Credits).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
+        player.State.LastCatalogPurchase = DateTime.Now;
         
         var created = DateTime.Now;
         var newItems = new List<PlayerInventoryFurnitureItem>();
@@ -140,5 +95,50 @@ public class CatalogPurchaseEventHandler(
             ).GetAllBytes());
         
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
+    }
+
+    private async Task<bool> TryChargeForItemAsync(INetworkClient client, CatalogItem item)
+    {
+        var costInCredits = item.CostCredits * eventParser.Amount;
+        var costInPoints = item.CostPoints * eventParser.Amount;
+        var balance = client.Player.Data.Balance;
+        
+        if (balance.Credits < costInCredits || 
+            (item.CostPointsType == 0 && balance.Pixels < costInPoints) ||
+            (item.CostPointsType != 0 && balance.Seasonal < costInPoints))
+        {
+            return false;
+        }
+
+        balance.Credits -= costInCredits;
+
+        if (item.CostPointsType == 0)
+        {
+            balance.Pixels -= costInPoints;
+        }
+        else
+        {
+            balance.Seasonal -= costInPoints;
+        }
+
+        var currencies = new Dictionary<int, long>
+        {
+            {0, balance.Pixels},
+            {1, 0}, // snowflakes
+            {2, 0}, // hearts
+            {3, 0}, // gift points
+            {4, 0}, // shells
+            {5, balance.Seasonal},
+            {101, 0}, // snowflakes
+            {102, 0}, // unknown
+            {103, balance.Gotw},
+            {104, 0}, // unknown
+            {105, 0} // unknown
+        };
+        
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(balance.Credits).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
+
+        return true;
     }
 }

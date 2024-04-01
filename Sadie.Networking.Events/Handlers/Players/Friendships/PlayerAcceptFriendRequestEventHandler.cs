@@ -24,11 +24,11 @@ public class PlayerAcceptFriendRequestEventHandler(
         
         foreach (var originId in eventParser.Ids)
         {
-            await ProcessAsync(client, originId);
+            await AcceptAsync(client, originId);
         }
     }
 
-    private async Task ProcessAsync(INetworkClient client, int originId)
+    private async Task AcceptAsync(INetworkClient client, int originId)
     {
         var player = client.Player;
         var playerId = player.Data.Id;
@@ -39,12 +39,7 @@ public class PlayerAcceptFriendRequestEventHandler(
             .Friendships
             .FirstOrDefault(x => x.OriginId == originId && x.Status == PlayerFriendshipStatus.Pending);
 
-        if (request == null)
-        {
-            return;
-        }
-        
-        if (request.TargetId != playerId)
+        if (request == null || request.TargetId != playerId)
         {
             return;
         }
