@@ -120,6 +120,8 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
         return await playerDataDao.GetPlayerDataForSearch(searchQuery, excludeIds);
     }
 
+    public ICollection<IPlayer> GetAll() => _players.Values;
+
     public async ValueTask DisposeAsync()
     {
         foreach (var player in _players.Values)

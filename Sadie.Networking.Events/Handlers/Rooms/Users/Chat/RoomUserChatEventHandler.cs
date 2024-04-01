@@ -11,7 +11,7 @@ using Sadie.Shared.Unsorted.Game;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 public class RoomUserChatEventHandler(
-    RoomUserChatEventParser eventParser,
+    RoomUserChatEventParser parser,
     IRoomRepository roomRepository, 
     RoomConstants roomConstants, 
     IRoomChatCommandRepository commandRepository)
@@ -23,9 +23,14 @@ public class RoomUserChatEventHandler(
         INetworkClient client, 
         INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
+        parser.Parse(reader);
 
-        var message = eventParser.Message.Truncate(roomConstants.MaxChatMessageLength - 1) + "...";
+        var message = parser.Message;
+
+        if (message.Length > roomConstants.MaxChatMessageLength)
+        {
+            message = message.Truncate(roomConstants.MaxChatMessageLength - 1) + "...";
+        }
         
         if (string.IsNullOrEmpty(message))
         {
@@ -52,7 +57,7 @@ public class RoomUserChatEventHandler(
             roomUser, 
             message, 
             room, 
-            (ChatBubble) reader.ReadInteger(), 
+            parser.Bubble, 
             0, 
             RoomChatMessageType.Normal);
         

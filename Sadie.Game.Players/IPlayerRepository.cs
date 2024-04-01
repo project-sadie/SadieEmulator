@@ -16,5 +16,6 @@ public interface IPlayerRepository : IAsyncDisposable
     int Count();
     Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataAsync(int playerId);
     Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsernameAsync(string username);
+    ICollection<IPlayer> GetAll();
     Task<List<IPlayerData>> GetPlayerDataForSearchAsync(string searchQuery, int[] excludeIds);
 }
