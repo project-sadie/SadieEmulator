@@ -19,7 +19,14 @@ public record RoomSettingsSaveEventParser : INetworkPacketEventParser
 
         for (var i = 0; i < tagCount; i++)
         {
-            Tags.Add(reader.ReadString());
+            var tag = reader.ReadString();
+
+            if (string.IsNullOrEmpty(tag))
+            {
+                continue;
+            }
+            
+            Tags.Add(tag);
         }
         
         TradeOption = reader.ReadInteger();
