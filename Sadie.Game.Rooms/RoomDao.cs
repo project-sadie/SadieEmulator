@@ -110,9 +110,17 @@ public class RoomDao(
         });
     }
 
-    public async Task<int> CreateRoomSettings(int roomId)
+    public async Task<int> CreateRoomSettingsAsync(int roomId)
     {
         return await QueryAsync(@"INSERT INTO room_settings (room_id) VALUES (@roomId);", new Dictionary<string, object>
+        {
+            {"roomId", roomId}
+        });
+    }
+
+    public async Task<int> CreatePaintSettingsAsync(int roomId)
+    {
+        return await QueryAsync(@"INSERT INTO room_paint_settings (room_id) VALUES (@roomId, @floor, @wall, @land);", new Dictionary<string, object>
         {
             {"roomId", roomId}
         });

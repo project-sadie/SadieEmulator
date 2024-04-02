@@ -30,7 +30,8 @@ public class PlayerCreateRoomEventHandler(
             eventParser.MaxUsersAllowed, 
             eventParser.Description);
         
-        await roomRepository.CreateRoomSettings(roomId);
+        await roomRepository.CreateRoomSettingsAsync(roomId);
+        await roomRepository.CreatePaintSettingsAsync(roomId);
 
         var (madeRoom, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
 
