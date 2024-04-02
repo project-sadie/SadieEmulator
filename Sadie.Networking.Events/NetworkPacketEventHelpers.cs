@@ -96,14 +96,19 @@ internal static class NetworkPacketEventHelpers
         
         await client.WriteToStreamAsync(new RoomDataWriter(room.Id, room.Layout.Name).GetAllBytes());
         
-        await client.WriteToStreamAsync(new RoomPaintWriter("floor", "0.0").GetAllBytes());
-        await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", "0.0").GetAllBytes());
+        // await client.WriteToStreamAsync(new RoomPaintWriter("floor", "0.0").GetAllBytes());
+        // await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", "0.0").GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
         
         await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, canLikeRoom).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
 
         var owner = room.OwnerId == playerData.Id;
+        
+        await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter(
+            room.Settings.HideWalls, 
+            room.Settings.WallThickness, 
+            room.Settings.FloorThickness).GetAllBytes());
         
         await client.WriteToStreamAsync(new RoomPaneWriter(room.Id, owner).GetAllBytes());
         await client.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());

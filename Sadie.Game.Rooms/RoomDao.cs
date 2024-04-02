@@ -157,7 +157,7 @@ public class RoomDao(
             {"newName", room.Name},
             {"newDescription", room.Description},
             {"newMaxUsers", room.MaxUsers},
-            {"accessType", settings.AccessType},
+            {"accessType", (int) settings.AccessType},
             {"password", settings.Password},
             {"tradeOption", settings.TradeOption},
             {"allowPets", settings.AllowPets ? 1 : 0},

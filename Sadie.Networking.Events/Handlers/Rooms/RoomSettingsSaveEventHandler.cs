@@ -30,7 +30,7 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
         
-        if (eventParser.Tags.Any(x => string.IsNullOrEmpty(x) || x.Length > roomConstants.MaxTagLength))
+        if (eventParser.Tags.Any(x => x.Length > roomConstants.MaxTagLength))
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.TagTooLong).GetAllBytes());
             return;
