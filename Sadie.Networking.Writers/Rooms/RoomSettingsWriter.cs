@@ -30,8 +30,8 @@ public class RoomSettingsWriter : NetworkPacketWriter
         WriteInteger(settings.CanPetsEat ? 1 : 0);
         WriteInteger(settings.CanUsersOverlap ? 1 : 0);
         WriteInteger(settings.HideWalls ? 1 : 0);
-        WriteInteger(0); // TODO: wall size
-        WriteInteger(0); // TODO: floor size
+        WriteInteger(settings.WallThickness);
+        WriteInteger(settings.FloorThickness);
         WriteInteger(settings.ChatType); 
         WriteInteger(settings.ChatWeight); 
         WriteInteger(settings.ChatSpeed); 

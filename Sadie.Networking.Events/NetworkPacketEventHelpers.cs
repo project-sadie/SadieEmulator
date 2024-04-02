@@ -93,7 +93,11 @@ internal static class NetworkPacketEventHelpers
         client.RoomUser = roomUser;
         
         await client.WriteToStreamAsync(new RoomDataWriter(room.Id, room.Layout.Name).GetAllBytes());
+        
+        await client.WriteToStreamAsync(new RoomPaintWriter("floor", "0.0").GetAllBytes());
+        await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", "0.0").GetAllBytes());
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
+        
         await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, true).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
 
