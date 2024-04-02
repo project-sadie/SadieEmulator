@@ -95,10 +95,18 @@ internal static class NetworkPacketEventHelpers
         var canLikeRoom = !player.Data.LikedRoomIds.Contains(room.Id);
         
         await client.WriteToStreamAsync(new RoomDataWriter(room.Id, room.Layout.Name).GetAllBytes());
+
+        if (room.PaintSettings.FloorPaint != "0.0")
+        {
+            await client.WriteToStreamAsync(new RoomPaintWriter("floor", room.PaintSettings.FloorPaint).GetAllBytes());
+        }
+
+        if (room.PaintSettings.WallPaint != "0.0")
+        {
+            await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", room.PaintSettings.WallPaint).GetAllBytes());
+        }
         
-        // await client.WriteToStreamAsync(new RoomPaintWriter("floor", "0.0").GetAllBytes());
-        // await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", "0.0").GetAllBytes());
-        await client.WriteToStreamAsync(new RoomPaintWriter("landscape", "0.0").GetAllBytes());
+        await client.WriteToStreamAsync(new RoomPaintWriter("landscape", room.PaintSettings.LandscapePaint).GetAllBytes());
         
         await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, canLikeRoom).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());

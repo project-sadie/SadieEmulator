@@ -43,5 +43,6 @@ public interface IRoomFactory
         int maxUsersAllowed,
         IRoomSettings settings,
         List<long> playersWithRights,
-        IRoomFurnitureItemRepository furnitureItemRepository);
+        IRoomFurnitureItemRepository furnitureItemRepository,
+        RoomPaintSettings paintSettings);
 }

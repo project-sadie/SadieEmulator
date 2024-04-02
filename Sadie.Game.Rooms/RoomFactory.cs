@@ -76,7 +76,8 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
         int maxUsersAllowed,
         IRoomSettings settings,
         List<long> playersWithRights,
-        IRoomFurnitureItemRepository furnitureItemRepository)
+        IRoomFurnitureItemRepository furnitureItemRepository,
+        RoomPaintSettings paintSettings)
     {
         return ActivatorUtilities.CreateInstance<Room>(
             serviceProvider,
@@ -91,6 +92,7 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
             maxUsersAllowed,
             settings,
             playersWithRights,
-            furnitureItemRepository);
+            furnitureItemRepository,
+            paintSettings);
     }
 }

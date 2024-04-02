@@ -17,6 +17,7 @@ public class RoomDao(
             SELECT {SelectColumns}
             FROM rooms 
                 INNER JOIN room_settings ON room_settings.room_id = rooms.id
+                INNER JOIN room_paint_settings ON room_paint_settings.room_id = rooms.id
                 INNER JOIN room_layouts ON room_layouts.id = rooms.layout_id
             WHERE rooms.id = @roomId
             LIMIT 1;", new Dictionary<string, object>
@@ -72,12 +73,13 @@ public class RoomDao(
 
         var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
-        var playersWithRights = commaSeparatedRights.Contains(",") ?
-            [
-                ..commaSeparatedRights.Split(",").Select(long.Parse)
-            ]
-            : 
+        var playersWithRights = commaSeparatedRights.Contains(",") ? [..commaSeparatedRights.Split(",").Select(long.Parse)] : 
             new List<long>();
+
+        var paintSettings = new RoomPaintSettings(
+            record.Get<string>("floor_paint"),
+            record.Get<string>("wall_paint"),
+            record.Get<string>("landscape_paint"));
 
         return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
@@ -90,7 +92,8 @@ public class RoomDao(
             record.Get<int>("max_users_allowed"),
             settings,
             playersWithRights,
-            furnitureItemRepository));
+            furnitureItemRepository,
+            paintSettings));
     }
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
@@ -245,12 +248,13 @@ public class RoomDao(
 
             var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
-            var playersWithRights = commaSeparatedRights.Contains(",") ?
-                [
-                    ..commaSeparatedRights.Split(",").Select(long.Parse)
-                ]
-                : 
+            var playersWithRights = commaSeparatedRights.Contains(",") ? [..commaSeparatedRights.Split(",").Select(long.Parse)] : 
                 new List<long>();
+
+            var paintSettings = new RoomPaintSettings(
+                record.Get<string>("floor_paint"),
+                record.Get<string>("wall_paint"),
+                record.Get<string>("landscape_paint"));
 
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
@@ -263,7 +267,8 @@ public class RoomDao(
                 record.Get<int>("max_users_allowed"),
                 settings,
                 playersWithRights,
-                furnitureItemRepository);
+                furnitureItemRepository,
+                paintSettings);
             
             rooms.Add(room);
         }
@@ -277,7 +282,6 @@ public class RoomDao(
         rooms.layout_id,
         rooms.owner_id,
         rooms.description,
-        rooms.score,
         rooms.is_muted,
         rooms.max_users_allowed,
         
@@ -292,6 +296,8 @@ public class RoomDao(
          FROM room_tags
          WHERE room_id = rooms.id
          GROUP BY room_id) AS comma_separated_tags,
+        
+        (SELECT COUNT(*) FROM player_room_likes WHERE room_id = id) AS score,
         
         room_settings.walk_diagonal,
         room_settings.access_type,
@@ -311,6 +317,10 @@ public class RoomDao(
         room_settings.chat_distance,
         room_settings.chat_protection,
         room_settings.trade_option,
+        
+        room_paint_settings.floor_paint,
+        room_paint_settings.wall_paint,
+        room_paint_settings.landscape_paint,
         
         room_layouts.name AS layout_name,
         room_layouts.heightmap,

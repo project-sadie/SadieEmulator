@@ -17,7 +17,8 @@ public class Room(
     IRoomUserRepository userRepository,
     IRoomFurnitureItemRepository furnitureItemRepository,
     IRoomSettings settings,
-    List<long> playersWithRights)
+    List<long> playersWithRights,
+    RoomPaintSettings paintSettings)
     : RoomData(id,
         name,
         layout,
@@ -30,7 +31,8 @@ public class Room(
         userRepository,
         settings,
         playersWithRights,
-        furnitureItemRepository), IRoom
+        furnitureItemRepository,
+        paintSettings), IRoom
 {
     public async Task RunPeriodicCheckAsync()
     {
@@ -47,8 +49,6 @@ public class Room(
         await UserRepository.BroadcastDataAsync(statusWriter);
         await UserRepository.BroadcastDataAsync(dataWriter);
     }
-
-    public IRoomFurnitureItemRepository FurnitureItemRepository => furnitureItemRepository;
 
     public async ValueTask DisposeAsync()
     {

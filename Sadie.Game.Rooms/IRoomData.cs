@@ -21,4 +21,5 @@ public interface IRoomData
     List<RoomChatMessage> ChatMessages { get; }
     public List<long> PlayersWithRights { get; }
     public IRoomFurnitureItemRepository FurnitureItemRepository { get; }
+    public RoomPaintSettings PaintSettings { get; }
 }

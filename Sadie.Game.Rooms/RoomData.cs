@@ -21,6 +21,7 @@ public class RoomData : IRoomData
     public List<RoomChatMessage> ChatMessages { get; }
     public List<long> PlayersWithRights { get; }
     public IRoomFurnitureItemRepository FurnitureItemRepository { get; }
+    public RoomPaintSettings PaintSettings { get; }
 
     protected RoomData(int id,
         string name,
@@ -34,7 +35,8 @@ public class RoomData : IRoomData
         IRoomUserRepository userRepository,
         IRoomSettings settings,
         List<long> playersWithRights,
-        IRoomFurnitureItemRepository furnitureItemRepository) 
+        IRoomFurnitureItemRepository furnitureItemRepository,
+        RoomPaintSettings paintSettings) 
     {
         Id = id;
         Name = name;
@@ -50,5 +52,6 @@ public class RoomData : IRoomData
         ChatMessages = new List<RoomChatMessage>();
         PlayersWithRights = playersWithRights;
         FurnitureItemRepository = furnitureItemRepository;
+        PaintSettings = paintSettings;
     }
 }
