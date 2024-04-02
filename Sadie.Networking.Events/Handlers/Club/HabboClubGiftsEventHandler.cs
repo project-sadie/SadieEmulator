@@ -1,15 +1,52 @@
+using Sadie.Game.Catalog.Pages;
+using Sadie.Game.Players.Subscriptions;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
-public class HabboClubGiftsEventHandler : INetworkPacketEventHandler
+public class HabboClubGiftsEventHandler(CatalogPageRepository catalogPageRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.HabboClubGifts;
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new HabboClubGiftsWriter(1, 1).GetAllBytes());
+        if (client.Player == null)
+        {
+            return;
+        }
+        
+        var (_, clubGiftPage) = catalogPageRepository.TryGetByLayout("club_gift");
+
+        var daysAsClub = CalculateDaysAsClub(client.Player.Data.Subscriptions);
+        var daysTillNextClubGift = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400;
+        var claimedGifts = 0;
+        var unclaimedGifts = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400; 
+        
+        await client.WriteToStreamAsync(new HabboClubGiftsWriter(
+            daysTillNextClubGift, 
+            unclaimedGifts, 
+            daysAsClub, 
+            clubGiftPage).GetAllBytes());
+    }
+
+    private int CalculateDaysAsClub(List<IPlayerSubscription> subscriptions)
+    {
+        var days = 0;
+
+        foreach (var subscription in subscriptions)
+        {
+            if (subscription.Expires >= DateTime.Now)
+            {
+                days += (int) (subscription.Expires - subscription.Started).TotalDays;
+            }
+            else
+            {
+                days += (int) (DateTime.Now - subscription.Started).TotalDays;
+            }
+        }
+
+        return days;
     }
 }

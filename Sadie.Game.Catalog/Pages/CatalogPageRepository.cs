@@ -29,4 +29,10 @@ public class CatalogPageRepository(CatalogPageDao pageDao)
             .Where(x => x.ParentId == parentId)
             .ToList();
     }
+
+    public Tuple<bool, CatalogPage?> TryGetByLayout(string layout)
+    {
+        var page = _pages.Values.FirstOrDefault(x => x.Layout == layout);
+        return new Tuple<bool, CatalogPage?>(page != null, page);
+    }
 }
