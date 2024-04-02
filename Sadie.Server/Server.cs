@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Game.Navigator.Filters;
@@ -84,6 +85,10 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         logger.LogTrace("Loading catalog pages...");
         var catalogPagesRepo = serviceProvider.GetRequiredService<CatalogPageRepository>();
         await catalogPagesRepo.LoadInitialDataAsync();
+
+        logger.LogTrace("Loading catalog front page items...");
+        var catalogFrontPageItemsRepo = serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>();
+        await catalogFrontPageItemsRepo.LoadInitialDataAsync();
 
         logger.LogTrace("Loading player club offers...");
         var clubOfferRepo = serviceProvider.GetRequiredService<PlayerClubOfferRepository>();

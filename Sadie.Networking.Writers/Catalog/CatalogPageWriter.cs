@@ -1,3 +1,4 @@
+using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Items;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Helpers;
@@ -17,13 +18,15 @@ public class CatalogPageWriter : NetworkPacketWriter
         string primaryText,
         string secondaryText,
         string teaserText,
-        List<CatalogItem> items, string catalogMode)
+        List<CatalogItem> items, 
+        string catalogMode,
+        bool acceptSeasonCurrencyAsCredits,
+        List<CatalogFrontPageItem>? frontPageItems)
     {
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(pageId);
         WriteString(catalogMode);
 
-        #region layout_dependent
         switch (pageLayout)
         {
             case "vip_buy":
@@ -56,7 +59,6 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(teaserText);
                 break;
         }
-        #endregion
         
         WriteInteger(items.Count);
 
@@ -113,12 +115,38 @@ public class CatalogPageWriter : NetworkPacketWriter
         }
         
         WriteInteger(0);
-        WriteBool(false);
+        WriteBool(acceptSeasonCurrencyAsCredits);
 
-        if (pageLayout is "frontpage")
+        if (pageLayout is not "frontpage" || frontPageItems == null)
         {
-            // TODO: serialize extra?
-            WriteInteger(0);
+            return;
+        }
+        
+        WriteInteger(frontPageItems.Count);
+
+        foreach (var item in frontPageItems)
+        {
+            WriteInteger(item.Id);
+            WriteString(item.Title);
+            WriteString(item.Image);
+            WriteInteger((int) item.Type);
+
+            switch (item.Type)
+            {
+                case CatalogFrontPageItemType.PageId:
+                    WriteInteger(item.Page.Id);
+                    break;
+                case CatalogFrontPageItemType.PageName:
+                    WriteString(item.Page.Name);
+                    break;
+                case CatalogFrontPageItemType.ProductName:
+                    WriteString(item.ProductName);
+                    break;
+                default:
+                    throw new Exception($"Unknown catalog front page item type {(int) item.Type}");
+            }
+
+            WriteInteger(-1);
         }
     }
 }

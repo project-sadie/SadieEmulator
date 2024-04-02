@@ -1,3 +1,4 @@
+using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
@@ -6,7 +7,9 @@ using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-public class CatalogPageEventHandler(CatalogPageEventParser eventParser, CatalogPageRepository catalogPageRepo) : INetworkPacketEventHandler
+public class CatalogPageEventHandler(CatalogPageEventParser eventParser, 
+    CatalogPageRepository catalogPageRepo,
+    CatalogFrontPageItemRepository frontPageItemRepo) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.CatalogPage;
 
@@ -31,6 +34,8 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser, Catalog
             page.SecondaryText, 
             page.TeaserText, 
             page.Items, 
-            eventParser.CatalogMode).GetAllBytes());
+            eventParser.CatalogMode,
+            false,
+            frontPageItemRepo.Items).GetAllBytes());
     }
 }

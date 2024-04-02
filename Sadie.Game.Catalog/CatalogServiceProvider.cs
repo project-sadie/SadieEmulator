@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Items;
 using Sadie.Game.Catalog.Pages;
 
@@ -16,5 +17,10 @@ public class CatalogServiceProvider
         serviceCollection.AddTransient<CatalogItem>();
         serviceCollection.AddSingleton<CatalogItemDao>();
         serviceCollection.AddSingleton<CatalogItemFactory>();
+        
+        serviceCollection.AddTransient<CatalogFrontPageItem>();
+        serviceCollection.AddSingleton<CatalogFrontPageItemRepository>();
+        serviceCollection.AddSingleton<CatalogFrontPageItemFactory>();
+        serviceCollection.AddSingleton<CatalogFrontPageItemDao>();
     }
 }
