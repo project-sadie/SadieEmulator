@@ -1,5 +1,6 @@
 using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Items;
+using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted.Networking;
@@ -30,7 +31,7 @@ public class CatalogPageWriter : NetworkPacketWriter
 
         switch (pageLayout)
         {
-            case "guilds":
+            case CatalogPageLayout.Guilds:
                 WriteString("guild_frontpage");
                 WriteInteger(2);
                 WriteString(headerImage);
@@ -40,7 +41,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(detailsText);
                 WriteString(teaserText);
                 break;
-            case "guild_custom_furni":
+            case CatalogPageLayout.GuildsCustomFurniture:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage);
@@ -50,7 +51,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(detailsText);
                 WriteString(teaserText);
                 break;
-            case "guild_forum":
+            case CatalogPageLayout.GuildForum:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage);
@@ -60,7 +61,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(detailsText);
                 WriteString(teaserText);
                 break;
-            case "soundmachine":
+            case CatalogPageLayout.SoundMachine:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage);
@@ -69,29 +70,29 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(primaryText);
                 WriteString(detailsText);
                 break;
-            case "marketplace_own_items":
-            case "marketplace":
+            case CatalogPageLayout.MarketplaceOwnItems:
+            case CatalogPageLayout.Marketplace:
                 WriteString(pageLayout);
                 WriteInteger(0);
                 WriteInteger(0);
                 break;
-            case "club_gifts":
-                WriteString(pageLayout);
-                WriteInteger(1);
-                WriteString(headerImage);
-                WriteInteger(1);
-                WriteString(primaryText);
-                break;
-            case "info_loyalty":
+            case CatalogPageLayout.ClubGifts:
                 WriteString(pageLayout);
                 WriteInteger(1);
                 WriteString(headerImage);
                 WriteInteger(1);
                 WriteString(primaryText);
+                break;
+            case CatalogPageLayout.InfoLoyalty:
+                WriteString(pageLayout);
+                WriteInteger(1);
+                WriteString(headerImage);
+                WriteInteger(1);
+                WriteString(primaryText);
                 WriteInteger(0);
                 break;
-            case "room_bundle":
-            case "single_bundle":
+            case CatalogPageLayout.RoomBundle:
+            case CatalogPageLayout.SingleBundle:
                 WriteString("single_bundle");
                 WriteInteger(3);
                 WriteString(headerImage);
@@ -103,8 +104,8 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(teaserText);
                 WriteString(secondaryText);
                 break;
-            case "badge_display":
-            case "petcustomization":
+            case CatalogPageLayout.PetCustomization:
+            case CatalogPageLayout.BadgeDisplay:
                 WriteString(pageLayout);
                 WriteInteger(3);
                 WriteString(headerImage);
@@ -115,7 +116,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(detailsText);
                 WriteString(teaserText);
                 break;
-            case "pets":
+            case CatalogPageLayout.Pets:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage);
@@ -126,7 +127,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(detailsText);
                 WriteString(teaserText);
                 break;
-            case "bots":
+            case CatalogPageLayout.Bots:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage);
@@ -136,14 +137,14 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(detailsText);
                 WriteString(secondaryText);
                 break;
-            case "vip_buy":
+            case CatalogPageLayout.VipBuy:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage);
                 WriteString(teaserImage);
                 WriteInteger(0);
                 break;
-            case "frontpage":
+            case CatalogPageLayout.FrontPage:
                 WriteString("frontpage4");
                 WriteInteger(2);
                 WriteString(headerImage);
@@ -153,9 +154,9 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(secondaryText);
                 WriteString(teaserText);
                 break;
-            case "default_3x3_color_grouping":
-            case "spaces_new":
-            case "trophies":
+            case CatalogPageLayout.Default3X3ColorGrouping:
+            case CatalogPageLayout.SpacesNew:
+            case CatalogPageLayout.Trophies:
                 WriteString(pageLayout);
                 WriteInteger(3);
                 WriteString(headerImage);
@@ -166,8 +167,8 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(detailsText);
                 WriteString(teaserText);
                 break;
-            case "default_3x3":
-            case "recent_purchases":
+            case CatalogPageLayout.Default3X3:
+            case CatalogPageLayout.RecentPurchases:
                 WriteString(pageLayout);
                 WriteInteger(3);
                 WriteString(headerImage);
@@ -178,7 +179,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(secondaryText);
                 WriteString(teaserText);
                 break;
-            case "roomads":
+            case CatalogPageLayout.RoomAds:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage);
