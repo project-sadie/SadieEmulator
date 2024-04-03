@@ -48,6 +48,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(teaserText);
                 break;
             case "default_3x3":
+            Ccase "spaces_new":
                 WriteString(pageLayout);
                 WriteInteger(3);
                 WriteString(headerImage);
