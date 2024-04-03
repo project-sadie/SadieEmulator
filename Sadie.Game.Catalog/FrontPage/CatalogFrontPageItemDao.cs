@@ -11,9 +11,9 @@ public class CatalogFrontPageItemDao(
     public async Task<List<CatalogFrontPageItem>> GetAllAsync()
     {
         var items = new List<CatalogFrontPageItem>();
-        var reader = await GetReaderAsync("SELECT title, image FROM catalog_front_page_items;");
+        var reader = await GetReaderAsync("SELECT id, title, image, type_id, product_name, catalog_page_id FROM catalog_front_page_items;");
 
-        while (true)
+        while (true)        
         {
             var (success, record) = reader.Read();
 
@@ -24,7 +24,7 @@ public class CatalogFrontPageItemDao(
 
             CatalogPage? matchingPage = null;
 
-            if (record.Get<object>("catalog_page_id") == DBNull.Value)
+            if (record.Get<object>("catalog_page_id") != DBNull.Value)
             {
                 var (found, page) = pageRepository.TryGet(record.Get<int>("catalog_page_id"));
 
@@ -37,8 +37,11 @@ public class CatalogFrontPageItemDao(
             }
 
             var filter = factory.Create(
+                record.Get<int>("id"),
                 record.Get<string>("title"),
                 record.Get<string>("image"),
+                (CatalogFrontPageItemType) record.Get<int>("type_id"),
+                record.Get<string>("product_name"),
                 matchingPage!);
             
             items.Add(filter);

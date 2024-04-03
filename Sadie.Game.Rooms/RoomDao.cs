@@ -120,7 +120,7 @@ public class RoomDao(
 
     public async Task<int> CreatePaintSettingsAsync(int roomId)
     {
-        return await QueryAsync(@"INSERT INTO room_paint_settings (room_id) VALUES (@roomId, @floor, @wall, @land);", new Dictionary<string, object>
+        return await QueryAsync(@"INSERT INTO room_paint_settings (room_id) VALUES (@roomId);", new Dictionary<string, object>
         {
             {"roomId", roomId}
         });
@@ -199,6 +199,7 @@ public class RoomDao(
                    {SelectColumns}
             FROM rooms 
                 INNER JOIN room_settings ON room_settings.room_id = rooms.id
+                INNER JOIN room_paint_settings ON room_paint_settings.room_id = rooms.id
                 INNER JOIN room_layouts ON room_layouts.id = rooms.layout_id
             WHERE rooms.owner_id = @ownerId " + (excludeIds.Count > 0 ? excludeClause : "") + @" 
             LIMIT " + limit + ";", new Dictionary<string, object>
@@ -326,6 +327,7 @@ public class RoomDao(
         room_settings.chat_protection,
         room_settings.trade_option,
         
+        room_paint_settings.room_id,
         room_paint_settings.floor_paint,
         room_paint_settings.wall_paint,
         room_paint_settings.landscape_paint,
