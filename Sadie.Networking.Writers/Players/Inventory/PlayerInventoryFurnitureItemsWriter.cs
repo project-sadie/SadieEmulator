@@ -30,7 +30,6 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
     {
         var furnitureItem = item.FurnitureItem;
         var reference = furnitureItem.Id;
-        var category = 1;
         var hasRentPeriodStarted = false;
         var flatId = furnitureItem.Id;
         var slotId = "";
@@ -42,8 +41,24 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type).ToUpper());
         WriteLong(reference);
         WriteInteger(furnitureItem.AssetId);
-        WriteInteger(category);
-            
+
+        if (furnitureItem.AssetName == "floor")
+        {
+            WriteInteger(3);
+            WriteInteger(0);
+            WriteString(item.MetaData);
+        }
+        else if (furnitureItem.AssetName == "wallpaper")
+        {
+            WriteInteger(2);
+            WriteInteger(0);
+            WriteString(item.MetaData);
+        }
+        else
+        {
+            WriteInteger(1);
+        }
+
         switch (item.FurnitureItem.InteractionType)
         {
             default:
