@@ -1,5 +1,5 @@
+using Sadie.Database.Models.Navigator;
 using Sadie.Game.Navigator;
-using Sadie.Game.Navigator.Categories;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
@@ -35,7 +35,7 @@ public class NavigatorSearchEventHandler(
             var writer = new NavigatorSearchResultPagesWriter(
                 tabName, 
                 searchQuery, 
-                new Dictionary<NavigatorCategory, List<IRoom>>());
+                new Dictionary<NavigatorCategoryEntity, List<IRoom>>());
             
             await client.WriteToStreamAsync(writer.GetAllBytes());
             return;
@@ -46,7 +46,7 @@ public class NavigatorSearchEventHandler(
             OrderBy(x => x.OrderId).
             ToList();
 
-        var categoryRoomMap = new Dictionary<NavigatorCategory, List<IRoom>>();
+        var categoryRoomMap = new Dictionary<NavigatorCategoryEntity, List<IRoom>>();
 
         foreach (var category in categories)
         {
@@ -63,9 +63,9 @@ public class NavigatorSearchEventHandler(
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }
 
-    private static Dictionary<NavigatorCategory, List<IRoom>> ApplyFilter(
+    private static Dictionary<NavigatorCategoryEntity, List<IRoom>> ApplyFilter(
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<IRoom>> categoryRoomMap)
+        Dictionary<NavigatorCategoryEntity, List<IRoom>> categoryRoomMap)
     {
         if (searchQuery.Contains(':'))
         {

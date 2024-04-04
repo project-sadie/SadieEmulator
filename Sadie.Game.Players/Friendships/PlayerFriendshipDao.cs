@@ -1,4 +1,4 @@
-﻿using Sadie.Database;
+﻿using Sadie.Database.LegacyAdoNet;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players.Friendships;

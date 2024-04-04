@@ -1,4 +1,4 @@
-﻿namespace Sadie.Database;
+﻿namespace Sadie.Database.LegacyAdoNet;
 
 public class DatabaseReader(Queue<DatabaseRecord> records)
 {

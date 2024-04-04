@@ -1,4 +1,4 @@
-using Sadie.Database;
+using Sadie.Database.LegacyAdoNet;
 
 namespace Sadie.Game.Rooms;
 

@@ -1,4 +1,4 @@
-using Sadie.Database;
+using Sadie.Database.LegacyAdoNet;
 using Sadie.Game.Catalog.Items;
 
 namespace Sadie.Game.Catalog.Pages;

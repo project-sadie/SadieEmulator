@@ -1,6 +1,6 @@
 using MySqlConnector;
 
-namespace Sadie.Database;
+namespace Sadie.Database.LegacyAdoNet;
 
 public interface IDatabaseConnection : IDisposable
 {

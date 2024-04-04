@@ -1,4 +1,4 @@
-﻿namespace Sadie.Database;
+﻿namespace Sadie.Database.LegacyAdoNet;
 
 public class DatabaseRecord(IDictionary<string, object> data)
 {

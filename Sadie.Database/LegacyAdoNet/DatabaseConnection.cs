@@ -1,7 +1,7 @@
 using System.Globalization;
 using MySqlConnector;
 
-namespace Sadie.Database;
+namespace Sadie.Database.LegacyAdoNet;
 
 public class DatabaseConnection : IDatabaseConnection
 {

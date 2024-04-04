@@ -1,4 +1,4 @@
-using Sadie.Database;
+using Sadie.Database.LegacyAdoNet;
 using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;

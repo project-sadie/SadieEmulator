@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 
-namespace Sadie.Database;
+namespace Sadie.Database.LegacyAdoNet;
 
 public class DatabaseProvider(MySqlConnectionStringBuilder connectionString, IServiceProvider serviceProvider)
     : IDatabaseProvider

@@ -1,4 +1,4 @@
-using Sadie.Game.Navigator.Categories;
+using Sadie.Database.Models.Navigator;
 using Sadie.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -10,7 +10,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
     public NavigatorSearchResultPagesWriter(
         string tabName, 
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<IRoom>> categoryRoomMap)
+        Dictionary<NavigatorCategoryEntity, List<IRoom>> categoryRoomMap)
     {
         WriteShort(ServerPacketId.NavigatorRooms);
         WriteString(tabName);

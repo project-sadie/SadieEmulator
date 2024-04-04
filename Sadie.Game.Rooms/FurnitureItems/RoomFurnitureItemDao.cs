@@ -1,4 +1,4 @@
-using Sadie.Database;
+using Sadie.Database.LegacyAdoNet;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Unsorted.Game.Rooms;
 

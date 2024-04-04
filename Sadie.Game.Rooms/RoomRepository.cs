@@ -85,6 +85,7 @@ public class RoomRepository(IRoomDao dao, IRoomChatMessageDao chatMessageDao) : 
     {
         foreach (var room in _rooms.Values)
         {
+            await dao.SaveRoomAsync(room);
             await room.DisposeAsync();
         }
         

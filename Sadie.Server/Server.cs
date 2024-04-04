@@ -1,11 +1,10 @@
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Sadie.Database;
+using Sadie.Database.LegacyAdoNet;
 using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
-using Sadie.Game.Navigator.Filters;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Club;
@@ -66,33 +65,18 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private async Task LoadInitialDataAsync()
     {
-        logger.LogTrace("Loading room categories...");
-        var roomCategoryRepo = serviceProvider.GetRequiredService<IRoomCategoryRepository>();
-        await roomCategoryRepo.LoadInitialDataAsync();
-        
-        logger.LogTrace("Loading navigator tabs...");
-        var navigatorTabRepo = serviceProvider.GetRequiredService<NavigatorTabRepository>();
-        await navigatorTabRepo.LoadInitialDataAsync();
-        
-        logger.LogTrace("Loading navigator search filters...");
-        var navigatorFilterRepo = serviceProvider.GetRequiredService<NavigatorFilterRepository>();
-        await navigatorFilterRepo.LoadInitialDataAsync();
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<IRoomCategoryRepository>().LoadInitialDataAsync, "room categories");
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync, "navigator tabs");
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync, "furniture items");
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync, "catalog pages");
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>().LoadInitialDataAsync, "catalog front page items");
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<PlayerClubOfferRepository>().LoadInitialDataAsync, "player club offers");
+    }
 
-        logger.LogTrace("Loading furniture items...");
-        var furnitureItemRepository = serviceProvider.GetRequiredService<FurnitureItemRepository>();
-        await furnitureItemRepository.LoadInitialDataAsync();
-
-        logger.LogTrace("Loading catalog pages...");
-        var catalogPagesRepo = serviceProvider.GetRequiredService<CatalogPageRepository>();
-        await catalogPagesRepo.LoadInitialDataAsync();
-
-        logger.LogTrace("Loading catalog front page items...");
-        var catalogFrontPageItemsRepo = serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>();
-        await catalogFrontPageItemsRepo.LoadInitialDataAsync();
-
-        logger.LogTrace("Loading player club offers...");
-        var clubOfferRepo = serviceProvider.GetRequiredService<PlayerClubOfferRepository>();
-        await clubOfferRepo.LoadInitialDataAsync();
+    private async Task LoadInitialDataAsync(Func<Task> action, string name)
+    {
+        logger.LogTrace($"Loading {name}...");
+        await action.Invoke();
     }
     
     private void WriteHeaderToConsole()

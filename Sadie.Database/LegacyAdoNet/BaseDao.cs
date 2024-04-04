@@ -1,6 +1,6 @@
 using Sadie.Shared.Extensions;
 
-namespace Sadie.Database;
+namespace Sadie.Database.LegacyAdoNet;
 
 public class BaseDao
 {
