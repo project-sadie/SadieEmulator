@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Sadie.Shared;
 using SadieEmulator;
 using Serilog;
+using Serilog.Events;
 
 namespace Sadie.Console;
 
@@ -16,7 +17,9 @@ internal static class Program
 
         var host = Host.CreateDefaultBuilder()
             .ConfigureServices((context, collection) => ServerServiceCollection.AddServices(collection, context.Configuration))
-            .UseSerilog((hostContext, _, logger) => logger.ReadFrom.Configuration(hostContext.Configuration))
+            .UseSerilog((hostContext, _, logger) => 
+                logger.ReadFrom.Configuration(hostContext.Configuration)
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning))
             .Build();
         
         _server = host.Services.GetRequiredService<IServer>();
