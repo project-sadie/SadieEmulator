@@ -137,6 +137,7 @@ public class RoomDao(
     public Task<int> SaveRoomAsync(IRoom room)
     {
         var settings = room.Settings;
+        var paintSettings = room.PaintSettings;
         
         return QueryAsync(@"
             UPDATE rooms SET 
@@ -163,6 +164,12 @@ public class RoomDao(
                 chat_speed = @chatSpeed,
                 chat_distance = @chatDistance,
                 chat_protection = @chatProtection
+            WHERE room_id = @roomId LIMIT 1;
+
+            UPDATE room_paint_settings SET 
+                floor_paint = @floorPaint,
+                wall_paint = @wallPaint,
+                landscape_paint = @landPaint
             WHERE room_id = @roomId LIMIT 1;", new Dictionary<string, object>
         {
             {"newName", room.Name},
@@ -185,6 +192,9 @@ public class RoomDao(
             {"chatSpeed", settings.ChatSpeed},    
             {"chatDistance", settings.ChatDistance},    
             {"chatProtection", settings.ChatProtection},
+            {"floorPaint", paintSettings.FloorPaint},
+            {"wallPaint", paintSettings.WallPaint},
+            {"landPaint", paintSettings.LandscapePaint},
             {"roomId", room.Id}
         });
     }
