@@ -25,6 +25,11 @@ public class CatalogPurchaseEventHandler(
 
         var player = client.Player;
 
+        if (client.Player == null)
+        {
+            return;
+        }
+        
         if ((DateTime.Now - player!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
         {
             var bytes = new CatalogPurchaseFailedWriter((int)CatalogPurchaseError.Server).GetAllBytes();
