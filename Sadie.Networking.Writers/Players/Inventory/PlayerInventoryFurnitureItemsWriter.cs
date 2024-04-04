@@ -39,37 +39,30 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         
         WriteLong(item.Id);
         WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type).ToUpper());
-        WriteLong(reference);
+        WriteLong(item.Id);
         WriteInteger(furnitureItem.AssetId);
-
-        if (furnitureItem.AssetName == "floor")
+        
+        switch (furnitureItem.AssetName)
         {
-            WriteInteger(3);
-            WriteInteger(0);
-            WriteString(item.MetaData);
-        }
-        else if (furnitureItem.AssetName == "wallpaper")
-        {
-            WriteInteger(2);
-            WriteInteger(0);
-            WriteString(item.MetaData);
-        }
-        else
-        {
-            WriteInteger(1);
-        }
-
-        switch (item.FurnitureItem.InteractionType)
-        {
+            case "floor":
+                WriteInteger(3);
+                WriteInteger(0);
+                WriteString(item.MetaData);
+                break;
+            case "wallpaper":
+                WriteInteger(2);
+                WriteInteger(0);
+                WriteString(item.MetaData);
+                break;
+            case "landscape":
+                WriteInteger(4);
+                WriteInteger(0);
+                WriteString(item.MetaData);
+                break;
             default:
-                WriteInteger((int) ObjectDataKey.MapKey); 
-                WriteInteger(objectData.Count);
-
-                foreach (var dataPair in objectData)
-                {
-                    WriteString(dataPair.Key);
-                    WriteString(dataPair.Value);
-                }
+                WriteInteger(1);
+                WriteInteger(1);
+                WriteInteger(0);
                 break;
         }
         
@@ -79,7 +72,7 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         WriteBool(furnitureItem.CanMarketplaceSell);
         WriteInteger(expiresInSeconds);
         WriteBool(hasRentPeriodStarted);
-        WriteInteger(flatId);
+        WriteInteger(-1);
 
         if (furnitureItem.Type != FurnitureItemType.Floor)
         {
