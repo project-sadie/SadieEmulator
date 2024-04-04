@@ -58,11 +58,29 @@ public class CatalogPurchaseEventHandler(
         
         var created = DateTime.Now;
         var newItems = new List<PlayerInventoryFurnitureItem>();
+        var metaData = eventParser.ExtraData;
+
+        switch (item.FurnitureItems.First().InteractionType)
+        {
+            case "roomeffect":
+                if (string.IsNullOrEmpty(metaData))
+                {
+                    metaData = 0.ToString();
+                }
+                else
+                {
+                    metaData = double
+                        .Parse(metaData)
+                        .ToString()
+                        .Replace(',', '.');
+                }
+                break;
+        }
 
         for (var i = 0; i < eventParser.Amount; i++)
         {
             var limitedData = $"1:1"; // TODO: maxStack:maxSell
-            newItems.Add(new PlayerInventoryFurnitureItem(0, item.FurnitureItems.First(), limitedData, item.Metadata, created));
+            newItems.Add(new PlayerInventoryFurnitureItem(0, item.FurnitureItems.First(), limitedData, metaData, created));
         }
 
         foreach (var newItem in newItems)
