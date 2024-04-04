@@ -31,6 +31,20 @@ public class RoomItemPlacedEventHandler(
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
+
+        if (!client.RoomUser.HasRights())
+        {
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
+            return;
+        }
+        
+        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
+        
+        if (!found || room == null)
+        {
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            return;
+        }
         
         var player = client.Player;
         var placementData = eventParser.PlacementData;
@@ -46,20 +60,6 @@ public class RoomItemPlacedEventHandler(
         if (playerItem == null)
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
-            return;
-        }
-        
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
-        
-        if (!found || room == null)
-        {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
-            return;
-        }
-
-        if (!client.RoomUser.HasRights())
-        {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
             return;
         }
 
