@@ -1,13 +1,11 @@
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Items;
 using Sadie.Game.Catalog.Pages;
-using Sadie.Game.Furniture;
 using Sadie.Game.Players.Inventory;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
-using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Shared;

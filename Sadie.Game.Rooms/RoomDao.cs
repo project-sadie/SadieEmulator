@@ -1,5 +1,4 @@
 ﻿using Sadie.Database;
-using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Unsorted.Game.Rooms;
 

@@ -1,4 +1,3 @@
-using Sadie.Game.Furniture;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
