@@ -11,7 +11,7 @@ public class CatalogItem
     public int CostPointsType { get; set; }
     public ICollection<FurnitureItem> FurnitureItems { get; set; }
     public bool RequiresClubMembership { get; set; }
-    public string Metadata { get; set; }
+    public string MetaData { get; set; }
     public int Amount { get; set; }
     public int SellLimit { get; set; }
 }
