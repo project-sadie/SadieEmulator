@@ -10,7 +10,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
     public NavigatorSearchResultPagesWriter(
         string tabName, 
         string searchQuery, 
-        Dictionary<NavigatorCategoryEntity, List<IRoom>> categoryRoomMap)
+        Dictionary<NavigatorCategoryDto, List<IRoom>> categoryRoomMap)
     {
         WriteShort(ServerPacketId.NavigatorRooms);
         WriteString(tabName);

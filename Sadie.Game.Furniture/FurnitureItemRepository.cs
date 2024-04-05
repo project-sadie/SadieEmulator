@@ -1,16 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Furniture;
+
 namespace Sadie.Game.Furniture;
 
-public class FurnitureItemRepository(FurnitureItemDao furnitureItemDao)
+public class FurnitureItemRepository(SadieContext dbContext)
 {
+    private Dictionary<int, FurnitureItemDto> _items = new();
+
     public async Task LoadInitialDataAsync()
     {
-        _items = await furnitureItemDao.GetAllAsync();
+        _items = await dbContext.Set<FurnitureItemDto>()
+            .ToDictionaryAsync(x => x.Id, x => x);
     }
 
-    private Dictionary<int, FurnitureItem> _items;
-
-    public Tuple<bool, FurnitureItem?> TryGetById(int itemId)
+    public Tuple<bool, FurnitureItemDto?> TryGetById(int itemId)
     {
-        return new Tuple<bool, FurnitureItem?>(_items.TryGetValue(itemId, out var item), item);
+        return new Tuple<bool, FurnitureItemDto?>(_items.TryGetValue(itemId, out var item), item);
     }
 }

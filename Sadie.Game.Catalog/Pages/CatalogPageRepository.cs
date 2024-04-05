@@ -1,28 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog.Pages;
+
 namespace Sadie.Game.Catalog.Pages;
 
-public class CatalogPageRepository(CatalogPageDao pageDao)
+public class CatalogPageRepository(SadieContext dbContext)
 {
-    private Dictionary<int, CatalogPage> _pages = new();
+    private Dictionary<int, CatalogPageDto> _pages = new();
 
     public async Task LoadInitialDataAsync()
     {
-        _pages = await pageDao.GetAllAsync();
-
-        foreach (var page in _pages.Values)
-        {
-            if (_pages.TryGetValue(page.ParentId, out var parentPage) && page.Id != parentPage.Id)
-            {
-                parentPage.Pages.Add(page);
-            }
-        }
+        _pages = await dbContext.Set<CatalogPageDto>()
+            .ToDictionaryAsync(x => x.Id, x => x);
     }
 
-    public Tuple<bool, CatalogPage?> TryGet(int pageId)
+    public Tuple<bool, CatalogPageDto?> TryGet(int pageId)
     {
-        return new Tuple<bool, CatalogPage?>(_pages.ContainsKey(pageId), _pages[pageId]);
+        return new Tuple<bool, CatalogPageDto?>(_pages.ContainsKey(pageId), _pages[pageId]);
     }
 
-    public List<CatalogPage> GetByParentId(int parentId)
+    public List<CatalogPageDto> GetByParentId(int parentId)
     {
         return _pages
             .Values
@@ -30,9 +27,9 @@ public class CatalogPageRepository(CatalogPageDao pageDao)
             .ToList();
     }
 
-    public Tuple<bool, CatalogPage?> TryGetByLayout(string layout)
+    public Tuple<bool, CatalogPageDto?> TryGetByLayout(string layout)
     {
         var page = _pages.Values.FirstOrDefault(x => x.Layout == layout);
-        return new Tuple<bool, CatalogPage?>(page != null, page);
+        return new Tuple<bool, CatalogPageDto?>(page != null, page);
     }
 }

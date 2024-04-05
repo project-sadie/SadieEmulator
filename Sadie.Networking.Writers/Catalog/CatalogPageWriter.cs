@@ -1,8 +1,10 @@
+using Sadie.Database.Models.Catalog.FrontPage;
+using Sadie.Database.Models.Catalog.Items;
 using Sadie.Game.Catalog.FrontPage;
-using Sadie.Game.Catalog.Items;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Helpers;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -20,10 +22,10 @@ public class CatalogPageWriter : NetworkPacketWriter
         string secondaryText,
         string teaserText,
         string detailsText,
-        List<CatalogItem> items, 
+        List<CatalogItemDto> items, 
         string catalogMode,
         bool acceptSeasonCurrencyAsCredits,
-        List<CatalogFrontPageItem>? frontPageItems)
+        List<CatalogFrontPageItemDto>? frontPageItems)
     {
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(pageId);

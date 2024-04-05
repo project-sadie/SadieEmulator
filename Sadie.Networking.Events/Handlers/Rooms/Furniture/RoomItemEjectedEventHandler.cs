@@ -8,6 +8,7 @@ using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 

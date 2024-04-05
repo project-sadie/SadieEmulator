@@ -1,5 +1,5 @@
+using Sadie.Database.Models.Catalog.Items;
 using Sadie.Game.Catalog;
-using Sadie.Game.Catalog.Items;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players.Inventory;
 using Sadie.Networking.Client;
@@ -118,7 +118,7 @@ public class CatalogPurchaseEventHandler(
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
     }
 
-    private async Task<bool> TryChargeForItemAsync(INetworkClient client, CatalogItem item)
+    private async Task<bool> TryChargeForItemAsync(INetworkClient client, CatalogItemDto item)
     {
         var costInCredits = item.CostCredits * eventParser.Amount;
         var costInPoints = item.CostPoints * eventParser.Amount;

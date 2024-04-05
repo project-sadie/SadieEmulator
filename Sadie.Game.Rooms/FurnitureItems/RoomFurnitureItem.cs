@@ -1,3 +1,4 @@
+using Sadie.Database.Models.Furniture;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -8,7 +9,7 @@ public class RoomFurnitureItem(
     long roomId,
     long ownerId,
     string ownerUsername,
-    FurnitureItem furnitureItem,
+    FurnitureItemDto furnitureItem,
     HPoint position,
     string wallPosition,
     HDirection direction,
@@ -20,7 +21,7 @@ public class RoomFurnitureItem(
     public long RoomId { get; } = roomId;
     public long OwnerId { get; } = ownerId;
     public string OwnerUsername { get; } = ownerUsername;
-    public FurnitureItem FurnitureItem { get; } = furnitureItem;
+    public FurnitureItemDto FurnitureItem { get; } = furnitureItem;
     public HPoint Position { get; set; } = position;
     public string WallPosition { get; set; } = wallPosition;
     public HDirection Direction { get; set; } = direction;

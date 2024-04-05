@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Database.Data;
+using Sadie.Database;
 using Sadie.Database.Models.Navigator;
 
 namespace Sadie.Game.Navigator.Categories;
 
 public class NavigatorCategoryRepository(SadieContext dbContext)
 {
-    public async Task<List<NavigatorCategoryEntity>> GetByTabIdAsync(int tabId)
+    public async Task<List<NavigatorCategoryDto>> GetByTabIdAsync(int tabId)
     {
         return await dbContext
             .NavigatorCategories

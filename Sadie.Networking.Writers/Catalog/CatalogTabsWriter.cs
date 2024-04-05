@@ -1,3 +1,4 @@
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -6,7 +7,7 @@ namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogTabsWriter : NetworkPacketWriter
 {
-    public CatalogTabsWriter(string mode, List<CatalogPage> tabPages)
+    public CatalogTabsWriter(string mode, List<CatalogPageDto> tabPages)
     {
         WriteShort(ServerPacketId.CatalogPages);
         WriteBool(true);
@@ -26,7 +27,7 @@ public class CatalogTabsWriter : NetworkPacketWriter
         WriteString(mode);
     }
 
-    private void AppendPage(CatalogPage page)
+    private void AppendPage(CatalogPageDto page)
     {
         WriteBool(page.Visible);
         WriteInteger(page.Icon);

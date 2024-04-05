@@ -1,6 +1,8 @@
-﻿using Sadie.Game.Catalog.Pages;
+﻿using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Shared.Helpers;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -8,7 +10,7 @@ namespace Sadie.Networking.Writers.Players.Other;
 
 public class HabboClubGiftsWriter : NetworkPacketWriter
 {
-    public HabboClubGiftsWriter(int daysTillNext, int unclaimedGifts, int daysAsClub, CatalogPage? clubGiftPage)
+    public HabboClubGiftsWriter(int daysTillNext, int unclaimedGifts, int daysAsClub, CatalogPageDto? clubGiftPage)
     {
         WriteShort(ServerPacketId.HabboClubGifts);
         WriteInteger(daysTillNext);

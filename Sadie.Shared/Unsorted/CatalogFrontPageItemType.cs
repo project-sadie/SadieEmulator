@@ -1,4 +1,4 @@
-namespace Sadie.Game.Catalog.FrontPage;
+namespace Sadie.Shared.Unsorted;
 
 public enum CatalogFrontPageItemType
 {

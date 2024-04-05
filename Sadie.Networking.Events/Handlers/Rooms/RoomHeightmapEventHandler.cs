@@ -5,6 +5,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 

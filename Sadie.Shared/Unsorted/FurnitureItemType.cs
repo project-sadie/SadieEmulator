@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Sadie.Game.Furniture;
+namespace Sadie.Shared.Unsorted;
 
 public enum FurnitureItemType
 {

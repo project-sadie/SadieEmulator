@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
-using Sadie.Database.Data;
 using Sadie.Database.LegacyAdoNet;
 
 namespace Sadie.Database;
@@ -25,7 +24,7 @@ public static class DatabaseServiceCollection
         serviceCollection.AddSingleton<IDatabaseProvider, DatabaseProvider>();
 
         serviceCollection.AddDbContext<SadieContext>(options => options
-            .UseMySql(connectionString, MariaDbServerVersion.LatestSupportedServerVersion)
+            .UseMySql(connectionString, MariaDbServerVersion.LatestSupportedServerVersion) 
             .UseSnakeCaseNamingConvention());
     }
 }

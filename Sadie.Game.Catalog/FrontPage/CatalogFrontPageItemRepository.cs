@@ -1,11 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog.FrontPage;
+
 namespace Sadie.Game.Catalog.FrontPage;
 
-public class CatalogFrontPageItemRepository(CatalogFrontPageItemDao frontPageItemDao)
+public class CatalogFrontPageItemRepository(SadieContext dbContext)
 {
-    public List<CatalogFrontPageItem> Items = [];
+    public List<CatalogFrontPageItemDto> Items = [];
 
     public async Task LoadInitialDataAsync()
     {
-        Items = await frontPageItemDao.GetAllAsync();
+        Items = await dbContext.Set<CatalogFrontPageItemDto>().ToListAsync();
     }
 }
