@@ -53,16 +53,16 @@ public class HabboClubGiftsWriter : NetworkPacketWriter
                     }
                     else if (item.Name.Contains("bot") && furnitureItem.Type == FurnitureItemType.Bot)
                     {
-                        var look = item.Metadata.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
+                        var look = item.MetaData.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
                         
                         WriteString(!string.IsNullOrEmpty(look)
                             ? look.Replace("figure:", "")
-                            : item.Metadata);
+                            : item.MetaData);
                     }
                     else if (furnitureItem.Type == FurnitureItemType.Bot || item.Name.ToLower() == "poster" ||
                              item.Name.StartsWith("SONG "))
                     {
-                        WriteString(item.Metadata);
+                        WriteString(item.MetaData);
                     }
                     else
                     {
@@ -82,7 +82,7 @@ public class HabboClubGiftsWriter : NetworkPacketWriter
             WriteInteger(item.Id);
             WriteBool(item.RequiresClubMembership);
             
-            if (int.TryParse(item.Metadata, out var daysRequired))
+            if (int.TryParse(item.MetaData, out var daysRequired))
             {
                 WriteInteger(daysRequired);
                 WriteBool(daysRequired <= daysAsClub);

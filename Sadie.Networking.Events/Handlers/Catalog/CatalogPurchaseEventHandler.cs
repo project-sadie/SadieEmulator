@@ -108,7 +108,7 @@ public class CatalogPurchaseEventHandler(
             eventParser.Amount,
             item.RequiresClubMembership ? 1 : 0,
             item.Amount != 1,
-            item.Metadata,
+            item.MetaData,
             false,
             0,
             0,

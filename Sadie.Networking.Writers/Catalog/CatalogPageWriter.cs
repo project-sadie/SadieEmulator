@@ -221,12 +221,12 @@ public class CatalogPageWriter : NetworkPacketWriter
                     }
                     else if (item.Name.Contains("bot") && furnitureItem.Type == FurnitureItemType.Bot)
                     {
-                        var look = item.Metadata.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
-                        WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : item.Metadata);
+                        var look = item.MetaData.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
+                        WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : item.MetaData);
                     }
                     else if (furnitureItem.Type == FurnitureItemType.Bot || item.Name.ToLower() == "poster" || item.Name.StartsWith("SONG "))
                     {
-                        WriteString(item.Metadata);
+                        WriteString(item.MetaData);
                     }
                     else
                     {
