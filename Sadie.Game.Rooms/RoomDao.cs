@@ -12,9 +12,9 @@ public class RoomDao(
     SadieContext dbContext,
     IDatabaseProvider databaseProvider, 
     IRoomFactory factory) 
-    : BaseDao(databaseProvider), IRoomDao
+    : BaseDao(databaseProvider)
 {
-    public async Task<Tuple<bool, IRoom?>> TryGetRoomById(long roomId)
+    public async Task<Tuple<bool, Room?>> TryGetRoomById(long roomId)
     {
         var reader = await GetReaderAsync(@$"
             SELECT {SelectColumns}
@@ -32,7 +32,7 @@ public class RoomDao(
 
         if (!success || record == null)
         {
-            return new Tuple<bool, IRoom?>(false, null);
+            return new Tuple<bool, Room?>(false, null);
         }
 
         var settings = dbContext
@@ -74,7 +74,7 @@ public class RoomDao(
             LandscapePaint = record.Get<string>("landscape_paint"),
         };
 
-        return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
+        return new Tuple<bool, Room?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
             layout,
             record.Get<int>("owner_id"),
@@ -103,7 +103,7 @@ public class RoomDao(
         });
     }
 
-    public Task<int> SaveRoomAsync(IRoom room)
+    public Task<int> SaveRoomAsync(Room room)
     {
         var settings = room.Settings;
         var paintSettings = room.PaintSettings;
@@ -168,7 +168,7 @@ public class RoomDao(
         });
     }
 
-    public async Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int limit, ICollection<long> excludeIds)
+    public async Task<List<Room>> GetByOwnerIdAsync(int ownerId, int limit, ICollection<long> excludeIds)
     {
         var excludeClause = @$"AND rooms.id NOT IN (" +
                             string.Join(",", excludeIds.Select(n => n.ToString()).ToArray()).TrimEnd(',') + @") ";
@@ -186,7 +186,7 @@ public class RoomDao(
             { "ownerId", ownerId }
         });
 
-        var rooms = new List<IRoom>();
+        var rooms = new List<Room>();
         
         while (true)
         {

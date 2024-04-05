@@ -7,7 +7,7 @@ namespace Sadie.Game.Rooms.Users;
 public interface IRoomUserFactory
 {
     RoomUser Create(
-        IRoom room,
+        Room room,
         INetworkObject networkObject, 
         int id, HPoint point, 
         HDirection directionHead,

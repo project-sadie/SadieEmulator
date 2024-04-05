@@ -24,7 +24,7 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
             tiles);
     }
 
-    public IRoom Create(int id,
+    public Room Create(int id,
         string name,
         RoomLayout layout,
         int ownerId,

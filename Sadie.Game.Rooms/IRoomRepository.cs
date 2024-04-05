@@ -2,13 +2,13 @@ namespace Sadie.Game.Rooms;
 
 public interface IRoomRepository : IAsyncDisposable
 {
-    Tuple<bool, IRoom?> TryGetRoomById(long id);
-    Task<Tuple<bool, IRoom?>> TryLoadRoomByIdAsync(long id);
-    List<IRoom> GetPopularRooms(int amount);
-    Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int amount);
+    Tuple<bool, Room?> TryGetRoomById(long id);
+    Task<Tuple<bool, Room?>> TryLoadRoomByIdAsync(long id);
+    List<Room> GetPopularRooms(int amount);
+    Task<List<Room>> GetByOwnerIdAsync(int ownerId, int amount);
     int Count { get; }
-    IEnumerable<IRoom> GetAllRooms();
+    IEnumerable<Room> GetAllRooms();
     Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description);
     Task<int> GetLayoutIdFromNameAsync(string name);
-    Task SaveRoomAsync(IRoom room);
+    Task SaveRoomAsync(Room room);
 }

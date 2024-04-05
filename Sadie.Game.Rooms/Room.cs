@@ -34,7 +34,7 @@ public class Room(
         settings,
         rights,
         furnitureItemRepository,
-        paintSettings), IRoom
+        paintSettings)
 {
     public async Task RunPeriodicCheckAsync()
     {

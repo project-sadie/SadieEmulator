@@ -13,7 +13,7 @@ public interface IRoomFactory
         HDirection doorDirection,
         List<RoomTile> tiles);
     
-    IRoom Create(int id,
+    Room Create(int id,
         string name,
         RoomLayout layout,
         int ownerId,

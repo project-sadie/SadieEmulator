@@ -2,22 +2,22 @@
 
 namespace Sadie.Game.Rooms;
 
-public class RoomRepository(IRoomDao dao) : IRoomRepository
+public class RoomRepository(RoomDao dao) : IRoomRepository
 {
-    private readonly ConcurrentDictionary<long, IRoom> _rooms = new();
+    private readonly ConcurrentDictionary<long, Room> _rooms = new();
 
-    public Tuple<bool, IRoom?> TryGetRoomById(long id)
+    public Tuple<bool, Room?> TryGetRoomById(long id)
     {
-        return new Tuple<bool, IRoom?>(_rooms.TryGetValue(id, out var room), room);
+        return new Tuple<bool, Room?>(_rooms.TryGetValue(id, out var room), room);
     }
     
-    public async Task<Tuple<bool, IRoom?>> TryLoadRoomByIdAsync(long id)
+    public async Task<Tuple<bool, Room?>> TryLoadRoomByIdAsync(long id)
     {
         var (memoryResult, memoryValue) = TryGetRoomById(id);
 
         if (memoryResult)
         {
-            return new Tuple<bool, IRoom?>(true, memoryValue);
+            return new Tuple<bool, Room?>(true, memoryValue);
         }
         
         var (result, room) = await dao.TryGetRoomById(id);
@@ -30,7 +30,7 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
         return TryGetRoomById(id);
     }
 
-    public List<IRoom> GetPopularRooms(int amount)
+    public List<Room> GetPopularRooms(int amount)
     {
         return _rooms.Values.
             Where(x => x.UserRepository.Count > 0).
@@ -39,7 +39,7 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
             ToList();
     }
 
-    public async Task<List<IRoom>> GetByOwnerIdAsync(int ownerId, int amount)
+    public async Task<List<Room>> GetByOwnerIdAsync(int ownerId, int amount)
     {
         var offlineRooms = await dao.GetByOwnerIdAsync(ownerId, amount, _rooms.Keys);
         var inMemoryRooms = _rooms.Values.Where(x => x.OwnerId == ownerId).ToList();
@@ -48,7 +48,7 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
     }
 
     public int Count => _rooms.Count;
-    public IEnumerable<IRoom> GetAllRooms() => _rooms.Values;
+    public IEnumerable<Room> GetAllRooms() => _rooms.Values;
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
     {
@@ -60,7 +60,7 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
         return await dao.GetLayoutIdFromNameAsync(name);
     }
 
-    public async Task SaveRoomAsync(IRoom room)
+    public async Task SaveRoomAsync(Room room)
     {
         await dao.SaveRoomAsync(room);
     }

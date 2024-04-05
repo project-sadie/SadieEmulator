@@ -19,7 +19,7 @@ internal static class NetworkPacketEventHelpers
 {
     internal static bool TryResolveRoomObjectsForClient(
         IRoomRepository roomRepository, 
-        INetworkClient client, out IRoom room, out IRoomUser user)
+        INetworkClient client, out Room room, out IRoomUser user)
     {
         var player = client.Player;
         
@@ -48,7 +48,7 @@ internal static class NetworkPacketEventHelpers
         return true;
     }
 
-    internal static async Task EnterRoomAsync<T>(INetworkClient client, IRoom room, ILogger<T> logger, 
+    internal static async Task EnterRoomAsync<T>(INetworkClient client, Room room, ILogger<T> logger, 
         IRoomUserFactory roomUserFactory)
     {
         var player = client.Player;

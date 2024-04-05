@@ -35,7 +35,7 @@ public class NavigatorSearchEventHandler(
             var writer = new NavigatorSearchResultPagesWriter(
                 tabName, 
                 searchQuery, 
-                new Dictionary<NavigatorCategory, List<IRoom>>());
+                new Dictionary<NavigatorCategory, List<Room>>());
             
             await client.WriteToStreamAsync(writer.GetAllBytes());
             return;
@@ -46,7 +46,7 @@ public class NavigatorSearchEventHandler(
             OrderBy(x => x.OrderId).
             ToList();
 
-        var categoryRoomMap = new Dictionary<NavigatorCategory, List<IRoom>>();
+        var categoryRoomMap = new Dictionary<NavigatorCategory, List<Room>>();
 
         foreach (var category in categories)
         {
@@ -63,9 +63,9 @@ public class NavigatorSearchEventHandler(
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }
 
-    private static Dictionary<NavigatorCategory, List<IRoom>> ApplyFilter(
+    private static Dictionary<NavigatorCategory, List<Room>> ApplyFilter(
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<IRoom>> categoryRoomMap)
+        Dictionary<NavigatorCategory, List<Room>> categoryRoomMap)
     {
         if (searchQuery.Contains(':'))
         {
