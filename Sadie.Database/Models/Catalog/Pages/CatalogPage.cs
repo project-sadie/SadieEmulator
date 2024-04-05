@@ -11,7 +11,7 @@ public class CatalogPage
     public string Caption { get; set; }
     public string Layout { get; set; }
     public int? RoleId { get; set; }
-    public int ParentPageId { get; set; }
+    public int CatalogPageId { get; set; }
     public int OrderId { get; set; }
     public int IconId { get; set; }
     public bool Enabled { get; set; }

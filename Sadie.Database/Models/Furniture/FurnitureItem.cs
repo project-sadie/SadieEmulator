@@ -17,7 +17,7 @@ public class FurnitureItem
     public bool CanWalk { get; set; }
     public bool CanSit { get; set; }
     public bool CanLay { get; set; }
-    public bool CanRecycle { get; set; }
+    public bool CanRecycle { get; set; } 
     public bool CanTrade { get; set; }
     public bool CanMarketplaceSell { get; set; }
     public bool CanInventoryStack { get; set; }

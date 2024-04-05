@@ -12,7 +12,6 @@ public class CatalogItem
     public ICollection<FurnitureItem> FurnitureItems { get; set; }
     public bool RequiresClubMembership { get; set; }
     public string Metadata { get; set; }
-    public long CatalogPageId { get; set; }
     public int Amount { get; set; }
     public int SellLimit { get; set; }
 }

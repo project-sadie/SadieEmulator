@@ -119,7 +119,7 @@ public class RoomItemPlacedEventHandler(
             Direction = (HDirection) direction,
             LimitedData = playerItem.LimitedData,
             MetaData = playerItem.MetaData,
-            Created = DateTime.Now
+            CreatedAt = DateTime.Now
         };
 
         tile.Items.Add(roomFurnitureItem);
@@ -177,7 +177,7 @@ public class RoomItemPlacedEventHandler(
             Direction = 0,
             LimitedData = playerItem.LimitedData,
             MetaData = playerItem.MetaData,
-            Created = DateTime.Now
+            CreatedAt = DateTime.Now
         };
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);

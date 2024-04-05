@@ -17,5 +17,5 @@ public class RoomFurnitureItem
     public HDirection Direction { get; set; }
     public string LimitedData { get; set; }
     public string MetaData { get; set; }
-    public DateTime Created { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

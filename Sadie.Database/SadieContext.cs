@@ -47,6 +47,6 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
 
         modelBuilder.Entity<CatalogItem>()
             .HasMany(c => c.FurnitureItems)
-            .WithOne();
+            .WithMany(x => x.CatalogItems);
     }
 }

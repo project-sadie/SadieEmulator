@@ -23,7 +23,7 @@ public class CatalogPageRepository(SadieContext dbContext)
     {
         return _pages
             .Values
-            .Where(x => x.ParentPageId == parentId)
+            .Where(x => x.CatalogPageId == parentId)
             .ToList();
     }
 

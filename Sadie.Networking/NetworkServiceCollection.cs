@@ -25,6 +25,9 @@ public static class NetworkServiceCollection
             serviceCollection.AddSingleton<X509Certificate2>(provider => certificate);
         }
 
+        // Shut fleck up 
+        FleckLog.LogAction = (x, y, z) => { };
+        
         serviceCollection.AddSingleton<WebSocketServer>(provider => new WebSocketServer($"wss://{host}:{port}"));
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
             
