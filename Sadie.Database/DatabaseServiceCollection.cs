@@ -24,7 +24,7 @@ public static class DatabaseServiceCollection
         serviceCollection.AddSingleton<IDatabaseProvider, DatabaseProvider>();
 
         serviceCollection.AddDbContext<SadieContext>(options => options
-            .UseMySql(connectionString, MariaDbServerVersion.LatestSupportedServerVersion) 
+            .UseMySql(connectionString, MySqlServerVersion.LatestSupportedServerVersion) 
             .UseSnakeCaseNamingConvention());
     }
 }
