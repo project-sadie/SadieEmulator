@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms.FurnitureItems;
+﻿using Sadie.Database.Models.Rooms.Rights;
+using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 
@@ -17,7 +18,7 @@ public class Room(
     IRoomUserRepository userRepository,
     IRoomFurnitureItemRepository furnitureItemRepository,
     IRoomSettings settings,
-    List<long> playersWithRights,
+    List<RoomPlayerRight> rights,
     RoomPaintSettings paintSettings)
     : RoomData(id,
         name,
@@ -30,7 +31,7 @@ public class Room(
         maxUsers,
         userRepository,
         settings,
-        playersWithRights,
+        rights,
         furnitureItemRepository,
         paintSettings), IRoom
 {

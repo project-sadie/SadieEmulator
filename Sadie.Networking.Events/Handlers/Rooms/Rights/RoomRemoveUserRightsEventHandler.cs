@@ -1,3 +1,5 @@
+using Sadie.Database;
+using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Rights;
@@ -8,9 +10,9 @@ using Sadie.Networking.Writers.Rooms.Rights;
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 public class RoomRemoveUserRightsEventHandler(
+    SadieContext dbContext,
     RoomRemoveUserRightsEventParser eventParser,
-    IRoomRepository roomRepository, 
-    IRoomRightsDao roomRightsDao) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomRemoveUserRights;
 
@@ -33,17 +35,19 @@ public class RoomRemoveUserRightsEventHandler(
 
         foreach (var playerId in eventParser.Ids)
         {
-            await RemoveForPlayerAsync(playerId, room);
+            var right = room.Rights.FirstOrDefault(x => x.PlayerId == playerId);
+            
+            if (right == null)
+            {
+                continue;
+            }
+            
+            await RemoveRoomPlayerRightAsync(playerId, room, right);
         }
     }
 
-    private async Task RemoveForPlayerAsync(long playerId, IRoomData room)
+    private async Task RemoveRoomPlayerRightAsync(long playerId, IRoomData room, RoomPlayerRight right)
     {
-        if (!room.PlayersWithRights.Contains(playerId))
-        {
-            return;
-        }
-
         if (room.UserRepository.TryGetById(playerId, out var roomUser))
         {
             roomUser!.ControllerLevel = RoomControllerLevel.None;
@@ -52,8 +56,10 @@ public class RoomRemoveUserRightsEventHandler(
             await roomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
         }
         
-        room.PlayersWithRights.Remove(playerId);
-        await roomRightsDao.DeleteRightsAsync(room.Id, playerId);
+        room.Rights.Remove(right);
+
+        dbContext.RoomPlayerRights.Remove(right);
+        await dbContext.SaveChangesAsync();
 
         await room.UserRepository.BroadcastDataAsync(
             new RoomRemoveUserRightsWriter(room.Id, playerId).GetAllBytes()

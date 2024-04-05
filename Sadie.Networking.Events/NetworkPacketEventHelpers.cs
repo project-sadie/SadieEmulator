@@ -62,7 +62,7 @@ internal static class NetworkPacketEventHelpers
 
         var controllerLevel = RoomControllerLevel.None;
         
-        if (room.PlayersWithRights.Contains(playerData.Id))
+        if (room.Rights.FirstOrDefault(x => x.PlayerId == playerData.Id) != null)
         {
             controllerLevel = RoomControllerLevel.Rights;
         }

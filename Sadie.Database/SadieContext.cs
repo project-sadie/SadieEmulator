@@ -7,6 +7,7 @@ using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 
@@ -23,6 +24,7 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
     public DbSet<RoomCategory> RoomCategories { get; set; }
     public DbSet<RoomChatMessage> RoomChatMessages { get; set; }
     public DbSet<RoomFurnitureItem> RoomFurnitureItems { get; set; }
+    public DbSet<RoomPlayerRight> RoomPlayerRights { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

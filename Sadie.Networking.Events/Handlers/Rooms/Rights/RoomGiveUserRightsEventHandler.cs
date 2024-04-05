@@ -1,3 +1,5 @@
+using Sadie.Database;
+using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Rights;
@@ -8,9 +10,9 @@ using Sadie.Networking.Writers.Rooms.Rights;
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 public class RoomGiveUserRightsEventHandler(
+    SadieContext dbContext,
     RoomGiveUserRightsEventParser eventParser,
-    IRoomRepository roomRepository, 
-    IRoomRightsDao roomRightsDao) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomGiveUserRights;
 
@@ -28,7 +30,7 @@ public class RoomGiveUserRightsEventHandler(
             return;
         }
 
-        if (room.PlayersWithRights.Contains(playerId))
+        if (room.Rights.FirstOrDefault(x => x.PlayerId == playerId) != null)
         {
             return;
         }
@@ -45,7 +47,15 @@ public class RoomGiveUserRightsEventHandler(
             await targetRoomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(targetRoomUser.ControllerLevel).GetAllBytes());
         }
         
-        room.PlayersWithRights.Add(playerId);
-        await roomRightsDao.InsertRightsAsync(room.Id, playerId);
+        var roomPlayerRight = new RoomPlayerRight
+        {
+            RoomId = room.Id,
+            PlayerId = playerId
+        };
+        
+        room.Rights.Add(roomPlayerRight);
+        
+        dbContext.RoomPlayerRights.Add(roomPlayerRight);
+        await dbContext.SaveChangesAsync();
     }
 }
