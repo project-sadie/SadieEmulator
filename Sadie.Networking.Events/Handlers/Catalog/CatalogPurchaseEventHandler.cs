@@ -118,7 +118,7 @@ public class CatalogPurchaseEventHandler(
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
     }
 
-    private async Task<bool> TryChargeForItemAsync(INetworkClient client, CatalogItemDto item)
+    private async Task<bool> TryChargeForItemAsync(INetworkClient client, CatalogItem item)
     {
         var costInCredits = item.CostCredits * eventParser.Amount;
         var costInPoints = item.CostPoints * eventParser.Amount;

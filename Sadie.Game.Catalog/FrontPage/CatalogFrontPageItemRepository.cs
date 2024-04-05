@@ -6,10 +6,10 @@ namespace Sadie.Game.Catalog.FrontPage;
 
 public class CatalogFrontPageItemRepository(SadieContext dbContext)
 {
-    public List<CatalogFrontPageItemDto> Items = [];
+    public List<CatalogFrontPageItem> Items = [];
 
     public async Task LoadInitialDataAsync()
     {
-        Items = await dbContext.Set<CatalogFrontPageItemDto>().ToListAsync();
+        Items = await dbContext.Set<CatalogFrontPageItem>().ToListAsync();
     }
 }

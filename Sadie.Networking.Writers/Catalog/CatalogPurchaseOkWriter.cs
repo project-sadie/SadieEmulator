@@ -24,7 +24,7 @@ public class CatalogPurchaseOkWriter : NetworkPacketWriter
         bool isLimited,
         int limitedItemSeriesSize,
         int amountLeft,
-        List<FurnitureItemDto> furnitureItems)
+        List<FurnitureItem> furnitureItems)
     {
         WriteShort(ServerPacketId.CatalogPurchaseOk);
         WriteInteger(id);

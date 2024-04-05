@@ -9,7 +9,7 @@ public class RoomFurnitureItem(
     long roomId,
     long ownerId,
     string ownerUsername,
-    FurnitureItemDto furnitureItem,
+    FurnitureItem furnitureItem,
     HPoint position,
     string wallPosition,
     HDirection direction,
@@ -21,7 +21,7 @@ public class RoomFurnitureItem(
     public long RoomId { get; } = roomId;
     public long OwnerId { get; } = ownerId;
     public string OwnerUsername { get; } = ownerUsername;
-    public FurnitureItemDto FurnitureItem { get; } = furnitureItem;
+    public FurnitureItem FurnitureItem { get; } = furnitureItem;
     public HPoint Position { get; set; } = position;
     public string WallPosition { get; set; } = wallPosition;
     public HDirection Direction { get; set; } = direction;

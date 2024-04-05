@@ -7,16 +7,16 @@ using Sadie.Game.Catalog.Pages;
 
 namespace Sadie.Game.Catalog;
 
-public class CatalogServiceProvider
+public static class CatalogServiceProvider
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddTransient<CatalogPageDto>();
+        serviceCollection.AddTransient<CatalogPage>();
         serviceCollection.AddSingleton<CatalogPageRepository>();
         
-        serviceCollection.AddTransient<CatalogItemDto>();
+        serviceCollection.AddTransient<CatalogItem>();
         
-        serviceCollection.AddTransient<CatalogFrontPageItemDto>();
+        serviceCollection.AddTransient<CatalogFrontPageItem>();
         serviceCollection.AddSingleton<CatalogFrontPageItemRepository>();
     }
 }

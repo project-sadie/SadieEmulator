@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogTabsWriter : NetworkPacketWriter
 {
-    public CatalogTabsWriter(string mode, List<CatalogPageDto> tabPages)
+    public CatalogTabsWriter(string mode, List<CatalogPage> tabPages)
     {
         WriteShort(ServerPacketId.CatalogPages);
         WriteBool(true);
@@ -27,10 +27,10 @@ public class CatalogTabsWriter : NetworkPacketWriter
         WriteString(mode);
     }
 
-    private void AppendPage(CatalogPageDto page)
+    private void AppendPage(CatalogPage page)
     {
         WriteBool(page.Visible);
-        WriteInteger(page.Icon);
+        WriteInteger(page.IconId);
         WriteInteger(page.Enabled ? page.Id : -1);
         WriteString(page.Name);
         WriteString(page.Caption);

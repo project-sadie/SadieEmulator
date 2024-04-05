@@ -22,10 +22,10 @@ public class CatalogPageWriter : NetworkPacketWriter
         string secondaryText,
         string teaserText,
         string detailsText,
-        List<CatalogItemDto> items, 
+        List<CatalogItem> items, 
         string catalogMode,
         bool acceptSeasonCurrencyAsCredits,
-        List<CatalogFrontPageItemDto>? frontPageItems)
+        List<CatalogFrontPageItem>? frontPageItems)
     {
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(pageId);
@@ -266,10 +266,10 @@ public class CatalogPageWriter : NetworkPacketWriter
             switch (item.Type)
             {
                 case CatalogFrontPageItemType.PageId:
-                    WriteInteger(item.Page.Id);
+                    WriteInteger(item.CatalogPage.Id);
                     break;
                 case CatalogFrontPageItemType.PageName:
-                    WriteString(item.Page.Name);
+                    WriteString(item.CatalogPage.Name);
                     break;
                 case CatalogFrontPageItemType.ProductName:
                     WriteString(item.ProductName);

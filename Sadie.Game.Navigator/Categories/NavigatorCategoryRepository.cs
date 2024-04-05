@@ -6,7 +6,7 @@ namespace Sadie.Game.Navigator.Categories;
 
 public class NavigatorCategoryRepository(SadieContext dbContext)
 {
-    public async Task<List<NavigatorCategoryDto>> GetByTabIdAsync(int tabId)
+    public async Task<List<NavigatorCategory>> GetByTabIdAsync(int tabId)
     {
         return await dbContext
             .NavigatorCategories

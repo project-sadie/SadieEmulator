@@ -2,7 +2,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database.Models.Furniture;
 
-public class FurnitureItemDto
+public class FurnitureItem
 {
     public int Id { get; set; }
     public string Name { get; set; }
