@@ -1,10 +1,14 @@
-namespace Sadie.Game.Rooms;
+﻿using Sadie.Shared.Unsorted;
 
-public interface IRoomSettings
+namespace Sadie.Database.Models.Rooms;
+
+public class RoomSettings
 {
-    bool CanWalkDiagonal { get; }
-    RoomAccessType AccessType { get; set; }
-    string Password { get; set; }
+    public int Id { get; set; }
+    public int RoomId { get; set; }
+    public bool WalkDiagonal { get; set; }
+    public RoomAccessType AccessType { get; set; }
+    public string Password { get; set; }
     public int WhoCanMute { get; set; }
     public int WhoCanKick { get; set; }
     public int WhoCanBan { get; set; }

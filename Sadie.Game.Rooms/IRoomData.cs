@@ -1,3 +1,4 @@
+using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Game.Rooms.FurnitureItems;
@@ -18,7 +19,7 @@ public interface IRoomData
     int MaxUsers { get; set; }
     bool Muted { get; }
     IRoomUserRepository UserRepository { get; }
-    IRoomSettings Settings { get; }
+    RoomSettings Settings { get; }
     List<RoomChatMessage> ChatMessages { get; }
     public List<RoomPlayerRight> Rights { get; }
     public IRoomFurnitureItemRepository FurnitureItemRepository { get; }

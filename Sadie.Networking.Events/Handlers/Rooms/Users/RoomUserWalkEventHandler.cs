@@ -30,7 +30,7 @@ public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, IRoom
 
         var point = tile.Point;
 
-        roomUser!.WalkToPoint(new Point(point.X, point.Y), room.Settings.CanWalkDiagonal);
+        roomUser!.WalkToPoint(new Point(point.X, point.Y), room.Settings.WalkDiagonal);
         return Task.CompletedTask;
     }
 }

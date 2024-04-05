@@ -1,3 +1,5 @@
+using Sadie.Database;
+using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
@@ -7,6 +9,7 @@ using Sadie.Networking.Writers.Navigator;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerCreateRoomEventHandler(
+    SadieContext dbContext,
     PlayerCreateRoomEventParser eventParser,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
@@ -29,9 +32,21 @@ public class PlayerCreateRoomEventHandler(
             client.Player.Data.Id, 
             eventParser.MaxUsersAllowed, 
             eventParser.Description);
-        
-        await roomRepository.CreateRoomSettingsAsync(roomId);
-        await roomRepository.CreatePaintSettingsAsync(roomId);
+
+        var roomSettings = new RoomSettings
+        {
+            RoomId = roomId
+        };
+
+        dbContext.Set<RoomSettings>().Add(roomSettings);
+
+        var paintSettings = new RoomPaintSettings
+        {
+            RoomId = roomId
+        };
+
+        dbContext.Set<RoomPaintSettings>().Add(paintSettings);
+        await dbContext.SaveChangesAsync();
 
         var (madeRoom, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
 

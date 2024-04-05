@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms;
+namespace Sadie.Shared.Unsorted;
 
 public enum RoomAccessType
 {

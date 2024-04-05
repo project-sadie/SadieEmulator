@@ -55,16 +55,6 @@ public class RoomRepository(IRoomDao dao) : IRoomRepository
         return await dao.CreateRoomAsync(name, layoutId, ownerId, maxUsers, description);
     }
 
-    public async Task<int> CreateRoomSettingsAsync(int roomId)
-    {
-        return await dao.CreateRoomSettingsAsync(roomId);
-    }
-
-    public async Task<int> CreatePaintSettingsAsync(int roomId)
-    {
-        return await dao.CreatePaintSettingsAsync(roomId);
-    }
-
     public async Task<int> GetLayoutIdFromNameAsync(string name)
     {
         return await dao.GetLayoutIdFromNameAsync(name);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -34,25 +35,9 @@ public class RoomDao(
             return new Tuple<bool, IRoom?>(false, null);
         }
 
-        var settings = factory.CreateSettings(
-            record.Get<bool>("walk_diagonal"),
-            (RoomAccessType) record.Get<int>("access_type"),
-            record.Get<string>("password"),
-            record.Get<int>("who_can_mute"),
-            record.Get<int>("who_can_kick"),
-            record.Get<int>("who_can_ban"),
-            record.Get<int>("allow_pets") == 1,
-            record.Get<int>("can_pets_eat") == 1,
-            record.Get<int>("hide_walls") == 1,
-            record.Get<int>("wall_thickness"),
-            record.Get<int>("floor_thickness"),
-            record.Get<int>("can_users_overlap") == 1,
-            record.Get<int>("chat_type"),
-            record.Get<int>("chat_weight"),
-            record.Get<int>("chat_speed"),
-            record.Get<int>("chat_distance"),
-            record.Get<int>("chat_protection"),
-            record.Get<int>("trade_option"));
+        var settings = dbContext
+            .Set<RoomSettings>()
+            .First(x => x.RoomId == record.Get<int>("id"));
         
         var doorPoint = new HPoint(record.Get<int>("door_x"),
             record.Get<int>("door_y"),
@@ -82,10 +67,12 @@ public class RoomDao(
         var playersWithRights = commaSeparatedRights.Contains(",") ? [..commaSeparatedRights.Split(",").Select(long.Parse)] : 
             new List<long>();
 
-        var paintSettings = new RoomPaintSettings(
-            record.Get<string>("floor_paint"),
-            record.Get<string>("wall_paint"),
-            record.Get<string>("landscape_paint"));
+        var paintSettings = new RoomPaintSettings
+        {
+            FloorPaint = record.Get<string>("floor_paint"),
+            WallPaint = record.Get<string>("wall_paint"),
+            LandscapePaint = record.Get<string>("landscape_paint"),
+        };
 
         return new Tuple<bool, IRoom?>(true, factory.Create(record.Get<int>("id"),
             record.Get<string>("name"),
@@ -113,30 +100,6 @@ public class RoomDao(
             {"ownerId", ownerId},
             {"maxUsers", maxUsers},
             {"description", description}
-        });
-    }
-
-    public async Task<int> CreateRoomSettingsAsync(int roomId)
-    {
-        return await QueryAsync(@"INSERT INTO room_settings (room_id) VALUES (@roomId);", new Dictionary<string, object>
-        {
-            {"roomId", roomId}
-        });
-    }
-
-    public async Task<int> CreatePaintSettingsAsync(int roomId)
-    {
-        return await QueryAsync(@"INSERT INTO room_paint_settings (room_id) VALUES (@roomId);", new Dictionary<string, object>
-        {
-            {"roomId", roomId}
-        });
-    }
-
-    public async Task<int> GetLayoutIdFromNameAsync(string name)
-    {
-        return await QueryScalarAsync("SELECT id FROM room_layouts WHERE name = @name", new Dictionary<string, object>
-        {
-            {"name", name}
         });
     }
 
@@ -233,26 +196,10 @@ public class RoomDao(
             {
                 break;
             }
-            
-            var settings = factory.CreateSettings(
-                record.Get<bool>("walk_diagonal"),
-                (RoomAccessType) record.Get<int>("access_type"),
-                record.Get<string>("password"),
-                record.Get<int>("who_can_mute"),
-                record.Get<int>("who_can_kick"),
-                record.Get<int>("who_can_ban"),
-                record.Get<int>("allow_pets") == 1,
-                record.Get<int>("can_pets_eat") == 1,
-                record.Get<int>("hide_walls") == 1,
-                record.Get<int>("wall_thickness"),
-                record.Get<int>("floor_thickness"),
-                record.Get<int>("can_users_overlap") == 1,
-                record.Get<int>("chat_type"),
-                record.Get<int>("chat_weight"),
-                record.Get<int>("chat_speed"),
-                record.Get<int>("chat_distance"),
-                record.Get<int>("chat_protection"),
-                record.Get<int>("trade_option"));
+
+            var settings = dbContext
+                .Set<RoomSettings>()
+                .First(x => x.RoomId == record.Get<int>("id"));
         
             var doorPoint = new HPoint(record.Get<int>("door_x"),
                 record.Get<int>("door_y"),
@@ -280,10 +227,12 @@ public class RoomDao(
             var playersWithRights = commaSeparatedRights.Contains(",") ? [..commaSeparatedRights.Split(",").Select(long.Parse)] : 
                 new List<long>();
 
-            var paintSettings = new RoomPaintSettings(
-                record.Get<string>("floor_paint"),
-                record.Get<string>("wall_paint"),
-                record.Get<string>("landscape_paint"));
+            var paintSettings = new RoomPaintSettings
+            {
+                FloorPaint = record.Get<string>("floor_paint"),
+                WallPaint = record.Get<string>("wall_paint"),
+                LandscapePaint = record.Get<string>("landscape_paint"),
+            };
 
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
@@ -305,58 +254,66 @@ public class RoomDao(
         return rooms;
     }
 
+    public async Task<int> GetLayoutIdFromNameAsync(string name)
+    {
+        return await QueryScalarAsync("SELECT id FROM room_layouts WHERE name = @name", new Dictionary<string, object>
+        {
+            {"name", name}
+        });
+    }
+
     private const string SelectColumns = """
-        rooms.id,
-        rooms.name,
-        rooms.layout_id,
-        rooms.owner_id,
-        rooms.description,
-        rooms.is_muted,
-        rooms.max_users_allowed,
-        
-        (SELECT username FROM players WHERE id = rooms.owner_id) AS owner_name,
-        
-        (SELECT GROUP_CONCAT(player_id) AS comma_separated_rights
-         FROM room_player_rights
-         WHERE room_id = rooms.id
-         GROUP BY room_id) AS comma_separated_rights,
-        
-        (SELECT GROUP_CONCAT(name) AS comma_separated_tags
-         FROM room_tags
-         WHERE room_id = rooms.id
-         GROUP BY room_id) AS comma_separated_tags,
-        
-        (SELECT COUNT(*) FROM player_room_likes WHERE room_id = id) AS score,
-        
-        room_settings.walk_diagonal,
-        room_settings.access_type,
-        room_settings.password,
-        room_settings.who_can_mute,
-        room_settings.who_can_kick,
-        room_settings.who_can_ban,
-        room_settings.allow_pets,
-        room_settings.can_pets_eat,
-        room_settings.hide_walls,
-        room_settings.wall_thickness,
-        room_settings.floor_thickness,
-        room_settings.can_users_overlap,
-        room_settings.chat_type,
-        room_settings.chat_weight,
-        room_settings.chat_speed,
-        room_settings.chat_distance,
-        room_settings.chat_protection,
-        room_settings.trade_option,
-        
-        room_paint_settings.room_id,
-        room_paint_settings.floor_paint,
-        room_paint_settings.wall_paint,
-        room_paint_settings.landscape_paint,
-        
-        room_layouts.name AS layout_name,
-        room_layouts.heightmap,
-        room_layouts.door_x,
-        room_layouts.door_y,
-        room_layouts.door_z,
-        room_layouts.door_direction
-    """;
+                                             rooms.id,
+                                             rooms.name,
+                                             rooms.layout_id,
+                                             rooms.owner_id,
+                                             rooms.description,
+                                             rooms.is_muted,
+                                             rooms.max_users_allowed,
+                                             
+                                             (SELECT username FROM players WHERE id = rooms.owner_id) AS owner_name,
+                                             
+                                             (SELECT GROUP_CONCAT(player_id) AS comma_separated_rights
+                                              FROM room_player_rights
+                                              WHERE room_id = rooms.id
+                                              GROUP BY room_id) AS comma_separated_rights,
+                                             
+                                             (SELECT GROUP_CONCAT(name) AS comma_separated_tags
+                                              FROM room_tags
+                                              WHERE room_id = rooms.id
+                                              GROUP BY room_id) AS comma_separated_tags,
+                                             
+                                             (SELECT COUNT(*) FROM player_room_likes WHERE room_id = id) AS score,
+                                             
+                                             room_settings.walk_diagonal,
+                                             room_settings.access_type,
+                                             room_settings.password,
+                                             room_settings.who_can_mute,
+                                             room_settings.who_can_kick,
+                                             room_settings.who_can_ban,
+                                             room_settings.allow_pets,
+                                             room_settings.can_pets_eat,
+                                             room_settings.hide_walls,
+                                             room_settings.wall_thickness,
+                                             room_settings.floor_thickness,
+                                             room_settings.can_users_overlap,
+                                             room_settings.chat_type,
+                                             room_settings.chat_weight,
+                                             room_settings.chat_speed,
+                                             room_settings.chat_distance,
+                                             room_settings.chat_protection,
+                                             room_settings.trade_option,
+                                             
+                                             room_paint_settings.room_id,
+                                             room_paint_settings.floor_paint,
+                                             room_paint_settings.wall_paint,
+                                             room_paint_settings.landscape_paint,
+                                             
+                                             room_layouts.name AS layout_name,
+                                             room_layouts.heightmap,
+                                             room_layouts.door_x,
+                                             room_layouts.door_y,
+                                             room_layouts.door_z,
+                                             room_layouts.door_direction
+                                         """;
 }
