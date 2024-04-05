@@ -11,6 +11,9 @@ public class CatalogPageRepository(SadieContext dbContext)
     public async Task LoadInitialDataAsync()
     {
         _pages = await dbContext.Set<CatalogPage>()
+            .Include(x => x.Pages)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.FurnitureItems)
             .ToDictionaryAsync(x => x.Id, x => x);
     }
 
