@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Sadie.Database.Models.Catalog.Items;
 
 namespace Sadie.Database.Models.Catalog.Pages;
@@ -24,8 +23,6 @@ public class CatalogPage
     public string? SecondaryText { get; set; }
     public string? DetailsText { get; set; }
     public string? TeaserText { get; set; }
-    [NotMapped]
     public List<CatalogPage> Pages { get; set; }
-    [NotMapped]
     public List<CatalogItem> Items { get; set; }
 }

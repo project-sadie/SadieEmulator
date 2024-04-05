@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Shared.Unsorted;
 

@@ -1,5 +1,4 @@
 using Sadie.Database.Models.Furniture;
-using Sadie.Game.Furniture;
 
 namespace Sadie.Game.Players.Inventory;
 

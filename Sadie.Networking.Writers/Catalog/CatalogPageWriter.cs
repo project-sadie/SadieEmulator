@@ -1,8 +1,6 @@
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Items;
-using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
-using Sadie.Game.Furniture;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;

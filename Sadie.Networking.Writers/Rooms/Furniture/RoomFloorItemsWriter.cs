@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -30,10 +30,10 @@ public class RoomFloorItemsWriter : NetworkPacketWriter
             
             WriteLong(item.Id);
             WriteInteger(item.FurnitureItem.AssetId);
-            WriteInteger(item.Position.X);
-            WriteInteger(item.Position.Y);
+            WriteInteger(item.PositionX);
+            WriteInteger(item.PositionY);
             WriteInteger((int) item.Direction);
-            WriteString($"{item.Position.Z.ToString():0.00}");
+            WriteString($"{item.PositionZ.ToString():0.00}");
             WriteString(height.ToString());
             WriteInteger(extra);
 

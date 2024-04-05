@@ -1,8 +1,8 @@
-using Sadie.Game.Furniture;
+using Sadie.Database;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
@@ -15,10 +15,10 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomItemPlacedEventHandler(
+    SadieContext dbContext,
     RoomFurnitureItemPlacedEventParser eventParser,
     IRoomRepository roomRepository, 
-    IPlayerInventoryDao playerInventoryDao,
-    IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEventHandler
+    IPlayerInventoryDao playerInventoryDao) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFurnitureItemPlaced;
 
@@ -103,28 +103,32 @@ public class RoomItemPlacedEventHandler(
             return;
         }
             
-        var created = DateTime.Now;
-        var highestItem = tile.Items.OrderByDescending(x => x.Position.Z).FirstOrDefault();
-        var z = (float)(highestItem != null ? highestItem.Position.Z + highestItem.FurnitureItem.StackHeight : 0);
+        var highestItem = tile.Items.OrderByDescending(x => x.PositionZ).FirstOrDefault();
+        var z = (float)(highestItem != null ? highestItem.PositionZ + highestItem.FurnitureItem.StackHeight : 0);
             
-        var roomFurnitureItem = new RoomFurnitureItem(
-            0, 
-            room.Id,
-            player.Data.Id,
-            player.Data.Username,
-            playerItem.FurnitureItem, 
-            new HPoint(x, y, z), 
-            string.Empty,
-            (HDirection)direction,
-            playerItem.LimitedData,
-            playerItem.MetaData,
-            created);
+        var roomFurnitureItem = new RoomFurnitureItem
+        {
+            RoomId = room.Id,
+            OwnerId = player.Data.Id,
+            OwnerUsername = player.Data.Username,
+            FurnitureItem = playerItem.FurnitureItem,
+            PositionX = x,
+            PositionY = y,
+            PositionZ = z,
+            WallPosition = string.Empty,
+            Direction = (HDirection) direction,
+            LimitedData = playerItem.LimitedData,
+            MetaData = playerItem.MetaData,
+            Created = DateTime.Now
+        };
 
         tile.Items.Add(roomFurnitureItem);
         RoomHelpers.UpdateTileMapForTile(tile, room.Layout);
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);
-        roomFurnitureItem.Id = await roomFurnitureItemDao.CreateItemAsync(roomFurnitureItem);
+        
+        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
+        await dbContext.SaveChangesAsync();
 
         room.FurnitureItemRepository.AddItems([roomFurnitureItem]);
         player.Data.Inventory.RemoveItems([itemId]);
@@ -134,7 +138,9 @@ public class RoomItemPlacedEventHandler(
         await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemPlacedWriter(
             roomFurnitureItem.Id,
             roomFurnitureItem.FurnitureItem.AssetId,
-            roomFurnitureItem.Position,
+            roomFurnitureItem.PositionX,
+            roomFurnitureItem.PositionY,
+            roomFurnitureItem.PositionZ,
             (int) roomFurnitureItem.Direction,
             roomFurnitureItem.FurnitureItem.StackHeight,
             1,
@@ -157,22 +163,27 @@ public class RoomItemPlacedEventHandler(
         INetworkObject client)
     {
         var wallPosition = $"{placementData[1]} {placementData[2]} {placementData[3]}";
-            
-        var roomFurnitureItem = new RoomFurnitureItem(
-            0, 
-            room.Id,
-            player.Data.Id,
-            player.Data.Username,
-            playerItem.FurnitureItem, 
-            new HPoint(0, 0, 0),
-            wallPosition,
-            0,
-            playerItem.LimitedData,
-            playerItem.MetaData,
-            DateTime.Now);
+
+        var roomFurnitureItem = new RoomFurnitureItem
+        {
+            RoomId = room.Id,
+            OwnerId = player.Data.Id,
+            OwnerUsername = player.Data.Username,
+            FurnitureItem = playerItem.FurnitureItem,
+            PositionX = 0,
+            PositionY = 0,
+            PositionZ = 0,
+            WallPosition = wallPosition,
+            Direction = 0,
+            LimitedData = playerItem.LimitedData,
+            MetaData = playerItem.MetaData,
+            Created = DateTime.Now
+        };
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);
-        roomFurnitureItem.Id = await roomFurnitureItemDao.CreateItemAsync(roomFurnitureItem);
+        
+        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
+        await dbContext.SaveChangesAsync();
         
         room.FurnitureItemRepository.AddItems([roomFurnitureItem]);
         player.Data.Inventory.RemoveItems([itemId]);

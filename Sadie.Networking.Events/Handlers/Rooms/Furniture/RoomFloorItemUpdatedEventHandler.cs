@@ -1,5 +1,5 @@
+using Sadie.Database;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
@@ -10,9 +10,9 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomFloorItemUpdatedEventHandler(
+    SadieContext dbContext,
     RoomFloorItemUpdatedEventParser eventParser,
-    IRoomRepository roomRepository, 
-    IRoomFurnitureItemDao roomFurnitureItemDao) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFloorFurnitureItemUpdated;
 
@@ -48,7 +48,7 @@ public class RoomFloorItemUpdatedEventHandler(
         }
         
         var currentTile = room.Layout.FindTile(
-            roomFurnitureItem.Position.X, roomFurnitureItem.Position.Y);
+            roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
 
         currentTile?.Items.Remove(roomFurnitureItem);
         
@@ -59,8 +59,8 @@ public class RoomFloorItemUpdatedEventHandler(
 
         var position = new HPoint(
             eventParser.X,
-            eventParser.Y,
-            roomFurnitureItem.Position.Z);
+            eventParser.Y, 
+            roomFurnitureItem.PositionZ);
 
         var direction = eventParser.Direction;
         var tile = room.Layout.FindTile(position.X, position.Y);
@@ -74,14 +74,19 @@ public class RoomFloorItemUpdatedEventHandler(
         tile.Items.Add(roomFurnitureItem);
         RoomHelpers.UpdateTileMapForTile(tile, room.Layout);
 
-        roomFurnitureItem.Position = position;
+        roomFurnitureItem.PositionX = position.X;
+        roomFurnitureItem.PositionY = position.Y;
+        roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = direction;
         
-        await roomFurnitureItemDao.UpdateItemAsync(roomFurnitureItem);
+        await dbContext.SaveChangesAsync();
+        
         await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(
             roomFurnitureItem.Id,
             roomFurnitureItem.FurnitureItem.AssetId,
-            roomFurnitureItem.Position,
+            roomFurnitureItem.PositionX,
+            roomFurnitureItem.PositionY,
+            roomFurnitureItem.PositionZ,
             (int) roomFurnitureItem.Direction,
             0,
             1,
@@ -92,12 +97,5 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.FurnitureItem.InteractionModes,
             -1,
             roomFurnitureItem.OwnerId).GetAllBytes());
-    }
-
-    public RoomFloorItemUpdatedEventHandler(IRoomRepository roomRepository, 
-        IRoomFurnitureItemDao roomFurnitureItemDao) : this(default(RoomFloorItemUpdatedEventParser),
-        roomRepository,
-        roomFurnitureItemDao)
-    {
     }
 }

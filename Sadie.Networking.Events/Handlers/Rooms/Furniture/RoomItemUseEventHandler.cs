@@ -39,7 +39,9 @@ public class RoomItemUseEventHandler(
         await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(
             roomFurnitureItem.Id,
             roomFurnitureItem.FurnitureItem.AssetId,
-            roomFurnitureItem.Position,
+            roomFurnitureItem.PositionX,
+            roomFurnitureItem.PositionY,
+            roomFurnitureItem.PositionZ,
             (int) roomFurnitureItem.Direction,
             0,
             1,

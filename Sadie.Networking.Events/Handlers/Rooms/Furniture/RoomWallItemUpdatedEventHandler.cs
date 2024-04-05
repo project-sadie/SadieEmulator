@@ -1,5 +1,5 @@
+using Sadie.Database;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
@@ -9,9 +9,9 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomWallItemUpdatedEventHandler(
+    SadieContext dbContext,
     RoomWallItemUpdatedEventParser eventParser,
-    IRoomRepository roomRepository,
-    IRoomFurnitureItemDao roomFurnitureItemDao)
+    IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomWallItemUpdated;
@@ -53,8 +53,9 @@ public class RoomWallItemUpdatedEventHandler(
         }
 
         roomFurnitureItem.WallPosition = wallPosition;
+
+        await dbContext.SaveChangesAsync();
         
-        await roomFurnitureItemDao.UpdateItemAsync(roomFurnitureItem);
         await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemUpdatedWriter(roomFurnitureItem).GetAllBytes());
     }
 }

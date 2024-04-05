@@ -1,5 +1,4 @@
 using Sadie.Database.Models.Catalog.Pages;
-using Sadie.Game.Catalog.Pages;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 

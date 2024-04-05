@@ -28,7 +28,7 @@ public static class RoomHelpers
 
                 var items = furnitureItemRepository
                     .Items
-                    .Where(item => item.Position.X == x && item.Position.Y == y)
+                    .Where(item => item.PositionX == x && item.PositionY == y)
                     .ToList();
                 
                 var tile = new RoomTile(x, y, zResult ? z : 33, state, items);
@@ -97,7 +97,7 @@ public static class RoomHelpers
 
     public static void UpdateTileMapForTile(RoomTile tile, RoomLayout layout)
     {
-        var topLevelItem = tile.Items.MaxBy(x => x.Position.Z);
+        var topLevelItem = tile.Items.MaxBy(x => x.PositionZ);
 
         if (topLevelItem == null)
         {

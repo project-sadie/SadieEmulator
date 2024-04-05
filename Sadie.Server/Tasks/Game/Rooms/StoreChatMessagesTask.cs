@@ -1,8 +1,9 @@
+using Sadie.Database;
 using Sadie.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class StoreChatMessagesTask(IRoomRepository roomRepository) : IServerTask
+public class StoreChatMessagesTask(SadieContext dbContext, IRoomRepository roomRepository) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
     public DateTime LastExecuted { get; set; }
@@ -15,8 +16,10 @@ public class StoreChatMessagesTask(IRoomRepository roomRepository) : IServerTask
             {
                 continue;
             }
-
-            await roomRepository.CreateChatMessages(room.ChatMessages);
+            
+            dbContext.RoomChatMessages.AddRange(room.ChatMessages);
+            await dbContext.SaveChangesAsync();
+            
             room.ChatMessages.Clear();
         }
     }

@@ -1,4 +1,3 @@
-using Sadie.Game.Furniture;
 using Sadie.Game.Players.Inventory;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;

@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Rooms.Chat;
+﻿using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.Users;
 

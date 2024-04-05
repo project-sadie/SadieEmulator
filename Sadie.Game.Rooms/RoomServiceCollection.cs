@@ -22,13 +22,10 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
         serviceCollection.AddSingleton<IRoomRightsDao, RoomRightsDao>();
-        serviceCollection.AddSingleton<IRoomChatMessageDao, RoomChatMessageDao>();
         serviceCollection.AddSingleton<IRoomDao, RoomDao>();
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
-            
-        serviceCollection.AddSingleton<RoomCategoryFactory>();
-        serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();
-        serviceCollection.AddSingleton<IRoomCategoryRepository, RoomCategoryRepository>();
+        
+        serviceCollection.AddSingleton<RoomCategoryRepository>();
         
         serviceCollection.AddSingleton<AboutCommand>();
         
@@ -39,6 +36,5 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
         
         serviceCollection.AddSingleton<IRoomFurnitureItemRepository, RoomFurnitureItemRepository>();
-        serviceCollection.AddSingleton<IRoomFurnitureItemDao, RoomFurnitureItemDao>();
     }
 }

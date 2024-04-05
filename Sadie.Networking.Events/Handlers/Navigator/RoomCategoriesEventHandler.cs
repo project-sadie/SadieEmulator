@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-public class RoomCategoriesEventHandler(IRoomCategoryRepository roomCategoryRepository) : INetworkPacketEventHandler
+public class RoomCategoriesEventHandler(RoomCategoryRepository roomCategoryRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomCategories;
 

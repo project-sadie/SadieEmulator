@@ -65,7 +65,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private async Task LoadInitialDataAsync()
     {
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<IRoomCategoryRepository>().LoadInitialDataAsync, "room categories");
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<RoomCategoryRepository>().LoadInitialDataAsync, "room categories");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync, "navigator tabs");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync, "furniture items");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync, "catalog pages");

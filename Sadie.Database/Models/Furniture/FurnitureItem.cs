@@ -1,3 +1,4 @@
+using Sadie.Database.Models.Catalog.Items;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database.Models.Furniture;
@@ -23,4 +24,5 @@ public class FurnitureItem
     public bool CanGift { get; set; }
     public string InteractionType { get; set; }
     public int InteractionModes { get; set; }
+    public ICollection<CatalogItem> CatalogItems { get; set; }
 }

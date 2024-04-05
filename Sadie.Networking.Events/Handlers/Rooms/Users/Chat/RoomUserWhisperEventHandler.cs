@@ -1,10 +1,10 @@
+using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Chat;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
-using Sadie.Shared.Unsorted.Game;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
@@ -39,15 +39,24 @@ public class RoomUserWhisperEventHandler(
             return;
         }
 
-        var chatMessage = new RoomChatMessage(roomUser, whisperMessage, room, (ChatBubble) reader.ReadInteger(), 0, RoomChatMessageType.Whisper);
+        var chatMessage = new RoomChatMessage
+        {
+            RoomId = room.Id,
+            PlayerId = roomUser.Id,
+            Message = whisperMessage,
+            ChatBubbleId = eventParser.Bubble,
+            EmotionId = 0,
+            Type = RoomChatMessageType.Whisper,
+            CreatedAt = DateTime.Now
+        };
 
         await roomUser.OnTalkAsync(chatMessage);
         
         var packetBytes = new RoomUserWhisperWriter(
-            chatMessage.Sender.Id,
+            chatMessage.PlayerId,
             chatMessage.Message,
             chatMessage.EmotionId,
-            (int) chatMessage.Bubble).GetAllBytes();
+            (int) chatMessage.ChatBubbleId).GetAllBytes();
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);

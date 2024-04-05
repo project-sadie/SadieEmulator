@@ -1,8 +1,7 @@
-using Sadie.Game.Furniture;
+using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
@@ -13,10 +12,10 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomItemEjectedEventHandler(
+    SadieContext dbContext,
     RoomFurnitureItemEjectedEventParser eventParser,
     IRoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
-    IRoomFurnitureItemDao roomFurnitureItemDao,
     IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFurnitureItemEjected;
@@ -55,7 +54,7 @@ public class RoomItemEjectedEventHandler(
         if (roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
         {
             var currentTile = room.Layout.FindTile(
-                roomFurnitureItem.Position.X, roomFurnitureItem.Position.Y);
+                roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
 
             if (currentTile != null)
             {
@@ -81,8 +80,10 @@ public class RoomItemEjectedEventHandler(
             roomFurnitureItem.LimitedData, roomFurnitureItem.MetaData, created);
 
         playerItem.Id = await playerInventoryDao.CreateItemAsync(roomFurnitureItem.OwnerId, playerItem);
-
-        await roomFurnitureItemDao.DeleteItemsAsync([roomFurnitureItem.Id]);
+        
+        dbContext.RoomFurnitureItems.Remove(roomFurnitureItem);
+        await dbContext.SaveChangesAsync();
+        
         room.FurnitureItemRepository.RemoveItems([roomFurnitureItem.Id]);
         
         if (ownsItem)

@@ -1,5 +1,3 @@
-using Sadie.Game.Rooms.Chat;
-
 namespace Sadie.Game.Rooms;
 
 public interface IRoomRepository : IAsyncDisposable
@@ -14,6 +12,5 @@ public interface IRoomRepository : IAsyncDisposable
     Task<int> CreateRoomSettingsAsync(int roomId);
     Task<int> CreatePaintSettingsAsync(int roomId);
     Task<int> GetLayoutIdFromNameAsync(string name);
-    Task<int> CreateChatMessages(List<RoomChatMessage> messages);
     Task SaveRoomAsync(IRoom room);
 }

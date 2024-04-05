@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Sadie.Game.Rooms.Chat;
+using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Avatar;
@@ -112,7 +112,7 @@ public class RoomUser(
         
             var seat = currentTile?
                 .Items
-                .OrderByDescending(item => item.Position.Z)
+                .OrderByDescending(item => item.PositionZ)
                 .FirstOrDefault(x => x.FurnitureItem.CanSit);
 
             if (seat == null)
@@ -124,7 +124,7 @@ public class RoomUser(
             Direction = seat.Direction;
             DirectionHead = seat.Direction;
         
-            StatusMap[RoomUserStatus.Sit] = (seat.Position.Z + seat.FurnitureItem.StackHeight) + "";
+            StatusMap[RoomUserStatus.Sit] = (seat.PositionZ + seat.FurnitureItem.StackHeight) + "";
         }
     }
 

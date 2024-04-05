@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -168,14 +168,17 @@ internal static class NetworkPacketEventHelpers
                 return;
             }
         }
-        
-        var chatMessage = new RoomChatMessage(
-            roomUser, 
-            message, 
-            room, 
-            parser.Bubble, 
-            0, 
-            RoomChatMessageType.Shout);
+
+        var chatMessage = new RoomChatMessage
+        {
+            RoomId = room.Id,
+            PlayerId = roomUser.Id,
+            Message = message,
+            ChatBubbleId = parser.Bubble,
+            EmotionId = 0,
+            Type = RoomChatMessageType.Shout,
+            CreatedAt = DateTime.Now
+        };
         
         await roomUser.OnTalkAsync(chatMessage);
 

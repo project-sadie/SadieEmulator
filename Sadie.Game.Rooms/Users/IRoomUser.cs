@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Sadie.Game.Rooms.Chat;
+using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 

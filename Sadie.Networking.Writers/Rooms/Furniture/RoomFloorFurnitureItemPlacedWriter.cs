@@ -1,4 +1,3 @@
-using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -9,7 +8,9 @@ public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
     public RoomFloorFurnitureItemPlacedWriter(
         long id,
         int assetId,
-        HPoint point,
+        int positionX,
+        int positionY,
+        double positionZ,
         int direction,
         double stackHeight,
         int extra,
@@ -25,10 +26,10 @@ public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
         WriteShort(ServerPacketId.RoomFloorFurnitureItemPlaced);
         WriteLong(id);
         WriteInteger(assetId);
-        WriteInteger(point.X);
-        WriteInteger(point.Y);
+        WriteInteger(positionX);
+        WriteInteger(positionY);
         WriteInteger(direction);
-        WriteString($"{point.Z.ToString():0.00}");
+        WriteString($"{positionZ.ToString():0.00}");
         WriteString($"{stackHeight}");
         WriteInteger(extra);
 

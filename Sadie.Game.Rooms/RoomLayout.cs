@@ -25,7 +25,7 @@ public class RoomLayout : RoomLayoutData
         foreach (var tile in Tiles)
         {
             var point = tile.Point;
-            var topLevelItem = tile.Items.MaxBy(x => x.Position.Z);
+            var topLevelItem = tile.Items.MaxBy(x => x.PositionZ);
             
             var canWalkOnTile = topLevelItem == null ||
                 topLevelItem.FurnitureItem.CanSit ||

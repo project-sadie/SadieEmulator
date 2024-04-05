@@ -1,5 +1,4 @@
 using Sadie.Database.Models.Furniture;
-using Sadie.Game.Furniture;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
@@ -24,7 +23,7 @@ public class CatalogPurchaseOkWriter : NetworkPacketWriter
         bool isLimited,
         int limitedItemSeriesSize,
         int amountLeft,
-        List<FurnitureItem> furnitureItems)
+        ICollection<FurnitureItem> furnitureItems)
     {
         WriteShort(ServerPacketId.CatalogPurchaseOk);
         WriteInteger(id);

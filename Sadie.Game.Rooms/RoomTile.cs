@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Rooms.FurnitureItems;
+﻿using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Game.Rooms;
 

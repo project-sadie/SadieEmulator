@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Sadie.Database.Models.Furniture;
 
 namespace Sadie.Database.Models.Catalog.Items;
@@ -10,8 +9,7 @@ public class CatalogItem
     public int CostCredits { get; set; }
     public int CostPoints { get; set; }
     public int CostPointsType { get; set; }
-    [NotMapped]
-    public List<FurnitureItem> FurnitureItems { get; set; }
+    public ICollection<FurnitureItem> FurnitureItems { get; set; }
     public bool RequiresClubMembership { get; set; }
     public string Metadata { get; set; }
     public long CatalogPageId { get; set; }

@@ -1,3 +1,5 @@
+using Sadie.Database.Models.Rooms.Furniture;
+
 namespace Sadie.Game.Rooms.FurnitureItems;
 
 public class RoomFurnitureItemRepository : IRoomFurnitureItemRepository

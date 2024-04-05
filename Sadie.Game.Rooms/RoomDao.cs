@@ -1,13 +1,16 @@
-﻿using Sadie.Database.LegacyAdoNet;
+﻿using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.LegacyAdoNet;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
 public class RoomDao(
+    SadieContext dbContext,
     IDatabaseProvider databaseProvider, 
-    IRoomFactory factory, 
-    IRoomFurnitureItemDao furnitureItemDao) 
+    IRoomFactory factory) 
     : BaseDao(databaseProvider), IRoomDao
 {
     public async Task<Tuple<bool, IRoom?>> TryGetRoomById(long roomId)
@@ -55,7 +58,11 @@ public class RoomDao(
             record.Get<int>("door_y"),
             record.Get<float>("door_z"));
 
-        var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+        var furnitureItems = await dbContext
+            .Set<RoomFurnitureItem>()
+            .Where(x => x.RoomId == record.Get<int>("id"))
+            .ToListAsync();
+        
         var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
 
         var tiles = RoomHelpers.BuildTileListFromHeightMap(
@@ -251,7 +258,11 @@ public class RoomDao(
                 record.Get<int>("door_y"),
                 record.Get<float>("door_z"));
 
-            var furnitureItems = await furnitureItemDao.GetItemsForRoomAsync(record.Get<int>("id"));
+            var furnitureItems = await dbContext
+                .Set<RoomFurnitureItem>()
+                .Where(x => x.RoomId == record.Get<int>("id"))
+                .ToListAsync();
+            
             var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
 
             var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItemRepository);
