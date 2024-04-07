@@ -35,7 +35,7 @@ public class NavigatorSearchEventHandler(
             var writer = new NavigatorSearchResultPagesWriter(
                 tabName, 
                 searchQuery, 
-                new Dictionary<NavigatorCategory, List<Room>>());
+                new Dictionary<NavigatorCategory, List<RoomLogic>>());
             
             await client.WriteToStreamAsync(writer.GetAllBytes());
             return;
@@ -46,7 +46,7 @@ public class NavigatorSearchEventHandler(
             OrderBy(x => x.OrderId).
             ToList();
 
-        var categoryRoomMap = new Dictionary<NavigatorCategory, List<Room>>();
+        var categoryRoomMap = new Dictionary<NavigatorCategory, List<RoomLogic>>();
 
         foreach (var category in categories)
         {
@@ -63,9 +63,9 @@ public class NavigatorSearchEventHandler(
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }
 
-    private static Dictionary<NavigatorCategory, List<Room>> ApplyFilter(
+    private static Dictionary<NavigatorCategory, List<RoomLogic>> ApplyFilter(
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<Room>> categoryRoomMap)
+        Dictionary<NavigatorCategory, List<RoomLogic>> categoryRoomMap)
     {
         if (searchQuery.Contains(':'))
         {
@@ -86,11 +86,11 @@ public class NavigatorSearchEventHandler(
                         .ToDictionary();
                 case "owner":
                     return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.OwnerName.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
+                        .Where(x => x.Value.Any(r => r.Owner.Username.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
                         .ToDictionary();
                 case "tag":
                     return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.Tags.Any(t => t.Contains(filterValue, StringComparison.OrdinalIgnoreCase))))
+                        .Where(x => x.Value.Any(r => r.Tags.Any(t => t.Name.Contains(filterValue, StringComparison.OrdinalIgnoreCase))))
                         .ToDictionary();
             }
         }

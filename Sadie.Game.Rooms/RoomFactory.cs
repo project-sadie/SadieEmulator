@@ -1,40 +1,40 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Database.Models;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
+using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
 public class RoomFactory(IServiceProvider serviceProvider)
 {
-    public Room Create(int id,
+    public RoomLogic Create(int id,
         string name,
         RoomLayout layout,
         RoomLayoutData layoutData,
-        int ownerId,
-        string ownerUsername,
+        Player owner,
         string description,
-        List<PlayerRoomLike> playerLikes,
-        List<string> tags,
         int maxUsersAllowed,
         bool isMuted,
+        List<RoomFurnitureItem> furnitureItems,
         RoomSettings settings,
         List<RoomChatMessage> chatMessages,
-        List<RoomPlayerRight> playersWithRights,
-        List<RoomFurnitureItem> furnitureItems,
-        RoomPaintSettings paintSettings)
+        List<RoomPlayerRight> playerRights,
+        RoomPaintSettings paintSettings,
+        List<RoomTag> tags,
+        List<PlayerRoomLike> playerLikes)
     {
-        return ActivatorUtilities.CreateInstance<Room>(
+        return ActivatorUtilities.CreateInstance<RoomLogic>(
             serviceProvider,
             id, 
             name,
             layout,
             layoutData,
-            ownerId,
-            ownerUsername,
+            owner,
             description,
             playerLikes,
             tags,
@@ -42,7 +42,7 @@ public class RoomFactory(IServiceProvider serviceProvider)
             isMuted,
             settings,
             chatMessages,
-            playersWithRights,
+            playerRights,
             furnitureItems,
             paintSettings);
     }

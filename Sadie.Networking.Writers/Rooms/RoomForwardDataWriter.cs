@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomForwardDataWriter : NetworkPacketWriter
 {
-    public RoomForwardDataWriter(Room room, bool roomForward, bool enterRoom, bool isOwner)
+    public RoomForwardDataWriter(RoomLogic room, bool roomForward, bool enterRoom, bool isOwner)
     {
         var settings = room.Settings;
         
@@ -15,10 +15,10 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         WriteLong(room.Id);
         WriteString(room.Name);
         WriteLong(room.OwnerId);
-        WriteString(room.OwnerName);
+        WriteString(room.Owner.Username);
         WriteInteger((int) room.Settings.AccessType);
         WriteInteger(room.UserRepository.Count);
-        WriteInteger(room.MaxUsers);
+        WriteInteger(room.MaxUsersAllowed);
         WriteString(room.Description);
         WriteInteger(settings.TradeOption);
         WriteInteger(2); // unknown
@@ -28,7 +28,7 @@ public class RoomForwardDataWriter : NetworkPacketWriter
 
         foreach (var tag in room.Tags)
         {
-            WriteString(tag);
+            WriteString(tag.Name);
         }
         
         WriteInteger(0 | 8); // TODO: base

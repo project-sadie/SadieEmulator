@@ -4,7 +4,7 @@ namespace Sadie.Game.Navigator;
 
 public class NavigatorRoomProvider(IRoomRepository roomRepository)
 {
-    public async Task<List<Room>> GetRoomsForCategoryNameAsync(int playerId, string category)
+    public async Task<List<RoomLogic>> GetRoomsForCategoryNameAsync(int playerId, string category)
     {
         return category switch
         {

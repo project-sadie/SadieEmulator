@@ -30,7 +30,7 @@ public class RoomGiveUserRightsEventHandler(
             return;
         }
 
-        if (room.Rights.FirstOrDefault(x => x.PlayerId == playerId) != null)
+        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId) != null)
         {
             return;
         }
@@ -53,7 +53,7 @@ public class RoomGiveUserRightsEventHandler(
             PlayerId = playerId
         };
         
-        room.Rights.Add(roomPlayerRight);
+        room.PlayerRights.Add(roomPlayerRight);
         
         dbContext.RoomPlayerRights.Add(roomPlayerRight);
         await dbContext.SaveChangesAsync();

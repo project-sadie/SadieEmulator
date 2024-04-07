@@ -10,7 +10,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
     public NavigatorSearchResultPagesWriter(
         string tabName, 
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<Room>> categoryRoomMap)
+        Dictionary<NavigatorCategory, List<RoomLogic>> categoryRoomMap)
     {
         WriteShort(ServerPacketId.NavigatorRooms);
         WriteString(tabName);
@@ -33,10 +33,10 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
                 WriteLong(room.Id);
                 WriteString(room.Name);
                 WriteLong(room.OwnerId);
-                WriteString(room.OwnerName);
+                WriteString(room.Owner.Username);
                 WriteInteger((int) room.Settings.AccessType);
                 WriteInteger(room.UserRepository.Count);
-                WriteInteger(room.MaxUsers);
+                WriteInteger(room.MaxUsersAllowed);
                 WriteString(room.Description);
                 WriteInteger(0); // unknown
                 WriteInteger(room.PlayerLikes.Count);
@@ -46,7 +46,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
 
                 foreach (var tag in room.Tags)
                 {
-                    WriteString(tag);
+                    WriteString(tag.Name);
                 }
                 
                 WriteInteger(0 | 8); // TODO: base

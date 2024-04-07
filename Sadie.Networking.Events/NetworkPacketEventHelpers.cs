@@ -20,7 +20,7 @@ internal static class NetworkPacketEventHelpers
 {
     internal static bool TryResolveRoomObjectsForClient(
         IRoomRepository roomRepository, 
-        INetworkClient client, out Room room, out IRoomUser user)
+        INetworkClient client, out RoomLogic room, out IRoomUser user)
     {
         var player = client.Player;
         
@@ -49,7 +49,7 @@ internal static class NetworkPacketEventHelpers
         return true;
     }
 
-    internal static async Task EnterRoomAsync<T>(INetworkClient client, Room room, ILogger<T> logger, 
+    internal static async Task EnterRoomAsync<T>(INetworkClient client, RoomLogic room, ILogger<T> logger, 
         IRoomUserFactory roomUserFactory)
     {
         var player = client.Player;
@@ -63,7 +63,7 @@ internal static class NetworkPacketEventHelpers
 
         var controllerLevel = RoomControllerLevel.None;
         
-        if (room.Rights.FirstOrDefault(x => x.PlayerId == playerData.Id) != null)
+        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerData.Id) != null)
         {
             controllerLevel = RoomControllerLevel.Rights;
         }

@@ -1,3 +1,4 @@
+using Sadie.Database.Models;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms;
@@ -51,8 +52,15 @@ public class RoomSettingsSaveEventHandler(
         
         room.Name = eventParser.Name.Truncate(roomConstants.MaxNameLength);
         room.Description = eventParser.Description.Truncate(roomConstants.MaxDescriptionLength);
-        room.MaxUsers = eventParser.MaxUsers;
-        room.Tags = eventParser.Tags;
+        room.MaxUsersAllowed = eventParser.MaxUsers;
+
+        foreach (var tag in eventParser.Tags)
+        {
+            room.Tags.Add(new RoomTag
+            {
+                Name = tag
+            });
+        }
         
         var settings = room.Settings;
         

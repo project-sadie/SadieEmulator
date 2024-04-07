@@ -81,7 +81,7 @@ public class RoomItemPlacedEventHandler(
 
     private async Task OnFloorItemAsync(
         IReadOnlyList<string> placementData, 
-        Room room, 
+        RoomLogic room, 
         INetworkObject client, 
         IPlayer player, 
         PlayerInventoryFurnitureItem playerItem, 
@@ -155,7 +155,7 @@ public class RoomItemPlacedEventHandler(
 
     private async Task OnWallItemAsync(
         IReadOnlyList<string> placementData,
-        Room room,
+        RoomLogic room,
         IPlayer player,
         PlayerInventoryFurnitureItem playerItem,
         int itemId,

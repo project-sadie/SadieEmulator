@@ -1,0 +1,27 @@
+using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Rooms;
+using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Rooms.Rights;
+
+namespace Sadie.Database.Models;
+
+public class Room
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public RoomLayout Layout { get; set; }
+    public long OwnerId { get; set; }
+    public Player Owner { get; set; }
+    public int MaxUsersAllowed { get; set; }
+    public string Description { get; set; }
+    public bool IsMuted { get; set; }
+    public RoomSettings Settings { get; set; }
+    public RoomPaintSettings PaintSettings { get; set; }
+    public List<RoomPlayerRight> PlayerRights { get; set; }
+    public List<RoomChatMessage> ChatMessages { get; set; }
+    public List<RoomTag> Tags { get; set; }
+    public List<PlayerRoomLike> PlayerLikes { get; set; }
+    public List<RoomFurnitureItem> FurnitureItems { get; set; }
+    public DateTime CreatedAt { get; set; }
+}

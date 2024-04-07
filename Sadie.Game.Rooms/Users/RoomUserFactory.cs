@@ -8,7 +8,7 @@ namespace Sadie.Game.Rooms.Users;
 public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactory
 {
     public RoomUser Create(
-        Room room,
+        RoomLogic room,
         INetworkObject networkObject, 
         int id, 
         HPoint point, 

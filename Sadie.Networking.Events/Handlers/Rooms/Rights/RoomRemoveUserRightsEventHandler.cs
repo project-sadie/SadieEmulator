@@ -35,7 +35,7 @@ public class RoomRemoveUserRightsEventHandler(
 
         foreach (var playerId in eventParser.Ids)
         {
-            var right = room.Rights.FirstOrDefault(x => x.PlayerId == playerId);
+            var right = room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId);
             
             if (right == null)
             {
@@ -46,7 +46,7 @@ public class RoomRemoveUserRightsEventHandler(
         }
     }
 
-    private async Task RemoveRoomPlayerRightAsync(long playerId, Room room, RoomPlayerRight right)
+    private async Task RemoveRoomPlayerRightAsync(long playerId, RoomLogic room, RoomPlayerRight right)
     {
         if (room.UserRepository.TryGetById(playerId, out var roomUser))
         {
@@ -56,7 +56,7 @@ public class RoomRemoveUserRightsEventHandler(
             await roomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
         }
         
-        room.Rights.Remove(right);
+        room.PlayerRights.Remove(right);
 
         dbContext.RoomPlayerRights.Remove(right);
         await dbContext.SaveChangesAsync();

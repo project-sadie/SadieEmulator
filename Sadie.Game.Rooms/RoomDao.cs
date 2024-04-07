@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Database.Models;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
@@ -16,7 +17,7 @@ public class RoomDao(
     RoomFactory factory) 
     : BaseDao(databaseProvider)
 {
-    public async Task<Tuple<bool, Room?>> TryGetRoomById(long roomId)
+    public async Task<Tuple<bool, RoomLogic?>> TryGetRoomById(long roomId)
     {
         var reader = await GetReaderAsync(@$"
             SELECT {SelectColumns}
@@ -34,7 +35,7 @@ public class RoomDao(
 
         if (!success || record == null)
         {
-            return new Tuple<bool, Room?>(false, null);
+            return new Tuple<bool, RoomLogic?>(false, null);
         }
 
         var settings = dbContext
@@ -75,23 +76,26 @@ public class RoomDao(
         var layoutData = new RoomLayoutData(record.Get<string>("heightmap"), tiles);
         var playerRoomLikes = new List<PlayerRoomLike>();
         var chatMessages = new List<RoomChatMessage>();
-
-        return new Tuple<bool, Room?>(true, factory.Create(record.Get<int>("id"),
+        var owner = new Player
+        {
+            Id = record.Get<int>("owner_id"),
+            Username = record.Get<string>("owner_name")
+        };
+        return new Tuple<bool, RoomLogic?>(true, factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
                 layout, 
             layoutData,
-            record.Get<int>("owner_id"),
-            record.Get<string>("owner_name"),
+            owner,
             record.Get<string>("description"),
-                playerRoomLikes,
-            [..record.Get<string>("comma_separated_tags").Split(",")],
             record.Get<int>("max_users_allowed"),
-                record.Get<int>("is_muted") == 1,
-            settings,
-                chatMessages,
-            new List<RoomPlayerRight>(),
+            record.Get<int>("is_muted") == 1,
             furnitureItems,
-            paintSettings));
+            settings,
+            chatMessages,
+                new List<RoomPlayerRight>(),
+                paintSettings,
+                new List<RoomTag>(),
+                playerRoomLikes));
     }
 
     public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
@@ -108,7 +112,7 @@ public class RoomDao(
         });
     }
 
-    public Task<int> SaveRoomAsync(Room room)
+    public Task<int> SaveRoomAsync(RoomLogic room)
     {
         var settings = room.Settings;
         var paintSettings = room.PaintSettings;
@@ -148,7 +152,7 @@ public class RoomDao(
         {
             {"newName", room.Name},
             {"newDescription", room.Description},
-            {"newMaxUsers", room.MaxUsers},
+            {"newMaxUsers", room.MaxUsersAllowed},
             {"accessType", (int) settings.AccessType},
             {"password", settings.Password},
             {"tradeOption", settings.TradeOption},
@@ -173,7 +177,7 @@ public class RoomDao(
         });
     }
 
-    public async Task<List<Room>> GetByOwnerIdAsync(int ownerId, int limit, ICollection<long> excludeIds)
+    public async Task<List<RoomLogic>> GetByOwnerIdAsync(int ownerId, int limit, ICollection<long> excludeIds)
     {
         var excludeClause = @$"AND rooms.id NOT IN (" +
                             string.Join(",", excludeIds.Select(n => n.ToString()).ToArray()).TrimEnd(',') + @") ";
@@ -191,7 +195,7 @@ public class RoomDao(
             { "ownerId", ownerId }
         });
 
-        var rooms = new List<Room>();
+        var rooms = new List<RoomLogic>();
         
         while (true)
         {
@@ -244,23 +248,27 @@ public class RoomDao(
             var layoutData = new RoomLayoutData(record.Get<string>("heightmap"), tiles);
             var playerRoomLikes = new List<PlayerRoomLike>();
             var chatMessages = new List<RoomChatMessage>();
+            var owner = new Player
+            {
+                Id = record.Get<int>("owner_id"),
+                Username = record.Get<string>("owner_name")
+            };
 
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
-                layout,
+                layout, 
                 layoutData,
-                record.Get<int>("owner_id"),
-                record.Get<string>("owner_name"),
+                owner,
                 record.Get<string>("description"),
-                playerRoomLikes,
-                [..record.Get<string>("comma_separated_tags").Split(",")],
                 record.Get<int>("max_users_allowed"),
                 record.Get<int>("is_muted") == 1,
+                furnitureItems,
                 settings,
                 chatMessages,
                 new List<RoomPlayerRight>(),
-                furnitureItems,
-                paintSettings);
+                paintSettings,
+                new List<RoomTag>(),
+                playerRoomLikes);
             
             rooms.Add(room);
         }

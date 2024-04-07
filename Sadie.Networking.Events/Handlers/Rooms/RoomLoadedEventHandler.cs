@@ -57,7 +57,7 @@ public class RoomLoadedEventHandler(
 
         var isOwner = room.OwnerId == playerData.Id;
 
-        if (room.UserRepository.Count > room.MaxUsers && !isOwner)
+        if (room.UserRepository.Count > room.MaxUsersAllowed && !isOwner)
         {
             await client.WriteToStreamAsync(new RoomEnterErrorWriter(RoomEnterError.NoCapacity).GetAllBytes());
             return;

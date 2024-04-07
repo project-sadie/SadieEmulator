@@ -9,7 +9,7 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser(
-    Room room,
+    RoomLogic room,
     INetworkObject networkObject,
     int id,
     HPoint point,
@@ -130,7 +130,7 @@ public class RoomUser(
 
     public bool HasRights()
     {
-        return room.OwnerId == Id || room.Rights.FirstOrDefault(x => x.PlayerId == Id) != null;
+        return room.OwnerId == Id || room.PlayerRights.FirstOrDefault(x => x.PlayerId == Id) != null;
     }
 
     private async Task ProcessMovementAsync() // 2bMoved
