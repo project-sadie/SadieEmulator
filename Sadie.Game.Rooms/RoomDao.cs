@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
 using Sadie.Database.LegacyAdoNet;
 using Sadie.Database.Models;
@@ -7,14 +8,15 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
+using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
 public class RoomDao(
+    IServiceProvider provider,
     SadieContext dbContext,
-    IDatabaseProvider databaseProvider, 
-    RoomFactory factory) 
+    IDatabaseProvider databaseProvider) 
     : BaseDao(databaseProvider)
 {
     public async Task<Tuple<bool, RoomLogic?>> TryGetRoomById(long roomId)
@@ -81,7 +83,7 @@ public class RoomDao(
             Id = record.Get<int>("owner_id"),
             Username = record.Get<string>("owner_name")
         };
-        return new Tuple<bool, RoomLogic?>(true, factory.Create(record.Get<int>("id"),
+        return new Tuple<bool, RoomLogic?>(true, new RoomLogic(record.Get<int>("id"),
                 record.Get<string>("name"),
                 layout, 
             layoutData,
@@ -89,6 +91,7 @@ public class RoomDao(
             record.Get<string>("description"),
             record.Get<int>("max_users_allowed"),
             record.Get<int>("is_muted") == 1,
+                provider.GetRequiredService<IRoomUserRepository>(),
             furnitureItems,
             settings,
             chatMessages,
@@ -254,7 +257,7 @@ public class RoomDao(
                 Username = record.Get<string>("owner_name")
             };
 
-            var room = factory.Create(record.Get<int>("id"),
+            var room = new RoomLogic(record.Get<int>("id"),
                 record.Get<string>("name"),
                 layout, 
                 layoutData,
@@ -262,6 +265,7 @@ public class RoomDao(
                 record.Get<string>("description"),
                 record.Get<int>("max_users_allowed"),
                 record.Get<int>("is_muted") == 1,
+                provider.GetRequiredService<IRoomUserRepository>(),
                 furnitureItems,
                 settings,
                 chatMessages,

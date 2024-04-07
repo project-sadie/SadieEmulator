@@ -19,7 +19,6 @@ public static class RoomServiceCollection
         
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
-        serviceCollection.AddSingleton<RoomFactory>();
         serviceCollection.AddSingleton<RoomDao>();
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
         
