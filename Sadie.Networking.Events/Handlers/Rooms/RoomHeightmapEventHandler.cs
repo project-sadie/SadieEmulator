@@ -14,7 +14,7 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
+        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
         if (!found || room == null)
         {
@@ -23,7 +23,7 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
 
         var roomTileMap = room.TileMap;
         var userRepository = room.UserRepository;
-        var isOwner = room.OwnerId == client.Player.Data.Id;
+        var isOwner = room.OwnerId == client.Player.Id;
         
         await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomTileMap).GetAllBytes());
         await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, room.Layout.HeightMap.Replace("\r\n", "\r")).GetAllBytes());

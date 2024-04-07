@@ -22,9 +22,9 @@ public class RoomGiveUserRightsEventHandler(
         eventParser.Parse(reader);
 
         var playerId = eventParser.PlayerId;
-        var playerData = client.Player.Data;
+        var player = client.Player;
         
-        var (roomFound, room) = roomRepository.TryGetRoomById(playerData.CurrentRoomId);
+        var (roomFound, room) = roomRepository.TryGetRoomById(player.CurrentRoomId);
 
         if (!roomFound || room == null)
         {
@@ -37,7 +37,7 @@ public class RoomGiveUserRightsEventHandler(
         }
 
         await room.UserRepository.BroadcastDataAsync(
-            new RoomGiveUserRightsWriter(room.Id, playerId, client.Player.Username).GetAllBytes()
+            new RoomGiveUserRightsWriter(room.Id, playerId, player.Username).GetAllBytes()
         );
 
         if (room.UserRepository.TryGetById(playerId, out var targetRoomUser))
