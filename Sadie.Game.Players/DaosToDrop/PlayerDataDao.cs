@@ -1,13 +1,12 @@
 using Sadie.Database.LegacyAdoNet;
-using Sadie.Game.Players.Badges;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Inventory;
-using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
+using PlayerBadge = Sadie.Game.Players.Badges.PlayerBadge;
 
 namespace Sadie.Game.Players.DaosToDrop;
 
@@ -129,8 +128,7 @@ public class PlayerDataDao(
             (ChatBubble) record.Get<int>("chat_bubble_id"),
             record.Get<int>("allow_friend_requests") == 1,
             new List<IPlayerSubscription>(),
-            new PlayerInventoryRepository(
-                new List<PlayerInventoryFurnitureItem>()),
+            new List<PlayerFurnitureItem>(),
                 new List<long>(),
             new Dictionary<int, PlayerWardrobeItem>(),
             new List<PlayerRelationship>()

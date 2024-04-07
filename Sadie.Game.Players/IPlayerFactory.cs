@@ -1,5 +1,5 @@
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Balance;
-using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
@@ -23,7 +23,7 @@ public interface IPlayerFactory
         bool openSearches,
         int mode);
 
-    PlayerSettings CreateSettings(int systemVolume,
+    PlayerGameSettings CreateSettings(int systemVolume,
         int furnitureVolume,
         int traxVolume,
         bool preferOldChat,

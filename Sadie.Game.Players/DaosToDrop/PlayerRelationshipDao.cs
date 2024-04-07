@@ -1,4 +1,5 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Relationships;
 
 namespace Sadie.Game.Players.DaosToDrop;
@@ -25,10 +26,7 @@ public class PlayerRelationshipDao(IDatabaseProvider databaseProvider) : BaseDao
                 break;
             }
             
-            data.Add(new PlayerRelationship(record.Get<int>("id"), 
-                record.Get<long>("origin_player_id"), 
-                record.Get<long>("target_player_id"), 
-                (PlayerRelationshipType) record.Get<int>("type_id")));
+            data.Add(new PlayerRelationship());
         }
 
         return data;
@@ -57,7 +55,7 @@ public class PlayerRelationshipDao(IDatabaseProvider databaseProvider) : BaseDao
                 origin_player_id, target_player_id, type_id
             ) VALUES (@playerId, @targetPlayerId, @type); SELECT LAST_INSERT_ID();", parameters);
 
-        return new PlayerRelationship(id, playerId, targetPlayerId, type);
+        return new PlayerRelationship();
     }
 
     public async Task DeleteRelationshipAsync(int id)

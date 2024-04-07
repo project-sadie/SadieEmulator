@@ -1,7 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database.Models.Catalog.Items;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
-using Sadie.Game.Players.Inventory;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
@@ -14,8 +15,8 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogPurchaseEventHandler(
     CatalogPurchaseEventParser eventParser,
-    CatalogPageRepository pageRepository, 
-    IPlayerInventoryDao inventoryDao) : INetworkPacketEventHandler
+    DbContext dbContext,
+    CatalogPageRepository pageRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.CatalogPurchase;
 
@@ -62,7 +63,7 @@ public class CatalogPurchaseEventHandler(
         player.State.LastCatalogPurchase = DateTime.Now;
         
         var created = DateTime.Now;
-        var newItems = new List<PlayerInventoryFurnitureItem>();
+        var newItems = new List<PlayerFurnitureItem>();
         var metaData = eventParser.ExtraData;
 
         switch (item.FurnitureItems.First().InteractionType)
@@ -85,15 +86,18 @@ public class CatalogPurchaseEventHandler(
         for (var i = 0; i < eventParser.Amount; i++)
         {
             var limitedData = $"1:1"; // TODO: maxStack:maxSell
-            newItems.Add(new PlayerInventoryFurnitureItem(0, item.FurnitureItems.First(), limitedData, metaData, created));
+            
+            newItems.Add(new PlayerFurnitureItem
+            {
+                FurnitureItem = item.FurnitureItems.First(),
+                LimitedData = limitedData,
+                MetaData = metaData,
+                CreatedAt = created
+            });
         }
-
-        foreach (var newItem in newItems)
-        {
-            newItem.Id = await inventoryDao.CreateItemAsync(client.Player.Data.Id, newItem);
-        }
-
-        client.Player.Data.Inventory.AddItems(newItems);
+        
+        client.Player.Data.FurnitureItems.AddRange(newItems);
+        await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());
         

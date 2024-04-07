@@ -5,7 +5,6 @@ using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Club;
 using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Messenger;
 using Sadie.Game.Players.Respect;
 using Sadie.Game.Players.Room;
@@ -39,8 +38,6 @@ public class PlayerServiceCollection
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
         serviceCollection.AddSingleton<PlayerFriendshipFactory>();
-        serviceCollection.AddSingleton<IPlayerInventoryDao, PlayerInventoryDao>();
-        serviceCollection.AddTransient<IPlayerInventoryRepository, PlayerInventoryRepository>();
         serviceCollection.AddTransient<IPlayerWardrobeDao, PlayerWardrobeDao>();
         serviceCollection.AddTransient<PlayerWardrobeComponent>();
         

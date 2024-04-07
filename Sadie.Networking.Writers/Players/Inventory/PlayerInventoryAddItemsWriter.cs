@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Inventory;
+using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Players.Inventory;
 
 public class PlayerInventoryAddItemsWriter : NetworkPacketWriter
 {
-    public PlayerInventoryAddItemsWriter(List<PlayerInventoryFurnitureItem> items)
+    public PlayerInventoryAddItemsWriter(List<PlayerFurnitureItem> items)
     {
         var category = 1;
         

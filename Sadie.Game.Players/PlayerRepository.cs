@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;

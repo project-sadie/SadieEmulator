@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Inventory;
+using Sadie.Database.Models.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Inventory;
@@ -12,11 +12,11 @@ public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHand
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var furnitureItems = client.Player.Data.Inventory.Items;
+        var furnitureItems = client.Player.Data.FurnitureItems;
 
         if (furnitureItems.Count == 0)
         {
-            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(1, 0, new List<PlayerInventoryFurnitureItem>()).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(1, 0, new List<PlayerFurnitureItem>()).GetAllBytes());
             return;
         }
 

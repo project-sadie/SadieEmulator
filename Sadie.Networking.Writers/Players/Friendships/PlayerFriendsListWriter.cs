@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Players;
+﻿using Sadie.Database.Models.Players;
+using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Relationships;
 using Sadie.Shared.Unsorted.Game.Avatar;

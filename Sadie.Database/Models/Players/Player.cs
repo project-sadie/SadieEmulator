@@ -15,4 +15,5 @@ public class Player
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
     public PlayerGameSettings PlayerGameSettings { get; set; }
     public List<PlayerBadge> Badges { get; set; }
+    public List<PlayerFurnitureItem> FurnitureItems { get; set; }
 }

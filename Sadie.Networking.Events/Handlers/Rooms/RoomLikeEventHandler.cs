@@ -1,4 +1,3 @@
-using Sadie.Game.Players;
 using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;

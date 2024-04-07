@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Inventory;
+using Sadie.Database.Models.Players;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
@@ -11,7 +11,7 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
     public PlayerInventoryFurnitureItemsWriter(
         int pages, 
         int currentPage, 
-        List<PlayerInventoryFurnitureItem> items)
+        List<PlayerFurnitureItem> items)
     {
         WriteShort(ServerPacketId.PlayerInventoryFurnitureItems);
         
@@ -25,7 +25,7 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         }
     }
     
-    private void WriteItem(PlayerInventoryFurnitureItem item)
+    private void WriteItem(PlayerFurnitureItem item)
     {
         var furnitureItem = item.FurnitureItem;
         var reference = furnitureItem.Id;

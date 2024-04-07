@@ -1,5 +1,5 @@
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Relationships;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 

@@ -1,7 +1,7 @@
 using Sadie.Database;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Tiles;
 using Sadie.Networking.Client;
@@ -56,7 +56,7 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var playerItem = player.Data.Inventory.Items.FirstOrDefault(x => x.Id == itemId);
+        var playerItem = player.Data.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
 
         if (playerItem == null)
         {
@@ -85,7 +85,7 @@ public class RoomItemPlacedEventHandler(
         RoomLogic room, 
         INetworkObject client, 
         IPlayer player, 
-        PlayerInventoryFurnitureItem playerItem, 
+        PlayerFurnitureItem playerItem, 
         int itemId)
     {
         if (!int.TryParse(placementData[1], out var x) ||

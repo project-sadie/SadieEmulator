@@ -17,7 +17,7 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
             playerSettings.SystemVolume, 
             playerSettings.FurnitureVolume, 
             playerSettings.TraxVolume, 
-            playerSettings.OldChat, 
+            playerSettings.PreferOldChat, 
             playerSettings.BlockRoomInvites, 
             playerSettings.BlockCameraFollow, 
             playerSettings.UiFlags, 

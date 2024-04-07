@@ -1,13 +1,12 @@
-using Sadie.Game.Players.Badges;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
-using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
+using PlayerBadge = Sadie.Game.Players.Badges.PlayerBadge;
 
 namespace Sadie.Game.Players;
 
@@ -27,7 +26,7 @@ public interface IPlayerDataFactory
         int respectPoints,
         int respectPointsPet,
         PlayerNavigatorSettings navigatorSettings,
-        PlayerSettings settings,
+        PlayerGameSettings settings,
         List<PlayerSavedSearch> savedSearches,
         List<string> permissions,
         long achievementScore,

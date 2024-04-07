@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Balance;
-using Sadie.Game.Players.Navigator;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
@@ -45,7 +45,7 @@ public class PlayerFactory(IServiceProvider serviceProvider) : IPlayerFactory
             0);
     }
 
-    public PlayerSettings CreateSettings(int systemVolume,
+    public PlayerGameSettings CreateSettings(int systemVolume,
         int furnitureVolume,
         int traxVolume,
         bool preferOldChat,
@@ -54,7 +54,7 @@ public class PlayerFactory(IServiceProvider serviceProvider) : IPlayerFactory
         int uiFlag,
         bool showNotifications)
     {
-        return ActivatorUtilities.CreateInstance<PlayerSettings>(
+        return ActivatorUtilities.CreateInstance<PlayerGameSettings>(
             serviceProvider,
             systemVolume,
             furnitureVolume,

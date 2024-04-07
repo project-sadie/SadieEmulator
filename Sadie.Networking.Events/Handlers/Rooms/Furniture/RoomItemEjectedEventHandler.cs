@@ -1,6 +1,6 @@
 using Sadie.Database;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
@@ -75,29 +75,35 @@ public class RoomItemEjectedEventHandler(
 
         var ownsItem = roomFurnitureItem.OwnerId == player.Data.Id;
         var created = DateTime.Now;
-        
-        var playerItem = new PlayerInventoryFurnitureItem(0, roomFurnitureItem.FurnitureItem,
-            roomFurnitureItem.LimitedData, roomFurnitureItem.MetaData, created);
+
+        var playerItem = new PlayerFurnitureItem
+        {
+            FurnitureItem = roomFurnitureItem.FurnitureItem,
+            LimitedData = roomFurnitureItem.LimitedData,
+            MetaData = roomFurnitureItem.MetaData,
+            CreatedAt = created
+        };
 
         playerItem.Id = await playerInventoryDao.CreateItemAsync(roomFurnitureItem.OwnerId, playerItem);
 
         room.FurnitureItems.Remove(roomFurnitureItem);
-        await dbContext.SaveChangesAsync();
         
         if (ownsItem)
         {
-            player.Data.Inventory.AddItems([playerItem]);
+            player.Data.FurnitureItems.Add(playerItem);
             
             await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]).GetAllBytes());
             await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
         }
         else if (playerRepository.TryGetPlayerById(roomFurnitureItem.OwnerId, out var owner) && owner != null)
         {
-            owner.Data.Inventory.AddItems([playerItem]);
+            owner.Data.FurnitureItems.Remove(playerItem);
             
             await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]).GetAllBytes());
             await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
         }
+        
+        await dbContext.SaveChangesAsync();
     }
 }
     
