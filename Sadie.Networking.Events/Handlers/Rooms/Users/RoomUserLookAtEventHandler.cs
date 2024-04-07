@@ -7,7 +7,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserLookAt;
 

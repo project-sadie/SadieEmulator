@@ -5,7 +5,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomLikeEventHandler(IPlayerDao playerDao, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomLikeEventHandler(IPlayerDao playerDao, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomLike;
 

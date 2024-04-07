@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-public class RoomPaintItemPlacedEventHandler(RoomPaintItemPlacedEventParser parser, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomPaintItemPlacedEventHandler(RoomPaintItemPlacedEventParser parser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomPaintItemPlaced;
     

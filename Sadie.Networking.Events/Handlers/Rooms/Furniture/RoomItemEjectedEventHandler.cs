@@ -14,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemEjectedEventHandler(
     SadieContext dbContext,
     RoomFurnitureItemEjectedEventParser eventParser,
-    IRoomRepository roomRepository, 
+    RoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
     IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {

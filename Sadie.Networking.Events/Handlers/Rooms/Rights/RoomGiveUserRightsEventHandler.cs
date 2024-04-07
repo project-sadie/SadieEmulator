@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 public class RoomGiveUserRightsEventHandler(
     SadieContext dbContext,
     RoomGiveUserRightsEventParser eventParser,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomGiveUserRights;
 

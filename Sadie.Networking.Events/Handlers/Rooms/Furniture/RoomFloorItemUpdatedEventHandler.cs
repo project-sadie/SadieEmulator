@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomFloorItemUpdatedEventHandler(
     SadieContext dbContext,
     RoomFloorItemUpdatedEventParser eventParser,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFloorFurnitureItemUpdated;
 

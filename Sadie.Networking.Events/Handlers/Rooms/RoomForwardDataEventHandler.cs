@@ -6,7 +6,7 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomForwardData;
 

@@ -6,7 +6,6 @@ namespace Sadie.Database.Models.Rooms.Furniture;
 public class RoomFurnitureItem
 {
     public long Id { get; set; }
-    public long RoomId { get; set; }
     public long OwnerId { get; set; }
     public string OwnerUsername { get; set; }
     public FurnitureItem FurnitureItem { get; set; }

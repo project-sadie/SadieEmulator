@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomHeightmapEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomHeightmap;
 

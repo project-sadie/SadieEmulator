@@ -16,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RoomLoadedEventHandler(
     RoomLoadedEventParser eventParser,
     ILogger<RoomLoadedEventHandler> logger,
-    IRoomRepository roomRepository,
+    RoomRepository roomRepository,
     IRoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository)
     : INetworkPacketEventHandler

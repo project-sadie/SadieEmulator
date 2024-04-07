@@ -4,7 +4,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserGoToHotelViewEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserGoToHotelView;
 

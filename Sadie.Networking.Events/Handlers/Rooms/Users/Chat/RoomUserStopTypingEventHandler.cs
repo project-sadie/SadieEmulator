@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms.Users.Chat;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-public class RoomUserStopTypingEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserStopTyping;
 

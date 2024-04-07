@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 public class RoomUserShoutEventHandler(
     RoomUserChatEventParser parser,
-    IRoomRepository roomRepository, 
+    RoomRepository roomRepository, 
     RoomConstants roomConstants, 
     IRoomChatCommandRepository commandRepository)
     : INetworkPacketEventHandler

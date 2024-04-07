@@ -1,8 +1,12 @@
 ﻿using System.Collections.Concurrent;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomRepository(RoomDao dao) : IRoomRepository
+public class RoomRepository(SadieContext dbContext, IMapper mapper)
 {
     private readonly ConcurrentDictionary<long, RoomLogic> _rooms = new();
 
@@ -11,23 +15,37 @@ public class RoomRepository(RoomDao dao) : IRoomRepository
         return new Tuple<bool, RoomLogic?>(_rooms.TryGetValue(id, out var room), room);
     }
     
-    public async Task<Tuple<bool, RoomLogic?>> TryLoadRoomByIdAsync(long id)
+    public Task<Tuple<bool, RoomLogic?>> TryLoadRoomByIdAsync(long id)
     {
         var (memoryResult, memoryValue) = TryGetRoomById(id);
 
         if (memoryResult)
         {
-            return new Tuple<bool, RoomLogic?>(true, memoryValue);
+            return Task.FromResult(new Tuple<bool, RoomLogic?>(true, memoryValue));
         }
-        
-        var (result, room) = await dao.TryGetRoomById(id);
 
-        if (result && room != null)
+        var room = dbContext.Set<Room>()
+            .Include(x => x.Owner)
+            .Include(x => x.Layout)
+            .Include(x => x.Settings)
+            .Include(x => x.PaintSettings)
+            .Include(x => x.PlayerRights)
+            .Include(x => x.ChatMessages)
+            .Include(x => x.FurnitureItems)
+            .Include(x => x.PlayerLikes)
+            .Include(x => x.Tags)
+            .FirstOrDefault(x => x.Id == id);
+
+        if (room == null)
         {
-            _rooms[room.Id] = room;
+            return Task.FromResult(new Tuple<bool, RoomLogic?>(false, null));
         }
 
-        return TryGetRoomById(id);
+        var roomLogic = mapper.Map<RoomLogic>(room);
+        
+        _rooms[room.Id] = roomLogic;
+
+        return Task.FromResult(new Tuple<bool, RoomLogic?>(true, roomLogic));
     }
 
     public List<RoomLogic> GetPopularRooms(int amount)
@@ -39,37 +57,41 @@ public class RoomRepository(RoomDao dao) : IRoomRepository
             ToList();
     }
 
-    public async Task<List<RoomLogic>> GetByOwnerIdAsync(int ownerId, int amount)
-    {
-        var offlineRooms = await dao.GetByOwnerIdAsync(ownerId, amount, _rooms.Keys);
-        var inMemoryRooms = _rooms.Values.Where(x => x.OwnerId == ownerId).ToList();
-        
-        return offlineRooms.Concat(inMemoryRooms).ToList();
-    }
+public async Task<List<RoomLogic>> GetAllByOwnerIdAsync(int ownerId, int amount)
+{
+    var rooms = await dbContext
+        .Rooms
+        .Where(x => x.OwnerId == ownerId)
+        .Include(x => x.Owner)
+        .Include(x => x.Layout)
+        .Include(x => x.Settings)
+        .Include(x => x.PaintSettings)
+        .Include(x => x.PlayerRights)
+        .Include(x => x.ChatMessages)
+        .Include(x => x.FurnitureItems)
+        .Include(x => x.PlayerLikes)
+        .Include(x => x.Tags)
+        .OrderByDescending(x => x.CreatedAt)
+        .Take(amount)
+        .ToListAsync();
+    
+    return mapper.Map<List<RoomLogic>>(rooms);
+}
 
     public int Count => _rooms.Count;
     public IEnumerable<RoomLogic> GetAllRooms() => _rooms.Values;
 
-    public async Task<int> CreateRoomAsync(string name, int layoutId, int ownerId, int maxUsers, string description)
-    {
-        return await dao.CreateRoomAsync(name, layoutId, ownerId, maxUsers, description);
-    }
-
-    public async Task<int> GetLayoutIdFromNameAsync(string name)
-    {
-        return await dao.GetLayoutIdFromNameAsync(name);
-    }
-
     public async Task SaveRoomAsync(RoomLogic room)
     {
-        await dao.SaveRoomAsync(room);
+        dbContext.Rooms.Add(mapper.Map<Room>(room));
+        await dbContext.SaveChangesAsync();
     }
 
     public async ValueTask DisposeAsync()
     {
         foreach (var room in _rooms.Values)
         {
-            await dao.SaveRoomAsync(room);
+            await SaveRoomAsync(room);
             await room.DisposeAsync();
         }
         

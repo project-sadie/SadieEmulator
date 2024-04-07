@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Game.Rooms.Chat.Commands.General;
 
 public class AboutCommand(
-    IRoomRepository roomRepository, 
+    RoomRepository roomRepository, 
     IPlayerRepository playerRepository) : IRoomChatCommand
 {
     public string Trigger => "about";

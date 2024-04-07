@@ -5,7 +5,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserSitEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserSitEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserSit;
 

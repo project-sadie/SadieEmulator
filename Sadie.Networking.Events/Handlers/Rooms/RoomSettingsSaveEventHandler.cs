@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 public class RoomSettingsSaveEventHandler(
     RoomSettingsSaveEventParser eventParser, 
-    IRoomRepository roomRepository, 
+    RoomRepository roomRepository, 
     RoomConstants roomConstants) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomSettingsSave;

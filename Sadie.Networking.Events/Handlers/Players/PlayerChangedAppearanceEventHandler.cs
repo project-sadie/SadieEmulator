@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerChangedAppearanceEventHandler(
     PlayerChangedAppearanceEventParser eventParser, 
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerChangedAppearance;
 

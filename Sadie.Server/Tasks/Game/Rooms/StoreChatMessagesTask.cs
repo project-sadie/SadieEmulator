@@ -3,7 +3,7 @@ using Sadie.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class StoreChatMessagesTask(SadieContext dbContext, IRoomRepository roomRepository) : IServerTask
+public class StoreChatMessagesTask(SadieContext dbContext, RoomRepository roomRepository) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
     public DateTime LastExecuted { get; set; }

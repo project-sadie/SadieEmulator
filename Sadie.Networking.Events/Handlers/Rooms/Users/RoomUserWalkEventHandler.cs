@@ -6,7 +6,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserWalk;
 

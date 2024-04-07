@@ -1,4 +1,5 @@
 using Sadie.Database;
+using Sadie.Database.Models;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
@@ -11,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerCreateRoomEventHandler(
     SadieContext dbContext,
     PlayerCreateRoomEventParser eventParser,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerCreateRoom;
 
@@ -19,36 +20,29 @@ public class PlayerCreateRoomEventHandler(
     {
         eventParser.Parse(reader);
 
-        var layoutId = await roomRepository.GetLayoutIdFromNameAsync(eventParser.LayoutName);
-        
-        if (layoutId == -1)
+        var layout = dbContext
+            .RoomLayouts
+            .Select(x => new { x.Id, x.Name })
+            .FirstOrDefault(x => x.Name == eventParser.LayoutName);
+
+        if (layout == null)
         {
             return;
         }
 
-        var roomId = await roomRepository.CreateRoomAsync(
-            eventParser.Name, 
-            layoutId, 
-            client.Player.Data.Id, 
-            eventParser.MaxUsersAllowed, 
-            eventParser.Description);
-
-        var roomSettings = new RoomSettings
+        var newRoom = new Room
         {
-            RoomId = roomId
+            Name = eventParser.Name,
+            Description = eventParser.Description
         };
 
-        dbContext.Set<RoomSettings>().Add(roomSettings);
-
-        var paintSettings = new RoomPaintSettings
-        {
-            RoomId = roomId
-        };
-
-        dbContext.Set<RoomPaintSettings>().Add(paintSettings);
         await dbContext.SaveChangesAsync();
 
-        var (madeRoom, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
+        newRoom.PaintSettings = new RoomPaintSettings();
+
+        await dbContext.SaveChangesAsync();
+
+        var (madeRoom, room) = await roomRepository.TryLoadRoomByIdAsync(newRoom.Id);
 
         if (madeRoom && room != null)
         {

@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 public class RoomItemUseEventHandler(
     RoomFurnitureItemUseEventParser eventParser,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFurnitureItemUse;
 

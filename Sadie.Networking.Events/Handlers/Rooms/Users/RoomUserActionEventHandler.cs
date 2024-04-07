@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserActionEventHandler(RoomUserActionEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserActionEventHandler(RoomUserActionEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserAction;
 

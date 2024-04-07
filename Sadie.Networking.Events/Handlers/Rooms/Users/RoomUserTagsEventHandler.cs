@@ -6,7 +6,7 @@ using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserTagsEventHandler(RoomUserTagsEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTagsEventHandler(RoomUserTagsEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserTags;
 

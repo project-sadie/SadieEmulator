@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.Database.Models;
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Navigator;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
@@ -26,6 +28,8 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
     public DbSet<RoomFurnitureItem> RoomFurnitureItems { get; set; }
     public DbSet<RoomPlayerRight> RoomPlayerRights { get; set; }
     public DbSet<RoomSettings> RoomSettings { get; set; }
+    public DbSet<RoomLayout> RoomLayouts { get; set; }
+    public DbSet<Room> Rooms { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,5 +55,22 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<CatalogItem>()
             .HasMany(c => c.FurnitureItems)
             .WithMany(x => x.CatalogItems);
+
+        modelBuilder.Entity<Room>()
+            .HasOne<RoomPaintSettings>(e => e.PaintSettings)
+            .WithOne(x => x.Room)
+            .HasForeignKey<RoomPaintSettings>(x => x.RoomId);
+
+        modelBuilder.Entity<Player>().ToTable("players");
+        modelBuilder.Entity<PlayerRoomLike>().ToTable("player_room_likes");
+        modelBuilder.Entity<RoomTag>().ToTable("room_tags");
+
+        modelBuilder.Entity<RoomLayout>()
+            .Property(x => x.HeightMap)
+            .HasColumnName("heightmap");
+
+        modelBuilder.Entity<RoomChatMessage>()
+            .Property(x => x.Type)
+            .HasColumnName("type_id");
     }
 }

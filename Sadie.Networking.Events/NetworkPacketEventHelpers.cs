@@ -19,7 +19,7 @@ namespace Sadie.Networking.Events;
 internal static class NetworkPacketEventHelpers
 {
     internal static bool TryResolveRoomObjectsForClient(
-        IRoomRepository roomRepository, 
+        RoomRepository roomRepository, 
         INetworkClient client, out RoomLogic room, out IRoomUser user)
     {
         var player = client.Player;
@@ -144,7 +144,7 @@ internal static class NetworkPacketEventHelpers
         RoomUserChatEventParser parser,
         bool shouting,
         RoomConstants roomConstants,
-        IRoomRepository roomRepository,
+        RoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository)
     {
         var message = parser.Message;

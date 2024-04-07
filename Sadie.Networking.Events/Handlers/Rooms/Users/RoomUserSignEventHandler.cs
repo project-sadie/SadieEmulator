@@ -6,7 +6,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserSignEventHandler(RoomUserSignEventParser eventParser, IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserSignEventHandler(RoomUserSignEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserSign;
 

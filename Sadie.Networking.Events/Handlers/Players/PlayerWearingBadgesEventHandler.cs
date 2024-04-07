@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerWearingBadgesEventHandler(
     PlayerWearingBadgesEventParser eventParser,
     IPlayerRepository playerRepository,
-    IRoomRepository roomRepository,
+    RoomRepository roomRepository,
     IPlayerBadgeRepository badgeRepository)
     : INetworkPacketEventHandler
 {

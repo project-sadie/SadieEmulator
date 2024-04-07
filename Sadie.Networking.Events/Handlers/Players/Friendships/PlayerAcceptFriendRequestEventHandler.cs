@@ -13,7 +13,7 @@ public class PlayerAcceptFriendRequestEventHandler(
     PlayerAcceptFriendRequestEventParser eventParser,
     IPlayerRepository playerRepository,
     IPlayerFriendshipRepository friendshipRepository,
-    IRoomRepository roomRepository)
+    RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerAcceptFriendRequest;

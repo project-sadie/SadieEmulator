@@ -17,7 +17,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
     RoomFurnitureItemPlacedEventParser eventParser,
-    IRoomRepository roomRepository, 
+    RoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFurnitureItemPlaced;
@@ -108,7 +108,6 @@ public class RoomItemPlacedEventHandler(
             
         var roomFurnitureItem = new RoomFurnitureItem
         {
-            RoomId = room.Id,
             OwnerId = player.Data.Id,
             OwnerUsername = player.Data.Username,
             FurnitureItem = playerItem.FurnitureItem,
@@ -165,7 +164,6 @@ public class RoomItemPlacedEventHandler(
 
         var roomFurnitureItem = new RoomFurnitureItem
         {
-            RoomId = room.Id,
             OwnerId = player.Data.Id,
             OwnerUsername = player.Data.Username,
             FurnitureItem = playerItem.FurnitureItem,

@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 public class RoomUserWhisperEventHandler(
     RoomUserWhisperEventParser eventParser,
-    IRoomRepository roomRepository, 
+    RoomRepository roomRepository, 
     RoomConstants roomConstants)
     : INetworkPacketEventHandler
 {

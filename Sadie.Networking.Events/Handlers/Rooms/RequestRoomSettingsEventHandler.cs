@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 public class RequestRoomSettingsEventHandler(
     RequestRoomSettingsEventParser eventParser, 
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomSettings;
 

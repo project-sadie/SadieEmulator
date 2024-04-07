@@ -106,7 +106,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
     {
         logger.LogWarning("Server is about to shut down...");
         
-        var roomRepository = serviceProvider.GetRequiredService<IRoomRepository>();
+        var roomRepository = serviceProvider.GetRequiredService<RoomRepository>();
         var playerRepository = serviceProvider.GetRequiredService<IPlayerRepository>();
         
         logger.LogInformation("Disposing rooms...");

@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms.Users.Chat;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-public class RoomUserStartTypingEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserStartTypingEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserStartTyping;
 

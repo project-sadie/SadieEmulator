@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
 public class RoomDoorbellAcceptedEventHandler(
     RoomDoorbellAcceptedEventParser eventParser,
-    IRoomRepository roomRepository,
+    RoomRepository roomRepository,
     ILogger<RoomDoorbellAcceptedEventHandler> logger,
     IRoomUserFactory roomUserFactory)
     : INetworkPacketEventHandler

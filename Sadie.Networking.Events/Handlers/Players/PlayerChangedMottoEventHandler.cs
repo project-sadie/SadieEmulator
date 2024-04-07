@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerChangedMottoEventHandler(
     PlayerChangedMottoEventParser eventParser,
-    IRoomRepository roomRepository, PlayerConstants constants) : INetworkPacketEventHandler
+    RoomRepository roomRepository, PlayerConstants constants) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerChangedMotto;
 
