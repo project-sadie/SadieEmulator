@@ -27,14 +27,14 @@ public class PlayerRemoveFriendsEventHandler(
             
             if (playerRepository.TryGetPlayerById(currentId, out var target) && target != null)
             {
-                target.Data.FriendshipComponent.RemoveFriend(playerId);
+                target.FriendshipComponent.RemoveFriend(playerId);
                 await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter([playerId]).GetAllBytes());
             }
 
             await friendshipRepository.DeleteFriendshipAsync(playerId, currentId);
         }
 
-        client.Player.Data.FriendshipComponent.RemoveFriends(eventParser.Ids);
+        client.Player.FriendshipComponent.RemoveFriends(eventParser.Ids);
         await client.WriteToStreamAsync(new PlayerRemoveFriendsWriter(eventParser.Ids).GetAllBytes());
     }
 }

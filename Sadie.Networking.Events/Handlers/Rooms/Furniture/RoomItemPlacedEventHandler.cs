@@ -55,7 +55,7 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var playerItem = player.Data.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
+        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
 
         if (playerItem == null)
         {
@@ -83,7 +83,7 @@ public class RoomItemPlacedEventHandler(
         IReadOnlyList<string> placementData, 
         RoomLogic room, 
         INetworkObject client, 
-        IPlayer player, 
+        PlayerLogic player, 
         PlayerFurnitureItem playerItem, 
         int itemId)
     {
@@ -109,7 +109,7 @@ public class RoomItemPlacedEventHandler(
         var roomFurnitureItem = new RoomFurnitureItem
         {
             OwnerId = player.Data.Id,
-            OwnerUsername = player.Data.Username,
+            OwnerUsername = player.Username,
             FurnitureItem = playerItem.FurnitureItem,
             PositionX = x,
             PositionY = y,
@@ -125,7 +125,7 @@ public class RoomItemPlacedEventHandler(
         RoomHelpers.UpdateTileMapForTile(tile, room.TileMap);
         
         room.FurnitureItems.Add(roomFurnitureItem);
-        player.Data.FurnitureItems.Remove(playerItem);
+        player.FurnitureItems.Remove(playerItem);
         
         await dbContext.SaveChangesAsync();
 
@@ -153,7 +153,7 @@ public class RoomItemPlacedEventHandler(
     private async Task OnWallItemAsync(
         IReadOnlyList<string> placementData,
         RoomLogic room,
-        IPlayer player,
+        PlayerLogic player,
         PlayerFurnitureItem playerItem,
         int itemId,
         INetworkObject client)
@@ -163,7 +163,7 @@ public class RoomItemPlacedEventHandler(
         var roomFurnitureItem = new RoomFurnitureItem
         {
             OwnerId = player.Data.Id,
-            OwnerUsername = player.Data.Username,
+            OwnerUsername = player.Username,
             FurnitureItem = playerItem.FurnitureItem,
             PositionX = 0,
             PositionY = 0,
@@ -177,7 +177,7 @@ public class RoomItemPlacedEventHandler(
 
         room.FurnitureItems.Remove(roomFurnitureItem);
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
-        player.Data.FurnitureItems.Remove(playerItem);
+        player.FurnitureItems.Remove(playerItem);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());

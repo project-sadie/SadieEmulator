@@ -26,7 +26,7 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
         {
             var friendData = friend.TargetData;
             var isOnline = playerRepository.TryGetPlayerById(friendData.Id, out var onlineFriend) && onlineFriend != null;
-            var inRoom = isOnline && onlineFriend != null && onlineFriend.Data.CurrentRoomId != 0;
+            var inRoom = isOnline && onlineFriend != null && onlineFriend.CurrentRoomId != 0;
             var relationshipType = relationships.FirstOrDefault(x => x.TargetPlayerId == friendData.Id)?.Type ?? PlayerRelationshipType.None;
 
             WriteInteger(friendData.Id);

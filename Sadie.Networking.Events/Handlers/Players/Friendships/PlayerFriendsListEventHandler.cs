@@ -14,7 +14,7 @@ public class PlayerFriendsListEventHandler(
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player!;
-        var friends = player.Data.FriendshipComponent.Friendships;
+        var friends = player.FriendshipComponent.Friendships;
         var pages = friends.Count / 500 + 1;
         
         for (var i = 0; i < pages; i++)
@@ -28,7 +28,7 @@ public class PlayerFriendsListEventHandler(
                 i, 
                 batch, 
                 playerRepository,
-                player.Data.Relationships).GetAllBytes());
+                player.Relationships).GetAllBytes());
         }
     }
 }

@@ -1,5 +1,4 @@
 using Sadie.Game.Players;
-using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;
 using Sadie.Networking.Client;
@@ -10,8 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerChangeRelationshipEventHandler(
     PlayerChangeRelationshipEventParser eventParser,
-    PlayerRepository playerRepository, 
-    PlayerRelationshipDao playerRelationshipDao)
+    PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerChangeRelationship;
@@ -23,7 +21,7 @@ public class PlayerChangeRelationshipEventHandler(
         var playerId = eventParser.PlayerId;
         var relationId = eventParser.RelationId;
         
-        var friendshipComponent = client.Player.Data.FriendshipComponent;
+        var friendshipComponent = client.Player.FriendshipComponent;
         
         var friendship = friendshipComponent.
             Friendships.
@@ -36,22 +34,22 @@ public class PlayerChangeRelationshipEventHandler(
 
         if (relationId == 0)
         {
-            var relationship = client.Player.Data.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (relationship != null)
             {
                 await playerRelationshipDao.DeleteRelationshipAsync(relationship.Id);
-                client.Player.Data.Relationships.Remove(relationship);
+                client.Player.Relationships.Remove(relationship);
             }
         }
         else
         {
-            var relationship = client.Player.Data.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
         
             if (relationship == null)
             {
                 relationship = await playerRelationshipDao.CreateRelationshipAsync(client.Player.Data.Id, playerId, (PlayerRelationshipType)relationId);
-                client.Player.Data.Relationships.Add(relationship);
+                client.Player.Relationships.Add(relationship);
             }
             else
             {
@@ -61,7 +59,7 @@ public class PlayerChangeRelationshipEventHandler(
         }
         
         var isOnline = playerRepository.TryGetPlayerById(playerId, out var onlineFriend) && onlineFriend != null;
-        var inRoom = isOnline && onlineFriend != null && onlineFriend.Data.CurrentRoomId != 0;
+        var inRoom = isOnline && onlineFriend != null && onlineFriend.CurrentRoomId != 0;
         
         var updateFriendWriter = new PlayerUpdateFriendWriter(
                 0, 

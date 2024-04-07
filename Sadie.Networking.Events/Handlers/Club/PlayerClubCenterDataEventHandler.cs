@@ -10,7 +10,7 @@ public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var subscription = client.Player?.Data.Subscriptions.FirstOrDefault(x => x.Name == "HABBO_CLUB");
+        var subscription = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
         
         if (subscription == null)
         {
@@ -29,7 +29,7 @@ public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
         }
         
         await client.WriteToStreamAsync(new PlayerClubCenterDataWriter(
-            subscription.Started.ToString("dd/MM/yyyy"),
+            subscription.CreatedAt.ToString("dd/MM/yyyy"),
             0,
             0.1,
             0,

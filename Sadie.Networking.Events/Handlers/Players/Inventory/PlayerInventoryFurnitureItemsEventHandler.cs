@@ -12,7 +12,7 @@ public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHand
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var furnitureItems = client.Player.Data.FurnitureItems;
+        var furnitureItems = client.Player.FurnitureItems;
 
         if (furnitureItems.Count == 0)
         {

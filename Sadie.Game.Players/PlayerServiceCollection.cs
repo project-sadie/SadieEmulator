@@ -7,11 +7,10 @@ using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Messenger;
 using Sadie.Game.Players.Respect;
 using Sadie.Game.Players.Room;
-using Sadie.Game.Players.Subscriptions;
 
 namespace Sadie.Game.Players;
 
-public class PlayerServiceCollection
+public static class PlayerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
@@ -19,15 +18,9 @@ public class PlayerServiceCollection
         serviceCollection.AddTransient<PlayerFriendshipComponent>();
         serviceCollection.AddTransient<IPlayerState, PlayerState>();
         serviceCollection.AddSingleton<IPlayerMessageDao, PlayerMessageDao>();
-        serviceCollection.AddSingleton<IPlayerSubscription, PlayerSubscription>();
-        serviceCollection.AddSingleton<IPlayerSubscriptionFactory, PlayerSubscriptionFactory>();
-        serviceCollection.AddSingleton<IPlayerSubscriptionDao, PlayerSubscriptionDao>();
         serviceCollection.AddSingleton<IPlayerRespectDao, PlayerRespectDao>();
         serviceCollection.AddTransient<IPlayerBalance, PlayerBalance>();
-        serviceCollection.AddTransient<IPlayer, PlayerLogic>();
-        serviceCollection.AddTransient<PlayerData, PlayerData>();
-        serviceCollection.AddSingleton<IPlayerDataFactory, PlayerDataFactory>();
-        serviceCollection.AddSingleton<IPlayerDataDao, PlayerDataDao>();
+        serviceCollection.AddTransient<PlayerLogic, PlayerLogic>();
         serviceCollection.AddSingleton<IPlayerFactory, PlayerFactory>();
         serviceCollection.AddSingleton<PlayerRepository>();
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();

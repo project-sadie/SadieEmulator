@@ -10,9 +10,7 @@ public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerData = client.Player!.Data;
-        
-        var badges = playerData.Badges;
+        var badges = client.Player.Badges;
         
         var equippedBadges = badges.
             Where(x => x.Slot is > 0 and <= 5).

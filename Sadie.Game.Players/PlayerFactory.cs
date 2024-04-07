@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
@@ -17,14 +18,18 @@ public class PlayerFactory(IServiceProvider serviceProvider) : IPlayerFactory
             gotwPoints);
     }
     
-    public IPlayer Create(
+    public PlayerLogic Create(
         INetworkObject networkObject, 
-        PlayerData data)
+        PlayerData data,
+        PlayerFriendshipComponent friendshipComponent,
+        PlayerBalance balance)
     {
         return ActivatorUtilities.CreateInstance<PlayerLogic>(
             serviceProvider,
             networkObject,
-            data);
+            data,
+            friendshipComponent,
+            balance);
     }
 
     public PlayerNavigatorSettings CreateNavigatorSettings(

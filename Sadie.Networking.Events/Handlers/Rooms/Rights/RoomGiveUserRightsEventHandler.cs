@@ -37,7 +37,7 @@ public class RoomGiveUserRightsEventHandler(
         }
 
         await room.UserRepository.BroadcastDataAsync(
-            new RoomGiveUserRightsWriter(room.Id, playerId, playerData.Username).GetAllBytes()
+            new RoomGiveUserRightsWriter(room.Id, playerId, client.Player.Username).GetAllBytes()
         );
 
         if (room.UserRepository.TryGetById(playerId, out var targetRoomUser))

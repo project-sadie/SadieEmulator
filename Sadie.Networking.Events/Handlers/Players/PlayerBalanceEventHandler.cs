@@ -11,7 +11,7 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
-        var balance = player.Data.Balance;
+        var balance = player.Balance;
         
         var currencies = new Dictionary<int, long>
         {

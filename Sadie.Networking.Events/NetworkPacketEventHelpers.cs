@@ -33,7 +33,7 @@ internal static class NetworkPacketEventHelpers
             return false;
         }
         
-        var roomId = player.Data.CurrentRoomId;
+        var roomId = player.CurrentRoomId;
         var (result, roomObject) = roomRepository.TryGetRoomById(roomId);
 
         if (!result || roomObject == null || client.RoomUser == null)

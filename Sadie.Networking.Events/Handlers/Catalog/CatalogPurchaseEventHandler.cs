@@ -96,7 +96,7 @@ public class CatalogPurchaseEventHandler(
             });
         }
         
-        client.Player.Data.FurnitureItems.AddRange(newItems);
+        client.Player.FurnitureItems.AddRange(newItems);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());
@@ -126,7 +126,7 @@ public class CatalogPurchaseEventHandler(
     {
         var costInCredits = item.CostCredits * eventParser.Amount;
         var costInPoints = item.CostPoints * eventParser.Amount;
-        var balance = client.Player.Data.Balance;
+        var balance = client.Player.Balance;
         
         if (balance.Credits < costInCredits || 
             (item.CostPointsType == 0 && balance.Pixels < costInPoints) ||

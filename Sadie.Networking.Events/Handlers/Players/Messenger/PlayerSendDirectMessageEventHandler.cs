@@ -42,7 +42,7 @@ public class PlayerSendDirectMessageEventHandler(
             message = message.Truncate(500);
         }
 
-        var friendships = client.Player.Data.FriendshipComponent.Friendships;
+        var friendships = client.Player.FriendshipComponent.Friendships;
         var friend = friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
 
         if (friend == null || friend.Status != PlayerFriendshipStatus.Accepted)

@@ -13,20 +13,20 @@ public class PlayerSubscriptionEventHandler(PlayerSubscriptionEventParser eventP
     {
         eventParser.Parse(reader);
 
-        var subscription = client.Player?.Data.Subscriptions.FirstOrDefault(x => x.Name == eventParser.Name);
+        var playerSub = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == eventParser.Name);
         
-        if (subscription == null)
+        if (playerSub == null)
         {
             return;
         }
         
-        var tillExpire = subscription.Expires - subscription.Started;
+        var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
         var daysLeft = (int) tillExpire.TotalDays;
         var minutesLeft = (int) tillExpire.TotalMinutes;
         var lastMod = client.Player.State.LastSubscriptionModification;
             
         await client.WriteToStreamAsync(new PlayerSubscriptionWriter(
-            subscription.Name,
+            playerSub.Subscription.Name,
             daysLeft,
             1, 
             2, 

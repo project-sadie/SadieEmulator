@@ -32,7 +32,7 @@ public class RoomPaintItemPlacedEventHandler(
             return;
         }
         
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
+        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
         if (!found || room == null)
         {
@@ -41,7 +41,7 @@ public class RoomPaintItemPlacedEventHandler(
         }
         
         var player = client.Player;
-        var playerItem = player.Data.FurnitureItems.FirstOrDefault(x => x.Id == parser.ItemId);
+        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == parser.ItemId);
 
         if (playerItem == null)
         {
@@ -62,7 +62,7 @@ public class RoomPaintItemPlacedEventHandler(
                 break;
         }
 
-        player.Data.FurnitureItems.Remove(playerItem);
+        player.FurnitureItems.Remove(playerItem);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(parser.ItemId).GetAllBytes());

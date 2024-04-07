@@ -33,7 +33,7 @@ public class RoomLoadedEventHandler(
 
         var (roomId, password) = (eventParser.RoomId, eventParser.Password);
         var (found, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
-        var lastRoomId = player.Data.CurrentRoomId;
+        var lastRoomId = player.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
@@ -51,7 +51,7 @@ public class RoomLoadedEventHandler(
 
         if (!found || room == null)
         {
-            logger.LogError($"Failed to load room {roomId} for player '{playerData.Username}'");
+            logger.LogError($"Failed to load room {roomId} for player '{player.Username}'");
             await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
             return;
         }
@@ -80,13 +80,13 @@ public class RoomLoadedEventHandler(
                 
                     if (usersWithRights.Count < 1)
                     {
-                        await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Data.Username).GetAllBytes());
+                        await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Username).GetAllBytes());
                     }
                     else
                     {
                         foreach (var user in usersWithRights)
                         {
-                            await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(playerData.Username)
+                            await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(player.Username)
                                 .GetAllBytes());
                         }
 

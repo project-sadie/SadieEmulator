@@ -35,7 +35,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         _packetHandler = packetHandler;
     }
 
-    public IPlayer? Player { get; set; }
+    public PlayerLogic? Player { get; set; }
     public RoomUser? RoomUser { get; set; }
     
     public Task ListenAsync()

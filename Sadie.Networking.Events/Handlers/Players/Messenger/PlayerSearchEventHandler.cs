@@ -35,7 +35,7 @@ public class PlayerSearchEventHandler(PlayerSearchEventParser eventParser, Playe
             searchQuery = searchQuery.Truncate(20);
         }
 
-        var friendships = client.Player!.Data.FriendshipComponent.Friendships;
+        var friendships = client.Player!.FriendshipComponent.Friendships;
         
         var friendsList = friendships
             .Where(x => x.TargetData.Username.Contains(searchQuery)).

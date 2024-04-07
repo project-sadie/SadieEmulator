@@ -16,20 +16,20 @@ public class PlayerRepository(
     SadieContext dbContext,
     IMapper mapper)
 {
-    private readonly ConcurrentDictionary<long, IPlayer> _players = new();
+    private readonly ConcurrentDictionary<long, PlayerLogic> _players = new();
 
-    public bool TryGetPlayerById(long id, out IPlayer? player)
+    public bool TryGetPlayerById(long id, out PlayerLogic? player)
     {
         return _players.TryGetValue(id, out player);
     }
 
-    public bool TryGetPlayerByUsername(string username, out IPlayer? player)
+    public bool TryGetPlayerByUsername(string username, out PlayerLogic? player)
     {
-        player = _players.Values.FirstOrDefault(x => x.Data.Username == username);
+        player = _players.Values.FirstOrDefault(x => x.Username == username);
         return player != default;
     }
 
-    public async Task<IPlayer?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
+    public async Task<PlayerLogic?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
     {
         var player = await dbContext
             .Set<Player>()
@@ -47,7 +47,7 @@ public class PlayerRepository(
         return mapper.Map<PlayerLogic>(player);
     }
 
-    public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Data.Id, player);
+    public bool TryAddPlayer(PlayerLogic player) => _players.TryAdd(player.Data.Id, player);
 
     public async Task<bool> TryRemovePlayerAsync(int playerId)
     {
@@ -59,13 +59,13 @@ public class PlayerRepository(
         }
 
         await UpdateOnlineStatusAsync(player.Data.Id, false);
-        await UpdateMessengerStatusForFriends(player.Data.Id, player.Data.FriendshipComponent.Friendships, false, false);
+        await UpdateMessengerStatusForFriends(player.Data.Id, player.FriendshipComponent.Friendships, false, false);
         await player!.DisposeAsync();
 
         return result;
     }
 
-    public async Task UpdateMessengerStatusForFriends(int playerId, IEnumerable<PlayerFriendship> friendships, bool isOnline, bool inRoom)
+    public async Task UpdateMessengerStatusForFriends(long playerId, IEnumerable<PlayerFriendship> friendships, bool isOnline, bool inRoom)
     {
         foreach (var friendId in friendships.Select(x => x.TargetData.Id).Distinct())
         {
@@ -74,12 +74,11 @@ public class PlayerRepository(
                 continue;
             }
          
-            var friendship = friend.Data.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
+            var friendship = friend.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
 
             if (friendship != null)
             {
                 var relationship = friend
-                    .Data
                     .Relationships
                     .FirstOrDefault(x =>
                         x.TargetPlayerId == friendship.OriginId || x.TargetPlayerId == friendship.TargetId);
@@ -147,7 +146,7 @@ public class PlayerRepository(
             .ToListAsync();
     }
 
-    public ICollection<IPlayer> GetAll() => _players.Values;
+    public ICollection<PlayerLogic> GetAll() => _players.Values;
 
     public async ValueTask DisposeAsync()
     {

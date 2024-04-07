@@ -19,7 +19,7 @@ public class SaveNavigatorSettingsEventHandler(SaveNavigatorSettingsEventParser 
             return Task.CompletedTask;
         }
         
-        var navigatorSettings = player.Data.NavigatorSettings;
+        var navigatorSettings = player.NavigatorSettings;
 
         navigatorSettings.WindowX = eventParser.WindowX;
         navigatorSettings.WindowY = eventParser.WindowY;

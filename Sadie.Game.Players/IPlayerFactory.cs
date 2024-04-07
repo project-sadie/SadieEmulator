@@ -1,5 +1,6 @@
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Balance;
+using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
@@ -11,9 +12,11 @@ public interface IPlayerFactory
         long seasonal,
         long gotwPoints);
     
-    IPlayer Create(
+    PlayerLogic Create(
         INetworkObject networkObject, 
-        PlayerData data);
+        PlayerData data,
+        PlayerFriendshipComponent friendshipComponent,
+        PlayerBalance balance);
 
     PlayerNavigatorSettings CreateNavigatorSettings(
         int windowX, 

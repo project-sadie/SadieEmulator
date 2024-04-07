@@ -22,7 +22,7 @@ public class RoomItemUseEventHandler(
             return;
         }
         
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
+        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
         if (!found || room == null)
         {

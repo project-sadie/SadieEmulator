@@ -10,7 +10,7 @@ public class PlayerDataEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerDataWriter(client.Player.Data).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerDataWriter(client.Player).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerPerksWriter().GetAllBytes());
     }
 }

@@ -7,7 +7,7 @@ namespace Sadie.Networking.Client;
 public interface INetworkClient : IAsyncDisposable, INetworkObject
 {
     Guid Guid { get; }
-    IPlayer? Player { get; set; }
+    PlayerLogic? Player { get; set; }
     RoomUser? RoomUser { get; set; }
     Task ListenAsync();
     DateTime LastPing { get; set; }

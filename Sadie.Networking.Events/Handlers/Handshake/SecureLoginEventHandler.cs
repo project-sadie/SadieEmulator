@@ -67,7 +67,7 @@ public class SecureLoginEventHandler(
             return;
         }
             
-        logger.LogInformation($"Player '{playerData.Username}' has logged in");
+        logger.LogInformation($"Player '{player.Username}' has logged in");
         await playerRepository.UpdateOnlineStatusAsync(playerId, true);
 
         player.Data.LastOnline = DateTime.Now;
@@ -76,36 +76,36 @@ public class SecureLoginEventHandler(
         await SendExtraPacketsAsync(client, player);
     }
 
-    private async Task SendExtraPacketsAsync(INetworkObject networkObject, IPlayer player)
+    private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
     {
         var playerData = player.Data;
-        var subscriptions = playerData.Subscriptions;
+        var playerSubscriptions = player.Subscriptions;
         
         await networkObject.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoom, playerData.HomeRoom).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
         
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
-            subscriptions.Exists(x => x.Name == "HABBO_CLUB") ? 1 : 0,
+            playerSubscriptions.Exists(x => x.Subscription.Name == "HABBO_CLUB") ? 1 : 0,
             2,
             true).GetAllBytes());
         
         await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(playerData.NavigatorSettings).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(playerData.Settings.ShowNotifications).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications).GetAllBytes());
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore).GetAllBytes());
 
-        foreach (var subscription in subscriptions)
+        foreach (var playerSub in playerSubscriptions)
         {
-            var tillExpire = subscription.Expires - subscription.Started;
+            var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
             var daysLeft = (int) tillExpire.TotalDays;
             var minutesLeft = (int) tillExpire.TotalMinutes;
             var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
             
             await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter(
-                subscription.Name,
+                playerSub.Subscription.Name,
                 daysLeft,
                 0, 
                 0, 
@@ -120,22 +120,21 @@ public class SecureLoginEventHandler(
             player.State.LastSubscriptionModification = DateTime.Now;
         }
 
-        if (playerData.Permissions.Contains("moderation_tools"))
+        if (player.Permissions.Contains("moderation_tools"))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
         }
         
-        await playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
-            playerData.FriendshipComponent.Friendships, true, playerData.CurrentRoomId != 0);
+        await playerRepository.UpdateMessengerStatusForFriends(player.Id,
+            player.FriendshipComponent.Friendships, true, player.CurrentRoomId != 0);
 
-        foreach (var friend in playerData.FriendshipComponent.Friendships)
+        foreach (var friend in player.FriendshipComponent.Friendships)
         {
             var isOnline = playerRepository.TryGetPlayerById(friend.TargetData.Id, out var friendPlayer) && friendPlayer != null;
-            var isInRoom = isOnline && friendPlayer!.Data.CurrentRoomId != 0;
+            var isInRoom = isOnline && friendPlayer!.CurrentRoomId != 0;
                     
             var relationship = isOnline
                 ? friendPlayer!
-                    .Data
                     .Relationships
                     .FirstOrDefault(x => x.TargetPlayerId == friend.OriginId || x.TargetPlayerId == friend.TargetId) : null;
 

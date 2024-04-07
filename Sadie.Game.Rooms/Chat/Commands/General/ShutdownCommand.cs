@@ -14,7 +14,7 @@ public class ShutdownCommand(
     public async Task ExecuteAsync(IRoomUser user)
     {
         if (!playerRepository.TryGetPlayerById(user.Id, out var player) || 
-            !player!.Data.Permissions.Contains("command.shutdown"))
+            !player!.Permissions.Contains("command.shutdown"))
         {
             return;
         }

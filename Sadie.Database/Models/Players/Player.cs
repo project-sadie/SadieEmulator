@@ -17,4 +17,6 @@ public class Player
     public List<PlayerBadge> Badges { get; set; }
     public List<PlayerFurnitureItem> FurnitureItems { get; set; }
     public List<PlayerWardrobeItem> WardrobeItems { get; set; }
+    public List<PlayerPermission> Permissions { get; set; }
+    public List<PlayerSubscription> Subscriptions { get; set; }
 }

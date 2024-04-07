@@ -1,3 +1,5 @@
+using Sadie.Database;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
@@ -5,7 +7,8 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomLikeEventHandler(PlayerGenericDao playerDao, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomLikeEventHandler(RoomRepository roomRepository,
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomLike;
 
@@ -18,12 +21,16 @@ public class RoomLikeEventHandler(PlayerGenericDao playerDao, RoomRepository roo
 
         var playerData = client.Player!.Data;
         
-        if (room.OwnerId == playerData.Id || playerData.LikedRoomIds.Contains(room.Id))
+        if (room.OwnerId == playerData.Id || client.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) != null)
         {
             return;
         }
         
-        playerData.LikedRoomIds.Add(room.Id);
-        await playerDao.CreatePlayerRoomLikeAsync(playerData.Id, playerData.CurrentRoomId);
+        client.Player.RoomLikes.Add(new PlayerRoomLike()
+        {
+            PlayerId = client.Player.Id,
+            RoomId = room.Id
+        });
+        await dbContext.SaveChangesAsync();
     }
 }

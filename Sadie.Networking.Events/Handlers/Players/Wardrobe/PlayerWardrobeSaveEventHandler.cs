@@ -31,7 +31,7 @@ public class PlayerWardrobeSaveEventHandler(
             Gender = eventParser.Gender == "M" ? AvatarGender.Male : AvatarGender.Female
         };
             
-        player.Data.WardrobeItems.Add(wardrobeItem);
+        player.WardrobeItems.Add(wardrobeItem);
         await dbContext.SaveChangesAsync();
     }
 }

@@ -25,14 +25,13 @@ public class PlayerClubOffersEventHandler(
         
         var clubSubscription = client
             .Player
-            .Data
             .Subscriptions
-            .FirstOrDefault(x => x.Name == "HABBO_CLUB");
+            .FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
 
         if (clubSubscription != null)
         {
-            var daysTotal = (clubSubscription.Expires - clubSubscription.Started).TotalDays;
-            var daysSinceStarted = (DateTime.Now - clubSubscription.Started).TotalDays;
+            var daysTotal = (clubSubscription.ExpiresAt - clubSubscription.CreatedAt).TotalDays;
+            var daysSinceStarted = (DateTime.Now - clubSubscription.CreatedAt).TotalDays;
 
             daysRemaining = (int)(daysTotal - daysSinceStarted);
         }

@@ -29,12 +29,12 @@ public class RoomUserRespectEventHandler(
         
         var player = client.Player!;
         var playerData = player.Data;
-        var lastRoom = player.Data.CurrentRoomId;
+        var lastRoom = player.CurrentRoomId;
         
         if (playerData.RespectPoints < 1 || 
             playerData.Id == eventParser.TargetId || 
             !playerRepository.TryGetPlayerById(eventParser.TargetId, out var targetPlayer) || 
-            targetPlayer!.Data.CurrentRoomId != 0 && lastRoom != targetPlayer.Data.CurrentRoomId)
+            targetPlayer!.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
         {
             return;
         }

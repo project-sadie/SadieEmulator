@@ -11,7 +11,7 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player!;
-        var playerSettings = player.Data.Settings;
+        var playerSettings = player.GameSettings;
         
         await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter(
             playerSettings.SystemVolume, 

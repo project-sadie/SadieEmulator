@@ -18,8 +18,7 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
 
         var playerId = eventParser.PlayerId;
 
-        var friend =
-            client.Player.Data.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
+        var friend = client.Player.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
 
         if (friend == null || friend.Status != PlayerFriendshipStatus.Accepted)
         {
@@ -33,17 +32,17 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
             return;
         }
 
-        if (targetPlayer.Data.CurrentRoomId == 0)
+        if (targetPlayer.CurrentRoomId == 0)
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetNotInRoom).GetAllBytes());
             return;
         }
 
-        if (client.Player.Data.CurrentRoomId == targetPlayer.Data.CurrentRoomId)
+        if (client.Player.CurrentRoomId == targetPlayer.CurrentRoomId)
         {
             return;
         }
 
-        await client.WriteToStreamAsync(new RoomForwardEntryWriter(targetPlayer.Data.CurrentRoomId).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomForwardEntryWriter(targetPlayer.CurrentRoomId).GetAllBytes());
     }
 }

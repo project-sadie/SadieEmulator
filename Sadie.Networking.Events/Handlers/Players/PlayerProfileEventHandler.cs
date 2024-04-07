@@ -1,3 +1,4 @@
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;

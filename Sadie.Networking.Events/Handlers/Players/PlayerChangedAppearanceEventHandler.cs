@@ -20,7 +20,6 @@ public class PlayerChangedAppearanceEventHandler(
         eventParser.Parse(reader);
         
         var player = client.Player;
-        var playerData = player.Data;
         
         var gender = eventParser.Gender == "M" ? 
             AvatarGender.Male : 
@@ -30,8 +29,8 @@ public class PlayerChangedAppearanceEventHandler(
         
         // TODO: Validate inputs above
 
-        playerData.Gender = gender;
-        playerData.FigureCode = figureCode;
+        player.AvatarData.Gender = gender;
+        player.AvatarData.FigureCode = figureCode;
         
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {

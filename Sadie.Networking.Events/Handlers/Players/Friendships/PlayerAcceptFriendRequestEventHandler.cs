@@ -33,7 +33,7 @@ public class PlayerAcceptFriendRequestEventHandler(
         var player = client.Player;
         var playerId = player.Data.Id;
         
-        var friendshipComponent = player.Data.FriendshipComponent;
+        var friendshipComponent = player.FriendshipComponent;
             
         var request = friendshipComponent
             .Friendships
@@ -46,7 +46,7 @@ public class PlayerAcceptFriendRequestEventHandler(
 
         if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
         {
-            var targetFriendshipComponent = origin.Data.FriendshipComponent;
+            var targetFriendshipComponent = origin.FriendshipComponent;
             
             targetFriendshipComponent.OutgoingRequestAccepted(playerId);
             
@@ -57,10 +57,9 @@ public class PlayerAcceptFriendRequestEventHandler(
             if (targetRequest != null)
             {
                 const bool isOnline = true;
-                var inRoom = origin.Data.CurrentRoomId != 0;
+                var inRoom = origin.CurrentRoomId != 0;
 
                 var relationship = origin
-                        .Data
                         .Relationships
                         .FirstOrDefault(x =>
                             x.TargetPlayerId == targetRequest.OriginId || x.TargetPlayerId == targetRequest.TargetId);
@@ -92,7 +91,7 @@ public class PlayerAcceptFriendRequestEventHandler(
 
         if (targetOnline && origin != null)
         {
-            var (roomFound, lastRoom) = roomRepository.TryGetRoomById(origin.Data.CurrentRoomId);
+            var (roomFound, lastRoom) = roomRepository.TryGetRoomById(origin.CurrentRoomId);
 
             if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Data.Id, out _))
             {
@@ -102,7 +101,6 @@ public class PlayerAcceptFriendRequestEventHandler(
                 
         var relationship2 = targetOnline
             ? origin!
-                .Data
                 .Relationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginId || x.TargetPlayerId == request.TargetId) : null;
         

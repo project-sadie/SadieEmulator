@@ -33,11 +33,11 @@ public class PlayerDeclineFriendRequestEventHandler(
                 var targetId = playerId;
 
                 await friendshipRepository.DeclineFriendRequestAsync(originId, targetId);
-                playerData.FriendshipComponent.DeclineIncomingRequest(originId);
+                player.FriendshipComponent.DeclineIncomingRequest(originId);
 
                 if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
                 {
-                    origin.Data.FriendshipComponent.OutgoingRequestDeclined(targetId);
+                    origin.FriendshipComponent.OutgoingRequestDeclined(targetId);
                 }
             }
         }

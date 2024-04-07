@@ -31,7 +31,7 @@ public class RoomItemEjectedEventHandler(
         var player = client.Player;
         var itemId = eventParser.ItemId;
         
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.Data.CurrentRoomId);
+        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
         if (!found || room == null)
         {
@@ -87,14 +87,14 @@ public class RoomItemEjectedEventHandler(
         
         if (ownsItem)
         {
-            player.Data.FurnitureItems.Add(playerItem);
+            player.FurnitureItems.Add(playerItem);
             
             await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]).GetAllBytes());
             await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
         }
         else if (playerRepository.TryGetPlayerById(roomFurnitureItem.OwnerId, out var owner) && owner != null)
         {
-            owner.Data.FurnitureItems.Remove(playerItem);
+            owner.FurnitureItems.Remove(playerItem);
             
             await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]).GetAllBytes());
             await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());

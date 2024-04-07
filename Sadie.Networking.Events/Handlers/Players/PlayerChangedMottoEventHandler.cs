@@ -27,7 +27,7 @@ public class PlayerChangedMottoEventHandler(
             newMotto = newMotto.Truncate(constants.MaxMottoLength);
         }
 
-        player.Data.Motto = newMotto;
+        player.AvatarData.Motto = newMotto;
         
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
