@@ -2,7 +2,7 @@
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
-namespace Sadie.Game.Rooms;
+namespace Sadie.Game.Rooms.Tiles;
 
 public class RoomTile(int x, int y, float z, RoomTileState state, List<RoomFurnitureItem> items)
 {

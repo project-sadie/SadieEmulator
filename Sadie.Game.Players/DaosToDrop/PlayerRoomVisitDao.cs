@@ -1,6 +1,7 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Room;
 
-namespace Sadie.Game.Players.Room;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerRoomVisitDao(IDatabaseProvider databaseProvider) : BaseDao(databaseProvider), IPlayerRoomVisitDao
 {

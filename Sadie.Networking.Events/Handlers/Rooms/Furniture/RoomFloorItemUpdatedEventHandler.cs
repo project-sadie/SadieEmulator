@@ -1,5 +1,6 @@
 using Sadie.Database;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Tiles;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;

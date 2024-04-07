@@ -1,6 +1,7 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Subscriptions;
 
-namespace Sadie.Game.Players.Subscriptions;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerSubscriptionDao(
     IDatabaseProvider databaseProvider,

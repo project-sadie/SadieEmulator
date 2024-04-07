@@ -1,7 +1,8 @@
 using Sadie.Database.LegacyAdoNet;
 using Sadie.Game.Furniture;
+using Sadie.Game.Players.Inventory;
 
-namespace Sadie.Game.Players.Inventory;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerInventoryDao(
     IDatabaseProvider databaseProvider, 

@@ -1,6 +1,7 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Respect;
 
-namespace Sadie.Game.Players.Respect;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerRespectDao(IDatabaseProvider databaseProvider) : BaseDao(databaseProvider), IPlayerRespectDao
 {

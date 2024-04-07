@@ -1,6 +1,7 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Badges;
 
-namespace Sadie.Game.Players.Badges;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerBadgeDao(IDatabaseProvider databaseProvider, IPlayerBadgeFactory badgeFactory)
     : BaseDao(databaseProvider), IPlayerBadgeDao

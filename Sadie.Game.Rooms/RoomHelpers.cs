@@ -2,6 +2,7 @@
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.PathFinding.Options;
+using Sadie.Game.Rooms.Tiles;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;

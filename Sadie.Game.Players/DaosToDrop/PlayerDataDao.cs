@@ -9,7 +9,7 @@ using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
-namespace Sadie.Game.Players;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerDataDao(
     IDatabaseProvider databaseProvider,

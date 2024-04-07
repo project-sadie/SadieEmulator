@@ -1,4 +1,5 @@
 using Sadie.Game.Players;
+using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Generic;
@@ -10,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 public class PlayerRelationshipsEventHandler(
     PlayerRelationshipsEventParser eventParser,
     IPlayerRepository playerRepository,
-    IPlayerDao playerDao,
+    PlayerRelationshipDao playerRelationshipDao,
     IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerRelationships;
@@ -24,7 +25,7 @@ public class PlayerRelationshipsEventHandler(
         
         var relationships = isOnline ? 
             player!.Data.Relationships : 
-            await playerDao.GetRelationshipsAsync(playerId);
+            await playerRelationshipDao.GetRelationshipsAsync(playerId);
 
         var playerFriends = isOnline
             ? player!.Data.FriendshipComponent.Friendships

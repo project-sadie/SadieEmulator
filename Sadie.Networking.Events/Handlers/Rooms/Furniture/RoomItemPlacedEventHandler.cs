@@ -3,6 +3,7 @@ using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Tiles;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;

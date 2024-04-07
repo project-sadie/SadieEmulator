@@ -3,14 +3,13 @@ using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Inventory;
 using Sadie.Game.Players.Navigator;
-using Sadie.Game.Players.Relationships;
 using Sadie.Game.Players.Subscriptions;
 using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
 
-namespace Sadie.Game.Players;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerDao(
     IDatabaseProvider databaseProvider,
@@ -20,7 +19,8 @@ public class PlayerDao(
     IPlayerFriendshipDao friendshipDao,
     IPlayerSubscriptionDao subscriptionDao,
     IPlayerInventoryDao inventoryDao,
-    IPlayerWardrobeDao wardrobeDao)
+    IPlayerWardrobeDao wardrobeDao,
+    PlayerRelationshipDao playerRelationshipDao)
     : BaseDao(databaseProvider), IPlayerDao
 {
     private async Task<DatabaseRecord?> GetRecordAsync(string ssoToken)
@@ -132,7 +132,7 @@ public class PlayerDao(
 
         var likedRoomIds = await GetLikedRoomsAsync(playerId);
         var wardrobeItems = await wardrobeDao.GetAllRecordsForPlayerAsync(playerId);
-        var relationships = await GetRelationshipsAsync(playerId);
+        var relationships = await playerRelationshipDao.GetRelationshipsAsync(playerId);
             
         var playerData = playerDataFactory.Create(
             record.Get<int>("id"),
@@ -256,14 +256,6 @@ public class PlayerDao(
         return data;
     }
 
-    public async Task ResetSsoTokenForPlayerAsync(long id)
-    {
-        await QueryAsync("UPDATE players SET sso_token = '' WHERE id = @playerId", new Dictionary<string, object>
-        {
-            { "playerId", id }
-        });
-    }
-
     public async Task CreatePlayerRoomLikeAsync(long playerId, long roomId)
     {
         await QueryAsync("INSERT INTO player_room_likes (player_id, room_id) VALUES (@playerId, @roomId);", new Dictionary<string, object>
@@ -272,67 +264,12 @@ public class PlayerDao(
             { "roomId", roomId }
         });
     }
-    
-    public async Task<List<PlayerRelationship>> GetRelationshipsAsync(long playerId)
+
+    public async Task ResetSsoTokenForPlayerAsync(long id)
     {
-        var reader = await GetReaderAsync(@"
-            SELECT id, origin_player_id, target_player_id, type_id FROM player_relationships WHERE origin_player_id = @playerId", 
-            new Dictionary<string, object>
-            {
-                { "playerId", playerId }
-            });
-        
-        var data = new List<PlayerRelationship>();
-        
-        while (true)
+        await QueryAsync("UPDATE players SET sso_token = '' WHERE id = @playerId", new Dictionary<string, object>
         {
-            var (success, record) = reader.Read();
-
-            if (!success || record == null)
-            {
-                break;
-            }
-            
-            data.Add(new PlayerRelationship(record.Get<int>("id"), 
-                record.Get<long>("origin_player_id"), 
-                record.Get<long>("target_player_id"), 
-                (PlayerRelationshipType) record.Get<int>("type_id")));
-        }
-
-        return data;
-    }
-
-    public async Task UpdateRelationshipTypeAsync(int id, PlayerRelationshipType type)
-    {
-        await QueryAsync("UPDATE player_relationships SET type_id = @type WHERE id = @id", new Dictionary<string, object>
-        {
-            { "type", (int) type },
-            { "id", id }
-        });
-    }
-
-    public async Task<PlayerRelationship> CreateRelationshipAsync(long playerId, long targetPlayerId, PlayerRelationshipType type)
-    {
-        var parameters = new Dictionary<string, object>
-        {
-            { "playerId", playerId },
-            { "targetPlayerId", targetPlayerId },
-            { "type", (int) type }
-        };
-
-        var id = await QueryScalarAsync(@"
-            INSERT INTO player_relationships (
-                origin_player_id, target_player_id, type_id
-            ) VALUES (@playerId, @targetPlayerId, @type); SELECT LAST_INSERT_ID();", parameters);
-
-        return new PlayerRelationship(id, playerId, targetPlayerId, type);
-    }
-
-    public async Task DeleteRelationshipAsync(int id)
-    {
-        await QueryAsync("DELETE FROM player_relationships WHERE id = @id", new Dictionary<string, object>()
-        {
-            {"id", id}
+            { "playerId", id }
         });
     }
 

@@ -1,7 +1,8 @@
 ﻿using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
-namespace Sadie.Game.Players.Friendships;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerFriendshipDao(IDatabaseProvider databaseProvider, PlayerFriendshipFactory friendshipFactory)
     : BaseDao(databaseProvider), IPlayerFriendshipDao

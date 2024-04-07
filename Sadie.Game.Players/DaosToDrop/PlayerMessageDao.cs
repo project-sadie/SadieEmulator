@@ -1,6 +1,7 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Messenger;
 
-namespace Sadie.Game.Players.Messenger;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerMessageDao(IDatabaseProvider databaseProvider) : BaseDao(databaseProvider), IPlayerMessageDao
 {

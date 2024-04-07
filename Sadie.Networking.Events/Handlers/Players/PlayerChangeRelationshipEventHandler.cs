@@ -1,4 +1,5 @@
 using Sadie.Game.Players;
+using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;
 using Sadie.Networking.Client;
@@ -10,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerChangeRelationshipEventHandler(
     PlayerChangeRelationshipEventParser eventParser,
     IPlayerRepository playerRepository, 
-    IPlayerDao playerDao)
+    PlayerRelationshipDao playerRelationshipDao)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerChangeRelationship;
@@ -39,7 +40,7 @@ public class PlayerChangeRelationshipEventHandler(
 
             if (relationship != null)
             {
-                await playerDao.DeleteRelationshipAsync(relationship.Id);
+                await playerRelationshipDao.DeleteRelationshipAsync(relationship.Id);
                 client.Player.Data.Relationships.Remove(relationship);
             }
         }
@@ -49,13 +50,13 @@ public class PlayerChangeRelationshipEventHandler(
         
             if (relationship == null)
             {
-                relationship = await playerDao.CreateRelationshipAsync(client.Player.Data.Id, playerId, (PlayerRelationshipType)relationId);
+                relationship = await playerRelationshipDao.CreateRelationshipAsync(client.Player.Data.Id, playerId, (PlayerRelationshipType)relationId);
                 client.Player.Data.Relationships.Add(relationship);
             }
             else
             {
                 relationship.Type = (PlayerRelationshipType)relationId;
-                await playerDao.UpdateRelationshipTypeAsync(relationship.Id, (PlayerRelationshipType) relationId);
+                await playerRelationshipDao.UpdateRelationshipTypeAsync(relationship.Id, (PlayerRelationshipType) relationId);
             }
         }
         

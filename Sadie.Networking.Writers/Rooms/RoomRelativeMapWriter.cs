@@ -1,4 +1,5 @@
 ﻿using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Tiles;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 

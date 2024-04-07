@@ -1,7 +1,8 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
-namespace Sadie.Game.Players.Wardrobe;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerWardrobeDao : BaseDao, IPlayerWardrobeDao
 {
