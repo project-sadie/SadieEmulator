@@ -3,6 +3,7 @@ using Sadie.Database;
 using Sadie.Database.LegacyAdoNet;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -84,7 +85,7 @@ public class RoomDao(
             [..record.Get<string>("comma_separated_tags").Split(",")],
             record.Get<int>("max_users_allowed"),
             settings,
-            playersWithRights,
+            new List<RoomPlayerRight>(),
             furnitureItemRepository,
             paintSettings));
     }
@@ -244,7 +245,7 @@ public class RoomDao(
                 [..record.Get<string>("comma_separated_tags").Split(",")],
                 record.Get<int>("max_users_allowed"),
                 settings,
-                playersWithRights,
+                new List<RoomPlayerRight>(),
                 furnitureItemRepository,
                 paintSettings);
             

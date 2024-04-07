@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database.Models.Rooms;
+using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -34,7 +35,7 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
         List<string> tags,
         int maxUsersAllowed,
         RoomSettings settings,
-        List<long> playersWithRights,
+        List<RoomPlayerRight> playersWithRights,
         IRoomFurnitureItemRepository furnitureItemRepository,
         RoomPaintSettings paintSettings)
     {
