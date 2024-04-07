@@ -15,7 +15,7 @@ public class PlayerWardrobeEventHandler : INetworkPacketEventHandler
             return;
         }
 
-        var wardrobeItems = client.Player.Data.WardrobeComponent.WardrobeItems;
+        var wardrobeItems = client.Player.Data.WardrobeItems;
         await client.WriteToStreamAsync(new PlayerWardrobeWriter(1, wardrobeItems).GetAllBytes());
     }
 }

@@ -8,7 +8,6 @@ using Sadie.Game.Players.Messenger;
 using Sadie.Game.Players.Respect;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Game.Players.Wardrobe;
 
 namespace Sadie.Game.Players;
 
@@ -34,8 +33,6 @@ public class PlayerServiceCollection
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
         serviceCollection.AddSingleton<PlayerFriendshipFactory>();
-        serviceCollection.AddTransient<IPlayerWardrobeDao, PlayerWardrobeDao>();
-        serviceCollection.AddTransient<PlayerWardrobeComponent>();
         
         var playerConstants = new PlayerConstants();
         config.GetSection("Constants:Player").Bind(playerConstants);

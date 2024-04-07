@@ -4,7 +4,6 @@ using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
@@ -38,12 +37,11 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
         List<IPlayerSubscription> subscriptions,
         List<PlayerFurnitureItem> furnitureItems,
         List<long> likedRoomIds,
-        Dictionary<int, PlayerWardrobeItem> wardrobeItems,
+        List<PlayerWardrobeItem> wardrobeItems,
         List<PlayerRelationship> relationships)
     {
         
         var friendshipComponent = CreatePlayerFriendshipComponent(id, friendships);
-        var wardrobeComponent = CreatePlayerWardrobeComponent(wardrobeItems);
         
         return new PlayerData(
             id,
@@ -71,7 +69,7 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
             subscriptions,
             furnitureItems,
             likedRoomIds,
-            wardrobeComponent,
+            wardrobeItems,
             relationships);
     }
 
@@ -81,12 +79,5 @@ public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFa
             serviceProvider,
             playerId,
             friendships);
-    }
-
-    private PlayerWardrobeComponent CreatePlayerWardrobeComponent(Dictionary<int, PlayerWardrobeItem> wardrobeItems)
-    {
-        return ActivatorUtilities.CreateInstance<PlayerWardrobeComponent>(
-            serviceProvider,
-            wardrobeItems);
     }
 }

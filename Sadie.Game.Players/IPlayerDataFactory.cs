@@ -3,7 +3,6 @@ using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
@@ -37,7 +36,7 @@ public interface IPlayerDataFactory
         List<IPlayerSubscription> subscriptions, 
         List<PlayerFurnitureItem> furnitureItems,
         List<long> likedRoomIds,
-        Dictionary<int, PlayerWardrobeItem> wardrobeItems,
+        List<PlayerWardrobeItem> wardrobeItems,
         List<PlayerRelationship> relationships);
 
     PlayerFriendshipComponent CreatePlayerFriendshipComponent(int playerId, List<PlayerFriendship> friendships);

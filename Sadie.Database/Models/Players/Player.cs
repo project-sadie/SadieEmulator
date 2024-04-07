@@ -13,7 +13,8 @@ public class Player
     public List<PlayerRoomLike> RoomLikes { get; set; }
     public List<PlayerRelationship> Relationships { get; set; }
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
-    public PlayerGameSettings PlayerGameSettings { get; set; }
+    public PlayerGameSettings GameSettings { get; set; }
     public List<PlayerBadge> Badges { get; set; }
     public List<PlayerFurnitureItem> FurnitureItems { get; set; }
+    public List<PlayerWardrobeItem> WardrobeItems { get; set; }
 }

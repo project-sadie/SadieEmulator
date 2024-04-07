@@ -3,7 +3,6 @@ using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Navigator;
 using Sadie.Game.Players.Subscriptions;
-using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
@@ -35,7 +34,7 @@ public class PlayerData(
     List<IPlayerSubscription> subscriptions,
     List<PlayerFurnitureItem> furnitureItems,
     List<long> likedRoomIds,
-    PlayerWardrobeComponent wardrobeComponent,
+    List<PlayerWardrobeItem> wardrobeItems,
     List<PlayerRelationship> relationships)
     : AvatarData(username, figureCode, motto, gender, achievementScore, tags, chatBubble)
 {
@@ -57,7 +56,7 @@ public class PlayerData(
     public List<IPlayerSubscription> Subscriptions { get; } = subscriptions;
     public List<PlayerFurnitureItem> FurnitureItems { get; } = furnitureItems;
     public List<long> LikedRoomIds { get; } = likedRoomIds;
-    public PlayerWardrobeComponent WardrobeComponent { get; } = wardrobeComponent;
+    public List<PlayerWardrobeItem> WardrobeItems { get; } = wardrobeItems;
     public List<PlayerRelationship> Relationships { get; } = relationships;
 
     public ValueTask DisposeAsync()
