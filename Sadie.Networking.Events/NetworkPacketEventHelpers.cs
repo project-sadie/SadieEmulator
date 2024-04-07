@@ -57,7 +57,7 @@ internal static class NetworkPacketEventHelpers
         var playerData = player.Data;
         var playerState = player.State;
         
-        playerData.CurrentRoomId = room.Id;
+        player.CurrentRoomId = room.Id;
         playerState.RoomVisits.Add(new PlayerRoomVisit(playerData.Id, room.Id));
 
         var avatarData = (IAvatarData) player.Data;
@@ -94,7 +94,7 @@ internal static class NetworkPacketEventHelpers
         
         client.RoomUser = roomUser;
 
-        var canLikeRoom = !player.Data.LikedRoomIds.Contains(room.Id);
+        var canLikeRoom = player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) == null;
         
         await client.WriteToStreamAsync(new RoomDataWriter(room.Id, room.Layout.Name).GetAllBytes());
 
