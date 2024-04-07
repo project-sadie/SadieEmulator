@@ -13,8 +13,12 @@ public class ShutdownCommand(
     
     public async Task ExecuteAsync(IRoomUser user)
     {
-        if (!playerRepository.TryGetPlayerById(user.Id, out var player) || 
-            !player!.Permissions.Contains("command.shutdown"))
+        if (!playerRepository.TryGetPlayerById(user.Id, out var player) )
+        {
+            return;
+        }
+
+        if (player!.Permissions.FirstOrDefault(x => x.Name == "command.shutdown") == null)
         {
             return;
         }
