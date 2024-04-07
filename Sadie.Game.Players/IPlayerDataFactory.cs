@@ -36,7 +36,7 @@ public interface IPlayerDataFactory
         ChatBubble chatBubble,
         bool allowFriendRequests, 
         List<IPlayerSubscription> subscriptions, 
-        PlayerInventoryRepository inventoryRepository,
+        List<PlayerFurnitureItem> furnitureItems,
         List<long> likedRoomIds,
         Dictionary<int, PlayerWardrobeItem> wardrobeItems,
         List<PlayerRelationship> relationships);

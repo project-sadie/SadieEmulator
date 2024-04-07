@@ -14,8 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemEjectedEventHandler(
     SadieContext dbContext,
     RoomFurnitureItemEjectedEventParser eventParser,
-    RoomRepository roomRepository, 
-    IPlayerInventoryDao playerInventoryDao,
+    RoomRepository roomRepository,
     PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFurnitureItemEjected;
@@ -83,8 +82,6 @@ public class RoomItemEjectedEventHandler(
             MetaData = roomFurnitureItem.MetaData,
             CreatedAt = created
         };
-
-        playerItem.Id = await playerInventoryDao.CreateItemAsync(roomFurnitureItem.OwnerId, playerItem);
 
         room.FurnitureItems.Remove(roomFurnitureItem);
         

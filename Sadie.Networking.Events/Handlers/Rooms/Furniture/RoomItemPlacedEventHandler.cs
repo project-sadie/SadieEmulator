@@ -18,8 +18,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
     RoomFurnitureItemPlacedEventParser eventParser,
-    RoomRepository roomRepository, 
-    IPlayerInventoryDao playerInventoryDao) : INetworkPacketEventHandler
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFurnitureItemPlaced;
 
@@ -125,13 +124,11 @@ public class RoomItemPlacedEventHandler(
         tile.Items.Add(roomFurnitureItem);
         RoomHelpers.UpdateTileMapForTile(tile, room.TileMap);
         
-        await playerInventoryDao.DeleteItemsAsync([itemId]);
-        
         room.FurnitureItems.Add(roomFurnitureItem);
+        player.Data.FurnitureItems.Remove(playerItem);
+        
         await dbContext.SaveChangesAsync();
 
-        player.Data.Inventory.RemoveItems([itemId]);
-        
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
         
         await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemPlacedWriter(
@@ -157,7 +154,7 @@ public class RoomItemPlacedEventHandler(
         IReadOnlyList<string> placementData,
         RoomLogic room,
         IPlayer player,
-        PlayerInventoryFurnitureItem playerItem,
+        PlayerFurnitureItem playerItem,
         int itemId,
         INetworkObject client)
     {
@@ -177,14 +174,11 @@ public class RoomItemPlacedEventHandler(
             MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
-        
-        await playerInventoryDao.DeleteItemsAsync([itemId]);
 
         room.FurnitureItems.Remove(roomFurnitureItem);
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
+        player.Data.FurnitureItems.Remove(playerItem);
         await dbContext.SaveChangesAsync();
-        
-        player.Data.Inventory.RemoveItems([itemId]);
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
         await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter(roomFurnitureItem)

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
@@ -8,7 +9,10 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-public class RoomPaintItemPlacedEventHandler(RoomPaintItemPlacedEventParser parser, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomPaintItemPlacedEventHandler(
+    RoomPaintItemPlacedEventParser parser, 
+    RoomRepository roomRepository,
+    DbContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomPaintItemPlaced;
     
@@ -37,7 +41,7 @@ public class RoomPaintItemPlacedEventHandler(RoomPaintItemPlacedEventParser pars
         }
         
         var player = client.Player;
-        var playerItem = player.Data.Inventory.Items.FirstOrDefault(x => x.Id == parser.ItemId);
+        var playerItem = player.Data.FurnitureItems.FirstOrDefault(x => x.Id == parser.ItemId);
 
         if (playerItem == null)
         {
@@ -57,8 +61,9 @@ public class RoomPaintItemPlacedEventHandler(RoomPaintItemPlacedEventParser pars
                 room.PaintSettings.LandscapePaint = playerItem.MetaData;
                 break;
         }
-        
-        player.Data.Inventory.RemoveItems([parser.ItemId]);
+
+        player.Data.FurnitureItems.Remove(playerItem);
+        await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(parser.ItemId).GetAllBytes());
         await room.UserRepository.BroadcastDataAsync(new RoomPaintWriter(playerItem.FurnitureItem.AssetName, playerItem.MetaData).GetAllBytes());
