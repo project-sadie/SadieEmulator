@@ -7,7 +7,10 @@ public class RoomLayout : RoomLayoutData
     public int Id { get; }
     public string Name { get; }
     public string HeightMap { get; }
-    public short[,] TileMap { get; }
+    public int DoorX { get; set; }
+    public int DoorY { get; set; }
+    public double DoorZ { get; set; }
+    public HDirection DoorDirection { get; }
     
     public RoomLayout(
         int id, 
@@ -15,12 +18,15 @@ public class RoomLayout : RoomLayoutData
         string heightMap, 
         HPoint doorPoint, 
         HDirection doorDirection, 
-        List<RoomTile> tiles) : base(heightMap, doorPoint, doorDirection, tiles)
+        List<RoomTile> tiles) : base(heightMap, tiles)
     {
         Id = id;
         Name = name;
         HeightMap = heightMap;
-        TileMap = new short[SizeY, SizeX];
+        DoorX = doorPoint.X;
+        DoorY = doorPoint.Y;
+        DoorZ = doorPoint.Z;
+        DoorDirection = doorDirection;
 
         foreach (var tile in Tiles)
         {

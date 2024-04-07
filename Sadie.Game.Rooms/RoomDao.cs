@@ -63,11 +63,6 @@ public class RoomDao(
             (HDirection) record.Get<int>("door_direction"), 
             tiles);
 
-        var commaSeparatedRights = record.Get<string>("comma_separated_rights");
-        
-        var playersWithRights = commaSeparatedRights.Contains(",") ? [..commaSeparatedRights.Split(",").Select(long.Parse)] : 
-            new List<long>();
-
         var paintSettings = new RoomPaintSettings
         {
             FloorPaint = record.Get<string>("floor_paint"),

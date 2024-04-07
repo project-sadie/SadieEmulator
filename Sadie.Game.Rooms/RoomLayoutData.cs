@@ -9,18 +9,16 @@ public class RoomLayoutData
     public int SizeY { get; }
     public int Size { get; }
     public List<RoomTile> Tiles { get; }
-    public HPoint DoorPoint { get; }
-    public HDirection DoorDirection { get; }
+    public short[,] TileMap { get; }
 
-    protected RoomLayoutData(string heightmap, HPoint doorPoint, HDirection doorDirection, List<RoomTile> tiles)
+    protected RoomLayoutData(string heightmap, List<RoomTile> tiles)
     {
         HeightmapRows = heightmap.Split("\n").ToList();
         SizeX = HeightmapRows.First().Length;
         SizeY = HeightmapRows.Count;
         Size = SizeY * SizeX;
         Tiles = tiles;
-        DoorPoint = doorPoint;
-        DoorDirection = doorDirection;
+        TileMap = new short[SizeY, SizeX];
     }
 
     public RoomTile? FindTile(int x, int y) => Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);
