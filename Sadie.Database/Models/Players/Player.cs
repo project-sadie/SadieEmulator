@@ -19,4 +19,5 @@ public class Player
     public List<PlayerWardrobeItem> WardrobeItems { get; set; }
     public List<PlayerPermission> Permissions { get; set; }
     public List<PlayerSubscription> Subscriptions { get; set; }
+    public List<PlayerRespect> Respects { get; set; }
 }

@@ -136,13 +136,13 @@ public class PlayerRepository(
             .FirstOrDefaultAsync(x => x.Player.Username == username);
     }
 
-    public async Task<List<PlayerData>> GetPlayerDataForSearchAsync(string searchQuery, int[] excludeIds)
+    public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, long[] excludeIds)
     {
         return await dbContext
-            .Set<Database.Models.Players.PlayerData>()
-            .Include(x => x.Player)
-            .Where(x => x.Player.Username.ToLower().Contains(searchQuery))
-            .Where(x => !excludeIds.Contains(x.PlayerId))
+            .Set<Player>()
+            .Where(x => 
+                x.Username.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) && 
+                !excludeIds.Contains(x.Id))
             .ToListAsync();
     }
 

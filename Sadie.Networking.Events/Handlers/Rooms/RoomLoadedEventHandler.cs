@@ -65,8 +65,8 @@ public class RoomLoadedEventHandler(
         }
 
         if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
-            !isOwner &&
-            !playerData.Permissions.Contains("enter_guarded_rooms"))
+            !isOwner && 
+            player.Permissions.FirstOrDefault(x => x.Name == "enter_guarded_rooms") == null)
         {
             switch (room.Settings.AccessType)
             {
@@ -100,7 +100,10 @@ public class RoomLoadedEventHandler(
         
         await NetworkPacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
         
-        await playerRepository.UpdateMessengerStatusForFriends(playerData.Id,
-            playerData.FriendshipComponent.Friendships, true, true);
+        await playerRepository.UpdateMessengerStatusForFriends(
+            playerData.Id,
+            player.FriendshipComponent.Friendships, 
+            true, 
+            true);
     }
 }

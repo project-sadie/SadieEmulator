@@ -1,3 +1,4 @@
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Respect;
 using Sadie.Game.Rooms;
@@ -41,8 +42,15 @@ public class RoomUserRespectEventHandler(
 
         var targetData = targetPlayer.Data;
 
+        var respect = new PlayerRespect
+        {
+            OriginPlayerId = player.Id,
+            TargetPlayerId = targetPlayer.Id
+        };
+
         playerData.RespectPoints--;
-        targetData.RespectsReceived++;
+        targetPlayer.Respects.Add(respect);
+        target.RespectsReceived++;
         
         await respectDao.CreateAsync(playerData.Id, eventParser.TargetId);
 

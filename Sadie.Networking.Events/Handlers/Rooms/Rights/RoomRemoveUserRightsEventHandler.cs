@@ -26,8 +26,7 @@ public class RoomRemoveUserRightsEventHandler(
             return;
         }
         
-        var playerData = client.Player.Data;
-        var (roomFound, room) = roomRepository.TryGetRoomById(playerData.CurrentRoomId);
+        var (roomFound, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
 
         if (!roomFound || room == null)
         {

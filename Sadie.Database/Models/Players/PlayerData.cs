@@ -2,7 +2,7 @@ namespace Sadie.Database.Models.Players;
 
 public class PlayerData
 {
-    public int Id { get; set; }
+    public int Id { get; set; } // this needs to go
     public Player Player { get; set; }
     public int PlayerId { get; set; }
     public int HomeRoomId { get; set; }
