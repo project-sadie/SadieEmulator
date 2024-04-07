@@ -21,7 +21,7 @@ public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, IRoom
         
         roomUser.LastAction = DateTime.Now;
         
-        var tile = room!.Layout.Tiles.FirstOrDefault(z => z.Point.X == eventParser.X && z.Point.Y == eventParser.Y);
+        var tile = room!.LayoutData.Tiles.FirstOrDefault(z => z.Point.X == eventParser.X && z.Point.Y == eventParser.Y);
         
         if (tile == null)
         {

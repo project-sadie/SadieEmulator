@@ -11,7 +11,7 @@ public class RoomLayoutData
     public List<RoomTile> Tiles { get; }
     public short[,] TileMap { get; }
 
-    protected RoomLayoutData(string heightmap, List<RoomTile> tiles)
+    public RoomLayoutData(string heightmap, List<RoomTile> tiles)
     {
         HeightmapRows = heightmap.Split("\n").ToList();
         SizeX = HeightmapRows.First().Length;
@@ -19,6 +19,24 @@ public class RoomLayoutData
         Size = SizeY * SizeX;
         Tiles = tiles;
         TileMap = new short[SizeY, SizeX];
+        
+        foreach (var tile in Tiles)
+        {
+            var point = tile.Point;
+            var topLevelItem = tile.Items.MaxBy(x => x.PositionZ);
+            
+            var canWalkOnTile = topLevelItem == null ||
+                                topLevelItem.FurnitureItem.CanSit ||
+                                topLevelItem.FurnitureItem.CanWalk ||
+                                topLevelItem.FurnitureItem.CanLay;
+
+            if (tile.Users.Count > 0)
+            {
+                canWalkOnTile = false;
+            }
+            
+            TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open && canWalkOnTile ? 1 : 0);
+        }
     }
 
     public RoomTile? FindTile(int x, int y) => Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);

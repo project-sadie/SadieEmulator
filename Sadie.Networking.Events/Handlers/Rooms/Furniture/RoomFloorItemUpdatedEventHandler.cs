@@ -47,14 +47,14 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
         
-        var currentTile = room.Layout.FindTile(
+        var currentTile = room.LayoutData.FindTile(
             roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
 
         currentTile?.Items.Remove(roomFurnitureItem);
         
         if (currentTile != null)
         {
-            RoomHelpers.UpdateTileMapForTile(currentTile, room.Layout);
+            RoomHelpers.UpdateTileMapForTile(currentTile, room.LayoutData);
         }
 
         var position = new HPoint(
@@ -63,7 +63,7 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.PositionZ);
 
         var direction = eventParser.Direction;
-        var tile = room.Layout.FindTile(position.X, position.Y);
+        var tile = room.LayoutData.FindTile(position.X, position.Y);
 
         if (tile == null || tile.State == RoomTileState.Closed)
         {
@@ -72,7 +72,7 @@ public class RoomFloorItemUpdatedEventHandler(
         }
 
         tile.Items.Add(roomFurnitureItem);
-        RoomHelpers.UpdateTileMapForTile(tile, room.Layout);
+        RoomHelpers.UpdateTileMapForTile(tile, room.LayoutData);
 
         roomFurnitureItem.PositionX = position.X;
         roomFurnitureItem.PositionY = position.Y;

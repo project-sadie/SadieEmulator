@@ -10,6 +10,7 @@ public class Room(
     int id,
     string name,
     RoomLayout layout,
+    RoomLayoutData layoutData,
     int ownerId,
     string ownerName,
     string description,
@@ -36,6 +37,8 @@ public class Room(
         furnitureItemRepository,
         paintSettings)
 {
+    public RoomLayoutData LayoutData { get; } = layoutData;
+
     public async Task RunPeriodicCheckAsync()
     {
         var users = UserRepository.GetAll();

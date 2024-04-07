@@ -9,7 +9,7 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser(
-    IRoomData room,
+    Room room,
     INetworkObject networkObject,
     int id,
     HPoint point,
@@ -32,13 +32,13 @@ public class RoomUser(
             return;
         }
         
-        var currentTile = room.Layout.FindTile(Point.X, Point.Y);
+        var currentTile = room.LayoutData.FindTile(Point.X, Point.Y);
         currentTile?.Users.Remove(Id);
-        RoomHelpers.UpdateTileMapForTile(currentTile!, room.Layout);
+        RoomHelpers.UpdateTileMapForTile(currentTile!, room.LayoutData);
 
-        var nextTile = room.Layout.FindTile(NextPoint.X, NextPoint.Y);
+        var nextTile = room.LayoutData.FindTile(NextPoint.X, NextPoint.Y);
         nextTile?.Users.Add(Id, this);
-        RoomHelpers.UpdateTileMapForTile(nextTile!, room.Layout);
+        RoomHelpers.UpdateTileMapForTile(nextTile!, room.LayoutData);
 
         Point = NextPoint;
     }
@@ -50,7 +50,7 @@ public class RoomUser(
         
         SetNextPosition();
         
-        GoalSteps = RoomHelpers.BuildPathForWalk(room.Layout, new Point(Point.X, Point.Y), point, useDiagonal);
+        GoalSteps = RoomHelpers.BuildPathForWalk(room.LayoutData, new Point(Point.X, Point.Y), point, useDiagonal);
         IsWalking = true;
     }
 
@@ -108,7 +108,7 @@ public class RoomUser(
     {
         if (!IsWalking)
         {
-            var currentTile = room.Layout.FindTile(Point.X, Point.Y);
+            var currentTile = room.LayoutData.FindTile(Point.X, Point.Y);
         
             var seat = currentTile?
                 .Items

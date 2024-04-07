@@ -11,12 +11,12 @@ public interface IRoomFactory
         string name,
         string heightmap,
         HPoint doorPoint,
-        HDirection doorDirection,
-        List<RoomTile> tiles);
+        HDirection doorDirection);
     
     Room Create(int id,
         string name,
         RoomLayout layout,
+        RoomLayoutData layoutData,
         int ownerId,
         string ownerUsername,
         string description,

@@ -60,8 +60,7 @@ public class RoomDao(
             record.Get<string>("layout_name"),
             record.Get<string>("heightmap"),
             doorPoint,
-            (HDirection) record.Get<int>("door_direction"), 
-            tiles);
+            (HDirection) record.Get<int>("door_direction"));
 
         var paintSettings = new RoomPaintSettings
         {
@@ -70,9 +69,12 @@ public class RoomDao(
             LandscapePaint = record.Get<string>("landscape_paint"),
         };
 
+        var layoutData = new RoomLayoutData(record.Get<string>("heightmap"), tiles);
+
         return new Tuple<bool, Room?>(true, factory.Create(record.Get<int>("id"),
-            record.Get<string>("name"),
-            layout,
+                record.Get<string>("name"),
+                layout, 
+            layoutData,
             record.Get<int>("owner_id"),
             record.Get<string>("owner_name"),
             record.Get<string>("description"),
@@ -215,8 +217,7 @@ public class RoomDao(
                 record.Get<string>("layout_name"),
                 record.Get<string>("heightmap"),
                 doorPoint,
-                (HDirection) record.Get<int>("door_direction"),
-                tiles);
+                (HDirection) record.Get<int>("door_direction"));
 
             var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
@@ -230,9 +231,12 @@ public class RoomDao(
                 LandscapePaint = record.Get<string>("landscape_paint"),
             };
 
+            var layoutData = new RoomLayoutData(record.Get<string>("heightmap"), tiles);
+
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
                 layout,
+                layoutData,
                 record.Get<int>("owner_id"),
                 record.Get<string>("owner_name"),
                 record.Get<string>("description"),

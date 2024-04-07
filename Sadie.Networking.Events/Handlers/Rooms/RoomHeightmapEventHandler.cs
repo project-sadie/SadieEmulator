@@ -21,12 +21,12 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository) : INetwor
             return;
         }
 
-        var roomLayout = room.Layout;
+        var roomLayoutData = room.LayoutData;
         var userRepository = room.UserRepository;
         var isOwner = room.OwnerId == client.Player.Data.Id;
         
-        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomLayout).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, roomLayout.HeightMap.Replace("\r\n", "\r")).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomLayoutData).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, room.Layout.HeightMap.Replace("\r\n", "\r")).GetAllBytes());
         
         await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
         await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());

@@ -81,7 +81,7 @@ public class RoomItemPlacedEventHandler(
 
     private async Task OnFloorItemAsync(
         IReadOnlyList<string> placementData, 
-        IRoomData room, 
+        Room room, 
         INetworkObject client, 
         IPlayer player, 
         PlayerInventoryFurnitureItem playerItem, 
@@ -95,7 +95,7 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var tile = room.Layout.FindTile(x, y);
+        var tile = room.LayoutData.FindTile(x, y);
 
         if (tile == null || tile.State == RoomTileState.Closed)
         {
@@ -123,7 +123,7 @@ public class RoomItemPlacedEventHandler(
         };
 
         tile.Items.Add(roomFurnitureItem);
-        RoomHelpers.UpdateTileMapForTile(tile, room.Layout);
+        RoomHelpers.UpdateTileMapForTile(tile, room.LayoutData);
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);
         
