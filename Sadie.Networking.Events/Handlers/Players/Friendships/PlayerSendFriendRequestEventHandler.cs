@@ -37,25 +37,20 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        PlayerData? targetData = null;
+        Player? targetPlayer = null;
         var targetOnline = false;
 
-        if (playerRepository.TryGetPlayerByUsername(targetUsername, out var targetPlayer) && targetPlayer != null)
+        if (playerRepository.TryGetPlayerByUsername(targetUsername, out var onlineTarget) && onlineTarget != null)
         {
-            targetData = targetPlayer.Data;
+            targetPlayer = onlineTarget;
             targetOnline = true;
         }
         else
         {
-            var offlineData = await playerRepository.TryGetPlayerDataByUsernameAsync(targetUsername);
-
-            if (offlineData != null)
-            {
-                targetData = offlineData;
-            }
+            targetPlayer = await playerRepository.TryGetPlayerByUsernameAsync(targetUsername);
         }
         
-        if (targetData == null)
+        if (targetPlayer == null)
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetNotFound).GetAllBytes());
             return;
@@ -63,17 +58,17 @@ public class PlayerSendFriendRequestEventHandler(
 
         var friendshipComponent = player.FriendshipComponent;
 
-        if (friendshipComponent.IsFriendsWith(targetData.Id))
+        if (friendshipComponent.IsFriendsWith(targetPlayer.Id))
         {
             return;
         }
         
-        if (targetData.FriendshipComponent.Friendships.Count >= playerConstants.MaxFriendships)
+        if (targetPlayer.Friendships.Count >= playerConstants.MaxFriendships)
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetTooManyFriends).GetAllBytes());
         }
         
-        if (!targetData.AllowFriendRequests)
+        if (!targetPlayer.Data.AllowFriendRequests)
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetNotAccepting).GetAllBytes());
             return;
@@ -89,29 +84,29 @@ public class PlayerSendFriendRequestEventHandler(
                 case PlayerFriendshipStatus.Accepted:
                     return;
                 case PlayerFriendshipStatus.Pending:
-                    await friendshipRepository.AcceptFriendRequestAsync(playerData.Id, targetData.Id);
-                    friendshipComponent.AcceptIncomingRequest(targetData.Id);
+                    await friendshipRepository.AcceptFriendRequestAsync(playerData.Id, targetPlayer.Id);
+                    friendshipComponent.AcceptIncomingRequest(targetPlayer.Id);
 
-                    if (targetOnline && targetPlayer != null)
+                    if (targetOnline && onlineTarget != null)
                     {
-                        targetPlayer.FriendshipComponent.OutgoingRequestAccepted(targetData.Id);
+                        onlineTarget.FriendshipComponent.OutgoingRequestAccepted(targetPlayer.Id);
                     }
                     return;
             }
         }
         
-        await friendshipRepository.CreateFriendRequestAsync(playerData.Id, targetData.Id);
+        await friendshipRepository.CreateFriendRequestAsync(playerData.Id, targetPlayer.Id);
         friendshipComponent.Friendships = await friendshipRepository.GetAllRecordsForPlayerAsync(playerData.Id);
 
-        if (targetOnline && targetPlayer != null)
+        if (targetOnline && onlineTarget != null)
         {
             var friendRequestWriter = new PlayerFriendRequestWriter(
                 playerData.Id,
                 player.Username, 
                 player.AvatarData.FigureCode).GetAllBytes();
             
-            targetPlayer.FriendshipComponent.Friendships = await friendshipRepository.GetAllRecordsForPlayerAsync(targetData.Id);
-            await targetPlayer.NetworkObject.WriteToStreamAsync(friendRequestWriter);
+            onlineTarget.FriendshipComponent.Friendships = await friendshipRepository.GetAllRecordsForPlayerAsync(targetPlayer.Id);
+            await onlineTarget.NetworkObject.WriteToStreamAsync(friendRequestWriter);
         }
     }
 }

@@ -68,7 +68,7 @@ public class NavigatorDataEventHandler : INetworkPacketEventHandler
             "eventcategory__Group Events"
         };
 
-        var savedSearches = client.Player.Data.SavedSearches;
+        var savedSearches = client.Player.SavedSearches;
         
         await client.WriteToStreamAsync(new NavigatorMetaDataWriter(metaData).GetAllBytes());
         await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter([]).GetAllBytes());

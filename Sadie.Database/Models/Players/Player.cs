@@ -2,7 +2,7 @@ namespace Sadie.Database.Models.Players;
 
 public class Player
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
     public string Username { get; set; }
     public string? SsoToken { get; set; }
     public int RoleId { get; set; }
@@ -20,4 +20,6 @@ public class Player
     public List<PlayerPermission> Permissions { get; set; }
     public List<PlayerSubscription> Subscriptions { get; set; }
     public List<PlayerRespect> Respects { get; set; }
+    public List<PlayerSavedSearch> SavedSearches { get; set; }
+    public List<PlayerFriendship> Friendships { get; set; }
 }

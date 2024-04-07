@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Navigator;
+using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -16,7 +16,7 @@ public class PlayerSavedSearchesWriter : NetworkPacketWriter
             WriteLong(search.Id);
             WriteString(search.Search);
             WriteString(search.Filter);
-            WriteString(search.Unknown1);
+            WriteString("");
         }
     }
 }

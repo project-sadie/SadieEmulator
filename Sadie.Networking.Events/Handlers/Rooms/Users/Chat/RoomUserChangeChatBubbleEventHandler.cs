@@ -12,6 +12,6 @@ public class RoomUserChangeChatBubbleEventHandler(RoomUserChangeChatBubbleEventP
     {
         eventParser.Parse(reader);
 
-        client.Player.Data.ChatBubble = eventParser.Bubble;
+        client.Player.AvatarData.ChatBubbleId = eventParser.Bubble;
     }
 }

@@ -16,9 +16,9 @@ public class PlayerRepository(
     SadieContext dbContext,
     IMapper mapper)
 {
-    private readonly ConcurrentDictionary<long, PlayerLogic> _players = new();
+    private readonly ConcurrentDictionary<int, PlayerLogic> _players = new();
 
-    public bool TryGetPlayerById(long id, out PlayerLogic? player)
+    public bool TryGetPlayerById(int id, out PlayerLogic? player)
     {
         return _players.TryGetValue(id, out player);
     }
@@ -128,15 +128,7 @@ public class PlayerRepository(
             .FirstOrDefaultAsync(x => x.PlayerId == playerId);
     }
 
-    public async Task<PlayerData?> TryGetPlayerDataByUsernameAsync(string username)
-    {
-        return await dbContext
-            .Set<Database.Models.Players.PlayerData>()
-            .Include(x => x.Player)
-            .FirstOrDefaultAsync(x => x.Player.Username == username);
-    }
-
-    public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, long[] excludeIds)
+    public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, int[] excludeIds)
     {
         return await dbContext
             .Set<Player>()
@@ -162,5 +154,13 @@ public class PlayerRepository(
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Player?> TryGetPlayerByUsernameAsync(string username)
+    {
+        return await dbContext
+            .Set<Player>()
+            .Include(x => x.Data)
+            .FirstOrDefaultAsync(x => x.Username == username);
     }
 }

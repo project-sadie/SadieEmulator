@@ -21,6 +21,6 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
             playerSettings.BlockRoomInvites, 
             playerSettings.BlockCameraFollow, 
             playerSettings.UiFlags, 
-            player.Data.ChatBubble).GetAllBytes());
+            player.AvatarData.ChatBubbleId).GetAllBytes());
     }
 }

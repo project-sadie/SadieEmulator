@@ -10,7 +10,7 @@ public class Room
     public int Id { get; set; }
     public string Name { get; set; }
     public RoomLayout Layout { get; set; }
-    public long OwnerId { get; set; }
+    public int OwnerId { get; set; }
     public Player Owner { get; set; }
     public int MaxUsersAllowed { get; set; }
     public string Description { get; set; }
