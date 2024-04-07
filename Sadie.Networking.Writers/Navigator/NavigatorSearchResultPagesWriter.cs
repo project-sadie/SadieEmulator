@@ -39,7 +39,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
                 WriteInteger(room.MaxUsers);
                 WriteString(room.Description);
                 WriteInteger(0); // unknown
-                WriteInteger(room.Score);
+                WriteInteger(room.PlayerLikes.Count);
                 WriteInteger(0); // unknown
                 WriteInteger(1); // TODO: category
                 WriteInteger(room.Tags.Count);

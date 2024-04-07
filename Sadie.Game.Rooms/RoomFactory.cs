@@ -1,28 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
+using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
-using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
+public class RoomFactory(IServiceProvider serviceProvider)
 {
-    public RoomLayout CreateLayout(int id,
-        string name,
-        string heightmap,
-        HPoint doorPoint,
-        HDirection doorDirection)
-    {
-        return ActivatorUtilities.CreateInstance<RoomLayout>(
-            serviceProvider, 
-            id, 
-            name, 
-            heightmap, 
-            doorPoint, 
-            doorDirection);
-    }
-
     public Room Create(int id,
         string name,
         RoomLayout layout,
@@ -30,12 +17,14 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
         int ownerId,
         string ownerUsername,
         string description,
-        int score,
+        List<PlayerRoomLike> playerLikes,
         List<string> tags,
         int maxUsersAllowed,
+        bool isMuted,
         RoomSettings settings,
+        List<RoomChatMessage> chatMessages,
         List<RoomPlayerRight> playersWithRights,
-        IRoomFurnitureItemRepository furnitureItemRepository,
+        List<RoomFurnitureItem> furnitureItems,
         RoomPaintSettings paintSettings)
     {
         return ActivatorUtilities.CreateInstance<Room>(
@@ -47,12 +36,14 @@ public class RoomFactory(IServiceProvider serviceProvider) : IRoomFactory
             ownerId,
             ownerUsername,
             description,
-            score,
+            playerLikes,
             tags,
             maxUsersAllowed,
+            isMuted,
             settings,
+            chatMessages,
             playersWithRights,
-            furnitureItemRepository,
+            furnitureItems,
             paintSettings);
     }
 }

@@ -39,7 +39,7 @@ public class RoomItemEjectedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItemRepository.Items.FirstOrDefault(x => x.Id == itemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
 
         if (roomFurnitureItem == null)
         {
@@ -80,11 +80,9 @@ public class RoomItemEjectedEventHandler(
             roomFurnitureItem.LimitedData, roomFurnitureItem.MetaData, created);
 
         playerItem.Id = await playerInventoryDao.CreateItemAsync(roomFurnitureItem.OwnerId, playerItem);
-        
-        dbContext.RoomFurnitureItems.Remove(roomFurnitureItem);
+
+        room.FurnitureItems.Remove(roomFurnitureItem);
         await dbContext.SaveChangesAsync();
-        
-        room.FurnitureItemRepository.RemoveItems([roomFurnitureItem.Id]);
         
         if (ownsItem)
         {

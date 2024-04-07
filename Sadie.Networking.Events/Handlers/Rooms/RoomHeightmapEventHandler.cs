@@ -31,13 +31,11 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository) : INetwor
         await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
         await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
         
-        var floorItems = room.FurnitureItemRepository
-            .Items
+        var floorItems = room.FurnitureItems
             .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
             .ToList();
         
-        var wallItems = room.FurnitureItemRepository
-            .Items
+        var wallItems = room.FurnitureItems
             .Where(x => x.FurnitureItem.Type == FurnitureItemType.Wall)
             .ToList();
 

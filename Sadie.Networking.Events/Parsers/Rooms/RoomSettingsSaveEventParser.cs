@@ -1,4 +1,3 @@
-using Sadie.Game.Rooms;
 using Sadie.Networking.Packets;
 using Sadie.Shared.Unsorted;
 

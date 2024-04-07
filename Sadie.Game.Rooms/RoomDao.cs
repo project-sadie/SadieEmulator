@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
+using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
-using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
@@ -12,7 +13,7 @@ namespace Sadie.Game.Rooms;
 public class RoomDao(
     SadieContext dbContext,
     IDatabaseProvider databaseProvider, 
-    IRoomFactory factory) 
+    RoomFactory factory) 
     : BaseDao(databaseProvider)
 {
     public async Task<Tuple<bool, Room?>> TryGetRoomById(long roomId)
@@ -48,19 +49,21 @@ public class RoomDao(
             .Set<RoomFurnitureItem>()
             .Where(x => x.RoomId == record.Get<int>("id"))
             .ToListAsync();
-        
-        var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
 
         var tiles = RoomHelpers.BuildTileListFromHeightMap(
             record.Get<string>("heightmap"), 
-            furnitureItemRepository);
-        
-        var layout = factory.CreateLayout(
-            record.Get<int>("layout_id"),
-            record.Get<string>("layout_name"),
-            record.Get<string>("heightmap"),
-            doorPoint,
-            (HDirection) record.Get<int>("door_direction"));
+            furnitureItems);
+
+        var layout = new RoomLayout
+        {
+            Id = record.Get<int>("layout_id"),
+            Name = record.Get<string>("layout_name"),
+            HeightMap = record.Get<string>("heightmap"),
+            DoorX = doorPoint.X,
+            DoorY = doorPoint.Y,
+            DoorZ = doorPoint.Z,
+            DoorDirection = (HDirection) record.Get<int>("door_direction")
+        };
 
         var paintSettings = new RoomPaintSettings
         {
@@ -70,6 +73,8 @@ public class RoomDao(
         };
 
         var layoutData = new RoomLayoutData(record.Get<string>("heightmap"), tiles);
+        var playerRoomLikes = new List<PlayerRoomLike>();
+        var chatMessages = new List<RoomChatMessage>();
 
         return new Tuple<bool, Room?>(true, factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
@@ -78,12 +83,14 @@ public class RoomDao(
             record.Get<int>("owner_id"),
             record.Get<string>("owner_name"),
             record.Get<string>("description"),
-            record.Get<int>("score"),
+                playerRoomLikes,
             [..record.Get<string>("comma_separated_tags").Split(",")],
             record.Get<int>("max_users_allowed"),
+                record.Get<int>("is_muted") == 1,
             settings,
+                chatMessages,
             new List<RoomPlayerRight>(),
-            furnitureItemRepository,
+            furnitureItems,
             paintSettings));
     }
 
@@ -207,17 +214,20 @@ public class RoomDao(
                 .Set<RoomFurnitureItem>()
                 .Where(x => x.RoomId == record.Get<int>("id"))
                 .ToListAsync();
-            
-            var furnitureItemRepository = new RoomFurnitureItemRepository(furnitureItems);
 
-            var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItemRepository);
+            var tiles = RoomHelpers.BuildTileListFromHeightMap(record.Get<string>("heightmap"), furnitureItems);
         
-            var layout = factory.CreateLayout(
-                record.Get<int>("layout_id"),
-                record.Get<string>("layout_name"),
-                record.Get<string>("heightmap"),
-                doorPoint,
-                (HDirection) record.Get<int>("door_direction"));
+
+            var layout = new RoomLayout
+            {
+                Id = record.Get<int>("layout_id"),
+                Name = record.Get<string>("layout_name"),
+                HeightMap = record.Get<string>("heightmap"),
+                DoorX = doorPoint.X,
+                DoorY = doorPoint.Y,
+                DoorZ = doorPoint.Z,
+                DoorDirection = (HDirection) record.Get<int>("door_direction")
+            };
 
             var commaSeparatedRights = record.Get<string>("comma_separated_rights");
         
@@ -232,6 +242,8 @@ public class RoomDao(
             };
 
             var layoutData = new RoomLayoutData(record.Get<string>("heightmap"), tiles);
+            var playerRoomLikes = new List<PlayerRoomLike>();
+            var chatMessages = new List<RoomChatMessage>();
 
             var room = factory.Create(record.Get<int>("id"),
                 record.Get<string>("name"),
@@ -240,12 +252,14 @@ public class RoomDao(
                 record.Get<int>("owner_id"),
                 record.Get<string>("owner_name"),
                 record.Get<string>("description"),
-                record.Get<int>("score"),
+                playerRoomLikes,
                 [..record.Get<string>("comma_separated_tags").Split(",")],
                 record.Get<int>("max_users_allowed"),
+                record.Get<int>("is_muted") == 1,
                 settings,
+                chatMessages,
                 new List<RoomPlayerRight>(),
-                furnitureItemRepository,
+                furnitureItems,
                 paintSettings);
             
             rooms.Add(room);
@@ -282,8 +296,6 @@ public class RoomDao(
                                               FROM room_tags
                                               WHERE room_id = rooms.id
                                               GROUP BY room_id) AS comma_separated_tags,
-                                             
-                                             (SELECT COUNT(*) FROM player_room_likes WHERE room_id = id) AS score,
                                              
                                              room_settings.walk_diagonal,
                                              room_settings.access_type,

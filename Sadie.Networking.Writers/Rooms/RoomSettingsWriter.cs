@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomSettingsWriter : NetworkPacketWriter
 {
-    public RoomSettingsWriter(IRoomData roomData)
+    public RoomSettingsWriter(Room roomData)
     {
         WriteShort(ServerPacketId.RoomSettings);
         WriteInteger(roomData.Id);

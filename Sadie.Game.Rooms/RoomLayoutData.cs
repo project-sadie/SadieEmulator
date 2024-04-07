@@ -1,6 +1,4 @@
-﻿using Sadie.Shared.Unsorted.Game.Rooms;
-
-namespace Sadie.Game.Rooms;
+﻿namespace Sadie.Game.Rooms;
 
 public class RoomLayoutData
 {

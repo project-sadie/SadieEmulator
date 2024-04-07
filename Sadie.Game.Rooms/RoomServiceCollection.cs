@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Rooms.Categories;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Chat.Commands.General;
-using Sadie.Game.Rooms.FurnitureItems;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -20,7 +19,7 @@ public static class RoomServiceCollection
         
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
-        serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
+        serviceCollection.AddSingleton<RoomFactory>();
         serviceCollection.AddSingleton<RoomDao>();
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
         
@@ -33,7 +32,5 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton(roomConstants);
 
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
-        
-        serviceCollection.AddSingleton<IRoomFurnitureItemRepository, RoomFurnitureItemRepository>();
     }
 }

@@ -46,7 +46,7 @@ public class RoomRemoveUserRightsEventHandler(
         }
     }
 
-    private async Task RemoveRoomPlayerRightAsync(long playerId, IRoomData room, RoomPlayerRight right)
+    private async Task RemoveRoomPlayerRightAsync(long playerId, Room room, RoomPlayerRight right)
     {
         if (room.UserRepository.TryGetById(playerId, out var roomUser))
         {

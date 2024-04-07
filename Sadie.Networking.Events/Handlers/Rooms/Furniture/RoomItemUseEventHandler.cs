@@ -29,7 +29,7 @@ public class RoomItemUseEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItemRepository.Items.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
 
         if (roomFurnitureItem == null)
         {

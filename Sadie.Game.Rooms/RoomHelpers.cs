@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.PathFinding.Options;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -9,7 +9,7 @@ namespace Sadie.Game.Rooms;
 public static class RoomHelpers
 {
     public static List<RoomTile> BuildTileListFromHeightMap(string heightMap, 
-        IRoomFurnitureItemRepository furnitureItemRepository)
+        List<RoomFurnitureItem> furnitureItems)
     {
         var heightmapLines = heightMap.Split("\n").ToList();
         var tiles = new List<RoomTile>();
@@ -26,8 +26,7 @@ public static class RoomHelpers
                     RoomTileState.Open : 
                     RoomTileState.Closed;
 
-                var items = furnitureItemRepository
-                    .Items
+                var items = furnitureItems
                     .Where(item => item.PositionX == x && item.PositionY == y)
                     .ToList();
                 

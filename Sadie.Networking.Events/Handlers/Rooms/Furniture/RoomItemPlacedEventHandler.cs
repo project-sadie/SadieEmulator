@@ -127,10 +127,9 @@ public class RoomItemPlacedEventHandler(
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);
         
-        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
+        room.FurnitureItems.Add(roomFurnitureItem);
         await dbContext.SaveChangesAsync();
 
-        room.FurnitureItemRepository.AddItems([roomFurnitureItem]);
         player.Data.Inventory.RemoveItems([itemId]);
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
@@ -156,7 +155,7 @@ public class RoomItemPlacedEventHandler(
 
     private async Task OnWallItemAsync(
         IReadOnlyList<string> placementData,
-        IRoomData room,
+        Room room,
         IPlayer player,
         PlayerInventoryFurnitureItem playerItem,
         int itemId,
@@ -181,11 +180,11 @@ public class RoomItemPlacedEventHandler(
         };
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);
-        
+
+        room.FurnitureItems.Remove(roomFurnitureItem);
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
         await dbContext.SaveChangesAsync();
         
-        room.FurnitureItemRepository.AddItems([roomFurnitureItem]);
         player.Data.Inventory.RemoveItems([itemId]);
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());

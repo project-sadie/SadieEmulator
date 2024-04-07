@@ -109,7 +109,7 @@ internal static class NetworkPacketEventHelpers
         
         await client.WriteToStreamAsync(new RoomPaintWriter("landscape", room.PaintSettings.LandscapePaint).GetAllBytes());
         
-        await client.WriteToStreamAsync(new RoomScoreWriter(room.Score, canLikeRoom).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomScoreWriter(room.PlayerLikes.Count, canLikeRoom).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
 
         var owner = room.OwnerId == playerData.Id;
