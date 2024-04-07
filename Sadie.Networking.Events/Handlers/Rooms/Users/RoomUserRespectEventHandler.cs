@@ -50,11 +50,10 @@ public class RoomUserRespectEventHandler(
 
         playerData.RespectPoints--;
         targetPlayer.Respects.Add(respect);
-        target.RespectsReceived++;
         
         await respectDao.CreateAsync(playerData.Id, eventParser.TargetId);
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetData.RespectsReceived).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetPlayer.Respects.Count).GetAllBytes());
         await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp).GetAllBytes());
     }
 }

@@ -17,7 +17,7 @@ public class PlayerDataWriter : NetworkPacketWriter
         WriteString(player.AvatarData.Motto);
         WriteString(player.Username);
         WriteBool(false);
-        WriteInteger(player.Data.RespectsReceived);
+        WriteInteger(player.Respects.Count);
         WriteInteger(player.Data.RespectPoints);
         WriteInteger(player.Data.RespectPointsPet);
         WriteBool(false);

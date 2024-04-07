@@ -20,10 +20,10 @@ public class PlayerRelationshipsEventHandler(
 
         var playerId = eventParser.PlayerId;
         var isOnline = playerRepository.TryGetPlayerById(playerId, out var player);
-        
+
         var relationships = isOnline ? 
-            player!.Relationships : 
-            await playerRelationshipDao.GetRelationshipsAsync(playerId);
+                player!.Relationships : 
+                await playerRepository.GetRelationshipsForPlayerAsync(playerId);
 
         var playerFriends = isOnline
             ? player!.FriendshipComponent.Friendships
