@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.Database.Models;
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
@@ -30,6 +31,8 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
     public DbSet<RoomLayout> RoomLayouts { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Player> Players { get; set; }
+    public DbSet<PlayerBadge> PlayerBadges { get; set; }
+    public DbSet<Badge> Badges { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

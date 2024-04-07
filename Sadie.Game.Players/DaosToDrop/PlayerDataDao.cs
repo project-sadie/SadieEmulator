@@ -6,7 +6,6 @@ using Sadie.Game.Players.Subscriptions;
 using Sadie.Game.Players.Wardrobe;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Game.Avatar;
-using PlayerBadge = Sadie.Game.Players.Badges.PlayerBadge;
 
 namespace Sadie.Game.Players.DaosToDrop;
 

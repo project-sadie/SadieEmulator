@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Badges;
+using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -15,7 +15,7 @@ public class PlayerWearingBadgesWriter : NetworkPacketWriter
         foreach (var item in badges)
         {
             WriteInteger(item.Slot);
-            WriteString(item.Code);
+            WriteString(item.Badge.Code);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.Game.Players.Badges;
 using Sadie.Game.Players.Balance;
 using Sadie.Game.Players.Club;
 using Sadie.Game.Players.DaosToDrop;
@@ -25,9 +24,6 @@ public class PlayerServiceCollection
         serviceCollection.AddSingleton<IPlayerSubscriptionFactory, PlayerSubscriptionFactory>();
         serviceCollection.AddSingleton<IPlayerSubscriptionDao, PlayerSubscriptionDao>();
         serviceCollection.AddSingleton<IPlayerRespectDao, PlayerRespectDao>();
-        serviceCollection.AddSingleton<IPlayerBadgeDao, PlayerBadgeDao>();
-        serviceCollection.AddSingleton<IPlayerBadgeFactory, PlayerBadgeFactory>();
-        serviceCollection.AddSingleton<IPlayerBadgeRepository, PlayerBadgeRepository>();
         serviceCollection.AddTransient<IPlayerBalance, PlayerBalance>();
         serviceCollection.AddTransient<IPlayer, PlayerLogic>();
         serviceCollection.AddTransient<PlayerData, PlayerData>();

@@ -5,5 +5,6 @@ public class PlayerBadge
     public int Id { get; set; }
     public int PlayerId { get; set; }
     public int BadgeId { get; set; }
+    public Badge Badge { get; set; }
     public int Slot { get; set; }
 }
