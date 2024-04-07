@@ -1,5 +1,10 @@
 using System.Collections.Concurrent;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Sadie.Database;
+using Sadie.Database.Models.Players;
+using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Players.Relationships;
@@ -7,8 +12,10 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
-public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playerDao, IPlayerDataDao playerDataDao)
-    : IPlayerRepository
+public class PlayerRepository(
+    ILogger<PlayerRepository> logger,
+    SadieContext dbContext,
+    IMapper mapper)
 {
     private readonly ConcurrentDictionary<long, IPlayer> _players = new();
 
@@ -23,9 +30,22 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
         return player != default;
     }
 
-    public async Task<Tuple<bool, IPlayer?>> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
+    public async Task<IPlayer?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
     {
-        return await playerDao.TryGetPlayerBySsoTokenAsync(networkObject, sso);
+        var player = await dbContext
+            .Set<Player>()
+            .Where(x => x.SsoToken == sso)
+            .FirstOrDefaultAsync();
+
+        if (player == null)
+        {
+            return null;
+        }
+        
+        player.SsoToken = null;
+        await dbContext.SaveChangesAsync();
+
+        return mapper.Map<PlayerLogic>(player);
     }
 
     public bool TryAddPlayer(IPlayer player) => _players.TryAdd(player.Data.Id, player);
@@ -39,7 +59,7 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
             return result;
         }
 
-        await MarkPlayerAsOfflineAsync(player.Data, player.State);
+        await UpdateOnlineStatusAsync(player.Data.Id, false);
         await UpdateMessengerStatusForFriends(player.Data.Id, player.Data.FriendshipComponent.Friendships, false, false);
         await player!.DisposeAsync();
 
@@ -85,19 +105,17 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
         }
     }
     
-    public async Task MarkPlayerAsOnlineAsync(int id)
+    public async Task UpdateOnlineStatusAsync(int playerId, bool isOnline)
     {
-        await playerDataDao.MarkPlayerAsOnlineAsync(id);
-    }
+        var playerData = await dbContext
+            .Set<Database.Models.Players.PlayerData>()
+            .FirstOrDefaultAsync(x => x.PlayerId == playerId);
 
-    private async Task MarkPlayerAsOfflineAsync(IPlayerData data, IPlayerState state)
-    {
-        await playerDataDao.MarkPlayerAsOfflineAsync(data, state);
-    }
-
-    public async Task ResetSsoTokenForPlayerAsync(int id)
-    {
-        await playerDao.ResetSsoTokenForPlayerAsync(id);
+        if (playerData != null)
+        {
+            playerData.IsOnline = isOnline;
+            await dbContext.SaveChangesAsync();
+        }
     }
 
     public int Count()
@@ -105,19 +123,29 @@ public class PlayerRepository(ILogger<PlayerRepository> logger, IPlayerDao playe
         return _players.Count;
     }
 
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataAsync(int playerId)
+    public async Task<PlayerData?> TryGetPlayerDataAsync(int playerId)
     {
-        return await playerDataDao.TryGetPlayerData(playerId);
+        return await dbContext
+            .Set<Database.Models.Players.PlayerData>()
+            .FirstOrDefaultAsync(x => x.PlayerId == playerId);
     }
 
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsernameAsync(string username)
+    public async Task<PlayerData?> TryGetPlayerDataByUsernameAsync(string username)
     {
-        return await playerDataDao.TryGetPlayerDataByUsername(username);
+        return await dbContext
+            .Set<Database.Models.Players.PlayerData>()
+            .Include(x => x.Player)
+            .FirstOrDefaultAsync(x => x.Player.Username == username);
     }
 
-    public async Task<List<IPlayerData>> GetPlayerDataForSearchAsync(string searchQuery, int[] excludeIds)
+    public async Task<List<PlayerData>> GetPlayerDataForSearchAsync(string searchQuery, int[] excludeIds)
     {
-        return await playerDataDao.GetPlayerDataForSearch(searchQuery, excludeIds);
+        return await dbContext
+            .Set<Database.Models.Players.PlayerData>()
+            .Include(x => x.Player)
+            .Where(x => x.Player.Username.ToLower().Contains(searchQuery))
+            .Where(x => !excludeIds.Contains(x.PlayerId))
+            .ToListAsync();
     }
 
     public ICollection<IPlayer> GetAll() => _players.Values;

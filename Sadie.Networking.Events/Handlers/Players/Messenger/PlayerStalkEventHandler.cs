@@ -8,7 +8,7 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, IPlayerRepository playerRepository) : INetworkPacketEventHandler
+public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerStalk;
 

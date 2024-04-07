@@ -7,7 +7,7 @@ namespace Sadie.Game.Rooms.Chat.Commands.General;
 
 public class ShutdownCommand(
     IServer server,
-    IPlayerRepository playerRepository) : IRoomChatCommand
+    PlayerRepository playerRepository) : IRoomChatCommand
 {
     public string Trigger => "shutdown";
     

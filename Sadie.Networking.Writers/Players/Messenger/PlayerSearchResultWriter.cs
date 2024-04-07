@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Players.Messenger;
 
 public class PlayerSearchResultWriter : NetworkPacketWriter
 {
-    public PlayerSearchResultWriter(ICollection<PlayerFriendshipData> friends, ICollection<IPlayerData> strangers)
+    public PlayerSearchResultWriter(ICollection<PlayerFriendshipData> friends, ICollection<PlayerData> strangers)
     {
         WriteShort(ServerPacketId.PlayerSearchResult);
         WriteInteger(friends.Count);

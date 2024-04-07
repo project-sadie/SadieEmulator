@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 public class PlayerSendDirectMessageEventHandler(
     PlayerSendDirectMessageEventParser eventParser,
-    IPlayerRepository playerRepository, 
+    PlayerRepository playerRepository, 
     IPlayerMessageDao playerMessageDao)
     : INetworkPacketEventHandler
 {

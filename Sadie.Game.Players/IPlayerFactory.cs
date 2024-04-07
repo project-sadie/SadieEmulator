@@ -13,7 +13,7 @@ public interface IPlayerFactory
     
     IPlayer Create(
         INetworkObject networkObject, 
-        IPlayerData data);
+        PlayerData data);
 
     PlayerNavigatorSettings CreateNavigatorSettings(
         int windowX, 

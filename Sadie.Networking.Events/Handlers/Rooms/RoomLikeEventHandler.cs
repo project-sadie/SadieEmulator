@@ -1,11 +1,12 @@
 using Sadie.Game.Players;
+using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomLikeEventHandler(IPlayerDao playerDao, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomLikeEventHandler(PlayerGenericDao playerDao, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomLike;
 

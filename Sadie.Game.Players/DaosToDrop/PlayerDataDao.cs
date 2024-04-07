@@ -18,7 +18,7 @@ public class PlayerDataDao(
     IPlayerRoomVisitDao roomVisitDao)
     : BaseDao(databaseProvider), IPlayerDataDao
 {
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerData(long playerId)
+    public async Task<Tuple<bool, PlayerData?>> TryGetPlayerData(long playerId)
     {
         var reader = await GetReaderForPlayerData("id", new Dictionary<string, object>
         {
@@ -30,13 +30,13 @@ public class PlayerDataDao(
         if (success && record != null)
         {
             var playerData = await CreateFromRecordAsync(record);
-            return new Tuple<bool, IPlayerData?>(true, playerData);
+            return new Tuple<bool, PlayerData?>(true, playerData);
         }
 
-        return new Tuple<bool, IPlayerData?>(false, null);                  
+        return new Tuple<bool, PlayerData?>(false, null);                  
     }
 
-    public async Task<Tuple<bool, IPlayerData?>> TryGetPlayerDataByUsername(string username)
+    public async Task<Tuple<bool, PlayerData?>> TryGetPlayerDataByUsername(string username)
     {
         var reader = await GetReaderForPlayerData("username", new Dictionary<string, object>
         {
@@ -48,13 +48,13 @@ public class PlayerDataDao(
         if (success && record != null)
         {
             var playerData = await CreateFromRecordAsync(record);
-            return new Tuple<bool, IPlayerData?>(true, playerData);
+            return new Tuple<bool, PlayerData?>(true, playerData);
         }
 
-        return new Tuple<bool, IPlayerData?>(false, null);
+        return new Tuple<bool, PlayerData?>(false, null);
     }
 
-    public async Task<List<IPlayerData>> GetPlayerDataForSearch(string searchQuery, int[] excludedIds)
+    public async Task<List<PlayerData>> GetPlayerDataForSearch(string searchQuery, int[] excludedIds)
     {
         var parameters = new Dictionary<string, object>
         {
@@ -84,7 +84,7 @@ public class PlayerDataDao(
                 INNER JOIN player_avatar_data ON player_avatar_data.player_id = players.id 
             WHERE {whereClause} LIMIT 100;", parameters);
         
-        var data = new List<IPlayerData>();
+        var data = new List<PlayerData>();
         
         while (true)
         {
@@ -103,7 +103,7 @@ public class PlayerDataDao(
         return data;
     }
 
-    private async Task<IPlayerData> CreateFromRecordAsync(DatabaseRecord record)
+    private async Task<PlayerData> CreateFromRecordAsync(DatabaseRecord record)
     {
         return factory.Create(
             record.Get<int>("id"),
@@ -174,7 +174,7 @@ public class PlayerDataDao(
         });
     }
 
-    public async Task MarkPlayerAsOfflineAsync(IPlayerData playerData, IPlayerState playerState)
+    public async Task MarkPlayerAsOfflineAsync(PlayerData playerData, IPlayerState playerState)
     {
         await QueryAsync(@"UPDATE player_data 
             SET 

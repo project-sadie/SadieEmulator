@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerDeclineFriendRequestEventHandler(
     PlayerDeclineFriendRequestEventParser eventParser,
-    IPlayerRepository playerRepository,
+    PlayerRepository playerRepository,
     IPlayerFriendshipRepository friendshipRepository)
     : INetworkPacketEventHandler
 {

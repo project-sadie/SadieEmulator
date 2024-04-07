@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
@@ -22,7 +23,8 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
-    IPlayerRepository playerRepository,
+    SadieContext dbContext,
+    PlayerRepository playerRepository,
     PlayerConstants constants,
     INetworkClientRepository networkClientRepository)
     : INetworkPacketEventHandler
@@ -40,9 +42,9 @@ public class SecureLoginEventHandler(
             return;
         }
             
-        var (foundPlayer, player) = await playerRepository.TryGetPlayerBySsoAsync(client, eventParser.Token);
+        var player = await playerRepository.TryGetPlayerBySsoAsync(client, eventParser.Token);
 
-        if (!foundPlayer || player == null)
+        if (player == null)
         {
             logger.LogWarning("Failed to resolve player from their provided sso");
             
@@ -55,8 +57,6 @@ public class SecureLoginEventHandler(
 
         var playerData = player.Data;
         var playerId = playerData.Id;
-        
-        await playerRepository.ResetSsoTokenForPlayerAsync(playerId);
             
         client.Player = player;
         
@@ -68,7 +68,7 @@ public class SecureLoginEventHandler(
         }
             
         logger.LogInformation($"Player '{playerData.Username}' has logged in");
-        await playerRepository.MarkPlayerAsOnlineAsync(playerId);
+        await playerRepository.UpdateOnlineStatusAsync(playerId, true);
 
         player.Data.LastOnline = DateTime.Now;
         player.Authenticated = true;

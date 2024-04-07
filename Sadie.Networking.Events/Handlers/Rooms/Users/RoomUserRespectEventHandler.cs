@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 public class RoomUserRespectEventHandler(
     RoomUserRespectEventParser eventParser,
-    IPlayerRepository playerRepository,
+    PlayerRepository playerRepository,
     RoomRepository roomRepository,
     IPlayerRespectDao respectDao)
     : INetworkPacketEventHandler

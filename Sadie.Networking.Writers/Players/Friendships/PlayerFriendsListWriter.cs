@@ -13,7 +13,7 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
         int pages, 
         int index, 
         List<PlayerFriendship> friends, 
-        IPlayerRepository playerRepository, 
+        PlayerRepository playerRepository, 
         List<PlayerRelationship> relationships)
     {
         WriteShort(ServerPacketId.PlayerFriendsList);

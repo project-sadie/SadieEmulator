@@ -14,7 +14,7 @@ namespace Sadie.Game.Players;
 
 public class PlayerDataFactory(IServiceProvider serviceProvider) : IPlayerDataFactory
 {
-    public IPlayerData Create(
+    public PlayerData Create(
         int id, 
         string username, 
         DateTime createdAt,

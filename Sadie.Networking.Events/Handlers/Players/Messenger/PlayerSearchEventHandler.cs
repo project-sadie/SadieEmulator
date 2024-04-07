@@ -8,7 +8,7 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-public class PlayerSearchEventHandler(PlayerSearchEventParser eventParser, IPlayerRepository playerRepository) : INetworkPacketEventHandler
+public class PlayerSearchEventHandler(PlayerSearchEventParser eventParser, PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerSearch;
 

@@ -1,13 +1,17 @@
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Sadie.Database;
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Club;
+using Sadie.Game.Players.DaosToDrop;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
 using Sadie.Shared;
@@ -58,8 +62,13 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private async Task CleanUpDataAsync()
     {
-        var playerDao = serviceProvider.GetRequiredService<IPlayerDao>();
-        await playerDao.CleanDataAsync();
+        var context = serviceProvider.GetRequiredService<SadieContext>();
+        
+        var affected = await context
+            .Players
+            .ExecuteUpdateAsync(s => s.SetProperty(b => b.SsoToken, b => null!));
+        
+        logger.LogWarning($"Reset sso token for {affected} players");
     }
 
     private async Task LoadInitialDataAsync()
@@ -105,7 +114,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         logger.LogWarning("Server is about to shut down...");
         
         var roomRepository = serviceProvider.GetRequiredService<RoomRepository>();
-        var playerRepository = serviceProvider.GetRequiredService<IPlayerRepository>();
+        var playerRepository = serviceProvider.GetRequiredService<PlayerRepository>();
         
         logger.LogInformation("Disposing rooms...");
         await roomRepository.DisposeAsync();

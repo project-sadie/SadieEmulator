@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 
 public class PlayerRelationshipsEventHandler(
     PlayerRelationshipsEventParser eventParser,
-    IPlayerRepository playerRepository,
+    PlayerRepository playerRepository,
     PlayerRelationshipDao playerRelationshipDao,
     IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEventHandler
 {

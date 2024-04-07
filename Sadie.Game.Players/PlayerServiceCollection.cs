@@ -30,13 +30,12 @@ public class PlayerServiceCollection
         serviceCollection.AddSingleton<IPlayerBadgeFactory, PlayerBadgeFactory>();
         serviceCollection.AddSingleton<IPlayerBadgeRepository, PlayerBadgeRepository>();
         serviceCollection.AddTransient<IPlayerBalance, PlayerBalance>();
-        serviceCollection.AddTransient<IPlayer, Player>();
-        serviceCollection.AddTransient<IPlayerData, PlayerData>();
+        serviceCollection.AddTransient<IPlayer, PlayerLogic>();
+        serviceCollection.AddTransient<PlayerData, PlayerData>();
         serviceCollection.AddSingleton<IPlayerDataFactory, PlayerDataFactory>();
         serviceCollection.AddSingleton<IPlayerDataDao, PlayerDataDao>();
         serviceCollection.AddSingleton<IPlayerFactory, PlayerFactory>();
-        serviceCollection.AddSingleton<IPlayerDao, PlayerDao>();
-        serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
+        serviceCollection.AddSingleton<PlayerRepository>();
         serviceCollection.AddSingleton<IPlayerFriendshipDao, PlayerFriendshipDao>();
         serviceCollection.AddSingleton<IPlayerFriendshipRepository, PlayerFriendshipRepository>();
         serviceCollection.AddSingleton<PlayerFriendshipFactory>();

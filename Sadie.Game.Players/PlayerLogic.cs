@@ -3,14 +3,14 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
-public class Player(
-    ILogger<Player> logger,
+public class PlayerLogic(
+    ILogger<PlayerLogic> logger,
     INetworkObject networkObject,
-    IPlayerData data)
+    PlayerData data)
     : IPlayer
 {
     public INetworkObject NetworkObject { get; } = networkObject;
-    public IPlayerData Data { get; } = data;
+    public PlayerData Data { get; } = data;
     public IPlayerState State { get; } = new PlayerState();
 
     public bool Authenticated { get; set; }

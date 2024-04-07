@@ -6,6 +6,6 @@ public interface IPlayer : IAsyncDisposable
 {
     INetworkObject NetworkObject { get; }
     bool Authenticated { get; set; }
-    IPlayerData Data { get; }
+    PlayerData Data { get; }
     IPlayerState State { get; }
 }

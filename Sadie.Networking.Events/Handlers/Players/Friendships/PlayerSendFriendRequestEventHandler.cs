@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerSendFriendRequestEventHandler(
     PlayerSendFriendRequestEventParser eventParser,
-    IPlayerRepository playerRepository,
+    PlayerRepository playerRepository,
     IPlayerFriendshipRepository friendshipRepository,
     PlayerConstants playerConstants)
     : INetworkPacketEventHandler
@@ -36,7 +36,7 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        IPlayerData? targetData = null;
+        PlayerData? targetData = null;
         var targetOnline = false;
 
         if (playerRepository.TryGetPlayerByUsername(targetUsername, out var targetPlayer) && targetPlayer != null)
@@ -46,11 +46,11 @@ public class PlayerSendFriendRequestEventHandler(
         }
         else
         {
-            var (found, offlineData) = await playerRepository.TryGetPlayerDataByUsernameAsync(targetUsername);
+            var offlineData = await playerRepository.TryGetPlayerDataByUsernameAsync(targetUsername);
 
-            if (found)
+            if (offlineData != null)
             {
-                targetData = offlineData!;
+                targetData = offlineData;
             }
         }
         

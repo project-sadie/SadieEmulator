@@ -19,7 +19,7 @@ public class RoomLoadedEventHandler(
     ILogger<RoomLoadedEventHandler> logger,
     RoomRepository roomRepository,
     IRoomUserFactory roomUserFactory,
-    IPlayerRepository playerRepository)
+    PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomLoaded;

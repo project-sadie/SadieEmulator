@@ -39,7 +39,7 @@ public class PlayerData(
     List<long> likedRoomIds,
     PlayerWardrobeComponent wardrobeComponent,
     List<PlayerRelationship> relationships)
-    : AvatarData(username, figureCode, motto, gender, achievementScore, tags, chatBubble), IPlayerData
+    : AvatarData(username, figureCode, motto, gender, achievementScore, tags, chatBubble)
 {
     public int Id { get; } = id;
     public DateTime CreatedAt { get; } = createdAt;
@@ -49,13 +49,13 @@ public class PlayerData(
     public int RespectsReceived { get; set; } = respectsReceived;
     public int RespectPoints { get; set; } = respectPoints;
     public int RespectPointsPet { get; } = respectPointsPet;
+    public bool AllowFriendRequests { get; } = allowFriendRequests;
     public PlayerNavigatorSettings NavigatorSettings { get; set; } = navigatorSettings;
     public PlayerSettings Settings { get; } = settings;
     public List<PlayerSavedSearch> SavedSearches { get; } = savedSearches;
     public List<string> Permissions { get; } = permissions;
     public List<PlayerBadge> Badges { get; } = badges;
     public PlayerFriendshipComponent FriendshipComponent { get; } = friendshipComponent;
-    public bool AllowFriendRequests { get; } = allowFriendRequests;
     public List<IPlayerSubscription> Subscriptions { get; } = subscriptions;
     public IPlayerInventoryRepository Inventory { get; } = inventoryRepository;
     public List<long> LikedRoomIds { get; } = likedRoomIds;

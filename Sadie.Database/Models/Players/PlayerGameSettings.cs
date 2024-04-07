@@ -2,6 +2,7 @@ namespace Sadie.Database.Models.Players;
 
 public class PlayerGameSettings
 {
+    public int Id { get; set; }
     public int SystemVolume { get; set; }
     public int FurnitureVolume { get; set; }
     public int TraxVolume { get; set; }
@@ -10,4 +11,4 @@ public class PlayerGameSettings
     public bool BlockCameraFollow { get; set; }
     public int UiFlags { get; set; }
     public bool ShowNotifications { get; set; }
-}
+} 

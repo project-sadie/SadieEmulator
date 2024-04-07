@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerProfileEventHandler(
     PlayerProfileEventParser eventParser,
-    IPlayerRepository playerRepository, 
+    PlayerRepository playerRepository, 
     IPlayerFriendshipRepository friendshipRepository)
     : INetworkPacketEventHandler
 {
@@ -25,7 +25,7 @@ public class PlayerProfileEventHandler(
         var profileId = eventParser.ProfileId;
         var profileOnline = false;
 
-        IPlayerData onlineData = null;
+        PlayerData onlineData = null;
         
         if (profileId == playerId)
         {
@@ -39,9 +39,9 @@ public class PlayerProfileEventHandler(
         }
         else
         {
-            var (found, fetchedPlayerData) = await playerRepository.TryGetPlayerDataAsync(profileId);
+            var fetchedPlayerData = await playerRepository.TryGetPlayerDataAsync(profileId);
 
-            if (found)
+            if (fetchedPlayerData != null)
             {
                 onlineData = fetchedPlayerData;
             }

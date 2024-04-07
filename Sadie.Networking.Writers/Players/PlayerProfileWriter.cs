@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Players;
 public class PlayerProfileWriter : NetworkPacketWriter
 {
     public PlayerProfileWriter(
-        IPlayerData playerData, 
+        PlayerData playerData, 
         bool online, 
         int friendshipCount, 
         bool friendshipExists, 

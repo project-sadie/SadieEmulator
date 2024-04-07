@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerDataWriter : NetworkPacketWriter
 {
-    public PlayerDataWriter(IPlayerData playerData)
+    public PlayerDataWriter(PlayerData playerData)
     {
         WriteShort(ServerPacketId.PlayerData);
         WriteInteger(playerData.Id);

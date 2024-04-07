@@ -13,7 +13,7 @@ namespace Sadie.Game.Players;
 
 public interface IPlayerDataFactory
 {
-    IPlayerData Create(
+    PlayerData Create(
         int id,
         string username,
         DateTime createdAt,

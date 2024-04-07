@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerAcceptFriendRequestEventHandler(
     PlayerAcceptFriendRequestEventParser eventParser,
-    IPlayerRepository playerRepository,
+    PlayerRepository playerRepository,
     IPlayerFriendshipRepository friendshipRepository,
     RoomRepository roomRepository)
     : INetworkPacketEventHandler

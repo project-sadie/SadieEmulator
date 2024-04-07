@@ -19,9 +19,9 @@ public class PlayerFactory(IServiceProvider serviceProvider) : IPlayerFactory
     
     public IPlayer Create(
         INetworkObject networkObject, 
-        IPlayerData data)
+        PlayerData data)
     {
-        return ActivatorUtilities.CreateInstance<Player>(
+        return ActivatorUtilities.CreateInstance<PlayerLogic>(
             serviceProvider,
             networkObject,
             data);

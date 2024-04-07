@@ -16,7 +16,7 @@ public class RoomItemEjectedEventHandler(
     RoomFurnitureItemEjectedEventParser eventParser,
     RoomRepository roomRepository, 
     IPlayerInventoryDao playerInventoryDao,
-    IPlayerRepository playerRepository) : INetworkPacketEventHandler
+    PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomFurnitureItemEjected;
 

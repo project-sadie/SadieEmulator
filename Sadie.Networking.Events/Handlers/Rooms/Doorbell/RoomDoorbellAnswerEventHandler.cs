@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
 public class RoomDoorbellAnswerEventHandler(
     RoomDoorbellAnswerEventParser eventParser,
-    IPlayerRepository playerRepository) : INetworkPacketEventHandler
+    PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomDoorbellAnswer;
 

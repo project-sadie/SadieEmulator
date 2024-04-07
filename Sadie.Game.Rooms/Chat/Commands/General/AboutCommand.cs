@@ -9,7 +9,7 @@ namespace Sadie.Game.Rooms.Chat.Commands.General;
 
 public class AboutCommand(
     RoomRepository roomRepository, 
-    IPlayerRepository playerRepository) : IRoomChatCommand
+    PlayerRepository playerRepository) : IRoomChatCommand
 {
     public string Trigger => "about";
 

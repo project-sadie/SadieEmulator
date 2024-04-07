@@ -13,7 +13,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     private readonly ILogger<NetworkClient> _logger;
     private readonly IWebSocketConnection _webSocket;
-    private readonly IPlayerRepository _playerRepository;
+    private readonly PlayerRepository _playerRepository;
     private readonly RoomRepository _roomRepository;
     private readonly INetworkPacketHandler _packetHandler;
 
@@ -21,7 +21,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         ILogger<NetworkClient> logger, 
         Guid guid, 
         IWebSocketConnection webSocket,
-        IPlayerRepository playerRepository, 
+        PlayerRepository playerRepository, 
         RoomRepository roomRepository,
         INetworkPacketHandler packetHandler,
         NetworkingConstants constants) : base(constants)

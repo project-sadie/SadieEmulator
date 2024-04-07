@@ -29,6 +29,7 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
     public DbSet<RoomSettings> RoomSettings { get; set; }
     public DbSet<RoomLayout> RoomLayouts { get; set; }
     public DbSet<Room> Rooms { get; set; }
+    public DbSet<Player> Players { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
