@@ -3,6 +3,7 @@ using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Players.Room;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
+using Sadie.Game.Rooms.Enums;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;

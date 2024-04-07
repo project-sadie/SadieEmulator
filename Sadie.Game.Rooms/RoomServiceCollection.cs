@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.Game.Rooms.Categories;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Chat.Commands.General;
 using Sadie.Game.Rooms.Users;
@@ -20,8 +19,6 @@ public static class RoomServiceCollection
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<RoomRepository, RoomRepository>();
-        
-        serviceCollection.AddSingleton<RoomCategoryRepository>();
         
         serviceCollection.AddSingleton<AboutCommand>();
         

@@ -39,18 +39,18 @@ public static class RoomHelpers
         return tiles;
     }
 
-    public static Queue<HPoint> BuildPathForWalk(RoomLayoutData layoutData, Point start, Point end, bool useDiagonal)
+    public static Queue<HPoint> BuildPathForWalk(RoomTileMap tileMap, Point start, Point end, bool useDiagonal)
     {
         var pathfinderOptions = new PathFinderOptions
         {
             UseDiagonals = useDiagonal
         };
         
-        var worldGrid = new WorldGrid(layoutData.TileMap);
+        var worldGrid = new WorldGrid(tileMap.TileMap);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
         var route = pathfinder.FindPath(start, end).ToList();
 
-        return new Queue<HPoint>(route.Select(x => layoutData.Tiles.First(y => y.Point.X == x.X && y.Point.Y == x.Y).Point)
+        return new Queue<HPoint>(route.Select(x => tileMap.Tiles.First(y => y.Point.X == x.X && y.Point.Y == x.Y).Point)
             .Skip(1));
     }
 
@@ -94,13 +94,13 @@ public static class RoomHelpers
         return rotation;
     }
 
-    public static void UpdateTileMapForTile(RoomTile tile, RoomLayoutData layoutData)
+    public static void UpdateTileMapForTile(RoomTile tile, RoomTileMap tileMap)
     {
         var topLevelItem = tile.Items.MaxBy(x => x.PositionZ);
 
         if (topLevelItem == null)
         {
-            layoutData.TileMap[tile.Point.Y, tile.Point.X] = 1;
+            tileMap.TileMap[tile.Point.Y, tile.Point.X] = 1;
         }
         else
         {
@@ -112,7 +112,7 @@ public static class RoomHelpers
                 canWalkOnItem = false;
             }
             
-            layoutData.TileMap[tile.Point.Y, tile.Point.X] = (short)(canWalkOnItem ? 1 : 0);
+            tileMap.TileMap[tile.Point.Y, tile.Point.X] = (short)(canWalkOnItem ? 1 : 0);
         }
     }
 }

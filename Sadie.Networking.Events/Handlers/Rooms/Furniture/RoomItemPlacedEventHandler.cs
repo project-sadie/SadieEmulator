@@ -95,7 +95,7 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var tile = room.LayoutData.FindTile(x, y);
+        var tile = room.TileMap.FindTile(x, y);
 
         if (tile == null || tile.State == RoomTileState.Closed)
         {
@@ -122,7 +122,7 @@ public class RoomItemPlacedEventHandler(
         };
 
         tile.Items.Add(roomFurnitureItem);
-        RoomHelpers.UpdateTileMapForTile(tile, room.LayoutData);
+        RoomHelpers.UpdateTileMapForTile(tile, room.TileMap);
         
         await playerInventoryDao.DeleteItemsAsync([itemId]);
         

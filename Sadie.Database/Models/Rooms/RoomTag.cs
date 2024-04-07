@@ -1,4 +1,4 @@
-namespace Sadie.Database.Models;
+namespace Sadie.Database.Models.Rooms;
 
 public class RoomTag
 {

@@ -11,7 +11,7 @@ public class ProcessRoomsTask(RoomRepository roomRepository) : IServerTask
     { 
         foreach (var room in roomRepository.GetAllRooms())
         {
-            await room.RunPeriodicCheckAsync();
+            await room.UserRepository.RunPeriodicCheckAsync();
         }
     }
 }

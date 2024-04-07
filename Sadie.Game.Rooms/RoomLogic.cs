@@ -1,10 +1,8 @@
-﻿using Sadie.Database.Models;
-using Sadie.Database.Models.Players;
+﻿using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -14,7 +12,7 @@ public class RoomLogic : Room
     public RoomLogic(int id,
         string name,
         RoomLayout layout,
-        RoomLayoutData layoutData,
+        RoomTileMap tileMap,
         Player owner,
         string description,
         int maxUsersAllowed,
@@ -42,28 +40,12 @@ public class RoomLogic : Room
         Tags = tags;
         PlayerLikes = playerLikes;
         FurnitureItems = furnitureItems;
-        LayoutData = layoutData;
+        TileMap = tileMap;
         UserRepository = userRepository;
     }
     
-    public RoomLayoutData LayoutData { get; }
+    public RoomTileMap TileMap { get; }
     public IRoomUserRepository UserRepository { get; }
-
-    public async Task RunPeriodicCheckAsync()
-    {
-        var users = UserRepository.GetAll();
-        
-        foreach (var roomUser in users)
-        {
-            await roomUser.RunPeriodicCheckAsync();
-        }
-
-        var statusWriter = new RoomUserStatusWriter(users).GetAllBytes();
-        var dataWriter = new RoomUserDataWriter(users).GetAllBytes();
-
-        await UserRepository.BroadcastDataAsync(statusWriter);
-        await UserRepository.BroadcastDataAsync(dataWriter);
-    }
 
     public async ValueTask DisposeAsync()
     {

@@ -9,7 +9,6 @@ using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Club;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
@@ -65,7 +64,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private async Task LoadInitialDataAsync()
     {
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<RoomCategoryRepository>().LoadInitialDataAsync, "room categories");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync, "navigator tabs");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync, "furniture items");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync, "catalog pages");

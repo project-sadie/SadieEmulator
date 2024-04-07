@@ -1,15 +1,16 @@
 ﻿namespace Sadie.Game.Rooms;
 
-public class RoomLayoutData
+public class RoomTileMap
 {
-    public List<string> HeightmapRows { get; }
+    private List<string> HeightmapRows { get; }
+    
     public int SizeX { get; }
     public int SizeY { get; }
     public int Size { get; }
     public List<RoomTile> Tiles { get; }
     public short[,] TileMap { get; }
 
-    public RoomLayoutData(string heightmap, List<RoomTile> tiles)
+    public RoomTileMap(string heightmap, List<RoomTile> tiles)
     {
         HeightmapRows = heightmap.Split("\n").ToList();
         SizeX = HeightmapRows.First().Length;
@@ -17,16 +18,21 @@ public class RoomLayoutData
         Size = SizeY * SizeX;
         Tiles = tiles;
         TileMap = new short[SizeY, SizeX];
-        
+
+        GenerateTileMap();
+    }
+
+    private void GenerateTileMap()
+    {
         foreach (var tile in Tiles)
         {
             var point = tile.Point;
             var topLevelItem = tile.Items.MaxBy(x => x.PositionZ);
             
             var canWalkOnTile = topLevelItem == null ||
-                                topLevelItem.FurnitureItem.CanSit ||
-                                topLevelItem.FurnitureItem.CanWalk ||
-                                topLevelItem.FurnitureItem.CanLay;
+                topLevelItem.FurnitureItem.CanSit ||
+                topLevelItem.FurnitureItem.CanWalk ||
+                topLevelItem.FurnitureItem.CanLay;
 
             if (tile.Users.Count > 0)
             {

@@ -1,10 +1,9 @@
 using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
 
-namespace Sadie.Database.Models;
+namespace Sadie.Database.Models.Rooms;
 
 public class Room
 {

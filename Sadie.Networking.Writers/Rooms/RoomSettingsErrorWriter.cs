@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 

@@ -58,6 +58,22 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
         return _users.Values.Where(x => x.HasRights()).ToList();
     }
 
+    public async Task RunPeriodicCheckAsync()
+    {
+        var users = _users.Values;
+        
+        foreach (var roomUser in users)
+        {
+            await roomUser.RunPeriodicCheckAsync();
+        }
+
+        var statusWriter = new RoomUserStatusWriter(users).GetAllBytes();
+        var dataWriter = new RoomUserDataWriter(users).GetAllBytes();
+
+        await BroadcastDataAsync(statusWriter);
+        await BroadcastDataAsync(dataWriter);
+    }
+
     public async ValueTask DisposeAsync()
     {
         foreach (var user in _users.Values)

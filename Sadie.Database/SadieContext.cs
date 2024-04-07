@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Database.Models;
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;

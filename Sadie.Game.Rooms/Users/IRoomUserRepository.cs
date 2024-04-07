@@ -11,4 +11,5 @@ public interface IRoomUserRepository : IAsyncDisposable
     int Count { get; }
     Task BroadcastDataAsync(byte[] data);
     ICollection<IRoomUser> GetAllWithRights();
+    Task RunPeriodicCheckAsync();
 }

@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Avatar;
@@ -32,13 +33,13 @@ public class RoomUser(
             return;
         }
         
-        var currentTile = room.LayoutData.FindTile(Point.X, Point.Y);
+        var currentTile = room.TileMap.FindTile(Point.X, Point.Y);
         currentTile?.Users.Remove(Id);
-        RoomHelpers.UpdateTileMapForTile(currentTile!, room.LayoutData);
+        RoomHelpers.UpdateTileMapForTile(currentTile!, room.TileMap);
 
-        var nextTile = room.LayoutData.FindTile(NextPoint.X, NextPoint.Y);
+        var nextTile = room.TileMap.FindTile(NextPoint.X, NextPoint.Y);
         nextTile?.Users.Add(Id, this);
-        RoomHelpers.UpdateTileMapForTile(nextTile!, room.LayoutData);
+        RoomHelpers.UpdateTileMapForTile(nextTile!, room.TileMap);
 
         Point = NextPoint;
     }
@@ -50,7 +51,7 @@ public class RoomUser(
         
         SetNextPosition();
         
-        GoalSteps = RoomHelpers.BuildPathForWalk(room.LayoutData, new Point(Point.X, Point.Y), point, useDiagonal);
+        GoalSteps = RoomHelpers.BuildPathForWalk(room.TileMap, new Point(Point.X, Point.Y), point, useDiagonal);
         IsWalking = true;
     }
 
@@ -108,7 +109,7 @@ public class RoomUser(
     {
         if (!IsWalking)
         {
-            var currentTile = room.LayoutData.FindTile(Point.X, Point.Y);
+            var currentTile = room.TileMap.FindTile(Point.X, Point.Y);
         
             var seat = currentTile?
                 .Items

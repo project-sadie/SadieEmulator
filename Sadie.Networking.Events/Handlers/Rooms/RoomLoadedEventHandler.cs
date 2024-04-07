@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Enums;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -40,9 +41,9 @@ public class RoomLoadedEventHandler(
 
             if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(playerData.Id, out var oldUser) && oldUser != null)
             {
-                var currentTile = lastRoom.LayoutData.FindTile(oldUser.Point.X, oldUser.Point.Y);
+                var currentTile = lastRoom.TileMap.FindTile(oldUser.Point.X, oldUser.Point.Y);
                 currentTile?.Users.Remove(oldUser.Id);
-                RoomHelpers.UpdateTileMapForTile(currentTile!, lastRoom.LayoutData);
+                RoomHelpers.UpdateTileMapForTile(currentTile!, lastRoom.TileMap);
                 
                 await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id);
             }

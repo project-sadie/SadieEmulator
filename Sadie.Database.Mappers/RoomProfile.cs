@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.Database.Models;
+using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 
@@ -15,7 +15,7 @@ public class RoomProfile : Profile
                 x.Id,
                 x.Name,
                 x.Layout,
-                new RoomLayoutData(x.Layout.HeightMap, RoomHelpers.BuildTileListFromHeightMap(x.Layout.HeightMap, x.FurnitureItems)),
+                new RoomTileMap(x.Layout.HeightMap, RoomHelpers.BuildTileListFromHeightMap(x.Layout.HeightMap, x.FurnitureItems)),
                 x.Owner,
                 x.Description,
                 x.MaxUsersAllowed,

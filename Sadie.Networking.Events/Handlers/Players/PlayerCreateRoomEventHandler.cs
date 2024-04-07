@@ -1,5 +1,4 @@
 using Sadie.Database;
-using Sadie.Database.Models;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
