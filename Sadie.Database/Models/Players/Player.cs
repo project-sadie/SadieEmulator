@@ -14,6 +14,7 @@ public class Player
     public PlayerAvatarData AvatarData { get; set; }
     public List<PlayerTag> Tags { get; set; }
     public List<PlayerRoomLike> RoomLikes { get; set; }
+    [InverseProperty("OriginPlayer")]
     public List<PlayerRelationship> Relationships { get; set; }
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
     public PlayerGameSettings GameSettings { get; set; }

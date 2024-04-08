@@ -116,7 +116,7 @@ public class PlayerRepository(
                         false, 
                         false, 
                         false,
-                        relationship?.Type ?? PlayerRelationshipType.None).GetAllBytes();
+                        relationship?.TypeId ?? PlayerRelationshipType.None).GetAllBytes();
                 
                 await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
             }

@@ -152,7 +152,7 @@ public class SecureLoginEventHandler(
                 false, 
                 false, 
                 false,
-                relationship?.Type ?? PlayerRelationshipType.None).GetAllBytes());   
+                relationship?.TypeId ?? PlayerRelationshipType.None).GetAllBytes());   
         }
     }
 

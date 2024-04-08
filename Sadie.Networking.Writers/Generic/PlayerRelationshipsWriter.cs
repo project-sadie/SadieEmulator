@@ -22,8 +22,8 @@ public class PlayerRelationshipsWriter : NetworkPacketWriter
                 continue;
             }
             
-            WriteInteger((int) relationship.Type);
-            WriteInteger(relationships.Count(x => x.Type == relationship.Type));
+            WriteInteger((int) relationship.TypeId);
+            WriteInteger(relationships.Count(x => x.TypeId == relationship.TypeId));
             WriteLong(relationship.TargetPlayerId);
             WriteString(friend.TargetPlayer.Username);
             WriteString(friend.TargetPlayer.AvatarData.FigureCode);
