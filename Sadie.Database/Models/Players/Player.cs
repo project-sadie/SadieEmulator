@@ -23,6 +23,7 @@ public class Player
     public List<PlayerFurnitureItem> FurnitureItems { get; set; }
     public List<PlayerWardrobeItem> WardrobeItems { get; set; }
     public List<PlayerSubscription> Subscriptions { get; set; }
+    [InverseProperty("TargetPlayer")]
     public List<PlayerRespect> Respects { get; set; }
     public List<PlayerSavedSearch> SavedSearches { get; set; }
     [InverseProperty("OriginPlayer")]
