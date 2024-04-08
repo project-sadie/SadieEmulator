@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Players.Inventory;
 
 public class PlayerInventoryBadgesWriter : NetworkPacketWriter
 {
-    public PlayerInventoryBadgesWriter(List<PlayerBadge> badges, List<PlayerBadge> equippedBadges)
+    public PlayerInventoryBadgesWriter(ICollection<PlayerBadge> badges, ICollection<PlayerBadge> equippedBadges)
     {
         WriteShort(ServerPacketId.PlayerInventoryBadges);
         

@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Players;
 
 public class PlayerWearingBadgesWriter : NetworkPacketWriter
 {
-    public PlayerWearingBadgesWriter(int playerId, List<PlayerBadge> badges)
+    public PlayerWearingBadgesWriter(int playerId, ICollection<PlayerBadge> badges)
     {
         WriteShort(ServerPacketId.PlayerBadges);
         WriteInteger(playerId);

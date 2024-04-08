@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserTagsWriter : NetworkPacketWriter
 {
-    public RoomUserTagsWriter(int userId, List<PlayerTag> tags)
+    public RoomUserTagsWriter(int userId, ICollection<PlayerTag> tags)
     {
         WriteShort(ServerPacketId.RoomUserTags);
         WriteInteger(userId);

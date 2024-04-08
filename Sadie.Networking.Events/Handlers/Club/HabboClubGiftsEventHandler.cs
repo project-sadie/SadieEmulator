@@ -31,7 +31,7 @@ public class HabboClubGiftsEventHandler(CatalogPageRepository catalogPageReposit
             clubGiftPage).GetAllBytes());
     }
 
-    private int CalculateDaysAsClub(List<PlayerSubscription> subscriptions)
+    private int CalculateDaysAsClub(ICollection<PlayerSubscription> subscriptions)
     {
         var days = 0;
 

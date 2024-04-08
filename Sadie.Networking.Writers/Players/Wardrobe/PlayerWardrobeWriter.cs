@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Players.Wardrobe;
 
 public class PlayerWardrobeWriter : NetworkPacketWriter
 {
-    public PlayerWardrobeWriter(int state, List<PlayerWardrobeItem> outfits)
+    public PlayerWardrobeWriter(int state, ICollection<PlayerWardrobeItem> outfits)
     {
         WriteShort(ServerPacketId.PlayerWardrobe);
         WriteInteger(state);

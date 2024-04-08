@@ -87,17 +87,20 @@ public class CatalogPurchaseEventHandler(
         for (var i = 0; i < eventParser.Amount; i++)
         {
             var limitedData = $"1:1"; // TODO: maxStack:maxSell
-            
-            newItems.Add(new PlayerFurnitureItem
+
+            var newItem = new PlayerFurnitureItem
             {
+                PlayerId = client.Player.Id,
                 FurnitureItem = item.FurnitureItems.First(),
                 LimitedData = limitedData,
                 MetaData = metaData,
                 CreatedAt = created
-            });
+            };
+            
+            newItems.Add(newItem);
+            client.Player.FurnitureItems.Add(newItem);
         }
         
-        client.Player.FurnitureItems.AddRange(newItems);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());

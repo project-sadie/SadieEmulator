@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Generic;
 
 public class PlayerRelationshipsWriter : NetworkPacketWriter
 {
-    public PlayerRelationshipsWriter(long playerId, List<PlayerRelationship> relationships, List<PlayerFriendship> friendships)
+    public PlayerRelationshipsWriter(long playerId, ICollection<PlayerRelationship> relationships, ICollection<PlayerFriendship> friendships)
     {
         WriteShort(ServerPacketId.PlayerRelationships);
         WriteLong(playerId);

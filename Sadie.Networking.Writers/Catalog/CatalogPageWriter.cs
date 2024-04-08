@@ -20,10 +20,10 @@ public class CatalogPageWriter : NetworkPacketWriter
         string secondaryText,
         string teaserText,
         string detailsText,
-        List<CatalogItem> items, 
+        ICollection<CatalogItem> items, 
         string catalogMode,
         bool acceptSeasonCurrencyAsCredits,
-        List<CatalogFrontPageItem>? frontPageItems)
+        ICollection<CatalogFrontPageItem>? frontPageItems)
     {
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(pageId);

@@ -10,7 +10,7 @@ namespace Sadie.Game.Rooms;
 public static class RoomHelpers
 {
     public static List<RoomTile> BuildTileListFromHeightMap(string heightMap, 
-        List<RoomFurnitureItem> furnitureItems)
+        ICollection<RoomFurnitureItem> furnitureItems)
     {
         var heightmapLines = heightMap.Split("\n").ToList();
         var tiles = new List<RoomTile>();

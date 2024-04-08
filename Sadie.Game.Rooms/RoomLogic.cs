@@ -19,13 +19,13 @@ public class RoomLogic : Room
         int maxUsersAllowed,
         bool isMuted,
         IRoomUserRepository userRepository,
-        List<RoomFurnitureItem> furnitureItems,
+        ICollection<RoomFurnitureItem> furnitureItems,
         RoomSettings settings,
-        List<RoomChatMessage> chatMessages,
-        List<RoomPlayerRight> playerRights,
+        ICollection<RoomChatMessage> chatMessages,
+        ICollection<RoomPlayerRight> playerRights,
         RoomPaintSettings paintSettings,
-        List<RoomTag> tags,
-        List<PlayerRoomLike> playerLikes)
+        ICollection<RoomTag> tags,
+        ICollection<PlayerRoomLike> playerLikes)
     {
         Id = id;
         Name = name;

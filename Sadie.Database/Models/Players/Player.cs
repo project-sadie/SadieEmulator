@@ -8,44 +8,44 @@ public class Player
     public int Id { get; set; }
     public string Username { get; set; }
     public string? SsoToken { get; set; }
-    public List<Role> Roles { get; set; }
+    public ICollection<Role> Roles { get; set; }
     public DateTime CreatedAt { get; set; }
     public PlayerData Data { get; set; }
     public PlayerAvatarData AvatarData { get; set; }
-    public List<PlayerTag> Tags { get; set; }
-    public List<PlayerRoomLike> RoomLikes { get; set; }
+    public ICollection<PlayerTag> Tags { get; set; }
+    public ICollection<PlayerRoomLike> RoomLikes { get; set; }
     
     [InverseProperty("OriginPlayer")]
-    public List<PlayerRelationship> Relationships { get; set; }
+    public ICollection<PlayerRelationship> Relationships { get; set; }
     
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
     
     public PlayerGameSettings GameSettings { get; set; }
     
-    public List<PlayerBadge> Badges { get; set; }
+    public ICollection<PlayerBadge> Badges { get; set; }
     
-    public List<PlayerFurnitureItem> FurnitureItems { get; set; }
+    public ICollection<PlayerFurnitureItem> FurnitureItems { get; set; }
     
-    public List<PlayerWardrobeItem> WardrobeItems { get; set; }
+    public ICollection<PlayerWardrobeItem> WardrobeItems { get; set; }
     
-    public List<PlayerSubscription> Subscriptions { get; set; }
+    public ICollection<PlayerSubscription> Subscriptions { get; set; }
     
     [InverseProperty("TargetPlayer")]
-    public List<PlayerRespect> Respects { get; set; }
+    public ICollection<PlayerRespect> Respects { get; set; }
     
-    public List<PlayerSavedSearch> SavedSearches { get; set; }
+    public ICollection<PlayerSavedSearch> SavedSearches { get; set; }
     
     [InverseProperty("OriginPlayer")]
-    public List<PlayerFriendship> OutgoingFriendships { get; set; }
+    public ICollection<PlayerFriendship> OutgoingFriendships { get; set; }
     
     [InverseProperty("TargetPlayer")]
-    public List<PlayerFriendship> IncomingFriendships { get; set; }
+    public ICollection<PlayerFriendship> IncomingFriendships { get; set; }
     
     [InverseProperty("OriginPlayer")]
-    public List<PlayerMessage> MessagesSent { get; set; }
+    public ICollection<PlayerMessage> MessagesSent { get; set; }
     
     [InverseProperty("TargetPlayer")]
-    public List<PlayerMessage> MessagesReceived { get; set; }
+    public ICollection<PlayerMessage> MessagesReceived { get; set; }
     
     public int GetAcceptedFriendshipCount()
     {

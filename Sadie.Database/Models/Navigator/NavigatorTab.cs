@@ -7,5 +7,5 @@ public class NavigatorTab
     [Key]
     public int Id { get; set; }
     public string Name { get; set; }
-    public List<NavigatorCategory> Categories { get; set; }
+    public ICollection<NavigatorCategory> Categories { get; set; }
 }

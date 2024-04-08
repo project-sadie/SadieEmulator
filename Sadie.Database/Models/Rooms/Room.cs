@@ -17,10 +17,10 @@ public class Room
     public bool IsMuted { get; set; }
     public RoomSettings Settings { get; set; }
     public RoomPaintSettings PaintSettings { get; set; }
-    public List<RoomPlayerRight> PlayerRights { get; set; }
-    public List<RoomChatMessage> ChatMessages { get; set; }
-    public List<RoomTag> Tags { get; set; }
-    public List<PlayerRoomLike> PlayerLikes { get; set; }
-    public List<RoomFurnitureItem> FurnitureItems { get; set; }
+    public ICollection<RoomPlayerRight> PlayerRights { get; set; } = [];
+    public ICollection<RoomChatMessage> ChatMessages { get; set; } = [];
+    public ICollection<RoomTag> Tags { get; set; } = [];
+    public ICollection<PlayerRoomLike> PlayerLikes { get; set; } = [];
+    public ICollection<RoomFurnitureItem> FurnitureItems { get; set; } = [];
     public DateTime CreatedAt { get; set; }
 }

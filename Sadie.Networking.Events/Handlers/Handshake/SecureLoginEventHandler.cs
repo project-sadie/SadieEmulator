@@ -88,7 +88,7 @@ public class SecureLoginEventHandler(
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
         
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
-            playerSubscriptions.Exists(x => x.Subscription.Name == "HABBO_CLUB") ? 1 : 0,
+            playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 1 : 0,
             2,
             true).GetAllBytes());
         
