@@ -15,21 +15,21 @@ public class RoomUserDataWriter : NetworkPacketWriter
         foreach (var user in users)
         {
             WriteInteger(user.Id);
-            WriteString(user.AvatarData.Username);
-            WriteString(user.AvatarData.Motto);
-            WriteString(user.AvatarData.FigureCode);
+            WriteString(user.Player.Username);
+            WriteString(user.Player.AvatarData.Motto);
+            WriteString(user.Player.AvatarData.FigureCode);
             WriteInteger(user.Id);
             WriteInteger(user.Point.X);
             WriteInteger(user.Point.Y);
             WriteString(user.Point.Z + "");
             WriteInteger(3);
             WriteInteger(1);
-            WriteString(user.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
+            WriteString(user.Player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
             WriteInteger(-1);
             WriteInteger(-1);
             WriteString("");
             WriteString("");
-            WriteInteger((int)user.AvatarData.AchievementScore);
+            WriteInteger(user.Player.Data.AchievementScore);
             WriteBool(true);
         }
     }

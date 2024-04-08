@@ -83,7 +83,7 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");
         modelBuilder.Entity<PlayerFurnitureItem>().ToTable("player_furniture_items");
         modelBuilder.Entity<PlayerWardrobeItem>().ToTable("player_wardrobe_items");
-        modelBuilder.Entity<Permission>().ToTable("player_permissions");
+        modelBuilder.Entity<Permission>().ToTable("permissions");
         modelBuilder.Entity<PlayerSubscription>().ToTable("player_subscriptions");
         modelBuilder.Entity<PlayerRespect>().ToTable("player_respects");
         modelBuilder.Entity<PlayerSavedSearch>().ToTable("player_saved_searches");
@@ -110,6 +110,9 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<Role>()
             .HasMany(r => r.Permissions)
             .WithMany(p => p.Roles)
-            .UsingEntity("roles_permissions");
+            .UsingEntity("roles_permissions",
+                l => l.HasOne(typeof(Permission)).WithMany().HasForeignKey("permission_id").HasPrincipalKey(nameof(Permission.Id)),
+                r => r.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
+                j => j.HasKey("permission_id", "role_id"));
     }
 }

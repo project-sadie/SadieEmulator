@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -6,7 +7,7 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactory
+public class RoomUserFactory(IServiceProvider serviceProvider)
 {
     public RoomUser Create(
         RoomLogic room,
@@ -15,7 +16,7 @@ public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactor
         HPoint point, 
         HDirection directionHead,
         HDirection direction, 
-        IAvatarData avatarData,
+        PlayerAvatarData avatarData,
         RoomControllerLevel controllerLevel)
     {
         return ActivatorUtilities.CreateInstance<RoomUser>(

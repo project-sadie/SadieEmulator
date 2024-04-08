@@ -1,11 +1,12 @@
-﻿using Sadie.Shared.Unsorted.Networking;
+﻿using Sadie.Database.Models.Players;
+using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Users;
 
 public class RoomUserTagsWriter : NetworkPacketWriter
 {
-    public RoomUserTagsWriter(int userId, List<string> tags)
+    public RoomUserTagsWriter(int userId, List<PlayerTag> tags)
     {
         WriteShort(ServerPacketId.RoomUserTags);
         WriteInteger(userId);
@@ -13,7 +14,7 @@ public class RoomUserTagsWriter : NetworkPacketWriter
 
         foreach (var tag in tags)
         {
-            WriteString(tag);
+            WriteString(tag.Name);
         }
     }
 }

@@ -59,8 +59,6 @@ internal static class NetworkPacketEventHelpers
         player.CurrentRoomId = room.Id;
         playerState.RoomVisits.Add(new PlayerRoomVisit(player.Id, room.Id));
 
-        var avatarData = (IAvatarData) player.Data;
-
         var controllerLevel = RoomControllerLevel.None;
         
         if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Id) != null)
@@ -80,7 +78,7 @@ internal static class NetworkPacketEventHelpers
             new HPoint(room.Layout.DoorX, room.Layout.DoorY, room.Layout.DoorZ),
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
-            avatarData,
+            player,
             controllerLevel);
 
         roomUser.ApplyFlatCtrlStatus();

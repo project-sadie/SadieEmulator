@@ -1,5 +1,7 @@
 ﻿using System.Drawing;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
@@ -16,10 +18,10 @@ public class RoomUser(
     HPoint point,
     HDirection directionHead,
     HDirection direction,
-    AvatarData avatarData,
+    PlayerLogic player,
     RoomConstants constants,
     RoomControllerLevel controllerLevel)
-    : RoomUserData(point, directionHead, direction, avatarData, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
+    : RoomUserData(point, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
 {
     public int Id { get; } = id;

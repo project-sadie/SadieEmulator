@@ -19,7 +19,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
 
     public bool TryGetByUsername(string username, out IRoomUser? user)
     {
-        user = _users.Values.FirstOrDefault(x => x.AvatarData.Username == username);
+        user = _users.Values.FirstOrDefault(x => x.Player.Username == username);
         return user != null;
     }
 

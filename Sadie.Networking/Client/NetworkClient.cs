@@ -83,7 +83,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         if (RoomUser != null)
         {
-            var (foundRoom, lastRoom) = _roomRepository.TryGetRoomById(RoomUser.AvatarData.CurrentRoomId);
+            var (foundRoom, lastRoom) = _roomRepository.TryGetRoomById(RoomUser.Player.CurrentRoomId);
             
             if (foundRoom && lastRoom != null)
             {
