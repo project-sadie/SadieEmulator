@@ -8,30 +8,42 @@ public class Player
     public int Id { get; set; }
     public string Username { get; set; }
     public string? SsoToken { get; set; }
-    public int RoleId { get; set; }
-    public PlayerRole Role { get; set; }
+    public List<Role> Roles { get; set; }
     public DateTime CreatedAt { get; set; }
     public PlayerData Data { get; set; }
     public PlayerAvatarData AvatarData { get; set; }
     public List<PlayerTag> Tags { get; set; }
     public List<PlayerRoomLike> RoomLikes { get; set; }
+    
     [InverseProperty("OriginPlayer")]
     public List<PlayerRelationship> Relationships { get; set; }
+    
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
+    
     public PlayerGameSettings GameSettings { get; set; }
+    
     public List<PlayerBadge> Badges { get; set; }
+    
     public List<PlayerFurnitureItem> FurnitureItems { get; set; }
+    
     public List<PlayerWardrobeItem> WardrobeItems { get; set; }
+    
     public List<PlayerSubscription> Subscriptions { get; set; }
+    
     [InverseProperty("TargetPlayer")]
     public List<PlayerRespect> Respects { get; set; }
+    
     public List<PlayerSavedSearch> SavedSearches { get; set; }
+    
     [InverseProperty("OriginPlayer")]
     public List<PlayerFriendship> OutgoingFriendships { get; set; }
+    
     [InverseProperty("TargetPlayer")]
     public List<PlayerFriendship> IncomingFriendships { get; set; }
+    
     [InverseProperty("OriginPlayer")]
     public List<PlayerMessage> MessagesSent { get; set; }
+    
     [InverseProperty("TargetPlayer")]
     public List<PlayerMessage> MessagesReceived { get; set; }
     
@@ -97,5 +109,10 @@ public class Player
         {
             OutgoingFriendships.Remove(outgoing);
         }
+    }
+
+    public bool HasPermission(string name)
+    {
+        return Roles.Any(r => r.Permissions.Any(x => x.Name == name));
     }
 }

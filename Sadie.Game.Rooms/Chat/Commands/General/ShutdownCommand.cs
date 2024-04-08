@@ -18,7 +18,7 @@ public class ShutdownCommand(
             return;
         }
 
-        if (player!.Role.Permissions.FirstOrDefault(x => x.Name == "command.shutdown") == null)
+        if (!player.HasPermission("command.shutdown"))
         {
             return;
         }

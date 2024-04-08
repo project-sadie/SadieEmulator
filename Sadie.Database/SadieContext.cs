@@ -13,6 +13,7 @@ using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Database;
 
@@ -82,11 +83,33 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");
         modelBuilder.Entity<PlayerFurnitureItem>().ToTable("player_furniture_items");
         modelBuilder.Entity<PlayerWardrobeItem>().ToTable("player_wardrobe_items");
-        modelBuilder.Entity<PlayerPermission>().ToTable("player_permissions");
+        modelBuilder.Entity<Permission>().ToTable("player_permissions");
         modelBuilder.Entity<PlayerSubscription>().ToTable("player_subscriptions");
         modelBuilder.Entity<PlayerRespect>().ToTable("player_respects");
         modelBuilder.Entity<PlayerSavedSearch>().ToTable("player_saved_searches");
         modelBuilder.Entity<PlayerFriendship>().ToTable("player_friendships");
         modelBuilder.Entity<PlayerMessage>().ToTable("player_messages");
+        modelBuilder.Entity<Role>().ToTable("roles");
+
+        modelBuilder.Entity<PlayerAvatarData>()
+            .Property(e => e.Gender)
+            .HasConversion(
+                v => v.ToString(),
+                v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v));
+        
+        modelBuilder.Entity<Subscription>().ToTable("subscriptions");
+
+        modelBuilder.Entity<Player>()
+            .HasMany(r => r.Roles)
+            .WithMany(p => p.Players)
+            .UsingEntity("players_roles",
+                l => l.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
+                r => r.HasOne(typeof(Player)).WithMany().HasForeignKey("player_id").HasPrincipalKey(nameof(Player.Id)),
+                j => j.HasKey("role_id", "player_id"));
+
+        modelBuilder.Entity<Role>()
+            .HasMany(r => r.Permissions)
+            .WithMany(p => p.Roles)
+            .UsingEntity("roles_permissions");
     }
 }
