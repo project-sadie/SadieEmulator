@@ -77,5 +77,16 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<RoomChatMessage>()
             .Property(x => x.Type)
             .HasColumnName("type_id");
+        
+        modelBuilder.Entity<PlayerTag>().ToTable("player_tags");
+        modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");
+        modelBuilder.Entity<PlayerFurnitureItem>().ToTable("player_furniture_items");
+        modelBuilder.Entity<PlayerWardrobeItem>().ToTable("player_wardrobe_items");
+        modelBuilder.Entity<PlayerPermission>().ToTable("player_permissions");
+        modelBuilder.Entity<PlayerSubscription>().ToTable("player_subscriptions");
+        modelBuilder.Entity<PlayerRespect>().ToTable("player_respects");
+        modelBuilder.Entity<PlayerSavedSearch>().ToTable("player_saved_searches");
+        modelBuilder.Entity<PlayerFriendship>().ToTable("player_friendships");
+        modelBuilder.Entity<PlayerMessage>().ToTable("player_messages");
     }
 }
