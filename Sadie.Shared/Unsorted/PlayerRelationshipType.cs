@@ -1,4 +1,4 @@
-namespace Sadie.Game.Players.Relationships;
+namespace Sadie.Shared.Unsorted;
 
 public enum PlayerRelationshipType
 {

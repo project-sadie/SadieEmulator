@@ -3,7 +3,6 @@ using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
-using Sadie.Game.Players.Relationships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Handshake;
 using Sadie.Networking.Packets;
@@ -16,6 +15,7 @@ using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
@@ -126,17 +126,17 @@ public class SecureLoginEventHandler(
         }
         
         await playerRepository.UpdateMessengerStatusForFriends(player.Id,
-            player.FriendshipComponent.Friendships, true, player.CurrentRoomId != 0);
+            player.Friendships, true, player.CurrentRoomId != 0);
 
-        foreach (var friend in player.FriendshipComponent.Friendships)
+        foreach (var friend in player.Friendships)
         {
-            var isOnline = playerRepository.TryGetPlayerById(friend.TargetData.Id, out var friendPlayer) && friendPlayer != null;
+            var isOnline = playerRepository.TryGetPlayerById(friend.TargetPlayerId, out var friendPlayer) && friendPlayer != null;
             var isInRoom = isOnline && friendPlayer!.CurrentRoomId != 0;
                     
             var relationship = isOnline
                 ? friendPlayer!
                     .Relationships
-                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginId || x.TargetPlayerId == friend.TargetId) : null;
+                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId) : null;
 
             await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 
                 1, 

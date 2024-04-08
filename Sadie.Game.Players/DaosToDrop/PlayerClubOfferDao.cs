@@ -1,6 +1,7 @@
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Players.Club;
 
-namespace Sadie.Game.Players.Club;
+namespace Sadie.Game.Players.DaosToDrop;
 
 public class PlayerClubOfferDao(IDatabaseProvider databaseProvider, PlayerClubOfferFactory factory) : BaseDao(databaseProvider)
 {

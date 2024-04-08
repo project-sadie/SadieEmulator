@@ -1,5 +1,4 @@
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Messenger;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Messenger;
@@ -7,6 +6,7 @@ using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Shared;
 using Sadie.Shared.Extensions;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
@@ -42,10 +42,10 @@ public class PlayerSendDirectMessageEventHandler(
             message = message.Truncate(500);
         }
 
-        var friendships = client.Player.FriendshipComponent.Friendships;
-        var friend = friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
+        var friendships = client.Player.Friendships;
+        var friend = friendships.FirstOrDefault(x => x.TargetPlayerId == playerId);
 
-        if (friend == null || friend.Status != PlayerFriendshipStatus.Accepted)
+        if (friend is not { Status: PlayerFriendshipStatus.Accepted })
         {
             await client.WriteToStreamAsync(new PlayerMessageErrorWriter(PlayerMessageError.NotFriends, playerId).GetAllBytes());
             return;

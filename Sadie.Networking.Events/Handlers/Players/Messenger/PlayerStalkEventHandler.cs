@@ -1,10 +1,10 @@
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Messenger;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
@@ -18,9 +18,9 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
 
         var playerId = eventParser.PlayerId;
 
-        var friend = client.Player.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
+        var friend = client.Player.Friendships.FirstOrDefault(x => x.TargetPlayerId == playerId);
 
-        if (friend == null || friend.Status != PlayerFriendshipStatus.Accepted)
+        if (friend is not { Status: PlayerFriendshipStatus.Accepted })
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.NotFriends).GetAllBytes());
             return;

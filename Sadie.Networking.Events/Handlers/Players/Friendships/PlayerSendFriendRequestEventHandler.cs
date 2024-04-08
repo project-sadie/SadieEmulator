@@ -1,17 +1,16 @@
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Friendships;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerSendFriendRequestEventHandler(
     PlayerSendFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
-    IPlayerFriendshipRepository friendshipRepository,
     PlayerConstants playerConstants)
     : INetworkPacketEventHandler
 {
@@ -26,7 +25,7 @@ public class PlayerSendFriendRequestEventHandler(
 
         var targetUsername = eventParser.TargetUsername;
         
-        if (player.FriendshipComponent.Friendships.Count >= playerConstants.MaxFriendships)
+        if (player.Friendships.Count >= playerConstants.MaxFriendships)
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TooManyFriends).GetAllBytes());
             return;
@@ -105,7 +104,7 @@ public class PlayerSendFriendRequestEventHandler(
                 player.Username, 
                 player.AvatarData.FigureCode).GetAllBytes();
             
-            onlineTarget.FriendshipComponent.Friendships = await friendshipRepository.GetAllRecordsForPlayerAsync(targetPlayer.Id);
+            onlineTarget.Friendships = await friendshipRepository.GetAllRecordsForPlayerAsync(targetPlayer.Id);
             await onlineTarget.NetworkObject.WriteToStreamAsync(friendRequestWriter);
         }
     }

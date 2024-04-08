@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
-using Sadie.Game.Players.Relationships;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
@@ -59,7 +58,7 @@ public class PlayerRepository(
         }
 
         await UpdateOnlineStatusAsync(player.Data.Id, false);
-        await UpdateMessengerStatusForFriends(player.Data.Id, player.FriendshipComponent.Friendships, false, false);
+        await UpdateMessengerStatusForFriends(player.Data.Id, player.Friendships, false, false);
         await player!.DisposeAsync();
 
         return result;
@@ -67,21 +66,21 @@ public class PlayerRepository(
 
     public async Task UpdateMessengerStatusForFriends(long playerId, IEnumerable<PlayerFriendship> friendships, bool isOnline, bool inRoom)
     {
-        foreach (var friendId in friendships.Select(x => x.TargetData.Id).Distinct())
+        foreach (var friendId in friendships.Select(x => x.TargetPlayer.Id).Distinct())
         {
             if (!TryGetPlayerById(friendId, out var friend) || friend == null)
             {
                 continue;
             }
          
-            var friendship = friend.FriendshipComponent.Friendships.FirstOrDefault(x => x.TargetData.Id == playerId);
+            var friendship = friend.Friendships.FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (friendship != null)
             {
                 var relationship = friend
                     .Relationships
                     .FirstOrDefault(x =>
-                        x.TargetPlayerId == friendship.OriginId || x.TargetPlayerId == friendship.TargetId);
+                        x.TargetPlayerId == friendship.OriginPlayerId || x.TargetPlayerId == friendship.TargetPlayerId);
 
                 var updateFriendWriter = new PlayerUpdateFriendWriter(
                         0, 

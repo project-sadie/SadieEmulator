@@ -1,5 +1,4 @@
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -7,7 +6,7 @@ namespace Sadie.Networking.Writers.Players.Messenger;
 
 public class PlayerSearchResultWriter : NetworkPacketWriter
 {
-    public PlayerSearchResultWriter(ICollection<PlayerFriendshipData> friends, ICollection<Player> strangers)
+    public PlayerSearchResultWriter(ICollection<Player> friends, ICollection<Player> strangers)
     {
         WriteShort(ServerPacketId.PlayerSearchResult);
         WriteInteger(friends.Count);
@@ -16,12 +15,12 @@ public class PlayerSearchResultWriter : NetworkPacketWriter
         {
             WriteInteger(friend.Id);
             WriteString(friend.Username);
-            WriteString(friend.Motto);
+            WriteString(friend.AvatarData.Motto);
             WriteBool(false);
             WriteBool(false);
             WriteString("");
             WriteInteger(1);
-            WriteString(friend.FigureCode);
+            WriteString(friend.AvatarData.FigureCode);
             WriteString("");
         }
         

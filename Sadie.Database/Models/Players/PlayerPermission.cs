@@ -1,4 +1,4 @@
-namespace Sadie.Database.Models;
+namespace Sadie.Database.Models.Players;
 
 public class PlayerPermission
 {

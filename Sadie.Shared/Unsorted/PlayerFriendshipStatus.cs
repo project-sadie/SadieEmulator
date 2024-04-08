@@ -1,4 +1,4 @@
-namespace Sadie.Game.Players.Friendships;
+namespace Sadie.Shared.Unsorted;
 
 public enum PlayerFriendshipStatus
 {

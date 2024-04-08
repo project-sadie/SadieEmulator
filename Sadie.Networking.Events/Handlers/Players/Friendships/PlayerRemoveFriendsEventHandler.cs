@@ -1,5 +1,4 @@
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;

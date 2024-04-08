@@ -1,11 +1,10 @@
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
-using Sadie.Game.Players.Relationships;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 

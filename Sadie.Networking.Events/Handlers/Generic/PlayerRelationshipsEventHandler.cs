@@ -1,5 +1,4 @@
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Generic;
 using Sadie.Networking.Packets;
@@ -9,8 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 
 public class PlayerRelationshipsEventHandler(
     PlayerRelationshipsEventParser eventParser,
-    PlayerRepository playerRepository,
-    IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEventHandler
+    PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerRelationships;
 
@@ -26,7 +24,7 @@ public class PlayerRelationshipsEventHandler(
                 await playerRepository.GetRelationshipsForPlayerAsync(playerId);
 
         var playerFriends = isOnline
-            ? player!.FriendshipComponent.Friendships
+            ? player!.Friendships
             : await friendshipRepository.GetFriendsForPlayerAsync(playerId);
         
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, 

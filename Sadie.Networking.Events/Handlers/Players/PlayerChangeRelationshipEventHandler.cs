@@ -2,10 +2,10 @@ using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
-using Sadie.Game.Players.Relationships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -24,11 +24,10 @@ public class PlayerChangeRelationshipEventHandler(
         var playerId = eventParser.PlayerId;
         var relationId = eventParser.RelationId;
         
-        var friendshipComponent = client.Player.FriendshipComponent;
-        
-        var friendship = friendshipComponent.
+        var friendship = client.
+            Player.
             Friendships.
-            FirstOrDefault(x => x.OriginId == playerId || x.TargetId == playerId);
+            FirstOrDefault(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId);
 
         if (friendship == null)
         {

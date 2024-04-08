@@ -14,7 +14,7 @@ public class PlayerFriendListUpdateEventHandler(
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player!;
-        var friends = player.FriendshipComponent.Friendships;
+        var friends = player.Friendships;
         var pages = friends.Count / 500 + 1;
         
         for (var i = 0; i < pages; i++)

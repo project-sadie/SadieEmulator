@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Relationships;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database.Models.Players;
 

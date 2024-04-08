@@ -1,5 +1,5 @@
-using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Relationships;
+using Sadie.Database.Models.Players;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -23,7 +23,7 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         bool pocketUser,
         PlayerRelationshipType relationshipType)
     {
-        var targetData = friendship.TargetData;
+        var targetData = friendship.TargetPlayer;
         
         WriteShort(ServerPacketId.PlayerUpdateFriend);
         WriteInteger(unknown1);
@@ -31,12 +31,12 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         WriteInteger(unknown3);
         WriteInteger(targetData.Id);
         WriteString(targetData.Username);
-        WriteInteger(targetData.Gender == AvatarGender.Male ? 0 : 1);
+        WriteInteger(targetData.AvatarData.Gender == AvatarGender.Male ? 0 : 1);
         WriteBool(isOnline);
         WriteBool(canFollow);
-        WriteString(targetData.FigureCode);
+        WriteString(targetData.AvatarData.FigureCode);
         WriteInteger(categoryId);
-        WriteString(targetData.Motto);
+        WriteString(targetData.AvatarData.Motto);
         WriteString(realName);
         WriteString(lastAccess);
         WriteBool(persistedMessageUser);
