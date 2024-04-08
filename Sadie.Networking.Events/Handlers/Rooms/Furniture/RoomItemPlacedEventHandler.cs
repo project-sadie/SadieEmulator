@@ -108,7 +108,7 @@ public class RoomItemPlacedEventHandler(
             
         var roomFurnitureItem = new RoomFurnitureItem
         {
-            OwnerId = player.Data.Id,
+            OwnerId = player.Id,
             OwnerUsername = player.Username,
             FurnitureItem = playerItem.FurnitureItem,
             PositionX = x,
@@ -162,7 +162,7 @@ public class RoomItemPlacedEventHandler(
 
         var roomFurnitureItem = new RoomFurnitureItem
         {
-            OwnerId = player.Data.Id,
+            OwnerId = player.Id,
             OwnerUsername = player.Username,
             FurnitureItem = playerItem.FurnitureItem,
             PositionX = 0,

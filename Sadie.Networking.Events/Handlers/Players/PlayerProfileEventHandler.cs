@@ -22,7 +22,7 @@ public class PlayerProfileEventHandler(
         eventParser.Parse(reader);
 
         var player = client.Player;
-        var playerId = player.Data.Id;
+        var playerId = player.Id;
 
         var profileId = eventParser.ProfileId;
 

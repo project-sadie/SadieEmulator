@@ -52,7 +52,7 @@ public class PlayerChangeRelationshipEventHandler(
             {
                 relationship = new PlayerRelationship
                 {
-                    OriginPlayerId = client.Player.Data.Id,
+                    OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
                     Type = (PlayerRelationshipType)relationId
                 };

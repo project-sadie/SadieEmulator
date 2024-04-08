@@ -1,4 +1,4 @@
-namespace Sadie.Game.Players.Messenger;
+namespace Sadie.Shared.Unsorted;
 
 public enum PlayerMessageError
 {

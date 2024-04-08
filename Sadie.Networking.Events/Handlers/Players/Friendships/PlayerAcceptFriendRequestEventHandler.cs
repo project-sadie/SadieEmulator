@@ -31,7 +31,7 @@ public class PlayerAcceptFriendRequestEventHandler(
     private async Task AcceptAsync(INetworkClient client, int originId)
     {
         var player = client.Player;
-        var playerId = player.Data.Id;
+        var playerId = player.Id;
         
         var request = player
             .Friendships
@@ -88,7 +88,7 @@ public class PlayerAcceptFriendRequestEventHandler(
         {
             var (roomFound, lastRoom) = roomRepository.TryGetRoomById(origin.CurrentRoomId);
 
-            if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Data.Id, out _))
+            if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Id, out _))
             {
                 targetInRoom = true;
             }

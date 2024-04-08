@@ -56,7 +56,7 @@ public class SecureLoginEventHandler(
         }
 
         var playerData = player.Data;
-        var playerId = playerData.Id;
+        var playerId = player.Id;
             
         client.Player = player;
         

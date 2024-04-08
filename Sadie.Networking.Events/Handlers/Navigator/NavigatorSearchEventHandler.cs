@@ -26,7 +26,7 @@ public class NavigatorSearchEventHandler(
             return;
         }
 
-        var playerId = client.Player.Data.Id;
+        var playerId = client.Player.Id;
         var tabName = eventParser.TabName;
         var searchQuery = eventParser.SearchQuery;
 

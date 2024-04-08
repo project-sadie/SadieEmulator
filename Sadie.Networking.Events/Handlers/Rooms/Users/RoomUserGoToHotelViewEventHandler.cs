@@ -17,7 +17,7 @@ public class RoomUserGoToHotelViewEventHandler(RoomRepository roomRepository) : 
         {
             var (foundLast, lastRoom) = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
 
-            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Data.Id, out var oldUser) && oldUser != null)
+            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
             {
                 await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id, true);
             }

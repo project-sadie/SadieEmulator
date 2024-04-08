@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Messenger;
+using Sadie.Database.Models.Players;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -10,7 +10,7 @@ public class PlayerDirectMessageWriter : NetworkPacketWriter
     public PlayerDirectMessageWriter(PlayerMessage message)
     {
         WriteShort(ServerPacketId.PlayerMessage);
-        WriteInteger(message.OriginId);
+        WriteInteger(message.OriginPlayerId);
         WriteString(message.Message);
         WriteLong(DateTime.Now.ToUnix() - message.CreatedAt.ToUnix());
     }

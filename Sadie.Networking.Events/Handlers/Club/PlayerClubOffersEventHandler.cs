@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Players.Club;
+﻿using Sadie.Game.Catalog.Club;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Club;
 using Sadie.Networking.Packets;
@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Club;
 
 public class PlayerClubOffersEventHandler(
     PlayerClubOffersEventParser eventParser, 
-    PlayerClubOfferRepository clubOfferRepository) : INetworkPacketEventHandler
+    CatalogClubOfferRepository clubOfferRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.HabboClubData;
 

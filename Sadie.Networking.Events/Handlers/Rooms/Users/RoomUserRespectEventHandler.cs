@@ -1,6 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Respect;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -14,7 +15,7 @@ public class RoomUserRespectEventHandler(
     RoomUserRespectEventParser eventParser,
     PlayerRepository playerRepository,
     RoomRepository roomRepository,
-    IPlayerRespectDao respectDao)
+    SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserRespect;
@@ -33,7 +34,7 @@ public class RoomUserRespectEventHandler(
         var lastRoom = player.CurrentRoomId;
         
         if (playerData.RespectPoints < 1 || 
-            playerData.Id == eventParser.TargetId || 
+            player.Id == eventParser.TargetId || 
             !playerRepository.TryGetPlayerById(eventParser.TargetId, out var targetPlayer) || 
             targetPlayer!.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
         {
@@ -50,8 +51,8 @@ public class RoomUserRespectEventHandler(
 
         playerData.RespectPoints--;
         targetPlayer.Respects.Add(respect);
-        
-        await respectDao.CreateAsync(playerData.Id, eventParser.TargetId);
+
+        await dbContext.SaveChangesAsync();
 
         await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetPlayer.Respects.Count).GetAllBytes());
         await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp).GetAllBytes());

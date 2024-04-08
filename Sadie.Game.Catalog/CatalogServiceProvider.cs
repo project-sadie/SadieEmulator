@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Game.Catalog.Club;
 using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
 
@@ -18,5 +20,8 @@ public static class CatalogServiceProvider
         
         serviceCollection.AddTransient<CatalogFrontPageItem>();
         serviceCollection.AddSingleton<CatalogFrontPageItemRepository>();
+        
+        serviceCollection.AddSingleton<CatalogClubOfferRepository>();
+        serviceCollection.AddTransient<CatalogClubOffer>();
     }
 }

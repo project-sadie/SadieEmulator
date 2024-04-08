@@ -106,7 +106,7 @@ public class PlayerSendFriendRequestEventHandler(
             if (targetOnline && onlineTarget != null)
             {
                 var friendRequestWriter = new PlayerFriendRequestWriter(
-                    playerData.Id,
+                    player.Id,
                     player.Username, 
                     player.AvatarData.FigureCode).GetAllBytes();
             

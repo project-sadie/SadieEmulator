@@ -45,7 +45,7 @@ public class RoomItemEjectedEventHandler(
             return;
         }
 
-        if (roomFurnitureItem.OwnerId != player.Data.Id)
+        if (roomFurnitureItem.OwnerId != player.Id)
         {
             return;
         }
@@ -72,7 +72,7 @@ public class RoomItemEjectedEventHandler(
             await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter(roomFurnitureItem).GetAllBytes());
         }
 
-        var ownsItem = roomFurnitureItem.OwnerId == player.Data.Id;
+        var ownsItem = roomFurnitureItem.OwnerId == player.Id;
         var created = DateTime.Now;
 
         var playerItem = new PlayerFurnitureItem

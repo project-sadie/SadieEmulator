@@ -4,12 +4,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.LegacyAdoNet;
+using Sadie.Game.Catalog.Club;
 using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Club;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
 using Sadie.Shared;
@@ -75,7 +75,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync, "furniture items");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync, "catalog pages");
         await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>().LoadInitialDataAsync, "catalog front page items");
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<PlayerClubOfferRepository>().LoadInitialDataAsync, "player club offers");
+        await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogClubOfferRepository>().LoadInitialDataAsync, "player club offers");
     }
 
     private async Task LoadInitialDataAsync(Func<Task> action, string name)

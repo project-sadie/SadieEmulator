@@ -20,7 +20,7 @@ public class RoomLikeEventHandler(RoomRepository roomRepository,
 
         var playerData = client.Player!.Data;
         
-        if (room.OwnerId == playerData.Id || client.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) != null)
+        if (room.OwnerId == client.Player.Id || client.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) != null)
         {
             return;
         }

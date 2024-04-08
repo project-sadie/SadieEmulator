@@ -46,7 +46,7 @@ public class PlayerRepository(
         return mapper.Map<PlayerLogic>(player);
     }
 
-    public bool TryAddPlayer(PlayerLogic player) => _players.TryAdd(player.Data.Id, player);
+    public bool TryAddPlayer(PlayerLogic player) => _players.TryAdd(player.Id, player);
 
     public async Task<bool> TryRemovePlayerAsync(int playerId)
     {
@@ -57,8 +57,8 @@ public class PlayerRepository(
             return result;
         }
 
-        await UpdateOnlineStatusAsync(player.Data.Id, false);
-        await UpdateMessengerStatusForFriends(player.Data.Id, player.Friendships, false, false);
+        await UpdateOnlineStatusAsync(player.Id, false);
+        await UpdateMessengerStatusForFriends(player.Id, player.Friendships, false, false);
         await player!.DisposeAsync();
 
         return result;
@@ -143,7 +143,7 @@ public class PlayerRepository(
     {
         foreach (var player in _players.Values)
         {
-            if (!await TryRemovePlayerAsync(player.Data.Id))
+            if (!await TryRemovePlayerAsync(player.Id))
             {
                 logger.LogError("Failed to dispose of player");
             }

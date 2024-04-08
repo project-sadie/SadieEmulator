@@ -1,13 +1,11 @@
-using Sadie.Shared.Unsorted;
-
 namespace Sadie.Database.Models.Players;
 
-public class PlayerFriendship
+public class PlayerMessage
 {
-    public int Id { get; set; }
     public int OriginPlayerId { get; set; }
     public Player OriginPlayer { get; set; }
     public int TargetPlayerId { get; set; }
     public Player TargetPlayer { get; set; }
-    public PlayerFriendshipStatus Status { get; set; }
+    public string Message { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

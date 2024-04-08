@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Sadie.Database.Models.Players;
 
 public class Player
@@ -21,5 +23,15 @@ public class Player
     public List<PlayerSubscription> Subscriptions { get; set; }
     public List<PlayerRespect> Respects { get; set; }
     public List<PlayerSavedSearch> SavedSearches { get; set; }
-    public List<PlayerFriendship> Friendships { get; set; }
+    [InverseProperty("OriginPlayer")]
+    public List<PlayerFriendship> FriendshipsSent { get; set; }
+    [InverseProperty("TargetPlayer")]
+    public List<PlayerFriendship> FriendshipsReceived { get; set; }
+    [InverseProperty("OriginPlayer")]
+    public List<PlayerMessage> MessagesSent { get; set; }
+    [InverseProperty("TargetPlayer")]
+    public List<PlayerMessage> MessagesReceived { get; set; }
+
+    [NotMapped] 
+    public List<PlayerFriendship> Friendships => FriendshipsSent.Union(FriendshipsReceived).ToList();
 }

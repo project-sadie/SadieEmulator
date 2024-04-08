@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Players.Club;
+﻿using Sadie.Database.Models.Catalog;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Players.Other;
 public class PlayerClubOffersWriter : NetworkPacketWriter
 {
     public PlayerClubOffersWriter(
-        IReadOnlyCollection<PlayerClubOffer> offers, 
+        IReadOnlyCollection<CatalogClubOffer> offers, 
         int windowId, 
         bool unused, 
         bool canGift,
@@ -18,7 +18,7 @@ public class PlayerClubOffersWriter : NetworkPacketWriter
 
         foreach (var offer in offers)
         {
-            var duration = TimeSpan.FromDays(offer.Days);
+            var duration = TimeSpan.FromDays(offer.DurationDays);
             var months = (int) duration.TotalDays / 31;
             var days = (int) duration.TotalDays - months * 31;
 
@@ -32,11 +32,11 @@ public class PlayerClubOffersWriter : NetworkPacketWriter
             WriteInteger(offer.CostCredits); 
             WriteInteger(offer.CostPoints);
             WriteInteger(offer.CostPointsType);
-            WriteBool(offer.Vip);
+            WriteBool(offer.IsVip);
             WriteInteger((int)duration.TotalDays / 31);
             WriteInteger(days);
             WriteBool(canGift);
-            WriteInteger(offer.Days);
+            WriteInteger(offer.DurationDays);
             WriteInteger(expires.Year);
             WriteInteger(expires.Month);
             WriteInteger(expires.Day);

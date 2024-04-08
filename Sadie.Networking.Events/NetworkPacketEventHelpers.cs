@@ -54,22 +54,21 @@ internal static class NetworkPacketEventHelpers
         IRoomUserFactory roomUserFactory)
     {
         var player = client.Player;
-        var playerData = player.Data;
         var playerState = player.State;
         
         player.CurrentRoomId = room.Id;
-        playerState.RoomVisits.Add(new PlayerRoomVisit(playerData.Id, room.Id));
+        playerState.RoomVisits.Add(new PlayerRoomVisit(player.Id, room.Id));
 
         var avatarData = (IAvatarData) player.Data;
 
         var controllerLevel = RoomControllerLevel.None;
         
-        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerData.Id) != null)
+        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Id) != null)
         {
             controllerLevel = RoomControllerLevel.Rights;
         }
 
-        if (room.OwnerId == player.Data.Id)
+        if (room.OwnerId == player.Id)
         {
             controllerLevel = RoomControllerLevel.Owner;
         }
@@ -77,7 +76,7 @@ internal static class NetworkPacketEventHelpers
         var roomUser = roomUserFactory.Create(
             room,
             player.NetworkObject,
-            playerData.Id,
+            player.Id,
             new HPoint(room.Layout.DoorX, room.Layout.DoorY, room.Layout.DoorZ),
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
@@ -88,7 +87,7 @@ internal static class NetworkPacketEventHelpers
         
         if (!room.UserRepository.TryAdd(roomUser))
         {
-            logger.LogError($"Failed to add user {playerData.Id} to room {room.Id}");
+            logger.LogError($"Failed to add user {player.Id} to room {room.Id}");
             return;
         }
         
@@ -113,7 +112,7 @@ internal static class NetworkPacketEventHelpers
         await client.WriteToStreamAsync(new RoomScoreWriter(room.PlayerLikes.Count, canLikeRoom).GetAllBytes());
         await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
 
-        var owner = room.OwnerId == playerData.Id;
+        var owner = room.OwnerId == player.Id;
         
         await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter(
             room.Settings.HideWalls, 

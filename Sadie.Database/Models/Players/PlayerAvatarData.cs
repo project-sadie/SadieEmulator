@@ -6,6 +6,7 @@ namespace Sadie.Database.Models.Players;
 public class PlayerAvatarData
 {
     public int Id { get; set; }
+    public int PlayerId { get; set; }
     public Player Player { get; set; }
     public string FigureCode { get; set; }
     public string Motto { get; set; }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
@@ -12,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomPaintItemPlacedEventHandler(
     RoomPaintItemPlacedEventParser parser, 
     RoomRepository roomRepository,
-    DbContext dbContext) : INetworkPacketEventHandler
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomPaintItemPlaced;
     

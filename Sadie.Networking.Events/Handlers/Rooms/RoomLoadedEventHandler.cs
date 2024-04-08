@@ -29,7 +29,6 @@ public class RoomLoadedEventHandler(
         eventParser.Parse(readers);
 
         var player = client.Player;
-        var playerData = player.Data;
 
         var (roomId, password) = (eventParser.RoomId, eventParser.Password);
         var (found, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
@@ -39,7 +38,7 @@ public class RoomLoadedEventHandler(
         {
             var (foundLast, lastRoom) = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
 
-            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(playerData.Id, out var oldUser) && oldUser != null)
+            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
             {
                 var currentTile = lastRoom.TileMap.FindTile(oldUser.Point.X, oldUser.Point.Y);
                 currentTile?.Users.Remove(oldUser.Id);
@@ -56,7 +55,7 @@ public class RoomLoadedEventHandler(
             return;
         }
 
-        var isOwner = room.OwnerId == playerData.Id;
+        var isOwner = room.OwnerId == player.Id;
 
         if (room.UserRepository.Count > room.MaxUsersAllowed && !isOwner)
         {
@@ -101,7 +100,7 @@ public class RoomLoadedEventHandler(
         await NetworkPacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
         
         await playerRepository.UpdateMessengerStatusForFriends(
-            playerData.Id,
+            player.Id,
             player.Friendships, 
             true, 
             true);

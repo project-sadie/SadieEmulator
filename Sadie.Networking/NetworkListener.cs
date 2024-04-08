@@ -35,8 +35,15 @@ namespace Sadie.Networking
 
         private void OnOpen(IWebSocketConnection connection)
         {
-            var client = clientFactory.CreateClient(connection.ConnectionInfo.Id, connection);
-            clientRepository.AddClient(connection.ConnectionInfo.Id, client);
+            try
+            {
+                var client = clientFactory.CreateClient(connection.ConnectionInfo.Id, connection);
+                clientRepository.AddClient(connection.ConnectionInfo.Id, client);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.ToString());
+            }
         }
 
         private async void OnClose(IWebSocketConnection connection)
@@ -51,7 +58,7 @@ namespace Sadie.Networking
         {
             if (!clientRepository.TryGetClientByGuid(connection.ConnectionInfo.Id, out var client))
             {
-                logger.LogError("Failed to resolve client from connection information.");
+                logger.LogError($"Failed to resolve client from connection information {connection.ConnectionInfo.Id}.");
             }
             else
             {

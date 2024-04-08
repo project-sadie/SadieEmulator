@@ -1,5 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Messenger;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Messenger;
 using Sadie.Networking.Packets;
@@ -12,8 +13,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 public class PlayerSendDirectMessageEventHandler(
     PlayerSendDirectMessageEventParser eventParser,
-    PlayerRepository playerRepository, 
-    IPlayerMessageDao playerMessageDao)
+    PlayerRepository playerRepository,
+    DbContext dbContext)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerSendDirectMessage;
@@ -56,9 +57,18 @@ public class PlayerSendDirectMessageEventHandler(
             return;
         }
 
-        var playerMessage = new PlayerMessage(client.Player.Data.Id, targetPlayer.Data.Id, message);
+        var playerMessage = new PlayerMessage
+        {
+            OriginPlayerId = client.Player.Id,
+            TargetPlayerId = targetPlayer.Id,
+            Message = message
+        };
 
-        await playerMessageDao.CreateMessageAsync(playerMessage);
+        client.Player.MessagesSent.Add(playerMessage);
+        targetPlayer.MessagesReceived.Add(playerMessage);
+
+        await dbContext.SaveChangesAsync();
+
         await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter(playerMessage).GetAllBytes());
     }
 }
