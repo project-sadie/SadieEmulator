@@ -13,6 +13,10 @@ public class PlayerProfileWriter : NetworkPacketWriter
         bool friendshipExists, 
         bool friendshipRequestExists)
     {
+        var lastOnline = player.Data.LastOnline == null
+            ? 0
+            : (int) (DateTime.Now - player.Data.LastOnline).Value.TotalSeconds;
+        
         WriteShort(ServerPacketId.PlayerProfile);
         WriteLong(player.Id);
         WriteString(player.Username);
@@ -25,7 +29,7 @@ public class PlayerProfileWriter : NetworkPacketWriter
         WriteBool(friendshipRequestExists);
         WriteBool(online);
         WriteInteger(0);
-        WriteInteger((int)(DateTime.Now - player.Data.LastOnline).TotalSeconds);
+        WriteInteger(lastOnline);
         WriteBool(true);
     }
 }
