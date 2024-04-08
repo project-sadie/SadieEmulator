@@ -14,6 +14,6 @@ public class PlayerNavigatorSettingsWriter : NetworkPacketWriter
         WriteInteger(navigatorSettings.WindowWidth);
         WriteInteger(navigatorSettings.WindowHeight);
         WriteBool(navigatorSettings.OpenSearches);
-        WriteInteger(navigatorSettings.Mode);
+        WriteInteger(0);
     }
 }

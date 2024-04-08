@@ -26,7 +26,6 @@ public class SaveNavigatorSettingsEventHandler(SaveNavigatorSettingsEventParser 
         navigatorSettings.WindowWidth = eventParser.WindowWidth;
         navigatorSettings.WindowHeight = eventParser.WindowHeight;
         navigatorSettings.OpenSearches = eventParser.OpenSearches;
-        navigatorSettings.Mode = eventParser.Mode;
 
         return Task.CompletedTask;
     }
