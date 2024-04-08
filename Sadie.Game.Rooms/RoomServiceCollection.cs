@@ -17,7 +17,7 @@ public static class RoomServiceCollection
             .WithSingletonLifetime());
         
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
-        serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
+        serviceCollection.AddSingleton<RoomUserFactory>();
         serviceCollection.AddSingleton<RoomRepository, RoomRepository>();
         
         serviceCollection.AddSingleton<AboutCommand>();

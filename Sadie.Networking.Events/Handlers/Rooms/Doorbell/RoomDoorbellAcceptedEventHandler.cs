@@ -11,7 +11,7 @@ public class RoomDoorbellAcceptedEventHandler(
     RoomDoorbellAcceptedEventParser eventParser,
     RoomRepository roomRepository,
     ILogger<RoomDoorbellAcceptedEventHandler> logger,
-    IRoomUserFactory roomUserFactory)
+    RoomUserFactory roomUserFactory)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomDoorbellAccepted;
