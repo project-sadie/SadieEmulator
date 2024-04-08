@@ -20,5 +20,4 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     Task RunPeriodicCheckAsync();
     void UpdateLastAction();
     bool HasRights();
-    Task OnTalkAsync(RoomChatMessage message);
 }

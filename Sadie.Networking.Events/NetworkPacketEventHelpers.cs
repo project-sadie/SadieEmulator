@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sadie.Database;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
@@ -143,7 +144,8 @@ internal static class NetworkPacketEventHelpers
         bool shouting,
         RoomConstants roomConstants,
         RoomRepository roomRepository,
-        IRoomChatCommandRepository commandRepository)
+        IRoomChatCommandRepository commandRepository,
+        SadieContext dbContext)
     {
         var message = parser.Message;
         
@@ -178,13 +180,18 @@ internal static class NetworkPacketEventHelpers
             Type = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };
-        
-        await roomUser.OnTalkAsync(chatMessage);
 
         await room!.UserRepository.BroadcastDataAsync(
             shouting ? 
             new RoomUserShoutWriter(chatMessage!, 0).GetAllBytes() : 
             new RoomUserChatWriter(chatMessage!, 0).GetAllBytes()
         );
+        
+        roomUser.UpdateLastAction();
+
+        room.ChatMessages.Add(chatMessage);
+
+        dbContext.Add(chatMessage);
+        await dbContext.SaveChangesAsync();
     }
 }

@@ -1,3 +1,4 @@
+using Sadie.Database;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
@@ -11,7 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 public class RoomUserWhisperEventHandler(
     RoomUserWhisperEventParser eventParser,
     RoomRepository roomRepository, 
-    RoomConstants roomConstants)
+    RoomConstants roomConstants,
+    SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomUserWhisper;
@@ -50,8 +52,6 @@ public class RoomUserWhisperEventHandler(
             CreatedAt = DateTime.Now
         };
 
-        await roomUser.OnTalkAsync(chatMessage);
-        
         var packetBytes = new RoomUserWhisperWriter(
             chatMessage.PlayerId,
             chatMessage.Message,
@@ -60,5 +60,12 @@ public class RoomUserWhisperEventHandler(
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);
+        
+        roomUser.UpdateLastAction();
+        
+        room.ChatMessages.Add(chatMessage);
+
+        dbContext.Add(chatMessage);
+        await dbContext.SaveChangesAsync();
     }
 }

@@ -156,13 +156,6 @@ public class RoomUser(
         }
     }
 
-    public async Task OnTalkAsync(RoomChatMessage message)
-    {
-        room.ChatMessages.Add(message);
-
-        UpdateLastAction();
-    }
-
     public async ValueTask DisposeAsync()
     {
         

@@ -22,7 +22,6 @@ public static class ServerServiceCollection
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
         serviceCollection.AddSingleton<IServerTask, ProcessRoomsTask>();
-        serviceCollection.AddSingleton<IServerTask, StoreChatMessagesTask>();
         serviceCollection.AddSingleton<IServerTask, DisconnectIdleClientsTask>();
         serviceCollection.AddSingleton<IServerTask, UpdateConsoleTitleTask>();
         

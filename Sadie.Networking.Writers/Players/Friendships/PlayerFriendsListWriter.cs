@@ -12,9 +12,9 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
     public PlayerFriendsListWriter(
         int pages, 
         int index, 
-        List<PlayerFriendship> friends, 
+        ICollection<PlayerFriendship> friends, 
         PlayerRepository playerRepository, 
-        List<PlayerRelationship> relationships)
+        ICollection<PlayerRelationship> relationships)
     {
         WriteShort(ServerPacketId.PlayerFriendsList);
         WriteInteger(pages);
