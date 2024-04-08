@@ -18,7 +18,7 @@ public class RoomLoadedEventHandler(
     RoomLoadedEventParser eventParser,
     ILogger<RoomLoadedEventHandler> logger,
     RoomRepository roomRepository,
-    IRoomUserFactory roomUserFactory,
+    RoomUserFactory roomUserFactory,
     PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
