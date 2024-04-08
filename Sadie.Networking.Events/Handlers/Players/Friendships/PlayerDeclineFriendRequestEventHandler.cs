@@ -1,14 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerDeclineFriendRequestEventHandler(
     PlayerDeclineFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
-    IPlayerFriendshipRepository friendshipRepository)
+    SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerDeclineFriendRequest;
@@ -23,20 +27,30 @@ public class PlayerDeclineFriendRequestEventHandler(
 
         if (eventParser.DeclineAll)
         {
-            await friendshipRepository.DeclineAllFriendRequestsAsync(playerId);
+            await dbContext.Set<PlayerFriendship>()
+                .Where(x => x.TargetPlayerId == playerId && x.Status == PlayerFriendshipStatus.Pending)
+                .ExecuteDeleteAsync();
         }
         else
         {
             foreach (var originId in eventParser.Ids) 
             {
                 var targetId = playerId;
+                
+                await dbContext.Set<PlayerFriendship>()
+                    .Where(x => x.OriginPlayerId == originId && x.TargetPlayerId == targetId)
+                    .ExecuteDeleteAsync();
 
-                await friendshipRepository.DeclineFriendRequestAsync(originId, targetId);
-                player.FriendshipComponent.DeclineIncomingRequest(originId);
-
-                if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
+                if (!playerRepository.TryGetPlayerById(originId, out var origin) || origin == null)
                 {
-                    origin.FriendshipComponent.OutgoingRequestDeclined(targetId);
+                    continue;
+                }
+                
+                var request = origin.Friendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
+
+                if (request != null)
+                {
+                    origin.Friendships.Remove(request);
                 }
             }
         }

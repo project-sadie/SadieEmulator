@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 
 public class RoomWallItemsWriter : NetworkPacketWriter
 {
-    public RoomWallItemsWriter(ICollection<RoomFurnitureItem> wallItems,
-        Dictionary<long, string> furnitureOwners)
+    public RoomWallItemsWriter(
+        ICollection<RoomFurnitureItem> wallItems,
+        Dictionary<int, string> furnitureOwners)
     {
        WriteShort(ServerPacketId.RoomWallItems);
        WriteInteger(furnitureOwners.Count);

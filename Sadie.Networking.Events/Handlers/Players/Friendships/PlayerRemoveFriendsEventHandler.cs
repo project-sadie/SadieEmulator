@@ -8,8 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 public class PlayerRemoveFriendsEventHandler(
     PlayerRemoveFriendsEventParser eventParser,
-    PlayerRepository playerRepository,
-    IPlayerFriendshipRepository friendshipRepository)
+    PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerRemoveFriends;

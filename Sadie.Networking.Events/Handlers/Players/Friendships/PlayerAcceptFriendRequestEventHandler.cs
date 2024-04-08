@@ -1,3 +1,4 @@
+using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
@@ -11,8 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 public class PlayerAcceptFriendRequestEventHandler(
     PlayerAcceptFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
-    IPlayerFriendshipRepository friendshipRepository,
-    RoomRepository roomRepository)
+    RoomRepository roomRepository,
+    SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerAcceptFriendRequest;
@@ -32,26 +33,24 @@ public class PlayerAcceptFriendRequestEventHandler(
         var player = client.Player;
         var playerId = player.Data.Id;
         
-        var friendshipComponent = player.FriendshipComponent;
-            
-        var request = friendshipComponent
+        var request = player
             .Friendships
-            .FirstOrDefault(x => x.OriginId == originId && x.Status == PlayerFriendshipStatus.Pending);
+            .FirstOrDefault(x => x.OriginPlayerId == originId && x.Status == PlayerFriendshipStatus.Pending);
 
-        if (request == null || request.TargetId != playerId)
+        if (request == null || request.TargetPlayerId != playerId)
         {
             return;
         }
 
+        request.Status = PlayerFriendshipStatus.Accepted;
+        await dbContext.SaveChangesAsync();
+        
         if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
         {
-            var targetFriendshipComponent = origin.FriendshipComponent;
             
-            targetFriendshipComponent.OutgoingRequestAccepted(playerId);
-            
-            var targetRequest = targetFriendshipComponent.
+            var targetRequest = origin.
                 Friendships.
-                FirstOrDefault(x => x.OriginId == originId && x.TargetId == playerId);
+                FirstOrDefault(x => x.OriginPlayerId == originId && x.TargetPlayerId == playerId);
 
             if (targetRequest != null)
             {
@@ -61,7 +60,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 var relationship = origin
                         .Relationships
                         .FirstOrDefault(x =>
-                            x.TargetPlayerId == targetRequest.OriginId || x.TargetPlayerId == targetRequest.TargetId);
+                            x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 
                 var updateFriendWriter = new PlayerUpdateFriendWriter(
                     0, 
@@ -82,9 +81,6 @@ public class PlayerAcceptFriendRequestEventHandler(
             }
         }
 
-        await friendshipRepository.AcceptFriendRequestAsync(originId, playerId);
-        friendshipComponent.AcceptIncomingRequest(originId);
-
         var targetOnline = origin != null;
         var targetInRoom = false;
 
@@ -98,10 +94,10 @@ public class PlayerAcceptFriendRequestEventHandler(
             }
         }
                 
-        var relationship2 = targetOnline
+        var targetRelationship = targetOnline
             ? origin!
                 .Relationships
-                .FirstOrDefault(x => x.TargetPlayerId == request.OriginId || x.TargetPlayerId == request.TargetId) : null;
+                .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
         
         var updateFriendWriter2 = new PlayerUpdateFriendWriter(
                 0, 
@@ -116,7 +112,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 false, 
                 false,
                 false,
-                relationship2?.Type ?? PlayerRelationshipType.None).GetAllBytes();
+                targetRelationship?.Type ?? PlayerRelationshipType.None).GetAllBytes();
         
         await client.WriteToStreamAsync(updateFriendWriter2);
     }

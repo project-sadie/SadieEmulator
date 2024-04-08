@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Players.Messenger;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
-public class PlayerFriendRequestsEventHandler(IPlayerFriendshipRepository friendshipRepository) : INetworkPacketEventHandler
+public class PlayerFriendRequestsEventHandler() : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerFriendRequestsList;
 

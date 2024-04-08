@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Generic;
@@ -8,7 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 
 public class PlayerRelationshipsEventHandler(
     PlayerRelationshipsEventParser eventParser,
-    PlayerRepository playerRepository) : INetworkPacketEventHandler
+    PlayerRepository playerRepository,
+    DbContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerRelationships;
 
@@ -25,7 +28,10 @@ public class PlayerRelationshipsEventHandler(
 
         var playerFriends = isOnline
             ? player!.Friendships
-            : await friendshipRepository.GetFriendsForPlayerAsync(playerId);
+            : await dbContext
+                .Set<PlayerFriendship>()
+                .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)
+                .ToListAsync();
         
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, 
             relationships, 

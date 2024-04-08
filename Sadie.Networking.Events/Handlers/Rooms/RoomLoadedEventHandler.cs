@@ -102,7 +102,7 @@ public class RoomLoadedEventHandler(
         
         await playerRepository.UpdateMessengerStatusForFriends(
             playerData.Id,
-            player.FriendshipComponent.Friendships, 
+            player.Friendships, 
             true, 
             true);
     }

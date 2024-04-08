@@ -15,7 +15,7 @@ public class PlayerRelationshipsWriter : NetworkPacketWriter
         foreach (var relationship in relationships)
         {
             var friend = friendships
-                .FirstOrDefault(x => x.OriginId == relationship.TargetPlayerId || x.TargetId == relationship.TargetPlayerId);
+                .FirstOrDefault(x => x.OriginPlayerId == relationship.TargetPlayerId || x.TargetPlayerId == relationship.TargetPlayerId);
 
             if (friend == null)
             {
@@ -25,8 +25,8 @@ public class PlayerRelationshipsWriter : NetworkPacketWriter
             WriteInteger((int) relationship.Type);
             WriteInteger(relationships.Count(x => x.Type == relationship.Type));
             WriteLong(relationship.TargetPlayerId);
-            WriteString(friend.TargetData.Username);
-            WriteString(friend.TargetData.FigureCode);
+            WriteString(friend.TargetPlayer.Username);
+            WriteString(friend.TargetPlayer.AvatarData.FigureCode);
         }
     }
 }

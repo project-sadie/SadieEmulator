@@ -23,19 +23,19 @@ public class PlayerFriendsListWriter : NetworkPacketWriter
 
         foreach (var friend in friends)
         {
-            var friendData = friend.TargetData;
+            var friendData = friend.TargetPlayer;
             var isOnline = playerRepository.TryGetPlayerById(friendData.Id, out var onlineFriend) && onlineFriend != null;
             var inRoom = isOnline && onlineFriend != null && onlineFriend.CurrentRoomId != 0;
             var relationshipType = relationships.FirstOrDefault(x => x.TargetPlayerId == friendData.Id)?.Type ?? PlayerRelationshipType.None;
 
             WriteInteger(friendData.Id);
             WriteString(friendData.Username);
-            WriteInteger(friendData.Gender == AvatarGender.Male ? 0 : 1);
+            WriteInteger(friendData.AvatarData.Gender == AvatarGender.Male ? 0 : 1);
             WriteBool(isOnline);
             WriteBool(inRoom);
-            WriteString(friendData.FigureCode);
+            WriteString(friendData.AvatarData.FigureCode);
             WriteInteger(0); // unknown
-            WriteString(friendData.Motto);
+            WriteString(friendData.AvatarData.Motto);
             WriteString(friendData.Username); // real name
             WriteString(""); // last access?
             WriteBool(false); // TODO: offline messaging
