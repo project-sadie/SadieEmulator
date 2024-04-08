@@ -43,7 +43,7 @@ public class PlayerRepository(
             .Include(x => x.Badges)
             .Include(x => x.FurnitureItems)
             .Include(x => x.WardrobeItems)
-            .Include(x => x.Permissions)
+            .Include(x => x.Role)
             .Include(x => x.Subscriptions)
             .Include(x => x.Respects)
             .Include(x => x.SavedSearches)

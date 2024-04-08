@@ -65,7 +65,7 @@ public class RoomLoadedEventHandler(
 
         if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
             !isOwner && 
-            player.Permissions.FirstOrDefault(x => x.Name == "enter_guarded_rooms") == null)
+            player.Role.Permissions.FirstOrDefault(x => x.Name == "enter_guarded_rooms") == null)
         {
             switch (room.Settings.AccessType)
             {

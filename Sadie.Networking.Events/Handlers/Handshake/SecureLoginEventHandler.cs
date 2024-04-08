@@ -120,7 +120,7 @@ public class SecureLoginEventHandler(
             player.State.LastSubscriptionModification = DateTime.Now;
         }
 
-        if (player.Permissions.FirstOrDefault(x => x.Name == "moderation_tools") != null)
+        if (player.Role.Permissions.FirstOrDefault(x => x.Name == "moderation_tools") != null)
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
         }
