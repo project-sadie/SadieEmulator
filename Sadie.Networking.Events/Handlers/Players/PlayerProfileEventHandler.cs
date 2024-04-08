@@ -45,21 +45,16 @@ public class PlayerProfileEventHandler(
         {
             return;
         }
-        
-        var friendCount = playerRecord.Friendships.Count;
 
-        var friendship = playerRecord
-            .Friendships
-            .FirstOrDefault(x => x.OriginPlayerId == playerRecord.Id || x.TargetPlayerId == playerRecord.Id);
-
-        var friendshipRequestExists = friendship is { Status: PlayerFriendshipStatus.Pending };
+        var friendCount = playerRecord.GetAcceptedFriendshipCount();
+        var friendship = playerRecord.TryGetFriendshipFor(profileId);
 
         var profileWriter = new PlayerProfileWriter(
             playerRecord, 
             profileOnline, 
             friendCount, 
-            friendship != null, 
-            friendshipRequestExists).GetAllBytes();
+            friendship is { Status: PlayerFriendshipStatus.Accepted }, 
+            friendship != null).GetAllBytes();
         
         await client.WriteToStreamAsync(profileWriter);
     }

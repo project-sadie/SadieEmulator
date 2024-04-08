@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySqlConnector;
-using Sadie.Database.LegacyAdoNet;
 
 namespace Sadie.Database;
 
@@ -17,12 +15,6 @@ public static class DatabaseServiceCollection
             throw new Exception("Default connection string is missing");
         }
         
-        var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
-        
-        serviceCollection.AddSingleton(connectionStringBuilder);
-        serviceCollection.AddTransient<IDatabaseConnection, DatabaseConnection>();
-        serviceCollection.AddSingleton<IDatabaseProvider, DatabaseProvider>();
-
         serviceCollection.AddDbContext<SadieContext>(options => options
             .UseMySql(connectionString, MySqlServerVersion.LatestSupportedServerVersion) 
             .UseSnakeCaseNamingConvention());

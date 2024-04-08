@@ -18,9 +18,7 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
 
         var playerId = eventParser.PlayerId;
 
-        var friend = client.Player.Friendships.FirstOrDefault(x => x.TargetPlayerId == playerId);
-
-        if (friend is not { Status: PlayerFriendshipStatus.Accepted })
+        if (!client.Player.IsFriendsWith(eventParser.PlayerId))
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.NotFriends).GetAllBytes());
             return;

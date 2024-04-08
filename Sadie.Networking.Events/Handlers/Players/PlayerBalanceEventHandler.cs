@@ -10,25 +10,24 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var player = client.Player;
-        var balance = player.Balance;
+        var playerData = client.Player.Data;
         
         var currencies = new Dictionary<int, long>
         {
-            {0, balance.Pixels},
+            {0, playerData.PixelBalance},
             {1, 0}, // snowflakes
             {2, 0}, // hearts
             {3, 0}, // gift points
             {4, 0}, // shells
-            {5, balance.Seasonal},
+            {5, playerData.SeasonalBalance},
             {101, 0}, // snowflakes
             {102, 0}, // unknown
-            {103, balance.Gotw},
+            {103, playerData.GotwPoints},
             {104, 0}, // unknown
             {105, 0} // unknown
         };
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(balance.Credits).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
     }
 }

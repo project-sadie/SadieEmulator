@@ -27,6 +27,8 @@ public class PlayerDeclineFriendRequestEventHandler(
 
         if (eventParser.DeclineAll)
         {
+            player.IncomingFriendships.Clear();
+            
             await dbContext.Set<PlayerFriendship>()
                 .Where(x => x.TargetPlayerId == playerId && x.Status == PlayerFriendshipStatus.Pending)
                 .ExecuteDeleteAsync();
@@ -46,11 +48,11 @@ public class PlayerDeclineFriendRequestEventHandler(
                     continue;
                 }
                 
-                var request = origin.Friendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
+                var request = origin.OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
 
                 if (request != null)
                 {
-                    origin.Friendships.Remove(request);
+                    origin.OutgoingFriendships.Remove(request);
                 }
             }
         }

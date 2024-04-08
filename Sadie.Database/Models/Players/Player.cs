@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database.Models.Players;
 
@@ -24,14 +25,75 @@ public class Player
     public List<PlayerRespect> Respects { get; set; }
     public List<PlayerSavedSearch> SavedSearches { get; set; }
     [InverseProperty("OriginPlayer")]
-    public List<PlayerFriendship> FriendshipsSent { get; set; }
+    public List<PlayerFriendship> OutgoingFriendships { get; set; }
     [InverseProperty("TargetPlayer")]
-    public List<PlayerFriendship> FriendshipsReceived { get; set; }
+    public List<PlayerFriendship> IncomingFriendships { get; set; }
     [InverseProperty("OriginPlayer")]
     public List<PlayerMessage> MessagesSent { get; set; }
     [InverseProperty("TargetPlayer")]
     public List<PlayerMessage> MessagesReceived { get; set; }
+    
+    public int GetAcceptedFriendshipCount()
+    {
+        return IncomingFriendships.Count(x => x.Status == PlayerFriendshipStatus.Accepted) + 
+               OutgoingFriendships.Count(x => x.Status == PlayerFriendshipStatus.Accepted);
+    }
 
-    [NotMapped] 
-    public List<PlayerFriendship> Friendships => FriendshipsSent.Union(FriendshipsReceived).ToList();
+    public List<PlayerFriendship> GetMergedFriendships()
+    {
+        return OutgoingFriendships
+            .Union(IncomingFriendships)
+            .ToList();
+    }
+
+    public bool IsFriendsWith(int targetId)
+    {
+        return IncomingFriendships.FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) != null 
+               || OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) != null;
+    }
+
+    public PlayerFriendship? TryGetAcceptedFriendshipFor(int targetId)
+    {
+        var incoming = IncomingFriendships.FirstOrDefault(x =>
+            x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
+
+        if (incoming != null)
+        {
+            return incoming;
+        }
+        
+        return OutgoingFriendships
+            .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
+    }
+
+    public PlayerFriendship? TryGetFriendshipFor(int targetId)
+    {
+        var incoming = IncomingFriendships
+            .FirstOrDefault(x => x.OriginPlayerId == targetId);
+
+        if (incoming != null)
+        {
+            return incoming;
+        }
+        
+        return OutgoingFriendships
+            .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
+    }
+
+    public void DeleteFriendshipFor(int targetId)
+    {
+        var incoming = IncomingFriendships.FirstOrDefault(x => x.OriginPlayerId == targetId);
+
+        if (incoming != null)
+        {
+            IncomingFriendships.Remove(incoming);
+        }
+
+        var outgoing = OutgoingFriendships.FirstOrDefault(x => x.OriginPlayerId == targetId);
+        
+        if (outgoing != null)
+        {
+            OutgoingFriendships.Remove(outgoing);
+        }
+    }
 }

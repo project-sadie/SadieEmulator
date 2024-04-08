@@ -43,7 +43,8 @@ public class PlayerRepository(
         player.SsoToken = null;
         await dbContext.SaveChangesAsync();
 
-        return mapper.Map<PlayerLogic>(player);
+        return mapper.Map<PlayerLogic>(player, opt => 
+            opt.AfterMap((src, dest) => dest.NetworkObject = networkObject));
     }
 
     public bool TryAddPlayer(PlayerLogic player) => _players.TryAdd(player.Id, player);
@@ -58,7 +59,7 @@ public class PlayerRepository(
         }
 
         await UpdateOnlineStatusAsync(player.Id, false);
-        await UpdateMessengerStatusForFriends(player.Id, player.Friendships, false, false);
+        await UpdateMessengerStatusForFriends(player.Id, player.GetMergedFriendships(), false, false);
         await player!.DisposeAsync();
 
         return result;
@@ -73,7 +74,7 @@ public class PlayerRepository(
                 continue;
             }
          
-            var friendship = friend.Friendships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var friendship = friend.GetMergedFriendships().FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (friendship != null)
             {
@@ -118,13 +119,6 @@ public class PlayerRepository(
     public int Count()
     {
         return _players.Count;
-    }
-
-    public async Task<PlayerData?> TryGetPlayerDataAsync(int playerId)
-    {
-        return await dbContext
-            .Set<Database.Models.Players.PlayerData>()
-            .FirstOrDefaultAsync(x => x.PlayerId == playerId);
     }
 
     public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, int[] excludeIds)

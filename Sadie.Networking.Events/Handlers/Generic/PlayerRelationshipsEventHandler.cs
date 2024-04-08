@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
@@ -11,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 public class PlayerRelationshipsEventHandler(
     PlayerRelationshipsEventParser eventParser,
     PlayerRepository playerRepository,
-    DbContext dbContext) : INetworkPacketEventHandler
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerRelationships;
 
@@ -27,7 +28,7 @@ public class PlayerRelationshipsEventHandler(
                 await playerRepository.GetRelationshipsForPlayerAsync(playerId);
 
         var playerFriends = isOnline
-            ? player!.Friendships
+            ? player!.GetMergedFriendships()
             : await dbContext
                 .Set<PlayerFriendship>()
                 .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)

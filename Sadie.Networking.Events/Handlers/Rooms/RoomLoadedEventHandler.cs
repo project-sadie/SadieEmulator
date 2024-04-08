@@ -101,7 +101,7 @@ public class RoomLoadedEventHandler(
         
         await playerRepository.UpdateMessengerStatusForFriends(
             player.Id,
-            player.Friendships, 
+            player.GetMergedFriendships(), 
             true, 
             true);
     }

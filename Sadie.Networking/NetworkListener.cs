@@ -58,7 +58,7 @@ namespace Sadie.Networking
         {
             if (!clientRepository.TryGetClientByGuid(connection.ConnectionInfo.Id, out var client))
             {
-                logger.LogError($"Failed to resolve client from connection information {connection.ConnectionInfo.Id}.");
+                logger.LogError($"Failed to resolve client from connection information.");
             }
             else
             {

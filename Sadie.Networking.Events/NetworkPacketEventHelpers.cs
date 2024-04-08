@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Database.Models.Rooms.Chat;
-using Sadie.Game.Players.Room;
+using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Enums;

@@ -1,4 +1,4 @@
-namespace Sadie.Game.Players.Room;
+namespace Sadie.Game.Players.RoomVisits;
 
 public class PlayerRoomVisit(
     int playerId,

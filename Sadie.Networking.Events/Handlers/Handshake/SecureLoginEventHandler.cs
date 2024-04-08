@@ -124,11 +124,13 @@ public class SecureLoginEventHandler(
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
         }
+
+        var allFriends = player.GetMergedFriendships();
         
         await playerRepository.UpdateMessengerStatusForFriends(player.Id,
-            player.Friendships, true, player.CurrentRoomId != 0);
+            allFriends, true, player.CurrentRoomId != 0);
 
-        foreach (var friend in player.Friendships)
+        foreach (var friend in allFriends)
         {
             var isOnline = playerRepository.TryGetPlayerById(friend.TargetPlayerId, out var friendPlayer) && friendPlayer != null;
             var isInRoom = isOnline && friendPlayer!.CurrentRoomId != 0;
@@ -154,10 +156,9 @@ public class SecureLoginEventHandler(
         }
     }
 
-    private bool ValidateSso(string sso) => 
-        !string.IsNullOrEmpty(sso) && sso.Length >= constants.MinSsoLength;
+    private bool ValidateSso(string sso) => !string.IsNullOrEmpty(sso) && sso.Length >= constants.MinSsoLength;
 
-    public async Task DisconnectAsync(Guid guid)
+    private async Task DisconnectAsync(Guid guid)
     {
         if (!await networkClientRepository.TryRemoveAsync(guid))
         {

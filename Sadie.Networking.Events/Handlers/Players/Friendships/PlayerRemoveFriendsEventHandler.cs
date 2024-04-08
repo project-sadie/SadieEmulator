@@ -31,23 +31,18 @@ public class PlayerRemoveFriendsEventHandler(
             {
                 continue;
             }
-            
-            var friendship = target
-                .Friendships
-                .FirstOrDefault(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId);
+
+            var friendship = target.TryGetAcceptedFriendshipFor(target.Id);
 
             if (friendship != null)
             {
-                target.Friendships.Remove(friendship);
+                target.DeleteFriendshipFor(playerId);
             }
                 
             await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter([playerId]).GetAllBytes());
+            
+            client.Player.DeleteFriendshipFor(currentId);
         }
-
-        client
-            .Player
-            .Friendships
-            .RemoveAll(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId);
 
         await dbContext
             .Set<PlayerFriendship>()

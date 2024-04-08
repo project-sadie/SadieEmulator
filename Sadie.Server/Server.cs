@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
-using Sadie.Database.LegacyAdoNet;
 using Sadie.Game.Catalog.Club;
 using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
@@ -24,7 +23,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         var stopwatch = Stopwatch.StartNew();
         
         WriteHeaderToConsole();
-        TestDatabaseConnection();
 
         await CleanUpDataAsync();
         await LoadInitialDataAsync();
@@ -44,18 +42,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
         networkListener.Start();
         await networkListener.ListenAsync();
-    }
-
-    private void TestDatabaseConnection()
-    {
-        var dbProvider = serviceProvider.GetRequiredService<IDatabaseProvider>();
-
-        if (!dbProvider.TestConnection())
-        {
-            throw new Exception("Failed to connect to the database.");
-        }
-
-        logger.LogTrace("Database connection is working!");
     }
 
     private async Task CleanUpDataAsync()

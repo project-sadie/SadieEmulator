@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
@@ -15,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogPurchaseEventHandler(
     CatalogPurchaseEventParser eventParser,
-    DbContext dbContext,
+    SadieContext dbContext,
     CatalogPageRepository pageRepository) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.CatalogPurchase;
@@ -126,42 +127,43 @@ public class CatalogPurchaseEventHandler(
     {
         var costInCredits = item.CostCredits * eventParser.Amount;
         var costInPoints = item.CostPoints * eventParser.Amount;
-        var balance = client.Player.Balance;
+
+        var playerData = client.Player.Data;
         
-        if (balance.Credits < costInCredits || 
-            (item.CostPointsType == 0 && balance.Pixels < costInPoints) ||
-            (item.CostPointsType != 0 && balance.Seasonal < costInPoints))
+        if (playerData.CreditBalance < costInCredits || 
+            (item.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||
+            (item.CostPointsType != 0 && playerData.SeasonalBalance < costInPoints))
         {
             return false;
         }
 
-        balance.Credits -= costInCredits;
+        playerData.CreditBalance -= costInCredits;
 
         if (item.CostPointsType == 0)
         {
-            balance.Pixels -= costInPoints;
+            playerData.PixelBalance -= costInPoints;
         }
         else
         {
-            balance.Seasonal -= costInPoints;
+            playerData.SeasonalBalance -= costInPoints;
         }
 
         var currencies = new Dictionary<int, long>
         {
-            {0, balance.Pixels},
+            {0, playerData.PixelBalance},
             {1, 0}, // snowflakes
             {2, 0}, // hearts
             {3, 0}, // gift points
             {4, 0}, // shells
-            {5, balance.Seasonal},
+            {5, playerData.SeasonalBalance},
             {101, 0}, // snowflakes
             {102, 0}, // unknown
-            {103, balance.Gotw},
+            {103, playerData.GotwPoints},
             {104, 0}, // unknown
             {105, 0} // unknown
         };
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(balance.Credits).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance).GetAllBytes());
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
 
         return true;

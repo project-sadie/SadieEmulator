@@ -1,34 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.Balance;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
-public class PlayerFactory(IServiceProvider serviceProvider) : IPlayerFactory
+public class PlayerFactory(IServiceProvider serviceProvider)
 {
-    public IPlayerBalance CreateBalance(long credits, long pixels, long seasonal, long gotwPoints)
-    {
-        return ActivatorUtilities.CreateInstance<PlayerBalance>(
-            serviceProvider, 
-            credits,
-            pixels,
-            seasonal,
-            gotwPoints);
-    }
-    
-    public PlayerLogic Create(
-        INetworkObject networkObject, 
-        PlayerData data,
-        PlayerBalance balance)
-    {
-        return ActivatorUtilities.CreateInstance<PlayerLogic>(
-            serviceProvider,
-            networkObject,
-            data,
-            balance);
-    }
-
     public PlayerNavigatorSettings CreateNavigatorSettings(
         int windowX, 
         int windowY, 

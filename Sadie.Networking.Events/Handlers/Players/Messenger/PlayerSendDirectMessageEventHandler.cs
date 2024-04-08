@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
@@ -14,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 public class PlayerSendDirectMessageEventHandler(
     PlayerSendDirectMessageEventParser eventParser,
     PlayerRepository playerRepository,
-    DbContext dbContext)
+    SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerSendDirectMessage;
@@ -43,10 +44,7 @@ public class PlayerSendDirectMessageEventHandler(
             message = message.Truncate(500);
         }
 
-        var friendships = client.Player.Friendships;
-        var friend = friendships.FirstOrDefault(x => x.TargetPlayerId == playerId);
-
-        if (friend is not { Status: PlayerFriendshipStatus.Accepted })
+        if (!client.Player.IsFriendsWith(eventParser.PlayerId))
         {
             await client.WriteToStreamAsync(new PlayerMessageErrorWriter(PlayerMessageError.NotFriends, playerId).GetAllBytes());
             return;

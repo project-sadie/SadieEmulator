@@ -34,7 +34,7 @@ public class PlayerAcceptFriendRequestEventHandler(
         var playerId = player.Id;
         
         var request = player
-            .Friendships
+            .IncomingFriendships
             .FirstOrDefault(x => x.OriginPlayerId == originId && x.Status == PlayerFriendshipStatus.Pending);
 
         if (request == null || request.TargetPlayerId != playerId)
@@ -47,10 +47,9 @@ public class PlayerAcceptFriendRequestEventHandler(
         
         if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
         {
-            
             var targetRequest = origin.
-                Friendships.
-                FirstOrDefault(x => x.OriginPlayerId == originId && x.TargetPlayerId == playerId);
+                OutgoingFriendships.
+                FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (targetRequest != null)
             {

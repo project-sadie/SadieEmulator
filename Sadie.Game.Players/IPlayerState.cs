@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Room;
+using Sadie.Game.Players.RoomVisits;
 
 namespace Sadie.Game.Players;
 

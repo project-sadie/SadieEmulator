@@ -11,9 +11,14 @@ public class PlayerFriendRequestsEventHandler() : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        if (client.Player == null)
+        {
+            return;
+        }
+        
         var pending = client
             .Player
-            .Friendships
+            .OutgoingFriendships
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
             .Select(x => x.TargetPlayer)
             .ToList();

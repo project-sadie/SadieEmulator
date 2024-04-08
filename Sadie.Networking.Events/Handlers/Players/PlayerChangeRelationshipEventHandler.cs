@@ -23,12 +23,9 @@ public class PlayerChangeRelationshipEventHandler(
 
         var playerId = eventParser.PlayerId;
         var relationId = eventParser.RelationId;
-        
-        var friendship = client.
-            Player.
-            Friendships.
-            FirstOrDefault(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId);
 
+        var friendship = client.Player.TryGetAcceptedFriendshipFor(playerId);
+        
         if (friendship == null)
         {
             return;
