@@ -14,6 +14,3 @@ public class NavigatorCategoryRepository(SadieContext dbContext)
             .ToListAsync();
     }
 }
-
-
-

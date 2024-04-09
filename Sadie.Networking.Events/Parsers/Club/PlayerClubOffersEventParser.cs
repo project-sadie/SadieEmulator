@@ -11,9 +11,3 @@ public class PlayerClubOffersEventParser : INetworkPacketEventParser
         WindowId = reader.ReadInteger();
     }
 }
-
-
-
-
-
-

@@ -30,4 +30,3 @@ public class RoomDoorbellAnswerEventHandler(
             : new RoomDoorbellNoAnswerWriter(username).GetAllBytes());
     }
 }
-
