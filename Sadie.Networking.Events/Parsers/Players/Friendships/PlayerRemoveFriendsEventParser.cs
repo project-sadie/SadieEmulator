@@ -9,11 +9,11 @@ public class PlayerRemoveFriendsEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        Amount = reader.ReadInteger();
+        Amount = reader.ReadInt();
 
         for (var i = 0; i < Amount; i++)
         {
-            Ids.Add(reader.ReadInteger());
+            Ids.Add(reader.ReadInt());
         }
     }
 }

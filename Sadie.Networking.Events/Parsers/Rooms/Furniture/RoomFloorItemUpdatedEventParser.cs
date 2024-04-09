@@ -12,9 +12,9 @@ public class RoomFloorItemUpdatedEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        ItemId = reader.ReadInteger();
-        X = reader.ReadInteger();
-        Y = reader.ReadInteger();
-        Direction = (HDirection) reader.ReadInteger();
+        ItemId = reader.ReadInt();
+        X = reader.ReadInt();
+        Y = reader.ReadInt();
+        Direction = (HDirection) reader.ReadInt();
     }
 }

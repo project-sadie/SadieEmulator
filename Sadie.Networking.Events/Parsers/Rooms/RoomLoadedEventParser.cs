@@ -9,7 +9,7 @@ public class RoomLoadedEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        RoomId = reader.ReadInteger();
+        RoomId = reader.ReadInt();
         Password = reader.ReadString();
     }
 }

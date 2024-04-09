@@ -8,6 +8,6 @@ public class RoomDoorbellAcceptedEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        RoomId = reader.ReadInteger();
+        RoomId = reader.ReadInt();
     }
 }

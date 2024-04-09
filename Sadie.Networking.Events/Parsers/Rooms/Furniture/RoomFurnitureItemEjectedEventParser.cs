@@ -9,7 +9,7 @@ public class RoomFurnitureItemEjectedEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        Category = reader.ReadInteger();
-        ItemId = reader.ReadInteger();
+        Category = reader.ReadInt();
+        ItemId = reader.ReadInt();
     }
 }

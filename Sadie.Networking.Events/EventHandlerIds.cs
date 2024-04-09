@@ -97,4 +97,5 @@ public class EventHandlerIds
     public const short PlayerWardrobeSave = 800;
     public const short RoomWallItemUpdated = 168;
     public const short RoomPaintItemPlaced = 711;
+    public const short PlayerSetHomeRoom = 1740;
 }

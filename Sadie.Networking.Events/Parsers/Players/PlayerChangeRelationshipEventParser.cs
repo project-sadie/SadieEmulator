@@ -9,7 +9,7 @@ public class PlayerChangeRelationshipEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        PlayerId = reader.ReadInteger();
-        RelationId = reader.ReadInteger();
+        PlayerId = reader.ReadInt();
+        RelationId = reader.ReadInt();
     }
 }

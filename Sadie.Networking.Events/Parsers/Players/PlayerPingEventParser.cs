@@ -8,6 +8,6 @@ public class PlayerPingEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        Id = reader.ReadInteger();
+        Id = reader.ReadInt();
     }
 }

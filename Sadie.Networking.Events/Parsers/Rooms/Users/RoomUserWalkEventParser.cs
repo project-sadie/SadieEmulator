@@ -8,7 +8,7 @@ public record RoomUserWalkEventParser : INetworkPacketEventParser
     public int Y { get; private set; }
     public void Parse(INetworkPacketReader reader)
     {
-        X = reader.ReadInteger();
-        Y = reader.ReadInteger();
+        X = reader.ReadInt();
+        Y = reader.ReadInt();
     }
 }

@@ -7,15 +7,15 @@ public record RoomSettingsSaveEventParser : INetworkPacketEventParser
 {
     public void Parse(INetworkPacketReader reader)
     {
-        RoomId = reader.ReadInteger();
+        RoomId = reader.ReadInt();
         Name = reader.ReadString();
         Description = reader.ReadString();
-        AccessType = (RoomAccessType) reader.ReadInteger();
+        AccessType = (RoomAccessType) reader.ReadInt();
         Password = reader.ReadString();
-        MaxUsers = reader.ReadInteger();
-        CategoryId = reader.ReadInteger();
+        MaxUsers = reader.ReadInt();
+        CategoryId = reader.ReadInt();
         
-        var tagCount = reader.ReadInteger();
+        var tagCount = reader.ReadInt();
 
         for (var i = 0; i < tagCount; i++)
         {
@@ -29,21 +29,21 @@ public record RoomSettingsSaveEventParser : INetworkPacketEventParser
             Tags.Add(tag);
         }
         
-        TradeOption = reader.ReadInteger();
+        TradeOption = reader.ReadInt();
         AllowPets = reader.ReadBool();
         CanPetsEat = reader.ReadBool();
         CanUsersOverlap = reader.ReadBool();
         HideWall = reader.ReadBool();
-        WallSize = reader.ReadInteger();
-        FloorSize = reader.ReadInteger();
-        WhoCanMute = reader.ReadInteger();
-        WhoCanKick = reader.ReadInteger();
-        WhoCanBan = reader.ReadInteger();
-        ChatType = reader.ReadInteger();
-        ChatWeight = reader.ReadInteger();
-        ChatSpeed = reader.ReadInteger();
-        ChatDistance = reader.ReadInteger();
-        ChatProtection = reader.ReadInteger();
+        WallSize = reader.ReadInt();
+        FloorSize = reader.ReadInt();
+        WhoCanMute = reader.ReadInt();
+        WhoCanKick = reader.ReadInt();
+        WhoCanBan = reader.ReadInt();
+        ChatType = reader.ReadInt();
+        ChatWeight = reader.ReadInt();
+        ChatSpeed = reader.ReadInt();
+        ChatDistance = reader.ReadInt();
+        ChatProtection = reader.ReadInt();
     }
     
     public long RoomId { get; private set; }

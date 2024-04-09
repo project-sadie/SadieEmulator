@@ -10,8 +10,8 @@ public class CatalogPageEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        PageId = reader.ReadInteger();
-        OfferId = reader.ReadInteger();
+        PageId = reader.ReadInt();
+        OfferId = reader.ReadInt();
         CatalogMode = reader.ReadString();
     }
 }

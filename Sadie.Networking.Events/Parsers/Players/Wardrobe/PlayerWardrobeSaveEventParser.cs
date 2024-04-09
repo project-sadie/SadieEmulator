@@ -10,7 +10,7 @@ public class PlayerWardrobeSaveEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        SlotId = reader.ReadInteger();
+        SlotId = reader.ReadInt();
         FigureCode = reader.ReadString();
         Gender = reader.ReadString();
     }

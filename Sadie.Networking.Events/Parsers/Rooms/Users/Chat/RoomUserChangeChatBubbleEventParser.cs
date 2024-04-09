@@ -9,6 +9,6 @@ public class RoomUserChangeChatBubbleEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        Bubble = (ChatBubble) reader.ReadInteger();
+        Bubble = (ChatBubble) reader.ReadInt();
     }
 }

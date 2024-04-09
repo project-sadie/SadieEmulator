@@ -126,7 +126,8 @@ public class RoomItemPlacedEventHandler(
         
         room.FurnitureItems.Add(roomFurnitureItem);
         player.FurnitureItems.Remove(playerItem);
-        
+
+        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
         await dbContext.SaveChangesAsync();
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
@@ -153,7 +154,7 @@ public class RoomItemPlacedEventHandler(
     private async Task OnWallItemAsync(
         IReadOnlyList<string> placementData,
         RoomLogic room,
-        PlayerLogic player,
+        Player player,
         PlayerFurnitureItem playerItem,
         int itemId,
         INetworkObject client)

@@ -7,6 +7,6 @@ public class RequestRoomSettingsEventParser : INetworkPacketEventParser
     public int RoomId { get; private set; }
     public void Parse(INetworkPacketReader reader)
     {
-        RoomId = reader.ReadInteger();
+        RoomId = reader.ReadInt();
     }
 }

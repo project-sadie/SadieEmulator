@@ -17,11 +17,11 @@ public class PlayerDeclineFriendRequestEventParser : INetworkPacketEventParser
             return;
         }
         
-        Amount = reader.ReadInteger();
+        Amount = reader.ReadInt();
 
         for (var i = 0; i < Amount; i++)
         {
-            Ids.Add(reader.ReadInteger());
+            Ids.Add(reader.ReadInt());
         }
     }
 }

@@ -9,6 +9,6 @@ public record RoomUserActionEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        Action = (RoomUserAction) reader.ReadInteger();
+        Action = (RoomUserAction) reader.ReadInt();
     }
 }

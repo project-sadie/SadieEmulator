@@ -10,8 +10,8 @@ public class RoomForwardDataEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        RoomId = reader.ReadInteger();
-        Unknown1 = reader.ReadInteger();
-        Unknown2 = reader.ReadInteger();
+        RoomId = reader.ReadInt();
+        Unknown1 = reader.ReadInt();
+        Unknown2 = reader.ReadInt();
     }
 }

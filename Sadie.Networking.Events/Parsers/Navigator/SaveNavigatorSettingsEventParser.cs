@@ -13,11 +13,11 @@ public class SaveNavigatorSettingsEventParser : INetworkPacketEventParser
     
     public void Parse(INetworkPacketReader reader)
     {
-        WindowX = reader.ReadInteger();
-        WindowY = reader.ReadInteger();
-        WindowWidth = reader.ReadInteger();
-        WindowHeight = reader.ReadInteger();
+        WindowX = reader.ReadInt();
+        WindowY = reader.ReadInt();
+        WindowWidth = reader.ReadInt();
+        WindowHeight = reader.ReadInt();
         OpenSearches = reader.ReadBool();
-        Mode = reader.ReadInteger();
+        Mode = reader.ReadInt();
     }
 }

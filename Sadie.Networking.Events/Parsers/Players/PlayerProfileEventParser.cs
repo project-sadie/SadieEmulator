@@ -8,6 +8,6 @@ public class PlayerProfileEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        ProfileId = reader.ReadInteger();
+        ProfileId = reader.ReadInt();
     }
 }

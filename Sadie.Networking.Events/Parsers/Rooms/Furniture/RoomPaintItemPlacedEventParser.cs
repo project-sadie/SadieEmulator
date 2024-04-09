@@ -8,6 +8,6 @@ public class RoomPaintItemPlacedEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        ItemId = reader.ReadInteger();
+        ItemId = reader.ReadInt();
     }
 }

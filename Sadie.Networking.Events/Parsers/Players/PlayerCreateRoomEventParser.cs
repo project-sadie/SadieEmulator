@@ -16,8 +16,8 @@ public class PlayerCreateRoomEventParser : INetworkPacketEventParser
         Name = reader.ReadString();
         Description = reader.ReadString();
         LayoutName = reader.ReadString();
-        CategoryId = reader.ReadInteger();
-        MaxUsersAllowed = reader.ReadInteger();
-        TradingPermission = reader.ReadInteger();
+        CategoryId = reader.ReadInt();
+        MaxUsersAllowed = reader.ReadInt();
+        TradingPermission = reader.ReadInt();
     }
 }

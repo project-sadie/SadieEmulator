@@ -8,6 +8,6 @@ public class PlayerWearingBadgesEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        PlayerId = reader.ReadInteger();
+        PlayerId = reader.ReadInt();
     }
 }

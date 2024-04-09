@@ -9,7 +9,7 @@ public record RoomUserLookAtEventParser : INetworkPacketEventParser
     
     public void Parse(INetworkPacketReader reader)
     {
-        X = reader.ReadInteger();
-        Y = reader.ReadInteger();
+        X = reader.ReadInt();
+        Y = reader.ReadInt();
     }
 }

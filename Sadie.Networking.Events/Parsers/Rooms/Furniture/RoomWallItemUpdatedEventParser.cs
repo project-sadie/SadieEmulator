@@ -9,7 +9,7 @@ public class RoomWallItemUpdatedEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        ItemId = reader.ReadInteger();
+        ItemId = reader.ReadInt();
         WallPosition = reader.ReadString();
     }
 }

@@ -9,7 +9,7 @@ public class PlayerSendDirectMessageEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        PlayerId = reader.ReadInteger();
+        PlayerId = reader.ReadInt();
         Message = reader.ReadString();
     }
 }

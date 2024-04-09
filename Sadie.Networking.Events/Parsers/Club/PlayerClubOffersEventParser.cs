@@ -8,6 +8,6 @@ public class PlayerClubOffersEventParser : INetworkPacketEventParser
     
     public void Parse(INetworkPacketReader reader)
     {
-        WindowId = reader.ReadInteger();
+        WindowId = reader.ReadInt();
     }
 }

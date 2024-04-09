@@ -11,9 +11,9 @@ public class CatalogPurchaseEventParser : INetworkPacketEventParser
     
     public void Parse(INetworkPacketReader reader)
     {
-        PageId = reader.ReadInteger();
-        ItemId = reader.ReadInteger();
+        PageId = reader.ReadInt();
+        ItemId = reader.ReadInt();
         ExtraData = reader.ReadString();
-        Amount = reader.ReadInteger();
+        Amount = reader.ReadInt();
     }
 }

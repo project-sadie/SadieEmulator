@@ -8,6 +8,6 @@ public class RoomGiveUserRightsEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        PlayerId = reader.ReadInteger();
+        PlayerId = reader.ReadInt();
     }
 }

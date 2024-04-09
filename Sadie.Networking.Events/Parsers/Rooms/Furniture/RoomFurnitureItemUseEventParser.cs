@@ -9,7 +9,7 @@ public class RoomFurnitureItemUseEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        ItemId = reader.ReadInteger();
-        State = reader.ReadInteger();
+        ItemId = reader.ReadInt();
+        State = reader.ReadInt();
     }
 }

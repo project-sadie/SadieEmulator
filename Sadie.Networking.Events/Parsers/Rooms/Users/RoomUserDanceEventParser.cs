@@ -8,6 +8,6 @@ public record RoomUserDanceEventParser : INetworkPacketEventParser
 
     public void Parse(INetworkPacketReader reader)
     {
-        DanceId = reader.ReadInteger();
+        DanceId = reader.ReadInt();
     }
 }
