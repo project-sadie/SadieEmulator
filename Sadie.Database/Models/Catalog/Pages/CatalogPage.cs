@@ -23,6 +23,6 @@ public class CatalogPage
     public string? SecondaryText { get; set; }
     public string? DetailsText { get; set; }
     public string? TeaserText { get; set; }
-    public ICollection<CatalogPage> Pages { get; set; }
-    public ICollection<CatalogItem> Items { get; set; }
+    public ICollection<CatalogPage> Pages { get; set; } = [];
+    public ICollection<CatalogItem> Items { get; set; } = [];
 }
