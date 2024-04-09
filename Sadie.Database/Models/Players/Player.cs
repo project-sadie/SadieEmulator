@@ -14,37 +14,21 @@ public class Player
     public PlayerAvatarData AvatarData { get; set; }
     public ICollection<PlayerTag> Tags { get; set; }
     public ICollection<PlayerRoomLike> RoomLikes { get; set; }
-
     [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; set; } = [];
-    
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
-    
     public PlayerGameSettings GameSettings { get; set; }
-
     public ICollection<PlayerBadge> Badges { get; set; } = [];
-
     public ICollection<PlayerFurnitureItem> FurnitureItems { get; set; } = [];
-    
     public ICollection<PlayerWardrobeItem> WardrobeItems { get; set; } = [];
-    
     public ICollection<PlayerSubscription> Subscriptions { get; set; } = [];
-    
-    [InverseProperty("TargetPlayer")]
-    public ICollection<PlayerRespect> Respects { get; set; } = [];
-    
+    [InverseProperty("TargetPlayer")] public ICollection<PlayerRespect> Respects { get; set; } = [];
     public ICollection<PlayerSavedSearch> SavedSearches { get; set; } = [];
-    
-    [InverseProperty("OriginPlayer")]
-    public ICollection<PlayerFriendship> OutgoingFriendships { get; set; } = [];
+    [InverseProperty("OriginPlayer")] public ICollection<PlayerFriendship> OutgoingFriendships { get; set; } = [];
     
     [InverseProperty("TargetPlayer")]
     public ICollection<PlayerFriendship> IncomingFriendships { get; set; } = [];
-    
-    [InverseProperty("OriginPlayer")]
-    public ICollection<PlayerMessage> MessagesSent { get; set; } = [];
-    
-    [InverseProperty("TargetPlayer")]
-    public ICollection<PlayerMessage> MessagesReceived { get; set; } = [];
+    [InverseProperty("OriginPlayer")] public ICollection<PlayerMessage> MessagesSent { get; set; } = [];
+    [InverseProperty("TargetPlayer")] public ICollection<PlayerMessage> MessagesReceived { get; set; } = [];
     
     public int GetAcceptedFriendshipCount()
     {
