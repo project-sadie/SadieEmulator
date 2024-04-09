@@ -108,6 +108,7 @@ public class RoomItemPlacedEventHandler(
             
         var roomFurnitureItem = new RoomFurnitureItem
         {
+            RoomId = room.Id,
             OwnerId = player.Id,
             OwnerUsername = player.Username,
             FurnitureItem = playerItem.FurnitureItem,

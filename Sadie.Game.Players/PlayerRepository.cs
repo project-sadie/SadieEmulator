@@ -126,7 +126,7 @@ public class PlayerRepository(
     public async Task UpdateOnlineStatusAsync(int playerId, bool isOnline)
     {
         var playerData = await dbContext
-            .Set<Database.Models.Players.PlayerData>()
+            .Set<PlayerData>()
             .FirstOrDefaultAsync(x => x.PlayerId == playerId);
 
         if (playerData != null)

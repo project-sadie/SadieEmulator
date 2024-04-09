@@ -34,12 +34,25 @@ public class PlayerCreateRoomEventHandler(
         var newRoom = new Room
         {
             Name = eventParser.Name,
-            Description = eventParser.Description
+            LayoutId = layout.Id,
+            OwnerId = client.Player.Id,
+            Description = eventParser.Description,
+            CreatedAt = DateTime.Now
         };
+
+        dbContext.Rooms.Add(newRoom);
 
         await dbContext.SaveChangesAsync();
 
-        newRoom.PaintSettings = new RoomPaintSettings();
+        newRoom.Settings = new RoomSettings
+        {
+            RoomId = newRoom.Id
+        };
+
+        newRoom.PaintSettings = new RoomPaintSettings
+        {
+            RoomId = newRoom.Id,
+        };
 
         await dbContext.SaveChangesAsync();
 
