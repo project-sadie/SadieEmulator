@@ -48,11 +48,13 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
     {
         var context = serviceProvider.GetRequiredService<SadieContext>();
         
-        var affected = await context
+        await context
             .Players
             .ExecuteUpdateAsync(s => s.SetProperty(b => b.SsoToken, b => null!));
         
-        logger.LogWarning($"Reset sso token for {affected} players");
+        await context
+            .PlayerData
+            .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false ));
     }
 
     private async Task LoadInitialDataAsync()
