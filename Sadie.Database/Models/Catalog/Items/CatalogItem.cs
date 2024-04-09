@@ -9,7 +9,7 @@ public class CatalogItem
     public int CostCredits { get; set; }
     public int CostPoints { get; set; }
     public int CostPointsType { get; set; }
-    public ICollection<FurnitureItem> FurnitureItems { get; set; }
+    public ICollection<FurnitureItem> FurnitureItems { get; set; } = [];
     public bool RequiresClubMembership { get; set; }
     public string MetaData { get; set; }
     public int Amount { get; set; }

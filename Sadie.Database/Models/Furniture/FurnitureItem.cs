@@ -24,5 +24,5 @@ public class FurnitureItem
     public bool CanGift { get; set; }
     public string InteractionType { get; set; }
     public int InteractionModes { get; set; }
-    public ICollection<CatalogItem> CatalogItems { get; set; }
+    public ICollection<CatalogItem> CatalogItems { get; set; } = [];
 }

@@ -8,44 +8,43 @@ public class Player
     public int Id { get; set; }
     public string Username { get; set; }
     public string? SsoToken { get; set; }
-    public ICollection<Role> Roles { get; set; }
+    public ICollection<Role> Roles { get; set; } = [];
     public DateTime CreatedAt { get; set; }
     public PlayerData Data { get; set; }
     public PlayerAvatarData AvatarData { get; set; }
     public ICollection<PlayerTag> Tags { get; set; }
     public ICollection<PlayerRoomLike> RoomLikes { get; set; }
-    
-    [InverseProperty("OriginPlayer")]
-    public ICollection<PlayerRelationship> Relationships { get; set; }
+
+    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; set; } = [];
     
     public PlayerNavigatorSettings NavigatorSettings { get; set; }
     
     public PlayerGameSettings GameSettings { get; set; }
+
+    public ICollection<PlayerBadge> Badges { get; set; } = [];
+
+    public ICollection<PlayerFurnitureItem> FurnitureItems { get; set; } = [];
     
-    public ICollection<PlayerBadge> Badges { get; set; }
+    public ICollection<PlayerWardrobeItem> WardrobeItems { get; set; } = [];
     
-    public ICollection<PlayerFurnitureItem> FurnitureItems { get; set; }
-    
-    public ICollection<PlayerWardrobeItem> WardrobeItems { get; set; }
-    
-    public ICollection<PlayerSubscription> Subscriptions { get; set; }
+    public ICollection<PlayerSubscription> Subscriptions { get; set; } = [];
     
     [InverseProperty("TargetPlayer")]
-    public ICollection<PlayerRespect> Respects { get; set; }
+    public ICollection<PlayerRespect> Respects { get; set; } = [];
     
-    public ICollection<PlayerSavedSearch> SavedSearches { get; set; }
+    public ICollection<PlayerSavedSearch> SavedSearches { get; set; } = [];
     
     [InverseProperty("OriginPlayer")]
-    public ICollection<PlayerFriendship> OutgoingFriendships { get; set; }
+    public ICollection<PlayerFriendship> OutgoingFriendships { get; set; } = [];
     
     [InverseProperty("TargetPlayer")]
-    public ICollection<PlayerFriendship> IncomingFriendships { get; set; }
+    public ICollection<PlayerFriendship> IncomingFriendships { get; set; } = [];
     
     [InverseProperty("OriginPlayer")]
-    public ICollection<PlayerMessage> MessagesSent { get; set; }
+    public ICollection<PlayerMessage> MessagesSent { get; set; } = [];
     
     [InverseProperty("TargetPlayer")]
-    public ICollection<PlayerMessage> MessagesReceived { get; set; }
+    public ICollection<PlayerMessage> MessagesReceived { get; set; } = [];
     
     public int GetAcceptedFriendshipCount()
     {
@@ -68,8 +67,8 @@ public class Player
 
     public PlayerFriendship? TryGetAcceptedFriendshipFor(int targetId)
     {
-        var incoming = IncomingFriendships.FirstOrDefault(x =>
-            x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
+        var incoming = IncomingFriendships
+            .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
 
         if (incoming != null)
         {
@@ -96,14 +95,16 @@ public class Player
 
     public void DeleteFriendshipFor(int targetId)
     {
-        var incoming = IncomingFriendships.FirstOrDefault(x => x.OriginPlayerId == targetId);
+        var incoming = IncomingFriendships
+            .FirstOrDefault(x => x.OriginPlayerId == targetId);
 
         if (incoming != null)
         {
             IncomingFriendships.Remove(incoming);
         }
 
-        var outgoing = OutgoingFriendships.FirstOrDefault(x => x.OriginPlayerId == targetId);
+        var outgoing = OutgoingFriendships
+            .FirstOrDefault(x => x.OriginPlayerId == targetId);
         
         if (outgoing != null)
         {
