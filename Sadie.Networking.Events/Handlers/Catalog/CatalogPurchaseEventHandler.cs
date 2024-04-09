@@ -100,7 +100,8 @@ public class CatalogPurchaseEventHandler(
             newItems.Add(newItem);
             client.Player.FurnitureItems.Add(newItem);
         }
-        
+
+        dbContext.PlayerFurnitureItems.AddRange(newItems);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());

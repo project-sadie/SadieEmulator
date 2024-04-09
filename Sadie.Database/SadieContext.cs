@@ -34,6 +34,7 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Player> Players { get; set; }
     public DbSet<PlayerData> PlayerData { get; set; }
+    public DbSet<PlayerFurnitureItem> PlayerFurnitureItems { get; set; }
     public DbSet<PlayerBadge> PlayerBadges { get; set; }
     public DbSet<Badge> Badges { get; set; }
     public DbSet<CatalogClubOffer> CatalogClubOffers { get; set; }
