@@ -22,7 +22,7 @@ public class PlayerSetHomeRoomEventHandler(
         
         client.Player.Data.HomeRoomId = parser.RoomId;
 
-        dbContext.PlayerData.Attach(client.Player.Data);
+        dbContext.PlayerData.Update(client.Player.Data);
         await dbContext.SaveChangesAsync();
     }
 }
