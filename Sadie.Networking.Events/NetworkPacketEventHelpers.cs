@@ -179,7 +179,7 @@ internal static class NetworkPacketEventHelpers
             Message = message,
             ChatBubbleId = parser.Bubble,
             EmotionId = 0,
-            Type = RoomChatMessageType.Shout,
+            TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };
 

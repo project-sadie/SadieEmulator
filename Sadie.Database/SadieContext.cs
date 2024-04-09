@@ -17,7 +17,7 @@ using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Database;
 
-public class SadieContext(DbContextOptions options) : DbContext(options)
+public class SadieContext : DbContext
 {
     public DbSet<NavigatorCategory> NavigatorCategories { get; set; }
     public DbSet<NavigatorTab> NavigatorTabs { get; set; }
@@ -52,14 +52,6 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
                 v => v.ToString(),
                 v => EnumHelpers.GetEnumValueFromDescription<FurnitureItemType>(v));
 
-        modelBuilder.Entity<CatalogFrontPageItem>()
-            .Property(e => e.Type)
-            .HasConversion<int>();
-        
-        modelBuilder.Entity<CatalogFrontPageItem>()
-            .Property(e => e.Type)
-            .HasColumnName("type_id");
-
         modelBuilder.Entity<CatalogItem>()
             .HasMany(c => c.FurnitureItems)
             .WithMany(x => x.CatalogItems);
@@ -76,10 +68,6 @@ public class SadieContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<RoomLayout>()
             .Property(x => x.HeightMap)
             .HasColumnName("heightmap");
-
-        modelBuilder.Entity<RoomChatMessage>()
-            .Property(x => x.Type)
-            .HasColumnName("type_id");
         
         modelBuilder.Entity<PlayerTag>().ToTable("player_tags");
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");

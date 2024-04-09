@@ -48,7 +48,7 @@ public class RoomUserWhisperEventHandler(
             Message = whisperMessage,
             ChatBubbleId = eventParser.Bubble,
             EmotionId = 0,
-            Type = RoomChatMessageType.Whisper,
+            TypeId = RoomChatMessageType.Whisper,
             CreatedAt = DateTime.Now
         };
 

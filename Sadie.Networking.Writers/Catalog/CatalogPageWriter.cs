@@ -259,9 +259,9 @@ public class CatalogPageWriter : NetworkPacketWriter
             WriteInteger(item.Id);
             WriteString(item.Title);
             WriteString(item.Image);
-            WriteInteger((int) item.Type);
+            WriteInteger((int) item.TypeId);
 
-            switch (item.Type)
+            switch (item.TypeId)
             {
                 case CatalogFrontPageItemType.PageId:
                     WriteInteger(item.CatalogPage.Id);
@@ -273,7 +273,7 @@ public class CatalogPageWriter : NetworkPacketWriter
                     WriteString(item.ProductName);
                     break;
                 default:
-                    throw new Exception($"Unknown catalog front page item type {(int) item.Type}");
+                    throw new Exception($"Unknown catalog front page item type {(int) item.TypeId}");
             }
 
             WriteInteger(-1);

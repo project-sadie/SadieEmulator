@@ -11,6 +11,6 @@ public class RoomChatMessage
     public string Message { get; set; }
     public ChatBubble ChatBubbleId { get; set; }
     public int EmotionId { get; set; }
-    public RoomChatMessageType Type { get; set; }
+    public RoomChatMessageType TypeId { get; set; }
     public DateTime CreatedAt { get; set; }
 }
