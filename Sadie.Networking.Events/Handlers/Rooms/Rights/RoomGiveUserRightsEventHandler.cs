@@ -24,9 +24,9 @@ public class RoomGiveUserRightsEventHandler(
         var playerId = eventParser.PlayerId;
         var player = client.Player;
         
-        var (roomFound, room) = roomRepository.TryGetRoomById(player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(player.CurrentRoomId);
 
-        if (!roomFound || room == null)
+        if (room == null)
         {
             return;
         }

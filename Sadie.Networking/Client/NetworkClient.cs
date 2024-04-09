@@ -83,9 +83,9 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         if (RoomUser != null)
         {
-            var (foundRoom, lastRoom) = _roomRepository.TryGetRoomById(RoomUser.Player.CurrentRoomId);
+            var lastRoom = _roomRepository.TryGetRoomById(RoomUser.Player.CurrentRoomId);
             
-            if (foundRoom && lastRoom != null)
+            if (lastRoom != null)
             {
                 await lastRoom.UserRepository.TryRemoveAsync(RoomUser.Id);
                 RoomUser = null;

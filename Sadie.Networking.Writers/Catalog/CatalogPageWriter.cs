@@ -44,7 +44,7 @@ public class CatalogPageWriter : NetworkPacketWriter
             case CatalogPageLayout.GuildsCustomFurniture:
                 WriteString(pageLayout);
                 WriteInteger(2);
-                WriteString(headerImage);
+                WriteString(headerImage); 
                 WriteString(teaserImage);
                 WriteInteger(3);
                 WriteString(primaryText);

@@ -85,9 +85,9 @@ public class PlayerAcceptFriendRequestEventHandler(
 
         if (targetOnline && origin != null)
         {
-            var (roomFound, lastRoom) = roomRepository.TryGetRoomById(origin.CurrentRoomId);
+            var lastRoom = roomRepository.TryGetRoomById(origin.CurrentRoomId);
 
-            if (roomFound && lastRoom != null && lastRoom.UserRepository.TryGet(origin.Id, out _))
+            if (lastRoom != null && lastRoom.UserRepository.TryGet(origin.Id, out _))
             {
                 targetInRoom = true;
             }

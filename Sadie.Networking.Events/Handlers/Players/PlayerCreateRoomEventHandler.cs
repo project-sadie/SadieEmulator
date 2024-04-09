@@ -4,7 +4,9 @@ using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Navigator;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -41,9 +43,9 @@ public class PlayerCreateRoomEventHandler(
 
         await dbContext.SaveChangesAsync();
 
-        var (madeRoom, room) = await roomRepository.TryLoadRoomByIdAsync(newRoom.Id);
+        var room = await roomRepository.TryLoadRoomByIdAsync(newRoom.Id);
 
-        if (madeRoom && room != null)
+        if (room != null)
         {
             await client.WriteToStreamAsync(new RoomCreatedWriter(room.Id, room.Name).GetAllBytes());
         }

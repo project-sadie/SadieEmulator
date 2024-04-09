@@ -31,14 +31,14 @@ public class RoomLoadedEventHandler(
         var player = client.Player;
 
         var (roomId, password) = (eventParser.RoomId, eventParser.Password);
-        var (found, room) = await roomRepository.TryLoadRoomByIdAsync(roomId);
+        var room = await roomRepository.TryLoadRoomByIdAsync(roomId);
         var lastRoomId = player.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
-            var (foundLast, lastRoom) = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
+            var lastRoom = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
 
-            if (foundLast && lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
             {
                 var currentTile = lastRoom.TileMap.FindTile(oldUser.Point.X, oldUser.Point.Y);
                 currentTile?.Users.Remove(oldUser.Id);
@@ -48,7 +48,7 @@ public class RoomLoadedEventHandler(
             }
         }
 
-        if (!found || room == null)
+        if (room == null)
         {
             logger.LogError($"Failed to load room {roomId} for player '{player.Username}'");
             await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());

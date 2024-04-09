@@ -26,13 +26,13 @@ public class RoomRemoveUserRightsEventHandler(
             return;
         }
         
-        var (roomFound, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
 
-        if (!roomFound || room == null)
+        if (room == null)
         {
             return;
         }
-
+        
         foreach (var playerId in eventParser.Ids)
         {
             var right = room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId);

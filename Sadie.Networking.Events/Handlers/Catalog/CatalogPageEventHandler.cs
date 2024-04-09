@@ -17,9 +17,9 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
     {
         eventParser.Parse(reader);
         
-        var (exists, page) = catalogPageRepo.TryGet(eventParser.PageId);
+        var page = catalogPageRepo.TryGet(eventParser.PageId);
 
-        if (!exists || page is not { Enabled: true } || !page.Visible)
+        if (page is not { Enabled: true } || !page.Visible)
         {
             return;
         }

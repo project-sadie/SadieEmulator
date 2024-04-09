@@ -6,7 +6,7 @@ namespace Sadie.Game.Catalog.Pages;
 
 public class CatalogPageRepository(SadieContext dbContext)
 {
-    private Dictionary<int, CatalogPage> _pages = new();
+    private Dictionary<int, CatalogPage> _pages = [];
 
     public async Task LoadInitialDataAsync()
     {
@@ -17,9 +17,9 @@ public class CatalogPageRepository(SadieContext dbContext)
             .ToDictionaryAsync(x => x.Id, x => x);
     }
 
-    public Tuple<bool, CatalogPage?> TryGet(int pageId)
+    public CatalogPage? TryGet(int pageId)
     {
-        return new Tuple<bool, CatalogPage?>(_pages.ContainsKey(pageId), _pages[pageId]);
+        return _pages.GetValueOrDefault(pageId);
     }
 
     public List<CatalogPage> GetByParentId(int parentId)
@@ -30,9 +30,8 @@ public class CatalogPageRepository(SadieContext dbContext)
             .ToList();
     }
 
-    public Tuple<bool, CatalogPage?> TryGetByLayout(string layout)
+    public CatalogPage? TryGetByLayout(string layout)
     {
-        var page = _pages.Values.FirstOrDefault(x => x.Layout == layout);
-        return new Tuple<bool, CatalogPage?>(page != null, page);
+        return _pages.Values.FirstOrDefault(x => x.Layout == layout);
     }
 }

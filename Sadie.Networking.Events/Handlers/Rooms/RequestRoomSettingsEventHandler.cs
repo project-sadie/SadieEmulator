@@ -16,11 +16,11 @@ public class RequestRoomSettingsEventHandler(
     {
         eventParser.Parse(reader);
         
-        var (foundRoom, room) = roomRepository.TryGetRoomById(eventParser.RoomId);
+        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
         
-        if (foundRoom)
+        if (room != null)
         {
-            await client.WriteToStreamAsync(new RoomSettingsWriter(room!).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomSettingsWriter(room).GetAllBytes());
         }
     }
 }

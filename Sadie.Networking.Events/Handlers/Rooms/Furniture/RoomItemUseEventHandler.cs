@@ -22,14 +22,8 @@ public class RoomItemUseEventHandler(
             return;
         }
         
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
-        
-        if (!found || room == null)
-        {
-            return;
-        }
-
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
 
         if (roomFurnitureItem == null)
         {

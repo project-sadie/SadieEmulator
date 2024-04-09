@@ -35,9 +35,9 @@ internal static class NetworkPacketEventHelpers
         }
         
         var roomId = player.CurrentRoomId;
-        var (result, roomObject) = roomRepository.TryGetRoomById(roomId);
+        var roomObject = roomRepository.TryGetRoomById(roomId);
 
-        if (!result || roomObject == null || client.RoomUser == null)
+        if (roomObject == null || client.RoomUser == null)
         {
             room = null!;
             user = null!;
@@ -161,9 +161,11 @@ internal static class NetworkPacketEventHelpers
         
         if (!shouting && message.StartsWith(":"))
         {
-            var (found, command) = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0].Substring(1));
+            var command = commandRepository
+                .TryGetCommandByTriggerWord(message.Split(" ")[0]
+                .Substring(1));
 
-            if (found && command != null)
+            if (command != null)
             {
                 await command.ExecuteAsync(roomUser!);
                 return;

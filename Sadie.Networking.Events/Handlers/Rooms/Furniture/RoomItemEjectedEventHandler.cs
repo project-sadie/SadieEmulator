@@ -30,15 +30,8 @@ public class RoomItemEjectedEventHandler(
 
         var player = client.Player;
         var itemId = eventParser.ItemId;
-        
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
-        
-        if (!found || room == null)
-        {
-            return;
-        }
-
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
+        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
 
         if (roomFurnitureItem == null)
         {

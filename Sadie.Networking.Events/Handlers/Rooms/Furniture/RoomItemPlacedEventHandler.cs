@@ -38,9 +38,9 @@ public class RoomItemPlacedEventHandler(
             return;
         }
         
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
-        if (!found || room == null)
+        if (room == null)
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;

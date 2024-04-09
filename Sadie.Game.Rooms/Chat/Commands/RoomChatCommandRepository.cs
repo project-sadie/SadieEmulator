@@ -9,10 +9,8 @@ public class RoomChatCommandRepository : IRoomChatCommandRepository
         _commands = commands.ToDictionary(x => x.Trigger, c => c);
     }
 
-    public Tuple<bool, IRoomChatCommand?> TryGetCommandByTriggerWord(string trigger)
+    public IRoomChatCommand? TryGetCommandByTriggerWord(string trigger)
     {
-        return _commands.TryGetValue(trigger, out var command)
-            ? new Tuple<bool, IRoomChatCommand?>(true, command)
-            : new Tuple<bool, IRoomChatCommand?>(false, null);
+        return _commands.GetValueOrDefault(trigger);
     }
 }

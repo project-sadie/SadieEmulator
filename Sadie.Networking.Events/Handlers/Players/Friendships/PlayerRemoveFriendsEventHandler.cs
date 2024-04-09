@@ -46,7 +46,9 @@ public class PlayerRemoveFriendsEventHandler(
 
         await dbContext
             .Set<PlayerFriendship>()
-            .Where(x => x.OriginPlayerId == playerId && eventParser.Ids.Contains(x.TargetPlayerId) || x.TargetPlayerId == playerId && eventParser.Ids.Contains(x.OriginPlayerId))
+            .Where(x => 
+                x.OriginPlayerId == playerId && eventParser.Ids.Contains(x.TargetPlayerId) || 
+                x.TargetPlayerId == playerId && eventParser.Ids.Contains(x.OriginPlayerId))
             .ExecuteDeleteAsync();
         
         await client.WriteToStreamAsync(new PlayerRemoveFriendsWriter(eventParser.Ids).GetAllBytes());

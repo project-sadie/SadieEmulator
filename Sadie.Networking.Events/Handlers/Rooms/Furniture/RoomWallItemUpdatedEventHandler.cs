@@ -25,9 +25,9 @@ public class RoomWallItemUpdatedEventHandler(
             return;
         }
         
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
-        if (!found || room == null || !client.RoomUser.HasRights())
+        if (room == null || !client.RoomUser.HasRights())
         {
             return;
         }

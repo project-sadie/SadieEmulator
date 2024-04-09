@@ -20,9 +20,9 @@ public class RoomDoorbellAcceptedEventHandler(
     {
         eventParser.Parse(reader);
 
-        var (roomFound, room) = roomRepository.TryGetRoomById(eventParser.RoomId);
+        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
 
-        if (!roomFound || room == null)
+        if (room == null)
         {
             return;
         }

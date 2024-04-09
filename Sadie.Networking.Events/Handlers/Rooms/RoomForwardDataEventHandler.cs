@@ -13,10 +13,10 @@ public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser,
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
-
-        var (found, room) = await roomRepository.TryLoadRoomByIdAsync(eventParser.RoomId);
         
-        if (!found || room == null)
+        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
+
+        if (room == null)
         {
             return;
         }

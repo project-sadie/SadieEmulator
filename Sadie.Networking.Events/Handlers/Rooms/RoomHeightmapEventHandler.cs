@@ -14,9 +14,9 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
-        if (!found || room == null)
+        if (room == null)
         {
             return;
         }

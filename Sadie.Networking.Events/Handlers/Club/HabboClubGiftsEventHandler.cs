@@ -17,7 +17,7 @@ public class HabboClubGiftsEventHandler(CatalogPageRepository catalogPageReposit
             return;
         }
         
-        var (_, clubGiftPage) = catalogPageRepository.TryGetByLayout("club_gift");
+        var clubGiftPage = catalogPageRepository.TryGetByLayout("club_gift");
 
         var daysAsClub = CalculateDaysAsClub(client.Player.Subscriptions);
         var daysTillNextClubGift = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400;

@@ -28,9 +28,9 @@ public class RoomFloorItemUpdatedEventHandler(
 
         var itemId = eventParser.ItemId;
         
-        var (found, room) = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
-        if (!found || room == null || !client.RoomUser.HasRights())
+        if (room == null)
         {
             return;
         }

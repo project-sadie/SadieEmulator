@@ -10,21 +10,21 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
 {
     private readonly ConcurrentDictionary<long, RoomLogic> _rooms = new();
 
-    public Tuple<bool, RoomLogic?> TryGetRoomById(long id)
+    public RoomLogic? TryGetRoomById(long id)
     {
-        return new Tuple<bool, RoomLogic?>(_rooms.TryGetValue(id, out var room), room);
+        return _rooms.GetValueOrDefault(id);
     }
     
-    public Task<Tuple<bool, RoomLogic?>> TryLoadRoomByIdAsync(long id)
+    public async Task<RoomLogic?> TryLoadRoomByIdAsync(long id)
     {
-        var (memoryResult, memoryValue) = TryGetRoomById(id);
+        var memoryValue = TryGetRoomById(id);
 
-        if (memoryResult)
+        if (memoryValue != null)
         {
-            return Task.FromResult(new Tuple<bool, RoomLogic?>(true, memoryValue));
+            return memoryValue;
         }
 
-        var room = dbContext.Set<Room>()
+        var room = await dbContext.Set<Room>()
             .Include(x => x.Owner)
             .Include(x => x.Layout)
             .Include(x => x.Settings)
@@ -34,18 +34,17 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
             .Include(x => x.FurnitureItems)
             .Include(x => x.PlayerLikes)
             .Include(x => x.Tags)
-            .FirstOrDefault(x => x.Id == id);
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (room == null)
         {
-            return Task.FromResult(new Tuple<bool, RoomLogic?>(false, null));
+            return null;
         }
 
         var roomLogic = mapper.Map<RoomLogic>(room);
-        
         _rooms[room.Id] = roomLogic;
 
-        return Task.FromResult(new Tuple<bool, RoomLogic?>(true, roomLogic));
+        return roomLogic;
     }
 
     public List<RoomLogic> GetPopularRooms(int amount)

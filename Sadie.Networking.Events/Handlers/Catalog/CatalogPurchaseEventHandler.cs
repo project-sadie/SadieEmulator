@@ -40,9 +40,9 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        var (found, page) = pageRepository.TryGet(eventParser.PageId);
+        var page = pageRepository.TryGet(eventParser.PageId);
 
-        if (!found || page == null)
+        if (page == null)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
             return;
