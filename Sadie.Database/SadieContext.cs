@@ -17,7 +17,7 @@ using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Database;
 
-public class SadieContext : DbContext
+public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(options)
 {
     public DbSet<NavigatorCategory> NavigatorCategories { get; set; }
     public DbSet<NavigatorTab> NavigatorTabs { get; set; }

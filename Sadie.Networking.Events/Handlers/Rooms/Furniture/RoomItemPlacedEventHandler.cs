@@ -176,11 +176,12 @@ public class RoomItemPlacedEventHandler(
             MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
-
-        room.FurnitureItems.Remove(roomFurnitureItem);
+        
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
-        player.FurnitureItems.Remove(playerItem);
         await dbContext.SaveChangesAsync();
+
+        room.FurnitureItems.Add(roomFurnitureItem);
+        player.FurnitureItems.Remove(playerItem);
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
         await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter(roomFurnitureItem)
