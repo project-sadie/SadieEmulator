@@ -9,7 +9,7 @@ jobs:
           command: dotnet test
   check-code-quality:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:7.0
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
       - run: |
           dotnet tool install sharpidious --global
