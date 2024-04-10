@@ -1,5 +1,4 @@
 using Sadie.Database;
-using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
@@ -8,7 +7,6 @@ using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Inventory;
-using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
