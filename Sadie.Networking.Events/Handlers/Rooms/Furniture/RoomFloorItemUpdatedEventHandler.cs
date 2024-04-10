@@ -52,11 +52,6 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
 
         currentTile?.Items.Remove(roomFurnitureItem);
-        
-        if (currentTile != null)
-        {
-            RoomHelpers.UpdateTileMapForTile(currentTile, room.TileMap);
-        }
 
         var position = new HPoint(
             eventParser.X,
@@ -71,14 +66,37 @@ public class RoomFloorItemUpdatedEventHandler(
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
+        
+        if (currentTile != null)
+        {
+            RoomHelpers.UpdateTileMapForTile(currentTile, room.TileMap);
+        }
 
         tile.Items.Add(roomFurnitureItem);
         RoomHelpers.UpdateTileMapForTile(tile, room.TileMap);
+
+        var movedTiles = roomFurnitureItem.PositionX != position.X || roomFurnitureItem.PositionY != position.Y;
 
         roomFurnitureItem.PositionX = position.X;
         roomFurnitureItem.PositionY = position.Y;
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = direction;
+        
+        if (movedTiles)
+        {
+            foreach (var userOnTile in tile.Users.Values)
+            {
+                userOnTile.CheckStatusForCurrentTile();
+            }
+        }
+
+        if (currentTile != null)
+        {
+            foreach (var userOnTile in currentTile.Users.Values)
+            {
+                userOnTile.CheckStatusForCurrentTile();
+            }
+        }
         
         await dbContext.SaveChangesAsync();
         

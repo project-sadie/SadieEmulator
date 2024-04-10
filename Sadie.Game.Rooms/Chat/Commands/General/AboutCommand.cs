@@ -27,7 +27,6 @@ public class AboutCommand(
         message.AppendLine("");
         message.AppendLine("Credits:");
         message.AppendLine("Habtard - Solo Developer");
-        message.AppendLine("Lucas - Testing & Support");
         message.AppendLine("");
         
         await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(message.ToString()).GetAllBytes());

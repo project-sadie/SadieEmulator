@@ -5,6 +5,7 @@ using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -45,6 +46,7 @@ public class RoomUser(
 
     public void WalkToPoint(Point point, bool useDiagonal)
     {
+        StatusMap.Remove(RoomUserStatus.Lay);
         StatusMap.Remove(RoomUserStatus.Sit);
         StatusMap.Remove(RoomUserStatus.FlatCtrl);
         
@@ -60,7 +62,9 @@ public class RoomUser(
         IsWalking = false;
 
         StatusMap.Remove(RoomUserStatus.Move);
+        
         ApplyFlatCtrlStatus();
+        CheckStatusForCurrentTile();
     }
 
     public void LookAtPoint(Point point)
@@ -84,7 +88,6 @@ public class RoomUser(
             await ProcessMovementAsync();
         }
 
-        CheckStatusForCurrentTile();
         await UpdateIdleStatusAsync();
     }
 
@@ -104,27 +107,50 @@ public class RoomUser(
         LastAction = DateTime.Now;
     }
 
-    private void CheckStatusForCurrentTile()
+    public void CheckStatusForCurrentTile()
     {
-        if (!IsWalking)
+        if (IsWalking)
         {
-            var currentTile = room.TileMap.FindTile(Point.X, Point.Y);
+            return;
+        }
         
-            var seat = currentTile?
-                .Items
-                .OrderByDescending(item => item.PositionZ)
-                .FirstOrDefault(x => x.FurnitureItem.CanSit);
+        var currentTile = room.TileMap.FindTile(Point.X, Point.Y);
+        var tileItems = currentTile?.Items;
 
-            if (seat == null)
-            {
-                StatusMap.Remove(RoomUserStatus.Sit);
-                return;
-            }
+        if (tileItems == null || tileItems.Count == 0)
+        {
+            StatusMap.Remove(RoomUserStatus.Sit);
+            StatusMap.Remove(RoomUserStatus.Lay);
+            return;
+        }
+
+        var topItem = tileItems.MaxBy(item => item.PositionZ);
+
+        if (topItem == null)
+        {
+            StatusMap.Remove(RoomUserStatus.Sit);
+            StatusMap.Remove(RoomUserStatus.Lay);
+            return;
+        }
         
-            Direction = seat.Direction;
-            DirectionHead = seat.Direction;
-        
-            StatusMap[RoomUserStatus.Sit] = (seat.PositionZ + seat.FurnitureItem.StackHeight) + "";
+        if (topItem.FurnitureItem.CanSit)
+        {
+            StatusMap[RoomUserStatus.Sit] = (topItem.PositionZ + topItem.FurnitureItem.StackHeight) + "";
+            
+            Direction = topItem.Direction;
+            DirectionHead = topItem.Direction;
+        }
+        else if (topItem.FurnitureItem.CanLay)
+        {
+            StatusMap[RoomUserStatus.Lay] = (topItem.PositionZ + topItem.FurnitureItem.StackHeight) + "";
+            
+            Direction = topItem.Direction;
+            DirectionHead = topItem.Direction;
+        }
+        else
+        {
+            StatusMap.Remove(RoomUserStatus.Sit);
+            StatusMap.Remove(RoomUserStatus.Lay);
         }
     }
 

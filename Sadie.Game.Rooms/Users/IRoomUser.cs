@@ -18,5 +18,6 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     void ApplyFlatCtrlStatus();
     Task RunPeriodicCheckAsync();
     void UpdateLastAction();
+    void CheckStatusForCurrentTile();
     bool HasRights();
 }

@@ -8,7 +8,7 @@ public class RoomTileMap
     public int SizeY { get; }
     public int Size { get; }
     public List<RoomTile> Tiles { get; }
-    public short[,] TileMap { get; }
+    public short[,] Map { get; }
 
     public RoomTileMap(string heightmap, List<RoomTile> tiles)
     {
@@ -17,7 +17,7 @@ public class RoomTileMap
         SizeY = HeightmapRows.Count;
         Size = SizeY * SizeX;
         Tiles = tiles;
-        TileMap = new short[SizeY, SizeX];
+        Map = new short[SizeY, SizeX];
 
         GenerateTileMap();
     }
@@ -39,7 +39,7 @@ public class RoomTileMap
                 canWalkOnTile = false;
             }
             
-            TileMap[point.Y, point.X] = (short)(tile.State == RoomTileState.Open && canWalkOnTile ? 1 : 0);
+            Map[point.Y, point.X] = (short)(tile.State == RoomTileState.Open && canWalkOnTile ? 1 : 0);
         }
     }
 

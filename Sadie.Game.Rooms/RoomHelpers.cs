@@ -47,7 +47,7 @@ public static class RoomHelpers
             UseDiagonals = useDiagonal
         };
         
-        var worldGrid = new WorldGrid(tileMap.TileMap);
+        var worldGrid = new WorldGrid(tileMap.Map);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
         var route = pathfinder.FindPath(start, end).ToList();
 
@@ -101,7 +101,7 @@ public static class RoomHelpers
 
         if (topLevelItem == null)
         {
-            tileMap.TileMap[tile.Point.Y, tile.Point.X] = 1;
+            tileMap.Map[tile.Point.Y, tile.Point.X] = 1;
         }
         else
         {
@@ -113,7 +113,7 @@ public static class RoomHelpers
                 canWalkOnItem = false;
             }
             
-            tileMap.TileMap[tile.Point.Y, tile.Point.X] = (short)(canWalkOnItem ? 1 : 0);
+            tileMap.Map[tile.Point.Y, tile.Point.X] = (short)(canWalkOnItem ? 1 : 0);
         }
     }
 }
