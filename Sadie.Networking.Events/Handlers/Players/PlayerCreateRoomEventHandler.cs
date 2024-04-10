@@ -4,9 +4,7 @@ using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Navigator;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 

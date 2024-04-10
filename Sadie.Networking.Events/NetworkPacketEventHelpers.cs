@@ -12,7 +12,6 @@ using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 

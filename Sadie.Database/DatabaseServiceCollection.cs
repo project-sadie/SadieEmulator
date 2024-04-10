@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace Sadie.Database;
 
@@ -11,7 +10,7 @@ public static class DatabaseServiceCollection
     {
         var connectionString = config.GetConnectionString("Default");
 
-        if (string.IsNullOrEmpty(connectionString))
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new Exception("Default connection string is missing");
         }

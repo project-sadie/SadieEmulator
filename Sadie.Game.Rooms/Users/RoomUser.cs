@@ -1,11 +1,8 @@
 ﻿using System.Drawing;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 

@@ -4,7 +4,6 @@ using Sadie.Networking.Events.Parsers.Players.Messenger;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 

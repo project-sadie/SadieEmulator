@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;

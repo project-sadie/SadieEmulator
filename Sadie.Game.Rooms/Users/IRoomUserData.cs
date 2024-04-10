@@ -1,6 +1,4 @@
-using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
-using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;

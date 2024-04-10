@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
