@@ -13,10 +13,9 @@
     "Default": "Server=127.0.0.1;Database=sadie;Uid=root;Pwd=;"
   },
   "Networking": {
-    "UseWss": false,
     "Host": "0.0.0.0",
     "Port": "2096",
-    "UseWebSockets": true,
+    "UseWss": false,
     "CertificateFile": ""
   },
   "Constants": {
