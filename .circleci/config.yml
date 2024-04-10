@@ -5,11 +5,17 @@ jobs:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
-      - checkout
       - run: 
-          name: RunUnitTests
           command: dotnet test
+  check-code-quality:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:7.0
+    steps:
+      - run: |
+          dotnet tool install sharpidious --global
+          sharpidious
 workflows:
   main:
     jobs:
       - run-unit-tests
+      - check-code-quality
