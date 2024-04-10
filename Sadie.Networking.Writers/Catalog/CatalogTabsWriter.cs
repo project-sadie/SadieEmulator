@@ -6,7 +6,9 @@ namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogTabsWriter : NetworkPacketWriter
 {
-    public CatalogTabsWriter(string mode, List<CatalogPage> tabPages)
+    public CatalogTabsWriter(
+        string mode, 
+        List<CatalogPage> tabPages)
     {
         WriteShort(ServerPacketId.CatalogPages);
         WriteBool(true);

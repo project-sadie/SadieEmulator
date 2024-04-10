@@ -5,7 +5,10 @@ namespace Sadie.Networking.Writers.Camera;
 
 public class CameraPriceWriter : NetworkPacketWriter
 {
-    public CameraPriceWriter(int costCredits, int costPoints, int pointsType)
+    public CameraPriceWriter(
+        int costCredits, 
+        int costPoints, 
+        int pointsType)
     {
         WriteShort(ServerPacketId.CameraPrice);
         WriteInteger(costCredits);

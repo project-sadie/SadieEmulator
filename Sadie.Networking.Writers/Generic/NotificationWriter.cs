@@ -6,7 +6,9 @@ namespace Sadie.Networking.Writers.Generic;
 
 public class NotificationWriter : NetworkPacketWriter
 {
-    public NotificationWriter(NotificationType type, Dictionary<string, string> messages)
+    public NotificationWriter(
+        NotificationType type, 
+        Dictionary<string, string> messages)
     {
         WriteShort(ServerPacketId.NotificationWriter);
         WriteString(type.ToString());
