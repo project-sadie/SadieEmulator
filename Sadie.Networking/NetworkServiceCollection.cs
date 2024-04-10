@@ -18,20 +18,19 @@ public static class NetworkServiceCollection
         serviceCollection.AddSingleton<INetworkClientFactory, NetworkClientFactory>();
         serviceCollection.AddSingleton<INetworkClientRepository, NetworkClientRepository>();
             
-        var certificateLocation = config["Networking:CertificateFile"];
-            
-        if (useWss && certificateLocation != null)
-        {
-            var certificate = new X509Certificate2(certificateLocation, "");
-            serviceCollection.AddSingleton<X509Certificate2>(provider => certificate);
-        }
-
         // Shut fleck up 
         FleckLog.LogAction = (x, y, z) => { };
 
         var websocketLocation = useWss ? $"wss://{host}:{port}" : $"ws://{host}:{port}";
+        var wss = new WebSocketServer(websocketLocation, useWss);
+        var certificateLocation = config["Networking:CertificateFile"];
+
+        if (useWss && !string.IsNullOrEmpty(certificateLocation))
+        {
+            wss.Certificate = new X509Certificate2(certificateLocation, "");
+        }
         
-        serviceCollection.AddSingleton<WebSocketServer>(provider => new WebSocketServer(websocketLocation, useWss));
+        serviceCollection.AddSingleton<WebSocketServer>(provider => wss);
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
             
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();

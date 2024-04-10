@@ -10,17 +10,11 @@ namespace Sadie.Networking
         ILogger<NetworkListener> logger,
         INetworkClientRepository clientRepository,
         INetworkClientFactory clientFactory,
-        X509Certificate2? certificate,
         WebSocketServer server)
         : INetworkListener
     {
         public void Start()
         {
-            if (certificate != null)
-            {
-                server.Certificate = certificate;
-            }
-            
             server.EnabledSslProtocols = SslProtocols.Tls12;
         }
 
