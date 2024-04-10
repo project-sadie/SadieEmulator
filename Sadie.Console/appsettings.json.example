@@ -1,0 +1,40 @@
+{
+  "Serilog": {
+    "Using":  [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+    "MinimumLevel": {
+      "Default": "Verbose",
+      "Microsoft": "Warning"
+    },
+    "WriteTo": [
+      { "Name": "Console" }
+    ]
+  },
+  "ConnectionStrings": {
+    "Default": "Server=127.0.0.1;Database=sadie;Uid=root;Pwd=;"
+  },
+  "Networking": {
+    "UseWss": false,
+    "Host": "0.0.0.0",
+    "Port": "2096",
+    "UseWebSockets": true,
+    "CertificateFile": ""
+  },
+  "Constants": {
+    "Player": {
+      "MaxMottoLength": 30,
+      "MinSsoLength": 1,
+      "MaxFriendships": 5000
+    },
+    "Room": {
+      "MaxChatMessageLength": 500,
+      "SecondsTillUserIdle": 300,
+      "MaxNameLength": 60,
+      "MaxDescriptionLength": 250,
+      "MaxTagLength": 30
+    },
+    "Networking": {
+      "BufferByteSize": 4024,
+      "FrameLengthByteCount": 4
+    }
+  }
+}

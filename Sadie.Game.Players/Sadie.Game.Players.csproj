@@ -12,14 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="AutoMapper">
-        <HintPath>..\..\..\..\..\..\..\home\ash\.nuget\packages\automapper\13.0.1\lib\net6.0\AutoMapper.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>
