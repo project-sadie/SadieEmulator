@@ -7,9 +7,7 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
@@ -65,36 +63,10 @@ public class RoomLoadedEventHandler(
 
         if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
             !isOwner && 
-            !player.HasPermission("enter_guarded_rooms"))
+            !player.HasPermission("enter_guarded_rooms") && 
+            !await NetworkPacketEventHelpers.ValidateRoomAccessForClientAsync(client, room, password))
         {
-            switch (room.Settings.AccessType)
-            {
-                case RoomAccessType.Password when password != room.Settings.Password:
-                    await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword).GetAllBytes());
-                    await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
-                    return;
-                case RoomAccessType.Doorbell:
-                {
-                    var usersWithRights = room.UserRepository.GetAllWithRights();
-                
-                    if (usersWithRights.Count < 1)
-                    {
-                        await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Username).GetAllBytes());
-                    }
-                    else
-                    {
-                        foreach (var user in usersWithRights)
-                        {
-                            await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(player.Username)
-                                .GetAllBytes());
-                        }
-
-                        await client.WriteToStreamAsync(new RoomDoorbellWriter().GetAllBytes());
-                    }
-
-                    return;
-                }
-            }
+            return;
         }
         
         await NetworkPacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);

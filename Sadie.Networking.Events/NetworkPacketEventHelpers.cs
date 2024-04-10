@@ -5,11 +5,14 @@ using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Enums;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
+using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -194,5 +197,41 @@ internal static class NetworkPacketEventHelpers
 
         dbContext.Add(chatMessage);
         await dbContext.SaveChangesAsync();
+    }
+
+    public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, RoomLogic room, string password)
+    {
+        var player = client.Player!;
+        
+        switch (room.Settings.AccessType)
+        {
+            case RoomAccessType.Password when password != room.Settings.Password:
+                await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword).GetAllBytes());
+                await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
+                return false;
+            case RoomAccessType.Doorbell:
+            {
+                var usersWithRights = room.UserRepository.GetAllWithRights();
+                
+                if (usersWithRights.Count < 1)
+                {
+                    await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Username).GetAllBytes());
+                }
+                else
+                {
+                    foreach (var user in usersWithRights)
+                    {
+                        await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(player.Username)
+                            .GetAllBytes());
+                    }
+
+                    await client.WriteToStreamAsync(new RoomDoorbellWriter().GetAllBytes());
+                }
+
+                return false;
+            }
+        }
+
+        return true;
     }
 }

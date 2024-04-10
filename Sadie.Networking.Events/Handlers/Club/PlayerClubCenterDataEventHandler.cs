@@ -14,17 +14,6 @@ public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
         
         if (subscription == null)
         {
-            await client.WriteToStreamAsync(new PlayerClubCenterDataWriter(
-                "",
-                0,
-                0.1,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0).GetAllBytes());
-            
             return;
         }
         

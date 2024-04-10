@@ -5,7 +5,9 @@ namespace Sadie.Networking.Writers.Rooms.Rights;
 
 public class RoomRemoveUserRightsWriter : NetworkPacketWriter
 {
-    public RoomRemoveUserRightsWriter(long roomId, long playerId)
+    public RoomRemoveUserRightsWriter(
+        long roomId, 
+        long playerId)
     {
         WriteShort(ServerPacketId.RoomRemoveUserRights);
         WriteLong(roomId);

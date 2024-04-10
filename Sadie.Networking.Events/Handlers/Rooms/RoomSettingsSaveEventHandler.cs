@@ -50,7 +50,7 @@ public class RoomSettingsSaveEventHandler(
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.PasswordRequired).GetAllBytes());
             return;
         }
-        
+
         room.Name = eventParser.Name.Truncate(roomConstants.MaxNameLength);
         room.Description = eventParser.Description.Truncate(roomConstants.MaxDescriptionLength);
         room.MaxUsersAllowed = eventParser.MaxUsers;
@@ -63,6 +63,15 @@ public class RoomSettingsSaveEventHandler(
             });
         }
         
+        UpdateSettings(room);
+        
+        await roomRepository.SaveRoomAsync(room);
+        await BroadcastUpdatesAsync(room);
+        await client.WriteToStreamAsync(new RoomSettingsSavedWriter(eventParser.RoomId).GetAllBytes());
+    }
+
+    private void UpdateSettings(Room room)
+    {
         var settings = room.Settings;
         
         settings.AccessType = eventParser.AccessType;
@@ -82,13 +91,16 @@ public class RoomSettingsSaveEventHandler(
         settings.ChatSpeed = eventParser.ChatSpeed;
         settings.ChatDistance = eventParser.ChatDistance;
         settings.ChatProtection = eventParser.ChatProtection;
-        
-        await roomRepository.SaveRoomAsync(room);
+    }
 
+    private async Task BroadcastUpdatesAsync(RoomLogic room)
+    {
+        var settings = room.Settings;
+        
         var floorSettingsWriter = new RoomWallFloorSettingsWriter(
-                settings.HideWalls, 
-                settings.WallThickness, 
-                settings.FloorThickness).GetAllBytes();
+            settings.HideWalls, 
+            settings.WallThickness, 
+            settings.FloorThickness).GetAllBytes();
 
         var settingsWriter = new RoomChatSettingsWriter(
             settings.ChatType, 
@@ -102,7 +114,5 @@ public class RoomSettingsSaveEventHandler(
         await room.UserRepository.BroadcastDataAsync(floorSettingsWriter);
         await room.UserRepository.BroadcastDataAsync(settingsWriter);
         await room.UserRepository.BroadcastDataAsync(settingsUpdatedWriter);
-        
-        await client.WriteToStreamAsync(new RoomSettingsSavedWriter(eventParser.RoomId).GetAllBytes());
     }
 }

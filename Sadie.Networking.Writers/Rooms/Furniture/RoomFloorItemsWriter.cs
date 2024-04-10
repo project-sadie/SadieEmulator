@@ -7,7 +7,9 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 
 public class RoomFloorItemsWriter : NetworkPacketWriter
 {
-    public RoomFloorItemsWriter(ICollection<RoomFurnitureItem> floorItems, Dictionary<int, string> furnitureOwners)
+    public RoomFloorItemsWriter(
+        ICollection<RoomFurnitureItem> floorItems, 
+        Dictionary<int, string> furnitureOwners)
     {
         
         WriteShort(ServerPacketId.RoomFloorItems);
