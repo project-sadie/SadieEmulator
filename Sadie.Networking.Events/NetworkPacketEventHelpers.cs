@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
@@ -11,6 +12,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Generic;
+using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -233,5 +235,70 @@ internal static class NetworkPacketEventHelpers
         }
 
         return true;
+    }
+
+    public static async Task<bool> TryChargeForCatalogItemPurchaseAsync(INetworkClient client, CatalogItem item, int amount)
+    {
+        var costInCredits = item.CostCredits * amount;
+        var costInPoints = item.CostPoints * amount;
+
+        var playerData = client.Player.Data;
+        
+        if (playerData.CreditBalance < costInCredits || 
+            (item.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||
+            (item.CostPointsType != 0 && playerData.SeasonalBalance < costInPoints))
+        {
+            return false;
+        }
+
+        playerData.CreditBalance -= costInCredits;
+
+        if (item.CostPointsType == 0)
+        {
+            playerData.PixelBalance -= costInPoints;
+        }
+        else
+        {
+            playerData.SeasonalBalance -= costInPoints;
+        }
+
+        var currencies = new Dictionary<int, long>
+        {
+            {0, playerData.PixelBalance},
+            {1, 0}, // snowflakes
+            {2, 0}, // hearts
+            {3, 0}, // gift points
+            {4, 0}, // shells
+            {5, playerData.SeasonalBalance},
+            {101, 0}, // snowflakes
+            {102, 0}, // unknown
+            {103, playerData.GotwPoints},
+            {104, 0}, // unknown
+            {105, 0} // unknown
+        };
+        
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
+
+        return true;
+    }
+
+    public static string CalculateMetaDataForCatalogItem(string metaData, CatalogItem item)
+    {
+        switch (item.FurnitureItems.First().InteractionType)
+        {
+            case "roomeffect":
+                if (string.IsNullOrEmpty(metaData))
+                {
+                    return 0.ToString();
+                }
+
+                return double
+                    .Parse(metaData)
+                    .ToString()
+                    .Replace(',', '.');
+            default:
+                return metaData;
+        }
     }
 }

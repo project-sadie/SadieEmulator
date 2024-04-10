@@ -37,7 +37,7 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        Player? targetPlayer = null;
+        Player? targetPlayer;
         var targetOnline = false;
 
         if (playerRepository.TryGetPlayerByUsername(targetUsername, out var onlineTarget) && onlineTarget != null)
