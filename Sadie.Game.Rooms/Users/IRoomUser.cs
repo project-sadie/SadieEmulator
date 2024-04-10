@@ -11,8 +11,8 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     public RoomControllerLevel ControllerLevel { get; set; }
     INetworkObject NetworkObject { get; }
     HPoint Point { get; }
-    HDirection DirectionHead { get; }
-    HDirection Direction { get; }
+    HDirection DirectionHead { get; set; }
+    HDirection Direction { get; set; }
     void WalkToPoint(Point point, bool useDiagonal);
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();

@@ -155,7 +155,8 @@ public class RoomUser(
 
     public bool HasRights()
     {
-        return room.OwnerId == Id || room.PlayerRights.FirstOrDefault(x => x.PlayerId == Id) != null;
+        return room.OwnerId == Id || 
+               room.PlayerRights.FirstOrDefault(x => x.PlayerId == Id) != null;
     }
 
     private async Task ProcessMovementAsync() // 2bMoved

@@ -1,11 +1,11 @@
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Tiles;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 

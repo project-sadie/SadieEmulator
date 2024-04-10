@@ -6,8 +6,8 @@ namespace Sadie.Game.Rooms.Users;
 public class RoomUserData : IRoomUserData
 {
     public HPoint Point { get; protected set;  }
-    public HDirection DirectionHead { get; protected set; }
-    public HDirection Direction { get; protected set; }
+    public HDirection DirectionHead { get; set; }
+    public HDirection Direction { get; set; }
     public PlayerLogic Player { get; }
     public Dictionary<string, string> StatusMap { get; }
     public DateTime LastAction { get; set; }

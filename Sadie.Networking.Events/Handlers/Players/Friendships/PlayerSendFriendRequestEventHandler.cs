@@ -67,34 +67,19 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
 
-        var incomingRequest = player
+        var existingRequest = player
             .IncomingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetPlayer.Id && x.Status == PlayerFriendshipStatus.Accepted);
+            .FirstOrDefault(x => x.OriginPlayerId == targetPlayer.Id);
 
-        if (incomingRequest != null)
+        if (existingRequest is { Status: PlayerFriendshipStatus.Pending })
         {
-            if (incomingRequest.Status != PlayerFriendshipStatus.Pending)
-            {
-                return;
-            }
+            await AcceptPendingAsync(
+                existingRequest, 
+                targetOnline, 
+                onlineTarget,
+                player.Id);
             
-            incomingRequest.Status = PlayerFriendshipStatus.Accepted;
-
-            if (targetOnline && onlineTarget != null)
-            {
-                var targetRequest = onlineTarget
-                    .OutgoingFriendships
-                    .FirstOrDefault(x => x.TargetPlayerId == player.Id);
-
-                if (targetRequest != null)
-                {
-                    targetRequest.Status = PlayerFriendshipStatus.Accepted;
-                }
-            }
-
-            await dbContext.SaveChangesAsync();
             return;
-
         }
 
         var playerFriendship = new PlayerFriendship
@@ -118,5 +103,33 @@ public class PlayerSendFriendRequestEventHandler(
         }
 
         dbContext.Set<PlayerFriendship>().Add(playerFriendship);
+    }
+
+    private async Task AcceptPendingAsync(
+        PlayerFriendship incomingRequest, 
+        bool targetOnline, 
+        PlayerLogic? onlineTarget,
+        int playerId)
+    {
+        if (incomingRequest.Status != PlayerFriendshipStatus.Pending)
+        {
+            return;
+        }
+            
+        incomingRequest.Status = PlayerFriendshipStatus.Accepted;
+
+        if (targetOnline && onlineTarget != null)
+        {
+            var targetRequest = onlineTarget
+                .OutgoingFriendships
+                .FirstOrDefault(x => x.TargetPlayerId == playerId);
+
+            if (targetRequest != null)
+            {
+                targetRequest.Status = PlayerFriendshipStatus.Accepted;
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
     }
 }
