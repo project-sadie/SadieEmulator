@@ -59,11 +59,26 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private async Task LoadInitialDataAsync()
     {
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync, "navigator tabs");
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync, "furniture items");
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync, "catalog pages");
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>().LoadInitialDataAsync, "catalog front page items");
-        await LoadInitialDataAsync(serviceProvider.GetRequiredService<CatalogClubOfferRepository>().LoadInitialDataAsync, "player club offers");
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync, 
+            "navigator tabs");
+        
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync, 
+            "furniture items");
+        
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync, 
+            "catalog pages");
+        
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>().LoadInitialDataAsync, 
+            "catalog front page items");
+        
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<CatalogClubOfferRepository>().LoadInitialDataAsync, 
+            "player club offers");
+        
     }
 
     private async Task LoadInitialDataAsync(Func<Task> action, string name)

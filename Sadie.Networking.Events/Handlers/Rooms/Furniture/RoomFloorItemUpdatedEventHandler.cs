@@ -1,4 +1,5 @@
 using Sadie.Database;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Tiles;
 using Sadie.Networking.Client;
@@ -99,7 +100,11 @@ public class RoomFloorItemUpdatedEventHandler(
         }
         
         await dbContext.SaveChangesAsync();
-        
+        await BroadcastUpdateAsync(room, roomFurnitureItem);
+    }
+
+    private static async Task BroadcastUpdateAsync(RoomLogic room, RoomFurnitureItem roomFurnitureItem)
+    {
         await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(
             roomFurnitureItem.Id,
             roomFurnitureItem.FurnitureItem.AssetId,
