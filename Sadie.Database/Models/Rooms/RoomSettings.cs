@@ -8,7 +8,7 @@ public class RoomSettings
     public int RoomId { get; set; }
     public bool WalkDiagonal { get; set; }
     public RoomAccessType AccessType { get; set; }
-    public string Password { get; set; }
+    public string Password { get; set; } = "";
     public int WhoCanMute { get; set; }
     public int WhoCanKick { get; set; }
     public int WhoCanBan { get; set; }
