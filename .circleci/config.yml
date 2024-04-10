@@ -5,12 +5,14 @@ jobs:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
+      - checkout
       - run: 
           command: dotnet test
   check-code-quality:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
+      - checkout
       - run: |
           dotnet tool install sharpidious --global
           sharpidious
