@@ -14,6 +14,7 @@ jobs:
     steps:
       - checkout
       - run: |
+          export PATH="$PATH:/root/.dotnet/tools"
           dotnet tool install sharpidious --global
           sharpidious
 workflows:
