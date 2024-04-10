@@ -31,7 +31,7 @@ public static class NetworkServiceCollection
 
         var websocketLocation = useWss ? $"wss://{host}:{port}" : $"ws://{host}:{port}";
         
-        serviceCollection.AddSingleton<WebSocketServer>(provider => new WebSocketServer(websocketLocation));
+        serviceCollection.AddSingleton<WebSocketServer>(provider => new WebSocketServer(websocketLocation, useWss));
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
             
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();

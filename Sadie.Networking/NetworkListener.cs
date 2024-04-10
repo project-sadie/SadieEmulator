@@ -1,8 +1,6 @@
 ﻿using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using Fleck;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
 
@@ -12,23 +10,17 @@ namespace Sadie.Networking
         ILogger<NetworkListener> logger,
         INetworkClientRepository clientRepository,
         INetworkClientFactory clientFactory,
-        WebSocketServer server,
-        IConfiguration config,
-        IServiceProvider serviceProvider)
+        X509Certificate2? certificate,
+        WebSocketServer server)
         : INetworkListener
     {
         public void Start()
         {
-            if (!bool.Parse(config["Networking:UseWss"])) return;
-
-            var certificate = serviceProvider.GetRequiredService<X509Certificate2>();
-
-            if (certificate == null)
+            if (certificate != null)
             {
-                throw new InvalidOperationException("Certificate is null");
+                server.Certificate = certificate;
             }
             
-            server.Certificate = certificate;
             server.EnabledSslProtocols = SslProtocols.Tls12;
         }
 
