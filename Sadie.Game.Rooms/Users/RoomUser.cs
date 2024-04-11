@@ -49,6 +49,8 @@ public class RoomUser(
         StatusMap.Remove(RoomUserStatus.Sit);
         StatusMap.Remove(RoomUserStatus.FlatCtrl);
         
+        NeedsStatusUpdate = true;
+        
         SetNextPosition();
         
         GoalSteps = RoomHelpers.BuildPathForWalk(room.TileMap, new Point(Point.X, Point.Y), point, useDiagonal);
@@ -78,6 +80,7 @@ public class RoomUser(
     public void ApplyFlatCtrlStatus()
     {
         StatusMap[RoomUserStatus.FlatCtrl] = ((int) controllerLevel).ToString();
+        NeedsStatusUpdate = true;
     }
 
     public async Task RunPeriodicCheckAsync()
@@ -120,6 +123,8 @@ public class RoomUser(
         {
             StatusMap.Remove(RoomUserStatus.Sit);
             StatusMap.Remove(RoomUserStatus.Lay);
+        
+            NeedsStatusUpdate = true;
             return;
         }
 
@@ -129,12 +134,15 @@ public class RoomUser(
         {
             StatusMap.Remove(RoomUserStatus.Sit);
             StatusMap.Remove(RoomUserStatus.Lay);
+        
+            NeedsStatusUpdate = true;
             return;
         }
         
         if (topItem.FurnitureItem.CanSit)
         {
             StatusMap[RoomUserStatus.Sit] = (topItem.PositionZ + topItem.FurnitureItem.StackHeight) + "";
+            NeedsStatusUpdate = true;
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
@@ -142,6 +150,7 @@ public class RoomUser(
         else if (topItem.FurnitureItem.CanLay)
         {
             StatusMap[RoomUserStatus.Lay] = (topItem.PositionZ + topItem.FurnitureItem.StackHeight) + "";
+            NeedsStatusUpdate = true;
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
@@ -150,6 +159,8 @@ public class RoomUser(
         {
             StatusMap.Remove(RoomUserStatus.Sit);
             StatusMap.Remove(RoomUserStatus.Lay);
+            
+            NeedsStatusUpdate = true;
         }
     }
 
@@ -170,7 +181,8 @@ public class RoomUser(
             LookAtPoint(next.ToPoint());
             
             StatusMap[RoomUserStatus.Move] = $"{next.X},{next.Y},{Math.Round(next.Z * 100.0) / 100.0}";
-
+            NeedsStatusUpdate = true;
+            
             NextPoint = next;
         }
         else

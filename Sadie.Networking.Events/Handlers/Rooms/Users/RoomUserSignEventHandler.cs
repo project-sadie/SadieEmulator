@@ -20,6 +20,7 @@ public class RoomUserSignEventHandler(RoomUserSignEventParser eventParser, RoomR
         }
 
         roomUser!.StatusMap[RoomUserStatus.Sign] = eventParser.SignId.ToString();
+        roomUser.NeedsStatusUpdate = true;
         
         return Task.CompletedTask;
     }

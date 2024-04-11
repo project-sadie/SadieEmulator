@@ -13,6 +13,7 @@ public class RoomUserData : IRoomUserData
     public DateTime LastAction { get; set; }
     public TimeSpan IdleTime { get; }
     public bool IsIdle { get; set; }
+    public bool NeedsStatusUpdate { get; set; }
     
     protected RoomUserData(HPoint point, HDirection directionHead, HDirection direction, PlayerLogic player, TimeSpan idleTime)
     {
