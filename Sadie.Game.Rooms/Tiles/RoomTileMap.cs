@@ -45,9 +45,9 @@ public class RoomTileMap
         }
     }
 
-    public RoomTile? FindTile(int x, int y) => Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);
+    public RoomTile? GetTile(int x, int y) => Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);
 
-    public List<RoomTile> GetTileCollection(
+    public List<RoomTile> GetTilesForSpan(
         int x, 
         int y, 
         int width, 
@@ -62,7 +62,7 @@ public class RoomTileMap
             {
                 for (var j = y; j <= y + (length - 1); j++)
                 {
-                    var t = FindTile(i, j);
+                    var t = GetTile(i, j);
 
                     if (t == null)
                     {
@@ -79,7 +79,7 @@ public class RoomTileMap
             {
                 for (var j = y; j <= y + (width - 1); j++)
                 {
-                    var t = FindTile(i, j);
+                    var t = GetTile(i, j);
 
                     if (t == null)
                     {

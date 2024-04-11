@@ -97,7 +97,7 @@ public class RoomItemPlacedEventHandler(
 
         var furnitureItem = playerItem.FurnitureItem;
         
-        var tiles = room.TileMap.GetTileCollection(
+        var tiles = room.TileMap.GetTilesForSpan(
             x,
             y,
             furnitureItem.TileSpanX,

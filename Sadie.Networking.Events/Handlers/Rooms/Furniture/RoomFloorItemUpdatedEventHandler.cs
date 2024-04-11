@@ -49,7 +49,7 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var tilesOn = room.TileMap.GetTileCollection(
+        var tilesOn = room.TileMap.GetTilesForSpan(
             roomFurnitureItem.PositionX,
             roomFurnitureItem.PositionY,
             roomFurnitureItem.FurnitureItem.TileSpanX,
@@ -68,7 +68,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
         var direction = eventParser.Direction;
         
-        var newTiles = room.TileMap.GetTileCollection(
+        var newTiles = room.TileMap.GetTilesForSpan(
             position.X,
             position.Y,
             roomFurnitureItem.FurnitureItem.TileSpanX,
