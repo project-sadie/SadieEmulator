@@ -1,4 +1,6 @@
-﻿namespace Sadie.Game.Rooms.Tiles;
+﻿using Sadie.Shared.Unsorted.Game.Rooms;
+
+namespace Sadie.Game.Rooms.Tiles;
 
 public class RoomTileMap
 {
@@ -44,4 +46,14 @@ public class RoomTileMap
     }
 
     public RoomTile? FindTile(int x, int y) => Tiles.FirstOrDefault(tile => tile.Point.X == x && tile.Point.Y == y);
+
+    public List<RoomTile> GetTileCollection(
+        int x, 
+        int y, 
+        int width, 
+        int length, 
+        HDirection direction)
+    {
+        return new List<RoomTile>(); // TODO: Calculate
+    }
 }

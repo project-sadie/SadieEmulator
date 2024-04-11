@@ -116,4 +116,9 @@ public static class RoomHelpers
             tileMap.Map[tile.Point.Y, tile.Point.X] = (short)(canWalkOnItem ? 1 : 0);
         }
     }
+
+    public static void UpdateTileMapForTiles(List<RoomTile> tiles, RoomTileMap tileMap)
+    {
+        throw new NotImplementedException();
+    }
 }

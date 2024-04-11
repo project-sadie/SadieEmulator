@@ -3,7 +3,7 @@ using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
 
-namespace Sadie.Game.Rooms.Furniture;
+namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 {
