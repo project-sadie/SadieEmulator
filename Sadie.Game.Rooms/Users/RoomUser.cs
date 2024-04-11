@@ -45,11 +45,10 @@ public class RoomUser(
 
     public void WalkToPoint(Point point, bool useDiagonal)
     {
-        StatusMap.Remove(RoomUserStatus.Lay);
-        StatusMap.Remove(RoomUserStatus.Sit);
-        StatusMap.Remove(RoomUserStatus.FlatCtrl);
-        
-        NeedsStatusUpdate = true;
+        RemoveStatuses(
+            RoomUserStatus.Lay,
+            RoomUserStatus.Sit,
+            RoomUserStatus.FlatCtrl);
         
         SetNextPosition();
         
@@ -62,8 +61,7 @@ public class RoomUser(
         NextPoint = null;
         IsWalking = false;
 
-        StatusMap.Remove(RoomUserStatus.Move);
-        
+        RemoveStatuses(RoomUserStatus.Move);
         ApplyFlatCtrlStatus();
         CheckStatusForCurrentTile();
     }
@@ -79,7 +77,22 @@ public class RoomUser(
 
     public void ApplyFlatCtrlStatus()
     {
-        StatusMap[RoomUserStatus.FlatCtrl] = ((int) controllerLevel).ToString();
+        AddStatus(RoomUserStatus.FlatCtrl, ((int)controllerLevel).ToString());
+    }
+
+    public void AddStatus(string key, string value)
+    {
+        StatusMap[key] = value;
+        NeedsStatusUpdate = true;
+    }
+
+    public void RemoveStatuses(params string[] statuses)
+    {
+        foreach (var status in statuses)
+        {
+            StatusMap.Remove(status);
+        }
+
         NeedsStatusUpdate = true;
     }
 
@@ -121,10 +134,7 @@ public class RoomUser(
 
         if (tileItems == null || tileItems.Count == 0)
         {
-            StatusMap.Remove(RoomUserStatus.Sit);
-            StatusMap.Remove(RoomUserStatus.Lay);
-        
-            NeedsStatusUpdate = true;
+            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
             return;
         }
 
@@ -132,35 +142,33 @@ public class RoomUser(
 
         if (topItem == null)
         {
-            StatusMap.Remove(RoomUserStatus.Sit);
-            StatusMap.Remove(RoomUserStatus.Lay);
-        
-            NeedsStatusUpdate = true;
+            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
             return;
         }
         
         if (topItem.FurnitureItem.CanSit)
         {
-            StatusMap[RoomUserStatus.Sit] = (topItem.PositionZ + topItem.FurnitureItem.StackHeight) + "";
-            NeedsStatusUpdate = true;
+            AddStatus(
+                RoomUserStatus.Sit, 
+                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
         }
         else if (topItem.FurnitureItem.CanLay)
         {
-            StatusMap[RoomUserStatus.Lay] = (topItem.PositionZ + topItem.FurnitureItem.StackHeight) + "";
-            NeedsStatusUpdate = true;
+            AddStatus(
+                RoomUserStatus.Lay, 
+                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
         }
         else
         {
-            StatusMap.Remove(RoomUserStatus.Sit);
-            StatusMap.Remove(RoomUserStatus.Lay);
-            
-            NeedsStatusUpdate = true;
+            RemoveStatuses(
+                RoomUserStatus.Sit,
+                RoomUserStatus.Lay);
         }
     }
 

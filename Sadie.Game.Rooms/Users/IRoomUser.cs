@@ -16,6 +16,7 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     void WalkToPoint(Point point, bool useDiagonal);
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();
+    void AddStatus(string key, string value);
     Task RunPeriodicCheckAsync();
     void UpdateLastAction();
     void CheckStatusForCurrentTile();
