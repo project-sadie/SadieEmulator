@@ -56,38 +56,45 @@ public class RoomTileMap
     {
         var tiles = new List<RoomTile>();
         
-        if (direction is 0 or 4)
+        switch (direction)
         {
-            for (var i = x; i <= x + (width - 1); i++)
+            case 0 or 4:
             {
-                for (var j = y; j <= y + (length - 1); j++)
+                for (var i = x; i <= x + (width - 1); i++)
                 {
-                    var t = GetTile(i, j);
-
-                    if (t == null)
+                    for (var j = y; j <= y + (length - 1); j++)
                     {
-                        continue;
-                    }
+                        var t = GetTile(i, j);
+
+                        if (t == null)
+                        {
+                            continue;
+                        }
                     
-                    tiles.Add(t);
+                        tiles.Add(t);
+                    }
                 }
+
+                break;
             }
-        }
-        else if (direction is 2 or 6)
-        {
-            for (var i = x; i <= x + (length - 1); i++)
+            case 2 or 6:
             {
-                for (var j = y; j <= y + (width - 1); j++)
+                for (var i = x; i <= x + (length - 1); i++)
                 {
-                    var t = GetTile(i, j);
-
-                    if (t == null)
+                    for (var j = y; j <= y + (width - 1); j++)
                     {
-                        continue;
-                    }
+                        var t = GetTile(i, j);
+
+                        if (t == null)
+                        {
+                            continue;
+                        }
                     
-                    tiles.Add(t);
+                        tiles.Add(t);
+                    }
                 }
+
+                break;
             }
         }
 
