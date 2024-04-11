@@ -102,7 +102,7 @@ public class RoomItemPlacedEventHandler(
             y,
             furnitureItem.TileSpanX,
             furnitureItem.TileSpanY,
-            (HDirection)direction);
+            direction);
 
         if (tiles.Any(t => t.State == RoomTileState.Closed))
         {

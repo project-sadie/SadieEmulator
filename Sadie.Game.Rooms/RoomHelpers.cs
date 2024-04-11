@@ -119,6 +119,9 @@ public static class RoomHelpers
 
     public static void UpdateTileMapForTiles(List<RoomTile> tiles, RoomTileMap tileMap)
     {
-        throw new NotImplementedException();
+        foreach (var tile in tiles)
+        {
+            UpdateTileMapForTile(tile, tileMap);
+        }
     }
 }

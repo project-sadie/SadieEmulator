@@ -52,8 +52,45 @@ public class RoomTileMap
         int y, 
         int width, 
         int length, 
-        HDirection direction)
+        int direction)
     {
-        return new List<RoomTile>(); // TODO: Calculate
+        var tiles = new List<RoomTile>();
+        
+        if (direction is 0 or 4)
+        {
+            for (var i = x; i <= x + (width - 1); i++)
+            {
+                for (var j = y; j <= y + (length - 1); j++)
+                {
+                    var t = FindTile(i, j);
+
+                    if (t == null)
+                    {
+                        continue;
+                    }
+                    
+                    tiles.Add(t);
+                }
+            }
+        }
+        else if (direction is 2 or 6)
+        {
+            for (var i = x; i <= x + (length - 1); i++)
+            {
+                for (var j = y; j <= y + (width - 1); j++)
+                {
+                    var t = FindTile(i, j);
+
+                    if (t == null)
+                    {
+                        continue;
+                    }
+                    
+                    tiles.Add(t);
+                }
+            }
+        }
+
+        return tiles;
     }
 }
