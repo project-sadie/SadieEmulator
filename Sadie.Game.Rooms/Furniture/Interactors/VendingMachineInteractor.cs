@@ -13,8 +13,10 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
     {
         item.MetaData = "1";
 
-        roomUser.Direction = item.Direction;
-        roomUser.DirectionHead = item.Direction;
+        var direction = RoomHelpers.GetOppositeDirection(item.Direction);
+
+        roomUser.Direction = direction;
+        roomUser.DirectionHead = direction;
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter(roomUser.Id, new Random().Next(2, 9)).GetAllBytes());
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter(
