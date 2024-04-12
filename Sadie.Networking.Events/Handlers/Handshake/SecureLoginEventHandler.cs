@@ -23,7 +23,6 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
-    SadieContext dbContext,
     PlayerRepository playerRepository,
     PlayerConstants constants,
     INetworkClientRepository networkClientRepository)
@@ -55,7 +54,6 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var playerData = player.Data;
         var playerId = player.Id;
             
         client.Player = player;
