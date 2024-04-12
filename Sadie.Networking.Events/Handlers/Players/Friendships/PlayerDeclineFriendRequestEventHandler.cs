@@ -22,7 +22,6 @@ public class PlayerDeclineFriendRequestEventHandler(
         eventParser.Parse(reader);
 
         var player = client.Player;
-        var playerData = player.Data;
         var playerId = player.Id;
 
         if (eventParser.DeclineAll)
