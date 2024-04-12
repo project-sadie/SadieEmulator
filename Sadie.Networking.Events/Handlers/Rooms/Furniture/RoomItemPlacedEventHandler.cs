@@ -147,7 +147,7 @@ public class RoomItemPlacedEventHandler(
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
         
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemPlacedWriter(
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter(
             roomFurnitureItem.Id,
             roomFurnitureItem.FurnitureItem.AssetId,
             roomFurnitureItem.PositionX,

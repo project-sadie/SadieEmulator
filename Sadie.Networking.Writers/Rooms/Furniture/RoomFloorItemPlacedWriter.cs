@@ -3,9 +3,9 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
+public class RoomFloorItemPlacedWriter : NetworkPacketWriter
 {
-    public RoomFloorFurnitureItemPlacedWriter(
+    public RoomFloorItemPlacedWriter(
         long id,
         int assetId,
         int positionX,
