@@ -19,18 +19,6 @@
     "CertificateFile": ""
   },
   "Constants": {
-    "Player": {
-      "MaxMottoLength": 30,
-      "MinSsoLength": 1,
-      "MaxFriendships": 5000
-    },
-    "Room": {
-      "MaxChatMessageLength": 500,
-      "SecondsTillUserIdle": 300,
-      "MaxNameLength": 60,
-      "MaxDescriptionLength": 250,
-      "MaxTagLength": 30
-    },
     "Networking": {
       "BufferByteSize": 4024,
       "FrameLengthByteCount": 4

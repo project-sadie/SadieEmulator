@@ -28,10 +28,6 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton<RoomRepository, RoomRepository>();
         
         serviceCollection.AddSingleton<AboutCommand>();
-        
-        var roomConstants = new RoomConstants();
-        config.GetSection("Constants:Room").Bind(roomConstants);
-        serviceCollection.AddSingleton(roomConstants);
 
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
         serviceCollection.AddSingleton<RoomFurnitureItemInteractorRepository>();

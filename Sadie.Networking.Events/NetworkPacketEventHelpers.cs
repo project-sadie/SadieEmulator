@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog.Items;
+using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
@@ -146,7 +147,7 @@ internal static class NetworkPacketEventHelpers
         INetworkClient client,
         RoomUserChatEventParser parser,
         bool shouting,
-        RoomConstants roomConstants,
+        ServerRoomConstants roomConstants,
         RoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository,
         SadieContext dbContext)

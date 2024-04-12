@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
@@ -25,7 +26,7 @@ public class SecureLoginEventHandler(
     ILogger<SecureLoginEventHandler> logger,
     SadieContext dbContext,
     PlayerRepository playerRepository,
-    PlayerConstants constants,
+    ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository)
     : INetworkPacketEventHandler
 {
