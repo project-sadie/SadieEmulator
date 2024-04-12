@@ -1,4 +1,5 @@
 using Sadie.Database;
+using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
@@ -12,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 public class PlayerSendFriendRequestEventHandler(
     PlayerSendFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
-    PlayerConstants playerConstants,
+    ServerPlayerConstants playerConstants,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {

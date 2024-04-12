@@ -10,9 +10,5 @@ public static class PlayerServiceCollection
         serviceCollection.AddTransient<IPlayerState, PlayerState>();
         serviceCollection.AddTransient<PlayerLogic, PlayerLogic>();
         serviceCollection.AddSingleton<PlayerRepository>();
-        
-        var playerConstants = new PlayerConstants();
-        config.GetSection("Constants:Player").Bind(playerConstants);
-        serviceCollection.AddSingleton(playerConstants);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.Database.Models.Constants;
 
 namespace Sadie.Database;
 
@@ -25,5 +26,11 @@ public static class DatabaseServiceCollection
                 ))
                 .UseSnakeCaseNamingConvention();
         });
+
+        serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
+            provider.GetRequiredService<SadieContext>().PlayerConstants.First());
+
+        serviceCollection.AddSingleton<ServerRoomConstants>(provider =>
+            provider.GetRequiredService<SadieContext>().RoomConstants.First());
     }
 }
