@@ -24,10 +24,10 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
-    SadieContext dbContext,
     PlayerRepository playerRepository,
     ServerPlayerConstants constants,
-    INetworkClientRepository networkClientRepository)
+    INetworkClientRepository networkClientRepository,
+    ServerSettings serverSettings)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.SecureLogin;
@@ -56,7 +56,6 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var playerData = player.Data;
         var playerId = player.Id;
             
         client.Player = player;
@@ -75,6 +74,17 @@ public class SecureLoginEventHandler(
         player.Authenticated = true;
 
         await SendExtraPacketsAsync(client, player);
+        await SendWelcomeMessageAsync(player);
+    }
+
+    private async Task SendWelcomeMessageAsync(PlayerLogic player)
+    {
+        if (string.IsNullOrEmpty(serverSettings.PlayerWelcomeMessage))
+        {
+            return;
+        }
+        
+        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(serverSettings.PlayerWelcomeMessage).GetAllBytes());
     }
 
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)

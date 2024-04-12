@@ -111,6 +111,5 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         
         modelBuilder.Entity<ServerPlayerConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerRoomConstants>(builder => builder.HasNoKey());
-
     }
 }
