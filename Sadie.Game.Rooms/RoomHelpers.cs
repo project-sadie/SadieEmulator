@@ -162,19 +162,5 @@ public static class RoomHelpers
         return tileItems;
     }
 
-    public static HDirection GetOppositeDirection(HDirection direction)
-    {
-        return direction switch
-        {
-            HDirection.North => HDirection.South,
-            HDirection.NorthEast => HDirection.SouthWest,
-            HDirection.East => HDirection.West,
-            HDirection.SouthEast => HDirection.NorthWest,
-            HDirection.South => HDirection.North,
-            HDirection.SouthWest => HDirection.NorthEast,
-            HDirection.West => HDirection.East,
-            HDirection.NorthWest => HDirection.SouthEast,
-            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-        };
-    }
+    public static int GetOppositeDirection(int direction) => direction <= 5 ? direction + 4 : direction - 4;
 }
