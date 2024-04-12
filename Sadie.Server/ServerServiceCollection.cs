@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
 using Sadie.Database.Mappers;
+using Sadie.Database.Models;
 using Sadie.Game.Catalog;
 using Sadie.Game.Furniture;
 using Sadie.Game.Navigator;
@@ -30,6 +31,9 @@ public static class ServerServiceCollection
         serviceCollection.AddSingleton<ServerTaskWorker>();
         
         DatabaseServiceCollection.AddServices(serviceCollection, config);
+
+        serviceCollection.AddSingleton<ServerSettings>(p => p.GetRequiredService<SadieContext>().ServerSettings.First());
+        
         MapperServiceCollection.AddServices(serviceCollection, config);
         PlayerServiceCollection.AddServices(serviceCollection, config);
         RoomServiceCollection.AddServices(serviceCollection, config);

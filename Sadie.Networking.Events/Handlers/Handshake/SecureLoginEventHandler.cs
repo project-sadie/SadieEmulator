@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Database.Models;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
@@ -25,7 +26,8 @@ public class SecureLoginEventHandler(
     ILogger<SecureLoginEventHandler> logger,
     PlayerRepository playerRepository,
     PlayerConstants constants,
-    INetworkClientRepository networkClientRepository)
+    INetworkClientRepository networkClientRepository,
+    ServerSettings serverSettings)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.SecureLogin;
@@ -72,6 +74,17 @@ public class SecureLoginEventHandler(
         player.Authenticated = true;
 
         await SendExtraPacketsAsync(client, player);
+        await SendWelcomeMessageAsync(player);
+    }
+
+    private async Task SendWelcomeMessageAsync(PlayerLogic player)
+    {
+        if (string.IsNullOrEmpty(serverSettings.PlayerWelcomeMessage))
+        {
+            return;
+        }
+        
+        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(serverSettings.PlayerWelcomeMessage).GetAllBytes());
     }
 
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
