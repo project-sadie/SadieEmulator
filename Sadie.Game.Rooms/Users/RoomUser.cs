@@ -32,11 +32,11 @@ public class RoomUser(
             return;
         }
         
-        var currentTile = room.TileMap.FindTile(Point.X, Point.Y);
+        var currentTile = room.TileMap.GetTile(Point.X, Point.Y);
         currentTile?.Users.Remove(Id);
         RoomHelpers.UpdateTileMapForTile(currentTile!, room.TileMap);
 
-        var nextTile = room.TileMap.FindTile(NextPoint.X, NextPoint.Y);
+        var nextTile = room.TileMap.GetTile(NextPoint.X, NextPoint.Y);
         nextTile?.Users.Add(Id, this);
         RoomHelpers.UpdateTileMapForTile(nextTile!, room.TileMap);
 
@@ -113,7 +113,7 @@ public class RoomUser(
             return;
         }
         
-        var currentTile = room.TileMap.FindTile(Point.X, Point.Y);
+        var currentTile = room.TileMap.GetTile(Point.X, Point.Y);
         var tileItems = currentTile?.Items;
 
         if (tileItems == null || tileItems.Count == 0)
