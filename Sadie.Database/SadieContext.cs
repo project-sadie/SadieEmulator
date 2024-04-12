@@ -38,6 +38,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
     public DbSet<PlayerBadge> PlayerBadges { get; set; }
     public DbSet<Badge> Badges { get; set; }
     public DbSet<CatalogClubOffer> CatalogClubOffers { get; set; }
+    public DbSet<ServerSettings> ServerSettings { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -104,5 +105,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
                 l => l.HasOne(typeof(Permission)).WithMany().HasForeignKey("permission_id").HasPrincipalKey(nameof(Permission.Id)),
                 r => r.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
                 j => j.HasKey("permission_id", "role_id"));
+
+        modelBuilder.Entity<ServerSettings>().HasNoKey();
     }
 }
