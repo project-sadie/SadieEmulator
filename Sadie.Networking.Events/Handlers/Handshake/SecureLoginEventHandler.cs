@@ -45,7 +45,7 @@ public class SecureLoginEventHandler(
             return;
         }
             
-        var player = await playerRepository.TryGetPlayerBySsoAsync(client, eventParser.Token);
+        var player = await playerRepository.TryGetPlayerBySsoAsync(client, eventParser.Token, eventParser.Delay);
 
         if (player == null)
         {

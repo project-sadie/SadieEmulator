@@ -28,11 +28,14 @@ public class PlayerRepository(
         return player != default;
     }
 
-    public async Task<PlayerLogic?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
+    public async Task<PlayerLogic?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso, int delay)
     {
         var tokenRecord = dbContext
             .PlayerSsoToken
-            .FirstOrDefault(x => x.Token == sso && x.ExpiresAt > DateTime.Now && x.UsedAt == null);
+            .FirstOrDefault(x => 
+                x.Token == sso && 
+                x.ExpiresAt > DateTime.Now.Subtract(TimeSpan.FromMilliseconds(delay)) && 
+                x.UsedAt == null);
 
         if (tokenRecord == null)
         {
