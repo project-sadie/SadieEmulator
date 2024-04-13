@@ -30,9 +30,21 @@ public class PlayerRepository(
 
     public async Task<PlayerLogic?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
     {
+        var tokenRecord = dbContext
+            .PlayerSsoToken
+            .FirstOrDefault(x => x.Token == sso && x.UsedAt == null);
+
+        if (tokenRecord == null)
+        {
+            return null;
+        }
+
+        tokenRecord.UsedAt = DateTime.Now;
+        dbContext.PlayerSsoToken.Update(tokenRecord);
+        
         var player = await dbContext
             .Set<Player>()
-            .Where(x => x.SsoToken == sso)
+            .Where(x => x.Id == tokenRecord.PlayerId)
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
             .Include(x => x.Tags)
@@ -59,9 +71,6 @@ public class PlayerRepository(
         {
             return null;
         }
-        
-        player.SsoToken = null;
-        await dbContext.SaveChangesAsync();
 
         return mapper.Map<PlayerLogic>(player, opt => 
             opt.AfterMap((src, dest) => dest.NetworkObject = networkObject));

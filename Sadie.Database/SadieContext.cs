@@ -42,6 +42,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
     public DbSet<ServerPlayerConstants> ServerPlayerConstants { get; init; }
     public DbSet<ServerRoomConstants> ServerRoomConstants { get; init; }
     public DbSet<ServerSettings> ServerSettings { get; init; }
+    public DbSet<PlayerSsoToken> PlayerSsoToken { get; init; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
