@@ -28,9 +28,9 @@ public static class DatabaseServiceCollection
         });
 
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
-            provider.GetRequiredService<SadieContext>().PlayerConstants.First());
+            provider.GetRequiredService<SadieContext>().ServerPlayerConstants.First());
 
         serviceCollection.AddSingleton<ServerRoomConstants>(provider =>
-            provider.GetRequiredService<SadieContext>().RoomConstants.First());
+            provider.GetRequiredService<SadieContext>().ServerRoomConstants.First());
     }
 }

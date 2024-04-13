@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Database.Models;
 using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;

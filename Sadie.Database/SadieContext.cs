@@ -39,9 +39,9 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
     public DbSet<PlayerBadge> PlayerBadges { get; init; }
     public DbSet<Badge> Badges { get; init; }
     public DbSet<CatalogClubOffer> CatalogClubOffers { get; init; }
-    
-    public DbSet<ServerPlayerConstants> PlayerConstants { get; set; }
-    public DbSet<ServerRoomConstants> RoomConstants { get; set; }
+    public DbSet<ServerPlayerConstants> ServerPlayerConstants { get; init; }
+    public DbSet<ServerRoomConstants> ServerRoomConstants { get; init; }
+    public DbSet<ServerSettings> ServerSettings { get; init; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -111,5 +111,6 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         
         modelBuilder.Entity<ServerPlayerConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerRoomConstants>(builder => builder.HasNoKey());
+        modelBuilder.Entity<ServerSettings>(builder => builder.HasNoKey());
     }
 }
