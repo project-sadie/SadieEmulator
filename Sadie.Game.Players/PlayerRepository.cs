@@ -28,26 +28,29 @@ public class PlayerRepository(
         return player != default;
     }
 
-    public async Task<PlayerLogic?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso, int delay)
+    public async Task<PlayerSsoToken?> TryGetSsoTokenAsync(string token, int delay)
     {
-        var tokenRecord = dbContext
+        var record = await dbContext
             .PlayerSsoToken
-            .FirstOrDefault(x => 
-                x.Token == sso && 
+            .FirstOrDefaultAsync(x => 
+                x.Token == token && 
                 x.ExpiresAt > DateTime.Now.Subtract(TimeSpan.FromMilliseconds(delay)) && 
                 x.UsedAt == null);
 
-        if (tokenRecord == null)
+        if (record != null)
         {
-            return null;
+            record.UsedAt = DateTime.Now;
+            dbContext.PlayerSsoToken.Update(record);
         }
 
-        tokenRecord.UsedAt = DateTime.Now;
-        dbContext.PlayerSsoToken.Update(tokenRecord);
-        
+        return record;
+    }
+    
+    public async Task<PlayerLogic?> TryGetPlayerInstanceByIdAsync(INetworkObject networkObject, int playerId)
+    {
         var player = await dbContext
             .Set<Player>()
-            .Where(x => x.Id == tokenRecord.PlayerId)
+            .Where(x => x.Id == playerId)
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
             .Include(x => x.Tags)
