@@ -32,7 +32,7 @@ public class PlayerRepository(
     {
         var tokenRecord = dbContext
             .PlayerSsoToken
-            .FirstOrDefault(x => x.Token == sso && x.UsedAt == null);
+            .FirstOrDefault(x => x.Token == sso && x.ExpiresAt > DateTime.Now && x.UsedAt == null);
 
         if (tokenRecord == null)
         {
