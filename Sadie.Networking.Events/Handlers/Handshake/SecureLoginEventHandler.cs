@@ -16,6 +16,7 @@ using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
+using Sadie.Shared;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
@@ -83,8 +84,12 @@ public class SecureLoginEventHandler(
         {
             return;
         }
+
+        var formattedMessage = serverSettings.PlayerWelcomeMessage
+            .Replace("[username]", player.Username)
+            .Replace("[version]", GlobalState.Version.ToString());
         
-        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(serverSettings.PlayerWelcomeMessage).GetAllBytes());
+        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(formattedMessage).GetAllBytes());
     }
 
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
