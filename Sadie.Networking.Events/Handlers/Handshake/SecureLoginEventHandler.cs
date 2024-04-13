@@ -49,6 +49,7 @@ public class SecureLoginEventHandler(
 
         if (token == null)
         {
+            await DisconnectAsync(client.Guid);
             return;
         }
         
@@ -57,11 +58,7 @@ public class SecureLoginEventHandler(
         if (player == null)
         {
             logger.LogWarning("Failed to resolve player from their provided sso");
-            
-            if (!await networkClientRepository.TryRemoveAsync(client.Guid))
-            {
-                logger.LogError("Failed to remove network client");
-            }
+            await DisconnectAsync(client.Guid);
             return;
         }
 
