@@ -96,7 +96,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         modelBuilder.Entity<Player>()
             .HasMany(r => r.Roles)
             .WithMany(p => p.Players)
-            .UsingEntity("players_roles",
+            .UsingEntity("player_role",
                 l => l.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
                 r => r.HasOne(typeof(Player)).WithMany().HasForeignKey("player_id").HasPrincipalKey(nameof(Player.Id)),
                 j => j.HasKey("role_id", "player_id"));
