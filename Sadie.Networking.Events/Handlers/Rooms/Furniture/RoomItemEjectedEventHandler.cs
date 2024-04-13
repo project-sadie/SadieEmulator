@@ -77,6 +77,9 @@ public class RoomItemEjectedEventHandler(
         };
 
         room.FurnitureItems.Remove(roomFurnitureItem);
+
+        dbContext.RoomFurnitureItems.Remove(roomFurnitureItem);
+        await dbContext.SaveChangesAsync();
         
         if (ownsItem)
         {
