@@ -1,5 +1,4 @@
 ﻿using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 using Fleck;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
