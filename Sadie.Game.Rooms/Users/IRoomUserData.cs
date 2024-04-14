@@ -14,4 +14,5 @@ public interface IRoomUserData
     TimeSpan IdleTime { get; }
     bool IsIdle { get; }
     bool NeedsStatusUpdate { get; set; }
+    bool IsWalking { get; set; }
 }

@@ -14,6 +14,7 @@ public class RoomUserData : IRoomUserData
     public TimeSpan IdleTime { get; }
     public bool IsIdle { get; set; }
     public bool NeedsStatusUpdate { get; set; }
+    public bool IsWalking { get; set; }
     
     protected RoomUserData(HPoint point, HDirection directionHead, HDirection direction, PlayerLogic player, TimeSpan idleTime)
     {
@@ -26,7 +27,9 @@ public class RoomUserData : IRoomUserData
         IdleTime = idleTime;
     }
     
-    protected Queue<HPoint> GoalSteps = new();
-    protected HPoint? NextPoint;
-    protected bool IsWalking { get; set; }
+    protected HPoint PathGoal { get; set; }
+    protected Queue<HPoint> PathPoints { get; set; }
+    protected int PathStep { get; set; }
+    protected bool NeedsPathCalculated { get; set; }
+    protected HPoint? NextPoint { get; set; }
 }
