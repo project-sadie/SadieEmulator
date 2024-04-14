@@ -42,5 +42,10 @@ public static class ServerServiceCollection
         NavigatorServiceCollection.AddServices(serviceCollection);
         CatalogServiceProvider.AddServices(serviceCollection);
         FurnitureServiceProvider.AddServices(serviceCollection);
+
+        if (config.GetValue<bool>("Development"))
+        {
+            GlobalState.InDevelopmentMode = true;
+        }
     }
 }
