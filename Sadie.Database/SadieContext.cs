@@ -67,6 +67,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .HasForeignKey<RoomPaintSettings>(x => x.RoomId);
 
         modelBuilder.Entity<Player>().ToTable("players");
+        modelBuilder.Entity<PlayerSsoToken>().ToTable("player_sso_tokens");
         modelBuilder.Entity<PlayerRoomLike>().ToTable("player_room_likes");
         modelBuilder.Entity<RoomTag>().ToTable("room_tags");
 

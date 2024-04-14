@@ -30,18 +30,22 @@ public class PlayerRepository(
 
     public async Task<PlayerSsoToken?> TryGetSsoTokenAsync(string token, TimeSpan delay)
     {
+        var expireDt = DateTime.Now.Subtract(delay);
+        
         var record = await dbContext
             .PlayerSsoToken
             .FirstOrDefaultAsync(x => 
                 x.Token == token && 
-                x.ExpiresAt > DateTime.Now.Subtract(delay) && 
+                x.ExpiresAt > expireDt && 
                 x.UsedAt == null);
 
-        if (record != null)
+        if (record == null)
         {
-            record.UsedAt = DateTime.Now;
-            dbContext.PlayerSsoToken.Update(record);
+            return record;
         }
+        
+        record.UsedAt = DateTime.Now;
+        dbContext.PlayerSsoToken.Update(record);
 
         return record;
     }
