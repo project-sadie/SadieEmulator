@@ -92,7 +92,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
             }
         }
 
-        if (!await _playerRepository.TryRemovePlayerAsync(Player.Id))
+        if (Player != null && !await _playerRepository.TryRemovePlayerAsync(Player.Id))
         {
             _logger.LogError("Failed to dispose of player");
         }

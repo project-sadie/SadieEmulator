@@ -48,6 +48,7 @@ public class SecureLoginEventHandler(
 
         if (token == null)
         {
+            logger.LogWarning("Failed to find token record for provided sso.");
             await DisconnectAsync(client.Guid);
             return;
         }
@@ -56,7 +57,7 @@ public class SecureLoginEventHandler(
 
         if (player == null)
         {
-            logger.LogWarning("Failed to resolve player from their provided sso");
+            logger.LogError("Failed to resolve player record.");
             await DisconnectAsync(client.Guid);
             return;
         }
