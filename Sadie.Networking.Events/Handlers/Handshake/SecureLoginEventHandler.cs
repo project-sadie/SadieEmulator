@@ -37,7 +37,7 @@ public class SecureLoginEventHandler(
     {
         eventParser.Parse(reader);
 
-        if (!GlobalState.InDevelopmentMode && !ValidateSso(eventParser.Token)) 
+        if (!ValidateSso(eventParser.Token)) 
         {
             logger.LogWarning("Rejected an insecure sso token");
             await DisconnectAsync(client.Guid);

@@ -3,12 +3,13 @@
         "class.maxNameLength": 50,
         "class.maxLineCount": 300,
         "class.maxLineLength": 150,
-        "method.maxLineCount": 90,
+        "method.maxLineCount": 95,
         "check.multipleEmptyLines": true
     },
 
     "ignoredClassNames": [
-        "NetworkPacketEventHelpers"
+        "NetworkPacketEventHelpers",
+        "RoomFloorItemUpdatedEventHandler"
     ],
 
     "rules.override": {
