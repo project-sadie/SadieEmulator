@@ -11,13 +11,11 @@ public class PlayerLogic : Player
     public PlayerLogic(ILogger<PlayerLogic> logger,
         int id,
         string username,
-        string ssoToken,
         PlayerData data)
     {
         _logger = logger;
         Id = id;
         Username = username;
-        SsoToken = ssoToken;
         Data = data;
     }
 
