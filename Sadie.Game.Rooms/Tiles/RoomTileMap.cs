@@ -1,6 +1,4 @@
-﻿using Sadie.Shared.Unsorted.Game.Rooms;
-
-namespace Sadie.Game.Rooms.Tiles;
+﻿namespace Sadie.Game.Rooms.Tiles;
 
 public class RoomTileMap
 {

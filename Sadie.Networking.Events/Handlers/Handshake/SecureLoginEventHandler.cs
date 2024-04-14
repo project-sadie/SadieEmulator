@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging;
-using Sadie.Database;
 using Sadie.Database.Models;
 using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
@@ -44,17 +43,21 @@ public class SecureLoginEventHandler(
             await DisconnectAsync(client.Guid);
             return;
         }
-            
-        var player = await playerRepository.TryGetPlayerBySsoAsync(client, eventParser.Token);
+
+        var token = await playerRepository.TryGetSsoTokenAsync(eventParser.Token, eventParser.Delay);
+
+        if (token == null)
+        {
+            await DisconnectAsync(client.Guid);
+            return;
+        }
+        
+        var player = await playerRepository.TryGetPlayerInstanceByIdAsync(client, token.PlayerId);
 
         if (player == null)
         {
             logger.LogWarning("Failed to resolve player from their provided sso");
-            
-            if (!await networkClientRepository.TryRemoveAsync(client.Guid))
-            {
-                logger.LogError("Failed to remove network client");
-            }
+            await DisconnectAsync(client.Guid);
             return;
         }
 

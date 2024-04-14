@@ -7,7 +7,6 @@ public class Player
 {
     public int Id { get; set; }
     public string Username { get; set; }
-    public string? SsoToken { get; set; }
     public ICollection<Role> Roles { get; set; } = [];
     public DateTime CreatedAt { get; set; }
     public PlayerData Data { get; set; }

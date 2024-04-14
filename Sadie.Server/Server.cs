@@ -49,10 +49,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         var context = serviceProvider.GetRequiredService<SadieContext>();
         
         await context
-            .Players
-            .ExecuteUpdateAsync(s => s.SetProperty(b => b.SsoToken, b => null!));
-        
-        await context
             .PlayerData
             .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false ));
     }
