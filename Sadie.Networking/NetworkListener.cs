@@ -1,72 +1,58 @@
-﻿using System.Security.Authentication;
+﻿using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using Fleck;
+using DotNetty.Codecs.Http;
+using DotNetty.Handlers.Tls;
+using DotNetty.Transport.Bootstrapping;
+using DotNetty.Transport.Channels;
+using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Logging;
-using Sadie.Networking.Client;
 
 namespace Sadie.Networking
 {
     public class NetworkListener(
         ILogger<NetworkListener> logger,
-        INetworkClientRepository clientRepository,
-        INetworkClientFactory clientFactory,
-        WebSocketServer server)
+        X509Certificate? certificate)
         : INetworkListener
     {
-        public void Start()
-        {
-            server.EnabledSslProtocols = SslProtocols.Tls12;
-        }
+        private IChannel? _channel;
 
-        public Task ListenAsync()
+        public async Task ListenAsync(int port)
         {
-            server.Start(socket =>
-            {
-                socket.OnOpen = () => OnOpen(socket);
-                socket.OnClose = () => OnClose(socket);
-                socket.OnBinary = message => OnBinary(socket, message);
-            });
+            var bossGroup = new MultithreadEventLoopGroup(1);
+            var workGroup = new MultithreadEventLoopGroup();
+            
+            var bootstrap = new ServerBootstrap();
+            
+            bootstrap.Group(bossGroup, workGroup);
+            bootstrap.Channel<TcpServerSocketChannel>();
+            
+            bootstrap
+                .Option(ChannelOption.SoBacklog, 8192)
+                .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
+                {
+                    var pipeline = channel.Pipeline;
+
+                    if (certificate != null)
+                    {
+                        pipeline.AddLast(TlsHandler.Server(certificate));
+                    }
+                    
+                    pipeline.AddLast(new HttpServerCodec());
+                    pipeline.AddLast(new HttpObjectAggregator(65536));
+                    pipeline.AddLast(new WebSocketServerHandler(certificate == null));
+                }));
+            
+            _channel = await bootstrap.BindAsync(IPAddress.Any, port);
             
             logger.LogInformation("Networking is listening for connections");
-            return Task.CompletedTask;
         }
 
-        private void OnOpen(IWebSocketConnection connection)
+        public async ValueTask DisposeAsync()
         {
-            try
+            if (_channel != null)
             {
-                var client = clientFactory.CreateClient(connection.ConnectionInfo.Id, connection);
-                clientRepository.AddClient(connection.ConnectionInfo.Id, client);
+                await _channel.CloseAsync();
             }
-            catch (Exception e)
-            {
-                logger.LogError(e.ToString());
-            }
-        }
-
-        private async void OnClose(IWebSocketConnection connection)
-        {
-            if (!await clientRepository.TryRemoveAsync(connection.ConnectionInfo.Id))
-            {
-                logger.LogError("Failed to remove client from connection information.");
-            }
-        }
-
-        private void OnBinary(IWebSocketConnection connection, byte[] message)
-        {
-            if (!clientRepository.TryGetClientByGuid(connection.ConnectionInfo.Id, out var client))
-            {
-                logger.LogError($"Failed to resolve client from connection information.");
-            }
-            else
-            {
-                client!.OnReceivedAsync(message);
-            }
-        }
-        
-        public void Dispose()
-        {
-            server.Dispose();
         }
     }
 }

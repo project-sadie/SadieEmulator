@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="DotNetty.Buffers" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Codecs" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Codecs.Http" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Handlers" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Transport" Version="0.7.6" />
         <PackageReference Include="Fleck" Version="1.2.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />

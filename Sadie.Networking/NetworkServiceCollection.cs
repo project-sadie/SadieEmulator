@@ -27,7 +27,7 @@ public static class NetworkServiceCollection
 
         if (useWss && !string.IsNullOrEmpty(certificateLocation))
         {
-            wss.Certificate = new X509Certificate2(certificateLocation, "");
+            serviceCollection.AddSingleton(new X509Certificate2(certificateLocation, ""));
         }
         
         serviceCollection.AddSingleton<WebSocketServer>(provider => wss);
