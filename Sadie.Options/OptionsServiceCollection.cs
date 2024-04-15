@@ -18,5 +18,6 @@ public static class OptionsServiceCollection
 
         serviceCollection.AddSingleton<IValidateOptions<DatabaseOptions>, DatabaseOptionsValidator>();
         serviceCollection.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
+        serviceCollection.AddSingleton<IValidateOptions<NetworkPacketOptions>, NetworkPacketOptionsValidator>();
     }
 }
