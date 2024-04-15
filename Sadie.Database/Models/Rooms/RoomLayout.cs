@@ -4,11 +4,11 @@ namespace Sadie.Database.Models.Rooms;
 
 public class RoomLayout
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string HeightMap { get; set; }
-    public int DoorX { get; set; }
-    public int DoorY { get; set; }
-    public double DoorZ { get; set; }
-    public HDirection DoorDirection { get; set; }
+    public int Id { get; init; }
+    public string Name { get; init; }
+    public string HeightMap { get; init; }
+    public int DoorX { get; init; }
+    public int DoorY { get; init; }
+    public double DoorZ { get; init; }
+    public HDirection DoorDirection { get; init; }
 }

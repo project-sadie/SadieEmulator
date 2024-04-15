@@ -5,10 +5,10 @@ namespace Sadie.Database.Models.Catalog.FrontPage;
 
 public class CatalogFrontPageItem
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
-    public string Image { get; set; }
-    public CatalogFrontPageItemType TypeId { get; set; }
-    public string? ProductName { get; set; }
-    public CatalogPage CatalogPage { get; set; }
+    public int Id { get; init; }
+    public string Title { get; init; }
+    public string Image { get; init; }
+    public CatalogFrontPageItemType TypeId { get; init; }
+    public string? ProductName { get; init; }
+    public CatalogPage CatalogPage { get; init; }
 }
