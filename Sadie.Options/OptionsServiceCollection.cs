@@ -17,5 +17,6 @@ public static class OptionsServiceCollection
         serviceCollection.Configure<NetworkPacketOptions>(options => config.GetSection("NetworkOptions:PacketOptions").Bind(options));
 
         serviceCollection.AddSingleton<IValidateOptions<DatabaseOptions>, DatabaseOptionsValidator>();
+        serviceCollection.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
     }
 }
