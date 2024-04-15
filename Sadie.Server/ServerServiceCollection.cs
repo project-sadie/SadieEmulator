@@ -37,10 +37,10 @@ public static class ServerServiceCollection
 
         serviceCollection.AddSingleton<ServerSettings>(p => p.GetRequiredService<SadieContext>().ServerSettings.First());
 
-        MapperServiceCollection.AddServices(serviceCollection, config);
-        PlayerServiceCollection.AddServices(serviceCollection, config);
-        RoomServiceCollection.AddServices(serviceCollection, config);
-        NetworkServiceCollection.AddServices(serviceCollection, config);
+        MapperServiceCollection.AddServices(serviceCollection);
+        PlayerServiceCollection.AddServices(serviceCollection);
+        RoomServiceCollection.AddServices(serviceCollection);
+        NetworkServiceCollection.AddServices(serviceCollection);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         CatalogServiceProvider.AddServices(serviceCollection);
