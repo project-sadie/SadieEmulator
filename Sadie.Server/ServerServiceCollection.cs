@@ -32,7 +32,6 @@ public static class ServerServiceCollection
         serviceCollection.AddSingleton<ServerTaskWorker>();
 
         OptionsServiceCollection.AddServices(serviceCollection, config);
-
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
         serviceCollection.AddSingleton<ServerSettings>(p => p.GetRequiredService<SadieContext>().ServerSettings.First());
