@@ -1,9 +1,11 @@
 using Fleck;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
+using Sadie.Options.Models;
 
 namespace Sadie.Networking.Client;
 
@@ -18,13 +20,13 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
     private readonly INetworkPacketHandler _packetHandler;
 
     public NetworkClient(
-        ILogger<NetworkClient> logger, 
-        Guid guid, 
+        ILogger<NetworkClient> logger,
+        Guid guid,
         IWebSocketConnection webSocket,
-        PlayerRepository playerRepository, 
+        PlayerRepository playerRepository,
         RoomRepository roomRepository,
         INetworkPacketHandler packetHandler,
-        NetworkingConstants constants) : base(constants)
+        IOptions<NetworkPacketOptions> options) : base(options)
     {
         Guid = guid;
 
@@ -37,7 +39,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public PlayerLogic? Player { get; set; }
     public RoomUser? RoomUser { get; set; }
-    
+
     public Task ListenAsync()
     {
         return Task.CompletedTask;
@@ -51,7 +53,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         {
             return;
         }
-        
+
         try
         {
             await _webSocket.Send(data);
@@ -61,7 +63,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
             _logger.LogError($"Error whilst writing to stream: {e.Message}");
         }
     }
-    
+
     public async Task OnReceivedAsync(byte[] data)
     {
         foreach (var packet in DecodePacketsFromBytes(data))
@@ -71,7 +73,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
     }
 
     private bool _disposed;
-    
+
     public async ValueTask DisposeAsync()
     {
         if (_disposed)
@@ -84,7 +86,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         if (RoomUser != null)
         {
             var lastRoom = _roomRepository.TryGetRoomById(RoomUser.Player.CurrentRoomId);
-            
+
             if (lastRoom != null)
             {
                 await lastRoom.UserRepository.TryRemoveAsync(RoomUser.Id);
@@ -96,7 +98,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         {
             _logger.LogError("Failed to dispose of player");
         }
-        
+
         _webSocket.Close();
     }
 }
