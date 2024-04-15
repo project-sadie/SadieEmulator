@@ -15,7 +15,8 @@ public class NetworkPacketDecoder
 
     protected List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
     {
-        if (packet.Length < _packetSettings.FrameLengthByteCount || packet.Length > _packetSettings.BufferByteSize - _packetSettings.FrameLengthByteCount)
+        if (packet.Length < _packetSettings.FrameLengthByteCount || 
+            packet.Length > _packetSettings.BufferByteSize - _packetSettings.FrameLengthByteCount)
         {
             return new List<NetworkPacket>();
         }

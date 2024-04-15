@@ -23,7 +23,10 @@ namespace Sadie.Networking
             // Shut fleck up 
             FleckLog.LogAction = (x, y, z) => { };
 
-            var location = networkSettings.UseWss ? $"wss://{networkSettings.Host}:{networkSettings.Port}" : $"ws://{networkSettings.Host}:{networkSettings.Port}";
+            var location = networkSettings.UseWss ? 
+                $"wss://{networkSettings.Host}:{networkSettings.Port}" : 
+                $"ws://{networkSettings.Host}:{networkSettings.Port}";
+            
             server = new WebSocketServer(location, networkSettings.UseWss);
             var certificateLocation = networkSettings.CertificateFile;
 
