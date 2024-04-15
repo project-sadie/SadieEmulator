@@ -10,6 +10,7 @@ using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
 using Sadie.Networking.Events;
+using Sadie.Options;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using SadieEmulator.Tasks.Game.Rooms;
@@ -25,15 +26,17 @@ public static class ServerServiceCollection
         serviceCollection.AddSingleton<IServerTask, ProcessRoomsTask>();
         serviceCollection.AddSingleton<IServerTask, DisconnectIdleClientsTask>();
         serviceCollection.AddSingleton<IServerTask, UpdateConsoleTitleTask>();
-        
+
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
         serviceCollection.AddSingleton<ServerTaskWorker>();
-        
+
+        OptionsServiceCollection.AddServices(serviceCollection, config);
+
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
         serviceCollection.AddSingleton<ServerSettings>(p => p.GetRequiredService<SadieContext>().ServerSettings.First());
-        
+
         MapperServiceCollection.AddServices(serviceCollection, config);
         PlayerServiceCollection.AddServices(serviceCollection, config);
         RoomServiceCollection.AddServices(serviceCollection, config);
