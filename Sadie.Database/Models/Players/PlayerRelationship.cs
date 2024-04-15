@@ -6,8 +6,8 @@ public class PlayerRelationship
 {
     public int Id { get; init; }
     public int OriginPlayerId { get; init; }
-    public Player OriginPlayer { get; init; }
+    public Player? OriginPlayer { get; init; }
     public int TargetPlayerId { get; init; }
-    public Player TargetPlayer { get; init; }
+    public Player? TargetPlayer { get; init; }
     public PlayerRelationshipType TypeId { get; set; }
 }
