@@ -1,7 +1,10 @@
-﻿using System.Security.Authentication;
-using Fleck;
+﻿using Fleck;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
+using Sadie.Options.Models;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Sadie.Networking
 {
@@ -9,23 +12,38 @@ namespace Sadie.Networking
         ILogger<NetworkListener> logger,
         INetworkClientRepository clientRepository,
         INetworkClientFactory clientFactory,
-        WebSocketServer server)
+        IOptions<NetworkOptions> options)
         : INetworkListener
     {
-        public void Start()
+        private readonly NetworkOptions networkSettings = options.Value;
+        private WebSocketServer? server;
+
+        public void Initialize()
         {
+            // Shut fleck up 
+            FleckLog.LogAction = (x, y, z) => { };
+
+            var location = networkSettings.UseWss ? $"wss://{networkSettings.Host}:{networkSettings.Port}" : $"ws://{networkSettings.Host}:{networkSettings.Port}";
+            server = new WebSocketServer(location, networkSettings.UseWss);
+            var certificateLocation = networkSettings.CertificateFile;
+
+            if (networkSettings.UseWss && !string.IsNullOrEmpty(certificateLocation))
+            {
+                server.Certificate = new X509Certificate2(certificateLocation, "");
+            }
+
             server.EnabledSslProtocols = SslProtocols.Tls12;
         }
 
         public Task ListenAsync()
         {
-            server.Start(socket =>
+            server?.Start(socket =>
             {
                 socket.OnOpen = () => OnOpen(socket);
                 socket.OnClose = () => OnClose(socket);
                 socket.OnBinary = message => OnBinary(socket, message);
             });
-            
+
             logger.LogInformation("Networking is listening for connections");
             return Task.CompletedTask;
         }
@@ -62,10 +80,10 @@ namespace Sadie.Networking
                 client!.OnReceivedAsync(message);
             }
         }
-        
+
         public void Dispose()
         {
-            server.Dispose();
+            server?.Dispose();
         }
     }
 }
