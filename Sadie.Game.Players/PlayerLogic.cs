@@ -19,8 +19,8 @@ public class PlayerLogic : Player
         Data = data;
     }
 
-    public INetworkObject NetworkObject { get; set; }
-    public PlayerData Data { get; }
+    public INetworkObject? NetworkObject { get; set; }
+    public new PlayerData Data { get; }
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }
     public int CurrentRoomId { get; set; }
