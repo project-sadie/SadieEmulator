@@ -14,7 +14,7 @@ public class NetworkOptionsValidator : IValidateOptions<NetworkOptions>
 
         if (string.IsNullOrWhiteSpace(options.Host))
         {
-            return ValidateOptionsResult.Fail("Host cannot be null or empty.");
+            return ValidateOptionsResult.Fail($"{nameof(NetworkOptions)} `Host` cannot be null or empty.");
         }
 
         return ValidateOptionsResult.Success;

@@ -14,22 +14,22 @@ public class DatabaseOptionsValidator : IValidateOptions<DatabaseOptions>
 
         if (string.IsNullOrWhiteSpace(options.Host))
         {
-            return ValidateOptionsResult.Fail("Host cannot be null or empty.");
+            return ValidateOptionsResult.Fail($"{nameof(DatabaseOptions)} `Host` cannot be null or empty.");
         }
 
         if (string.IsNullOrWhiteSpace(options.Username))
         {
-            return ValidateOptionsResult.Fail("Username cannot be null or empty.");
+            return ValidateOptionsResult.Fail($"{nameof(DatabaseOptions)} `Username` cannot be null or empty.");
         }
 
         if (string.IsNullOrWhiteSpace(options.Password))
         {
-            return ValidateOptionsResult.Fail("Password cannot be null or empty.");
+            return ValidateOptionsResult.Fail($"{nameof(DatabaseOptions)} `Password` cannot be null or empty.");
         }
 
         if (string.IsNullOrWhiteSpace(options.Database))
         {
-            return ValidateOptionsResult.Fail("Database cannot be null or empty.");
+            return ValidateOptionsResult.Fail($"{nameof(DatabaseOptions)} `Database` cannot be null or empty.");
         }
 
         return ValidateOptionsResult.Success;
