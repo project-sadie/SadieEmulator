@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
-using Sadie.Options.Models;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using Sadie.Options.Options;
 
 namespace Sadie.Networking
 {

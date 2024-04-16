@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
-using Sadie.Options.Models;
 using System.Buffers.Binary;
+using Sadie.Options.Options;
 
 namespace Sadie.Networking.Packets;
 
