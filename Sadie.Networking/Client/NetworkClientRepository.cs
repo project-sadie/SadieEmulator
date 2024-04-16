@@ -1,27 +1,28 @@
 ﻿using System.Collections.Concurrent;
+using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 
 namespace Sadie.Networking.Client;
 
 public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : INetworkClientRepository
 {
-    private readonly ConcurrentDictionary<Guid, INetworkClient> _clients = new();
+    private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
 
-    public void AddClient(Guid guid, INetworkClient client)
+    public void AddClient(IChannelId channelId, INetworkClient client)
     {
-        _clients[guid] = client;
+        _clients[channelId] = client;
     }
 
-    public async Task<bool> TryRemoveAsync(Guid guid)
+    public async Task<bool> TryRemoveAsync(IChannelId channelId)
     {
-        if (!_clients.ContainsKey(guid))
+        if (!_clients.ContainsKey(channelId))
         {
             return true;
         }
         
         try
         {
-            var result = _clients.TryRemove(guid, out var client);
+            var result = _clients.TryRemove(channelId, out var client);
 
             if (client != null)
             {
@@ -54,16 +55,16 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
 
         foreach (var client in idleClients)
         {
-            if (!await TryRemoveAsync(client.Guid))
+            if (!await TryRemoveAsync(client.Channel.Id))
             {
                 logger.LogError("Failed to dispose of network client");
             }
         }
     }
-    
-    public bool TryGetClientByGuid(Guid guid, out INetworkClient? client)
+
+    public INetworkClient? TryGetClientByChannelId(IChannelId channelId)
     {
-        return _clients.TryGetValue(guid, out client);
+        return _clients.GetValueOrDefault(channelId);
     }
 
     public async ValueTask DisposeAsync()

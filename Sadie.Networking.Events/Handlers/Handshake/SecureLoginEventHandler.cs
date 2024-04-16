@@ -1,3 +1,4 @@
+using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Sadie.Database.Models;
 using Sadie.Database.Models.Constants;
@@ -40,7 +41,7 @@ public class SecureLoginEventHandler(
         if (!ValidateSso(eventParser.Token)) 
         {
             logger.LogWarning("Rejected an insecure sso token");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
 
@@ -49,7 +50,7 @@ public class SecureLoginEventHandler(
         if (token == null)
         {
             logger.LogWarning("Failed to find token record for provided sso.");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
         
@@ -58,7 +59,7 @@ public class SecureLoginEventHandler(
         if (player == null)
         {
             logger.LogError("Failed to resolve player record.");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
 
@@ -69,7 +70,7 @@ public class SecureLoginEventHandler(
         if (!playerRepository.TryAddPlayer(player))
         {
             logger.LogError($"Player {playerId} could not be registered");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
             
@@ -179,9 +180,9 @@ public class SecureLoginEventHandler(
 
     private bool ValidateSso(string sso) => !string.IsNullOrEmpty(sso) && sso.Length >= constants.MinSsoLength;
 
-    private async Task DisconnectAsync(Guid guid)
+    private async Task DisconnectAsync(IChannelId channelId)
     {
-        if (!await networkClientRepository.TryRemoveAsync(guid))
+        if (!await networkClientRepository.TryRemoveAsync(channelId))
         {
             logger.LogError("Failed to remove network client");
         }

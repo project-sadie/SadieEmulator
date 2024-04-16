@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using DotNetty.Buffers;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms.Packets.Writers;
 
@@ -45,7 +46,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     
     public int Count => _users.Count;
     
-    public async Task BroadcastDataAsync(byte[] data)
+    public async Task BroadcastDataAsync(IByteBuffer data)
     {
         foreach (var roomUser in _users.Values)
         {

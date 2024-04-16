@@ -1,15 +1,16 @@
-using System.Buffers;
 using System.Text;
+using DotNetty.Buffers;
 
 namespace Sadie.Shared.Unsorted.Networking.Packets;
 
 public class NetworkPacketWriter
 {
-    private readonly ArrayBufferWriter<byte> _packet;
+    private readonly IByteBuffer _buffer;
         
     protected NetworkPacketWriter()
     {
-        _packet = new ArrayBufferWriter<byte>();
+        _buffer = Unpooled.Buffer(6);
+        _buffer.WriteInt(0);
     }
 
     protected void WriteString(string data)
@@ -20,12 +21,12 @@ public class NetworkPacketWriter
 
     private void WriteBytes(byte[] data, bool reverse = false)
     {
-        _packet.Write(reverse ? data.Reverse().ToArray() : data);
+        _buffer.WriteBytes(reverse ? data.Reverse().ToArray() : data);
     }
 
     protected void WriteShort(short data)
     {
-        WriteBytes(BitConverter.GetBytes(data), true);
+        _buffer.WriteShort(data);
     }
 
     protected void WriteInteger(int data)
@@ -43,14 +44,9 @@ public class NetworkPacketWriter
         WriteBytes(new[] {(byte) (boolean ? 1 : 0)});
     }
 
-    public byte[] GetAllBytes()
+    public IByteBuffer GetAllBytes()
     {
-        var bytes = new List<byte>();
-            
-        bytes.AddRange(BitConverter.GetBytes(_packet.WrittenCount));
-        bytes.Reverse();
-        bytes.AddRange(_packet.WrittenSpan.ToArray());
-
-        return bytes.ToArray();
+        _buffer.SetInt(0, _buffer.WriterIndex - 4);
+        return _buffer;
     }
 }

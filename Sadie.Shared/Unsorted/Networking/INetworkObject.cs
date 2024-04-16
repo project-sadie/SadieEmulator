@@ -1,6 +1,8 @@
-﻿namespace Sadie.Shared.Unsorted.Networking;
+﻿using DotNetty.Buffers;
+
+namespace Sadie.Shared.Unsorted.Networking;
 
 public interface INetworkObject
 {
-    Task WriteToStreamAsync(byte[] data);
+    Task WriteToStreamAsync(IByteBuffer data);
 }

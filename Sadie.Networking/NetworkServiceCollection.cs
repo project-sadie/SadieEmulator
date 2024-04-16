@@ -14,5 +14,7 @@ public static class NetworkServiceCollection
 
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
         serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
+
+        serviceCollection.AddSingleton<DefaultChannelHandler>();
     }
 }
