@@ -3,7 +3,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomHeightmap2EventHandler(INetworkPacketEventHandler eventHandler) : INetworkPacketEventHandler
+public class RoomHeightmap2EventHandler(RoomHeightmapEventHandler eventHandler) : INetworkPacketEventHandler
 {
     // Nitro sends a different header based on if the user is exiting a room to enter another
     // Just call the original / other event
