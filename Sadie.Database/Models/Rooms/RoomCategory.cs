@@ -2,7 +2,7 @@ namespace Sadie.Database.Models.Rooms;
 
 public class RoomCategory
 {
-    public int Id { get; set; }
-    public string Caption { get; set; }
-    public bool IsVisible { get; set; }
+    public int Id { get; init; }
+    public string Caption { get; init; }
+    public bool IsVisible { get; init; }
 }
