@@ -1,6 +1,6 @@
 {
   "Serilog": {
-    "Using":  [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
+    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.File" ],
     "MinimumLevel": {
       "Default": "Verbose",
       "Microsoft": "Warning"
@@ -9,17 +9,19 @@
       { "Name": "Console" }
     ]
   },
-  "ConnectionStrings": {
-    "Default": "Server=127.0.0.1;Database=sadie;Uid=root;Pwd=;"
+  "DatabaseOptions": {
+    "Host": "127.0.0.1",
+    "Port": 3306,
+    "Username": "root",
+    "Password": "password",
+    "Database": "sadie"
   },
-  "Networking": {
+  "NetworkOptions": {
     "Host": "0.0.0.0",
     "Port": "2096",
     "UseWss": false,
-    "CertificateFile": ""
-  },
-  "Constants": {
-    "Networking": {
+    "CertificateFile": "",
+    "PacketOptions": {
       "BufferByteSize": 4024,
       "FrameLengthByteCount": 4
     }

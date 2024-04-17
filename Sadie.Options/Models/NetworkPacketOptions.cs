@@ -1,6 +1,6 @@
-namespace Sadie.Networking;
+﻿namespace Sadie.Options.Models;
 
-public class NetworkingConstants
+public class NetworkPacketOptions
 {
     public int BufferByteSize { get; set; }
     public int FrameLengthByteCount { get; set; }

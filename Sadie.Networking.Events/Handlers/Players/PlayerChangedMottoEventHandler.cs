@@ -1,5 +1,4 @@
 ﻿using Sadie.Database.Models.Constants;
-using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
