@@ -1,5 +1,4 @@
 using Sadie.Database;
-using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
@@ -13,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 public class RoomUserWhisperEventHandler(
     RoomUserWhisperEventParser eventParser,
     RoomRepository roomRepository, 
-    ServerRoomConstants roomConstants,
+    RoomConstants roomConstants,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {

@@ -38,7 +38,7 @@ public class RoomLoadedEventHandler(
 
             if (lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
             {
-                var currentTile = lastRoom.TileMap.GetTile(oldUser.Point.X, oldUser.Point.Y);
+                var currentTile = lastRoom.TileMap.FindTile(oldUser.Point.X, oldUser.Point.Y);
                 currentTile?.Users.Remove(oldUser.Id);
                 RoomHelpers.UpdateTileMapForTile(currentTile!, lastRoom.TileMap);
                 

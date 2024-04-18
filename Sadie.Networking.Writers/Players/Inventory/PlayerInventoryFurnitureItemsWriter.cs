@@ -28,9 +28,12 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
     private void WriteItem(PlayerFurnitureItem item)
     {
         var furnitureItem = item.FurnitureItem;
+        var reference = furnitureItem.Id;
         var hasRentPeriodStarted = false;
+        var flatId = furnitureItem.Id;
         var slotId = "";
         var extra = 1;
+        var objectData = new Dictionary<string, string>();
         var expiresInSeconds = -1;
         
         WriteLong(item.Id);

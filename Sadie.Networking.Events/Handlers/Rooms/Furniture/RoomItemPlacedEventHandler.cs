@@ -95,26 +95,16 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var furnitureItem = playerItem.FurnitureItem;
-        
-        var tiles = room.TileMap.GetTilesForSpan(
-            x,
-            y,
-            furnitureItem.TileSpanX,
-            furnitureItem.TileSpanY,
-            direction);
+        var tile = room.TileMap.FindTile(x, y);
 
-        if (tiles.Any(t => t.State == RoomTileState.Closed))
+        if (tile == null || tile.State == RoomTileState.Closed)
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
-
-        var highestItemOnTiles = tiles
-                .SelectMany(t => t.Items)
-                .MaxBy(f => f.PositionZ);
-        
-        var z = (float)(highestItemOnTiles != null ? highestItemOnTiles.PositionZ + highestItemOnTiles.FurnitureItem.StackHeight : 0);
+            
+        var highestItem = tile.Items.OrderByDescending(x => x.PositionZ).FirstOrDefault();
+        var z = (float)(highestItem != null ? highestItem.PositionZ + highestItem.FurnitureItem.StackHeight : 0);
             
         var roomFurnitureItem = new RoomFurnitureItem
         {
@@ -132,12 +122,8 @@ public class RoomItemPlacedEventHandler(
             CreatedAt = DateTime.Now
         };
 
-        foreach (var t in tiles)
-        {
-            t.Items.Add(roomFurnitureItem);
-        }
-        
-        RoomHelpers.UpdateTileMapForTiles(tiles, room.TileMap);
+        tile.Items.Add(roomFurnitureItem);
+        RoomHelpers.UpdateTileMapForTile(tile, room.TileMap);
         
         room.FurnitureItems.Add(roomFurnitureItem);
         player.FurnitureItems.Remove(playerItem);
@@ -147,7 +133,7 @@ public class RoomItemPlacedEventHandler(
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
         
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter(
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemPlacedWriter(
             roomFurnitureItem.Id,
             roomFurnitureItem.FurnitureItem.AssetId,
             roomFurnitureItem.PositionX,

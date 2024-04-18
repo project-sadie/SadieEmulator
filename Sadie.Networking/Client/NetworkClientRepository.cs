@@ -14,11 +14,6 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
 
     public async Task<bool> TryRemoveAsync(Guid guid)
     {
-        if (!_clients.ContainsKey(guid))
-        {
-            return true;
-        }
-        
         try
         {
             var result = _clients.TryRemove(guid, out var client);
@@ -33,7 +28,7 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
         }
         catch (Exception e)
         {
-            logger.LogError($"Failed to remove network client: {e}");
+            logger.LogError($"Failed to remove network client: {e.Message}");
             return false;
         }
     }

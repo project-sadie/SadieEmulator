@@ -6,7 +6,7 @@ public class PathFinderOptions
 {
     public HeuristicFormula HeuristicFormula { get; } = HeuristicFormula.Manhattan;
 
-    public bool UseDiagonals { get; init; } = true;
+    public bool UseDiagonals { get; set; } = true;
 
     public bool PunishChangeDirection { get; set; }
 

@@ -11,16 +11,18 @@ public class PlayerLogic : Player
     public PlayerLogic(ILogger<PlayerLogic> logger,
         int id,
         string username,
+        string ssoToken,
         PlayerData data)
     {
         _logger = logger;
         Id = id;
         Username = username;
+        SsoToken = ssoToken;
         Data = data;
     }
 
-    public INetworkObject? NetworkObject { get; set; }
-    public new PlayerData Data { get; }
+    public INetworkObject NetworkObject { get; set; }
+    public PlayerData Data { get; }
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }
     public int CurrentRoomId { get; set; }
