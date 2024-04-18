@@ -43,7 +43,7 @@ public class NetworkPacketWriter
         WriteBytes(new[] {(byte) (boolean ? 1 : 0)});
     }
 
-    public byte[] GetAllBytes2()
+    public byte[] GetAllBytes()
     {
         var bytes = new List<byte>();
             
