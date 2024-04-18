@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MySqlConnector;
 using Sadie.Database.Models;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Players;
@@ -11,34 +14,65 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
+using Sadie.Options.Models;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Database;
 
-public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(options)
+public class SadieContext(IOptions<DatabaseOptions> options) : DbContext
 {
-    public DbSet<NavigatorCategory> NavigatorCategories { get; set; }
-    public DbSet<NavigatorTab> NavigatorTabs { get; set; }
-    public DbSet<FurnitureItem> FurnitureItems { get; set; }
-    public DbSet<CatalogItem> CatalogItems { get; set; }
-    public DbSet<CatalogPage> CatalogPages { get; set; }
-    public DbSet<CatalogFrontPageItem> CatalogFrontPageItems { get; set; }
-    public DbSet<RoomCategory> RoomCategories { get; set; }
-    public DbSet<RoomChatMessage> RoomChatMessages { get; set; }
-    public DbSet<RoomFurnitureItem> RoomFurnitureItems { get; set; }
-    public DbSet<RoomPlayerRight> RoomPlayerRights { get; set; }
-    public DbSet<RoomSettings> RoomSettings { get; set; }
-    public DbSet<RoomLayout> RoomLayouts { get; set; }
-    public DbSet<Room> Rooms { get; set; }
-    public DbSet<Player> Players { get; set; }
-    public DbSet<PlayerData> PlayerData { get; set; }
-    public DbSet<PlayerFurnitureItem> PlayerFurnitureItems { get; set; }
-    public DbSet<PlayerBadge> PlayerBadges { get; set; }
-    public DbSet<Badge> Badges { get; set; }
-    public DbSet<CatalogClubOffer> CatalogClubOffers { get; set; }
-    
+    public DbSet<NavigatorCategory> NavigatorCategories { get; init; }
+    public DbSet<NavigatorTab> NavigatorTabs { get; init; }
+    public DbSet<FurnitureItem> FurnitureItems { get; init; }
+    public DbSet<CatalogItem> CatalogItems { get; init; }
+    public DbSet<CatalogPage> CatalogPages { get; init; }
+    public DbSet<CatalogFrontPageItem> CatalogFrontPageItems { get; init; }
+    public DbSet<RoomCategory> RoomCategories { get; init; }
+    public DbSet<RoomChatMessage> RoomChatMessages { get; init; }
+    public DbSet<RoomFurnitureItem> RoomFurnitureItems { get; init; }
+    public DbSet<RoomPlayerRight> RoomPlayerRights { get; init; }
+    public DbSet<RoomSettings> RoomSettings { get; init; }
+    public DbSet<RoomLayout> RoomLayouts { get; init; }
+    public DbSet<Room> Rooms { get; init; }
+    public DbSet<Player> Players { get; init; }
+    public DbSet<PlayerData> PlayerData { get; init; }
+    public DbSet<PlayerFurnitureItem> PlayerFurnitureItems { get; init; }
+    public DbSet<PlayerBadge> PlayerBadges { get; init; }
+    public DbSet<Badge> Badges { get; init; }
+    public DbSet<CatalogClubOffer> CatalogClubOffers { get; init; }
+    public DbSet<ServerPlayerConstants> ServerPlayerConstants { get; init; }
+    public DbSet<ServerRoomConstants> ServerRoomConstants { get; init; }
+    public DbSet<ServerSettings> ServerSettings { get; init; }
+    public DbSet<PlayerSsoToken> PlayerSsoToken { get; init; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        var databaseSettings = options.Value;
+        var stringBuilder = new MySqlConnectionStringBuilder
+        {
+            UserID = databaseSettings.Username,
+            Server = databaseSettings.Host,
+            Database = databaseSettings.Database,
+            Port = databaseSettings.Port,
+            Password = databaseSettings.Password
+        };
+
+        var connectionString = stringBuilder.ToString();
+
+        optionsBuilder.UseMySql(connectionString, MySqlServerVersion.LatestSupportedServerVersion, mySqlOptions =>
+        {
+            mySqlOptions.EnableRetryOnFailure(
+               maxRetryCount: 10,
+               maxRetryDelay: TimeSpan.FromSeconds(30),
+               errorNumbersToAdd: null);
+        });
+        optionsBuilder.UseSnakeCaseNamingConvention();
+
+        base.OnConfiguring(optionsBuilder);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<NavigatorCategory>()
@@ -62,13 +96,14 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .HasForeignKey<RoomPaintSettings>(x => x.RoomId);
 
         modelBuilder.Entity<Player>().ToTable("players");
+        modelBuilder.Entity<PlayerSsoToken>().ToTable("player_sso_tokens");
         modelBuilder.Entity<PlayerRoomLike>().ToTable("player_room_likes");
         modelBuilder.Entity<RoomTag>().ToTable("room_tags");
 
         modelBuilder.Entity<RoomLayout>()
             .Property(x => x.HeightMap)
             .HasColumnName("heightmap");
-        
+
         modelBuilder.Entity<PlayerTag>().ToTable("player_tags");
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");
         modelBuilder.Entity<PlayerFurnitureItem>().ToTable("player_furniture_items");
@@ -86,13 +121,13 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .HasConversion(
                 v => v.ToString(),
                 v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v));
-        
+
         modelBuilder.Entity<Subscription>().ToTable("subscriptions");
 
         modelBuilder.Entity<Player>()
             .HasMany(r => r.Roles)
             .WithMany(p => p.Players)
-            .UsingEntity("players_roles",
+            .UsingEntity("player_role",
                 l => l.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
                 r => r.HasOne(typeof(Player)).WithMany().HasForeignKey("player_id").HasPrincipalKey(nameof(Player.Id)),
                 j => j.HasKey("role_id", "player_id"));
@@ -104,5 +139,9 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
                 l => l.HasOne(typeof(Permission)).WithMany().HasForeignKey("permission_id").HasPrincipalKey(nameof(Permission.Id)),
                 r => r.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
                 j => j.HasKey("permission_id", "role_id"));
+
+        modelBuilder.Entity<ServerPlayerConstants>(builder => builder.HasNoKey());
+        modelBuilder.Entity<ServerRoomConstants>(builder => builder.HasNoKey());
+        modelBuilder.Entity<ServerSettings>(builder => builder.HasNoKey());
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Extensions;
@@ -16,7 +17,7 @@ public class RoomUser(
     HDirection directionHead,
     HDirection direction,
     PlayerLogic player,
-    RoomConstants constants,
+    ServerRoomConstants constants,
     RoomControllerLevel controllerLevel)
     : RoomUserData(point, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
@@ -131,7 +132,7 @@ public class RoomUser(
             return;
         }
         
-        var currentTile = room.TileMap.FindTile(Point.X, Point.Y);
+        var currentTile = room.TileMap.GetTile(Point.X, Point.Y);
         var tileItems = currentTile?.Items;
 
         if (tileItems == null || tileItems.Count == 0)

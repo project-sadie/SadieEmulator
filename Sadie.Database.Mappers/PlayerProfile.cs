@@ -15,7 +15,6 @@ public class PlayerProfile : Profile
                 provider.GetRequiredService<ILogger<PlayerLogic>>(),
                 x.Id,
                 x.Username,
-                x.SsoToken,
                 x.Data))
             .ForMember(x => x.NetworkObject, option => option.Ignore());
     }

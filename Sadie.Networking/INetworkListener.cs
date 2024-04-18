@@ -2,6 +2,6 @@ namespace Sadie.Networking;
 
 public interface INetworkListener : IDisposable
 {
-    void Start();
+    void Initialize();
     Task ListenAsync();
 }

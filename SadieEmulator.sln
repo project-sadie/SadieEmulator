@@ -1,32 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Server", "Sadie.Server\Sadie.Server.csproj", "{C1876B7B-B71D-41EE-A812-FF518D36D004}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Server", "Sadie.Server\Sadie.Server.csproj", "{C1876B7B-B71D-41EE-A812-FF518D36D004}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Database", "Sadie.Database\Sadie.Database.csproj", "{49A8F049-8021-4882-AD19-8C0FF171CC14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Database", "Sadie.Database\Sadie.Database.csproj", "{49A8F049-8021-4882-AD19-8C0FF171CC14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking", "Sadie.Networking\Sadie.Networking.csproj", "{62284185-265A-467C-AF4B-5D416D3446B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Networking", "Sadie.Networking\Sadie.Networking.csproj", "{62284185-265A-467C-AF4B-5D416D3446B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Players", "Sadie.Game.Players\Sadie.Game.Players.csproj", "{D3C7859C-E142-4157-915A-25DAB8125C20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Players", "Sadie.Game.Players\Sadie.Game.Players.csproj", "{D3C7859C-E142-4157-915A-25DAB8125C20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Shared", "Sadie.Shared\Sadie.Shared.csproj", "{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Shared", "Sadie.Shared\Sadie.Shared.csproj", "{F11CA68E-FDE0-43C3-B2DC-49CFD0EB7FA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Rooms", "Sadie.Game.Rooms\Sadie.Game.Rooms.csproj", "{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Rooms", "Sadie.Game.Rooms\Sadie.Game.Rooms.csproj", "{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Writers", "Sadie.Networking.Writers\Sadie.Networking.Writers.csproj", "{77B3B583-B714-4489-9506-D0C45EAA403B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Networking.Writers", "Sadie.Networking.Writers\Sadie.Networking.Writers.csproj", "{77B3B583-B714-4489-9506-D0C45EAA403B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Events", "Sadie.Networking.Events\Sadie.Networking.Events.csproj", "{F9BA4ED3-4CAB-42DD-AE23-F6261FC358D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Networking.Events", "Sadie.Networking.Events\Sadie.Networking.Events.csproj", "{F9BA4ED3-4CAB-42DD-AE23-F6261FC358D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Navigator", "Sadie.Game.Navigator\Sadie.Game.Navigator.csproj", "{A0156BF5-EA41-4AAD-B9E7-99420621F62C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Navigator", "Sadie.Game.Navigator\Sadie.Game.Navigator.csproj", "{A0156BF5-EA41-4AAD-B9E7-99420621F62C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Console", "Sadie.Console\Sadie.Console.csproj", "{75350F5E-7D10-45A1-A995-115C2C45AF51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Console", "Sadie.Console\Sadie.Console.csproj", "{75350F5E-7D10-45A1-A995-115C2C45AF51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Tests", "Sadie.Tests\Sadie.Tests.csproj", "{9280AA15-E4EC-4496-B8B1-7BAD8D770061}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Tests", "Sadie.Tests\Sadie.Tests.csproj", "{9280AA15-E4EC-4496-B8B1-7BAD8D770061}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Catalog", "Sadie.Game.Catalog\Sadie.Game.Catalog.csproj", "{7B791022-B51E-4724-A062-E2802C8D7F52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Catalog", "Sadie.Game.Catalog\Sadie.Game.Catalog.csproj", "{7B791022-B51E-4724-A062-E2802C8D7F52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game.Furniture", "Sadie.Game.Furniture\Sadie.Game.Furniture.csproj", "{5CF75332-EC1D-4E23-9737-475A54A570A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Furniture", "Sadie.Game.Furniture\Sadie.Game.Furniture.csproj", "{5CF75332-EC1D-4E23-9737-475A54A570A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Database.Mappers", "Sadie.Database.Mappers\Sadie.Database.Mappers.csproj", "{5E4537C2-F21E-4125-8638-83D6A8204111}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Database.Mappers", "Sadie.Database.Mappers\Sadie.Database.Mappers.csproj", "{5E4537C2-F21E-4125-8638-83D6A8204111}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Options", "Sadie.Options\Sadie.Options.csproj", "{6508F006-DE36-47D1-A812-F140DE3325A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,5 +95,15 @@ Global
 		{5E4537C2-F21E-4125-8638-83D6A8204111}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E4537C2-F21E-4125-8638-83D6A8204111}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E4537C2-F21E-4125-8638-83D6A8204111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6508F006-DE36-47D1-A812-F140DE3325A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6508F006-DE36-47D1-A812-F140DE3325A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {94FA3379-7384-475E-8306-CBD6FF9E81B6}
 	EndGlobalSection
 EndGlobal

@@ -20,6 +20,7 @@
       <ProjectReference Include="..\Sadie.Game.Furniture\Sadie.Game.Furniture.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
+      <ProjectReference Include="..\Sadie.Options\Sadie.Options.csproj" />
     </ItemGroup>
 
 </Project>

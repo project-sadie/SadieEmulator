@@ -17,6 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
       <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
+      <ProjectReference Include="..\Sadie.Options\Sadie.Options.csproj" />
       <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
     </ItemGroup>
 

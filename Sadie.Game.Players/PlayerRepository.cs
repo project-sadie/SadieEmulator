@@ -28,11 +28,33 @@ public class PlayerRepository(
         return player != default;
     }
 
-    public async Task<PlayerLogic?> TryGetPlayerBySsoAsync(INetworkObject networkObject, string sso)
+    public async Task<PlayerSsoToken?> TryGetSsoTokenAsync(string token, TimeSpan delay)
+    {
+        var expireDt = DateTime.Now.Subtract(delay);
+        
+        var record = await dbContext
+            .PlayerSsoToken
+            .FirstOrDefaultAsync(x => 
+                x.Token == token && 
+                x.ExpiresAt > expireDt && 
+                x.UsedAt == null);
+
+        if (record == null)
+        {
+            return record;
+        }
+        
+        record.UsedAt = DateTime.Now;
+        dbContext.PlayerSsoToken.Update(record);
+
+        return record;
+    }
+    
+    public async Task<PlayerLogic?> TryGetPlayerInstanceByIdAsync(INetworkObject networkObject, int playerId)
     {
         var player = await dbContext
             .Set<Player>()
-            .Where(x => x.SsoToken == sso)
+            .Where(x => x.Id == playerId)
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
             .Include(x => x.Tags)
@@ -59,9 +81,6 @@ public class PlayerRepository(
         {
             return null;
         }
-        
-        player.SsoToken = null;
-        await dbContext.SaveChangesAsync();
 
         return mapper.Map<PlayerLogic>(player, opt => 
             opt.AfterMap((src, dest) => dest.NetworkObject = networkObject));
@@ -166,7 +185,10 @@ public class PlayerRepository(
 
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)
     {
-        throw new NotImplementedException();
+        return await dbContext
+            .Set<PlayerRelationship>()
+            .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)
+            .ToListAsync();
     }
 
     public async Task<Player?> TryGetPlayerByUsernameAsync(string username)

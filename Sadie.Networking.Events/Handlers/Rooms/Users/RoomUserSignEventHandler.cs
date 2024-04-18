@@ -14,7 +14,7 @@ public class RoomUserSignEventHandler(RoomUserSignEventParser eventParser, RoomR
     {
         eventParser.Parse(reader);
 
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }

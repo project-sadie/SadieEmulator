@@ -1,18 +1,18 @@
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Rooms.Furniture;
+namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
+public class RoomFloorItemUpdatedWriter : NetworkPacketWriter
 {
-    public RoomFloorFurnitureItemPlacedWriter(
+    public RoomFloorItemUpdatedWriter(
         long id,
         int assetId,
         int positionX,
         int positionY,
         double positionZ,
         int direction,
-        double stackHeight,
+        int stackHeight,
         int extra,
         int objectDataKey,
         Dictionary<string, string> objectData,
@@ -20,10 +20,9 @@ public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
         string metaData,
         int interactionModes,
         int expires,
-        long ownerId,
-        string ownerUsername)
+        long ownerId)
     {
-        WriteShort(ServerPacketId.RoomFloorFurnitureItemPlaced);
+        WriteShort(ServerPacketId.RoomFloorFurnitureItemMoved);
         WriteLong(id);
         WriteInteger(assetId);
         WriteInteger(positionX);
@@ -46,11 +45,10 @@ public class RoomFloorFurnitureItemPlacedWriter : NetworkPacketWriter
                 }
                 break;
         }
-        
+
         WriteString(metaData);
         WriteInteger(expires);
         WriteInteger(interactionModes > 1 ? 1 : 0); 
         WriteLong(ownerId);
-        WriteString(ownerUsername);
     }
 }

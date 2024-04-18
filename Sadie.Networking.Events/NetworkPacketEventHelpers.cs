@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog.Items;
+using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
@@ -55,7 +56,10 @@ internal static class NetworkPacketEventHelpers
         return true;
     }
 
-    internal static async Task EnterRoomAsync<T>(INetworkClient client, RoomLogic room, ILogger<T> logger, 
+    internal static async Task EnterRoomAsync<T>(
+        INetworkClient client, 
+        RoomLogic room, 
+        ILogger<T> logger, 
         RoomUserFactory roomUserFactory)
     {
         var player = client.Player;
@@ -146,7 +150,7 @@ internal static class NetworkPacketEventHelpers
         INetworkClient client,
         RoomUserChatEventParser parser,
         bool shouting,
-        RoomConstants roomConstants,
+        ServerRoomConstants roomConstants,
         RoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository,
         SadieContext dbContext)

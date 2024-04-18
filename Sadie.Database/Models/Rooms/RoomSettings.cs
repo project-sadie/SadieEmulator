@@ -4,9 +4,9 @@ namespace Sadie.Database.Models.Rooms;
 
 public class RoomSettings
 {
-    public int Id { get; set; }
-    public int RoomId { get; set; }
-    public bool WalkDiagonal { get; set; }
+    public int Id { get; init; }
+    public int RoomId { get; init; }
+    public bool WalkDiagonal { get; init; }
     public RoomAccessType AccessType { get; set; }
     public string Password { get; set; } = "";
     public int WhoCanMute { get; set; }
