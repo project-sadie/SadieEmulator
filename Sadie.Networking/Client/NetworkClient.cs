@@ -1,4 +1,3 @@
-using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -48,7 +47,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public DateTime LastPing { get; set; }
 
-    public async Task WriteToStreamAsync(IByteBuffer data)
+    public async Task WriteToStreamAsync(NetworkPacketWriter data)
     {
         if (_disposed)
         {
@@ -61,13 +60,8 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         }
         catch (Exception e)
         {
-            _logger.LogError($"Error whilst writing to stream: {e.Message}");
+            _logger.LogError($"Error whilst writing to stream: {e}");
         }
-    }
-
-    public async Task WriteToStreamAsync(NetworkPacketWriter data)
-    {
-        await _channel.WriteAndFlushAsync(data);
     }
 
     public async Task OnReceivedAsync(byte[] data)

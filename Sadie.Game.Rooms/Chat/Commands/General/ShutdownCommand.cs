@@ -27,7 +27,7 @@ public class ShutdownCommand(
 
         foreach (var p in playerRepository.GetAll())
         {
-            await p.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(shutdownMessage).GetAllBytes());
+            await p.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(shutdownMessage));
         }
 
         await Task.Delay(3000);

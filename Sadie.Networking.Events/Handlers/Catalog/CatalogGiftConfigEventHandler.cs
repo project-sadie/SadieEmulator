@@ -10,6 +10,6 @@ public class CatalogGiftConfigEventHandler : INetworkPacketEventHandler
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new CatalogGiftConfigWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new CatalogGiftConfigWriter());
     }
 }

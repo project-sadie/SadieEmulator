@@ -18,6 +18,6 @@ public class CatalogMarketplaceConfigEventHandler : INetworkPacketEventHandler
             1, 
             1000000, 
             48, 
-            7).GetAllBytes());
+            7));
     }
 }

@@ -99,39 +99,39 @@ internal static class NetworkPacketEventHelpers
 
         var canLikeRoom = player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) == null;
         
-        await client.WriteToStreamAsync(new RoomDataWriter(room.Id, room.Layout.Name).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomDataWriter(room.Id, room.Layout.Name));
 
         if (room.PaintSettings.FloorPaint != "0.0")
         {
-            await client.WriteToStreamAsync(new RoomPaintWriter("floor", room.PaintSettings.FloorPaint).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomPaintWriter("floor", room.PaintSettings.FloorPaint));
         }
 
         if (room.PaintSettings.WallPaint != "0.0")
         {
-            await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", room.PaintSettings.WallPaint).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomPaintWriter("wallpaper", room.PaintSettings.WallPaint));
         }
         
-        await client.WriteToStreamAsync(new RoomPaintWriter("landscape", room.PaintSettings.LandscapePaint).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomPaintWriter("landscape", room.PaintSettings.LandscapePaint));
         
-        await client.WriteToStreamAsync(new RoomScoreWriter(room.PlayerLikes.Count, canLikeRoom).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomPromotionWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new RoomScoreWriter(room.PlayerLikes.Count, canLikeRoom));
+        await client.WriteToStreamAsync(new RoomPromotionWriter());
 
         var owner = room.OwnerId == player.Id;
         
         await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter(
             room.Settings.HideWalls, 
             room.Settings.WallThickness, 
-            room.Settings.FloorThickness).GetAllBytes());
+            room.Settings.FloorThickness));
         
-        await client.WriteToStreamAsync(new RoomPaneWriter(room.Id, owner).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomPaneWriter(room.Id, owner));
+        await client.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel));
         
         if (owner)
         {
-            await client.WriteToStreamAsync(new RoomOwnerWriter().GetAllBytes());
+            await client.WriteToStreamAsync(new RoomOwnerWriter());
         }
 
-        await client.WriteToStreamAsync(new RoomLoadedWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new RoomLoadedWriter());
     }
 
     public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
@@ -140,7 +140,7 @@ internal static class NetworkPacketEventHelpers
             new Dictionary<string, string>
             {
                 { "message", error.ToString() }
-            }).GetAllBytes());
+            }));
     }
 
     public static async Task ProcessChatMessageAsync(
@@ -190,8 +190,8 @@ internal static class NetworkPacketEventHelpers
 
         await room!.UserRepository.BroadcastDataAsync(
             shouting ? 
-            new RoomUserShoutWriter(chatMessage!, 0).GetAllBytes() : 
-            new RoomUserChatWriter(chatMessage!, 0).GetAllBytes()
+            new RoomUserShoutWriter(chatMessage!, 0) : 
+            new RoomUserChatWriter(chatMessage!, 0)
         );
         
         roomUser.UpdateLastAction();
@@ -209,8 +209,8 @@ internal static class NetworkPacketEventHelpers
         switch (room.Settings.AccessType)
         {
             case RoomAccessType.Password when password != room.Settings.Password:
-                await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword).GetAllBytes());
-                await client.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
+                await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword));
+                await client.WriteToStreamAsync(new PlayerHotelViewWriter());
                 return false;
             case RoomAccessType.Doorbell:
             {
@@ -218,17 +218,17 @@ internal static class NetworkPacketEventHelpers
                 
                 if (usersWithRights.Count < 1)
                 {
-                    await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Username).GetAllBytes());
+                    await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Username));
                 }
                 else
                 {
                     foreach (var user in usersWithRights)
                     {
                         await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(player.Username)
-                            .GetAllBytes());
+                            );
                     }
 
-                    await client.WriteToStreamAsync(new RoomDoorbellWriter().GetAllBytes());
+                    await client.WriteToStreamAsync(new RoomDoorbellWriter());
                 }
 
                 return false;
@@ -278,8 +278,8 @@ internal static class NetworkPacketEventHelpers
             {105, 0} // unknown
         };
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance));
+        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies));
 
         return true;
     }

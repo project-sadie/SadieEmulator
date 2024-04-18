@@ -1,8 +1,8 @@
-﻿using DotNetty.Buffers;
+﻿using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Shared.Unsorted.Networking;
 
 public interface INetworkObject
 {
-    Task WriteToStreamAsync(IByteBuffer data);
+    Task WriteToStreamAsync(NetworkPacketWriter data);
 }

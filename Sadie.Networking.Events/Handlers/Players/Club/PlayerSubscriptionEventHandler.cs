@@ -36,7 +36,7 @@ public class PlayerSubscriptionEventHandler(PlayerSubscriptionEventParser eventP
             0, 
             0, 
             minutesLeft,
-            (int)(DateTime.Now - lastMod).TotalMinutes).GetAllBytes());
+            (int)(DateTime.Now - lastMod).TotalMinutes));
 
         client.Player.State.LastSubscriptionModification = DateTime.Now;
     }

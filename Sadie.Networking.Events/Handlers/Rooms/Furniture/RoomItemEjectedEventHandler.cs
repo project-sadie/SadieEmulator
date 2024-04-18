@@ -58,11 +58,11 @@ public class RoomItemEjectedEventHandler(
                 roomFurnitureItem.Id, 
                 false, 
                 roomFurnitureItem.OwnerId, 
-                0).GetAllBytes());
+                0));
         }
         else
         {
-            await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter(roomFurnitureItem).GetAllBytes());
+            await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter(roomFurnitureItem));
         }
 
         var ownsItem = roomFurnitureItem.OwnerId == player.Id;
@@ -85,15 +85,15 @@ public class RoomItemEjectedEventHandler(
         {
             player.FurnitureItems.Add(playerItem);
             
-            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]).GetAllBytes());
-            await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+            await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
         }
         else if (playerRepository.TryGetPlayerById(roomFurnitureItem.OwnerId, out var owner) && owner != null)
         {
             owner.FurnitureItems.Remove(playerItem);
             
-            await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]).GetAllBytes());
-            await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
+            await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+            await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
         }
         
         await dbContext.SaveChangesAsync();

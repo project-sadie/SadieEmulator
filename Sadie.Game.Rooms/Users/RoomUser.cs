@@ -98,7 +98,7 @@ public class RoomUser(
         if (shouldBeIdle && !IsIdle || !shouldBeIdle && IsIdle)
         {
             IsIdle = shouldBeIdle;
-            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(Id, IsIdle).GetAllBytes());
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(Id, IsIdle));
         }
     }
 

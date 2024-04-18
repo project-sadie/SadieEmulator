@@ -28,12 +28,12 @@ public class RoomUserActionEventHandler(RoomUserActionEventParser eventParser, R
                 roomUser.LastAction -= roomUser.IdleTime;
             }
             
-            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(roomUser.Id, roomUser.IsIdle).GetAllBytes());
+            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(roomUser.Id, roomUser.IsIdle));
             return;
         }
         
         roomUser.UpdateLastAction();
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser.Id, (int) eventParser.Action).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser.Id, (int) eventParser.Action));
     }
 }

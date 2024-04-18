@@ -11,6 +11,8 @@ using DotNetty.Handlers.Tls;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
+using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
 
 namespace Sadie.Networking
 {
@@ -18,7 +20,10 @@ namespace Sadie.Networking
         ILogger<NetworkListener> logger,
         IOptions<NetworkOptions> options,
         IOptions<NetworkPacketOptions> packetOptions,
-        DefaultChannelHandler defaultChannelHandler)
+        ILogger<DefaultChannelHandler> logger2,
+        INetworkPacketHandler packetHandler,
+        INetworkClientRepository clientRepository,
+        INetworkClientFactory clientFactory)
         : INetworkListener
     {
         private readonly NetworkOptions _networkOptions = options.Value;
@@ -34,7 +39,6 @@ namespace Sadie.Networking
                 .Channel<TcpServerSocketChannel>()
                 .ChildOption(ChannelOption.TcpNodelay, true)
                 .ChildOption(ChannelOption.SoKeepalive, true)
-                .ChildOption(ChannelOption.SoReuseaddr, true)
                 .ChildOption(ChannelOption.SoRcvbuf, _packetOptions.BufferByteSize)
                 .Option(ChannelOption.SoBacklog, 8192)
                 .ChildOption(ChannelOption.RcvbufAllocator, new FixedRecvByteBufAllocator(_packetOptions.BufferByteSize))
@@ -48,7 +52,6 @@ namespace Sadie.Networking
                         var certificate = new X509Certificate(_networkOptions.CertificateFile);
                         pipeline.AddLast(TlsHandler.Server(certificate));
                     }
-                    
                     pipeline.AddLast(new HttpServerCodec());
                     pipeline.AddLast(new HttpObjectAggregator(65536));
                     pipeline.AddLast(new WebSocketServerProtocolHandler("/", null, true, 65536, false, true));
@@ -59,9 +62,10 @@ namespace Sadie.Networking
                         _packetOptions.FrameLengthByteCount, 
                         0, 
                         _packetOptions.FrameLengthByteCount));
+                    
                     pipeline.AddLast(new PacketDecoder());
                     pipeline.AddLast(new PacketEncoder());
-                    pipeline.AddLast(defaultChannelHandler);
+                    pipeline.AddLast(new DefaultChannelHandler(logger2, packetHandler, clientRepository, clientFactory));
                 }));
         }
         

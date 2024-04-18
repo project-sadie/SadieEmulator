@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using DotNetty.Buffers;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -26,7 +26,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
 
     public async Task TryRemoveAsync(int id, bool hotelView = false)
     {
-        await BroadcastDataAsync(new RoomUserLeftWriter(id).GetAllBytes());
+        await BroadcastDataAsync(new RoomUserLeftWriter(id));
 
         var result = _users.TryRemove(id, out var roomUser);
 
@@ -38,7 +38,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
         
         if (hotelView)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(new PlayerHotelViewWriter().GetAllBytes());
+            await roomUser.NetworkObject.WriteToStreamAsync(new PlayerHotelViewWriter());
         }
         
         await roomUser.DisposeAsync();
@@ -46,7 +46,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     
     public int Count => _users.Count;
     
-    public async Task BroadcastDataAsync(IByteBuffer data)
+    public async Task BroadcastDataAsync(NetworkPacketWriter data)
     {
         foreach (var roomUser in _users.Values)
         {
@@ -68,8 +68,8 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
             await roomUser.RunPeriodicCheckAsync();
         }
 
-        var statusWriter = new RoomUserStatusWriter(users).GetAllBytes();
-        var dataWriter = new RoomUserDataWriter(users).GetAllBytes();
+        var statusWriter = new RoomUserStatusWriter(users);
+        var dataWriter = new RoomUserDataWriter(users);
 
         await BroadcastDataAsync(statusWriter);
         await BroadcastDataAsync(dataWriter);

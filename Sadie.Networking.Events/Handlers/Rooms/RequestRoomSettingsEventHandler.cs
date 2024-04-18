@@ -20,7 +20,7 @@ public class RequestRoomSettingsEventHandler(
         
         if (room != null)
         {
-            await client.WriteToStreamAsync(new RoomSettingsWriter(room).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomSettingsWriter(room));
         }
     }
 }

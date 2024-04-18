@@ -16,7 +16,7 @@ public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHand
 
         if (furnitureItems.Count == 0)
         {
-            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(1, 0, new List<PlayerFurnitureItem>()).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(1, 0, new List<PlayerFurnitureItem>()));
             return;
         }
 
@@ -25,7 +25,7 @@ public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHand
         
         foreach (var batch in furnitureItems.Batch(700))
         {
-            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(pages, page, batch.ToList()).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(pages, page, batch.ToList()));
             page++;
         }
     }

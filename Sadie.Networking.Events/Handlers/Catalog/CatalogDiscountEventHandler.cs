@@ -10,6 +10,6 @@ public class CatalogDiscountEventHandler : INetworkPacketEventHandler
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new CatalogDiscountWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new CatalogDiscountWriter());
     }
 }
