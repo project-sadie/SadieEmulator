@@ -67,7 +67,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
             await roomUser.RunPeriodicCheckAsync();
         }
 
-        var statusWriter = new RoomUserStatusWriter(users).GetAllBytes();
+        var statusWriter = new RoomUserStatusWriter(users.Where(x => x.NeedsStatusUpdate).ToList()).GetAllBytes();
         var dataWriter = new RoomUserDataWriter(users).GetAllBytes();
 
         await BroadcastDataAsync(statusWriter);
