@@ -1,22 +1,19 @@
-﻿using Microsoft.Extensions.Options;
-using Sadie.Options.Models;
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 
 namespace Sadie.Networking.Packets;
 
 public class NetworkPacketDecoder
 {
-    private readonly NetworkPacketOptions _packetSettings;
+    private readonly NetworkingConstants _constants;
 
-    protected NetworkPacketDecoder(IOptions<NetworkPacketOptions> options)
+    protected NetworkPacketDecoder(NetworkingConstants constants)
     {
-        _packetSettings = options.Value;
+        _constants = constants;
     }
 
     protected List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
     {
-        if (packet.Length < _packetSettings.FrameLengthByteCount || 
-            packet.Length > _packetSettings.BufferByteSize - _packetSettings.FrameLengthByteCount)
+        if (packet.Length < _constants.FrameLengthByteCount || packet.Length > _constants.BufferByteSize - _constants.FrameLengthByteCount)
         {
             return new List<NetworkPacket>();
         }
@@ -33,7 +30,7 @@ public class NetworkPacketDecoder
         Buffer.BlockCopy(packetData, 2, content, 0, packetData.Length - 2);
 
         var packets = new List<NetworkPacket>();
-
+        
         if (reader.BaseStream.Length - 4 > packetLength)
         {
             var extra = new byte[reader.BaseStream.Length - reader.BaseStream.Position];
@@ -42,6 +39,14 @@ public class NetworkPacketDecoder
             packets.AddRange(DecodePacketsFromBytes(extra));
         }
 
+        // For some reason Nitro sends a different header based on if its originating from a room.
+        // Just update it to the one our handler is registered too.
+        
+        if (packetId == 2300)
+        {
+            packetId = 3898;
+        }
+        
         packets.Add(new NetworkPacket(packetId, content));
         return packets;
     }

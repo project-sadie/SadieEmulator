@@ -45,7 +45,7 @@ public class RoomItemEjectedEventHandler(
 
         if (roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
         {
-            var currentTile = room.TileMap.GetTile(
+            var currentTile = room.TileMap.FindTile(
                 roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
 
             if (currentTile != null)
@@ -77,9 +77,6 @@ public class RoomItemEjectedEventHandler(
         };
 
         room.FurnitureItems.Remove(roomFurnitureItem);
-
-        dbContext.RoomFurnitureItems.Remove(roomFurnitureItem);
-        await dbContext.SaveChangesAsync();
         
         if (ownsItem)
         {

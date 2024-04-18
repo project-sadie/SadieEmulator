@@ -2,9 +2,8 @@ using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
-namespace Sadie.Game.Rooms.Furniture.Interactors;
+namespace Sadie.Game.Rooms.Furniture;
 
 public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 {
@@ -14,13 +13,11 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
     {
         item.MetaData = "1";
 
-        var direction = (HDirection) RoomHelpers.GetOppositeDirection((int) item.Direction);
-
-        roomUser.Direction = direction;
-        roomUser.DirectionHead = direction;
+        roomUser.Direction = item.Direction;
+        roomUser.DirectionHead = item.Direction;
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter(roomUser.Id, new Random().Next(2, 9)).GetAllBytes());
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter(
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(
             item.Id,
             item.FurnitureItem.AssetId,
             item.PositionX,

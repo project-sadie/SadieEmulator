@@ -1,4 +1,3 @@
-using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Enums;
@@ -14,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RoomSettingsSaveEventHandler(
     RoomSettingsSaveEventParser eventParser, 
     RoomRepository roomRepository, 
-    ServerRoomConstants roomConstants) : INetworkPacketEventHandler
+    RoomConstants roomConstants) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.RoomSettingsSave;
 

@@ -18,7 +18,7 @@ public class ShutdownCommand(
             return;
         }
 
-        if (!player.HasPermission("command_shutdown"))
+        if (!player.HasPermission("command.shutdown"))
         {
             return;
         }

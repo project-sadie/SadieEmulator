@@ -48,18 +48,11 @@ public class RoomFloorItemUpdatedEventHandler(
         {
             return;
         }
+        
+        var currentTile = room.TileMap.FindTile(
+            roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
 
-        var tilesOn = room.TileMap.GetTilesForSpan(
-            roomFurnitureItem.PositionX,
-            roomFurnitureItem.PositionY,
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY,
-            (int) roomFurnitureItem.Direction);
-
-        foreach (var t in tilesOn)
-        {
-            t?.Items.Remove(roomFurnitureItem);
-        }
+        currentTile?.Items.Remove(roomFurnitureItem);
 
         var position = new HPoint(
             eventParser.X,
@@ -67,28 +60,21 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.PositionZ);
 
         var direction = eventParser.Direction;
-        
-        var newTiles = room.TileMap.GetTilesForSpan(
-            position.X,
-            position.Y,
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY,
-            (int)direction);
+        var tile = room.TileMap.FindTile(position.X, position.Y);
 
-        if (tilesOn.Any(x => x.State == RoomTileState.Closed))
+        if (tile == null || tile.State == RoomTileState.Closed)
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
         
-        RoomHelpers.UpdateTileMapForTiles(tilesOn, room.TileMap);
-
-        foreach (var t in newTiles)
+        if (currentTile != null)
         {
-            t.Items.Add(roomFurnitureItem);
+            RoomHelpers.UpdateTileMapForTile(currentTile, room.TileMap);
         }
-        
-        RoomHelpers.UpdateTileMapForTiles(newTiles, room.TileMap);
+
+        tile.Items.Add(roomFurnitureItem);
+        RoomHelpers.UpdateTileMapForTile(tile, room.TileMap);
 
         var movedTiles = roomFurnitureItem.PositionX != position.X || roomFurnitureItem.PositionY != position.Y;
 
@@ -99,15 +85,18 @@ public class RoomFloorItemUpdatedEventHandler(
         
         if (movedTiles)
         {
-            foreach (var userOnTile in tilesOn.SelectMany(x => x.Users.Values))
+            foreach (var userOnTile in tile.Users.Values)
             {
                 userOnTile.CheckStatusForCurrentTile();
             }
         }
 
-        foreach (var userOnTile in newTiles.SelectMany(x => x.Users.Values))
+        if (currentTile != null)
         {
-            userOnTile.CheckStatusForCurrentTile();
+            foreach (var userOnTile in currentTile.Users.Values)
+            {
+                userOnTile.CheckStatusForCurrentTile();
+            }
         }
         
         await dbContext.SaveChangesAsync();
@@ -116,7 +105,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
     private static async Task BroadcastUpdateAsync(RoomLogic room, RoomFurnitureItem roomFurnitureItem)
     {
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter(
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemUpdatedWriter(
             roomFurnitureItem.Id,
             roomFurnitureItem.FurnitureItem.AssetId,
             roomFurnitureItem.PositionX,

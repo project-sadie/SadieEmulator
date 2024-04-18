@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
-using Sadie.Database.Models;
-using Sadie.Database.Models.Constants;
+using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
@@ -16,7 +15,6 @@ using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
-using Sadie.Shared;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
@@ -25,10 +23,10 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
+    SadieContext dbContext,
     PlayerRepository playerRepository,
-    ServerPlayerConstants constants,
-    INetworkClientRepository networkClientRepository,
-    ServerSettings serverSettings)
+    PlayerConstants constants,
+    INetworkClientRepository networkClientRepository)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.SecureLogin;
@@ -43,25 +41,21 @@ public class SecureLoginEventHandler(
             await DisconnectAsync(client.Guid);
             return;
         }
-
-        var token = await playerRepository.TryGetSsoTokenAsync(eventParser.Token, eventParser.Delay);
-
-        if (token == null)
-        {
-            logger.LogWarning("Failed to find token record for provided sso.");
-            await DisconnectAsync(client.Guid);
-            return;
-        }
-        
-        var player = await playerRepository.TryGetPlayerInstanceByIdAsync(client, token.PlayerId);
+            
+        var player = await playerRepository.TryGetPlayerBySsoAsync(client, eventParser.Token);
 
         if (player == null)
         {
-            logger.LogError("Failed to resolve player record.");
-            await DisconnectAsync(client.Guid);
+            logger.LogWarning("Failed to resolve player from their provided sso");
+            
+            if (!await networkClientRepository.TryRemoveAsync(client.Guid))
+            {
+                logger.LogError("Failed to remove network client");
+            }
             return;
         }
 
+        var playerData = player.Data;
         var playerId = player.Id;
             
         client.Player = player;
@@ -80,21 +74,6 @@ public class SecureLoginEventHandler(
         player.Authenticated = true;
 
         await SendExtraPacketsAsync(client, player);
-        await SendWelcomeMessageAsync(player);
-    }
-
-    private async Task SendWelcomeMessageAsync(PlayerLogic player)
-    {
-        if (string.IsNullOrEmpty(serverSettings.PlayerWelcomeMessage))
-        {
-            return;
-        }
-
-        var formattedMessage = serverSettings.PlayerWelcomeMessage
-            .Replace("[username]", player.Username)
-            .Replace("[version]", GlobalState.Version.ToString());
-        
-        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(formattedMessage).GetAllBytes());
     }
 
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
@@ -109,7 +88,7 @@ public class SecureLoginEventHandler(
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
         
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
-            playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
+            playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 1 : 0,
             2,
             true).GetAllBytes());
         
