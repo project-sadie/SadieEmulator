@@ -41,6 +41,6 @@ public class PlayerClubOffersEventHandler(
             eventParser.WindowId,
             false,
             false,
-            daysRemaining).GetAllBytes());
+            daysRemaining));
     }
 }

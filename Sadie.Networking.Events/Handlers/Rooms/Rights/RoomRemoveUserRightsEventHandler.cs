@@ -53,7 +53,7 @@ public class RoomRemoveUserRightsEventHandler(
             roomUser!.ControllerLevel = RoomControllerLevel.None;
             roomUser.ApplyFlatCtrlStatus();
             
-            await roomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel).GetAllBytes());
+            await roomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(roomUser.ControllerLevel));
         }
         
         room.PlayerRights.Remove(right);
@@ -62,7 +62,7 @@ public class RoomRemoveUserRightsEventHandler(
         await dbContext.SaveChangesAsync();
 
         await room.UserRepository.BroadcastDataAsync(
-            new RoomRemoveUserRightsWriter(room.Id, playerId).GetAllBytes()
+            new RoomRemoveUserRightsWriter(room.Id, playerId)
         );
     }
 }

@@ -23,6 +23,6 @@ public class PlayerFriendRequestsEventHandler() : INetworkPacketEventHandler
             .Select(x => x.TargetPlayer)
             .ToList();
         
-        await client.WriteToStreamAsync(new PlayerFriendRequestsWriter(pending).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerFriendRequestsWriter(pending));
     }
 }

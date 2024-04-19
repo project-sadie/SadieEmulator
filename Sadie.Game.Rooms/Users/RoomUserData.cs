@@ -28,8 +28,7 @@ public class RoomUserData : IRoomUserData
     }
     
     protected HPoint PathGoal { get; set; }
-    protected Queue<HPoint> PathPoints { get; set; }
-    protected int PathStep { get; set; }
+    protected Queue<HPoint> PathPoints { get; set; } = [];
     protected bool NeedsPathCalculated { get; set; }
     protected HPoint? NextPoint { get; set; }
 }

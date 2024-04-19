@@ -14,6 +14,6 @@ public class CameraPriceEventHandler : INetworkPacketEventHandler
         var costPoints = 0;
         var pointsType = 0;
         
-        await client.WriteToStreamAsync(new CameraPriceWriter(costCredits, costPoints, pointsType).GetAllBytes());
+        await client.WriteToStreamAsync(new CameraPriceWriter(costCredits, costPoints, pointsType));
     }
 }

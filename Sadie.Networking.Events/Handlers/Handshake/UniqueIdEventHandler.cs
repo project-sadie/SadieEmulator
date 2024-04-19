@@ -12,6 +12,6 @@ public class UniqueIdEventHandler(UniqueIdEventParser eventParser) : INetworkPac
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
-        await client.WriteToStreamAsync(new UniqueIdWriter(eventParser.Fingerprint).GetAllBytes());
+        await client.WriteToStreamAsync(new UniqueIdWriter(eventParser.Fingerprint));
     }
 }
