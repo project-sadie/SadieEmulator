@@ -41,8 +41,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
     private async Task StartListeningForConnectionsAsync()
     {
         var networkListener = serviceProvider.GetRequiredService<INetworkListener>();
-
-        networkListener.Initialize();
+        networkListener.Bootstrap();
         await networkListener.ListenAsync();
     }
 

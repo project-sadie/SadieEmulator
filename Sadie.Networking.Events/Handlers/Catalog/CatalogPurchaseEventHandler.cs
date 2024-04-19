@@ -31,7 +31,7 @@ public class CatalogPurchaseEventHandler(
         
         if ((DateTime.Now - player!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
         {
-            var bytes = new CatalogPurchaseFailedWriter((int)CatalogPurchaseError.Server).GetAllBytes();
+            var bytes = new CatalogPurchaseFailedWriter((int)CatalogPurchaseError.Server);
             
             await client.WriteToStreamAsync(bytes);
             return;
@@ -41,7 +41,7 @@ public class CatalogPurchaseEventHandler(
 
         if (page == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server));
             return;
         }
 
@@ -49,7 +49,7 @@ public class CatalogPurchaseEventHandler(
 
         if (item == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server).GetAllBytes());
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server));
             return;
         }
 
@@ -82,7 +82,7 @@ public class CatalogPurchaseEventHandler(
         dbContext.PlayerFurnitureItems.AddRange(newItems);
         await dbContext.SaveChangesAsync();
         
-        await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems));
         
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(
             item.Id,
@@ -100,8 +100,8 @@ public class CatalogPurchaseEventHandler(
             0,
             0,
             item.FurnitureItems
-            ).GetAllBytes());
+            ));
         
-        await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
     }
 }

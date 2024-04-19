@@ -37,6 +37,6 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
             page.Items, 
             eventParser.CatalogMode,
             false,
-            frontPageItemRepo.Items).GetAllBytes());
+            frontPageItemRepo.Items));
     }
 }

@@ -56,6 +56,6 @@ public class RoomWallItemUpdatedEventHandler(
 
         await dbContext.SaveChangesAsync();
         
-        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemUpdatedWriter(roomFurnitureItem).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemUpdatedWriter(roomFurnitureItem));
     }
 }

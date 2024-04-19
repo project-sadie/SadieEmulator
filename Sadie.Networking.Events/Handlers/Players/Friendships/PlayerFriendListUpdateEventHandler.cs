@@ -32,7 +32,7 @@ public class PlayerFriendListUpdateEventHandler(
             await client.WriteToStreamAsync(new PlayerFriendsListWriter(
                 pages, i, batch, 
                 playerRepository, 
-                player.Relationships).GetAllBytes());
+                player.Relationships));
         }
     }
 }

@@ -7,8 +7,8 @@ public class NetworkPacketReader : INetworkPacketReader
 {
     private readonly byte[] _packetData;
     private int _packetPosition;
-        
-    protected NetworkPacketReader(byte[] packetData)
+
+    public NetworkPacketReader(byte[] packetData)
     {
         _packetData = packetData;
     }

@@ -74,7 +74,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                     false, 
                     false, 
                     false,
-                    relationship?.TypeId ?? PlayerRelationshipType.None).GetAllBytes();
+                    relationship?.TypeId ?? PlayerRelationshipType.None);
                 
                 await origin.NetworkObject.WriteToStreamAsync(updateFriendWriter);    
             }
@@ -111,7 +111,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 false, 
                 false,
                 false,
-                targetRelationship?.TypeId ?? PlayerRelationshipType.None).GetAllBytes();
+                targetRelationship?.TypeId ?? PlayerRelationshipType.None);
         
         await client.WriteToStreamAsync(updateFriendWriter2);
     }

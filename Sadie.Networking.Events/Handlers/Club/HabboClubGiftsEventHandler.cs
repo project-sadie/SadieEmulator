@@ -28,7 +28,7 @@ public class HabboClubGiftsEventHandler(CatalogPageRepository catalogPageReposit
             daysTillNextClubGift, 
             unclaimedGifts, 
             daysAsClub, 
-            clubGiftPage).GetAllBytes());
+            clubGiftPage));
     }
 
     private int CalculateDaysAsClub(ICollection<PlayerSubscription> subscriptions)
