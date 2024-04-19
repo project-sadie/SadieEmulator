@@ -34,6 +34,7 @@ public class PlayerCreateRoomEventHandler(
             Name = eventParser.Name,
             LayoutId = layout.Id,
             OwnerId = client.Player.Id,
+            MaxUsersAllowed = 50,
             Description = eventParser.Description,
             CreatedAt = DateTime.Now
         };
