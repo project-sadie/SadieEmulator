@@ -1,8 +1,6 @@
-﻿using System.Drawing;
-using Sadie.Database.Models.Constants;
+﻿using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
-using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
@@ -62,51 +60,68 @@ public class RoomUser(
         NeedsStatusUpdate = true;
     }
 
-    public async Task RunPeriodicCheckAsync()
+    private void CalculatePath()
     {
-        if (NeedsPathCalculated)
-        {
-            PathPoints = RoomHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal);
-            NeedsPathCalculated = false;
+        PathPoints = RoomHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal);
 
+        if (PathPoints.Count > 1)
+        {
+            IsWalking = true;
+            NeedsPathCalculated = false;
+        }
+        else
+        {
+            NeedsPathCalculated = false;
+                
             if (PathPoints.Count > 0)
             {
-                IsWalking = true;
+                PathPoints.Clear();
             }
         }
+    }
 
+    public async Task RunPeriodicCheckAsync()
+    {
         if (NextPoint != null)
         {
-            Point = NextPoint;
+            Point = NextPoint!;
             NextPoint = null;
+        }
+
+        if (NeedsPathCalculated)
+        {
+            CalculatePath();
         }
 
         if (IsWalking)
         {
-            if (PathPoints.Count > 0)
-            {
-                NextPoint = PathPoints.Dequeue();
-                
-                RemoveStatuses(RoomUserStatus.Move);
-                AddStatus(RoomUserStatus.Move, $"{NextPoint.X},{NextPoint.Y},{NextPoint.Z}");
-
-                var direction = RoomHelpers.GetDirectionForNextStep(Point, NextPoint);
-
-                Direction = direction;
-                DirectionHead = direction;
-            }
-            else
-            {
-                RemoveStatuses(RoomUserStatus.Move);
-                IsWalking = false;
-            }
-        }
-        else if (StatusMap.ContainsKey(RoomUserStatus.Move))
-        {
-            RemoveStatuses(RoomUserStatus.Move);
+            ProcessMovement();
         }
 
         await UpdateIdleStatusAsync();
+    }
+
+    private void ProcessMovement()
+    {
+        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y)
+        {
+            IsWalking = false;
+            RemoveStatuses(RoomUserStatus.Move);
+            return;
+        }
+        
+        var nextStep = PathPoints.Dequeue();
+
+        RemoveStatuses(RoomUserStatus.Move);
+
+        AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextStep.Z}");
+
+        var newDirection = RoomHelpers.GetDirectionForNextStep(Point, nextStep);
+                
+        Direction = newDirection;
+        DirectionHead = newDirection;
+                
+        NextPoint = nextStep;
     }
 
     private async Task UpdateIdleStatusAsync()
