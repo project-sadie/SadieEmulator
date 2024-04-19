@@ -1,37 +1,36 @@
-using Fleck;
+using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
-using Sadie.Options.Models;
+using Sadie.Options.Options;
 
 namespace Sadie.Networking.Client;
 
 public class NetworkClient : NetworkPacketDecoder, INetworkClient
 {
-    public Guid Guid { get; private set; }
+    public IChannel Channel { get; set; }
 
     private readonly ILogger<NetworkClient> _logger;
-    private readonly IWebSocketConnection _webSocket;
+    private readonly IChannel _channel;
     private readonly PlayerRepository _playerRepository;
     private readonly RoomRepository _roomRepository;
     private readonly INetworkPacketHandler _packetHandler;
 
     public NetworkClient(
         ILogger<NetworkClient> logger,
-        Guid guid,
-        IWebSocketConnection webSocket,
+        IChannel channel,
         PlayerRepository playerRepository,
         RoomRepository roomRepository,
         INetworkPacketHandler packetHandler,
         IOptions<NetworkPacketOptions> options) : base(options)
     {
-        Guid = guid;
+        Channel = channel;
 
         _logger = logger;
-        _webSocket = webSocket;
+        _channel = channel;
         _playerRepository = playerRepository;
         _roomRepository = roomRepository;
         _packetHandler = packetHandler;
@@ -47,7 +46,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public DateTime LastPing { get; set; }
 
-    public async Task WriteToStreamAsync(byte[] data)
+    public async Task WriteToStreamAsync(NetworkPacketWriter data)
     {
         if (_disposed)
         {
@@ -56,11 +55,11 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         try
         {
-            await _webSocket.Send(data);
+            await _channel.WriteAndFlushAsync(data);
         }
         catch (Exception e)
         {
-            _logger.LogError($"Error whilst writing to stream: {e.Message}");
+            _logger.LogError($"Error whilst writing to stream: {e}");
         }
     }
 
@@ -99,6 +98,6 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
             _logger.LogError("Failed to dispose of player");
         }
 
-        _webSocket.Close();
+        await _channel.CloseAsync();
     }
 }

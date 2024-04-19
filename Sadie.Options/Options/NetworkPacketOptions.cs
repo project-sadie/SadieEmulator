@@ -1,4 +1,4 @@
-﻿namespace Sadie.Options.Models;
+﻿namespace Sadie.Options.Options;
 
 public class NetworkPacketOptions
 {

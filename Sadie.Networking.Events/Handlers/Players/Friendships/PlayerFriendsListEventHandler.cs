@@ -34,7 +34,7 @@ public class PlayerFriendsListEventHandler(
                 i, 
                 batch, 
                 playerRepository,
-                player.Relationships).GetAllBytes());
+                player.Relationships));
         }
     }
 }

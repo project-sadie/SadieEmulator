@@ -36,6 +36,6 @@ public class PlayerRelationshipsEventHandler(
         
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, 
             relationships, 
-            playerFriends).GetAllBytes());
+            playerFriends));
     }
 }

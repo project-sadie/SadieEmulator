@@ -145,7 +145,7 @@ public class RoomItemPlacedEventHandler(
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
         await dbContext.SaveChangesAsync();
 
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));
         
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter(
             roomFurnitureItem.Id,
@@ -163,7 +163,7 @@ public class RoomItemPlacedEventHandler(
             roomFurnitureItem.FurnitureItem.InteractionModes,
             -1,
             roomFurnitureItem.OwnerId,
-            roomFurnitureItem.OwnerUsername).GetAllBytes());
+            roomFurnitureItem.OwnerUsername));
     }
 
     private async Task OnWallItemAsync(
@@ -197,9 +197,9 @@ public class RoomItemPlacedEventHandler(
         room.FurnitureItems.Add(roomFurnitureItem);
         player.FurnitureItems.Remove(playerItem);
         
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));
         await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter(roomFurnitureItem)
-            .GetAllBytes());
+            );
     }
 }
     

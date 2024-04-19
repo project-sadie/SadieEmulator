@@ -21,7 +21,7 @@ public class RoomUserTagsEventHandler(RoomUserTagsEventParser eventParser, RoomR
 
         if (room.UserRepository.TryGet(eventParser.UserId, out var specialUser))
         {        
-            await specialUser!.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter(specialUser.Id, specialUser.Player.Tags).GetAllBytes());
+            await specialUser!.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter(specialUser.Id, specialUser.Player.Tags));
         }
     }
 }
