@@ -10,6 +10,6 @@ public class PlayerAchievementsEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerAchievementsWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerAchievementsWriter());
     }
 }

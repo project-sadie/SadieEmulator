@@ -44,6 +44,6 @@ public class PlayerSearchEventHandler(PlayerSearchEventParser eventParser, Playe
 
         var strangers = await playerRepository.GetPlayersForSearchAsync(searchQuery, friendships.Select(x => x.Id).ToArray());
 
-        await client.WriteToStreamAsync(new PlayerSearchResultWriter(friendsList, strangers).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerSearchResultWriter(friendsList, strangers));
     }
 }

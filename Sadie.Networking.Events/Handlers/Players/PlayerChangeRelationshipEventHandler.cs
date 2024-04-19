@@ -81,7 +81,7 @@ public class PlayerChangeRelationshipEventHandler(
                 false, 
                 false,
                 (PlayerRelationshipType) relationId)
-            .GetAllBytes();
+            ;
             
         await client.WriteToStreamAsync(updateFriendWriter);
     }

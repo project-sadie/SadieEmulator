@@ -58,7 +58,7 @@ public class PlayerCreateRoomEventHandler(
 
         if (room != null)
         {
-            await client.WriteToStreamAsync(new RoomCreatedWriter(room.Id, room.Name).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomCreatedWriter(room.Id, room.Name));
         }
     }
 }

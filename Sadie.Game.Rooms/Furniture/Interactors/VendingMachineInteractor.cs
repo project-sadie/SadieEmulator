@@ -19,7 +19,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
         roomUser.Direction = direction;
         roomUser.DirectionHead = direction;
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter(roomUser.Id, new Random().Next(2, 9)).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter(roomUser.Id, new Random().Next(2, 9)));
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter(
             item.Id,
             item.FurnitureItem.AssetId,
@@ -35,6 +35,6 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             item.MetaData,
             item.FurnitureItem.InteractionModes,
             -1,
-            item.OwnerId).GetAllBytes());
+            item.OwnerId));
     }
 }

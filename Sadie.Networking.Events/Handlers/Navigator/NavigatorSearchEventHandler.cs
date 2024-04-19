@@ -37,7 +37,7 @@ public class NavigatorSearchEventHandler(
                 searchQuery, 
                 new Dictionary<NavigatorCategory, List<RoomLogic>>());
             
-            await client.WriteToStreamAsync(writer.GetAllBytes());
+            await client.WriteToStreamAsync(writer);
             return;
         }
 
@@ -58,7 +58,7 @@ public class NavigatorSearchEventHandler(
         var searchResultPagesWriter = new NavigatorSearchResultPagesWriter(
             tabName, 
             searchQuery, 
-            categoryRoomMap).GetAllBytes();
+            categoryRoomMap);
         
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }

@@ -131,6 +131,6 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.MetaData,
             roomFurnitureItem.FurnitureItem.InteractionModes,
             -1,
-            roomFurnitureItem.OwnerId).GetAllBytes());
+            roomFurnitureItem.OwnerId));
     }
 }
