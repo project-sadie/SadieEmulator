@@ -14,6 +14,7 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
+using Sadie.Database.Models.Server;
 using Sadie.Options.Models;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
@@ -45,6 +46,7 @@ public class SadieContext(IOptions<DatabaseOptions> options) : DbContext
     public DbSet<ServerPlayerConstants> ServerPlayerConstants { get; init; }
     public DbSet<ServerRoomConstants> ServerRoomConstants { get; init; }
     public DbSet<ServerSettings> ServerSettings { get; init; }
+    public DbSet<ServerPeriodicCurrencyReward> ServerPeriodicCurrencyRewards { get; init; }
     public DbSet<PlayerSsoToken> PlayerSsoToken { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
