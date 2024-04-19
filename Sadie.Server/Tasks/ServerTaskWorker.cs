@@ -28,13 +28,20 @@ public class ServerTaskWorker(
 
     private async Task ProcessTaskAsync(IServerTask task)
     {
-        var stopwatch = Stopwatch.StartNew();
-        await task.ExecuteAsync();
-        stopwatch.Stop();
-
-        if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 2)
+        try
         {
-            logger.LogWarning($"Task '{task.GetType().Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
+            var stopwatch = Stopwatch.StartNew();
+            await task.ExecuteAsync();
+            stopwatch.Stop();
+
+            if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 2)
+            {
+                logger.LogWarning($"Task '{task.GetType().Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
+            }
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
         }
     }
 }
