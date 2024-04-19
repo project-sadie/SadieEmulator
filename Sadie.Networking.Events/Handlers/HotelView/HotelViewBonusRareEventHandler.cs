@@ -14,6 +14,6 @@ public class HotelViewBonusRareEventHandler : INetworkPacketEventHandler
             "", 
             -1, 
             -1, 
-            -1).GetAllBytes());
+            -1));
     }
 }

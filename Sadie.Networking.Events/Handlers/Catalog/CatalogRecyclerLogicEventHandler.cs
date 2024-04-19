@@ -10,6 +10,6 @@ public class CatalogRecyclerLogicEventHandler : INetworkPacketEventHandler
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new CatalogRecyclerLogicWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new CatalogRecyclerLogicWriter());
     }
 }

@@ -29,7 +29,7 @@ public class PlayerSendFriendRequestEventHandler(
         
         if (player.GetAcceptedFriendshipCount() >= playerConstants.MaxFriendships)
         {
-            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TooManyFriends).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TooManyFriends));
             return;
         }
         
@@ -53,18 +53,18 @@ public class PlayerSendFriendRequestEventHandler(
         
         if (targetPlayer == null)
         {
-            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetNotFound).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetNotFound));
             return;
         }
 
         if (targetPlayer.GetAcceptedFriendshipCount() >= playerConstants.MaxFriendships)
         {
-            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetTooManyFriends).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetTooManyFriends));
         }
         
         if (!targetPlayer.Data.AllowFriendRequests)
         {
-            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetNotAccepting).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TargetNotAccepting));
             return;
         }
 
@@ -96,7 +96,7 @@ public class PlayerSendFriendRequestEventHandler(
             var friendRequestWriter = new PlayerFriendRequestWriter(
                 player.Id,
                 player.Username, 
-                player.AvatarData.FigureCode).GetAllBytes();
+                player.AvatarData.FigureCode);
             
             onlineTarget.IncomingFriendships.Add(playerFriendship);
                 

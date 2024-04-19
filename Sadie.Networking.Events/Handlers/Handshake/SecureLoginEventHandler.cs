@@ -1,3 +1,4 @@
+using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Sadie.Database.Models;
 using Sadie.Database.Models.Constants;
@@ -40,7 +41,7 @@ public class SecureLoginEventHandler(
         if (!ValidateSso(eventParser.Token)) 
         {
             logger.LogWarning("Rejected an insecure sso token");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
 
@@ -49,7 +50,7 @@ public class SecureLoginEventHandler(
         if (token == null)
         {
             logger.LogWarning("Failed to find token record for provided sso.");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
         
@@ -58,7 +59,7 @@ public class SecureLoginEventHandler(
         if (player == null)
         {
             logger.LogError("Failed to resolve player record.");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
 
@@ -69,7 +70,7 @@ public class SecureLoginEventHandler(
         if (!playerRepository.TryAddPlayer(player))
         {
             logger.LogError($"Player {playerId} could not be registered");
-            await DisconnectAsync(client.Guid);
+            await DisconnectAsync(client.Channel.Id);
             return;
         }
             
@@ -94,7 +95,7 @@ public class SecureLoginEventHandler(
             .Replace("[username]", player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
         
-        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(formattedMessage).GetAllBytes());
+        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(formattedMessage));
     }
 
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
@@ -102,21 +103,21 @@ public class SecureLoginEventHandler(
         var playerData = player.Data;
         var playerSubscriptions = player.Subscriptions;
         
-        await networkObject.WriteToStreamAsync(new SecureLoginWriter().GetAllBytes());
-        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter().GetAllBytes());
+        await networkObject.WriteToStreamAsync(new SecureLoginWriter());
+        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1));
+        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId));
+        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()));
+        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
         
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
             playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
             2,
-            true).GetAllBytes());
+            true));
         
-        await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications).GetAllBytes());
-        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore).GetAllBytes());
+        await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true));
+        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings));
+        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications));
+        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore));
 
         foreach (var playerSub in playerSubscriptions)
         {
@@ -136,14 +137,14 @@ public class SecureLoginEventHandler(
                 0, 
                 0, 
                 minutesLeft,
-                minutesSinceMod).GetAllBytes());
+                minutesSinceMod));
             
             player.State.LastSubscriptionModification = DateTime.Now;
         }
 
         if (player.HasPermission("moderation_tools"))
         {
-            await networkObject.WriteToStreamAsync(new ModerationToolsWriter().GetAllBytes());
+            await networkObject.WriteToStreamAsync(new ModerationToolsWriter());
         }
 
         var allFriends = player.GetMergedFriendships();
@@ -173,15 +174,15 @@ public class SecureLoginEventHandler(
                 false, 
                 false, 
                 false,
-                relationship?.TypeId ?? PlayerRelationshipType.None).GetAllBytes());   
+                relationship?.TypeId ?? PlayerRelationshipType.None));   
         }
     }
 
     private bool ValidateSso(string sso) => !string.IsNullOrEmpty(sso) && sso.Length >= constants.MinSsoLength;
 
-    private async Task DisconnectAsync(Guid guid)
+    private async Task DisconnectAsync(IChannelId channelId)
     {
-        if (!await networkClientRepository.TryRemoveAsync(guid))
+        if (!await networkClientRepository.TryRemoveAsync(channelId))
         {
             logger.LogError("Failed to remove network client");
         }

@@ -36,19 +36,19 @@ public class RoomSettingsSaveEventHandler(
         
         if (eventParser.Tags.Any(x => x.Length > roomConstants.MaxTagLength))
         {
-            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.TagTooLong).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.TagTooLong));
             return;
         }
         
         if (string.IsNullOrEmpty(eventParser.Name))
         {
-            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.NameRequired).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.NameRequired));
             return;
         }
 
         if (eventParser.AccessType == RoomAccessType.Password && string.IsNullOrEmpty(eventParser.Password))
         {
-            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.PasswordRequired).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.PasswordRequired));
             return;
         }
 
@@ -68,7 +68,7 @@ public class RoomSettingsSaveEventHandler(
         
         await roomRepository.SaveRoomAsync(room);
         await BroadcastUpdatesAsync(room);
-        await client.WriteToStreamAsync(new RoomSettingsSavedWriter(eventParser.RoomId).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomSettingsSavedWriter(eventParser.RoomId));
     }
 
     private void UpdateSettings(Room room)
@@ -101,16 +101,16 @@ public class RoomSettingsSaveEventHandler(
         var floorSettingsWriter = new RoomWallFloorSettingsWriter(
             settings.HideWalls, 
             settings.WallThickness, 
-            settings.FloorThickness).GetAllBytes();
+            settings.FloorThickness);
 
         var settingsWriter = new RoomChatSettingsWriter(
             settings.ChatType, 
             settings.ChatWeight, 
             settings.ChatSpeed,
             settings.ChatDistance, 
-            settings.ChatProtection).GetAllBytes();
+            settings.ChatProtection);
 
-        var settingsUpdatedWriter = new RoomSettingsUpdatedWriter(eventParser.RoomId).GetAllBytes();
+        var settingsUpdatedWriter = new RoomSettingsUpdatedWriter(eventParser.RoomId);
 
         await room.UserRepository.BroadcastDataAsync(floorSettingsWriter);
         await room.UserRepository.BroadcastDataAsync(settingsWriter);

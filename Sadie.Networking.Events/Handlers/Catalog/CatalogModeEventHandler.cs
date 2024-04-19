@@ -19,7 +19,7 @@ public class CatalogModeEventHandler(
         var mode = eventParser.Mode;
         var pages = catalogPageRepository.GetByParentId(-1);
 
-        await client.WriteToStreamAsync(new CatalogModeWriter(mode == "BUILDERS_CLUB" ? 1 : 0).GetAllBytes());
-        await client.WriteToStreamAsync(new CatalogTabsWriter(mode, pages).GetAllBytes());
+        await client.WriteToStreamAsync(new CatalogModeWriter(mode == "BUILDERS_CLUB" ? 1 : 0));
+        await client.WriteToStreamAsync(new CatalogTabsWriter(mode, pages));
     }
 }

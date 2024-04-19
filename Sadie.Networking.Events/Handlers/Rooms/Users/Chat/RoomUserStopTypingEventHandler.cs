@@ -18,6 +18,6 @@ public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INe
 
         roomUser.UpdateLastAction();
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter(roomUser.Id, false).GetAllBytes());
+        await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter(roomUser.Id, false));
     }
 }

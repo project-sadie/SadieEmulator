@@ -18,6 +18,6 @@ public class PlayerMessengerInitEventHandler(
             1337, 
             playerConstants.MaxFriendships,
             0
-        ).GetAllBytes());
+        ));
     }
 }
