@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Sadie.Game.Rooms;
+﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
@@ -30,7 +29,7 @@ public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, RoomR
 
         var point = tile.Point;
 
-        roomUser!.WalkToPoint(new Point(point.X, point.Y), room.Settings.WalkDiagonal);
+        roomUser.WalkToPoint(point);
         return Task.CompletedTask;
     }
 }

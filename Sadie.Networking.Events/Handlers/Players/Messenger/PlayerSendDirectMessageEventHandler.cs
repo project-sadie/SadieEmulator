@@ -45,7 +45,7 @@ public class PlayerSendDirectMessageEventHandler(
 
         if (!client.Player.IsFriendsWith(eventParser.PlayerId))
         {
-            await client.WriteToStreamAsync(new PlayerMessageErrorWriter(PlayerMessageError.NotFriends, playerId).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerMessageErrorWriter(PlayerMessageError.NotFriends, playerId));
             return;
         }
 
@@ -66,6 +66,6 @@ public class PlayerSendDirectMessageEventHandler(
 
         await dbContext.SaveChangesAsync();
 
-        await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter(playerMessage).GetAllBytes());
+        await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter(playerMessage));
     }
 }

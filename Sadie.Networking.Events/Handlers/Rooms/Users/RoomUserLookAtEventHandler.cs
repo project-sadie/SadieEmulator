@@ -1,9 +1,8 @@
-﻿using System.Drawing;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Users;
+﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
@@ -20,7 +19,7 @@ public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, R
             return Task.CompletedTask;
         }
 
-        if (roomUser!.StatusMap.ContainsKey(RoomUserStatus.Move))
+        if (roomUser.IsWalking)
         {
             return Task.CompletedTask;
         }
@@ -34,7 +33,7 @@ public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, R
             return Task.CompletedTask;
         }
 
-        roomUser.LookAtPoint(new Point(x, y));
+        roomUser.LookAtPoint(new HPoint(x, y, currentPoint.Z));
         return Task.CompletedTask;
     }
 }

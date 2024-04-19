@@ -53,7 +53,7 @@ public class RoomUserRespectEventHandler(
 
         await dbContext.SaveChangesAsync();
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetPlayer.Respects.Count).GetAllBytes());
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetPlayer.Respects.Count));
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp));
     }
 }

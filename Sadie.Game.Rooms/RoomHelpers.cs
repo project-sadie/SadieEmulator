@@ -1,9 +1,9 @@
-﻿using System.Drawing;
-using Sadie.Database.Models.Rooms.Furniture;
+﻿using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.PathFinding.Options;
 using Sadie.Game.Rooms.Tiles;
 using Sadie.Shared.Unsorted;
+using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
@@ -39,7 +39,7 @@ public static class RoomHelpers
         return tiles;
     }
 
-    public static Queue<HPoint> BuildPathForWalk(RoomTileMap tileMap, Point start, Point end, bool useDiagonal)
+    public static Queue<HPoint> BuildPathForWalk(RoomTileMap tileMap, HPoint start, HPoint end, bool useDiagonal)
     {
         var pathfinderOptions = new PathFinderOptions
         {
@@ -48,13 +48,17 @@ public static class RoomHelpers
         
         var worldGrid = new WorldGrid(tileMap.Map);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
-        var route = pathfinder.FindPath(start, end).ToList();
-
-        return new Queue<HPoint>(route.Select(x => tileMap.Tiles.First(y => y.Point.X == x.X && y.Point.Y == x.Y).Point)
-            .Skip(1));
+        
+        var points = pathfinder
+            .FindPath(start.ToPoint(), end.ToPoint())
+            .Select(x => tileMap.Tiles.First(y => y.Point.X == x.X && y.Point.Y == x.Y).Point)
+            .Skip(1)
+            .ToList();
+        
+        return new Queue<HPoint>(points);
     }
 
-    public static HDirection GetDirectionForNextStep(Point current, Point next)
+    public static HDirection GetDirectionForNextStep(HPoint current, HPoint next)
     {
         var rotation = HDirection.North;
 

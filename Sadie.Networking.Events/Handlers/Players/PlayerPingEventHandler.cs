@@ -12,6 +12,6 @@ public class PlayerPingEventHandler(PlayerPingEventParser eventParser) : INetwor
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
-        await client.WriteToStreamAsync(new PlayerPongWriter(eventParser.Id).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerPongWriter(eventParser.Id));
     }
 }

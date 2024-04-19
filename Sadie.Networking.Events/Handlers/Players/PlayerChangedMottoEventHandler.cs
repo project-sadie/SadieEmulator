@@ -34,6 +34,6 @@ public class PlayerChangedMottoEventHandler(
             return;
         }
         
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }).GetAllBytes());
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }));
     }
 }

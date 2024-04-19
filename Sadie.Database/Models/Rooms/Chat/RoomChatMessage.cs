@@ -5,12 +5,12 @@ namespace Sadie.Database.Models.Rooms.Chat;
 
 public class RoomChatMessage
 {
-    public int Id { get; set; }
-    public int RoomId { get; set; }
-    public int PlayerId { get; set; }
-    public string Message { get; set; }
-    public ChatBubble ChatBubbleId { get; set; }
-    public int EmotionId { get; set; }
-    public RoomChatMessageType TypeId { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public int Id { get; init; }
+    public int RoomId { get; init; }
+    public int PlayerId { get; init; }
+    public string Message { get; init; }
+    public ChatBubble ChatBubbleId { get; init; }
+    public int EmotionId { get; init; }
+    public RoomChatMessageType TypeId { get; init; }
+    public DateTime CreatedAt { get; init; }
 }

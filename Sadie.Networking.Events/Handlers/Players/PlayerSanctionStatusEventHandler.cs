@@ -23,6 +23,6 @@ public class PlayerSanctionStatusEventHandler : INetworkPacketEventHandler
             0,
             30,
             false, 
-            DateTime.MinValue).GetAllBytes());
+            DateTime.MinValue));
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Sadie.Game.Rooms.Enums;
+﻿using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 
@@ -13,9 +12,10 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     HPoint Point { get; }
     HDirection DirectionHead { get; set; }
     HDirection Direction { get; set; }
-    void WalkToPoint(Point point, bool useDiagonal);
-    void LookAtPoint(Point point);
+    void WalkToPoint(HPoint point);
+    void LookAtPoint(HPoint point);
     void ApplyFlatCtrlStatus();
+    void AddStatus(string key, string value);
     Task RunPeriodicCheckAsync();
     void UpdateLastAction();
     void CheckStatusForCurrentTile();

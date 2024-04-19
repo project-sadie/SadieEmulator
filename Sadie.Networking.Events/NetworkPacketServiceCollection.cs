@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sadie.Networking.Events.Handlers;
+using Sadie.Networking.Events.Handlers.Rooms;
 using Sadie.Networking.Events.Parsers;
 using Sadie.Networking.Packets;
 
@@ -20,6 +21,8 @@ public static class NetworkPacketServiceCollection
             .AddClasses(classes => classes.AssignableTo<INetworkPacketEventHandler>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
+
+        serviceCollection.AddSingleton<RoomHeightmapEventHandler>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
     }

@@ -135,7 +135,7 @@ public class PlayerRepository(
                         false, 
                         false, 
                         false,
-                        relationship?.TypeId ?? PlayerRelationshipType.None).GetAllBytes();
+                        relationship?.TypeId ?? PlayerRelationshipType.None);
                 
                 await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
             }
@@ -185,7 +185,10 @@ public class PlayerRepository(
 
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)
     {
-        throw new NotImplementedException();
+        return await dbContext
+            .Set<PlayerRelationship>()
+            .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)
+            .ToListAsync();
     }
 
     public async Task<Player?> TryGetPlayerByUsernameAsync(string username)

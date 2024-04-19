@@ -15,10 +15,4 @@
       <PackageReference Include="Scrutor" Version="4.2.2" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="AutoMapper">
-        <HintPath>..\..\..\..\..\..\..\home\ash\.nuget\packages\automapper\13.0.1\lib\net6.0\AutoMapper.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
