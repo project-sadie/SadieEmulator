@@ -1,3 +1,4 @@
+using Sadie.Database;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Users;
@@ -6,6 +7,7 @@ using Sadie.Networking.Writers.Players.Purse;
 namespace SadieEmulator.Tasks.Game.Players;
 
 public class PlayerCurrencyRewardsTask(
+    SadieContext dbContext,
     List<ServerPeriodicCurrencyReward> rewards, 
     PlayerRepository playerRepository,
     ServerSettings serverSettings,
@@ -29,6 +31,7 @@ public class PlayerCurrencyRewardsTask(
     private async Task RewardPlayersAsync(ServerPeriodicCurrencyReward reward)
     {
         var players = playerRepository.GetAll();
+        var logs = new List<ServerPeriodicCurrencyRewardLog>();
         
         foreach (var player in players)
         {
@@ -71,6 +74,16 @@ public class PlayerCurrencyRewardsTask(
                         player.Data.GotwPoints).GetAllBytes());
                     break;
             }
+            
+            logs.Add(new ServerPeriodicCurrencyRewardLog
+            {
+                PlayerId = player.Id,
+                Type = reward.Type,
+                Amount = reward.Amount,
+                CreatedAt = DateTime.Now
+            });
         }
+
+        await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(logs);
     }
 }

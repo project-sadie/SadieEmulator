@@ -47,6 +47,7 @@ public class SadieContext(IOptions<DatabaseOptions> options) : DbContext
     public DbSet<ServerRoomConstants> ServerRoomConstants { get; init; }
     public DbSet<ServerSettings> ServerSettings { get; init; }
     public DbSet<ServerPeriodicCurrencyReward> ServerPeriodicCurrencyRewards { get; init; }
+    public DbSet<ServerPeriodicCurrencyRewardLog> ServerPeriodicCurrencyRewardLogs { get; init; }
     public DbSet<PlayerSsoToken> PlayerSsoToken { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
