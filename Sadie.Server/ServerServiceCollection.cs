@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
 using Sadie.Database.Mappers;
-using Sadie.Database.Models;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Catalog;
 using Sadie.Game.Furniture;
@@ -14,9 +13,6 @@ using Sadie.Networking.Events;
 using Sadie.Options;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
-using SadieEmulator.Tasks.Game.Rooms;
-using SadieEmulator.Tasks.Networking;
-using SadieEmulator.Tasks.Other;
 
 namespace SadieEmulator;
 
@@ -37,8 +33,11 @@ public static class ServerServiceCollection
         OptionsServiceCollection.AddServices(serviceCollection, config);
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
-        serviceCollection.AddSingleton<ServerSettings>(p => p.GetRequiredService<SadieContext>().ServerSettings.First());
-        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());
+        serviceCollection.AddSingleton<ServerSettings>(p => 
+            p.GetRequiredService<SadieContext>().ServerSettings.First());
+        
+        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => 
+            p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());
 
         MapperServiceCollection.AddServices(serviceCollection);
         PlayerServiceCollection.AddServices(serviceCollection);
