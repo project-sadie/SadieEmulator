@@ -25,11 +25,11 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
         var userRepository = room.UserRepository;
         var isOwner = room.OwnerId == client.Player.Id;
         
-        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomTileMap).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, room.Layout.HeightMap.Replace("\r\n", "\r")).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomTileMap));
+        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, room.Layout.HeightMap.Replace("\r\n", "\r")));
         
-        await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()).GetAllBytes());
-        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()).GetAllBytes());
+        await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()));
+        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()));
         
         var floorItems = room.FurnitureItems
             .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
@@ -51,9 +51,9 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
                 .Distinct()
                 .ToDictionary(x => x.Key, x => x.Value);
 
-        await client.WriteToStreamAsync(new RoomFloorItemsWriter(floorItems, floorFurnitureOwners).GetAllBytes());
-        await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems, wallFurnitureOwners).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomFloorItemsWriter(floorItems, floorFurnitureOwners));
+        await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems, wallFurnitureOwners));
         
-        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter(room, false, true, isOwner).GetAllBytes());
+        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter(room, false, true, isOwner));
     }
 }

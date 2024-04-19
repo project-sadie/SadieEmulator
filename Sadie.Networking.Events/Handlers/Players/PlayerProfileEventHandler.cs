@@ -54,7 +54,7 @@ public class PlayerProfileEventHandler(
             profileOnline, 
             friendCount, 
             friendship is { Status: PlayerFriendshipStatus.Accepted }, 
-            friendship != null).GetAllBytes();
+            friendship != null);
         
         await client.WriteToStreamAsync(profileWriter);
     }

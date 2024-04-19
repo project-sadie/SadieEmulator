@@ -57,7 +57,7 @@ public class RoomUserWhisperEventHandler(
             chatMessage.PlayerId,
             chatMessage.Message,
             chatMessage.EmotionId,
-            (int) chatMessage.ChatBubbleId).GetAllBytes();
+            (int) chatMessage.ChatBubbleId);
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);

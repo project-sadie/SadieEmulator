@@ -10,6 +10,6 @@ public class PromotedRoomsEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new NavigatorPromotedRoomsWriter().GetAllBytes());
+        await client.WriteToStreamAsync(new NavigatorPromotedRoomsWriter());
     }
 }

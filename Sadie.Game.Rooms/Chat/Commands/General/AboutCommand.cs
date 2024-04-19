@@ -29,6 +29,6 @@ public class AboutCommand(
         message.AppendLine("Habtard - Solo Developer");
         message.AppendLine("");
         
-        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(message.ToString()).GetAllBytes());
+        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(message.ToString()));
     }
 }

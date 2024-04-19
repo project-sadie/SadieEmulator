@@ -16,6 +16,6 @@ public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
             Where(x => x.Slot is > 0 and <= 5).
             ToList();
         
-        await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter(badges, equippedBadges).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter(badges, equippedBadges));
     }
 }

@@ -39,7 +39,7 @@ public class PlayerRemoveFriendsEventHandler(
                 target.DeleteFriendshipFor(playerId);
             }
                 
-            await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter([playerId]).GetAllBytes());
+            await target.NetworkObject.WriteToStreamAsync(new PlayerRemoveFriendsWriter([playerId]));
             
             client.Player.DeleteFriendshipFor(currentId);
         }
@@ -51,6 +51,6 @@ public class PlayerRemoveFriendsEventHandler(
                 x.TargetPlayerId == playerId && eventParser.Ids.Contains(x.OriginPlayerId))
             .ExecuteDeleteAsync();
         
-        await client.WriteToStreamAsync(new PlayerRemoveFriendsWriter(eventParser.Ids).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerRemoveFriendsWriter(eventParser.Ids));
     }
 }

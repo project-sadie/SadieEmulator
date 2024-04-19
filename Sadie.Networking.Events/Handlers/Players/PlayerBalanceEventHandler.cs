@@ -27,7 +27,7 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
             {105, 0} // unknown
         };
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance).GetAllBytes());
-        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance));
+        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(currencies));
     }
 }
