@@ -5,8 +5,7 @@ using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
-using Sadie.Options.Models;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Options.Options;
 
 namespace Sadie.Networking.Client;
 

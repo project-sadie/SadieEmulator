@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Sadie.Options.Models;
+using Sadie.Options.Options;
 using Sadie.Options.Validation;
 
 namespace Sadie.Options;
