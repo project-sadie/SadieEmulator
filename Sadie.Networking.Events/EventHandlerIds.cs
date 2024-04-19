@@ -12,7 +12,7 @@ public class EventHandlerIds
     public const short PlayerBalance = 273;
     public const short PlayerSubscription = 3166;
     public const short NavigatorData = 2110;
-    public const short PlayerFriendsList = 1523;
+    public const short MOTD = 1523;
     public const short PlayerMessengerInit = 2781;
     public const short PlayerPing = 295;
     public const short PlayerPong = 2596;
