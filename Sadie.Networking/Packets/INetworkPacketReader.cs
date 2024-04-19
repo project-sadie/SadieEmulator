@@ -3,6 +3,6 @@ namespace Sadie.Networking.Packets;
 public interface INetworkPacketReader
 {
     string ReadString();
-    int ReadInteger();
+    int ReadInt();
     bool ReadBool();
 }

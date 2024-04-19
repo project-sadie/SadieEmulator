@@ -1,36 +1,38 @@
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Game.Catalog.Club;
+using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Furniture;
-using Sadie.Game.Navigator.Filters;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Categories;
 using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
+using System.Diagnostics;
 
 namespace SadieEmulator;
 
 public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : IServer
 {
+    private readonly CancellationTokenSource _tokenSource = new();
+    
     public async Task RunAsync()
     {
         var stopwatch = Stopwatch.StartNew();
-        
+
         WriteHeaderToConsole();
-        TestDatabaseConnection();
 
         await CleanUpDataAsync();
         await LoadInitialDataAsync();
-        
-        serviceProvider.GetRequiredService<IServerTaskWorker>().Start();
+
+        serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
-        
+
         logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
 
         await StartListeningForConnectionsAsync();
@@ -39,56 +41,53 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
     private async Task StartListeningForConnectionsAsync()
     {
         var networkListener = serviceProvider.GetRequiredService<INetworkListener>();
-
-        networkListener.Start();
+        networkListener.Bootstrap();
         await networkListener.ListenAsync();
-    }
-
-    private void TestDatabaseConnection()
-    {
-        var dbProvider = serviceProvider.GetRequiredService<IDatabaseProvider>();
-
-        if (!dbProvider.TestConnection())
-        {
-            throw new Exception("Failed to connect to the database.");
-        }
-
-        logger.LogTrace("Database connection is working!");
     }
 
     private async Task CleanUpDataAsync()
     {
-        var playerDao = serviceProvider.GetRequiredService<IPlayerDao>();
-        await playerDao.CleanDataAsync();
+        var context = serviceProvider.GetRequiredService<SadieContext>();
+
+        await context
+            .PlayerData
+            .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false));
     }
 
     private async Task LoadInitialDataAsync()
     {
-        var roomCategoryRepo = serviceProvider.GetRequiredService<IRoomCategoryRepository>();
-        await roomCategoryRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded room categories");
-        
-        var navigatorTabRepo = serviceProvider.GetRequiredService<NavigatorTabRepository>();
-        await navigatorTabRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded navigator tabs");
-        
-        var navigatorFilterRepo = serviceProvider.GetRequiredService<NavigatorFilterRepository>();
-        await navigatorFilterRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded navigator search filters");
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync,
+            "navigator tabs");
 
-        var furnitureItemRepository = serviceProvider.GetRequiredService<FurnitureItemRepository>();
-        await furnitureItemRepository.LoadInitialDataAsync();
-        logger.LogTrace("Loaded furniture items");
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync,
+            "furniture items");
 
-        var catalogPagesRepo = serviceProvider.GetRequiredService<CatalogPageRepository>();
-        await catalogPagesRepo.LoadInitialDataAsync();
-        logger.LogTrace("Loaded catalog pages");
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync,
+            "catalog pages");
+
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>().LoadInitialDataAsync,
+            "catalog front page items");
+
+        await LoadInitialDataAsync(
+            serviceProvider.GetRequiredService<CatalogClubOfferRepository>().LoadInitialDataAsync,
+            "player club offers");
+
     }
-    
+
+    private async Task LoadInitialDataAsync(Func<Task> action, string name)
+    {
+        logger.LogTrace($"Loading {name}...");
+        await action.Invoke();
+    }
+
     private void WriteHeaderToConsole()
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        
+
         Console.WriteLine(@"");
         Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
         Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
@@ -99,25 +98,27 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
         Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
         Console.WriteLine(@"");
-        
+
         Console.ForegroundColor = ConsoleColor.White;
-        
+
         Console.WriteLine($"         You are running version {GlobalState.Version}");
         Console.WriteLine(@"");
-        
+
         logger.LogTrace("Booting up...");
     }
 
     public async ValueTask DisposeAsync()
     {
+        await _tokenSource.CancelAsync();
+        
         logger.LogWarning("Server is about to shut down...");
-        
-        var roomRepository = serviceProvider.GetRequiredService<IRoomRepository>();
-        var playerRepository = serviceProvider.GetRequiredService<IPlayerRepository>();
-        
+
+        var roomRepository = serviceProvider.GetRequiredService<RoomRepository>();
+        var playerRepository = serviceProvider.GetRequiredService<PlayerRepository>();
+
         logger.LogInformation("Disposing rooms...");
         await roomRepository.DisposeAsync();
-        
+
         logger.LogInformation("Disposing players...");
         await playerRepository.DisposeAsync();
     }

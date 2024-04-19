@@ -1,19 +1,22 @@
-﻿using System.Buffers.Binary;
+﻿using Microsoft.Extensions.Options;
+using System.Buffers.Binary;
+using Sadie.Options.Options;
 
 namespace Sadie.Networking.Packets;
 
 public class NetworkPacketDecoder
 {
-    private readonly NetworkingConstants _constants;
+    private readonly NetworkPacketOptions _packetSettings;
 
-    protected NetworkPacketDecoder(NetworkingConstants constants)
+    protected NetworkPacketDecoder(IOptions<NetworkPacketOptions> options)
     {
-        _constants = constants;
+        _packetSettings = options.Value;
     }
 
     protected List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
     {
-        if (packet.Length < _constants.FrameLengthByteCount || packet.Length > _constants.BufferByteSize - _constants.FrameLengthByteCount)
+        if (packet.Length < _packetSettings.FrameLengthByteCount || 
+            packet.Length > _packetSettings.BufferByteSize - _packetSettings.FrameLengthByteCount)
         {
             return new List<NetworkPacket>();
         }
@@ -30,7 +33,7 @@ public class NetworkPacketDecoder
         Buffer.BlockCopy(packetData, 2, content, 0, packetData.Length - 2);
 
         var packets = new List<NetworkPacket>();
-        
+
         if (reader.BaseStream.Length - 4 > packetLength)
         {
             var extra = new byte[reader.BaseStream.Length - reader.BaseStream.Position];
@@ -38,7 +41,7 @@ public class NetworkPacketDecoder
 
             packets.AddRange(DecodePacketsFromBytes(extra));
         }
-        
+
         packets.Add(new NetworkPacket(packetId, content));
         return packets;
     }

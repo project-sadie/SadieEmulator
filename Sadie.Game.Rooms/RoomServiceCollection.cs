@@ -1,43 +1,34 @@
-﻿using System.Collections.Concurrent;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Sadie.Game.Rooms.Categories;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Chat.Commands.General;
-using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
 public static class RoomServiceCollection
 {
-    public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
+    public static void AddServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
-        serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
-        serviceCollection.AddSingleton<IRoomFactory, RoomFactory>();
-        serviceCollection.AddSingleton<IRoomRightsDao, RoomRightsDao>();
-        serviceCollection.AddSingleton<IRoomDao, RoomDao>();
-        serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
-            
-        serviceCollection.AddSingleton<RoomCategoryFactory>();
-        serviceCollection.AddSingleton<IRoomCategoryDao, RoomCategoryDao>();
-        serviceCollection.AddSingleton<IRoomCategoryRepository, RoomCategoryRepository>();
-        
-        serviceCollection.AddSingleton<AboutCommand>();
-        
-        var roomConstants = new RoomConstants();
-        config.GetSection("Constants:Room").Bind(roomConstants);
-        serviceCollection.AddSingleton(roomConstants);
+        serviceCollection.Scan(scan => scan
+            .FromAssemblyOf<IRoomChatCommand>()
+            .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
+            .AsImplementedInterfaces()
+            .WithSingletonLifetime());
 
-        serviceCollection.AddSingleton(provider => new ConcurrentDictionary<string, IRoomChatCommand>
-        {
-            ["about"] = provider.GetRequiredService<AboutCommand>()
-        });
-        
+        serviceCollection.Scan(scan => scan
+            .FromAssemblyOf<IRoomFurnitureItemInteractor>()
+            .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemInteractor>())
+            .AsImplementedInterfaces()
+            .WithSingletonLifetime());
+
+        serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
+        serviceCollection.AddSingleton<RoomUserFactory>();
+        serviceCollection.AddSingleton<RoomRepository, RoomRepository>();
+
+        serviceCollection.AddSingleton<AboutCommand>();
+
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
-        
-        serviceCollection.AddSingleton<IRoomFurnitureItemRepository, RoomFurnitureItemRepository>();
-        serviceCollection.AddSingleton<IRoomFurnitureItemDao, RoomFurnitureItemDao>();
+        serviceCollection.AddSingleton<RoomFurnitureItemInteractorRepository>();
     }
 }

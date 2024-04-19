@@ -1,5 +1,4 @@
-using Sadie.Game.Furniture;
-using Sadie.Game.Players.Inventory;
+using Sadie.Database.Models.Players;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
@@ -12,7 +11,7 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
     public PlayerInventoryFurnitureItemsWriter(
         int pages, 
         int currentPage, 
-        List<PlayerInventoryFurnitureItem> items)
+        List<PlayerFurnitureItem> items)
     {
         WriteShort(ServerPacketId.PlayerInventoryFurnitureItems);
         
@@ -26,35 +25,40 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         }
     }
     
-    private void WriteItem(PlayerInventoryFurnitureItem item)
+    private void WriteItem(PlayerFurnitureItem item)
     {
         var furnitureItem = item.FurnitureItem;
-        var reference = furnitureItem.Id;
-        var category = 1;
         var hasRentPeriodStarted = false;
-        var flatId = furnitureItem.Id;
         var slotId = "";
         var extra = 1;
-        var objectData = new Dictionary<string, string>();
         var expiresInSeconds = -1;
         
         WriteLong(item.Id);
         WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type).ToUpper());
-        WriteLong(reference);
+        WriteLong(item.Id);
         WriteInteger(furnitureItem.AssetId);
-        WriteInteger(category);
-            
-        switch (item.FurnitureItem.InteractionType)
+        
+        switch (furnitureItem.AssetName)
         {
+            case "floor":
+                WriteInteger(3);
+                WriteInteger(0);
+                WriteString(item.MetaData);
+                break;
+            case "wallpaper":
+                WriteInteger(2);
+                WriteInteger(0);
+                WriteString(item.MetaData);
+                break;
+            case "landscape":
+                WriteInteger(4);
+                WriteInteger(0);
+                WriteString(item.MetaData);
+                break;
             default:
-                WriteInteger((int) ObjectDataKey.MapKey); 
-                WriteInteger(objectData.Count);
-
-                foreach (var dataPair in objectData)
-                {
-                    WriteString(dataPair.Key);
-                    WriteString(dataPair.Value);
-                }
+                WriteInteger(1);
+                WriteInteger(1);
+                WriteInteger(0);
                 break;
         }
         
@@ -64,7 +68,7 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         WriteBool(furnitureItem.CanMarketplaceSell);
         WriteInteger(expiresInSeconds);
         WriteBool(hasRentPeriodStarted);
-        WriteInteger(flatId);
+        WriteInteger(-1);
 
         if (furnitureItem.Type != FurnitureItemType.Floor)
         {

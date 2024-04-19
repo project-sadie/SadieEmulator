@@ -1,4 +1,4 @@
-using Sadie.Game.Navigator.Categories;
+using Sadie.Database.Models.Navigator;
 using Sadie.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -10,7 +10,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
     public NavigatorSearchResultPagesWriter(
         string tabName, 
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<IRoom>> categoryRoomMap)
+        Dictionary<NavigatorCategory, List<RoomLogic>> categoryRoomMap)
     {
         WriteShort(ServerPacketId.NavigatorRooms);
         WriteString(tabName);
@@ -22,7 +22,7 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
         {
             WriteString(category.CodeName);
             WriteString(category.Name);
-            WriteInteger((int) 0); // TODO: SEARCH ACTION?
+            WriteInteger(0); // TODO: SEARCH ACTION?
             WriteBool(false); // TODO: is it collapsed?
             WriteInteger(0); // TODO: Show thumbnail? display mode
 
@@ -33,20 +33,20 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
                 WriteLong(room.Id);
                 WriteString(room.Name);
                 WriteLong(room.OwnerId);
-                WriteString(room.OwnerName);
+                WriteString(room.Owner.Username);
                 WriteInteger((int) room.Settings.AccessType);
                 WriteInteger(room.UserRepository.Count);
-                WriteInteger(room.MaxUsers);
+                WriteInteger(room.MaxUsersAllowed);
                 WriteString(room.Description);
                 WriteInteger(0); // unknown
-                WriteInteger(room.Score);
+                WriteInteger(room.PlayerLikes.Count);
                 WriteInteger(0); // unknown
                 WriteInteger(1); // TODO: category
                 WriteInteger(room.Tags.Count);
 
                 foreach (var tag in room.Tags)
                 {
-                    WriteString(tag);
+                    WriteString(tag.Name);
                 }
                 
                 WriteInteger(0 | 8); // TODO: base

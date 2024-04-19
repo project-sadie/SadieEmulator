@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Navigator;
+using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -14,6 +14,6 @@ public class PlayerNavigatorSettingsWriter : NetworkPacketWriter
         WriteInteger(navigatorSettings.WindowWidth);
         WriteInteger(navigatorSettings.WindowHeight);
         WriteBool(navigatorSettings.OpenSearches);
-        WriteInteger(navigatorSettings.Unknown1);
+        WriteInteger(0);
     }
 }

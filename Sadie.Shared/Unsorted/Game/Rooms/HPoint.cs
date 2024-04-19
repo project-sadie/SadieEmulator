@@ -4,9 +4,9 @@ public class HPoint
 {
     public int X { get; }
     public int Y { get; }
-    public float Z { get; }
+    public double Z { get; }
     
-    public HPoint(int x, int y, float z)
+    public HPoint(int x, int y, double z)
     {
         X = x;
         Y = y;

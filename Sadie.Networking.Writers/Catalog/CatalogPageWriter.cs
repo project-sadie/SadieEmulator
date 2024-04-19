@@ -1,6 +1,8 @@
-using Sadie.Game.Catalog.Items;
-using Sadie.Game.Furniture;
+using Sadie.Database.Models.Catalog.FrontPage;
+using Sadie.Database.Models.Catalog.Items;
+using Sadie.Game.Catalog.Pages;
 using Sadie.Shared.Helpers;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -17,17 +19,133 @@ public class CatalogPageWriter : NetworkPacketWriter
         string primaryText,
         string secondaryText,
         string teaserText,
-        List<CatalogItem> items, string catalogMode)
+        string detailsText,
+        ICollection<CatalogItem> items, 
+        string catalogMode,
+        bool acceptSeasonCurrencyAsCredits,
+        ICollection<CatalogFrontPageItem>? frontPageItems)
     {
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(pageId);
         WriteString(catalogMode);
-        WriteString(pageLayout);
 
         switch (pageLayout)
         {
-            case "frontpage":
-            case "club_buy":
+            case CatalogPageLayout.Guilds:
+                WriteString("guild_frontpage");
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(3);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                WriteString(teaserText);
+                break;
+            case CatalogPageLayout.GuildsCustomFurniture:
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage); 
+                WriteString(teaserImage);
+                WriteInteger(3);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                WriteString(teaserText);
+                break;
+            case CatalogPageLayout.GuildForum:
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(3);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                WriteString(teaserText);
+                break;
+            case CatalogPageLayout.SoundMachine:
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(2);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                break;
+            case CatalogPageLayout.MarketplaceOwnItems:
+            case CatalogPageLayout.Marketplace:
+                WriteString(pageLayout);
+                WriteInteger(0);
+                WriteInteger(0);
+                break;
+            case CatalogPageLayout.ClubGifts:
+                WriteString(pageLayout);
+                WriteInteger(1);
+                WriteString(headerImage);
+                WriteInteger(1);
+                WriteString(primaryText);
+                break;
+            case CatalogPageLayout.InfoLoyalty:
+                WriteString(pageLayout);
+                WriteInteger(1);
+                WriteString(headerImage);
+                WriteInteger(1);
+                WriteString(primaryText);
+                WriteInteger(0);
+                break;
+            case CatalogPageLayout.RoomBundle:
+            case CatalogPageLayout.SingleBundle:
+                WriteString("single_bundle");
+                WriteInteger(3);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteString("");
+                WriteInteger(4);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                WriteString(teaserText);
+                WriteString(secondaryText);
+                break;
+            case CatalogPageLayout.PetCustomization:
+            case CatalogPageLayout.BadgeDisplay:
+                WriteString(pageLayout);
+                WriteInteger(3);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteString(specialImage);
+                WriteInteger(3);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                WriteString(teaserText);
+                break;
+            case CatalogPageLayout.Pets:
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(4);
+                WriteString(primaryText);
+                WriteString(secondaryText);
+                WriteString(detailsText);
+                WriteString(teaserText);
+                break;
+            case CatalogPageLayout.Bots:
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(3);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                WriteString(secondaryText);
+                break;
+            case CatalogPageLayout.VipBuy:
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(0);
+                break;
+            case CatalogPageLayout.FrontPage:
+                WriteString("frontpage4");
                 WriteInteger(2);
                 WriteString(headerImage);
                 WriteString(teaserImage);
@@ -36,7 +154,22 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(secondaryText);
                 WriteString(teaserText);
                 break;
-            default:
+            case CatalogPageLayout.Default3X3ColorGrouping:
+            case CatalogPageLayout.SpacesNew:
+            case CatalogPageLayout.Trophies:
+                WriteString(pageLayout);
+                WriteInteger(3);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteString(specialImage);
+                WriteInteger(3);
+                WriteString(primaryText);
+                WriteString(detailsText);
+                WriteString(teaserText);
+                break;
+            case CatalogPageLayout.Default3X3:
+            case CatalogPageLayout.RecentPurchases:
+                WriteString(pageLayout);
                 WriteInteger(3);
                 WriteString(headerImage);
                 WriteString(teaserImage);
@@ -45,6 +178,15 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(primaryText);
                 WriteString(secondaryText);
                 WriteString(teaserText);
+                break;
+            case CatalogPageLayout.RoomAds:
+                WriteString(pageLayout);
+                WriteInteger(2);
+                WriteString(headerImage);
+                WriteString(teaserImage);
+                WriteInteger(2);
+                WriteString(primaryText);
+                WriteString(secondaryText);
                 break;
         }
         
@@ -73,18 +215,18 @@ public class CatalogPageWriter : NetworkPacketWriter
                 {
                     WriteInteger(furnitureItem.AssetId);
 
-                    if (item.Name.Contains("wallpaper_single") || item.Name.Contains("floor_single") || item.Name.Contains("landscape_single"))
+                    if (item.Name.Contains("_single_"))
                     {
                         WriteString(item.Name.Split("_")[2]);
                     }
                     else if (item.Name.Contains("bot") && furnitureItem.Type == FurnitureItemType.Bot)
                     {
-                        var look = item.Metadata.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
-                        WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : item.Metadata);
+                        var look = item.MetaData.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
+                        WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : item.MetaData);
                     }
                     else if (furnitureItem.Type == FurnitureItemType.Bot || item.Name.ToLower() == "poster" || item.Name.StartsWith("SONG "))
                     {
-                        WriteString(item.Metadata);
+                        WriteString(item.MetaData);
                     }
                     else
                     {
@@ -103,12 +245,38 @@ public class CatalogPageWriter : NetworkPacketWriter
         }
         
         WriteInteger(0);
-        WriteBool(false);
+        WriteBool(acceptSeasonCurrencyAsCredits);
 
-        if (pageLayout is "frontpage4")
+        if (pageLayout is not "frontpage" || frontPageItems == null)
         {
-            // TODO: serialize extra?
-            WriteInteger(0);
+            return;
+        }
+        
+        WriteInteger(frontPageItems.Count);
+
+        foreach (var item in frontPageItems)
+        {
+            WriteInteger(item.Id);
+            WriteString(item.Title);
+            WriteString(item.Image);
+            WriteInteger((int) item.TypeId);
+
+            switch (item.TypeId)
+            {
+                case CatalogFrontPageItemType.PageId:
+                    WriteInteger(item.CatalogPage.Id);
+                    break;
+                case CatalogFrontPageItemType.PageName:
+                    WriteString(item.CatalogPage.Name);
+                    break;
+                case CatalogFrontPageItemType.ProductName:
+                    WriteString(item.ProductName);
+                    break;
+                default:
+                    throw new Exception($"Unknown catalog front page item type {(int) item.TypeId}");
+            }
+
+            WriteInteger(-1);
         }
     }
 }

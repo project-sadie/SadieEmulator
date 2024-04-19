@@ -8,9 +8,11 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Game.Rooms.Chat.Commands.General;
 
 public class AboutCommand(
-    IRoomRepository roomRepository, 
-    IPlayerRepository playerRepository) : IRoomChatCommand
+    RoomRepository roomRepository, 
+    PlayerRepository playerRepository) : IRoomChatCommand
 {
+    public string Trigger => "about";
+
     public async Task ExecuteAsync(IRoomUser user)
     {
         var version = GlobalState.Version;
@@ -25,9 +27,8 @@ public class AboutCommand(
         message.AppendLine("");
         message.AppendLine("Credits:");
         message.AppendLine("Habtard - Solo Developer");
-        message.AppendLine("Lucas - Testing & Support");
         message.AppendLine("");
         
-        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(message.ToString()).GetAllBytes());
+        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(message.ToString()));
     }
 }

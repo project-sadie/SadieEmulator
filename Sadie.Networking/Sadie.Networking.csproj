@@ -7,16 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="DotNetty.Buffers" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Codecs" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Codecs.Http" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Handlers" Version="0.7.6" />
+        <PackageReference Include="DotNetty.Transport" Version="0.7.6" />
         <PackageReference Include="Fleck" Version="1.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0-preview.2.22152.2" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0-preview.2.22152.2" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
       <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
+      <ProjectReference Include="..\Sadie.Options\Sadie.Options.csproj" />
       <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
     </ItemGroup>
 

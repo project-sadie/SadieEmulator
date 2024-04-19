@@ -1,4 +1,4 @@
-using Sadie.Game.Players.Messenger;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 

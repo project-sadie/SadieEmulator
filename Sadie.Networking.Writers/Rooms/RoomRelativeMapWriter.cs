@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Rooms;
+﻿using Sadie.Game.Rooms.Tiles;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomRelativeMapWriter : NetworkPacketWriter
 {
-    public RoomRelativeMapWriter(RoomLayoutData layout)
+    public RoomRelativeMapWriter(RoomTileMap layout)
     {
         WriteShort(ServerPacketId.RoomRelativeMap);
         WriteInteger(layout.Size / layout.SizeY);
@@ -16,7 +16,7 @@ public class RoomRelativeMapWriter : NetworkPacketWriter
         {
             for (var x = 0; x < layout.SizeX; x++)
             {
-                var tile = layout.FindTile(x, y);
+                var tile = layout.GetTile(x, y);
 
                 if (tile == null)
                 {

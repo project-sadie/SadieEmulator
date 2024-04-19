@@ -24,6 +24,8 @@ public class RoomUserStatusWriter : NetworkPacketWriter
             WriteInteger((int) user.DirectionHead);
             WriteInteger((int) user.Direction);
             WriteString("/" + string.Join("/", statusList).TrimEnd('/'));
+            
+            user.NeedsStatusUpdate = false; 
         }
     }
 }

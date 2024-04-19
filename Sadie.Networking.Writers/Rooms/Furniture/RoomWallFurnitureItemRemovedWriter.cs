@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 

@@ -1,3 +1,5 @@
+using Sadie.Shared.Unsorted.Networking.Packets;
+
 namespace Sadie.Game.Rooms.Users;
 
 public interface IRoomUserRepository : IAsyncDisposable
@@ -9,6 +11,7 @@ public interface IRoomUserRepository : IAsyncDisposable
     bool TryGetByUsername(string username, out IRoomUser? user);
     Task TryRemoveAsync(int id, bool hotelView = false);
     int Count { get; }
-    Task BroadcastDataAsync(byte[] data);
+    Task BroadcastDataAsync(NetworkPacketWriter data);
     ICollection<IRoomUser> GetAllWithRights();
+    Task RunPeriodicCheckAsync();
 }

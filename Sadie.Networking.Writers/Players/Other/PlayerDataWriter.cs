@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Players;
+﻿using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -7,21 +7,21 @@ namespace Sadie.Networking.Writers.Players.Other;
 
 public class PlayerDataWriter : NetworkPacketWriter
 {
-    public PlayerDataWriter(IPlayerData playerData)
+    public PlayerDataWriter(Player player)
     {
         WriteShort(ServerPacketId.PlayerData);
-        WriteInteger(playerData.Id);
-        WriteString(playerData.Username);
-        WriteString(playerData.FigureCode);
-        WriteString(playerData.Gender == AvatarGender.Male ? "M" : "F");
-        WriteString(playerData.Motto);
-        WriteString(playerData.Username);
+        WriteLong(player.Id);
+        WriteString(player.Username);
+        WriteString(player.AvatarData.FigureCode);
+        WriteString(player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
+        WriteString(player.AvatarData.Motto);
+        WriteString(player.Username);
         WriteBool(false);
-        WriteInteger(playerData.RespectsReceived);
-        WriteInteger(playerData.RespectPoints);
-        WriteInteger(playerData.RespectPointsPet);
+        WriteInteger(player.Respects.Count);
+        WriteInteger(player.Data.RespectPoints);
+        WriteInteger(player.Data.RespectPointsPet);
         WriteBool(false);
-        WriteString(playerData.LastOnline.ToString());
+        WriteString(player.Data.LastOnline.ToString());
         WriteBool(false);
         WriteBool(false);
     }

@@ -1,13 +1,16 @@
-using System.Collections.Concurrent;
-
 namespace Sadie.Game.Rooms.Chat.Commands;
 
-public class RoomChatCommandRepository(ConcurrentDictionary<string, IRoomChatCommand> commands) : IRoomChatCommandRepository
+public class RoomChatCommandRepository : IRoomChatCommandRepository
 {
-    public Tuple<bool, IRoomChatCommand?> TryGetCommandByTriggerWord(string trigger)
+    private readonly Dictionary<string, IRoomChatCommand> _commands;
+
+    public RoomChatCommandRepository(IEnumerable<IRoomChatCommand> commands)
     {
-        return commands.TryGetValue(trigger, out var command)
-            ? new Tuple<bool, IRoomChatCommand?>(true, command)
-            : new Tuple<bool, IRoomChatCommand?>(false, null);
+        _commands = commands.ToDictionary(x => x.Trigger, c => c);
+    }
+
+    public IRoomChatCommand? TryGetCommandByTriggerWord(string trigger)
+    {
+        return _commands.GetValueOrDefault(trigger);
     }
 }

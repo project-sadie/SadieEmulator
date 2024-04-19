@@ -9,5 +9,5 @@ public enum ObjectDataKey
     EmptyKey = 4,
     NumberKey = 5,
     HighScoreKey = 6,
-    CrackableKey = 7,
+    CrackableKey = 7
 }

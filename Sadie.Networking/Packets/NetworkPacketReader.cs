@@ -7,8 +7,8 @@ public class NetworkPacketReader : INetworkPacketReader
 {
     private readonly byte[] _packetData;
     private int _packetPosition;
-        
-    protected NetworkPacketReader(byte[] packetData)
+
+    public NetworkPacketReader(byte[] packetData)
     {
         _packetData = packetData;
     }
@@ -19,7 +19,7 @@ public class NetworkPacketReader : INetworkPacketReader
         return Encoding.Default.GetString(ReadBytes(packetLength));
     }
 
-    public int ReadInteger()
+    public int ReadInt()
     {
         return BinaryPrimitives.ReadInt32BigEndian(ReadBytes(4));
     }

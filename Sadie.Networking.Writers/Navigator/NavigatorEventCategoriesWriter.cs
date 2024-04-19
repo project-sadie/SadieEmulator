@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms.Categories;
+using Sadie.Database.Models.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -15,7 +15,7 @@ public class NavigatorEventCategoriesWriter : NetworkPacketWriter
         {
             WriteLong(category.Id);
             WriteString(category.Caption);
-            WriteBool(category.Visible);
+            WriteBool(category.IsVisible);
         }
     }
 }

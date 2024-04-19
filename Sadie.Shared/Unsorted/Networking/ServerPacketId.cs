@@ -4,7 +4,7 @@ public class ServerPacketId
 {
     public const short SecureLogin = 2491;
     public const short PlayerHomeRoom = 2875;
-    public const short UniqueMachineId = 1488;
+    public const short UniqueId = 1488;
     public const short PlayerEffectList = 340;
     public const short PlayerClothingList = 1450;
     public const short NoobnessLevel = 3738;
@@ -12,7 +12,7 @@ public class ServerPacketId
     public const short PlayerStatus = 2033;
     public const short PlayerData = 2725;
     public const short PlayerPerks = 2586;
-    public const short PlayerClubMembership = 954;
+    public const short PlayerSubscription = 954;
     public const short NavigatorMetaData = 3052;
     public const short NavigatorLiftedRooms = 3104;
     public const short NavigatorCollapsedCategories = 1543;
@@ -68,7 +68,7 @@ public class ServerPacketId
     public const short PlayerRemoveFriends = 2800;
     public const short PlayerUpdateFriend = 2800;
     public const short RoomCreated = 1304;
-    public const short HabboClubData = 2405;
+    public const short PlayerClubOffers = 2405;
     public const short HabboClubGifts = 619;
     public const short HabboClubCenter = 3277;
     public const short RoomScore = 482;
@@ -121,4 +121,5 @@ public class ServerPacketId
     public const short RoomWallFurnitureItemPlaced = 2187;
     public const short RoomWallFurnitureItemUpdated = 2009;
     public const short RoomWallFurnitureItemRemoved = 3208;
+    public const short RoomUserHandItem = 1474;
 }

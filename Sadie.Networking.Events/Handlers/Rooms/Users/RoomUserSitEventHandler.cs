@@ -1,0 +1,23 @@
+﻿using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Users;
+using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
+
+namespace Sadie.Networking.Events.Handlers.Rooms.Users;
+
+public class RoomUserSitEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+{
+    public int Id => EventHandlerIds.RoomUserSit;
+
+    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    {
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
+        {
+            return Task.CompletedTask;
+        }
+        
+        roomUser.AddStatus(RoomUserStatus.Sit, 0.5.ToString());
+        
+        return Task.CompletedTask;
+    }
+}

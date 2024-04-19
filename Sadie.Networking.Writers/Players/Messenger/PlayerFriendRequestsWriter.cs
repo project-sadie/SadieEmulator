@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Players.Friendships;
+﻿using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Players.Messenger;
 
 public class PlayerFriendRequestsWriter : NetworkPacketWriter
 {
-    public PlayerFriendRequestsWriter(List<PlayerFriendshipData> requests)
+    public PlayerFriendRequestsWriter(List<Player> requests)
     {
         WriteShort(ServerPacketId.PlayerFriendRequests);
         WriteInteger(requests.Count);
@@ -16,7 +16,7 @@ public class PlayerFriendRequestsWriter : NetworkPacketWriter
         {
             WriteLong(request.Id);
             WriteString(request.Username);
-            WriteString(request.FigureCode);
+            WriteString(request.AvatarData.FigureCode);
         }
     }
 }

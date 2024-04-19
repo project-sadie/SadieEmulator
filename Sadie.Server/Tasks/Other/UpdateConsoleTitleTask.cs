@@ -5,8 +5,8 @@ using Sadie.Shared;
 namespace SadieEmulator.Tasks.Other;
 
 public class UpdateConsoleTitleTask(
-    IPlayerRepository playerRepository, 
-    IRoomRepository roomRepository) : IServerTask
+    PlayerRepository playerRepository, 
+    RoomRepository roomRepository) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
     public DateTime LastExecuted { get; set; }

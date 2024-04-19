@@ -1,5 +1,5 @@
-using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Relationships;
+using Sadie.Database.Models.Players;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -14,16 +14,16 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         int unknown3, 
         PlayerFriendship friendship, 
         bool isOnline, 
-        bool inRoom, 
-        int unknown4, 
-        string unknown5, 
-        string unknown6, 
-        bool unknown7, 
-        bool unknown8, 
-        bool unknown9,
+        bool canFollow, 
+        int categoryId, 
+        string realName, 
+        string lastAccess, 
+        bool persistedMessageUser, 
+        bool vipMember, 
+        bool pocketUser,
         PlayerRelationshipType relationshipType)
     {
-        var targetData = friendship.TargetData;
+        var targetData = friendship.TargetPlayer;
         
         WriteShort(ServerPacketId.PlayerUpdateFriend);
         WriteInteger(unknown1);
@@ -31,17 +31,17 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         WriteInteger(unknown3);
         WriteInteger(targetData.Id);
         WriteString(targetData.Username);
-        WriteInteger(targetData.Gender == AvatarGender.Male ? 0 : 1);
+        WriteInteger(targetData.AvatarData.Gender == AvatarGender.Male ? 0 : 1);
         WriteBool(isOnline);
-        WriteBool(inRoom);
-        WriteString(targetData.FigureCode);
-        WriteInteger(unknown4);
-        WriteString(targetData.Motto);
-        WriteString(unknown5);
-        WriteString(unknown6);
-        WriteBool(unknown7);
-        WriteBool(unknown8);
-        WriteBool(unknown9);
+        WriteBool(canFollow);
+        WriteString(targetData.AvatarData.FigureCode);
+        WriteInteger(categoryId);
+        WriteString(targetData.AvatarData.Motto);
+        WriteString(realName);
+        WriteString(lastAccess);
+        WriteBool(persistedMessageUser);
+        WriteBool(vipMember);
+        WriteBool(pocketUser);
         WriteShort((short) relationshipType);
     }
 }

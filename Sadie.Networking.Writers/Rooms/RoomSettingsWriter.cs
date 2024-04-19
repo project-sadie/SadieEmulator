@@ -6,7 +6,7 @@ namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomSettingsWriter : NetworkPacketWriter
 {
-    public RoomSettingsWriter(IRoomData roomData)
+    public RoomSettingsWriter(RoomLogic roomData)
     {
         WriteShort(ServerPacketId.RoomSettings);
         WriteInteger(roomData.Id);
@@ -14,13 +14,13 @@ public class RoomSettingsWriter : NetworkPacketWriter
         WriteString(roomData.Description);
         WriteInteger((int) roomData.Settings.AccessType);
         WriteInteger(0); // TODO: category
-        WriteInteger(roomData.MaxUsers);
-        WriteInteger(roomData.MaxUsers);
+        WriteInteger(roomData.MaxUsersAllowed);
+        WriteInteger(roomData.MaxUsersAllowed);
         WriteInteger(roomData.Tags.Count);
 
         foreach (var tag in roomData.Tags)
         {
-            WriteString(tag);
+            WriteString(tag.Name);
         }
 
         var settings = roomData.Settings;
@@ -30,8 +30,8 @@ public class RoomSettingsWriter : NetworkPacketWriter
         WriteInteger(settings.CanPetsEat ? 1 : 0);
         WriteInteger(settings.CanUsersOverlap ? 1 : 0);
         WriteInteger(settings.HideWalls ? 1 : 0);
-        WriteInteger(0); // TODO: wall size
-        WriteInteger(0); // TODO: floor size
+        WriteInteger(settings.WallThickness);
+        WriteInteger(settings.FloorThickness);
         WriteInteger(settings.ChatType); 
         WriteInteger(settings.ChatWeight); 
         WriteInteger(settings.ChatSpeed); 

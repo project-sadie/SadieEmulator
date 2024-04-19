@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms.FurnitureItems;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -6,8 +6,9 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 
 public class RoomWallItemsWriter : NetworkPacketWriter
 {
-    public RoomWallItemsWriter(ICollection<RoomFurnitureItem> wallItems,
-        Dictionary<long, string> furnitureOwners)
+    public RoomWallItemsWriter(
+        ICollection<RoomFurnitureItem> wallItems,
+        Dictionary<int, string> furnitureOwners)
     {
        WriteShort(ServerPacketId.RoomWallItems);
        WriteInteger(furnitureOwners.Count);

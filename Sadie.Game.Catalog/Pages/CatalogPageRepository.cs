@@ -1,32 +1,37 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog.Pages;
+
 namespace Sadie.Game.Catalog.Pages;
 
-public class CatalogPageRepository(CatalogPageDao pageDao)
+public class CatalogPageRepository(SadieContext dbContext)
 {
-    private Dictionary<int, CatalogPage> _pages = new(); // TODO: make dictionary so we can lookup by id faster
+    private Dictionary<int, CatalogPage> _pages = [];
 
     public async Task LoadInitialDataAsync()
     {
-        _pages = await pageDao.GetAllAsync();
-
-        foreach (var page in _pages.Values)
-        {
-            if (_pages.TryGetValue(page.ParentId, out var parentPage) && page.Id != parentPage.Id)
-            {
-                parentPage.Pages.Add(page);
-            }
-        }
+        _pages = await dbContext.Set<CatalogPage>()
+            .Include(x => x.Pages)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.FurnitureItems)
+            .ToDictionaryAsync(x => x.Id, x => x);
     }
 
-    public Tuple<bool, CatalogPage?> TryGet(int pageId)
+    public CatalogPage? TryGet(int pageId)
     {
-        return new Tuple<bool, CatalogPage?>(_pages.ContainsKey(pageId), _pages[pageId]);
+        return _pages.GetValueOrDefault(pageId);
     }
 
     public List<CatalogPage> GetByParentId(int parentId)
     {
         return _pages
             .Values
-            .Where(x => x.ParentId == parentId)
+            .Where(x => x.CatalogPageId == parentId)
             .ToList();
+    }
+
+    public CatalogPage? TryGetByLayout(string layout)
+    {
+        return _pages.Values.FirstOrDefault(x => x.Layout == layout);
     }
 }
