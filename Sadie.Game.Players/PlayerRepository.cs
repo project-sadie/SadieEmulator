@@ -185,7 +185,10 @@ public class PlayerRepository(
 
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)
     {
-        throw new NotImplementedException();
+        return await dbContext
+            .Set<PlayerRelationship>()
+            .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)
+            .ToListAsync();
     }
 
     public async Task<Player?> TryGetPlayerByUsernameAsync(string username)

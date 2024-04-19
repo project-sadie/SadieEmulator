@@ -16,7 +16,8 @@ public class RoomUserSitEventHandler(RoomRepository roomRepository) : INetworkPa
             return Task.CompletedTask;
         }
         
-        roomUser.StatusMap[RoomUserStatus.Sit] = 0.5 + "";
+        roomUser.AddStatus(RoomUserStatus.Sit, 0.5.ToString());
+        
         return Task.CompletedTask;
     }
 }

@@ -13,4 +13,6 @@ public interface IRoomUserData
     DateTime LastAction { get; set; }
     TimeSpan IdleTime { get; }
     bool IsIdle { get; }
+    bool NeedsStatusUpdate { get; set; }
+    bool IsWalking { get; set; }
 }

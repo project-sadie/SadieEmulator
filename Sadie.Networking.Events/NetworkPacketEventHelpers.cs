@@ -56,7 +56,10 @@ internal static class NetworkPacketEventHelpers
         return true;
     }
 
-    internal static async Task EnterRoomAsync<T>(INetworkClient client, RoomLogic room, ILogger<T> logger, 
+    internal static async Task EnterRoomAsync<T>(
+        INetworkClient client, 
+        RoomLogic room, 
+        ILogger<T> logger, 
         RoomUserFactory roomUserFactory)
     {
         var player = client.Player;
