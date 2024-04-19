@@ -21,7 +21,10 @@ public class PlayerCurrencyRewardsTask(
     
     public async Task ExecuteAsync()
     {
-        foreach (var reward in rewards.Where(reward => (DateTime.Now - _lastProcessed[reward.Id]).TotalSeconds >= reward.IntervalSeconds))
+        var rewardsReady = rewards
+            .Where(r => (DateTime.Now - _lastProcessed[r.Id]).TotalSeconds >= r.IntervalSeconds);
+        
+        foreach (var reward in rewardsReady)
         {
             await RewardPlayersAsync(reward);
             _lastProcessed[reward.Id] = DateTime.Now;
@@ -57,21 +60,21 @@ public class PlayerCurrencyRewardsTask(
                     await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
                         player.Data.PixelBalance,
                         player.Data.SeasonalBalance,
-                        player.Data.GotwPoints).GetAllBytes());
+                        player.Data.GotwPoints));
                     break;
                 case "pixels":
                     player.Data.PixelBalance += reward.Amount;
                     await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
                         player.Data.PixelBalance,
                         player.Data.SeasonalBalance,
-                        player.Data.GotwPoints).GetAllBytes());
+                        player.Data.GotwPoints));
                     break;
                 case "seasonal":
                     player.Data.SeasonalBalance += reward.Amount;
                     await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
                         player.Data.PixelBalance,
                         player.Data.SeasonalBalance,
-                        player.Data.GotwPoints).GetAllBytes());
+                        player.Data.GotwPoints));
                     break;
             }
             
