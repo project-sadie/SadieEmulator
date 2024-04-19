@@ -1,6 +1,6 @@
 namespace SadieEmulator.Tasks;
 
-public interface IServerTaskWorker
+public interface IServerTaskWorker : IDisposable
 {
-    void Start();
+    Task WorkAsync(CancellationToken token);
 }
