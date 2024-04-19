@@ -18,6 +18,8 @@ namespace SadieEmulator;
 
 public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : IServer
 {
+    private readonly CancellationTokenSource _tokenSource = new();
+    
     public async Task RunAsync()
     {
         var stopwatch = Stopwatch.StartNew();
@@ -27,7 +29,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         await CleanUpDataAsync();
         await LoadInitialDataAsync();
 
-        serviceProvider.GetRequiredService<IServerTaskWorker>().Start();
+        serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
 
@@ -107,6 +109,8 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     public async ValueTask DisposeAsync()
     {
+        await _tokenSource.CancelAsync();
+        
         logger.LogWarning("Server is about to shut down...");
 
         var roomRepository = serviceProvider.GetRequiredService<RoomRepository>();

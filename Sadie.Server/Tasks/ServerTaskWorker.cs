@@ -7,14 +7,9 @@ public class ServerTaskWorker(
     ILogger<ServerTaskWorker> logger, 
     IEnumerable<IServerTask> tasks) : IServerTaskWorker
 {
-    public void Start()
+    public async Task WorkAsync(CancellationToken token)
     {
-        Task.Run(WorkAsync);
-    }
-
-    private async Task WorkAsync()
-    {
-        while (true)
+        while (!token.IsCancellationRequested)
         {
             foreach (var task in tasks.Where(task => task.WaitingToExecute()))
             {
@@ -22,7 +17,7 @@ public class ServerTaskWorker(
                 await ProcessTaskAsync(task);
             }
 
-            await Task.Delay(50);
+            await Task.Delay(50, token);
         }
     }
 
@@ -43,5 +38,10 @@ public class ServerTaskWorker(
         {
             logger.LogError(e.ToString());
         }
+    }
+
+    public void Dispose()
+    {
+        // TODO release managed resources here
     }
 }
