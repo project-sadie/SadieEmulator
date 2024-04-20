@@ -8,7 +8,7 @@ public class RoomTileMap
     public int SizeY { get; }
     public int Size { get; }
     public List<RoomTile> Tiles { get; }
-    public short[,] Map { get; }
+    public short[,] Map { get; private set; }
 
     public RoomTileMap(string heightmap, List<RoomTile> tiles)
     {
@@ -24,15 +24,14 @@ public class RoomTileMap
 
     private void GenerateTileMap()
     {
+        Map = new short[SizeY, SizeX];
+        
         foreach (var tile in Tiles)
         {
             var point = tile.Point;
             var topLevelItem = tile.Items.MaxBy(x => x.PositionZ);
-            
-            var canWalkOnTile = topLevelItem == null ||
-                topLevelItem.FurnitureItem.CanSit ||
-                topLevelItem.FurnitureItem.CanWalk ||
-                topLevelItem.FurnitureItem.CanLay;
+
+            var canWalkOnTile = topLevelItem == null || topLevelItem.FurnitureItem.CanWalk;
 
             if (tile.Users.Count > 0)
             {

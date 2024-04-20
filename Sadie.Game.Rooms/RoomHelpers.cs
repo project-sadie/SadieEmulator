@@ -106,7 +106,7 @@ public static class RoomHelpers
         else
         {
             var furnitureItem = topLevelItem.FurnitureItem;
-            var canWalkOnItem = furnitureItem.CanWalk || furnitureItem.CanSit;
+            var canWalkOnItem = furnitureItem.CanWalk;
 
             if (tile.Users.Count > 0)
             {
