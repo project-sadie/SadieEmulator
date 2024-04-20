@@ -8,7 +8,7 @@ namespace SadieEmulator.Tasks.Game.Players;
 
 public class PlayerCurrencyRewardsTask(
     SadieContext dbContext,
-    IEnumerable<ServerPeriodicCurrencyReward> rewards, 
+    List<ServerPeriodicCurrencyReward> rewards, 
     PlayerRepository playerRepository,
     ServerSettings serverSettings,
     IRoomUserRepository roomUserRepository) : IServerTask
@@ -56,14 +56,17 @@ public class PlayerCurrencyRewardsTask(
             }
 
             await RewardPlayerAsync(player, reward);
-            
-            logs.Add(new ServerPeriodicCurrencyRewardLog
+
+            var log = new ServerPeriodicCurrencyRewardLog
             {
                 PlayerId = player.Id,
                 Type = reward.Type,
                 Amount = reward.Amount,
                 CreatedAt = DateTime.Now
-            });
+            };
+            
+            player.RewardLogs.Add(log);
+            logs.Add(log);
         }
 
         await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(logs);
@@ -76,10 +79,8 @@ public class PlayerCurrencyRewardsTask(
         {
             case "credits":
                 player.Data.CreditBalance += reward.Amount;
-                await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
-                    player.Data.PixelBalance,
-                    player.Data.SeasonalBalance,
-                    player.Data.GotwPoints));
+                await player.NetworkObject!.WriteToStreamAsync(new PlayerCreditsBalanceWriter(
+                    player.Data.CreditBalance));
                 break;
             case "pixels":
                 player.Data.PixelBalance += reward.Amount;
