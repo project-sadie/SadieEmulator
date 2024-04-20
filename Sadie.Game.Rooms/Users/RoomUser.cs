@@ -104,7 +104,7 @@ public class RoomUser(
 
     private void ProcessMovement()
     {
-        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y)
+        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
         {
             IsWalking = false;
             RemoveStatuses(RoomUserStatus.Move);
