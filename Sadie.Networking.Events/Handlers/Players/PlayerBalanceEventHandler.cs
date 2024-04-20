@@ -12,11 +12,11 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
     {
         var playerData = client.Player.Data;
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance));
         
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
             playerData.PixelBalance, 
             playerData.SeasonalBalance, 
-            playerData.GotwPoints).GetAllBytes());
+            playerData.GotwPoints));
     }
 }

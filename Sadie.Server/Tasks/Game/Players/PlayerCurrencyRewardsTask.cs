@@ -21,10 +21,12 @@ public class PlayerCurrencyRewardsTask(
     
     public async Task ExecuteAsync()
     {
-        var rewardsReady = rewards
-            .Where(r => (DateTime.Now - _lastProcessed[r.Id]).TotalSeconds >= r.IntervalSeconds);
+        var rewardsToCheck = serverSettings.MakeCurrencyRewardsFair
+            ? rewards
+            : rewards
+                .Where(r => (DateTime.Now - _lastProcessed[r.Id]).TotalSeconds >= r.IntervalSeconds);
         
-        foreach (var reward in rewardsReady)
+        foreach (var reward in rewardsToCheck)
         {
             await RewardPlayersAsync(reward);
             _lastProcessed[reward.Id] = DateTime.Now;
@@ -39,11 +41,11 @@ public class PlayerCurrencyRewardsTask(
         foreach (var player in players)
         {
             var failIdleCheck = reward.SkipIdle && 
-                                roomUserRepository.TryGetById(player.Id, out var roomUser) && 
-                                roomUser!.IsIdle;
+                roomUserRepository.TryGetById(player.Id, out var roomUser) && 
+                roomUser!.IsIdle;
             
             var failRoomCheck = reward.SkipHotelView && 
-                                player.CurrentRoomId == 0;
+                player.CurrentRoomId == 0;
          
             if ((serverSettings.MakeCurrencyRewardsFair && 
                  !player.DeservesReward(reward.Type, reward.IntervalSeconds)) ||

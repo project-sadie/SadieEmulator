@@ -266,12 +266,12 @@ internal static class NetworkPacketEventHelpers
             playerData.SeasonalBalance -= costInPoints;
         }
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance).GetAllBytes());
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance));
         
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
             playerData.PixelBalance, 
             playerData.SeasonalBalance, 
-            playerData.GotwPoints).GetAllBytes());
+            playerData.GotwPoints));
 
         return true;
     }
