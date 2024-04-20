@@ -79,12 +79,20 @@ internal static class NetworkPacketEventHelpers
         {
             controllerLevel = RoomControllerLevel.Owner;
         }
+
+        var tile = room.TileMap.GetTile(room.Layout.DoorX, room.Layout.DoorY);
+        
+        var highestItemOnTiles = tile
+            .Items
+            .MaxBy(f => f.PositionZ);
+        
+        var z = (float)(highestItemOnTiles != null ? highestItemOnTiles.PositionZ + highestItemOnTiles.FurnitureItem.StackHeight : 0);
         
         var roomUser = roomUserFactory.Create(
             room,
             player.NetworkObject,
             player.Id,
-            new HPoint(room.Layout.DoorX, room.Layout.DoorY, room.Layout.DoorZ),
+            new HPoint(room.Layout.DoorX, room.Layout.DoorY, z),
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
             player,
