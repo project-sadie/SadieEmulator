@@ -4,6 +4,15 @@ using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using DotNetty.Buffers;
+using DotNetty.Codecs;
+using DotNetty.Codecs.Http;
+using DotNetty.Codecs.Http.WebSockets;
+using DotNetty.Handlers.Tls;
+using DotNetty.Transport.Bootstrapping;
+using DotNetty.Transport.Channels;
+using DotNetty.Transport.Channels.Sockets;
+using Sadie.Networking.Packets;
 using Sadie.Options.Options;
 
 namespace Sadie.Networking
