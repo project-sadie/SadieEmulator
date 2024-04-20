@@ -39,7 +39,7 @@ public static class RoomHelpers
         return tiles;
     }
 
-    public static Queue<HPoint> BuildPathForWalk(RoomTileMap tileMap, HPoint start, HPoint end, bool useDiagonal)
+    public static List<HPoint> BuildPathForWalk(RoomTileMap tileMap, HPoint start, HPoint end, bool useDiagonal)
     {
         var pathfinderOptions = new PathFinderOptions
         {
@@ -48,14 +48,11 @@ public static class RoomHelpers
         
         var worldGrid = new WorldGrid(tileMap.Map);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
-        
-        var points = pathfinder
+
+        return pathfinder
             .FindPath(start.ToPoint(), end.ToPoint())
             .Select(x => tileMap.Tiles.First(y => y.Point.X == x.X && y.Point.Y == x.Y).Point)
-            .Skip(1)
             .ToList();
-        
-        return new Queue<HPoint>(points);
     }
 
     public static HDirection GetDirectionForNextStep(HPoint current, HPoint next)
