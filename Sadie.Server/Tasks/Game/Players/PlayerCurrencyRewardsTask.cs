@@ -8,7 +8,7 @@ namespace SadieEmulator.Tasks.Game.Players;
 
 public class PlayerCurrencyRewardsTask(
     SadieContext dbContext,
-    List<ServerPeriodicCurrencyReward> rewards, 
+    IEnumerable<ServerPeriodicCurrencyReward> rewards, 
     PlayerRepository playerRepository,
     ServerSettings serverSettings,
     IRoomUserRepository roomUserRepository) : IServerTask
@@ -16,8 +16,8 @@ public class PlayerCurrencyRewardsTask(
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
     public DateTime LastExecuted { get; set; }
 
-    private readonly Dictionary<int, DateTime> _lastProcessed = 
-        rewards.ToDictionary(k => k.Id, v => DateTime.Now);
+    private readonly Dictionary<int, DateTime> _lastProcessed = rewards
+        .ToDictionary(k => k.Id, v => DateTime.Now);
     
     public async Task ExecuteAsync()
     {
@@ -28,12 +28,12 @@ public class PlayerCurrencyRewardsTask(
         
         foreach (var reward in rewardsToCheck)
         {
-            await RewardPlayersAsync(reward);
+            await CheckRewardsForPlayersAsync(reward);
             _lastProcessed[reward.Id] = DateTime.Now;
         }
     }
 
-    private async Task RewardPlayersAsync(ServerPeriodicCurrencyReward reward)
+    private async Task CheckRewardsForPlayersAsync(ServerPeriodicCurrencyReward reward)
     {
         var players = playerRepository.GetAll();
         var logs = new List<ServerPeriodicCurrencyRewardLog>();
@@ -55,30 +55,7 @@ public class PlayerCurrencyRewardsTask(
                 continue;
             }
 
-            switch (reward.Type)
-            {
-                case "credits":
-                    player.Data.CreditBalance += reward.Amount;
-                    await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
-                        player.Data.PixelBalance,
-                        player.Data.SeasonalBalance,
-                        player.Data.GotwPoints));
-                    break;
-                case "pixels":
-                    player.Data.PixelBalance += reward.Amount;
-                    await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
-                        player.Data.PixelBalance,
-                        player.Data.SeasonalBalance,
-                        player.Data.GotwPoints));
-                    break;
-                case "seasonal":
-                    player.Data.SeasonalBalance += reward.Amount;
-                    await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
-                        player.Data.PixelBalance,
-                        player.Data.SeasonalBalance,
-                        player.Data.GotwPoints));
-                    break;
-            }
+            await RewardPlayerAsync(player, reward);
             
             logs.Add(new ServerPeriodicCurrencyRewardLog
             {
@@ -90,5 +67,34 @@ public class PlayerCurrencyRewardsTask(
         }
 
         await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(logs);
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task RewardPlayerAsync(PlayerLogic player, ServerPeriodicCurrencyReward reward)
+    {
+        switch (reward.Type)
+        {
+            case "credits":
+                player.Data.CreditBalance += reward.Amount;
+                await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
+                    player.Data.PixelBalance,
+                    player.Data.SeasonalBalance,
+                    player.Data.GotwPoints));
+                break;
+            case "pixels":
+                player.Data.PixelBalance += reward.Amount;
+                await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
+                    player.Data.PixelBalance,
+                    player.Data.SeasonalBalance,
+                    player.Data.GotwPoints));
+                break;
+            case "seasonal":
+                player.Data.SeasonalBalance += reward.Amount;
+                await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
+                    player.Data.PixelBalance,
+                    player.Data.SeasonalBalance,
+                    player.Data.GotwPoints));
+                break;
+        }
     }
 }
