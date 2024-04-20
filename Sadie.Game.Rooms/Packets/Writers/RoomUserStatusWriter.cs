@@ -20,7 +20,7 @@ public class RoomUserStatusWriter : NetworkPacketWriter
             WriteLong(user.Id);
             WriteInteger(user.Point.X);
             WriteInteger(user.Point.Y);
-            WriteString(user.Point.Z + "");
+            WriteString(user.PointZ + "");
             WriteInteger((int) user.DirectionHead);
             WriteInteger((int) user.Direction);
             WriteString("/" + string.Join("/", statusList).TrimEnd('/'));

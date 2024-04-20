@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Drawing;
+using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
@@ -33,7 +34,7 @@ public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, R
             return Task.CompletedTask;
         }
 
-        roomUser.LookAtPoint(new HPoint(x, y, currentPoint.Z));
+        roomUser.LookAtPoint(new Point(x, y));
         return Task.CompletedTask;
     }
 }

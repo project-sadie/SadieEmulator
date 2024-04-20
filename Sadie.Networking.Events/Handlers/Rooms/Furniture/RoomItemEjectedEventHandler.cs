@@ -45,15 +45,6 @@ public class RoomItemEjectedEventHandler(
 
         if (roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
         {
-            var currentTile = room.TileMap.GetTile(
-                roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
-
-            if (currentTile != null)
-            {
-                currentTile.Items.Remove(roomFurnitureItem);
-                RoomHelpers.UpdateTileMapForTile(currentTile, room.TileMap);
-            }
-            
             await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(
                 roomFurnitureItem.Id, 
                 false, 

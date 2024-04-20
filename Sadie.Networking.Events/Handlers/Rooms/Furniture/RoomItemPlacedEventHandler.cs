@@ -95,26 +95,9 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var furnitureItem = playerItem.FurnitureItem;
-        
-        var tiles = room.TileMap.GetTilesForSpan(
-            x,
-            y,
-            furnitureItem.TileSpanX,
-            furnitureItem.TileSpanY,
-            direction);
+        // TODO: Validate if the item fits
 
-        if (tiles.Any(t => t.State == RoomTileState.Closed))
-        {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
-            return;
-        }
-
-        var highestItemOnTiles = tiles
-                .SelectMany(t => t.Items)
-                .MaxBy(f => f.PositionZ);
-        
-        var z = (float)(highestItemOnTiles != null ? highestItemOnTiles.PositionZ + highestItemOnTiles.FurnitureItem.StackHeight : 0);
+        var z = 0; // TODO: Calculate this
             
         var roomFurnitureItem = new RoomFurnitureItem
         {
@@ -131,13 +114,6 @@ public class RoomItemPlacedEventHandler(
             MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
-
-        foreach (var t in tiles)
-        {
-            t.Items.Add(roomFurnitureItem);
-        }
-        
-        RoomHelpers.UpdateTileMapForTiles(tiles, room.TileMap);
         
         room.FurnitureItems.Add(roomFurnitureItem);
         player.FurnitureItems.Remove(playerItem);

@@ -49,18 +49,6 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var tilesOn = room.TileMap.GetTilesForSpan(
-            roomFurnitureItem.PositionX,
-            roomFurnitureItem.PositionY,
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY,
-            (int) roomFurnitureItem.Direction);
-
-        foreach (var t in tilesOn)
-        {
-            t?.Items.Remove(roomFurnitureItem);
-        }
-
         var position = new HPoint(
             eventParser.X,
             eventParser.Y, 
@@ -68,47 +56,15 @@ public class RoomFloorItemUpdatedEventHandler(
 
         var direction = eventParser.Direction;
         
-        var newTiles = room.TileMap.GetTilesForSpan(
-            position.X,
-            position.Y,
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY,
-            (int)direction);
+        // TODO: Validate if the item fits
 
-        if (tilesOn.Any(x => x.State == RoomTileState.Closed))
-        {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
-            return;
-        }
-        
-        RoomHelpers.UpdateTileMapForTiles(tilesOn, room.TileMap);
-
-        foreach (var t in newTiles)
-        {
-            t.Items.Add(roomFurnitureItem);
-        }
-        
-        RoomHelpers.UpdateTileMapForTiles(newTiles, room.TileMap);
-
-        var movedTiles = roomFurnitureItem.PositionX != position.X || roomFurnitureItem.PositionY != position.Y;
+        var movedTiles = roomFurnitureItem.PositionX != position.X ||
+                         roomFurnitureItem.PositionY != position.Y;
 
         roomFurnitureItem.PositionX = position.X;
         roomFurnitureItem.PositionY = position.Y;
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = direction;
-        
-        if (movedTiles)
-        {
-            foreach (var userOnTile in tilesOn.SelectMany(x => x.Users.Values))
-            {
-                userOnTile.CheckStatusForCurrentTile();
-            }
-        }
-
-        foreach (var userOnTile in newTiles.SelectMany(x => x.Users.Values))
-        {
-            userOnTile.CheckStatusForCurrentTile();
-        }
         
         await dbContext.SaveChangesAsync();
         await BroadcastUpdateAsync(room, roomFurnitureItem);

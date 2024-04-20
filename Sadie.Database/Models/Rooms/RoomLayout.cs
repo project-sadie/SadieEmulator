@@ -1,4 +1,5 @@
-﻿using Sadie.Shared.Unsorted.Game.Rooms;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Database.Models.Rooms;
 
@@ -11,4 +12,6 @@ public class RoomLayout
     public int DoorY { get; init; }
     public double DoorZ { get; init; }
     public HDirection DoorDirection { get; init; }
+    [NotMapped] public int MapSizeY => HeightMap.Split("\n").Length;
+    [NotMapped] public int MapSizeX => HeightMap.Split("\n").First().Length;
 }
