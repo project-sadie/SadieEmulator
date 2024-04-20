@@ -119,4 +119,29 @@ public static class RoomHelpers
             _ => throw new ArgumentOutOfRangeException(nameof(direction))
         };
     }
+
+    public static short[,] GenerateMapForRoom(
+        int mapSizeX,
+        int mapSizeY,
+        string heightMap, 
+        ICollection<RoomFurnitureItem> furnitureItems)
+    {
+        var heightmapLines = heightMap.Split("\n").ToList();
+        var map = new short[mapSizeX, mapSizeY];
+        
+        for (var y = 0; y < heightmapLines.Count; y++)
+        {
+            var currentLine = heightmapLines[y];
+
+            for (var x = 0; x < currentLine.Length; x++)
+            {
+                var open = int.TryParse(currentLine[x].ToString(), out var z);
+                var items = GetItemsForPosition(x, y, furnitureItems);
+
+                map[x, y] = (short)(open && items.All(x => x.FurnitureItem.CanWalk) ? 1 : 0);
+            }
+        }
+        
+        return map;
+    }
 }

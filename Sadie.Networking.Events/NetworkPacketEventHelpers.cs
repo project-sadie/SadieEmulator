@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Drawing;
+using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Constants;
@@ -84,7 +85,8 @@ internal static class NetworkPacketEventHelpers
             room,
             player.NetworkObject,
             player.Id,
-            new HPoint(room.Layout.DoorX, room.Layout.DoorY, room.Layout.DoorZ),
+            new Point(room.Layout.DoorX, room.Layout.DoorY),
+            room.Layout.DoorZ,
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
             player,
