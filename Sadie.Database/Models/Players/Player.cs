@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Sadie.Database.Models.Server;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database.Models.Players;
@@ -28,6 +29,7 @@ public class Player
     public ICollection<PlayerFriendship> IncomingFriendships { get; init; } = [];
     [InverseProperty("OriginPlayer")] public ICollection<PlayerMessage> MessagesSent { get; init; } = [];
     [InverseProperty("TargetPlayer")] public ICollection<PlayerMessage> MessagesReceived { get; init; } = [];
+    public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; set; }
     
     public int GetAcceptedFriendshipCount()
     {
