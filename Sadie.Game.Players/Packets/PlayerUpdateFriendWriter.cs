@@ -26,9 +26,9 @@ public class PlayerUpdateFriendWriter : NetworkPacketWriter
         var targetData = friendship.TargetPlayer;
         
         WriteShort(ServerPacketId.PlayerUpdateFriend);
-        WriteInteger(unknown1);
-        WriteInteger(unknown2);
-        WriteInteger(unknown3);
+        WriteInteger(unknown1); // categories
+        WriteInteger(unknown2); // total updates 
+        WriteInteger(unknown3); // type ; -1 removed, 0 updated, 1 added
         WriteInteger(targetData.Id);
         WriteString(targetData.Username);
         WriteInteger(targetData.AvatarData.Gender == AvatarGender.Male ? 0 : 1);

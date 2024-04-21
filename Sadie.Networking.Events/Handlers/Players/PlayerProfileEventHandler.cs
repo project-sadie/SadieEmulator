@@ -1,5 +1,4 @@
 using AutoMapper;
-using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
@@ -21,37 +20,20 @@ public class PlayerProfileEventHandler(
     {
         eventParser.Parse(reader);
 
-        var player = client.Player;
-        var playerId = player.Id;
-
         var profileId = eventParser.ProfileId;
-
-        Player playerRecord = null;
-        var profileOnline = false;
+        var profilePlayer = await playerRepository.GetPlayerByIdAsync(profileId);
         
-        if (profileId == playerId)
-        {
-            playerRecord = client.Player;
-            profileOnline = true;
-        }
-        
-        if (playerRecord == null && playerRepository.TryGetPlayerById(profileId, out var onlinePlayer))
-        {
-            playerRecord = mapper.Map<Player>(onlinePlayer);
-            profileOnline = true;
-        }
-
-        if (playerRecord == null)
+        if (profilePlayer == null)
         {
             return;
         }
-
-        var friendCount = playerRecord.GetAcceptedFriendshipCount();
-        var friendship = playerRecord.TryGetFriendshipFor(profileId);
+        
+        var friendCount = profilePlayer.GetAcceptedFriendshipCount();
+        var friendship = profilePlayer.TryGetFriendshipFor(profileId);
 
         var profileWriter = new PlayerProfileWriter(
-            playerRecord, 
-            profileOnline, 
+            profilePlayer, 
+            profilePlayer.Data.IsOnline, 
             friendCount, 
             friendship is { Status: PlayerFriendshipStatus.Accepted }, 
             friendship != null);

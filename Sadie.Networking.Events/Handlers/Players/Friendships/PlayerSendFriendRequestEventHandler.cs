@@ -40,15 +40,16 @@ public class PlayerSendFriendRequestEventHandler(
         
         Player? targetPlayer;
         var targetOnline = false;
-
-        if (playerRepository.TryGetPlayerByUsername(targetUsername, out var onlineTarget) && onlineTarget != null)
+        var onlineTarget = playerRepository.GetPlayerLogicByUsername(targetUsername);
+        
+        if (onlineTarget != null)
         {
             targetPlayer = onlineTarget;
             targetOnline = true;
         }
         else
         {
-            targetPlayer = await playerRepository.TryGetPlayerByUsernameAsync(targetUsername);
+            targetPlayer = await playerRepository.GetPlayerByUsernameAsync(targetUsername);
         }
         
         if (targetPlayer == null)

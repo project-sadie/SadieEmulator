@@ -31,16 +31,15 @@ public class RoomUserRespectEventHandler(
         var player = client.Player!;
         var playerData = player.Data;
         var lastRoom = player.CurrentRoomId;
+        var targetPlayer = playerRepository.GetPlayerLogicById(eventParser.TargetId);
         
         if (playerData.RespectPoints < 1 || 
             player.Id == eventParser.TargetId || 
-            !playerRepository.TryGetPlayerById(eventParser.TargetId, out var targetPlayer) || 
+            targetPlayer == null || 
             targetPlayer!.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
         {
             return;
         }
-
-        var targetData = targetPlayer.Data;
 
         var respect = new PlayerRespect
         {

@@ -14,11 +14,6 @@ public class ShutdownCommand(
 
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
-        if (!playerRepository.TryGetPlayerById(user.Id, out var player))
-        {
-            return;
-        }
-
         const string shutdownMessage = "The server is about to shut down...";
 
         await playerRepository.BroadcastDataAsync(new PlayerAlertWriter(shutdownMessage));
