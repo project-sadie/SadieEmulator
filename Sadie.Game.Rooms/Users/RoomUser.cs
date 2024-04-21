@@ -66,6 +66,7 @@ public class RoomUser(
 
         if (PathPoints.Count > 1)
         {
+            StepsWalked = 0;
             IsWalking = true;
             NeedsPathCalculated = false;
         }
@@ -110,7 +111,8 @@ public class RoomUser(
             return;
         }
         
-        var nextStep = PathPoints.Dequeue();
+        StepsWalked++;
+        var nextStep = PathPoints[StepsWalked];
 
         RemoveStatuses(RoomUserStatus.Move);
 
