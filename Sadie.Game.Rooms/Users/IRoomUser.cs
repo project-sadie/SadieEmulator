@@ -7,6 +7,7 @@ namespace Sadie.Game.Rooms.Users;
 public interface IRoomUser : IRoomUserData, IAsyncDisposable
 {
     int Id { get; }
+    public RoomLogic Room { get; }
     public RoomControllerLevel ControllerLevel { get; set; }
     INetworkObject NetworkObject { get; }
     HPoint Point { get; }

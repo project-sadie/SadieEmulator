@@ -3,7 +3,7 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Shared;
 using Sadie.Shared.Unsorted;
 
-namespace Sadie.Game.Rooms.Chat.Commands.General;
+namespace Sadie.Game.Rooms.Chat.Commands.Server;
 
 public class ShutdownCommand(
     IServer server,
