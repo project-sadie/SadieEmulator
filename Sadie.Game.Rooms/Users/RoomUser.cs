@@ -36,6 +36,12 @@ public class RoomUser(
     
     public void WalkToPoint(Point point)
     {
+        if (room.TileMap.GetMappedUsers(point).Count > 0 && 
+            !room.Settings.CanUsersOverlap)
+        {
+            return;
+        }
+        
         PathGoal = point;
         NeedsPathCalculated = true;
     }
@@ -127,6 +133,13 @@ public class RoomUser(
         StepsWalked++;
         
         var nextStep = PathPoints[StepsWalked];
+
+        if (room.TileMap.GetMappedUsers(nextStep).Count > 0)
+        {
+            NeedsPathCalculated = true;
+            return;
+        }
+        
         var itemsAtNextStep = RoomHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
         var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
 
