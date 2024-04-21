@@ -7,11 +7,12 @@ namespace Sadie.Game.Rooms.Chat.Commands.General;
 
 public class ShutdownCommand(
     IServer server,
-    PlayerRepository playerRepository) : IRoomChatCommand
+    PlayerRepository playerRepository) : AbstractRoomChatCommand
 {
-    public string Trigger => "shutdown";
-    
-    public async Task ExecuteAsync(IRoomUser user)
+    public override string Trigger => "shutdown";
+    public override string Description => "Shuts down the server";
+
+    public override async Task ExecuteAsync(IRoomUser user)
     {
         if (!playerRepository.TryGetPlayerById(user.Id, out var player) )
         {
@@ -29,5 +30,5 @@ public class ShutdownCommand(
         await server.DisposeAsync();
     }
 
-    public List<string> PermissionsRequired { get; set; } = ["command_shutdown"];
+    public override List<string> PermissionsRequired { get; set; } = ["command_shutdown"];
 }

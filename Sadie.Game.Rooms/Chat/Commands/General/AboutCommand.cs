@@ -9,11 +9,12 @@ namespace Sadie.Game.Rooms.Chat.Commands.General;
 
 public class AboutCommand(
     RoomRepository roomRepository, 
-    PlayerRepository playerRepository) : IRoomChatCommand
+    PlayerRepository playerRepository) : AbstractRoomChatCommand
 {
-    public string Trigger => "about";
+    public override string Trigger => "about";
+    public override string Description => "Provides information about the server";
 
-    public async Task ExecuteAsync(IRoomUser user)
+    public override async Task ExecuteAsync(IRoomUser user)
     {
         var version = GlobalState.Version;
         var message = new StringBuilder();
@@ -26,7 +27,9 @@ public class AboutCommand(
         message.AppendLine($"Memory Used: {memoryMb} MB");
         message.AppendLine("");
         message.AppendLine("Credits:");
-        message.AppendLine("Habtard - Solo Developer");
+        message.AppendLine("Habtard - Lead Developer");
+        message.AppendLine("Damien - Developer");
+        message.AppendLine("Lucas - Creative Director");
         message.AppendLine("");
         
         await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(message.ToString()));

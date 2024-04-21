@@ -10,11 +10,11 @@ public static class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.Scan(scan => scan
-            .FromAssemblyOf<IRoomChatCommand>()
-            .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
-            .AsImplementedInterfaces()
-            .WithSingletonLifetime());
+    serviceCollection.Scan(scan => scan
+        .FromAssemblyOf<IRoomChatCommand>()
+        .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
+        .AsImplementedInterfaces()
+        .WithSingletonLifetime());
 
         serviceCollection.Scan(scan => scan
             .FromAssemblyOf<IRoomFurnitureItemInteractor>()
