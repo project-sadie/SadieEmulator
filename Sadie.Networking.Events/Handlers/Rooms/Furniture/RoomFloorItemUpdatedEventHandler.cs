@@ -55,8 +55,27 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.PositionZ);
 
         var direction = eventParser.Direction;
+        var x = eventParser.X;
+        var y = eventParser.Y;
         
-        // TODO: Validate if the item fits
+        if (!RoomHelpers.CanPlaceAt(
+                x, 
+                y, 
+                roomFurnitureItem.FurnitureItem.TileSpanX, 
+                roomFurnitureItem.FurnitureItem.TileSpanY,
+                direction, 
+                room.TileMap))
+        {
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            return;
+        }
+
+        var points = RoomHelpers.GetPointsForPlacement(
+            roomFurnitureItem.PositionX, 
+            roomFurnitureItem.PositionY, 
+            roomFurnitureItem.FurnitureItem.TileSpanX,
+            roomFurnitureItem.FurnitureItem.TileSpanY, 
+            direction);
 
         var movedTiles = roomFurnitureItem.PositionX != position.X ||
                          roomFurnitureItem.PositionY != position.Y;
@@ -64,7 +83,19 @@ public class RoomFloorItemUpdatedEventHandler(
         roomFurnitureItem.PositionX = position.X;
         roomFurnitureItem.PositionY = position.Y;
         roomFurnitureItem.PositionZ = position.Z;
-        roomFurnitureItem.Direction = direction;
+        roomFurnitureItem.Direction = (HDirection) direction;
+        
+        RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
+
+        if (movedTiles)
+        {
+            var newPoints = RoomHelpers.GetPointsForPlacement(x, y, 
+                roomFurnitureItem.FurnitureItem.TileSpanX,
+                roomFurnitureItem.FurnitureItem.TileSpanY, 
+                direction);
+            
+            RoomHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
+        }
         
         await dbContext.SaveChangesAsync();
         await BroadcastUpdateAsync(room, roomFurnitureItem);

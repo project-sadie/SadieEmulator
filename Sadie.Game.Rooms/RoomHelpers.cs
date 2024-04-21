@@ -162,7 +162,7 @@ public static class RoomHelpers
         ICollection<RoomFurnitureItem> furnitureItems)
     {
         var heightmapLines = heightMap.Split("\n").ToList();
-        var map = new short[mapSizeX, mapSizeY];
+        var map = new short[mapSizeY, mapSizeX];
         
         for (var y = 0; y < heightmapLines.Count; y++)
         {
@@ -171,12 +171,42 @@ public static class RoomHelpers
             for (var x = 0; x < currentLine.Length; x++)
             {
                 var open = int.TryParse(currentLine[x].ToString(), out var z);
-                var items = GetItemsForPosition(x, y, furnitureItems);
 
-                map[x, y] = (short)(open && items.All(x => x.FurnitureItem.CanWalk) ? 1 : 0);;
+                if (!open)
+                {
+                    map[y, x] = 0;
+                    continue;
+                }
+                
+                map[y, x] = CanWalkOnTile(x, y, furnitureItems);
             }
         }
         
         return map; 
+    }
+
+    public static bool CanPlaceAt(
+        int x,
+        int y, 
+        int width, 
+        int height,
+        int direction, 
+        RoomTileMap tileMap)
+    {
+        return GetPointsForPlacement(x, y, width, height, direction).All(point => tileMap.Map[point.Y, point.X] == 1);
+    }
+
+    public static void UpdateTileStatesForPoints(List<Point> points, RoomTileMap tileMap, ICollection<RoomFurnitureItem> furnitureItems)
+    {
+        foreach (var point in points)
+        {
+            tileMap.Map[point.Y, point.X] = CanWalkOnTile(point.X, point.Y, furnitureItems);
+        }
+    }
+
+    private static short CanWalkOnTile(int x, int y, IEnumerable<RoomFurnitureItem> furnitureItems)
+    {
+        var items = GetItemsForPosition(x, y, furnitureItems);
+        return (short)(items.All(i => i.FurnitureItem!.CanWalk) ? 1 : 0);
     }
 }

@@ -95,10 +95,21 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        // TODO: Validate if the item fits
+        if (!RoomHelpers.CanPlaceAt(x, y, 
+                playerItem.FurnitureItem.TileSpanX, 
+                playerItem.FurnitureItem.TileSpanY,
+                direction, 
+                room.TileMap))
+        {
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            return;
+        }
+
+        var points = RoomHelpers.GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX,
+            playerItem.FurnitureItem.TileSpanY, direction);
 
         var z = 0; // TODO: Calculate this
-            
+        
         var roomFurnitureItem = new RoomFurnitureItem
         {
             RoomId = room.Id,
@@ -116,6 +127,9 @@ public class RoomItemPlacedEventHandler(
         };
         
         room.FurnitureItems.Add(roomFurnitureItem);
+
+        RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
+        
         player.FurnitureItems.Remove(playerItem);
 
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
