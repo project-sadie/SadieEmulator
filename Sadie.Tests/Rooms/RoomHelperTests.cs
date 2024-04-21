@@ -7,6 +7,13 @@ namespace Sadie.Tests.Rooms;
 public class RoomHelperTests
 {
     [Test]
+    public void GetItemsForPosition_ReturnsCorrect()
+    {
+        // TODO;
+        RoomHelpers.GetItemsForPosition(4, 17)
+    }
+    
+    [Test]
     public void GetOppositeDirection_ReturnsCorrect()
     {
         var northResult = RoomHelpers.GetOppositeDirection((int) HDirection.North);

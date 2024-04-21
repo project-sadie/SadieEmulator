@@ -26,6 +26,14 @@ public class RoomUser(
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 
+    private void ClearStatuses()
+    {
+        RemoveStatuses(
+            RoomUserStatus.Sit,
+            RoomUserStatus.Lay,
+            RoomUserStatus.Move);
+    }
+    
     public void WalkToPoint(Point point)
     {
         PathGoal = point;
@@ -121,8 +129,8 @@ public class RoomUser(
         var nextStep = PathPoints[StepsWalked];
         var itemsAtNextStep = RoomHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
         var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
-        
-        RemoveStatuses(RoomUserStatus.Move);
+
+        ClearStatuses();
 
         AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextZ}");
 
@@ -157,7 +165,7 @@ public class RoomUser(
             return;
         }
         
-        var tileItems = RoomHelpers.GetItemsForPosition(Point.X, point.Y, room.FurnitureItems);
+        var tileItems = RoomHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
 
         if (tileItems.Count == 0)
         {
