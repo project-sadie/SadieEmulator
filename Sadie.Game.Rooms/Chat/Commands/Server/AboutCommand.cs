@@ -14,7 +14,7 @@ public class AboutCommand(
     public override string Trigger => "about";
     public override string Description => "Provides information about the server";
 
-    public override async Task ExecuteAsync(IRoomUser user)
+    public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
         var version = GlobalState.Version;
         var message = new StringBuilder();

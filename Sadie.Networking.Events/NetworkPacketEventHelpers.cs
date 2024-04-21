@@ -174,7 +174,7 @@ internal static class NetworkPacketEventHelpers
 
             if (command != null && command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x)))
             {
-                await command.ExecuteAsync(roomUser!);
+                await command.ExecuteAsync(roomUser!, message.Split(" ").Skip(1));
                 return;
             }
         }

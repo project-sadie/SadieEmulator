@@ -7,7 +7,7 @@ public class SitCommand : AbstractRoomChatCommand
     public override string Trigger => "sit";
     public override string Description => "Makes your avatar sit down";
     
-    public override Task ExecuteAsync(IRoomUser user)
+    public override Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
         if (user.StatusMap.ContainsKey(RoomUserStatus.Sit))
         {

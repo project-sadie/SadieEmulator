@@ -1,7 +1,7 @@
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Rooms.Users.Chat;
+namespace Sadie.Game.Rooms.Packets.Writers;
 
 public class RoomUserWhisperWriter : NetworkPacketWriter
 {

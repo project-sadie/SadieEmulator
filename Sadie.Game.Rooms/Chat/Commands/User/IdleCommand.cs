@@ -8,7 +8,7 @@ public class IdleCommand : AbstractRoomChatCommand
     public override string Trigger => "idle";
     public override string Description => "Your avatar falls asleep";
     
-    public override async Task ExecuteAsync(IRoomUser user)
+    public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
         await user.Room.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(user.Id, true));
     }

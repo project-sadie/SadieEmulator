@@ -12,19 +12,16 @@ public class ShutdownCommand(
     public override string Trigger => "shutdown";
     public override string Description => "Shuts down the server";
 
-    public override async Task ExecuteAsync(IRoomUser user)
+    public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
-        if (!playerRepository.TryGetPlayerById(user.Id, out var player) )
+        if (!playerRepository.TryGetPlayerById(user.Id, out var player))
         {
             return;
         }
 
         const string shutdownMessage = "The server is about to shut down...";
 
-        foreach (var p in playerRepository.GetAll())
-        {
-            await p.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(shutdownMessage));
-        }
+        await playerRepository.BroadcastDataAsync(new PlayerAlertWriter(shutdownMessage));
 
         await Task.Delay(3000);
         await server.DisposeAsync();

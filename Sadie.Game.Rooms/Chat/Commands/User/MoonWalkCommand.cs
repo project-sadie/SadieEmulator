@@ -9,7 +9,7 @@ public class MoonWalkCommand : AbstractRoomChatCommand
     public override string Trigger => "moonwalk";
     public override string Description => "Your avatar falls asleep";
     
-    public override async Task ExecuteAsync(IRoomUser user)
+    public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
         user.MoonWalking = !user.MoonWalking;
         var effectId = user.MoonWalking ? (int) EffectIds.Moonwalk : 0;

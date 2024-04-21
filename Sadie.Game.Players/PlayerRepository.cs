@@ -7,6 +7,7 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Players;
 
@@ -170,8 +171,6 @@ public class PlayerRepository(
             .ToListAsync();
     }
 
-    public ICollection<PlayerLogic> GetAll() => _players.Values;
-
     public async ValueTask DisposeAsync()
     {
         foreach (var player in _players.Values)
@@ -197,5 +196,13 @@ public class PlayerRepository(
             .Set<Player>()
             .Include(x => x.Data)
             .FirstOrDefaultAsync(x => x.Username == username);
+    }
+    
+    public async Task BroadcastDataAsync(NetworkPacketWriter data)
+    {
+        foreach (var player in _players.Values)
+        {
+            await player.NetworkObject.WriteToStreamAsync(data);
+        }
     }
 }
