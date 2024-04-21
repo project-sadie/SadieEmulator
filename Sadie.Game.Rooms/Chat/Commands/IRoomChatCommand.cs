@@ -6,4 +6,6 @@ public interface IRoomChatCommand
 {
     string Trigger { get; }
     Task ExecuteAsync(IRoomUser user);
+    List<string> PermissionsRequired { get; set; }
+    
 }

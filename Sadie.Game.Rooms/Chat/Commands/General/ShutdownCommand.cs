@@ -18,11 +18,6 @@ public class ShutdownCommand(
             return;
         }
 
-        if (!player.HasPermission("command_shutdown"))
-        {
-            return;
-        }
-        
         const string shutdownMessage = "The server is about to shut down...";
 
         foreach (var p in playerRepository.GetAll())
@@ -33,4 +28,6 @@ public class ShutdownCommand(
         await Task.Delay(3000);
         await server.DisposeAsync();
     }
+
+    public List<string> PermissionsRequired { get; set; } = ["command_shutdown"];
 }
