@@ -87,6 +87,9 @@ public class RoomUser(
     {
         if (NextPoint != null)
         {
+            room.TileMap.RemoveUserFromMap(Point, this);
+            room.TileMap.AddUserToMap(NextPoint.Value, this);
+            
             Point = NextPoint.Value;
             NextPoint = null;
         }
@@ -204,6 +207,7 @@ public class RoomUser(
 
     public async ValueTask DisposeAsync()
     {
-        
+        room.TileMap.RemoveUserFromMap(Point, this);
+
     }
 }

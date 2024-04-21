@@ -3,6 +3,7 @@ using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.PathFinding.Options;
 using Sadie.Game.Rooms.Tiles;
+using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -196,7 +197,10 @@ public static class RoomHelpers
         return GetPointsForPlacement(x, y, width, height, direction).All(point => tileMap.Map[point.Y, point.X] == 1);
     }
 
-    public static void UpdateTileStatesForPoints(List<Point> points, RoomTileMap tileMap, ICollection<RoomFurnitureItem> furnitureItems)
+    public static void UpdateTileStatesForPoints(
+        List<Point> points, 
+        RoomTileMap tileMap, 
+        ICollection<RoomFurnitureItem> furnitureItems)
     {
         foreach (var point in points)
         {
@@ -204,9 +208,26 @@ public static class RoomHelpers
         }
     }
 
-    private static short CanWalkOnTile(int x, int y, IEnumerable<RoomFurnitureItem> furnitureItems)
+    private static short CanWalkOnTile(
+        int x, 
+        int y, 
+        IEnumerable<RoomFurnitureItem> furnitureItems)
     {
         var items = GetItemsForPosition(x, y, furnitureItems);
         return (short)(items.All(i => i.FurnitureItem!.CanWalk) ? 1 : 0);
+    }
+
+    public static List<IRoomUser> GetUsersForPoints(
+        IEnumerable<Point> points, 
+        RoomTileMap tileMap)
+    {
+        var users = new List<IRoomUser>();
+
+        foreach (var point in points)
+        {
+            users.AddRange(tileMap.GetMappedUsers(point));
+        }
+
+        return users;
     }
 }

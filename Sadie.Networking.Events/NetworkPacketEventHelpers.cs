@@ -80,17 +80,21 @@ internal static class NetworkPacketEventHelpers
         {
             controllerLevel = RoomControllerLevel.Owner;
         }
+
+        var doorPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
         
         var roomUser = roomUserFactory.Create(
             room,
             player.NetworkObject,
             player.Id,
-            new Point(room.Layout.DoorX, room.Layout.DoorY),
+            doorPoint,
             room.Layout.DoorZ,
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
             player,
             controllerLevel);
+
+        room.TileMap.AddUserToMap(doorPoint, roomUser);
 
         roomUser.ApplyFlatCtrlStatus();
         

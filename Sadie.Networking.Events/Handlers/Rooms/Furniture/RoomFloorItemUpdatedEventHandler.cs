@@ -58,7 +58,10 @@ public class RoomFloorItemUpdatedEventHandler(
         var x = eventParser.X;
         var y = eventParser.Y;
         
-        if (!RoomHelpers.CanPlaceAt(
+        var movedTiles = roomFurnitureItem.PositionX != position.X ||
+                         roomFurnitureItem.PositionY != position.Y;
+        
+        if (movedTiles && !RoomHelpers.CanPlaceAt(
                 x, 
                 y, 
                 roomFurnitureItem.FurnitureItem.TileSpanX, 
@@ -77,13 +80,15 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.FurnitureItem.TileSpanY, 
             direction);
 
-        var movedTiles = roomFurnitureItem.PositionX != position.X ||
-                         roomFurnitureItem.PositionY != position.Y;
-
         roomFurnitureItem.PositionX = position.X;
         roomFurnitureItem.PositionY = position.Y;
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = (HDirection) direction;
+        
+        foreach (var user in RoomHelpers.GetUsersForPoints(points, room.TileMap))
+        {
+            user.CheckStatusForCurrentTile();
+        }
         
         RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
 
@@ -93,6 +98,11 @@ public class RoomFloorItemUpdatedEventHandler(
                 roomFurnitureItem.FurnitureItem.TileSpanX,
                 roomFurnitureItem.FurnitureItem.TileSpanY, 
                 direction);
+            
+            foreach (var user in RoomHelpers.GetUsersForPoints(newPoints, room.TileMap))
+            {
+                user.CheckStatusForCurrentTile();
+            }
             
             RoomHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
         }
