@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms;
+﻿using Sadie.Database;
+using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -11,12 +12,18 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerChangedAppearanceEventHandler(
     PlayerChangedAppearanceEventParser eventParser, 
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository,
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerChangedAppearance;
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        if (client.Player == null)
+        {
+            return;
+        }
+
         eventParser.Parse(reader);
         
         var player = client.Player;
@@ -31,6 +38,9 @@ public class PlayerChangedAppearanceEventHandler(
 
         player.AvatarData.Gender = gender;
         player.AvatarData.FigureCode = figureCode;
+        
+        dbContext.PlayerAvatarData.Update(player.AvatarData);
+        await dbContext.SaveChangesAsync();
         
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
