@@ -1,8 +1,8 @@
-using Fleck;
+using DotNetty.Transport.Channels;
 
 namespace Sadie.Networking.Client;
 
 public interface INetworkClientFactory
 {
-    INetworkClient CreateClient(Guid guid, IWebSocketConnection tcpClient);
+    INetworkClient CreateClient(IChannel channel);
 }

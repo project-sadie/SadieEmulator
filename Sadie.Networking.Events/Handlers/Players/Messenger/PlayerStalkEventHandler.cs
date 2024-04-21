@@ -19,19 +19,19 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
 
         if (!client.Player.IsFriendsWith(eventParser.PlayerId))
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.NotFriends).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.NotFriends));
             return;
         }
 
         if (!playerRepository.TryGetPlayerById(playerId, out var targetPlayer))
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetOffline).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetOffline));
             return;
         }
 
         if (targetPlayer.CurrentRoomId == 0)
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetNotInRoom).GetAllBytes());
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetNotInRoom));
             return;
         }
 
@@ -40,6 +40,6 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
             return;
         }
 
-        await client.WriteToStreamAsync(new RoomForwardEntryWriter(targetPlayer.CurrentRoomId).GetAllBytes());
+        await client.WriteToStreamAsync(new RoomForwardEntryWriter(targetPlayer.CurrentRoomId));
     }
 }

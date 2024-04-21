@@ -34,6 +34,7 @@ public class PlayerCreateRoomEventHandler(
             Name = eventParser.Name,
             LayoutId = layout.Id,
             OwnerId = client.Player.Id,
+            MaxUsersAllowed = 50,
             Description = eventParser.Description,
             CreatedAt = DateTime.Now
         };
@@ -58,7 +59,7 @@ public class PlayerCreateRoomEventHandler(
 
         if (room != null)
         {
-            await client.WriteToStreamAsync(new RoomCreatedWriter(room.Id, room.Name).GetAllBytes());
+            await client.WriteToStreamAsync(new RoomCreatedWriter(room.Id, room.Name));
         }
     }
 }

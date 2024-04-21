@@ -26,6 +26,6 @@ public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
             0,
             0,
             0,
-            0).GetAllBytes());
+            0));
     }
 }
