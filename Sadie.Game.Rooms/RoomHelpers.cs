@@ -103,6 +103,41 @@ public static class RoomHelpers
 
         return tileItems;
     }
+
+    public static List<Point> GetPointsForPlacement(int x, int y, int width, int length, int direction)
+    {
+        var points = new List<Point>();
+        
+        switch (direction)
+        {
+            case 0 or 4:
+            {
+                for (var i = x; i <= x + (width - 1); i++)
+                {
+                    for (var j = y; j <= y + (length - 1); j++)
+                    {
+                        points.Add(new Point(i, j));
+                    }
+                }
+
+                break;
+            }
+            case 2 or 6:
+            {
+                for (var i = x; i <= x + (length - 1); i++)
+                {
+                    for (var j = y; j <= y + (width - 1); j++)
+                    {
+                        points.Add(new Point(i, j));
+                    }
+                }
+
+                break;
+            }
+        }
+
+        return points;
+    }
     
     public static HDirection GetOppositeDirection(int direction)
     {
@@ -138,10 +173,10 @@ public static class RoomHelpers
                 var open = int.TryParse(currentLine[x].ToString(), out var z);
                 var items = GetItemsForPosition(x, y, furnitureItems);
 
-                map[x, y] = (short)(open && items.All(x => x.FurnitureItem.CanWalk) ? 1 : 0);
+                map[x, y] = (short)(open && items.All(x => x.FurnitureItem.CanWalk) ? 1 : 0);;
             }
         }
         
-        return map;
+        return map; 
     }
 }
