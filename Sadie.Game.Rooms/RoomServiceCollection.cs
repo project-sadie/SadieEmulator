@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sadie.Game.Rooms.Chat.Commands;
-using Sadie.Game.Rooms.Chat.Commands.General;
 using Sadie.Game.Rooms.Chat.Commands.Server;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Users;
