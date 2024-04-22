@@ -25,7 +25,7 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
         var userRepository = room.UserRepository;
         var isOwner = room.OwnerId == client.Player.Id;
         
-        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomTileMap));
+        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomTileMap, room.FurnitureItems));
         await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, room.Layout.HeightMap.Replace("\r\n", "\r")));
         
         await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()));

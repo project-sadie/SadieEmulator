@@ -1,4 +1,7 @@
+using Sadie.Database.Models.Furniture;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Tests.Rooms;
@@ -6,6 +9,42 @@ namespace Sadie.Tests.Rooms;
 [TestFixture]
 public class RoomHelperTests
 {
+    [Test]
+    public void GetItemsForPosition_ReturnsCorrect()
+    {
+        var someItems = new List<RoomFurnitureItem>
+        {
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
+        };
+        
+        Assert.That(RoomHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(1));
+    }
+    
+    [Test]
+    public void GetItemsForPosition_NotFound_ReturnsCorrect()
+    {
+        var someItems = new List<RoomFurnitureItem>
+        {
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
+        };
+        
+        Assert.That(RoomHelpers.GetItemsForPosition(14, 10, someItems), Is.Empty);
+    }
+    
+    [Test]
+    public void GetItemsForPosition_ReturnsCorrectForBulk()
+    {
+        var someItems = new List<RoomFurnitureItem>
+        {
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
+            new() { PositionX = 4, PositionY = 5, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
+        };
+        
+        Assert.That(RoomHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(3));
+    }
+    
     [Test]
     public void GetOppositeDirection_ReturnsCorrect()
     {

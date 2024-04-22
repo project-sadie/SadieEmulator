@@ -49,7 +49,7 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
 
     public void AddRoom(Room room) => _rooms[room.Id] = mapper.Map<RoomLogic>(room);
 
-    public List<RoomLogic> GetPopularRooms(int amount)
+    public List<Room> GetPopularRooms(int amount)
     {
         return mapper.Map<List<Room>>(_rooms.Values.Where(x => x.UserRepository.Count > 0)
             .OrderByDescending(x => x.UserRepository.Count).Take(amount).ToList());

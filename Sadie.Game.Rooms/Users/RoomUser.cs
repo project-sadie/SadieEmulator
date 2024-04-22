@@ -1,4 +1,5 @@
-﻿using Sadie.Database.Models.Constants;
+﻿using System.Drawing;
+using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Unsorted;
@@ -11,13 +12,14 @@ public class RoomUser(
     RoomLogic room,
     INetworkObject networkObject,
     int id,
-    HPoint point,
+    Point point,
+    double pointZ,
     HDirection directionHead,
     HDirection direction,
     PlayerLogic player,
     ServerRoomConstants constants,
     RoomControllerLevel controllerLevel)
-    : RoomUserData(point, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
+    : RoomUserData(point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
 {
     public int Id { get; } = id;
@@ -25,13 +27,27 @@ public class RoomUser(
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 
-    public void WalkToPoint(HPoint point)
+    private void ClearStatuses()
     {
+        RemoveStatuses(
+            RoomUserStatus.Sit,
+            RoomUserStatus.Lay,
+            RoomUserStatus.Move);
+    }
+    
+    public void WalkToPoint(Point point)
+    {
+        if (room.TileMap.GetMappedUsers(point).Count > 0 && 
+            !room.Settings.CanUsersOverlap)
+        {
+            return;
+        }
+        
         PathGoal = point;
         NeedsPathCalculated = true;
     }
 
-    public void LookAtPoint(HPoint point)
+    public void LookAtPoint(Point point)
     {
         var direction = RoomHelpers.GetDirectionForNextStep(Point, point);
 
@@ -86,7 +102,10 @@ public class RoomUser(
     {
         if (NextPoint != null)
         {
-            Point = NextPoint!;
+            room.TileMap.RemoveUserFromMap(Point, this);
+            room.TileMap.AddUserToMap(NextPoint.Value, this);
+            
+            Point = NextPoint.Value;
             NextPoint = null;
         }
 
@@ -105,7 +124,7 @@ public class RoomUser(
 
     private void ProcessMovement()
     {
-        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y)
+        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
         {
             IsWalking = false;
             RemoveStatuses(RoomUserStatus.Move);
@@ -113,11 +132,21 @@ public class RoomUser(
         }
         
         StepsWalked++;
+        
         var nextStep = PathPoints[StepsWalked];
 
-        RemoveStatuses(RoomUserStatus.Move);
+        if (room.TileMap.GetMappedUsers(nextStep).Count > 0 || room.TileMap.Map[nextStep.Y, nextStep.X] == 0)
+        {
+            NeedsPathCalculated = true;
+            return;
+        }
+        
+        var itemsAtNextStep = RoomHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
+        var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
 
-        AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextStep.Z}");
+        ClearStatuses();
+
+        AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextZ}");
 
         var newDirection = RoomHelpers.GetDirectionForNextStep(Point, nextStep);
                 
@@ -150,10 +179,9 @@ public class RoomUser(
             return;
         }
         
-        var currentTile = room.TileMap.GetTile(Point.X, Point.Y);
-        var tileItems = currentTile?.Items;
+        var tileItems = RoomHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
 
-        if (tileItems == null || tileItems.Count == 0)
+        if (tileItems.Count == 0)
         {
             RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
             return;
@@ -201,6 +229,7 @@ public class RoomUser(
 
     public async ValueTask DisposeAsync()
     {
-        
+        room.TileMap.RemoveUserFromMap(Point, this);
+
     }
 }

@@ -1,3 +1,4 @@
+using System.Drawing;
 using Sadie.Game.Players;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -5,7 +6,7 @@ namespace Sadie.Game.Rooms.Users;
 
 public interface IRoomUserData
 {
-    HPoint Point { get; }
+    Point Point { get; }
     HDirection DirectionHead { get; set; }
     HDirection Direction { get; set; }
     PlayerLogic Player { get; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Drawing;
+using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Constants;
@@ -80,23 +81,21 @@ internal static class NetworkPacketEventHelpers
             controllerLevel = RoomControllerLevel.Owner;
         }
 
-        var tile = room.TileMap.GetTile(room.Layout.DoorX, room.Layout.DoorY);
-        
-        var highestItemOnTiles = tile
-            .Items
-            .MaxBy(f => f.PositionZ);
-        
-        var z = (float)(highestItemOnTiles != null ? highestItemOnTiles.PositionZ + highestItemOnTiles.FurnitureItem.StackHeight : 0);
+        var doorPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
+        var z = 0; // TODO: Calculate this
         
         var roomUser = roomUserFactory.Create(
             room,
             player.NetworkObject,
             player.Id,
-            new HPoint(room.Layout.DoorX, room.Layout.DoorY, z),
+            doorPoint,
+            z,
             room.Layout.DoorDirection,
             room.Layout.DoorDirection,
             player,
             controllerLevel);
+
+        room.TileMap.AddUserToMap(doorPoint, roomUser);
 
         roomUser.ApplyFlatCtrlStatus();
         

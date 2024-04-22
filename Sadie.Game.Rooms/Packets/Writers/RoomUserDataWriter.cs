@@ -21,7 +21,7 @@ public class RoomUserDataWriter : NetworkPacketWriter
             WriteInteger(user.Id);
             WriteInteger(user.Point.X);
             WriteInteger(user.Point.Y);
-            WriteString(user.Point.Z + "");
+            WriteString(user.PointZ + "");
             WriteInteger((int) user.Direction);
             WriteInteger(1); // type, 1 = user, 2 = pet, 3 = bot, 4 = rent bot
             WriteString(user.Player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");

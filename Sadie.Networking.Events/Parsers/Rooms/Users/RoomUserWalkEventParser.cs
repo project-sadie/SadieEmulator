@@ -1,14 +1,16 @@
+using System.Drawing;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Parsers.Rooms.Users;
 
 public record RoomUserWalkEventParser : INetworkPacketEventParser
 {
-    public int X { get; private set; }
-    public int Y { get; private set; }
+    public Point Point { get; private set; }
+    
     public void Parse(INetworkPacketReader reader)
     {
-        X = reader.ReadInt();
-        Y = reader.ReadInt();
+        Point = new Point(
+            reader.ReadInt(), 
+            reader.ReadInt());
     }
 }

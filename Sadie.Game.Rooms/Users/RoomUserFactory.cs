@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Drawing;
+using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -12,7 +13,8 @@ public class RoomUserFactory(IServiceProvider serviceProvider)
         RoomLogic room,
         INetworkObject networkObject, 
         int id, 
-        HPoint point, 
+        Point point, 
+        double pointZ,
         HDirection directionHead,
         HDirection direction, 
         Player player,
@@ -24,6 +26,7 @@ public class RoomUserFactory(IServiceProvider serviceProvider)
             networkObject, 
             id, 
             point, 
+            pointZ,
             directionHead, 
             direction, 
             player,

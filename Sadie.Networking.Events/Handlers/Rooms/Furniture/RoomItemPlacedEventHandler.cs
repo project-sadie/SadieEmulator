@@ -95,27 +95,21 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var furnitureItem = playerItem.FurnitureItem;
-        
-        var tiles = room.TileMap.GetTilesForSpan(
-            x,
-            y,
-            furnitureItem.TileSpanX,
-            furnitureItem.TileSpanY,
-            direction);
-
-        if (tiles.Any(t => t.State == RoomTileState.Closed))
+        if (!RoomHelpers.CanPlaceAt(x, y, 
+                playerItem.FurnitureItem.TileSpanX, 
+                playerItem.FurnitureItem.TileSpanY,
+                direction, 
+                room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
-        var highestItemOnTiles = tiles
-                .SelectMany(t => t.Items)
-                .MaxBy(f => f.PositionZ);
+        var points = RoomHelpers.GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX,
+            playerItem.FurnitureItem.TileSpanY, direction);
+
+        var z = 0; // TODO: Calculate this
         
-        var z = (float)(highestItemOnTiles != null ? highestItemOnTiles.PositionZ + highestItemOnTiles.FurnitureItem.StackHeight : 0);
-            
         var roomFurnitureItem = new RoomFurnitureItem
         {
             RoomId = room.Id,
@@ -131,15 +125,11 @@ public class RoomItemPlacedEventHandler(
             MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
-
-        foreach (var t in tiles)
-        {
-            t.Items.Add(roomFurnitureItem);
-        }
-        
-        RoomHelpers.UpdateTileMapForTiles(tiles, room.TileMap);
         
         room.FurnitureItems.Add(roomFurnitureItem);
+
+        RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
+        
         player.FurnitureItems.Remove(playerItem);
 
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);

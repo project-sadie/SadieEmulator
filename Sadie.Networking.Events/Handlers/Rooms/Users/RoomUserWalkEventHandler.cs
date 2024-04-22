@@ -1,4 +1,5 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Drawing;
+using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
@@ -13,23 +14,14 @@ public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, RoomR
     {
         eventParser.Parse(reader);
 
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }
         
         roomUser.LastAction = DateTime.Now;
         
-        var tile = room!.TileMap.Tiles.FirstOrDefault(z => z.Point.X == eventParser.X && z.Point.Y == eventParser.Y);
-        
-        if (tile == null)
-        {
-            return Task.CompletedTask;
-        }
-
-        var point = tile.Point;
-
-        roomUser.WalkToPoint(point);
+        roomUser.WalkToPoint(eventParser.Point);
         return Task.CompletedTask;
     }
 }
