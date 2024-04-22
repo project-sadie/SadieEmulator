@@ -47,32 +47,34 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
         return roomLogic;
     }
 
-    public List<Room> GetPopularRooms(int amount)
+    public void AddRoom(Room room) => _rooms[room.Id] = mapper.Map<RoomLogic>(room);
+
+    public List<RoomLogic> GetPopularRooms(int amount)
     {
         return mapper.Map<List<Room>>(_rooms.Values.Where(x => x.UserRepository.Count > 0)
             .OrderByDescending(x => x.UserRepository.Count).Take(amount).ToList());
     }
 
-public async Task<List<Room>> GetAllByOwnerIdAsync(int ownerId, int amount)
-{
-    var rooms = await dbContext
-        .Rooms
-        .Where(x => x.OwnerId == ownerId)
-        .Include(x => x.Owner)
-        .Include(x => x.Layout)
-        .Include(x => x.Settings)
-        .Include(x => x.PaintSettings)
-        .Include(x => x.PlayerRights)
-        .Include(x => x.ChatMessages)
-        .Include(x => x.FurnitureItems)
-        .Include(x => x.PlayerLikes)
-        .Include(x => x.Tags)
-        .OrderByDescending(x => x.CreatedAt)
-        .Take(amount)
-        .ToListAsync();
+    public async Task<List<Room>> GetAllByOwnerIdAsync(int ownerId, int amount)
+    {
+        var rooms = await dbContext
+            .Rooms
+            .Where(x => x.OwnerId == ownerId)
+            .Include(x => x.Owner)
+            .Include(x => x.Layout)
+            .Include(x => x.Settings)
+            .Include(x => x.PaintSettings)
+            .Include(x => x.PlayerRights)
+            .Include(x => x.ChatMessages)
+            .Include(x => x.FurnitureItems)
+            .Include(x => x.PlayerLikes)
+            .Include(x => x.Tags)
+            .OrderByDescending(x => x.CreatedAt)
+            .Take(amount)
+            .ToListAsync();
 
-    return rooms;
-}
+        return rooms;
+    }
 
     public int Count => _rooms.Count;
     public IEnumerable<RoomLogic?> GetAllRooms() => _rooms.Values;
