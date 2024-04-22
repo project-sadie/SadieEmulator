@@ -47,16 +47,13 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
         return roomLogic;
     }
 
-    public List<RoomLogic> GetPopularRooms(int amount)
+    public List<Room> GetPopularRooms(int amount)
     {
-        return _rooms.Values.
-            Where(x => x.UserRepository.Count > 0).
-            OrderByDescending(x => x.UserRepository.Count).
-            Take(amount).
-            ToList();
+        return mapper.Map<List<Room>>(_rooms.Values.Where(x => x.UserRepository.Count > 0)
+            .OrderByDescending(x => x.UserRepository.Count).Take(amount).ToList());
     }
 
-public async Task<List<RoomLogic>> GetAllByOwnerIdAsync(int ownerId, int amount)
+public async Task<List<Room>> GetAllByOwnerIdAsync(int ownerId, int amount)
 {
     var rooms = await dbContext
         .Rooms
@@ -73,8 +70,8 @@ public async Task<List<RoomLogic>> GetAllByOwnerIdAsync(int ownerId, int amount)
         .OrderByDescending(x => x.CreatedAt)
         .Take(amount)
         .ToListAsync();
-    
-    return mapper.Map<List<RoomLogic>>(rooms);
+
+    return rooms;
 }
 
     public int Count => _rooms.Count;
