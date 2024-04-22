@@ -48,6 +48,8 @@ public class PlayerRepository(
             .Include(x => x.Data)
             .FirstOrDefaultAsync(x => x.Username == username);
     }
+
+    public ICollection<PlayerLogic> GetAll() => _players.Values;
     
     public async Task<PlayerSsoToken?> GetSsoTokenAsync(string token, TimeSpan delay)
     {
