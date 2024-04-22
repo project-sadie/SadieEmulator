@@ -55,57 +55,39 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.PositionZ);
 
         var direction = eventParser.Direction;
-        var x = eventParser.X;
-        var y = eventParser.Y;
         
-        var movedTiles = roomFurnitureItem.PositionX != position.X ||
-                         roomFurnitureItem.PositionY != position.Y;
-        
-        if (movedTiles && !RoomHelpers.CanPlaceAt(
-                x, 
-                y, 
-                roomFurnitureItem.FurnitureItem.TileSpanX, 
-                roomFurnitureItem.FurnitureItem.TileSpanY,
-                direction, 
-                room.TileMap))
-        {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
-            return;
-        }
-
-        var points = RoomHelpers.GetPointsForPlacement(
+        var oldPoints = RoomHelpers.GetPointsForPlacement(
             roomFurnitureItem.PositionX, 
             roomFurnitureItem.PositionY, 
             roomFurnitureItem.FurnitureItem.TileSpanX,
             roomFurnitureItem.FurnitureItem.TileSpanY, 
-            direction);
+            (int) roomFurnitureItem.Direction);
 
         roomFurnitureItem.PositionX = position.X;
         roomFurnitureItem.PositionY = position.Y;
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = (HDirection) direction;
         
-        foreach (var user in RoomHelpers.GetUsersForPoints(points, room.TileMap))
+        foreach (var user in RoomHelpers.GetUsersForPoints(oldPoints, room.TileMap))
         {
             user.CheckStatusForCurrentTile();
         }
         
-        RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
-
-        if (movedTiles)
+        RoomHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);
+        
+        var newPoints = RoomHelpers.GetPointsForPlacement(
+            roomFurnitureItem.PositionX, 
+            roomFurnitureItem.PositionY, 
+            roomFurnitureItem.FurnitureItem.TileSpanX,
+            roomFurnitureItem.FurnitureItem.TileSpanY, 
+            (int) roomFurnitureItem.Direction);
+            
+        foreach (var user in RoomHelpers.GetUsersForPoints(newPoints, room.TileMap))
         {
-            var newPoints = RoomHelpers.GetPointsForPlacement(x, y, 
-                roomFurnitureItem.FurnitureItem.TileSpanX,
-                roomFurnitureItem.FurnitureItem.TileSpanY, 
-                direction);
-            
-            foreach (var user in RoomHelpers.GetUsersForPoints(newPoints, room.TileMap))
-            {
-                user.CheckStatusForCurrentTile();
-            }
-            
-            RoomHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
+            user.CheckStatusForCurrentTile();
         }
+            
+        RoomHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
         
         await dbContext.SaveChangesAsync();
         await BroadcastUpdateAsync(room, roomFurnitureItem);
