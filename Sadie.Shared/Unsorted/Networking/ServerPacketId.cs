@@ -122,4 +122,5 @@ public class ServerPacketId
     public const short RoomWallFurnitureItemUpdated = 2009;
     public const short RoomWallFurnitureItemRemoved = 3208;
     public const short RoomUserHandItem = 1474;
+    public const short ServerError = 1004;
 }

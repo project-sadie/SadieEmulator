@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Handlers;
 
@@ -21,7 +22,8 @@ public class ClientPacketHandler : INetworkPacketHandler
     {
         if (!_packets.TryGetValue(packet.PacketId, out var packetEvent))
         {
-            _logger.LogError($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
+            await client.WriteToStreamAsync(new ServerErrorWriter(packet.PacketId, 1, DateTime.Now.ToString()));
+            _logger.LogWarning($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
             return;
         }
 
