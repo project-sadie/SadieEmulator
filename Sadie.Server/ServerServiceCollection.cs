@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
 using Sadie.Database.Mappers;
-using Sadie.Database.Models;
+using Sadie.Database.Models.Server;
 using Sadie.Game.Catalog;
 using Sadie.Game.Furniture;
 using Sadie.Game.Navigator;
@@ -13,9 +13,6 @@ using Sadie.Networking.Events;
 using Sadie.Options;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
-using SadieEmulator.Tasks.Game.Rooms;
-using SadieEmulator.Tasks.Networking;
-using SadieEmulator.Tasks.Other;
 
 namespace SadieEmulator;
 
@@ -23,9 +20,11 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddSingleton<IServerTask, ProcessRoomsTask>();
-        serviceCollection.AddSingleton<IServerTask, DisconnectIdleClientsTask>();
-        serviceCollection.AddSingleton<IServerTask, UpdateConsoleTitleTask>();
+        serviceCollection.Scan(scan => scan
+            .FromAssemblyOf<IServerTask>()
+            .AddClasses(classes => classes.AssignableTo<IServerTask>())
+            .AsImplementedInterfaces()
+            .WithSingletonLifetime());
 
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
@@ -34,7 +33,11 @@ public static class ServerServiceCollection
         OptionsServiceCollection.AddServices(serviceCollection, config);
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
-        serviceCollection.AddSingleton<ServerSettings>(p => p.GetRequiredService<SadieContext>().ServerSettings.First());
+        serviceCollection.AddSingleton<ServerSettings>(p => 
+            p.GetRequiredService<SadieContext>().ServerSettings.First());
+        
+        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => 
+            p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());
 
         MapperServiceCollection.AddServices(serviceCollection);
         PlayerServiceCollection.AddServices(serviceCollection);

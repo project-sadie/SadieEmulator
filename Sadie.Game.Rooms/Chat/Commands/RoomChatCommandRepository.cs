@@ -13,4 +13,9 @@ public class RoomChatCommandRepository : IRoomChatCommandRepository
     {
         return _commands.GetValueOrDefault(trigger);
     }
+
+    public ICollection<IRoomChatCommand> GetRegisteredCommands()
+    {
+        return _commands.Values;
+    }
 }

@@ -19,8 +19,9 @@ public class RoomDoorbellAnswerEventHandler(
         eventParser.Parse(reader);
 
         var username = eventParser.Username;
-
-        if (!playerRepository.TryGetPlayerByUsername(username, out var player) || player == null)
+        var player = playerRepository.GetPlayerLogicByUsername(username);
+        
+        if (player == null)
         {
             return;
         }

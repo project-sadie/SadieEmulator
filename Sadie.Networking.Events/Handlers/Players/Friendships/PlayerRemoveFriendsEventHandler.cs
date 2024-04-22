@@ -26,8 +26,9 @@ public class PlayerRemoveFriendsEventHandler(
         for (var i = 0; i < eventParser.Amount; i++)
         {
             var currentId = eventParser.Ids[i];
-
-            if (!playerRepository.TryGetPlayerById(currentId, out var target) || target == null)
+            var target = playerRepository.GetPlayerLogicById(currentId);
+            
+            if (target == null)
             {
                 continue;
             }

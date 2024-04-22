@@ -1,0 +1,71 @@
+using Sadie.Database;
+using Sadie.Database.Models.Players;
+using Sadie.Game.Players;
+using Sadie.Game.Players.Packets;
+using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Game.Rooms.Users;
+using Sadie.Shared.Unsorted;
+
+namespace Sadie.Game.Rooms.Chat.Commands.Room;
+
+public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbContext) : AbstractRoomChatCommand
+{
+    public override string Trigger => "pickall";
+    public override string Description => "Picks up all pieces of furniture in the room placing it into your inventory.";
+    
+    public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
+    {
+        var player = user.Player;
+        
+        foreach (var item in user.Room.FurnitureItems.Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor))
+        {
+            user.Room.FurnitureItems.Remove(item);
+            dbContext.RoomFurnitureItems.Remove(item);
+
+            var playerItem = new PlayerFurnitureItem
+            {
+                FurnitureItem = item.FurnitureItem,
+                LimitedData = item.LimitedData,
+                MetaData = item.MetaData,
+                CreatedAt = DateTime.Now
+            };
+            
+            var ownsItem = item.OwnerId == user.Id;
+            
+            if (ownsItem)
+            {
+                player.FurnitureItems.Add(playerItem);
+            
+                await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+                await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+            }
+            else
+            {
+                var ownerOnline = playerRepository.GetPlayerLogicById(item.OwnerId);
+
+                if (ownerOnline != null)
+                {
+                    await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+                    await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+                
+                    ownerOnline.FurnitureItems.Add(playerItem);
+                }
+                else
+                {
+                    dbContext.PlayerFurnitureItems.Add(playerItem);
+                }
+            }
+            
+            await user.Room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(
+                item.Id, 
+                false, 
+                item.OwnerId, 
+                0));
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public override List<string> PermissionsRequired { get; set; } = ["command_pickall"];
+    public override bool BypassPermissionCheckIfRoomOwner => true;
+}
