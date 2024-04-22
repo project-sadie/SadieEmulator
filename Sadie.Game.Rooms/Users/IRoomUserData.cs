@@ -16,4 +16,5 @@ public interface IRoomUserData
     bool IsIdle { get; }
     bool NeedsStatusUpdate { get; set; }
     bool IsWalking { get; set; }
+    bool MoonWalking { get; set; }
 }

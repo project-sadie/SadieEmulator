@@ -1,7 +1,9 @@
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
@@ -79,12 +81,21 @@ public class RoomItemEjectedEventHandler(
             await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
             await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
         }
-        else if (playerRepository.TryGetPlayerById(roomFurnitureItem.OwnerId, out var owner) && owner != null)
+        else
         {
-            owner.FurnitureItems.Remove(playerItem);
-            
-            await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
-            await owner.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+            var ownerOnline = playerRepository.GetPlayerLogicById(roomFurnitureItem.OwnerId);
+
+            if (ownerOnline != null)
+            {
+                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+                
+                ownerOnline.FurnitureItems.Add(playerItem);
+            }
+            else
+            {
+                dbContext.PlayerFurnitureItems.Add(playerItem);
+            }
         }
         
         await dbContext.SaveChangesAsync();

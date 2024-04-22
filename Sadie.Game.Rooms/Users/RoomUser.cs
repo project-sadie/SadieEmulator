@@ -23,6 +23,7 @@ public class RoomUser(
         IRoomUser
 {
     public int Id { get; } = id;
+    public RoomLogic Room { get; } = room;
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 

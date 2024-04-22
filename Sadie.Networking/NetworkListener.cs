@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
-using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using DotNetty.Buffers;
 using DotNetty.Codecs;

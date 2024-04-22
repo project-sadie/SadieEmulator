@@ -8,6 +8,7 @@ namespace Sadie.Game.Rooms.Users;
 public interface IRoomUser : IRoomUserData, IAsyncDisposable
 {
     int Id { get; }
+    public RoomLogic Room { get; }
     public RoomControllerLevel ControllerLevel { get; set; }
     INetworkObject NetworkObject { get; }
     Point Point { get; }
@@ -18,6 +19,7 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();
     void AddStatus(string key, string value);
+    void RemoveStatuses(params string[] statuses);
     Task RunPeriodicCheckAsync();
     void UpdateLastAction();
     void CheckStatusForCurrentTile();

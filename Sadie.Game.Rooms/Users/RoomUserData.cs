@@ -17,6 +17,7 @@ public class RoomUserData : IRoomUserData
     public bool IsIdle { get; protected set; }
     public bool NeedsStatusUpdate { get; set; }
     public bool IsWalking { get; set; }
+    public bool MoonWalking { get; set; }
     
     protected RoomUserData(Point point, double pointZ, HDirection directionHead, HDirection direction, PlayerLogic player, TimeSpan idleTime)
     {

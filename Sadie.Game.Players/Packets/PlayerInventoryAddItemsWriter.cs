@@ -2,7 +2,7 @@ using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Players.Inventory;
+namespace Sadie.Game.Players.Packets;
 
 public class PlayerInventoryAddItemsWriter : NetworkPacketWriter
 {

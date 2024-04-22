@@ -24,9 +24,9 @@ public class PlayerWearingBadgesEventHandler(
         eventParser.Parse(reader);
 
         var playerId = eventParser.PlayerId;
-        var isPlayerOnline = playerRepository.TryGetPlayerById(playerId, out var player);
+        var player = playerRepository.GetPlayerLogicById(playerId);
 
-        var playerBadges = isPlayerOnline
+        var playerBadges = player != null
             ? player!.Badges
             : await dbContext.Set<PlayerBadge>().Where(x => x.PlayerId == playerId).ToListAsync();
 
