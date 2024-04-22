@@ -1,7 +1,9 @@
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
