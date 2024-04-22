@@ -41,8 +41,6 @@ public class PlayerCreateRoomEventHandler(
 
         dbContext.Rooms.Add(newRoom);
 
-        await dbContext.SaveChangesAsync();
-
         newRoom.Settings = new RoomSettings
         {
             RoomId = newRoom.Id
@@ -53,10 +51,9 @@ public class PlayerCreateRoomEventHandler(
             RoomId = newRoom.Id,
         };
 
-        await dbContext.SaveChangesAsync();
-
         roomRepository.AddRoom(newRoom);
 
         await client.WriteToStreamAsync(new RoomCreatedWriter(newRoom.Id, newRoom.Name));
+        await dbContext.SaveChangesAsync();
     }
 }
