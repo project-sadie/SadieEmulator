@@ -16,7 +16,7 @@ public class HotelAlertCommand(PlayerRepository playerRepository) : AbstractRoom
 
         if (string.IsNullOrWhiteSpace(message) || message.Length < 5)
         {
-            await SendFeedbackWhisperAsync(user, "Please provide an appropriate message.");
+            await SendWhisperAsync(user, "Please provide an appropriate message.");
             return;
         }
         

@@ -169,10 +169,12 @@ internal static class NetworkPacketEventHelpers
         
         if (!shouting && message.StartsWith(":"))
         {
-            var command = commandRepository
-                .TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
-
-            if (command != null && command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x)))
+            var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
+            var roomOwner = room.OwnerId == roomUser.Id;
+            
+            if (command != null && 
+                ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 
+                 command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x))))
             {
                 await command.ExecuteAsync(roomUser!, message.Split(" ").Skip(1));
                 return;

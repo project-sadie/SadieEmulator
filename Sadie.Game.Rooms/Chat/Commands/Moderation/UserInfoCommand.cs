@@ -17,6 +17,7 @@ public class UserInfoCommand(PlayerRepository playerRepository) : AbstractRoomCh
 
         if (target == null)
         {
+            await SendWhisperAsync(user, "Failed to find the target user.");
             return;
         }
         

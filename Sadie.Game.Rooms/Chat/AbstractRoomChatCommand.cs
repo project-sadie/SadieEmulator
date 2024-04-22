@@ -13,7 +13,7 @@ public abstract class AbstractRoomChatCommand : IRoomChatCommand
 
     public virtual List<string> PermissionsRequired { get; set; } = [];
 
-    protected static async Task SendFeedbackWhisperAsync(IRoomUser user, string message)
+    protected static async Task SendWhisperAsync(IRoomUser user, string message)
     {
         await user.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter(
             user.Id,
@@ -22,4 +22,6 @@ public abstract class AbstractRoomChatCommand : IRoomChatCommand
             (int) ChatBubble.Default));
 
     }
+
+    public virtual bool BypassPermissionCheckIfRoomOwner => false;
 }

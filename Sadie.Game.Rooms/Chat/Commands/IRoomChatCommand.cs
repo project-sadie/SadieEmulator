@@ -8,5 +8,6 @@ public interface IRoomChatCommand
     string Description { get; }
     Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters);
     List<string> PermissionsRequired { get; set; }
+    bool BypassPermissionCheckIfRoomOwner { get; }
     
 }
