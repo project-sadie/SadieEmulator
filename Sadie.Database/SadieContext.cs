@@ -22,7 +22,9 @@ using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Database;
 
-public class SadieContext(IOptions<DatabaseOptions> options) : DbContext
+public class SadieContext(
+    Microsoft.Extensions.Logging.ILoggerFactory loggerFactory, 
+    IOptions<DatabaseOptions> options) : DbContext
 {
     public DbSet<NavigatorCategory> NavigatorCategories { get; init; }
     public DbSet<NavigatorTab> NavigatorTabs { get; init; }
@@ -73,6 +75,7 @@ public class SadieContext(IOptions<DatabaseOptions> options) : DbContext
                errorNumbersToAdd: null);
         });
         optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.UseLoggerFactory(loggerFactory);
 
         base.OnConfiguring(optionsBuilder);
     }
