@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Concurrent;
+using System.Drawing;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.PathFinding.Options;
@@ -18,13 +19,26 @@ public static class RoomHelpers
         {
             UseDiagonals = useDiagonal
         };
-        
-        var worldGrid = new WorldGrid(tileMap.Map);
+
+        var combinedMap = GenerateWorldArrayFromMaps(tileMap.Map, tileMap.UserMap);
+        var worldGrid = new WorldGrid(combinedMap);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
 
         return pathfinder
             .FindPath(start, end)
             .ToList();
+    }
+
+    private static short[,] GenerateWorldArrayFromMaps(
+        short[,] furnitureMap, 
+        ConcurrentDictionary<Point, List<IRoomUser>> userMap)
+    {
+        foreach (var (key, value) in userMap)
+        {
+            furnitureMap[key.Y, key.X] = (short)(value.Count < 1 ? 1 : 0);
+        }
+
+        return furnitureMap;
     }
 
     public static HDirection GetDirectionForNextStep(Point current, Point next)
