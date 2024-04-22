@@ -30,4 +30,13 @@ public class PlayerLogic : Player
         _logger.LogInformation($"Player '{Username}' has logged out");
         return ValueTask.CompletedTask;
     }
+
+    public bool DeservesReward(string? rewardType, int intervalInSeconds)
+    {
+        var lastReward = RewardLogs
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefault(x => x.Type == rewardType);
+
+        return lastReward == null || lastReward.CreatedAt < DateTime.Now.AddSeconds(-intervalInSeconds);
+    }
 }

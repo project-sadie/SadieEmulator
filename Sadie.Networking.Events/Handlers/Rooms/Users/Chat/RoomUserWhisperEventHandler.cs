@@ -2,10 +2,10 @@ using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Rooms.Users.Chat;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
