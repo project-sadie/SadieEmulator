@@ -10,5 +10,5 @@ public class CatalogFrontPageItem
     public string? Image { get; init; }
     public CatalogFrontPageItemType TypeId { get; init; }
     public string? ProductName { get; init; }
-    public CatalogPage? CatalogPage { get; init; }
+    public CatalogPage CatalogPage { get; init; }
 }
