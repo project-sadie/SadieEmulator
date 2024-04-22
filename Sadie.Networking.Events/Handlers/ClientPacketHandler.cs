@@ -22,7 +22,7 @@ public class ClientPacketHandler : INetworkPacketHandler
     {
         if (!_packets.TryGetValue(packet.PacketId, out var packetEvent))
         {
-            await client.WriteToStreamAsync(new ServerErrorWriter(packet.PacketId, 1, DateTime.Now.ToString()));
+            await client.WriteToStreamAsync(new ServerErrorWriter(packet.PacketId, 1));
             _logger.LogWarning($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
             return;
         }

@@ -5,11 +5,11 @@ namespace Sadie.Networking.Writers.Generic;
 
 public class ServerErrorWriter : NetworkPacketWriter
 {
-    public ServerErrorWriter(int messageId, int errorCode, string timestamp)
+    public ServerErrorWriter(int messageId, int errorCode)
     {
         WriteShort(ServerPacketId.ServerError);
         WriteInteger(messageId);
         WriteInteger(errorCode);
-        WriteString(timestamp);
+        WriteString(DateTime.Now.ToString("M/d/yy, h:mm tt"));
     }
 }
