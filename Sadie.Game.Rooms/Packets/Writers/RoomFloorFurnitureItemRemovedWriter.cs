@@ -1,7 +1,7 @@
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Rooms.Furniture;
+namespace Sadie.Game.Rooms.Packets.Writers;
 
 public class RoomFloorFurnitureItemRemovedWriter : NetworkPacketWriter
 {

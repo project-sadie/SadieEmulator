@@ -1,7 +1,7 @@
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
-namespace Sadie.Networking.Writers.Players;
+namespace Sadie.Shared.Unsorted;
 
 public class PlayerMotdMessageWriter : NetworkPacketWriter
 {

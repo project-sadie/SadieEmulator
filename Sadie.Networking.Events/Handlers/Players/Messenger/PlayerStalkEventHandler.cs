@@ -23,7 +23,9 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
             return;
         }
 
-        if (!playerRepository.TryGetPlayerById(playerId, out var targetPlayer))
+        var targetPlayer = playerRepository.GetPlayerLogicById(playerId);
+        
+        if (targetPlayer == null)
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetOffline));
             return;

@@ -21,14 +21,14 @@ public class PlayerRelationshipsEventHandler(
         eventParser.Parse(reader);
 
         var playerId = eventParser.PlayerId;
-        var isOnline = playerRepository.TryGetPlayerById(playerId, out var player);
+        var player = await playerRepository.GetPlayerByIdAsync(playerId);
 
-        var relationships = isOnline ? 
-                player!.Relationships : 
+        var relationships = player != null ? 
+                player.Relationships : 
                 await playerRepository.GetRelationshipsForPlayerAsync(playerId);
 
-        var playerFriends = isOnline
-            ? player!.GetMergedFriendships()
+        var playerFriends = player != null
+            ? player.GetMergedFriendships()
             : await dbContext
                 .Set<PlayerFriendship>()
                 .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)

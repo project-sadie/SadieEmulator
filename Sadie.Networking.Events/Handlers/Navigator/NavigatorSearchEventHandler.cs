@@ -1,4 +1,5 @@
 using Sadie.Database.Models.Navigator;
+using Sadie.Database.Models.Rooms;
 using Sadie.Game.Navigator;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Rooms;
@@ -12,7 +13,8 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 public class NavigatorSearchEventHandler(
     NavigatorSearchEventParser eventParser,
     NavigatorTabRepository navigatorTabRepository,
-    NavigatorRoomProvider navigatorRoomProvider)
+    NavigatorRoomProvider navigatorRoomProvider,
+    RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.NavigatorSearch;
@@ -32,12 +34,6 @@ public class NavigatorSearchEventHandler(
 
         if (!navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
         {
-            var writer = new NavigatorSearchResultPagesWriter(
-                tabName, 
-                searchQuery, 
-                new Dictionary<NavigatorCategory, List<RoomLogic>>());
-            
-            await client.WriteToStreamAsync(writer);
             return;
         }
 
@@ -46,7 +42,7 @@ public class NavigatorSearchEventHandler(
             OrderBy(x => x.OrderId).
             ToList();
 
-        var categoryRoomMap = new Dictionary<NavigatorCategory, List<RoomLogic>>();
+        var categoryRoomMap = new Dictionary<NavigatorCategory, List<Room>>();
 
         foreach (var category in categories)
         {
@@ -58,14 +54,15 @@ public class NavigatorSearchEventHandler(
         var searchResultPagesWriter = new NavigatorSearchResultPagesWriter(
             tabName, 
             searchQuery, 
-            categoryRoomMap);
+            categoryRoomMap,
+            roomRepository);
         
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }
 
-    private static Dictionary<NavigatorCategory, List<RoomLogic>> ApplyFilter(
+    private static Dictionary<NavigatorCategory, List<Room>> ApplyFilter(
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<RoomLogic>> categoryRoomMap)
+        Dictionary<NavigatorCategory, List<Room>> categoryRoomMap)
     {
         if (searchQuery.Contains(':'))
         {
