@@ -2,6 +2,7 @@ using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
+using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;

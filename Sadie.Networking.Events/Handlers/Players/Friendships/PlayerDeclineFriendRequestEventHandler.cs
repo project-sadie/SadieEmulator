@@ -42,16 +42,12 @@ public class PlayerDeclineFriendRequestEventHandler(
                     .Where(x => x.OriginPlayerId == originId && x.TargetPlayerId == targetId)
                     .ExecuteDeleteAsync();
 
-                if (!playerRepository.TryGetPlayerById(originId, out var origin) || origin == null)
-                {
-                    continue;
-                }
-                
-                var request = origin.OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
+                var origin = await playerRepository.GetPlayerByIdAsync(originId);
+                var request = origin?.OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
 
                 if (request != null)
                 {
-                    origin.OutgoingFriendships.Remove(request);
+                    origin?.OutgoingFriendships.Remove(request);
                 }
             }
         }

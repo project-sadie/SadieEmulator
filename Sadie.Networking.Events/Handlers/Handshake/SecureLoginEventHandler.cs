@@ -45,7 +45,7 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var token = await playerRepository.TryGetSsoTokenAsync(eventParser.Token, eventParser.Delay);
+        var token = await playerRepository.GetSsoTokenAsync(eventParser.Token, eventParser.Delay);
 
         if (token == null)
         {
@@ -54,7 +54,7 @@ public class SecureLoginEventHandler(
             return;
         }
         
-        var player = await playerRepository.TryGetPlayerInstanceByIdAsync(client, token.PlayerId);
+        var player = await playerRepository.CreatePlayerInstanceWithIdAsync(client, token.PlayerId);
 
         if (player == null)
         {
@@ -154,7 +154,8 @@ public class SecureLoginEventHandler(
 
         foreach (var friend in allFriends)
         {
-            var isOnline = playerRepository.TryGetPlayerById(friend.TargetPlayerId, out var friendPlayer) && friendPlayer != null;
+            var friendPlayer = playerRepository.GetPlayerLogicById(friend.TargetPlayerId);
+            var isOnline = friendPlayer != null;
             var isInRoom = isOnline && friendPlayer!.CurrentRoomId != 0;
                     
             var relationship = isOnline
