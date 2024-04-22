@@ -21,7 +21,6 @@ public class PlayerCreateRoomEventHandler(
 
         var layout = dbContext
             .RoomLayouts
-            .Select(x => new { x.Id, x.Name })
             .FirstOrDefault(x => x.Name == eventParser.LayoutName);
 
         if (layout == null)
@@ -33,6 +32,7 @@ public class PlayerCreateRoomEventHandler(
         {
             Name = eventParser.Name,
             LayoutId = layout.Id,
+            Layout = layout,
             OwnerId = client.Player.Id,
             MaxUsersAllowed = 50,
             Description = eventParser.Description,
@@ -55,11 +55,8 @@ public class PlayerCreateRoomEventHandler(
 
         await dbContext.SaveChangesAsync();
 
-        var room = await roomRepository.TryLoadRoomByIdAsync(newRoom.Id);
+        roomRepository.AddRoom(newRoom);
 
-        if (room != null)
-        {
-            await client.WriteToStreamAsync(new RoomCreatedWriter(room.Id, room.Name));
-        }
+        await client.WriteToStreamAsync(new RoomCreatedWriter(newRoom.Id, newRoom.Name));
     }
 }

@@ -47,6 +47,8 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
         return roomLogic;
     }
 
+    public void AddRoom(Room room) => _rooms[room.Id] = mapper.Map<RoomLogic>(room);
+
     public List<RoomLogic> GetPopularRooms(int amount)
     {
         return _rooms.Values.
