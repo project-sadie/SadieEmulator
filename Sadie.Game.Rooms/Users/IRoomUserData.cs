@@ -6,9 +6,9 @@ namespace Sadie.Game.Rooms.Users;
 
 public interface IRoomUserData
 {
-    Point Point { get; }
-    HDirection DirectionHead { get; }
-    HDirection Direction { get; }
+    HPoint Point { get; }
+    HDirection DirectionHead { get; set; }
+    HDirection Direction { get; set; }
     PlayerLogic Player { get; }
     Dictionary<string, string> StatusMap { get; }
     DateTime LastAction { get; set; }

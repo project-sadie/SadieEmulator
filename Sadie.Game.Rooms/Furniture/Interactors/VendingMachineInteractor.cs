@@ -14,7 +14,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
     {
         item.MetaData = "1";
 
-        var direction = (HDirection) RoomHelpers.GetOppositeDirection((int) item.Direction);
+        var direction = RoomHelpers.GetOppositeDirection((int) item.Direction);
 
         roomUser.Direction = direction;
         roomUser.DirectionHead = direction;
