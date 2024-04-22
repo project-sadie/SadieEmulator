@@ -21,6 +21,7 @@ public class RoomUser(
         IRoomUser
 {
     public int Id { get; } = id;
+    public RoomLogic Room { get; } = room;
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 
@@ -66,6 +67,7 @@ public class RoomUser(
 
         if (PathPoints.Count > 1)
         {
+            StepsWalked = 0;
             IsWalking = true;
             NeedsPathCalculated = false;
         }
@@ -110,7 +112,8 @@ public class RoomUser(
             return;
         }
         
-        var nextStep = PathPoints.Dequeue();
+        StepsWalked++;
+        var nextStep = PathPoints[StepsWalked];
 
         RemoveStatuses(RoomUserStatus.Move);
 

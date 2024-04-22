@@ -5,5 +5,9 @@ namespace Sadie.Game.Rooms.Chat.Commands;
 public interface IRoomChatCommand
 {
     string Trigger { get; }
-    Task ExecuteAsync(IRoomUser user);
+    string Description { get; }
+    Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters);
+    List<string> PermissionsRequired { get; set; }
+    bool BypassPermissionCheckIfRoomOwner { get; }
+    
 }
