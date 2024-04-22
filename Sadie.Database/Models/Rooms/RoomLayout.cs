@@ -9,6 +9,5 @@ public class RoomLayout
     public string? HeightMap { get; init; }
     public int DoorX { get; init; }
     public int DoorY { get; init; }
-    public double DoorZ { get; init; }
     public HDirection DoorDirection { get; init; }
 }

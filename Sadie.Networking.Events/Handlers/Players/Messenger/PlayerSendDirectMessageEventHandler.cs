@@ -49,7 +49,9 @@ public class PlayerSendDirectMessageEventHandler(
             return;
         }
 
-        if (!playerRepository.TryGetPlayerById(playerId, out var targetPlayer) || targetPlayer == null)
+        var targetPlayer = playerRepository.GetPlayerLogicById(playerId);
+        
+        if (targetPlayer == null)
         {
             return;
         }

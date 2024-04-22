@@ -63,9 +63,10 @@ public class PlayerChangeRelationshipEventHandler(
                 await dbContext.SaveChangesAsync();
             }
         }
-        
-        var isOnline = playerRepository.TryGetPlayerById(playerId, out var onlineFriend) && onlineFriend != null;
-        var inRoom = isOnline && onlineFriend != null && onlineFriend.CurrentRoomId != 0;
+
+        var onlineFriend = playerRepository.GetPlayerLogicById(playerId);
+        var isOnline = onlineFriend != null;
+        var inRoom = isOnline && onlineFriend!.CurrentRoomId != 0;
         
         var updateFriendWriter = new PlayerUpdateFriendWriter(
                 0, 
