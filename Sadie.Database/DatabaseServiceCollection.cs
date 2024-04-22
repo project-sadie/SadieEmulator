@@ -8,7 +8,7 @@ public static class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddDbContext<SadieContext>();
+        serviceCollection.AddDbContext<SadieContext>(ServiceLifetime.Transient);
 
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
             provider.GetRequiredService<SadieContext>().ServerPlayerConstants.First());
