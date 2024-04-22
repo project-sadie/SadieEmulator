@@ -8,7 +8,7 @@ namespace Sadie.Game.Rooms;
 
 public class RoomRepository(SadieContext dbContext, IMapper mapper)
 {
-    private readonly ConcurrentDictionary<long, RoomLogic> _rooms = new();
+    private readonly ConcurrentDictionary<long, RoomLogic?> _rooms = new();
 
     public RoomLogic? TryGetRoomById(long id)
     {
@@ -78,14 +78,19 @@ public async Task<List<RoomLogic>> GetAllByOwnerIdAsync(int ownerId, int amount)
 }
 
     public int Count => _rooms.Count;
-    public IEnumerable<RoomLogic> GetAllRooms() => _rooms.Values;
+    public IEnumerable<RoomLogic?> GetAllRooms() => _rooms.Values;
 
-    public async Task SaveRoomAsync(RoomLogic room)
+    public async Task SaveRoomAsync(RoomLogic? room)
     {
         dbContext.Rooms.Add(mapper.Map<Room>(room));
         await dbContext.SaveChangesAsync();
     }
 
+    public bool TryUnloadRoom(long id, out RoomLogic? roomLogic)
+    {
+        return _rooms.TryRemove(id, out roomLogic);
+    }
+    
     public async ValueTask DisposeAsync()
     {
         foreach (var room in _rooms.Values)

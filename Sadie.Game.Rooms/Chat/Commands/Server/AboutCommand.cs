@@ -20,7 +20,7 @@ public class AboutCommand(
         var message = new StringBuilder();
         var memoryMb = Process.GetCurrentProcess().PrivateMemorySize64 / (1024 * 1024);
 
-        message.AppendLine($"Sadie {version}");
+        message.AppendLine($"Sadie Emulator {version}");
         message.AppendLine("");
         message.AppendLine($"Players Online: {playerRepository.Count()}");
         message.AppendLine($"Rooms Loaded: {roomRepository.Count}");
