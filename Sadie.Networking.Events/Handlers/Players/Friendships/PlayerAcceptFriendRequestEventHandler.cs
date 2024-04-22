@@ -44,8 +44,10 @@ public class PlayerAcceptFriendRequestEventHandler(
 
         request.Status = PlayerFriendshipStatus.Accepted;
         await dbContext.SaveChangesAsync();
+
+        var origin = playerRepository.GetPlayerLogicById(originId);
         
-        if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
+        if (origin != null)
         {
             var targetRequest = origin.
                 OutgoingFriendships.

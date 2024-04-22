@@ -8,7 +8,7 @@ namespace Sadie.Game.Rooms;
 
 public class RoomRepository(SadieContext dbContext, IMapper mapper)
 {
-    private readonly ConcurrentDictionary<long, RoomLogic> _rooms = new();
+    private readonly ConcurrentDictionary<long, RoomLogic?> _rooms = new();
 
     public RoomLogic? TryGetRoomById(long id)
     {
@@ -47,16 +47,13 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
         return roomLogic;
     }
 
-    public List<RoomLogic> GetPopularRooms(int amount)
+    public List<Room> GetPopularRooms(int amount)
     {
-        return _rooms.Values.
-            Where(x => x.UserRepository.Count > 0).
-            OrderByDescending(x => x.UserRepository.Count).
-            Take(amount).
-            ToList();
+        return mapper.Map<List<Room>>(_rooms.Values.Where(x => x.UserRepository.Count > 0)
+            .OrderByDescending(x => x.UserRepository.Count).Take(amount).ToList());
     }
 
-public async Task<List<RoomLogic>> GetAllByOwnerIdAsync(int ownerId, int amount)
+public async Task<List<Room>> GetAllByOwnerIdAsync(int ownerId, int amount)
 {
     var rooms = await dbContext
         .Rooms
@@ -73,19 +70,24 @@ public async Task<List<RoomLogic>> GetAllByOwnerIdAsync(int ownerId, int amount)
         .OrderByDescending(x => x.CreatedAt)
         .Take(amount)
         .ToListAsync();
-    
-    return mapper.Map<List<RoomLogic>>(rooms);
+
+    return rooms;
 }
 
     public int Count => _rooms.Count;
-    public IEnumerable<RoomLogic> GetAllRooms() => _rooms.Values;
+    public IEnumerable<RoomLogic?> GetAllRooms() => _rooms.Values;
 
-    public async Task SaveRoomAsync(RoomLogic room)
+    public async Task SaveRoomAsync(RoomLogic? room)
     {
         dbContext.Rooms.Add(mapper.Map<Room>(room));
         await dbContext.SaveChangesAsync();
     }
 
+    public bool TryUnloadRoom(long id, out RoomLogic? roomLogic)
+    {
+        return _rooms.TryRemove(id, out roomLogic);
+    }
+    
     public async ValueTask DisposeAsync()
     {
         foreach (var room in _rooms.Values)

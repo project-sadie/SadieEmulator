@@ -1,4 +1,5 @@
 using Sadie.Database.Models.Navigator;
+using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
@@ -10,7 +11,8 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
     public NavigatorSearchResultPagesWriter(
         string tabName, 
         string searchQuery, 
-        Dictionary<NavigatorCategory, List<RoomLogic>> categoryRoomMap)
+        Dictionary<NavigatorCategory, List<Room>> categoryRoomMap,
+        RoomRepository roomRepository)
     {
         WriteShort(ServerPacketId.NavigatorRooms);
         WriteString(tabName);
@@ -30,12 +32,15 @@ public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
             
             foreach (var room in rooms)
             {
+                var liveRoom = roomRepository.TryGetRoomById(room.Id);
+                var userCount = liveRoom == null ? 0 : liveRoom.UserRepository.Count;
+                
                 WriteLong(room.Id);
                 WriteString(room.Name);
                 WriteLong(room.OwnerId);
                 WriteString(room.Owner.Username);
                 WriteInteger((int) room.Settings.AccessType);
-                WriteInteger(room.UserRepository.Count);
+                WriteInteger(userCount);
                 WriteInteger(room.MaxUsersAllowed);
                 WriteString(room.Description);
                 WriteInteger(0); // unknown

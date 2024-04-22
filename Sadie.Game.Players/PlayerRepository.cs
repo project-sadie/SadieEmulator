@@ -7,6 +7,7 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Players;
 
@@ -17,18 +18,38 @@ public class PlayerRepository(
 {
     private readonly ConcurrentDictionary<int, PlayerLogic> _players = new();
 
-    public bool TryGetPlayerById(int id, out PlayerLogic? player)
+    public PlayerLogic? GetPlayerLogicById(int id) => _players.GetValueOrDefault(id);
+    public PlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Username == username);
+    
+    public async Task<Player?> GetPlayerByIdAsync(int id)
     {
-        return _players.TryGetValue(id, out player);
+        if (_players.TryGetValue(id, out var byId))
+        {
+            return byId;
+        }
+        
+        return await dbContext
+            .Set<Player>()
+            .Include(x => x.Data)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
-
-    public bool TryGetPlayerByUsername(string username, out PlayerLogic? player)
+    
+    public async Task<Player?> GetPlayerByUsernameAsync(string username)
     {
-        player = _players.Values.FirstOrDefault(x => x.Username == username);
-        return player != default;
+        var online = _players.Values.FirstOrDefault(x => x.Username == username);
+        
+        if (online != null)
+        {
+            return online;
+        }
+        
+        return await dbContext
+            .Set<Player>()
+            .Include(x => x.Data)
+            .FirstOrDefaultAsync(x => x.Username == username);
     }
-
-    public async Task<PlayerSsoToken?> TryGetSsoTokenAsync(string token, TimeSpan delay)
+    
+    public async Task<PlayerSsoToken?> GetSsoTokenAsync(string token, TimeSpan delay)
     {
         var expireDt = DateTime.Now.Subtract(delay);
         
@@ -50,7 +71,7 @@ public class PlayerRepository(
         return record;
     }
     
-    public async Task<PlayerLogic?> TryGetPlayerInstanceByIdAsync(INetworkObject networkObject, int playerId)
+    public async Task<PlayerLogic?> CreatePlayerInstanceWithIdAsync(INetworkObject networkObject, int playerId)
     {
         var player = await dbContext
             .Set<Player>()
@@ -99,7 +120,7 @@ public class PlayerRepository(
 
         await UpdateOnlineStatusAsync(player.Id, false);
         await UpdateMessengerStatusForFriends(player.Id, player.GetMergedFriendships(), false, false);
-        await player!.DisposeAsync();
+        await player.DisposeAsync();
 
         return result;
     }
@@ -108,37 +129,35 @@ public class PlayerRepository(
     {
         foreach (var friendId in friendships.Select(x => x.TargetPlayer.Id).Distinct())
         {
-            if (!TryGetPlayerById(friendId, out var friend) || friend == null)
+            var friend = GetPlayerLogicById(friendId);
+            var friendship = friend?.GetMergedFriendships().FirstOrDefault(x => x.TargetPlayerId == playerId);
+
+            if (friendship == null)
             {
                 continue;
             }
-         
-            var friendship = friend.GetMergedFriendships().FirstOrDefault(x => x.TargetPlayerId == playerId);
+            
+            var relationship = friend
+                .Relationships
+                .FirstOrDefault(x =>
+                    x.TargetPlayerId == friendship.OriginPlayerId || x.TargetPlayerId == friendship.TargetPlayerId);
 
-            if (friendship != null)
-            {
-                var relationship = friend
-                    .Relationships
-                    .FirstOrDefault(x =>
-                        x.TargetPlayerId == friendship.OriginPlayerId || x.TargetPlayerId == friendship.TargetPlayerId);
-
-                var updateFriendWriter = new PlayerUpdateFriendWriter(
-                        0, 
-                        1, 
-                        0, 
-                        friendship, 
-                        isOnline, 
-                        inRoom, 
-                        0, 
-                        "", 
-                        "", 
-                        false, 
-                        false, 
-                        false,
-                        relationship?.TypeId ?? PlayerRelationshipType.None);
+            var updateFriendWriter = new PlayerUpdateFriendWriter(
+                0, 
+                1, 
+                0, 
+                friendship, 
+                isOnline, 
+                inRoom, 
+                0, 
+                "", 
+                "", 
+                false, 
+                false, 
+                false,
+                relationship?.TypeId ?? PlayerRelationshipType.None);
                 
-                await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
-            }
+            await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
         }
     }
     
@@ -170,8 +189,6 @@ public class PlayerRepository(
             .ToListAsync();
     }
 
-    public ICollection<PlayerLogic> GetAll() => _players.Values;
-
     public async ValueTask DisposeAsync()
     {
         foreach (var player in _players.Values)
@@ -191,11 +208,11 @@ public class PlayerRepository(
             .ToListAsync();
     }
 
-    public async Task<Player?> TryGetPlayerByUsernameAsync(string username)
+    public async Task BroadcastDataAsync(NetworkPacketWriter data)
     {
-        return await dbContext
-            .Set<Player>()
-            .Include(x => x.Data)
-            .FirstOrDefaultAsync(x => x.Username == username);
+        foreach (var player in _players.Values)
+        {
+            await player.NetworkObject.WriteToStreamAsync(data);
+        }
     }
 }
