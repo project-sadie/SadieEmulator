@@ -82,8 +82,7 @@ internal static class NetworkPacketEventHelpers
         }
 
         var doorPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
-        
-        var z = (float)(highestItemOnTiles != null ? highestItemOnTiles.PositionZ + highestItemOnTiles.FurnitureItem.StackHeight : 0);
+        var z = 0; // TODO: Calculate this
         
         var roomUser = roomUserFactory.Create(
             room,
