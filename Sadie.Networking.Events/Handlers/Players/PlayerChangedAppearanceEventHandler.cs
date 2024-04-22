@@ -39,9 +39,6 @@ public class PlayerChangedAppearanceEventHandler(
         player.AvatarData.Gender = gender;
         player.AvatarData.FigureCode = figureCode;
         
-        dbContext.PlayerAvatarData.Update(player.AvatarData);
-        await dbContext.SaveChangesAsync();
-        
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
@@ -49,5 +46,8 @@ public class PlayerChangedAppearanceEventHandler(
         
         await client.WriteToStreamAsync(new PlayerChangedAppearanceWriter(figureCode, gender));
         await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }));
+        
+        dbContext.PlayerAvatarData.Update(player.AvatarData);
+        await dbContext.SaveChangesAsync();
     }
 }
