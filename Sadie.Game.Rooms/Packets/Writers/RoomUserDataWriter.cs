@@ -22,15 +22,15 @@ public class RoomUserDataWriter : NetworkPacketWriter
             WriteInteger(user.Point.X);
             WriteInteger(user.Point.Y);
             WriteString(user.Point.Z + "");
-            WriteInteger(3);
-            WriteInteger(1);
+            WriteInteger((int) user.Direction);
+            WriteInteger(1); // type, 1 = user, 2 = pet, 3 = bot, 4 = rent bot
             WriteString(user.Player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
-            WriteInteger(-1);
-            WriteInteger(-1);
-            WriteString("");
-            WriteString("");
+            WriteInteger(-1); // group id
+            WriteInteger(-1); // group status
+            WriteString(""); // group name
+            WriteString(""); // swim figure
             WriteInteger(user.Player.Data.AchievementScore);
-            WriteBool(true);
+            WriteBool(true); // is moderator
         }
     }
 }
