@@ -1,4 +1,5 @@
-﻿using Sadie.Database.Models.Constants;
+﻿using Sadie.Database;
+using Sadie.Database.Models.Constants;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
@@ -11,23 +12,28 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 public class PlayerChangedMottoEventHandler(
     PlayerChangedMottoEventParser eventParser,
-    RoomRepository roomRepository, ServerPlayerConstants constants) : INetworkPacketEventHandler
+    RoomRepository roomRepository, 
+    ServerPlayerConstants constants,
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.PlayerChangedMotto;
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
+        if (client.Player == null)
+        {
+            return;
+        }
+        
         eventParser.Parse(reader);
 
-        var player = client.Player;
-        var newMotto = eventParser.Motto;
-
-        if (newMotto.Length >= constants.MaxMottoLength)
-        {
-            newMotto = newMotto.Truncate(constants.MaxMottoLength);
-        }
+        var player = client.Player!;
+        var newMotto = eventParser.Motto.Truncate(constants.MaxMottoLength);
 
         player.AvatarData.Motto = newMotto;
+        
+        dbContext.PlayerAvatarData.Update(player.AvatarData);
+        await dbContext.SaveChangesAsync();
         
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
