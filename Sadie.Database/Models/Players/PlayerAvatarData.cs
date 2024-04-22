@@ -7,9 +7,9 @@ public class PlayerAvatarData
 {
     public int Id { get; init; }
     public int PlayerId { get; init; }
-    public Player Player { get; init; }
-    public string FigureCode { get; set; }
-    public string Motto { get; set; }
+    public Player? Player { get; init; }
+    public string? FigureCode { get; set; }
+    public string? Motto { get; set; }
     public AvatarGender Gender { get; set; }
     public ChatBubble ChatBubbleId { get; set; }
 }

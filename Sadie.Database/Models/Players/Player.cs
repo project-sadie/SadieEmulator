@@ -6,16 +6,16 @@ namespace Sadie.Database.Models.Players;
 public class Player
 {
     public int Id { get; init; }
-    public string Username { get; init; }
+    public string? Username { get; init; }
     public ICollection<Role> Roles { get; init; } = [];
     public DateTime CreatedAt { get; init; }
-    public PlayerData Data { get; init; }
-    public PlayerAvatarData AvatarData { get; init; }
-    public ICollection<PlayerTag> Tags { get; init; }
-    public ICollection<PlayerRoomLike> RoomLikes { get; init; }
-    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = [];
-    public PlayerNavigatorSettings NavigatorSettings { get; init; }
-    public PlayerGameSettings GameSettings { get; init; }
+    public PlayerData? Data { get; init; }
+    public PlayerAvatarData? AvatarData { get; init; }
+    public ICollection<PlayerTag> Tags { get; init; } = [];
+    public ICollection<PlayerRoomLike> RoomLikes { get; init; } = [];
+    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = []; //
+    public PlayerNavigatorSettings? NavigatorSettings { get; init; }
+    public PlayerGameSettings? GameSettings { get; init; }
     public ICollection<PlayerBadge> Badges { get; init; } = [];
     public ICollection<PlayerFurnitureItem> FurnitureItems { get; init; } = [];
     public ICollection<PlayerWardrobeItem> WardrobeItems { get; init; } = [];
