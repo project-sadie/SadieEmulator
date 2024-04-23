@@ -113,12 +113,18 @@ public class RoomUser(
         await UpdateIdleStatusAsync();
     }
 
+    private void ClearWalking()
+    {
+        IsWalking = false;
+        RemoveStatuses(RoomUserStatus.Move);
+        CheckStatusForCurrentTile();
+    }
+    
     private void ProcessMovement()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
         {
-            IsWalking = false;
-            RemoveStatuses(RoomUserStatus.Move);
+            ClearWalking();
             return;
         }
         

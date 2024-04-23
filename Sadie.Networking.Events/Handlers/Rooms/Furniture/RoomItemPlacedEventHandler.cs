@@ -96,9 +96,6 @@ public class RoomItemPlacedEventHandler(
         }
 
         if (!RoomHelpers.CanPlaceAt(x, y, 
-                playerItem.FurnitureItem.TileSpanX, 
-                playerItem.FurnitureItem.TileSpanY,
-                direction, 
                 room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);

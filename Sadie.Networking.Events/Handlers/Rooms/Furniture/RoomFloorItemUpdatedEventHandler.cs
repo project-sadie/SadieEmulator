@@ -49,8 +49,7 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        if (!RoomHelpers.CanPlaceAt(eventParser.X, eventParser.Y, roomFurnitureItem.FurnitureItem.TileSpanX,
-                roomFurnitureItem.FurnitureItem.TileSpanY, eventParser.Direction, room.TileMap))
+        if (!RoomHelpers.CanPlaceAt(eventParser.X, eventParser.Y, room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;

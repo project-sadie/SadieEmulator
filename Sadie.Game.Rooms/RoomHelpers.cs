@@ -20,8 +20,7 @@ public static class RoomHelpers
             UseDiagonals = useDiagonal
         };
 
-        var combinedMap = tileMap.Map;
-        var worldGrid = new WorldGrid(combinedMap);
+        var worldGrid = new WorldGrid(tileMap.Map);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
 
         return pathfinder
@@ -190,13 +189,10 @@ public static class RoomHelpers
 
     public static bool CanPlaceAt(
         int x,
-        int y, 
-        int width, 
-        int height,
-        int direction, 
+        int y,  
         RoomTileMap tileMap)
     {
-        return GetPointsForPlacement(x, y, width, height, direction).All(point => tileMap.Map[point.Y, point.X] == 1);
+        return x >= 0 && y >= 0 && x < tileMap.SizeX && y < tileMap.SizeY;
     }
 
     public static void UpdateTileStatesForPoints(
@@ -215,8 +211,24 @@ public static class RoomHelpers
         int y, 
         IEnumerable<RoomFurnitureItem> furnitureItems)
     {
-        var items = GetItemsForPosition(x, y, furnitureItems);
-        return (short)(items.All(i => i.FurnitureItem!.CanWalk) ? 1 : 0);
+        var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
+
+        if (item == null)
+        {
+            return 1;
+        }
+        
+        if (item.FurnitureItem.CanWalk)
+        {
+            return 1;
+        }
+
+        if (item.FurnitureItem.CanSit)
+        {
+            return 2;
+        }
+
+        return 0;
     }
 
     public static List<IRoomUser> GetUsersForPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
