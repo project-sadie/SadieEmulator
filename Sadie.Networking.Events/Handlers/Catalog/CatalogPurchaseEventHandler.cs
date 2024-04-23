@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
@@ -64,23 +65,24 @@ public class CatalogPurchaseEventHandler(
         var created = DateTime.Now;
         var newItems = new List<PlayerFurnitureItem>();
         var metaData = NetworkPacketEventHelpers.CalculateMetaDataForCatalogItem(eventParser.ExtraData, item);
+        var furnitureItem = item.FurnitureItems.First();
 
         for (var i = 0; i < eventParser.Amount; i++)
         {
             var newItem = new PlayerFurnitureItem
             {
                 PlayerId = client.Player.Id,
-                FurnitureItem = item.FurnitureItems.First(),
-                LimitedData = $"1:1", // TODO: maxStack:maxSell
+                FurnitureItem = furnitureItem,
+                LimitedData = $"1:1",
                 MetaData = metaData,
                 CreatedAt = created
             };
             
-            newItems.Add(newItem);
             client.Player.FurnitureItems.Add(newItem);
+            dbContext.Entry(newItem).State = EntityState.Added;
+            newItems.Add(newItem);
         }
 
-        dbContext.PlayerFurnitureItems.AddRange(newItems);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems));

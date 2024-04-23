@@ -125,14 +125,15 @@ public class RoomItemPlacedEventHandler(
             MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
+
+        player.FurnitureItems.Remove(playerItem);
+        dbContext.PlayerFurnitureItems.Remove(playerItem);
         
         room.FurnitureItems.Add(roomFurnitureItem);
+        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
 
         RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
         
-        player.FurnitureItems.Remove(playerItem);
-
-        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
         await dbContext.SaveChangesAsync();
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));
