@@ -86,7 +86,7 @@ public class PlayerRepository(
             .Include(x => x.NavigatorSettings)
             .Include(x => x.GameSettings)
             .Include(x => x.Badges)
-            .Include(x => x.FurnitureItems)
+            .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
             .Include(x => x.WardrobeItems)
             .Include(x => x.Roles).ThenInclude(x => x.Permissions)
             .Include(x => x.Subscriptions).ThenInclude(x => x.Subscription)
