@@ -20,25 +20,13 @@ public static class RoomHelpers
             UseDiagonals = useDiagonal
         };
 
-        var combinedMap = GenerateWorldArrayFromMaps(tileMap.Map, tileMap.UserMap);
+        var combinedMap = tileMap.Map;
         var worldGrid = new WorldGrid(combinedMap);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
 
         return pathfinder
             .FindPath(start, end)
             .ToList();
-    }
-
-    private static short[,] GenerateWorldArrayFromMaps(
-        short[,] furnitureMap, 
-        ConcurrentDictionary<Point, List<IRoomUser>> userMap)
-    {
-        foreach (var (key, value) in userMap)
-        {
-            furnitureMap[key.Y, key.X] = (short)(value.Count < 1 ? 1 : 0);
-        }
-
-        return furnitureMap;
     }
 
     public static HDirection GetDirectionForNextStep(Point current, Point next)
@@ -231,17 +219,8 @@ public static class RoomHelpers
         return (short)(items.All(i => i.FurnitureItem!.CanWalk) ? 1 : 0);
     }
 
-    public static List<IRoomUser> GetUsersForPoints(
-        IEnumerable<Point> points, 
-        RoomTileMap tileMap)
+    public static List<IRoomUser> GetUsersForPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
     {
-        var users = new List<IRoomUser>();
-
-        foreach (var point in points)
-        {
-            users.AddRange(tileMap.GetMappedUsers(point));
-        }
-
-        return users;
+        return users.Where(user => points.Contains(user.Point)).ToList();
     }
 }

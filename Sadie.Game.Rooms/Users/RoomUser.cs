@@ -37,12 +37,6 @@ public class RoomUser(
     
     public void WalkToPoint(Point point)
     {
-        if (room.TileMap.GetMappedUsers(point).Count > 0 && 
-            !room.Settings.CanUsersOverlap)
-        {
-            return;
-        }
-        
         PathGoal = point;
         NeedsPathCalculated = true;
     }
@@ -102,9 +96,6 @@ public class RoomUser(
     {
         if (NextPoint != null)
         {
-            room.TileMap.RemoveUserFromMap(Point, this);
-            room.TileMap.AddUserToMap(NextPoint.Value, this);
-            
             Point = NextPoint.Value;
             NextPoint = null;
         }
@@ -135,7 +126,7 @@ public class RoomUser(
         
         var nextStep = PathPoints[StepsWalked];
 
-        if (room.TileMap.GetMappedUsers(nextStep).Count > 0 || room.TileMap.Map[nextStep.Y, nextStep.X] == 0)
+        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0)
         {
             NeedsPathCalculated = true;
             return;
@@ -229,7 +220,6 @@ public class RoomUser(
 
     public async ValueTask DisposeAsync()
     {
-        room.TileMap.RemoveUserFromMap(Point, this);
 
     }
 }

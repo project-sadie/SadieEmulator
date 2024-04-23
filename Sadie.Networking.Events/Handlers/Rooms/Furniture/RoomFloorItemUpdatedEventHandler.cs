@@ -49,6 +49,13 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
+        if (!RoomHelpers.CanPlaceAt(eventParser.X, eventParser.Y, roomFurnitureItem.FurnitureItem.TileSpanX,
+                roomFurnitureItem.FurnitureItem.TileSpanY, eventParser.Direction, room.TileMap))
+        {
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            return;
+        }
+
         var position = new HPoint(
             eventParser.X,
             eventParser.Y, 
@@ -68,25 +75,24 @@ public class RoomFloorItemUpdatedEventHandler(
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = (HDirection) direction;
         
-        foreach (var user in RoomHelpers.GetUsersForPoints(oldPoints, room.TileMap))
-        {
-            user.CheckStatusForCurrentTile();
-        }
-        
-        RoomHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);
-        
         var newPoints = RoomHelpers.GetPointsForPlacement(
             roomFurnitureItem.PositionX, 
             roomFurnitureItem.PositionY, 
             roomFurnitureItem.FurnitureItem.TileSpanX,
             roomFurnitureItem.FurnitureItem.TileSpanY, 
-            (int) roomFurnitureItem.Direction);
-            
-        foreach (var user in RoomHelpers.GetUsersForPoints(newPoints, room.TileMap))
+            direction);
+        
+        foreach (var user in RoomHelpers.GetUsersForPoints(oldPoints, room.UserRepository.GetAll()))
         {
             user.CheckStatusForCurrentTile();
         }
-            
+        
+        foreach (var user in RoomHelpers.GetUsersForPoints(newPoints, room.UserRepository.GetAll()))
+        {
+            user.CheckStatusForCurrentTile();
+        }
+        
+        RoomHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
         RoomHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
         
         await dbContext.SaveChangesAsync();
