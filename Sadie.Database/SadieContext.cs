@@ -90,7 +90,7 @@ public class SadieContext(
         modelBuilder.Entity<FurnitureItem>()
             .Property(e => e.Type)
             .HasConversion(
-                v => v.ToString(),
+                v => EnumHelpers.GetEnumDescription(v),
                 v => EnumHelpers.GetEnumValueFromDescription<FurnitureItemType>(v));
 
         modelBuilder.Entity<CatalogItem>()
@@ -126,7 +126,7 @@ public class SadieContext(
         modelBuilder.Entity<PlayerAvatarData>()
             .Property(e => e.Gender)
             .HasConversion(
-                v => v.ToString(),
+                v => EnumHelpers.GetEnumDescription(v),
                 v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v));
 
         modelBuilder.Entity<Subscription>().ToTable("subscriptions");
