@@ -20,12 +20,34 @@ public static class RoomHelpers
             UseDiagonals = useDiagonal
         };
 
-        var worldGrid = new WorldGrid(tileMap.Map);
+        var worldArray = GetWorldArrayFromTileMap(tileMap, end);
+        var worldGrid = new WorldGrid(worldArray);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
 
         return pathfinder
             .FindPath(start, end)
             .ToList();
+    }
+
+    private static short[,] GetWorldArrayFromTileMap(RoomTileMap map, Point goalPoint)
+    {
+        var tmp = new short[map.SizeY, map.SizeX];
+        
+        for (var y = 0; y < map.SizeY; y++)
+        {
+            for (var x = 0; x < map.SizeX; x++)
+            {
+                if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))
+                {
+                    tmp[y, x] = 0;
+                    continue;
+                }
+                
+                tmp[y, x] = map.Map[y, x];
+            }
+        }
+
+        return tmp;
     }
 
     public static HDirection GetDirectionForNextStep(Point current, Point next)

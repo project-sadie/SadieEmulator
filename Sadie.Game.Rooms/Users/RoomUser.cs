@@ -131,8 +131,9 @@ public class RoomUser(
         StepsWalked++;
         
         var nextStep = PathPoints[StepsWalked];
-
-        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0)
+        var lastStep = PathPoints.Count == StepsWalked + 1;
+        
+        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep)
         {
             NeedsPathCalculated = true;
             return;
