@@ -156,8 +156,37 @@ public static class RoomHelpers
             _ => throw new ArgumentOutOfRangeException(nameof(direction))
         };
     }
+    
+    public static short[,] BuildSquareStateMapForRoom(
+        int mapSizeX,
+        int mapSizeY,
+        string heightMap)
+    {
+        var heightmapLines = heightMap.Split("\n").ToList();
+        var map = new short[mapSizeY, mapSizeX];
+        
+        for (var y = 0; y < heightmapLines.Count; y++)
+        {
+            var currentLine = heightmapLines[y];
 
-    public static short[,] GenerateMapForRoom(
+            for (var x = 0; x < currentLine.Length; x++)
+            {
+                var open = short.TryParse(currentLine[x].ToString(), out var z);
+
+                if (!open)
+                {
+                    map[y, x] = 0;
+                    continue;
+                }
+
+                map[y, x] = 1;
+            }
+        }
+        
+        return map; 
+    }
+    
+    public static short[,] BuildTileMapForRoom(
         int mapSizeX,
         int mapSizeY,
         string heightMap, 
@@ -188,11 +217,10 @@ public static class RoomHelpers
     }
 
     public static bool CanPlaceAt(
-        int x,
-        int y,  
+        List<Point> points,  
         RoomTileMap tileMap)
     {
-        return x >= 0 && y >= 0 && x < tileMap.SizeX && y < tileMap.SizeY;
+        return points.All(point => tileMap.SquareStateMap[point.Y, point.X] != 0);
     }
 
     public static void UpdateTileStatesForPoints(
@@ -226,6 +254,11 @@ public static class RoomHelpers
         if (item.FurnitureItem.CanSit)
         {
             return 2;
+        }
+
+        if (item.FurnitureItem.CanLay)
+        {
+            return 3;
         }
 
         return 0;

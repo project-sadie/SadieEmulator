@@ -1,3 +1,4 @@
+using System.Drawing;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Furniture;
@@ -95,8 +96,9 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        if (!RoomHelpers.CanPlaceAt(x, y, 
-                room.TileMap))
+        if (!RoomHelpers
+            .GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX, playerItem.FurnitureItem.TileSpanY,
+                direction).All(x => RoomHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;

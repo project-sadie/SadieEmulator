@@ -49,7 +49,13 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        if (!RoomHelpers.CanPlaceAt(eventParser.X, eventParser.Y, room.TileMap))
+        var newPoints = RoomHelpers.GetPointsForPlacement(
+            eventParser.X, eventParser.Y, 
+            roomFurnitureItem.FurnitureItem.TileSpanX,
+            roomFurnitureItem.FurnitureItem.TileSpanY, 
+            eventParser.Direction);
+        
+        if (!RoomHelpers.CanPlaceAt(newPoints, room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
@@ -73,13 +79,6 @@ public class RoomFloorItemUpdatedEventHandler(
         roomFurnitureItem.PositionY = position.Y;
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = (HDirection) direction;
-        
-        var newPoints = RoomHelpers.GetPointsForPlacement(
-            roomFurnitureItem.PositionX, 
-            roomFurnitureItem.PositionY, 
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY, 
-            direction);
         
         foreach (var user in RoomHelpers.GetUsersForPoints(oldPoints, room.UserRepository.GetAll()))
         {
