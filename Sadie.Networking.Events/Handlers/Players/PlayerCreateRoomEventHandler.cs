@@ -52,6 +52,7 @@ public class PlayerCreateRoomEventHandler(
         };
 
         roomRepository.AddRoom(newRoom);
+        client.Player.Rooms.Add(newRoom);
 
         await client.WriteToStreamAsync(new RoomCreatedWriter(newRoom.Id, newRoom.Name));
         await dbContext.SaveChangesAsync();

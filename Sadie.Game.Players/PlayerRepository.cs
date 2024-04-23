@@ -98,6 +98,7 @@ public class PlayerRepository(
             .Include(x => x.IncomingFriendships)
             .Include(x => x.MessagesSent)
             .Include(x => x.MessagesReceived)
+            .Include(x => x.Rooms).ThenInclude(x => x.Settings)
             .FirstOrDefaultAsync();
 
         if (player == null)

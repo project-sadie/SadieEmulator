@@ -28,7 +28,6 @@ public class NavigatorSearchEventHandler(
             return;
         }
 
-        var playerId = client.Player.Id;
         var tabName = eventParser.TabName;
         var searchQuery = eventParser.SearchQuery;
 
@@ -46,7 +45,7 @@ public class NavigatorSearchEventHandler(
 
         foreach (var category in categories)
         {
-            categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(playerId, category.CodeName));
+            categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
         }
 
         categoryRoomMap = ApplyFilter(searchQuery, categoryRoomMap);
