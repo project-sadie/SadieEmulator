@@ -95,6 +95,7 @@ internal static class NetworkPacketEventHelpers
             player,
             controllerLevel);
 
+        room.TileMap.AddUserToMap(doorPoint, roomUser);
         roomUser.ApplyFlatCtrlStatus();
         
         if (!room.UserRepository.TryAdd(roomUser))

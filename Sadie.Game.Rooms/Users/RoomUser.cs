@@ -96,6 +96,9 @@ public class RoomUser(
     {
         if (NextPoint != null)
         {
+            room.TileMap.RemoveUserFromMap(Point, this);
+            room.TileMap.AddUserToMap(NextPoint.Value, this);
+            
             Point = NextPoint.Value;
             NextPoint = null;
         }
@@ -133,7 +136,9 @@ public class RoomUser(
         var nextStep = PathPoints[StepsWalked];
         var lastStep = PathPoints.Count == StepsWalked + 1;
         
-        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep)
+        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
+            (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
+            room.TileMap.GetMappedUsers(nextStep).Count > 0)
         {
             NeedsPathCalculated = true;
             return;
@@ -227,6 +232,6 @@ public class RoomUser(
 
     public async ValueTask DisposeAsync()
     {
-
+        room.TileMap.RemoveUserFromMap(Point, this);
     }
 }

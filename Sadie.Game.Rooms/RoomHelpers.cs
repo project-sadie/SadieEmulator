@@ -31,13 +31,23 @@ public static class RoomHelpers
 
     private static short[,] GetWorldArrayFromTileMap(RoomTileMap map, Point goalPoint)
     {
-        var tmp = new short[map.SizeY, map.SizeX];
+         var tmp = new short[map.SizeY, map.SizeX];
         
         for (var y = 0; y < map.SizeY; y++)
         {
             for (var x = 0; x < map.SizeX; x++)
             {
+                // If it's a seat tile, don't include it unless it's our goal
+                
                 if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))
+                {
+                    tmp[y, x] = 0;
+                    continue;
+                }
+                
+                // If the tile has other users on it skip it
+
+                if (map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0)
                 {
                     tmp[y, x] = 0;
                     continue;
