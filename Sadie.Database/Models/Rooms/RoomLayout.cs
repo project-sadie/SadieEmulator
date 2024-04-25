@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Sadie.Shared.Unsorted.Game.Rooms;
+﻿using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Database.Models.Rooms;
 

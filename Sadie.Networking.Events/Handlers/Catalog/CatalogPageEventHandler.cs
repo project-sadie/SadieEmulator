@@ -1,5 +1,7 @@
-using Sadie.Game.Catalog.FrontPage;
-using Sadie.Game.Catalog.Pages;
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog.FrontPage;
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
@@ -8,21 +10,28 @@ using Sadie.Networking.Writers.Catalog;
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogPageEventHandler(CatalogPageEventParser eventParser, 
-    CatalogPageRepository catalogPageRepo,
-    CatalogFrontPageItemRepository frontPageItemRepo) : INetworkPacketEventHandler
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.CatalogPage;
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
-        
-        var page = catalogPageRepo.TryGet(eventParser.PageId);
+
+        var page = await dbContext
+            .Set<CatalogPage>()
+            .Where(x => x.Id == eventParser.PageId)
+            .Include(catalogPage => catalogPage.Items)
+            .FirstOrDefaultAsync();
 
         if (page is not { Enabled: true } || !page.Visible)
         {
             return;
         }
+
+        var frontPageItems = await dbContext
+            .Set<CatalogFrontPageItem>()
+            .ToListAsync();
 
         await client.WriteToStreamAsync(new CatalogPageWriter(
             page.Id,
@@ -37,6 +46,6 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
             page.Items, 
             eventParser.CatalogMode,
             false,
-            frontPageItemRepo.Items));
+            frontPageItems));
     }
 }

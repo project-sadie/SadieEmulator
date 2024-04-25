@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
-using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
@@ -14,8 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogPurchaseEventHandler(
     CatalogPurchaseEventParser eventParser,
-    SadieContext dbContext,
-    CatalogPageRepository pageRepository) : INetworkPacketEventHandler
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.CatalogPurchase;
 
@@ -38,7 +37,11 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        var page = pageRepository.TryGet(eventParser.PageId);
+        var page = await dbContext
+            .Set<CatalogPage>()
+            .Include(catalogPage => catalogPage.Items)
+            .ThenInclude(catalogItem => catalogItem.FurnitureItems)
+            .FirstOrDefaultAsync(x => x.Id == eventParser.PageId);
 
         if (page == null)
         {

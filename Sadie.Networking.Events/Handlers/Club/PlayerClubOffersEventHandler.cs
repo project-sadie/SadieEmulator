@@ -1,4 +1,6 @@
-﻿using Sadie.Game.Catalog.Club;
+﻿using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Club;
 using Sadie.Networking.Packets;
@@ -8,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Club;
 
 public class PlayerClubOffersEventHandler(
     PlayerClubOffersEventParser eventParser, 
-    CatalogClubOfferRepository clubOfferRepository) : INetworkPacketEventHandler
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.HabboClubData;
 
@@ -35,9 +37,13 @@ public class PlayerClubOffersEventHandler(
 
             daysRemaining = (int)(daysTotal - daysSinceStarted);
         }
-
+        
+        var catalogClubOffers = await dbContext
+            .Set<CatalogClubOffer>()
+            .ToListAsync();
+        
         await client.WriteToStreamAsync(new PlayerClubOffersWriter(
-            clubOfferRepository.Offers,
+            catalogClubOffers,
             eventParser.WindowId,
             false,
             false,
