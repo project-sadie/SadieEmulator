@@ -8,7 +8,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
-using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
@@ -64,7 +63,6 @@ public class CatalogPurchaseEventHandler(
         
         var created = DateTime.Now;
         var newItems = new List<PlayerFurnitureItem>();
-        var metaData = NetworkPacketEventHelpers.CalculateMetaDataForCatalogItem(eventParser.ExtraData, item);
         var furnitureItem = item.FurnitureItems.First();
 
         for (var i = 0; i < eventParser.Amount; i++)
@@ -74,7 +72,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = $"1:1",
-                MetaData = metaData,
+                MetaData = eventParser.ExtraData,
                 CreatedAt = created
             };
             

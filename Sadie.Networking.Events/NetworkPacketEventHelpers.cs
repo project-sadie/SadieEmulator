@@ -19,7 +19,6 @@ using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events;
@@ -55,6 +54,15 @@ internal static class NetworkPacketEventHelpers
         user = client.RoomUser;
         
         return true;
+    }
+
+    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
+    {
+        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
+            new Dictionary<string, string>
+            {
+                { "message", error.ToString() }
+            }));
     }
 
     internal static async Task EnterRoomAsync<T>(
@@ -141,15 +149,6 @@ internal static class NetworkPacketEventHelpers
         }
 
         await client.WriteToStreamAsync(new RoomLoadedWriter());
-    }
-
-    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
-    {
-        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
-            new Dictionary<string, string>
-            {
-                { "message", error.ToString() }
-            }));
     }
 
     public static async Task ProcessChatMessageAsync(
@@ -281,24 +280,5 @@ internal static class NetworkPacketEventHelpers
             playerData.GotwPoints));
 
         return true;
-    }
-
-    public static string CalculateMetaDataForCatalogItem(string metaData, CatalogItem item)
-    {
-        switch (item.FurnitureItems.First().InteractionType)
-        {
-            case "roomeffect":
-                if (string.IsNullOrEmpty(metaData))
-                {
-                    return 0.ToString();
-                }
-
-                return double
-                    .Parse(metaData)
-                    .ToString()
-                    .Replace(',', '.');
-            default:
-                return metaData;
-        }
     }
 }
