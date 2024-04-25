@@ -18,10 +18,5 @@ public class RoomSettings
     public int WallThickness { get; set; }
     public int FloorThickness { get; set; }
     public bool CanUsersOverlap { get; set; }
-    public int ChatType { get; set; }
-    public int ChatWeight { get; set; }
-    public int ChatSpeed { get; set; }
-    public int ChatDistance { get; set; }
-    public int ChatProtection { get; set; }
     public int TradeOption { get; set; }
 }
