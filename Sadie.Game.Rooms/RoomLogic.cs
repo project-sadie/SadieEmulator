@@ -21,6 +21,7 @@ public class RoomLogic : Room
         IRoomUserRepository userRepository,
         ICollection<RoomFurnitureItem> furnitureItems,
         RoomSettings settings,
+        RoomChatSettings chatSettings,
         ICollection<RoomChatMessage> chatMessages,
         ICollection<RoomPlayerRight> playerRights,
         RoomPaintSettings paintSettings,
@@ -35,6 +36,7 @@ public class RoomLogic : Room
         Description = description;
         IsMuted = isMuted;
         Settings = settings;
+        ChatSettings = chatSettings;
         ChatMessages = chatMessages;
         PaintSettings = paintSettings;
         PlayerRights = playerRights;
