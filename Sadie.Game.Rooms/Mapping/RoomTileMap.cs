@@ -2,6 +2,7 @@
 using System.Drawing;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Users;
+using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Mapping;
 
@@ -13,7 +14,7 @@ public class RoomTileMap
     public int Size { get; }
     public short[,] SquareStateMap { get; }
     public short[,] Map { get; }
-    public ConcurrentDictionary<Point, List<IRoomUser>?> UserMap { get; } = [];
+    public ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; } = [];
 
     public RoomTileMap(string heightmap, ICollection<RoomFurnitureItem> furnitureItems)
     {
@@ -25,15 +26,6 @@ public class RoomTileMap
         Map = RoomTileMapHelpers.BuildTileMapForRoom(SizeX, SizeY, heightmap, furnitureItems);
     }
 
-    public void AddUserToMap(Point point, IRoomUser user)
-    {
-        if (UserMap.TryGetValue(point, out var value))
-        {
-            value.Add(user);
-        }
-        else
-        {
-            UserMap[point] = [user];
-        }
-    }
+    public void AddUserToMap(Point point, IRoomUser user) => 
+        UserMap.GetOrInsert(point, () => []).Add(user);
 }

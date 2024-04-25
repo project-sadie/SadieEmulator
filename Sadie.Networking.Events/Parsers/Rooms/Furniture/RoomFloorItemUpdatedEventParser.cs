@@ -1,5 +1,4 @@
 using Sadie.Networking.Packets;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Parsers.Rooms.Furniture;
 
