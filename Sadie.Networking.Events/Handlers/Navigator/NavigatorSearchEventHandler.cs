@@ -36,7 +36,7 @@ public class NavigatorSearchEventHandler(
             .Include(x => x.Categories)
             .FirstOrDefaultAsync(x => x.Name == tabName);
 
-        if (tab != null)
+        if (tab == null)
         {
             return;
         }
