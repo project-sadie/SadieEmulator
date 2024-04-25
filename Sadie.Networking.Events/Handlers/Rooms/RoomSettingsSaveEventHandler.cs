@@ -64,17 +64,16 @@ public class RoomSettingsSaveEventHandler(
             });
         }
         
-        UpdateSettings(room);
+        UpdateSettings(room.Settings);
+        UpdateChatSettings(room.ChatSettings);
         
         await roomRepository.SaveRoomAsync(room);
         await BroadcastUpdatesAsync(room);
         await client.WriteToStreamAsync(new RoomSettingsSavedWriter(eventParser.RoomId));
     }
 
-    private void UpdateSettings(Room room)
+    private void UpdateSettings(RoomSettings settings)
     {
-        var settings = room.Settings;
-        
         settings.AccessType = eventParser.AccessType;
         settings.Password = eventParser.Password;
         settings.TradeOption = eventParser.TradeOption;
@@ -87,16 +86,20 @@ public class RoomSettingsSaveEventHandler(
         settings.WhoCanMute = eventParser.WhoCanMute;
         settings.WhoCanKick = eventParser.WhoCanKick;
         settings.WhoCanBan = eventParser.WhoCanBan;
-        settings.ChatType = eventParser.ChatType;
-        settings.ChatWeight = eventParser.ChatWeight;
-        settings.ChatSpeed = eventParser.ChatSpeed;
-        settings.ChatDistance = eventParser.ChatDistance;
-        settings.ChatProtection = eventParser.ChatProtection;
     }
 
+    private void UpdateChatSettings(RoomChatSettings chatSettings)
+    {
+        chatSettings.ChatType = eventParser.ChatType;
+        chatSettings.ChatWeight = eventParser.ChatWeight;
+        chatSettings.ChatSpeed = eventParser.ChatSpeed;
+        chatSettings.ChatDistance = eventParser.ChatDistance;
+        chatSettings.ChatProtection = eventParser.ChatProtection;
+    }
     private async Task BroadcastUpdatesAsync(RoomLogic room)
     {
         var settings = room.Settings;
+        var chatSettings = room.ChatSettings;
         
         var floorSettingsWriter = new RoomWallFloorSettingsWriter(
             settings.HideWalls, 
@@ -104,11 +107,11 @@ public class RoomSettingsSaveEventHandler(
             settings.FloorThickness);
 
         var settingsWriter = new RoomChatSettingsWriter(
-            settings.ChatType, 
-            settings.ChatWeight, 
-            settings.ChatSpeed,
-            settings.ChatDistance, 
-            settings.ChatProtection);
+            chatSettings.ChatType, 
+            chatSettings.ChatWeight, 
+            chatSettings.ChatSpeed,
+            chatSettings.ChatDistance, 
+            chatSettings.ChatProtection);
 
         var settingsUpdatedWriter = new RoomSettingsUpdatedWriter(eventParser.RoomId);
 

@@ -34,14 +34,18 @@ public class PlayerCreateRoomEventHandler(
             LayoutId = layout.Id,
             Layout = layout,
             OwnerId = client.Player.Id,
+            Owner = client.Player,
             MaxUsersAllowed = 50,
             Description = eventParser.Description,
             CreatedAt = DateTime.Now
         };
 
-        dbContext.Rooms.Add(newRoom);
-
         newRoom.Settings = new RoomSettings
+        {
+            RoomId = newRoom.Id
+        };
+
+        newRoom.ChatSettings = new RoomChatSettings
         {
             RoomId = newRoom.Id
         };
@@ -51,6 +55,7 @@ public class PlayerCreateRoomEventHandler(
             RoomId = newRoom.Id,
         };
 
+        dbContext.Rooms.Add(newRoom);
         roomRepository.AddRoom(newRoom);
         client.Player.Rooms.Add(newRoom);
 

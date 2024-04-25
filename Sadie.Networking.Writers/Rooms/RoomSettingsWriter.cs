@@ -24,6 +24,7 @@ public class RoomSettingsWriter : NetworkPacketWriter
         }
 
         var settings = roomData.Settings;
+        var chatSettings = roomData.ChatSettings;
         
         WriteInteger(settings.TradeOption);
         WriteInteger(settings.AllowPets ? 1 : 0);
@@ -32,11 +33,11 @@ public class RoomSettingsWriter : NetworkPacketWriter
         WriteInteger(settings.HideWalls ? 1 : 0);
         WriteInteger(settings.WallThickness);
         WriteInteger(settings.FloorThickness);
-        WriteInteger(settings.ChatType); 
-        WriteInteger(settings.ChatWeight); 
-        WriteInteger(settings.ChatSpeed); 
-        WriteInteger(settings.ChatDistance); 
-        WriteInteger(settings.ChatProtection); 
+        WriteInteger(chatSettings.ChatType); 
+        WriteInteger(chatSettings.ChatWeight); 
+        WriteInteger(chatSettings.ChatSpeed); 
+        WriteInteger(chatSettings.ChatDistance); 
+        WriteInteger(chatSettings.ChatProtection); 
         WriteBool(false); // TODO: unknown
         WriteInteger(settings.WhoCanMute);
         WriteInteger(settings.WhoCanKick);

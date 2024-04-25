@@ -18,6 +18,7 @@ public class Room
     public bool IsMuted { get; init; }
     public RoomSettings? Settings { get; set; }
     public RoomPaintSettings? PaintSettings { get; set; }
+    public RoomChatSettings? ChatSettings { get; set; }
     public ICollection<RoomPlayerRight> PlayerRights { get; init; } = [];
     public ICollection<RoomChatMessage> ChatMessages { get; init; } = [];
     public ICollection<RoomTag> Tags { get; init; } = [];

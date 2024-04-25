@@ -27,6 +27,7 @@ public class RoomProfile : Profile
                 provider.GetRequiredService<IRoomUserRepository>(),
                 x.FurnitureItems,
                 x.Settings,
+                x.ChatSettings,
                 x.ChatMessages,
                 x.PlayerRights,
                 x.PaintSettings,

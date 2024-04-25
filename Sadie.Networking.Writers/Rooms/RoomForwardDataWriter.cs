@@ -9,6 +9,7 @@ public class RoomForwardDataWriter : NetworkPacketWriter
     public RoomForwardDataWriter(RoomLogic room, bool roomForward, bool enterRoom, bool isOwner)
     {
         var settings = room.Settings;
+        var chatSettings = room.ChatSettings;
         
         WriteShort(ServerPacketId.RoomForwardData);
         WriteBool(enterRoom);
@@ -40,10 +41,10 @@ public class RoomForwardDataWriter : NetworkPacketWriter
         WriteInteger(settings.WhoCanKick);
         WriteInteger(settings.WhoCanBan);
         WriteBool(isOwner); // mute all button
-        WriteInteger(settings.ChatType); 
-        WriteInteger(settings.ChatWeight); 
-        WriteInteger(settings.ChatSpeed); 
-        WriteInteger(settings.ChatDistance); 
-        WriteInteger(settings.ChatProtection); 
+        WriteInteger(chatSettings.ChatType); 
+        WriteInteger(chatSettings.ChatWeight); 
+        WriteInteger(chatSettings.ChatSpeed); 
+        WriteInteger(chatSettings.ChatDistance); 
+        WriteInteger(chatSettings.ChatProtection); 
     }
 }
