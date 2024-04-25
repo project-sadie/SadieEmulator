@@ -1,4 +1,5 @@
 using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
@@ -14,7 +15,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
     {
         item.MetaData = "1";
 
-        var direction = RoomHelpers.GetOppositeDirection((int) item.Direction);
+        var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 
         roomUser.Direction = direction;
         roomUser.DirectionHead = direction;

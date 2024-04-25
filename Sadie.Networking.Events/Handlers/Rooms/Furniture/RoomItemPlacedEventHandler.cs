@@ -4,7 +4,7 @@ using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Tiles;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
@@ -96,15 +96,15 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        if (!RoomHelpers
+        if (!RoomTileMapHelpers
             .GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX, playerItem.FurnitureItem.TileSpanY,
-                direction).All(x => RoomHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
+                direction).All(x => RoomTileMapHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
-        var points = RoomHelpers.GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX,
+        var points = RoomTileMapHelpers.GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX,
             playerItem.FurnitureItem.TileSpanY, direction);
 
         var z = 0; // TODO: Calculate this
@@ -131,7 +131,7 @@ public class RoomItemPlacedEventHandler(
         room.FurnitureItems.Add(roomFurnitureItem);
         dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
 
-        RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
+        RoomTileMapHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
         
         await dbContext.SaveChangesAsync();
 

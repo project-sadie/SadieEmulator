@@ -1,6 +1,6 @@
 ﻿using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Tiles;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
@@ -18,7 +18,7 @@ public class RoomRelativeMapWriter : NetworkPacketWriter
         {
             for (var x = 0; x < tileMap.SizeX; x++)
             {
-                var topItem = RoomHelpers
+                var topItem = RoomTileMapHelpers
                     .GetItemsForPosition(x, y, items)
                     .MaxBy(i => i.PositionZ);
                 

@@ -1,8 +1,8 @@
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Tiles;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
@@ -49,13 +49,13 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var newPoints = RoomHelpers.GetPointsForPlacement(
+        var newPoints = RoomTileMapHelpers.GetPointsForPlacement(
             eventParser.X, eventParser.Y, 
             roomFurnitureItem.FurnitureItem.TileSpanX,
             roomFurnitureItem.FurnitureItem.TileSpanY, 
             eventParser.Direction);
         
-        if (!RoomHelpers.CanPlaceAt(newPoints, room.TileMap))
+        if (!RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
@@ -68,7 +68,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
         var direction = eventParser.Direction;
         
-        var oldPoints = RoomHelpers.GetPointsForPlacement(
+        var oldPoints = RoomTileMapHelpers.GetPointsForPlacement(
             roomFurnitureItem.PositionX, 
             roomFurnitureItem.PositionY, 
             roomFurnitureItem.FurnitureItem.TileSpanX,
@@ -80,18 +80,18 @@ public class RoomFloorItemUpdatedEventHandler(
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = (HDirection) direction;
         
-        foreach (var user in RoomHelpers.GetUsersForPoints(oldPoints, room.UserRepository.GetAll()))
+        foreach (var user in RoomTileMapHelpers.GetUsersForPoints(oldPoints, room.UserRepository.GetAll()))
         {
             user.CheckStatusForCurrentTile();
         }
         
-        foreach (var user in RoomHelpers.GetUsersForPoints(newPoints, room.UserRepository.GetAll()))
+        foreach (var user in RoomTileMapHelpers.GetUsersForPoints(newPoints, room.UserRepository.GetAll()))
         {
             user.CheckStatusForCurrentTile();
         }
         
-        RoomHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
-        RoomHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
+        RoomTileMapHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
+        RoomTileMapHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
         
         await dbContext.SaveChangesAsync();
         await BroadcastUpdateAsync(room, roomFurnitureItem);

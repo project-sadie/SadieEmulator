@@ -1,0 +1,242 @@
+using System.Drawing;
+using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Game.Rooms.Users;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Rooms;
+
+namespace Sadie.Game.Rooms.Mapping;
+
+public class RoomTileMapHelpers
+{
+    public static HDirection GetOppositeDirection(int direction)
+    {
+        return (HDirection) direction switch
+        {
+            HDirection.North => HDirection.South,
+            HDirection.NorthEast => HDirection.SouthWest,
+            HDirection.East => HDirection.West,
+            HDirection.SouthEast => HDirection.NorthWest,
+            HDirection.South => HDirection.North,
+            HDirection.SouthWest => HDirection.NorthEast,
+            HDirection.West => HDirection.East,
+            HDirection.NorthWest => HDirection.SouthEast,
+            _ => throw new ArgumentOutOfRangeException(nameof(direction))
+        };
+    }
+    
+    public static List<Point> GetPointsForPlacement(int x, int y, int width, int length, int direction)
+    {
+        var points = new List<Point>();
+        
+        switch (direction)
+        {
+            case 0 or 4:
+            {
+                for (var i = x; i <= x + (width - 1); i++)
+                {
+                    for (var j = y; j <= y + (length - 1); j++)
+                    {
+                        points.Add(new Point(i, j));
+                    }
+                }
+
+                break;
+            }
+            case 2 or 6:
+            {
+                for (var i = x; i <= x + (length - 1); i++)
+                {
+                    for (var j = y; j <= y + (width - 1); j++)
+                    {
+                        points.Add(new Point(i, j));
+                    }
+                }
+
+                break;
+            }
+        }
+
+        return points;
+    }
+    
+    public static short[,] BuildTileMapForRoom(
+        int mapSizeX,
+        int mapSizeY,
+        string heightMap, 
+        ICollection<RoomFurnitureItem> furnitureItems)
+    {
+        var heightmapLines = heightMap.Split("\n").ToList();
+        var map = new short[mapSizeY, mapSizeX];
+        
+        for (var y = 0; y < heightmapLines.Count; y++)
+        {
+            var currentLine = heightmapLines[y];
+
+            for (var x = 0; x < currentLine.Length; x++)
+            {
+                var open = int.TryParse(currentLine[x].ToString(), out var z);
+
+                if (!open)
+                {
+                    map[y, x] = 0;
+                    continue;
+                }
+                
+                map[y, x] = GetStateNumberForTile(x, y, furnitureItems);
+            }
+        }
+        
+        return map; 
+    }
+
+    private static short GetStateNumberForTile(
+        int x, 
+        int y, 
+        IEnumerable<RoomFurnitureItem> furnitureItems)
+    {
+        var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
+
+        if (item == null)
+        {
+            return 1;
+        }
+        
+        if (item.FurnitureItem.CanWalk)
+        {
+            return 1;
+        }
+
+        if (item.FurnitureItem.CanSit)
+        {
+            return 2;
+        }
+
+        if (item.FurnitureItem.CanLay)
+        {
+            return 3;
+        }
+
+        return 0;
+    }
+
+    public static List<RoomFurnitureItem> GetItemsForPosition(int x, int y, IEnumerable<RoomFurnitureItem> items)
+    {
+        var tileItems = new List<RoomFurnitureItem>();
+        
+        foreach (var item in items)
+        {
+            var width = 0;
+            var length = 0;
+            
+            if (item.FurnitureItem.Type != FurnitureItemType.Floor)
+            {
+                continue;
+            }
+
+            switch ((int)item.Direction)
+            {
+                case 2 or 6:
+                    width = item.FurnitureItem.TileSpanY > 0 ? item.FurnitureItem.TileSpanY : 1;
+                    length = item.FurnitureItem.TileSpanX > 0 ? item.FurnitureItem.TileSpanX : 1;
+                    break;
+                case 0 or 4:
+                    width = item.FurnitureItem.TileSpanX > 0 ? item.FurnitureItem.TileSpanX : 1;
+                    length = item.FurnitureItem.TileSpanY > 0 ? item.FurnitureItem.TileSpanY : 1;
+                    break;
+            }
+            
+            if (!(x >= item.PositionX && x <= item.PositionX + width - 1 &&
+                  y >= item.PositionY && y <= item.PositionY + length - 1))
+            {
+                continue;
+            }
+
+            tileItems.Add(item);
+        }
+
+        return tileItems;
+    }
+    
+    public static short[,] BuildSquareStateMapForRoom(
+        int mapSizeX,
+        int mapSizeY,
+        string heightMap)
+    {
+        var heightmapLines = heightMap.Split("\n").ToList();
+        var map = new short[mapSizeY, mapSizeX];
+        
+        for (var y = 0; y < heightmapLines.Count; y++)
+        {
+            var currentLine = heightmapLines[y];
+
+            for (var x = 0; x < currentLine.Length; x++)
+            {
+                var open = short.TryParse(currentLine[x].ToString(), out var z);
+
+                if (!open)
+                {
+                    map[y, x] = 0;
+                    continue;
+                }
+
+                map[y, x] = 1;
+            }
+        }
+        
+        return map; 
+    }
+
+    public static short[,] GetWorldArrayFromTileMap(RoomTileMap map, Point goalPoint)
+    {
+        var tmp = new short[map.SizeY, map.SizeX];
+        
+        for (var y = 0; y < map.SizeY; y++)
+        {
+            for (var x = 0; x < map.SizeX; x++)
+            {
+                // If it's a seat tile, don't include it unless it's our goal
+                
+                if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))
+                {
+                    tmp[y, x] = 0;
+                    continue;
+                }
+                
+                // If the tile has other users on it skip it
+
+                if (map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0)
+                {
+                    tmp[y, x] = 0;
+                    continue;
+                }
+                
+                tmp[y, x] = map.Map[y, x];
+            }
+        }
+
+        return tmp;
+    }
+
+    public static void UpdateTileStatesForPoints(
+        List<Point> points, 
+        RoomTileMap tileMap, 
+        ICollection<RoomFurnitureItem> furnitureItems)
+    {
+        foreach (var point in points)
+        {
+            tileMap.Map[point.Y, point.X] = GetStateNumberForTile(point.X, point.Y, furnitureItems);
+        }
+    }
+    
+    public static bool CanPlaceAt(
+        List<Point> points,  
+        RoomTileMap tileMap)
+    {
+        return points.All(point => tileMap.SquareStateMap[point.Y, point.X] != 0);
+    }
+    
+    public static List<IRoomUser> GetUsersForPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
+    {
+        return users.Where(user => points.Contains(user.Point)).ToList();
+    }
+}

@@ -2,6 +2,8 @@
 using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
+using Sadie.Game.Rooms.Mapping;
+using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
@@ -43,7 +45,7 @@ public class RoomUser(
 
     public void LookAtPoint(Point point)
     {
-        var direction = RoomHelpers.GetDirectionForNextStep(Point, point);
+        var direction = RoomPathFinderHelpers.GetDirectionForNextStep(Point, point);
 
         Direction = direction;
         DirectionHead = direction;
@@ -73,7 +75,7 @@ public class RoomUser(
 
     private void CalculatePath()
     {
-        PathPoints = RoomHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal);
+        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal);
 
         if (PathPoints.Count > 1)
         {
@@ -144,14 +146,14 @@ public class RoomUser(
             return;
         }
         
-        var itemsAtNextStep = RoomHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
+        var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
         var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
 
         ClearStatuses();
 
         AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextZ}");
 
-        var newDirection = RoomHelpers.GetDirectionForNextStep(Point, nextStep);
+        var newDirection = RoomPathFinderHelpers.GetDirectionForNextStep(Point, nextStep);
                 
         Direction = newDirection;
         DirectionHead = newDirection;
@@ -182,7 +184,7 @@ public class RoomUser(
             return;
         }
         
-        var tileItems = RoomHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
+        var tileItems = RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
 
         if (tileItems.Count == 0)
         {

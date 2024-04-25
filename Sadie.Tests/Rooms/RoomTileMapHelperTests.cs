@@ -1,13 +1,14 @@
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Tests.Rooms;
 
 [TestFixture]
-public class RoomHelperTests
+public class RoomTileMapHelperTests
 {
     [Test]
     public void GetItemsForPosition_ReturnsCorrect()
@@ -17,7 +18,7 @@ public class RoomHelperTests
             new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
         };
         
-        Assert.That(RoomHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(1));
+        Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(1));
     }
     
     [Test]
@@ -28,7 +29,7 @@ public class RoomHelperTests
             new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
         };
         
-        Assert.That(RoomHelpers.GetItemsForPosition(14, 10, someItems), Is.Empty);
+        Assert.That(RoomTileMapHelpers.GetItemsForPosition(14, 10, someItems), Is.Empty);
     }
     
     [Test]
@@ -42,20 +43,20 @@ public class RoomHelperTests
             new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
         };
         
-        Assert.That(RoomHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(3));
+        Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(3));
     }
     
     [Test]
     public void GetOppositeDirection_ReturnsCorrect()
     {
-        var northResult = RoomHelpers.GetOppositeDirection((int) HDirection.North);
-        var northEastResult = RoomHelpers.GetOppositeDirection((int) HDirection.NorthEast);
-        var eastResult = RoomHelpers.GetOppositeDirection((int) HDirection.East);
-        var southEastResult = RoomHelpers.GetOppositeDirection((int) HDirection.SouthEast);
-        var southResult = RoomHelpers.GetOppositeDirection((int) HDirection.South);
-        var southWestResult = RoomHelpers.GetOppositeDirection((int) HDirection.SouthWest);
-        var westResult = RoomHelpers.GetOppositeDirection((int) HDirection.West);
-        var northWestResult = RoomHelpers.GetOppositeDirection((int) HDirection.NorthWest);
+        var northResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.North);
+        var northEastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.NorthEast);
+        var eastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.East);
+        var southEastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.SouthEast);
+        var southResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.South);
+        var southWestResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.SouthWest);
+        var westResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.West);
+        var northWestResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.NorthWest);
         
         Assert.Multiple(() =>
         {

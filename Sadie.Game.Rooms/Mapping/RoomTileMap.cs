@@ -2,12 +2,11 @@
 using System.Drawing;
 using Sadie.Game.Rooms.Users;
 
-namespace Sadie.Game.Rooms.Tiles;
+namespace Sadie.Game.Rooms.Mapping;
 
 public class RoomTileMap
 {
     private List<string> HeightmapRows { get; }
-    
     public int SizeX { get; }
     public int SizeY { get; }
     public int Size { get; }

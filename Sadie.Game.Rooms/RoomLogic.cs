@@ -3,7 +3,7 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
-using Sadie.Game.Rooms.Tiles;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;

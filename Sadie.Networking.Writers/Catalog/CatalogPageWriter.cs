@@ -32,16 +32,13 @@ public class CatalogPageWriter : NetworkPacketWriter
         switch (pageLayout)
         {
             case CatalogPageLayout.Guilds:
-                WriteString("guild_frontpage");
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                WriteString(teaserText);
-                break;
+            case CatalogPageLayout.SoundMachine:
+            case CatalogPageLayout.GuildForum:
             case CatalogPageLayout.GuildsCustomFurniture:
+            case CatalogPageLayout.MarketplaceOwnItems:
+            case CatalogPageLayout.Marketplace:
+            case CatalogPageLayout.ClubGifts:
+            case CatalogPageLayout.InfoLoyalty:
                 WriteString(pageLayout);
                 WriteInteger(2);
                 WriteString(headerImage); 
@@ -50,46 +47,6 @@ public class CatalogPageWriter : NetworkPacketWriter
                 WriteString(primaryText);
                 WriteString(detailsText);
                 WriteString(teaserText);
-                break;
-            case CatalogPageLayout.GuildForum:
-                WriteString(pageLayout);
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                WriteString(teaserText);
-                break;
-            case CatalogPageLayout.SoundMachine:
-                WriteString(pageLayout);
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(2);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                break;
-            case CatalogPageLayout.MarketplaceOwnItems:
-            case CatalogPageLayout.Marketplace:
-                WriteString(pageLayout);
-                WriteInteger(0);
-                WriteInteger(0);
-                break;
-            case CatalogPageLayout.ClubGifts:
-                WriteString(pageLayout);
-                WriteInteger(1);
-                WriteString(headerImage);
-                WriteInteger(1);
-                WriteString(primaryText);
-                break;
-            case CatalogPageLayout.InfoLoyalty:
-                WriteString(pageLayout);
-                WriteInteger(1);
-                WriteString(headerImage);
-                WriteInteger(1);
-                WriteString(primaryText);
-                WriteInteger(0);
                 break;
             case CatalogPageLayout.RoomBundle:
             case CatalogPageLayout.SingleBundle:
