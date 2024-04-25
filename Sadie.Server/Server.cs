@@ -5,7 +5,6 @@ using Sadie.Database;
 using Sadie.Game.Catalog.Club;
 using Sadie.Game.Catalog.FrontPage;
 using Sadie.Game.Catalog.Pages;
-using Sadie.Game.Furniture;
 using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -59,10 +58,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         await LoadInitialDataAsync(
             serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync,
             "navigator tabs");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync,
-            "furniture items");
 
         await LoadInitialDataAsync(
             serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync,
