@@ -86,7 +86,7 @@ public class PlayerRepository(
             .Include(x => x.NavigatorSettings)
             .Include(x => x.GameSettings)
             .Include(x => x.Badges)
-            .Include(x => x.FurnitureItems)
+            .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
             .Include(x => x.WardrobeItems)
             .Include(x => x.Roles).ThenInclude(x => x.Permissions)
             .Include(x => x.Subscriptions).ThenInclude(x => x.Subscription)
@@ -98,6 +98,7 @@ public class PlayerRepository(
             .Include(x => x.IncomingFriendships)
             .Include(x => x.MessagesSent)
             .Include(x => x.MessagesReceived)
+            .Include(x => x.Rooms).ThenInclude(x => x.Settings)
             .FirstOrDefaultAsync();
 
         if (player == null)

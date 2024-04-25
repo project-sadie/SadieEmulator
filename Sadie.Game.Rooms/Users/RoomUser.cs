@@ -37,12 +37,6 @@ public class RoomUser(
     
     public void WalkToPoint(Point point)
     {
-        if (room.TileMap.GetMappedUsers(point).Count > 0 && 
-            !room.Settings.CanUsersOverlap)
-        {
-            return;
-        }
-        
         PathGoal = point;
         NeedsPathCalculated = true;
     }
@@ -122,20 +116,29 @@ public class RoomUser(
         await UpdateIdleStatusAsync();
     }
 
+    private void ClearWalking()
+    {
+        IsWalking = false;
+        RemoveStatuses(RoomUserStatus.Move);
+        CheckStatusForCurrentTile();
+    }
+    
     private void ProcessMovement()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
         {
-            IsWalking = false;
-            RemoveStatuses(RoomUserStatus.Move);
+            ClearWalking();
             return;
         }
         
         StepsWalked++;
         
         var nextStep = PathPoints[StepsWalked];
-
-        if (room.TileMap.GetMappedUsers(nextStep).Count > 0 || room.TileMap.Map[nextStep.Y, nextStep.X] == 0)
+        var lastStep = PathPoints.Count == StepsWalked + 1;
+        
+        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
+            (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
+            room.TileMap.GetMappedUsers(nextStep).Count > 0)
         {
             NeedsPathCalculated = true;
             return;
@@ -230,6 +233,5 @@ public class RoomUser(
     public async ValueTask DisposeAsync()
     {
         room.TileMap.RemoveUserFromMap(Point, this);
-
     }
 }

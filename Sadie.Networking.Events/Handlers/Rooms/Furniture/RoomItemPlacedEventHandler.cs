@@ -1,3 +1,4 @@
+using System.Drawing;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Furniture;
@@ -95,11 +96,9 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        if (!RoomHelpers.CanPlaceAt(x, y, 
-                playerItem.FurnitureItem.TileSpanX, 
-                playerItem.FurnitureItem.TileSpanY,
-                direction, 
-                room.TileMap))
+        if (!RoomHelpers
+            .GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX, playerItem.FurnitureItem.TileSpanY,
+                direction).All(x => RoomHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
@@ -125,14 +124,15 @@ public class RoomItemPlacedEventHandler(
             MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
+
+        player.FurnitureItems.Remove(playerItem);
+        dbContext.PlayerFurnitureItems.Remove(playerItem);
         
         room.FurnitureItems.Add(roomFurnitureItem);
+        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
 
         RoomHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
         
-        player.FurnitureItems.Remove(playerItem);
-
-        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
         await dbContext.SaveChangesAsync();
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));

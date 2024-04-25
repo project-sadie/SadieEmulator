@@ -31,7 +31,7 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
             .Include(x => x.PaintSettings)
             .Include(x => x.PlayerRights)
             .Include(x => x.ChatMessages)
-            .Include(x => x.FurnitureItems)
+            .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
             .Include(x => x.PlayerLikes)
             .Include(x => x.Tags)
             .FirstOrDefaultAsync(x => x.Id == id);

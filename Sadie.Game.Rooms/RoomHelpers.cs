@@ -20,8 +20,8 @@ public static class RoomHelpers
             UseDiagonals = useDiagonal
         };
 
-        var combinedMap = GenerateWorldArrayFromMaps(tileMap.Map, tileMap.UserMap);
-        var worldGrid = new WorldGrid(combinedMap);
+        var worldArray = GetWorldArrayFromTileMap(tileMap, end);
+        var worldGrid = new WorldGrid(worldArray);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
 
         return pathfinder
@@ -29,16 +29,35 @@ public static class RoomHelpers
             .ToList();
     }
 
-    private static short[,] GenerateWorldArrayFromMaps(
-        short[,] furnitureMap, 
-        ConcurrentDictionary<Point, List<IRoomUser>> userMap)
+    private static short[,] GetWorldArrayFromTileMap(RoomTileMap map, Point goalPoint)
     {
-        foreach (var (key, value) in userMap)
+         var tmp = new short[map.SizeY, map.SizeX];
+        
+        for (var y = 0; y < map.SizeY; y++)
         {
-            furnitureMap[key.Y, key.X] = (short)(value.Count < 1 ? 1 : 0);
+            for (var x = 0; x < map.SizeX; x++)
+            {
+                // If it's a seat tile, don't include it unless it's our goal
+                
+                if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))
+                {
+                    tmp[y, x] = 0;
+                    continue;
+                }
+                
+                // If the tile has other users on it skip it
+
+                if (map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0)
+                {
+                    tmp[y, x] = 0;
+                    continue;
+                }
+                
+                tmp[y, x] = map.Map[y, x];
+            }
         }
 
-        return furnitureMap;
+        return tmp;
     }
 
     public static HDirection GetDirectionForNextStep(Point current, Point next)
@@ -169,8 +188,37 @@ public static class RoomHelpers
             _ => throw new ArgumentOutOfRangeException(nameof(direction))
         };
     }
+    
+    public static short[,] BuildSquareStateMapForRoom(
+        int mapSizeX,
+        int mapSizeY,
+        string heightMap)
+    {
+        var heightmapLines = heightMap.Split("\n").ToList();
+        var map = new short[mapSizeY, mapSizeX];
+        
+        for (var y = 0; y < heightmapLines.Count; y++)
+        {
+            var currentLine = heightmapLines[y];
 
-    public static short[,] GenerateMapForRoom(
+            for (var x = 0; x < currentLine.Length; x++)
+            {
+                var open = short.TryParse(currentLine[x].ToString(), out var z);
+
+                if (!open)
+                {
+                    map[y, x] = 0;
+                    continue;
+                }
+
+                map[y, x] = 1;
+            }
+        }
+        
+        return map; 
+    }
+    
+    public static short[,] BuildTileMapForRoom(
         int mapSizeX,
         int mapSizeY,
         string heightMap, 
@@ -201,14 +249,10 @@ public static class RoomHelpers
     }
 
     public static bool CanPlaceAt(
-        int x,
-        int y, 
-        int width, 
-        int height,
-        int direction, 
+        List<Point> points,  
         RoomTileMap tileMap)
     {
-        return GetPointsForPlacement(x, y, width, height, direction).All(point => tileMap.Map[point.Y, point.X] == 1);
+        return points.All(point => tileMap.SquareStateMap[point.Y, point.X] != 0);
     }
 
     public static void UpdateTileStatesForPoints(
@@ -227,21 +271,33 @@ public static class RoomHelpers
         int y, 
         IEnumerable<RoomFurnitureItem> furnitureItems)
     {
-        var items = GetItemsForPosition(x, y, furnitureItems);
-        return (short)(items.All(i => i.FurnitureItem!.CanWalk) ? 1 : 0);
-    }
+        var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
 
-    public static List<IRoomUser> GetUsersForPoints(
-        IEnumerable<Point> points, 
-        RoomTileMap tileMap)
-    {
-        var users = new List<IRoomUser>();
-
-        foreach (var point in points)
+        if (item == null)
         {
-            users.AddRange(tileMap.GetMappedUsers(point));
+            return 1;
+        }
+        
+        if (item.FurnitureItem.CanWalk)
+        {
+            return 1;
         }
 
-        return users;
+        if (item.FurnitureItem.CanSit)
+        {
+            return 2;
+        }
+
+        if (item.FurnitureItem.CanLay)
+        {
+            return 3;
+        }
+
+        return 0;
+    }
+
+    public static List<IRoomUser> GetUsersForPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
+    {
+        return users.Where(user => points.Contains(user.Point)).ToList();
     }
 }

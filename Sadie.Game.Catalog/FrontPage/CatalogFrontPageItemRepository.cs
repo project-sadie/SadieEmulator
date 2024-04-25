@@ -10,6 +10,8 @@ public class CatalogFrontPageItemRepository(SadieContext dbContext)
 
     public async Task LoadInitialDataAsync()
     {
-        Items = await dbContext.Set<CatalogFrontPageItem>().ToListAsync();
+        Items = await dbContext.Set<CatalogFrontPageItem>()
+            .Include(x => x.CatalogPage)
+            .ToListAsync();
     }
 }

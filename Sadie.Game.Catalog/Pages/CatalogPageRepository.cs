@@ -12,8 +12,7 @@ public class CatalogPageRepository(SadieContext dbContext)
     {
         _pages = await dbContext.Set<CatalogPage>()
             .Include(x => x.Pages)
-            .Include(x => x.Items)
-            .ThenInclude(x => x.FurnitureItems)
+            .Include(x => x.Items).ThenInclude(x => x.FurnitureItems)
             .ToDictionaryAsync(x => x.Id, x => x);
     }
 
