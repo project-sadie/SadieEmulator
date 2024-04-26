@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Inventory;
 
-public class PlayerInventoryBadgesWriter : NetworkPacketWriter
+public class PlayerInventoryBadgesWriter : AbstractPacketWriter
 {
     public PlayerInventoryBadgesWriter(ICollection<PlayerBadge> badges, ICollection<PlayerBadge> equippedBadges)
     {

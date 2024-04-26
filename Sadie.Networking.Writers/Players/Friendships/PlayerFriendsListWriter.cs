@@ -7,7 +7,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
-public class PlayerFriendsListWriter : NetworkPacketWriter
+public class PlayerFriendsListWriter : AbstractPacketWriter
 {
     public PlayerFriendsListWriter(
         int pages, 

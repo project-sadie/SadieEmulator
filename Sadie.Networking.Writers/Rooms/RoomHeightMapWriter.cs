@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomHeightMapWriter : NetworkPacketWriter
+public class RoomHeightMapWriter : AbstractPacketWriter
 {
     public RoomHeightMapWriter(bool unknown1, int wallHeight, string relativeHeightmap)
     {

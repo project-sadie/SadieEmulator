@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Permission;
 
-public class PlayerPermissionsWriter : NetworkPacketWriter
+public class PlayerPermissionsWriter : AbstractPacketWriter
 {
     public PlayerPermissionsWriter(int club, int rank, bool ambassador)
     {

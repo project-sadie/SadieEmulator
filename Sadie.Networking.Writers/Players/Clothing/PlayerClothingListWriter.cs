@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Clothing;
 
-public class PlayerClothingListWriter : NetworkPacketWriter
+public class PlayerClothingListWriter : AbstractPacketWriter
 {
     // TODO ...
     

@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Handshake;
 
-public class UniqueIdWriter : NetworkPacketWriter
+public class UniqueIdWriter : AbstractPacketWriter
 {
     public UniqueIdWriter(string machineId)
     {

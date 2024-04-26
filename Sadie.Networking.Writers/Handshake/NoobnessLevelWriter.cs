@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Handshake;
 
-public class NoobnessLevelWriter : NetworkPacketWriter
+public class NoobnessLevelWriter : AbstractPacketWriter
 {
     public NoobnessLevelWriter(int level)
     {

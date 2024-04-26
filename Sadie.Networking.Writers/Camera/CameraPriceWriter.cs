@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Camera;
 
-public class CameraPriceWriter : NetworkPacketWriter
+public class CameraPriceWriter : AbstractPacketWriter
 {
     public CameraPriceWriter(
         int costCredits, 

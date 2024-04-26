@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomWallItemsWriter : NetworkPacketWriter
+public class RoomWallItemsWriter : AbstractPacketWriter
 {
     public RoomWallItemsWriter(
         ICollection<RoomFurnitureItem> wallItems,

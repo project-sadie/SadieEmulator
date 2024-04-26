@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomRelativeMapWriter : NetworkPacketWriter
+public class RoomRelativeMapWriter : AbstractPacketWriter
 {
     public RoomRelativeMapWriter(RoomTileMap tileMap, ICollection<RoomFurnitureItem> items)
     {

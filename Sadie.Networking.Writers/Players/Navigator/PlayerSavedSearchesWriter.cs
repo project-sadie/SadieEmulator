@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Navigator;
 
-public class PlayerSavedSearchesWriter : NetworkPacketWriter
+public class PlayerSavedSearchesWriter : AbstractPacketWriter
 {
     public PlayerSavedSearchesWriter(ICollection<PlayerSavedSearch> searches)
     {

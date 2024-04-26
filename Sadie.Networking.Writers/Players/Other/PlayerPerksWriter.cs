@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerPerksWriter : NetworkPacketWriter
+public class PlayerPerksWriter : AbstractPacketWriter
 {
     public PlayerPerksWriter(List<PlayerPerk> perks)
     {

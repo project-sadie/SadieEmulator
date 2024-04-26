@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Generic;
 
-public class NotificationWriter : NetworkPacketWriter
+public class NotificationWriter : AbstractPacketWriter
 {
     public NotificationWriter(
         NotificationType type, 

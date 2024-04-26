@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerFriendRequestsWriter : NetworkPacketWriter
+public class PlayerFriendRequestsWriter : AbstractPacketWriter
 {
     public PlayerFriendRequestsWriter(List<Player> requests)
     {

@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Generic;
 
-public class PlayerRelationshipsWriter : NetworkPacketWriter
+public class PlayerRelationshipsWriter : AbstractPacketWriter
 {
     public PlayerRelationshipsWriter(long playerId, ICollection<PlayerRelationship> relationships, ICollection<PlayerFriendship> friendships)
     {

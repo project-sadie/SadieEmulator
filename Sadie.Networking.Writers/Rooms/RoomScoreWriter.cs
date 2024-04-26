@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomScoreWriter : NetworkPacketWriter
+public class RoomScoreWriter : AbstractPacketWriter
 {
     public RoomScoreWriter(int score, bool canUpvote)
     {

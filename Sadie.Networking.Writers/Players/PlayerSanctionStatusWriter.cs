@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerSanctionStatusWriter : NetworkPacketWriter
+public class PlayerSanctionStatusWriter : AbstractPacketWriter
 {
     public PlayerSanctionStatusWriter(
         bool hasPreviousSanction, 

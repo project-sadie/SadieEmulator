@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerDirectMessageWriter : NetworkPacketWriter
+public class PlayerDirectMessageWriter : AbstractPacketWriter
 {
     public PlayerDirectMessageWriter(PlayerMessage message)
     {

@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
-public class PlayerMessengerInitWriter : NetworkPacketWriter
+public class PlayerMessengerInitWriter : AbstractPacketWriter
 {
     public PlayerMessengerInitWriter(int maxFriends, int unknown1, int maxFriendsHc, int unknown2)
     {

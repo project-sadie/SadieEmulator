@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogPurchaseFailedWriter : NetworkPacketWriter
+public class CatalogPurchaseFailedWriter : AbstractPacketWriter
 {
     public CatalogPurchaseFailedWriter(int error)
     {

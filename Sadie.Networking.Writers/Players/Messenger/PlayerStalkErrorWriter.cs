@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerStalkErrorWriter : NetworkPacketWriter
+public class PlayerStalkErrorWriter : AbstractPacketWriter
 {
     public PlayerStalkErrorWriter(PlayerStalkError stalkError)
     {

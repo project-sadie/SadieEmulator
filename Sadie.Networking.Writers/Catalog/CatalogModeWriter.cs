@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogModeWriter : NetworkPacketWriter
+public class CatalogModeWriter : AbstractPacketWriter
 {
     public CatalogModeWriter(int mode)
     {

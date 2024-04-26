@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomOwnerWriter : NetworkPacketWriter
+public class RoomOwnerWriter : AbstractPacketWriter
 {
     public RoomOwnerWriter()
     {

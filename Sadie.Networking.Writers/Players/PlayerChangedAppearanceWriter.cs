@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerChangedAppearanceWriter : NetworkPacketWriter
+public class PlayerChangedAppearanceWriter : AbstractPacketWriter
 {
     public PlayerChangedAppearanceWriter(string figureCode, AvatarGender gender)
     {

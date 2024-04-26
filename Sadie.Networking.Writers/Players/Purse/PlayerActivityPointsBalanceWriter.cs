@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Purse;
 
-public class PlayerActivityPointsBalanceWriter : NetworkPacketWriter
+public class PlayerActivityPointsBalanceWriter : AbstractPacketWriter
 {
     public PlayerActivityPointsBalanceWriter(int pixelBalance, int seasonalBalance, int gotwPoints)
     {

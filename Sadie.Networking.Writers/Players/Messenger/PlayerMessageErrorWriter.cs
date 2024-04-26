@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerMessageErrorWriter : NetworkPacketWriter
+public class PlayerMessageErrorWriter : AbstractPacketWriter
 {
     public PlayerMessageErrorWriter(PlayerMessageError error, int targetId)
     {

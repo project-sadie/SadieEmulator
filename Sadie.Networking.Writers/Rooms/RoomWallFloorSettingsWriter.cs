@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomWallFloorSettingsWriter : NetworkPacketWriter
+public class RoomWallFloorSettingsWriter : AbstractPacketWriter
 {
     public RoomWallFloorSettingsWriter(bool hideWalls, int wallThickness, int floorThickness)
     {

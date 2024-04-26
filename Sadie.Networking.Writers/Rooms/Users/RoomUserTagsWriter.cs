@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Users;
 
-public class RoomUserTagsWriter : NetworkPacketWriter
+public class RoomUserTagsWriter : AbstractPacketWriter
 {
     public RoomUserTagsWriter(int userId, ICollection<PlayerTag> tags)
     {

@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
-public class PlayerFriendshipErrorWriter : NetworkPacketWriter
+public class PlayerFriendshipErrorWriter : AbstractPacketWriter
 {
     public PlayerFriendshipErrorWriter(int unknown1, PlayerFriendshipError error)
     {
