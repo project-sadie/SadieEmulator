@@ -26,7 +26,12 @@ public class KickCommand(PlayerRepository playerRepository) : AbstractRoomChatCo
             return;
         }
 
-        await targetUser!.Player.NetworkObject!.WriteToStreamAsync(new PlayerAlertWriter("You have been kicked from the room."));
+        var writer = new PlayerAlertWriter
+        {
+            Message = "You have been kicked from the room."
+        };
+        
+        await targetUser!.Player.NetworkObject!.WriteToStreamAsync(writer);
         await user.Room.UserRepository.TryRemoveAsync(targetUser.Id, true);
     }
 

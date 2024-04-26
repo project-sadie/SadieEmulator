@@ -5,10 +5,6 @@ namespace Sadie.Shared.Unsorted;
 
 public class RoomUserIdleWriter : AbstractPacketWriter
 {
-    public RoomUserIdleWriter(int userId, bool isIdle)
-    {
-        WriteShort(ServerPacketId.RoomUserIdle);
-        WriteInteger(userId);
-        WriteBool(isIdle);
-    }
+    public required int UserId { get; set; }
+    public required bool IsIdle { get; set; }
 }

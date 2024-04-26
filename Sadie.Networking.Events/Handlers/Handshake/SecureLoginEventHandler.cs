@@ -104,7 +104,7 @@ public class SecureLoginEventHandler(
         var playerSubscriptions = player.Subscriptions;
         
         await networkObject.WriteToStreamAsync(new SecureLoginWriter());
-        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1));
+        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(level: 1));
         await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId));
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()));
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());

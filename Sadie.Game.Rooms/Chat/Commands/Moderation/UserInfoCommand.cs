@@ -30,7 +30,10 @@ public class UserInfoCommand(PlayerRepository playerRepository) : AbstractRoomCh
         sb.AppendLine($"Last Online: {(target.Data.IsOnline ? "now" : target.Data.LastOnline)}");
         sb.AppendLine($"Created: {target.CreatedAt}");
         
-        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(sb.ToString()));
+        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter
+        {
+            Message = sb.ToString()
+        });
     }
 
     public override List<string> PermissionsRequired { get; set; } = ["command_user_info"];
