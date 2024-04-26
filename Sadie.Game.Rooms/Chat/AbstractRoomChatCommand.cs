@@ -15,12 +15,15 @@ public abstract class AbstractRoomChatCommand : IRoomChatCommand
 
     protected static async Task SendWhisperAsync(IRoomUser user, string message)
     {
-        await user.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter(
-            user.Id,
-            message,
-            0,
-            (int) ChatBubble.Default));
-
+        var writer = new RoomUserWhisperWriter
+        {
+            SenderId = user.Id,
+            Message = message,
+            EmotionId = 0,
+            Bubble = (int)ChatBubble.Default
+        };
+        
+        await user.NetworkObject.WriteToStreamAsync(writer);
     }
 
     public virtual bool BypassPermissionCheckIfRoomOwner => false;

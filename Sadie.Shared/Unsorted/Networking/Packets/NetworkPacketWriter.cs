@@ -5,14 +5,9 @@ namespace Sadie.Shared.Unsorted.Networking.Packets;
 
 public class NetworkPacketWriter
 {
-    private readonly ArrayBufferWriter<byte> _packet;
-        
-    protected NetworkPacketWriter()
-    {
-        _packet = new ArrayBufferWriter<byte>();
-    }
+    private readonly ArrayBufferWriter<byte> _packet = new();
 
-    protected void WriteString(string data)
+    public void WriteString(string data)
     {
         WriteShort((short) data.Length);
         WriteBytes(Encoding.Default.GetBytes(data));
@@ -23,12 +18,12 @@ public class NetworkPacketWriter
         _packet.Write(reverse ? data.Reverse().ToArray() : data);
     }
 
-    protected void WriteShort(short data)
+    public void WriteShort(short data)
     {
         WriteBytes(BitConverter.GetBytes(data), true);
     }
 
-    protected void WriteInteger(int data)
+    public void WriteInteger(int data)
     {
         WriteBytes(BitConverter.GetBytes(data), true);
     }
@@ -38,7 +33,7 @@ public class NetworkPacketWriter
         WriteBytes(BitConverter.GetBytes((int)data), true);
     }
 
-    protected void WriteBool(bool boolean)
+    public void WriteBool(bool boolean)
     {
         WriteBytes(new[] {(byte) (boolean ? 1 : 0)});
     }

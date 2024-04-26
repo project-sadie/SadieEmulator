@@ -211,11 +211,11 @@ public class PlayerRepository(
             .ToListAsync();
     }
 
-    public async Task BroadcastDataAsync(NetworkPacketWriter data)
+    public async Task BroadcastDataAsync(AbstractPacketWriter writer)
     {
         foreach (var player in _players.Values)
         {
-            await player.NetworkObject.WriteToStreamAsync(data);
+            await player.NetworkObject.WriteToStreamAsync(writer);
         }
     }
 }

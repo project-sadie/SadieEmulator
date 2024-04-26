@@ -47,7 +47,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public DateTime LastPing { get; set; }
 
-    public async Task WriteToStreamAsync(NetworkPacketWriter data)
+    public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
         if (_disposed)
         {
@@ -56,7 +56,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         try
         {
-            await _channel.WriteAndFlushAsync(data);
+            await _channel.WriteAndFlushAsync(NetworkPacketSerializer.Serialize(writer));
         }
         catch (Exception e)
         {
