@@ -94,8 +94,13 @@ public class SecureLoginEventHandler(
         var formattedMessage = serverSettings.PlayerWelcomeMessage
             .Replace("[username]", player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
+
+        var alertWriter = new PlayerAlertWriter
+        {
+            Message = formattedMessage
+        };
         
-        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(formattedMessage));
+        await player.NetworkObject.WriteToStreamAsync(alertWriter);
     }
 
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
@@ -104,7 +109,10 @@ public class SecureLoginEventHandler(
         var playerSubscriptions = player.Subscriptions;
         
         await networkObject.WriteToStreamAsync(new SecureLoginWriter());
-        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(level: 1));
+        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
+        {
+            Level = 1
+        });
         await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId));
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()));
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
