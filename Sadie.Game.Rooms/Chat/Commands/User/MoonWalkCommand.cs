@@ -14,10 +14,12 @@ public class MoonWalkCommand : AbstractRoomChatCommand
         user.MoonWalking = !user.MoonWalking;
         
         var effectId = user.MoonWalking ? (int) EffectIds.Moonwalk : 0;
+        
         var writer = new RoomUserEffectWriter
         {
             UserId = user.Id,
-            EffectId = effectId
+            EffectId = effectId,
+            DelayMs = 0
         };
         
         await user.Room.UserRepository.BroadcastDataAsync(writer);
