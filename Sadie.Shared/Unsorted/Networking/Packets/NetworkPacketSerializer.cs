@@ -20,7 +20,7 @@ public class NetworkPacketSerializer
             return false;
         }
         
-        onSerialize.Invoke(packet, [packet]);
+        onSerialize.Invoke(packet, [writer]);
         return true;
     }
 
@@ -56,7 +56,9 @@ public class NetworkPacketSerializer
     {
         writer.WriteShort(GetPacketIdentifierFromAttribute(packet));
         
-        var properties = packet.GetType().GetProperties();
+        var properties = packet.GetType().GetProperties()
+            .Where(p => p.GetCustomAttributes(typeof(NotPacketDataAttribute), true).Length == 0);
+        
         var beforeRuleMap = GetBeforeRuleMap(packet);
         var insteadRuleMap = GetInsteadRuleMap(packet);
         var afterRuleMap = GetAfterRuleMap(packet);
