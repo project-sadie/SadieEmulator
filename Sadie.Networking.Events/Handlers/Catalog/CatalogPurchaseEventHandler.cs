@@ -85,8 +85,13 @@ public class CatalogPurchaseEventHandler(
         }
 
         await dbContext.SaveChangesAsync();
+
+        var writer = new PlayerInventoryAddItemsWriter
+        {
+            Items = newItems
+        };
         
-        await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems));
+        await client.WriteToStreamAsync(writer);
         
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(
             item.Id,

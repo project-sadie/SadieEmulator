@@ -127,7 +127,7 @@ internal static class NetworkPacketEventHelpers
         {
             case RoomAccessType.Password when password != room.Settings.Password:
                 await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword));
-                await client.WriteToStreamAsync(new PlayerHotelViewWriter());
+                await client.WriteToStreamAsync(new RoomUserHotelView());
                 return false;
             
             case RoomAccessType.Doorbell:

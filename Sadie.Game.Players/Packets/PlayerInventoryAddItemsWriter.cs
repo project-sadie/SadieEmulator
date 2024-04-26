@@ -1,23 +1,12 @@
 using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Game.Players.Packets;
 
-public class PlayerInventoryAddItemsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerInventoryAddItems)]
+public class PlayerInventoryAddItemsWriter : AbstractPacketWriter
 {
-    public PlayerInventoryAddItemsWriter(List<PlayerFurnitureItem> items)
-    {
-        var category = 1;
-        
-        WriteShort(ServerPacketId.PlayerInventoryAddItems);
-        WriteInteger(items.Count);
-        WriteInteger(category);
-        WriteInteger(items.Count);
-
-        foreach (var item in items)
-        {
-            WriteLong(item.Id);
-        }
-    }
+    public required List<PlayerFurnitureItem> Items { get; set; }
 }

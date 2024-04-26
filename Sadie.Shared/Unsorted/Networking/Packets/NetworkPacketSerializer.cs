@@ -5,10 +5,23 @@ namespace Sadie.Shared.Unsorted.Networking.Packets;
 
 public class NetworkPacketSerializer
 {
-    private static void InvokeSerializeRuleInitialization(object packet)
+    private static void InvokeOnConfigureRules(object packet)
     {
-        var serializeOverrideMethod = packet.GetType().GetMethod("OnSerialize");
-        serializeOverrideMethod?.Invoke(packet, []);
+        var configureRulesMethod = packet.GetType().GetMethod("OnConfigureRules");
+        configureRulesMethod?.Invoke(packet, []);
+    }
+    
+    private static bool InvokeOnSerializeIfExists(object packet, NetworkPacketWriter writer)
+    {
+        var onSerialize = packet.GetType().GetMethod("OnSerialize");
+
+        if (onSerialize == null)
+        {
+            return false;
+        }
+        
+        onSerialize.Invoke(packet, [packet]);
+        return true;
     }
 
     private static short GetPacketIdentifierFromAttribute(object packetObject)
@@ -72,10 +85,16 @@ public class NetworkPacketSerializer
     
     public static NetworkPacketWriter Serialize(object packet)
     {
-        InvokeSerializeRuleInitialization(packet);
-        
         var writer = new NetworkPacketWriter();
+
+        if (InvokeOnSerializeIfExists(packet, writer))
+        {
+            return writer;
+        }
+        
+        InvokeOnConfigureRules(packet);
         AddObjectToWriter(packet, writer);
+
         return writer;
     }
 

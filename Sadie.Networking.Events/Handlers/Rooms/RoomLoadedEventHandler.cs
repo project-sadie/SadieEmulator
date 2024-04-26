@@ -45,7 +45,7 @@ public class RoomLoadedEventHandler(
         if (room == null)
         {
             logger.LogError($"Failed to load room {roomId} for player '{player.Username}'");
-            await client.WriteToStreamAsync(new PlayerHotelViewWriter());
+            await client.WriteToStreamAsync(new RoomUserHotelView());
             return;
         }
 

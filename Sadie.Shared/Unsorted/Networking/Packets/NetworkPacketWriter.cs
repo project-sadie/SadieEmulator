@@ -28,7 +28,7 @@ public class NetworkPacketWriter
         WriteBytes(BitConverter.GetBytes(data), true);
     }
 
-    protected void WriteLong(long data)
+    public void WriteLong(long data)
     {
         WriteBytes(BitConverter.GetBytes((int)data), true);
     }

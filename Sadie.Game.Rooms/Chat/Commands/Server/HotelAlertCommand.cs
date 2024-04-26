@@ -12,16 +12,19 @@ public class HotelAlertCommand(PlayerRepository playerRepository) : AbstractRoom
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
         var message = string.Join(" ", parameters);
-        var author = user.Player.Username;
 
         if (string.IsNullOrWhiteSpace(message) || message.Length < 5)
         {
             await SendWhisperAsync(user, "Please provide an appropriate message.");
             return;
         }
+
+        var writer = new PlayerAlertWriter
+        {
+            Message = $"{message}\n\n- {user.Player.Username} at {DateTime.Now:HH:mm}"
+        };
         
-        await playerRepository.BroadcastDataAsync(
-            new PlayerAlertWriter($"{message}\n\n- {author} at {DateTime.Now:HH:mm}"));
+        await playerRepository.BroadcastDataAsync(writer);
     }
     
     public override List<string> PermissionsRequired{ get; set; } = ["command_hotel_alert"];
