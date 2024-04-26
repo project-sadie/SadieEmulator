@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerIgnoredUsersWriter : NetworkPacketWriter
+public class PlayerIgnoredUsersWriter : AbstractPacketWriter
 {
     public PlayerIgnoredUsersWriter()
     {

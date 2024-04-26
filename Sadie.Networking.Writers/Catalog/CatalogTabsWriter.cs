@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogTabsWriter : NetworkPacketWriter
+public class CatalogTabsWriter : AbstractPacketWriter
 {
     public CatalogTabsWriter(
         string mode, 

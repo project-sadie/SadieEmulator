@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Shared.Unsorted;
 
-public class ModeratorMessageWriter : NetworkPacketWriter
+public class ModeratorMessageWriter : AbstractPacketWriter
 {
     public ModeratorMessageWriter(string message, string link)
     {

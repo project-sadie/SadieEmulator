@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Effects;
 
-public class PlayerEffectListWriter : NetworkPacketWriter
+public class PlayerEffectListWriter : AbstractPacketWriter
 {
     public PlayerEffectListWriter(List<PlayerEffect> effects)
     {

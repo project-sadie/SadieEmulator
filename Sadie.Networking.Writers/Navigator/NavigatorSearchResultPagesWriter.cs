@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Navigator;
 
-public class NavigatorSearchResultPagesWriter : NetworkPacketWriter
+public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
 {
     public NavigatorSearchResultPagesWriter(
         string tabName, 

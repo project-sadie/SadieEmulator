@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Players.Packets;
 
-public class PlayerUpdateFriendWriter : NetworkPacketWriter
+public class PlayerUpdateFriendWriter : AbstractPacketWriter
 {
     public PlayerUpdateFriendWriter(
         int unknown1, 

@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Doorbell;
 
-public class RoomDoorbellWriter : NetworkPacketWriter
+public class RoomDoorbellWriter : AbstractPacketWriter
 {
     public RoomDoorbellWriter()
     {

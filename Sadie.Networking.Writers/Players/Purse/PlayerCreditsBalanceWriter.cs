@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Purse;
 
-public class PlayerCreditsBalanceWriter : NetworkPacketWriter
+public class PlayerCreditsBalanceWriter : AbstractPacketWriter
 {
     public PlayerCreditsBalanceWriter(long credits)
     {

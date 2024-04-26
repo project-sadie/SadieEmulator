@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Wardrobe;
 
-public class PlayerWardrobeWriter : NetworkPacketWriter
+public class PlayerWardrobeWriter : AbstractPacketWriter
 {
     public PlayerWardrobeWriter(int state, ICollection<PlayerWardrobeItem> outfits)
     {

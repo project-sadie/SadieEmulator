@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Navigator;
 
-public class PlayerNavigatorSettingsWriter : NetworkPacketWriter
+public class PlayerNavigatorSettingsWriter : AbstractPacketWriter
 {
     public PlayerNavigatorSettingsWriter(PlayerNavigatorSettings navigatorSettings)
     {

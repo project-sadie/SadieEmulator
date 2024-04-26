@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogPageWriter : NetworkPacketWriter
+public class CatalogPageWriter : AbstractPacketWriter
 {
     public CatalogPageWriter(
         int pageId, 

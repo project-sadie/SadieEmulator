@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogPurchaseOkWriter : NetworkPacketWriter
+public class CatalogPurchaseOkWriter : AbstractPacketWriter
 {
     public CatalogPurchaseOkWriter(
         int id,

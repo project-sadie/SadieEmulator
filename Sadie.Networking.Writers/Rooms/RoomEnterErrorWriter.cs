@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomEnterErrorWriter : NetworkPacketWriter
+public class RoomEnterErrorWriter : AbstractPacketWriter
 {
     public RoomEnterErrorWriter(RoomEnterError errorCode)
     {

@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Shared.Unsorted;
 
-public class PlayerAlertWriter : NetworkPacketWriter
+public class PlayerAlertWriter : AbstractPacketWriter
 {
     public PlayerAlertWriter(string message)
     {

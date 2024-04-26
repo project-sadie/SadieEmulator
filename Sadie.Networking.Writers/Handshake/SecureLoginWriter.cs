@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Handshake;
 
-public class SecureLoginWriter : NetworkPacketWriter
+public class SecureLoginWriter : AbstractPacketWriter
 {
     public SecureLoginWriter()
     {

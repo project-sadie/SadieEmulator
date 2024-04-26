@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Users;
 
-public class RoomUserShoutWriter : NetworkPacketWriter
+public class RoomUserShoutWriter : AbstractPacketWriter
 {
     public RoomUserShoutWriter(RoomChatMessage message, int unknown1)
     {

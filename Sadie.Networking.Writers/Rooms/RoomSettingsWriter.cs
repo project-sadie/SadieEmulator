@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomSettingsWriter : NetworkPacketWriter
+public class RoomSettingsWriter : AbstractPacketWriter
 {
     public RoomSettingsWriter(RoomLogic roomData)
     {

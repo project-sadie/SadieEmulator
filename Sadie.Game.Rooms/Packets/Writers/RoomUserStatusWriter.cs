@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class RoomUserStatusWriter : NetworkPacketWriter
+public class RoomUserStatusWriter : AbstractPacketWriter
 {
     public RoomUserStatusWriter(ICollection<IRoomUser> users)
     {

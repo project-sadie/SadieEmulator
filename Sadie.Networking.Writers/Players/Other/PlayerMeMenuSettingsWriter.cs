@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerMeMenuSettingsWriter : NetworkPacketWriter
+public class PlayerMeMenuSettingsWriter : AbstractPacketWriter
 {
     public PlayerMeMenuSettingsWriter(
         int systemVolume, 

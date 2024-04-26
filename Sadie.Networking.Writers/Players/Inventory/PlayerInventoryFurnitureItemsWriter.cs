@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Inventory;
 
-public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
+public class PlayerInventoryFurnitureItemsWriter : AbstractPacketWriter
 {
     public PlayerInventoryFurnitureItemsWriter(
         int pages, 

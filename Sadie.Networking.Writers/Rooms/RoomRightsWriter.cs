@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomRightsWriter : NetworkPacketWriter
+public class RoomRightsWriter : AbstractPacketWriter
 {
     public RoomRightsWriter(RoomControllerLevel controllerLevel)
     {

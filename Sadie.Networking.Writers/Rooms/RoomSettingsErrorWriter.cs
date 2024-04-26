@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomSettingsErrorWriter : NetworkPacketWriter
+public class RoomSettingsErrorWriter : AbstractPacketWriter
 {
     public RoomSettingsErrorWriter(int roomId, RoomSettingsError error, string unknown = "")
     {

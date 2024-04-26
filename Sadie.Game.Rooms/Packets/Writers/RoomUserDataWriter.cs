@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class RoomUserDataWriter : NetworkPacketWriter
+public class RoomUserDataWriter : AbstractPacketWriter
 {
     public RoomUserDataWriter(ICollection<IRoomUser> users)
     {

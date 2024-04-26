@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class PlayerHotelViewWriter : NetworkPacketWriter
+public class PlayerHotelViewWriter : AbstractPacketWriter
 {
     public PlayerHotelViewWriter()
     {

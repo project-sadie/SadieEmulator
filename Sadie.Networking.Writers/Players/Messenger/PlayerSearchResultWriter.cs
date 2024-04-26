@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerSearchResultWriter : NetworkPacketWriter
+public class PlayerSearchResultWriter : AbstractPacketWriter
 {
     public PlayerSearchResultWriter(ICollection<Player> friends, ICollection<Player> strangers)
     {

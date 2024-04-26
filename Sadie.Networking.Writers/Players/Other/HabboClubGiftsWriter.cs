@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class HabboClubGiftsWriter : NetworkPacketWriter
+public class HabboClubGiftsWriter : AbstractPacketWriter
 {
     public HabboClubGiftsWriter(int daysTillNext, int unclaimedGifts, int daysAsClub, CatalogPage? clubGiftPage)
     {

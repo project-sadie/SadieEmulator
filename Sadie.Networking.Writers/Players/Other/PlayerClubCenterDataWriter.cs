@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerClubCenterDataWriter : NetworkPacketWriter
+public class PlayerClubCenterDataWriter : AbstractPacketWriter
 {
     public PlayerClubCenterDataWriter(
         string joinDateString, 

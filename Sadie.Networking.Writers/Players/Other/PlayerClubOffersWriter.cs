@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerClubOffersWriter : NetworkPacketWriter
+public class PlayerClubOffersWriter : AbstractPacketWriter
 {
     public PlayerClubOffersWriter(
         IReadOnlyCollection<CatalogClubOffer> offers, 

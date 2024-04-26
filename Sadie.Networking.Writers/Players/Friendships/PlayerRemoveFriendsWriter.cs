@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
-public class PlayerRemoveFriendsWriter : NetworkPacketWriter
+public class PlayerRemoveFriendsWriter : AbstractPacketWriter
 {
     public PlayerRemoveFriendsWriter(List<int> playerIds)
     {
