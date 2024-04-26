@@ -16,13 +16,8 @@ public class CatalogPage
     public int IconId { get; init; }
     public bool Enabled { get; init; }
     public bool Visible { get; init; }
-    public string? HeaderImage { get; init; }
-    public string? TeaserImage { get; init; }
-    public string? SpecialImage { get; init; }
-    public string? PrimaryText { get; init; }
-    public string? SecondaryText { get; init; }
-    public string? DetailsText { get; init; }
-    public string? TeaserText { get; init; }
+    public List<string> ImagesJson { get; init; } = [];
+    public List<string> TextsJson { get; init; } = [];
     public ICollection<CatalogPage> Pages { get; init; } = [];
     public ICollection<CatalogItem> Items { get; init; } = [];
 }

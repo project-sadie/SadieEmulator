@@ -88,7 +88,8 @@ internal static class NetworkPacketEventHelpers
                 ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 
                  command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x))))
             {
-                await command.ExecuteAsync(roomUser!, message.Split(" ").Skip(1));
+                var parameters = message.Split(" ").Skip(1);
+                await command.ExecuteAsync(roomUser, parameters);
                 return;
             }
         }
