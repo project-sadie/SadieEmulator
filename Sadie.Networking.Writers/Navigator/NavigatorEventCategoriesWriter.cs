@@ -1,21 +1,12 @@
 using Sadie.Database.Models.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Navigator;
 
+[PacketId(ServerPacketId.NavigatorEventCategories)]
 public class NavigatorEventCategoriesWriter : NetworkPacketWriter
 {
-    public NavigatorEventCategoriesWriter(List<RoomCategory> categories)
-    {
-        WriteShort(ServerPacketId.NavigatorEventCategories);
-        WriteInteger(categories.Count);
-
-        foreach (var category in categories)
-        {
-            WriteLong(category.Id);
-            WriteString(category.Caption);
-            WriteBool(category.IsVisible);
-        }
-    }
+    public required List<RoomCategory> Categories { get; init; }
 }
