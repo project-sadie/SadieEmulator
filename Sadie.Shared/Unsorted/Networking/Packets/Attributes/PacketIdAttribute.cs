@@ -1,6 +1,6 @@
 namespace Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
-internal class PacketIdAttribute(short i) : Attribute
+public class PacketIdAttribute(short id) : Attribute
 {
-    public short Id { get; } = i;
+    public short Id { get; } = id;
 }

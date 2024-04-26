@@ -11,7 +11,7 @@ public interface IRoomUserRepository : IAsyncDisposable
     bool TryGetByUsername(string username, out IRoomUser? user);
     Task TryRemoveAsync(int id, bool hotelView = false);
     int Count { get; }
-    Task BroadcastDataAsync(NetworkPacketWriter data);
+    Task BroadcastDataAsync(AbstractPacketWriter writer);
     ICollection<IRoomUser> GetAllWithRights();
     Task RunPeriodicCheckAsync();
 }

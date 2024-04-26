@@ -163,12 +163,19 @@ public class RoomUser(
 
     private async Task UpdateIdleStatusAsync()
     {
-        var shouldBeIdle = (DateTime.Now - LastAction) > IdleTime;
+        var shouldBeIdle = DateTime.Now - LastAction > IdleTime;
 
         if (shouldBeIdle && !IsIdle || !shouldBeIdle && IsIdle)
         {
             IsIdle = shouldBeIdle;
-            await room!.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(Id, IsIdle));
+
+            var writer = new RoomUserIdleWriter
+            {
+                UserId = Id,
+                IsIdle = IsIdle
+            };
+            
+            await room!.UserRepository.BroadcastDataAsync(writer);
         }
     }
 

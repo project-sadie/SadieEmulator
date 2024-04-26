@@ -12,7 +12,18 @@ public abstract class AbstractPacketWriter
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> AfterRulesSerialize { get; } = new();
     
-    public virtual void OnSerialize()
+    /// <summary>
+    /// Register any rules needed for custom mapping
+    /// </summary>
+    public virtual void OnConfigureRules()
+    {
+        
+    }
+
+    /// <summary>
+    /// Overrides the entire serialization process
+    /// </summary>
+    public virtual void OnSerialize(NetworkPacketWriter writer)
     {
         
     }
