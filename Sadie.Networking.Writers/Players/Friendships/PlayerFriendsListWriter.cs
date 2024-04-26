@@ -4,45 +4,48 @@ using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
+[PacketId(ServerPacketId.PlayerFriendsList)]
 public class PlayerFriendsListWriter : AbstractPacketWriter
 {
-    public PlayerFriendsListWriter(
-        int pages, 
-        int index, 
-        ICollection<PlayerFriendship> friends, 
-        PlayerRepository playerRepository, 
-        ICollection<PlayerRelationship> relationships)
-    {
-        WriteShort(ServerPacketId.PlayerFriendsList);
-        WriteInteger(pages);
-        WriteInteger(index);
-        WriteInteger(friends.Count);
+    public required int Pages { get; init; }
+    public required int Index { get; init; }
+    public required ICollection<PlayerFriendship> Friends { get; init; }
+    [NotPacketData] public required PlayerRepository PlayerRepository { get; init; }
+    public required ICollection<PlayerRelationship> Relationships { get; init; }
 
-        foreach (var friend in friends)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(Pages);
+        writer.WriteInteger(Index);
+        writer.WriteInteger(Friends.Count);
+
+        foreach (var friend in Friends)
         {
             var friendData = friend.TargetPlayer;
-            var onlineFriend = playerRepository.GetPlayerLogicById(friendData.Id);
+            var onlineFriend = PlayerRepository.GetPlayerLogicById(friendData.Id);
             var isOnline = onlineFriend != null;
             var inRoom = isOnline && onlineFriend != null && onlineFriend.CurrentRoomId != 0;
-            var relationshipType = relationships.FirstOrDefault(x => x.TargetPlayerId == friendData.Id)?.TypeId ?? PlayerRelationshipType.None;
+            var relationshipType = Relationships.FirstOrDefault(x => x.TargetPlayerId == friendData.Id)?.TypeId ?? PlayerRelationshipType.None;
 
-            WriteInteger(friendData.Id);
-            WriteString(friendData.Username);
-            WriteInteger(friendData.AvatarData.Gender == AvatarGender.Male ? 0 : 1);
-            WriteBool(isOnline);
-            WriteBool(inRoom);
-            WriteString(friendData.AvatarData.FigureCode);
-            WriteInteger(0); // unknown
-            WriteString(friendData.AvatarData.Motto);
-            WriteString(friendData.Username); // real name
-            WriteString(""); // last access?
-            WriteBool(false); // TODO: offline messaging
-            WriteBool(false); // unknown
-            WriteBool(false); // unknown
-            WriteShort((short) relationshipType);
+            writer.WriteInteger(friendData.Id);
+            writer.WriteString(friendData.Username);
+            writer.WriteInteger(friendData.AvatarData.Gender == AvatarGender.Male ? 0 : 1);
+            writer.WriteBool(isOnline);
+            writer.WriteBool(inRoom);
+            writer.WriteString(friendData.AvatarData.FigureCode);
+            writer.WriteInteger(0); // unknown
+            writer.WriteString(friendData.AvatarData.Motto);
+            writer.WriteString(friendData.Username); // real name
+            writer.WriteString(""); // last access?
+            writer.WriteBool(false); // TODO: offline messaging
+            writer.WriteBool(false); // unknown
+            writer.WriteBool(false); // unknown
+            writer.WriteShort((short) relationshipType);
         }
     }
+}
 }

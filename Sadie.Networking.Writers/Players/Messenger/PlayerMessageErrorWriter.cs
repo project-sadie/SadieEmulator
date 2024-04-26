@@ -1,16 +1,10 @@
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
 public class PlayerMessageErrorWriter : AbstractPacketWriter
 {
-    public PlayerMessageErrorWriter(PlayerMessageError error, int targetId)
-    {
-        WriteShort(ServerPacketId.PlayerMessageError);
-        WriteInteger((int) error);
-        WriteInteger(targetId);
-        WriteString("");
-    }
+    public required int Error { get; init; }
+    public required int TargetId { get; init; }
+    public required string Unknown { get; init; }
 }

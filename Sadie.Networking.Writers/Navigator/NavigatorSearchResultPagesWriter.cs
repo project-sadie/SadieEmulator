@@ -1,7 +1,6 @@
 using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
-using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
@@ -55,7 +54,7 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
                     writer.WriteString(tag.Name);
                 }
                 
-                WriteInteger(0 | 8); // TODO: base
+                writer.WriteInteger(0 | 8); // TODO: base
             }
         }
     }

@@ -121,9 +121,14 @@ public class SecureLoginEventHandler(
             playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
             2,
             true));
+
+        var navigatorSettingsWriter = new PlayerNavigatorSettingsWriter
+        {
+            NavigatorSettings = player.NavigatorSettings!
+        };
         
         await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true));
-        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings));
+        await networkObject.WriteToStreamAsync(navigatorSettingsWriter);
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications));
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore));
 
@@ -152,7 +157,20 @@ public class SecureLoginEventHandler(
 
         if (player.HasPermission("moderation_tools"))
         {
-            await networkObject.WriteToStreamAsync(new ModerationToolsWriter());
+            await networkObject.WriteToStreamAsync(new ModerationToolsWriter
+            {
+                Unknown1 = 0,
+                Unknown2 = 0,
+                Unknown3 = 0,
+                Unknown4 = true,
+                Unknown5 = true,
+                Unknown6 = true,
+                Unknown7 = true,
+                Unknown8 = true,
+                Unknown9 = true,
+                Unknown10 = true,
+                Unknown11 = 0
+            });
         }
 
         var allFriends = player.GetMergedFriendships();
