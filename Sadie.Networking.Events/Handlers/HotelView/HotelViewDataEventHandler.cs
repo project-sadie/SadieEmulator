@@ -23,17 +23,29 @@ public class HotelViewDataEventHandler(HotelViewDataEventParser eventParser) : I
             {
                 if (piece.Contains(','))
                 {
-                    await client.WriteToStreamAsync(new HotelViewDataWriter(piece, piece.Split(",").Last()));
+                    await client.WriteToStreamAsync(new HotelViewDataWriter
+                    {
+                        Key = piece,
+                        Value = piece.Split(",").Last()
+                    });
                 }
                 else
                 {
-                    await client.WriteToStreamAsync(new HotelViewDataWriter(unknown1, piece));
+                    await client.WriteToStreamAsync(new HotelViewDataWriter
+                    {
+                        Key = unknown1,
+                        Value = piece
+                    });
                 }
             }
         }
         else
         {
-            await client.WriteToStreamAsync(new HotelViewDataWriter(unknown1, unknown1.Split(",").Last()));
+            await client.WriteToStreamAsync(new HotelViewDataWriter
+            {
+                Key = unknown1,
+                Value = unknown1.Split(",").Last()
+            });
         }
     }
 }
