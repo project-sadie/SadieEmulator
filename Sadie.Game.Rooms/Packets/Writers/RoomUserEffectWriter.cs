@@ -5,11 +5,7 @@ namespace Sadie.Game.Rooms.Packets.Writers;
 
 public class RoomUserEffectWriter : NetworkPacketWriter
 {
-    public RoomUserEffectWriter(int userId, int effectId, TimeSpan delay = default)
-    {
-        WriteShort(ServerPacketId.RoomUserEffect);
-        WriteInteger(userId);
-        WriteInteger(effectId);
-        WriteInteger(delay == default ? 0 : (int) delay.TotalMilliseconds);
-    }
+    public required int UserId { get; init; }
+    public required int EffectId { get; init; }
+    public required int DelayMs { get; init; }
 }
