@@ -13,4 +13,4 @@ public class RequestGameCenterConfigEventHandler : INetworkPacketEventHandler
         var writer = new GameAchievementsListWriter();
         await client.WriteToStreamAsync(writer);
     }
-}
+} 

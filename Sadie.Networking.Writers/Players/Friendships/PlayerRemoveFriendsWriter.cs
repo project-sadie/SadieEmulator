@@ -1,20 +1,25 @@
+using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
+[PacketId(ServerPacketId.PlayerRemoveFriends)]
 public class PlayerRemoveFriendsWriter : AbstractPacketWriter
 {
-    public PlayerRemoveFriendsWriter(List<int> playerIds)
-    {
-        WriteShort(ServerPacketId.PlayerRemoveFriends);
-        WriteInteger(0);
-        WriteInteger(playerIds.Count);
+    public required int Unknown1 { get; init; }
+    public required List<int> PlayerIds { get; init; }
 
-        foreach (var playerId in playerIds)
+    public override void OnConfigureRules()
+    {
+        Override(PropertyHelper<PlayerRemoveFriendsWriter>.GetProperty(x => x.PlayerIds), writer =>
         {
-            WriteInteger(-1);
-            WriteInteger(playerId);
-        }
+            foreach (var playerId in PlayerIds)
+            {
+                writer.WriteInteger(-1);
+                writer.WriteInteger(playerId);
+            }
+        });
     }
 }
