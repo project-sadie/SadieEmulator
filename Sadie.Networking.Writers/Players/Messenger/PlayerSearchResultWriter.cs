@@ -8,36 +8,39 @@ namespace Sadie.Networking.Writers.Players.Messenger;
 [PacketId(ServerPacketId.PlayerSearchResult)]
 public class PlayerSearchResultWriter : AbstractPacketWriter
 {
-    public PlayerSearchResultWriter(ICollection<Player> friends, ICollection<Player> strangers)
-    {
-        WriteInteger(friends.Count);
+    public required ICollection<Player> Friends { get; init; }
+    public required ICollection<Player> Strangers { get; init; }
 
-        foreach (var friend in friends)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(Friends.Count);
+
+        foreach (var friend in Friends)
         {
-            WriteInteger(friend.Id);
-            WriteString(friend.Username);
-            WriteString(friend.AvatarData.Motto);
-            WriteBool(false);
-            WriteBool(false);
-            WriteString("");
-            WriteInteger(1);
-            WriteString(friend.AvatarData.FigureCode);
-            WriteString("");
+            writer.WriteInteger(friend.Id);
+            writer.WriteString(friend.Username);
+            writer.WriteString(friend.AvatarData.Motto);
+            writer.WriteBool(false);
+            writer.WriteBool(false);
+            writer.WriteString("");
+            writer.WriteInteger(1);
+            writer.WriteString(friend.AvatarData.FigureCode);
+            writer.WriteString("");
         }
         
-        WriteInteger(strangers.Count);
+        writer.WriteInteger(Strangers.Count);
 
-        foreach (var stranger in strangers)
+        foreach (var stranger in Strangers)
         {
-            WriteLong(stranger.Id);
-            WriteString(stranger.Username);
-            WriteString(stranger.AvatarData.Motto);
-            WriteBool(false);
-            WriteBool(false);
-            WriteString("");
-            WriteInteger(1);
-            WriteString(stranger.AvatarData.FigureCode);
-            WriteString("");
+            writer.WriteLong(stranger.Id);
+            writer.WriteString(stranger.Username);
+            writer.WriteString(stranger.AvatarData.Motto);
+            writer.WriteBool(false);
+            writer.WriteBool(false);
+            writer.WriteString("");
+            writer.WriteInteger(1);
+            writer.WriteString(stranger.AvatarData.FigureCode);
+            writer.WriteString("");
         }
     }
 }
