@@ -32,20 +32,15 @@ public class RoomFloorItemUpdatedWriter : NetworkPacketWriter
         WriteString($"{stackHeight}");
         WriteInteger(extra);
 
-        switch (interactionType)
+        WriteInteger(objectDataKey); 
+        WriteInteger(objectData.Count);
+
+        foreach (var dataPair in objectData)
         {
-            default:
-                WriteInteger(objectDataKey); 
-                WriteInteger(objectData.Count);
-
-                foreach (var dataPair in objectData)
-                {
-                    WriteString(dataPair.Key);
-                    WriteString(dataPair.Value);
-                }
-                break;
+            WriteString(dataPair.Key);
+            WriteString(dataPair.Value);
         }
-
+        
         WriteString(metaData);
         WriteInteger(expires);
         WriteInteger(interactionModes > 1 ? 1 : 0); 
