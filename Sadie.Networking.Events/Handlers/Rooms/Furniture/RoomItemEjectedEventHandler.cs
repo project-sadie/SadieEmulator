@@ -7,7 +7,6 @@ using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 

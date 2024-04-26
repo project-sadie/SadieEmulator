@@ -1,22 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
-using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Catalog;
-using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 public class CatalogPurchaseEventHandler(
     CatalogPurchaseEventParser eventParser,
-    SadieContext dbContext,
-    CatalogPageRepository pageRepository) : INetworkPacketEventHandler
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.CatalogPurchase;
 
@@ -39,7 +37,11 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        var page = pageRepository.TryGet(eventParser.PageId);
+        var page = await dbContext
+            .Set<CatalogPage>()
+            .Include(catalogPage => catalogPage.Items)
+            .ThenInclude(catalogItem => catalogItem.FurnitureItems)
+            .FirstOrDefaultAsync(x => x.Id == eventParser.PageId);
 
         if (page == null)
         {
@@ -64,7 +66,6 @@ public class CatalogPurchaseEventHandler(
         
         var created = DateTime.Now;
         var newItems = new List<PlayerFurnitureItem>();
-        var metaData = NetworkPacketEventHelpers.CalculateMetaDataForCatalogItem(eventParser.ExtraData, item);
         var furnitureItem = item.FurnitureItems.First();
 
         for (var i = 0; i < eventParser.Amount; i++)
@@ -74,7 +75,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = $"1:1",
-                MetaData = metaData,
+                MetaData = eventParser.ExtraData,
                 CreatedAt = created
             };
             

@@ -98,7 +98,7 @@ public class RoomUser(
     {
         if (NextPoint != null)
         {
-            room.TileMap.RemoveUserFromMap(Point, this);
+            room.TileMap.UserMap[Point].Remove(this);
             room.TileMap.AddUserToMap(NextPoint.Value, this);
             
             Point = NextPoint.Value;
@@ -140,7 +140,7 @@ public class RoomUser(
         
         if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
             (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
-            room.TileMap.GetMappedUsers(nextStep).Count > 0)
+            room.TileMap.UserMap.GetValueOrDefault(nextStep, [])!.Count > 0)
         {
             NeedsPathCalculated = true;
             return;
@@ -234,6 +234,6 @@ public class RoomUser(
 
     public async ValueTask DisposeAsync()
     {
-        room.TileMap.RemoveUserFromMap(Point, this);
+        room.TileMap.UserMap[Point].Remove(this);
     }
 }

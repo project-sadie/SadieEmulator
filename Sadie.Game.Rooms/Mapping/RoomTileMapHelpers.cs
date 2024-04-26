@@ -111,12 +111,7 @@ public class RoomTileMapHelpers
             return 2;
         }
 
-        if (item.FurnitureItem.CanLay)
-        {
-            return 3;
-        }
-
-        return 0;
+        return item.FurnitureItem.CanLay ? (short) 3 : (short) 0;
     }
 
     public static List<RoomFurnitureItem> GetItemsForPosition(int x, int y, IEnumerable<RoomFurnitureItem> items)
@@ -229,7 +224,7 @@ public class RoomTileMapHelpers
     }
     
     public static bool CanPlaceAt(
-        List<Point> points,  
+        IEnumerable<Point> points,  
         RoomTileMap tileMap)
     {
         return points.All(point => tileMap.SquareStateMap[point.Y, point.X] != 0);

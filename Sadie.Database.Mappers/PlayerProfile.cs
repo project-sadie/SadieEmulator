@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
+#pragma warning disable CS8604 // Possible null reference argument.
 
 namespace Sadie.Database.Mappers;
 

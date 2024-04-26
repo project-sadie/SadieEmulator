@@ -1,22 +1,25 @@
+using Sadie.Database;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-public class SaveNavigatorSettingsEventHandler(SaveNavigatorSettingsEventParser eventParser) : INetworkPacketEventHandler
+public class SaveNavigatorSettingsEventHandler(
+    SaveNavigatorSettingsEventParser eventParser,
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.SaveNavigatorSettings;
 
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
 
         var player = client.Player;
 
-        if (player == null)
+        if (player?.NavigatorSettings == null)
         {
-            return Task.CompletedTask;
+            return;
         }
         
         var navigatorSettings = player.NavigatorSettings;
@@ -27,6 +30,7 @@ public class SaveNavigatorSettingsEventHandler(SaveNavigatorSettingsEventParser 
         navigatorSettings.WindowHeight = eventParser.WindowHeight;
         navigatorSettings.OpenSearches = eventParser.OpenSearches;
 
-        return Task.CompletedTask;
+        dbContext.PlayerNavigatorSettings.Update(player.NavigatorSettings);
+        await dbContext.SaveChangesAsync();
     }
 }

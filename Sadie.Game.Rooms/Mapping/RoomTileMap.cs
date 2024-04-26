@@ -1,6 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
+using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Users;
+using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Mapping;
 
@@ -10,32 +12,20 @@ public class RoomTileMap
     public int SizeX { get; }
     public int SizeY { get; }
     public int Size { get; }
-    public short[,] SquareStateMap { get; private set; }
-    public short[,] Map { get; private set; }
+    public short[,] SquareStateMap { get; }
+    public short[,] Map { get; }
     public ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; } = [];
 
-    public RoomTileMap(string heightmap, short[,] tileMap, short[,] map)
+    public RoomTileMap(string heightmap, ICollection<RoomFurnitureItem> furnitureItems)
     {
         HeightmapRows = heightmap.Split("\n").ToList();
         SizeX = HeightmapRows.First().Length;
         SizeY = HeightmapRows.Count;
         Size = SizeY * SizeX;
-        SquareStateMap = tileMap;
-        Map = map;
+        SquareStateMap = RoomTileMapHelpers.BuildSquareStateMapForRoom(SizeX, SizeY, heightmap);
+        Map = RoomTileMapHelpers.BuildTileMapForRoom(SizeX, SizeY, heightmap, furnitureItems);
     }
 
-    public void AddUserToMap(Point point, IRoomUser user)
-    {
-        if (UserMap.TryGetValue(point, out var value))
-        {
-            value.Add(user);
-        }
-        else
-        {
-            UserMap[point] = [user];
-        }
-    }
-
-    public void RemoveUserFromMap(Point point, IRoomUser user) =>  UserMap[point].Remove(user);
-    public List<IRoomUser> GetMappedUsers(Point point) => UserMap.TryGetValue(point, out var value) ? value : [];
+    public void AddUserToMap(Point point, IRoomUser user) => 
+        UserMap.GetOrInsert(point, () => []).Add(user);
 }

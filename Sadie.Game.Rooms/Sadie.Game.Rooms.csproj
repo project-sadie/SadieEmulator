@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
-      <ProjectReference Include="..\Sadie.Game.Furniture\Sadie.Game.Furniture.csproj" />
       <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
     </ItemGroup>
 

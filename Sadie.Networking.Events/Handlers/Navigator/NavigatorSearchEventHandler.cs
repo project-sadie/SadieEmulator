@@ -1,7 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Navigator;
-using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Navigator;
@@ -12,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 public class NavigatorSearchEventHandler(
     NavigatorSearchEventParser eventParser,
-    NavigatorTabRepository navigatorTabRepository,
+    SadieContext dbContext,
     NavigatorRoomProvider navigatorRoomProvider,
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
@@ -31,7 +32,11 @@ public class NavigatorSearchEventHandler(
         var tabName = eventParser.TabName;
         var searchQuery = eventParser.SearchQuery;
 
-        if (!navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
+        var tab = await dbContext.Set<NavigatorTab>()
+            .Include(x => x.Categories)
+            .FirstOrDefaultAsync(x => x.Name == tabName);
+
+        if (tab == null)
         {
             return;
         }

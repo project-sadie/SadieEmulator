@@ -4,7 +4,6 @@ using Sadie.Database;
 using Sadie.Database.Mappers;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Catalog;
-using Sadie.Game.Furniture;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -46,6 +45,5 @@ public static class ServerServiceCollection
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         CatalogServiceProvider.AddServices(serviceCollection);
-        FurnitureServiceProvider.AddServices(serviceCollection);
     }
 }

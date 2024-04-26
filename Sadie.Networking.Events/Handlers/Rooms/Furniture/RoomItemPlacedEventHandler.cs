@@ -98,7 +98,7 @@ public class RoomItemPlacedEventHandler(
 
         if (!RoomTileMapHelpers
             .GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX, playerItem.FurnitureItem.TileSpanY,
-                direction).All(x => RoomTileMapHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
+                direction).All(x => RoomTileMapHelpers.CanPlaceAt((List<Point>)[new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;

@@ -3,7 +3,6 @@ using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 

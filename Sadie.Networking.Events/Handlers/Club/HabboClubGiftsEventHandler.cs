@@ -1,12 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Catalog.Pages;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
-public class HabboClubGiftsEventHandler(CatalogPageRepository catalogPageRepository) : INetworkPacketEventHandler
+public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int Id => EventHandlerIds.HabboClubGifts;
 
@@ -16,8 +18,10 @@ public class HabboClubGiftsEventHandler(CatalogPageRepository catalogPageReposit
         {
             return;
         }
-        
-        var clubGiftPage = catalogPageRepository.TryGetByLayout("club_gift");
+
+        var clubGiftPage = await dbContext
+            .Set<CatalogPage>()
+            .FirstOrDefaultAsync(x => x.Layout == "club_gift");
 
         var daysAsClub = CalculateDaysAsClub(client.Player.Subscriptions);
         var daysTillNextClubGift = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400;

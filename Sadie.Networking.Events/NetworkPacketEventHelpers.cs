@@ -19,7 +19,6 @@ using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events;
@@ -34,9 +33,7 @@ internal static class NetworkPacketEventHelpers
         
         if (player == null)
         {
-            room = null!;
-            user = null!;
-            
+            room = null!; user = null!;
             return false;
         }
         
@@ -45,9 +42,7 @@ internal static class NetworkPacketEventHelpers
 
         if (roomObject == null || client.RoomUser == null)
         {
-            room = null!;
-            user = null!;
-            
+            room = null!; user = null!;
             return false;
         }
 
@@ -57,6 +52,148 @@ internal static class NetworkPacketEventHelpers
         return true;
     }
 
+    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
+    {
+        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
+            new Dictionary<string, string>
+            {
+                { "message", error.ToString() }
+            }));
+    }
+
+    public static async Task ProcessChatMessageAsync(
+        INetworkClient client,
+        RoomUserChatEventParser parser,
+        bool shouting,
+        ServerRoomConstants roomConstants,
+        RoomRepository roomRepository,
+        IRoomChatCommandRepository commandRepository,
+        SadieContext dbContext)
+    {
+        var message = parser.Message;
+        
+        if (string.IsNullOrEmpty(message) || 
+            message.Length > roomConstants.MaxChatMessageLength ||
+            !TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        {
+            return;
+        }
+        
+        if (!shouting && message.StartsWith(":"))
+        {
+            var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
+            var roomOwner = room.OwnerId == roomUser.Id;
+            
+            if (command != null && 
+                ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 
+                 command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x))))
+            {
+                var parameters = message.Split(" ").Skip(1);
+                await command.ExecuteAsync(roomUser, parameters);
+                return;
+            }
+        }
+
+        var chatMessage = new RoomChatMessage
+        {
+            RoomId = room.Id,
+            PlayerId = roomUser.Id,
+            Message = message,
+            ChatBubbleId = parser.Bubble,
+            EmotionId = 0,
+            TypeId = RoomChatMessageType.Shout,
+            CreatedAt = DateTime.Now
+        };
+
+        await room!.UserRepository.BroadcastDataAsync(
+            shouting ? 
+            new RoomUserShoutWriter(chatMessage!, 0) : 
+            new RoomUserChatWriter(chatMessage!, 0)
+        );
+        
+        roomUser.UpdateLastAction();
+
+        room.ChatMessages.Add(chatMessage);
+
+        dbContext.Add(chatMessage);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, RoomLogic room, string password)
+    {
+        var player = client.Player!;
+        
+        switch (room.Settings.AccessType)
+        {
+            case RoomAccessType.Password when password != room.Settings.Password:
+                await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword));
+                await client.WriteToStreamAsync(new PlayerHotelViewWriter());
+                return false;
+            
+            case RoomAccessType.Doorbell:
+            {
+                var usersWithRights = room.UserRepository.GetAllWithRights();
+
+                if (usersWithRights.Count < 1)
+                {
+                    await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Username));
+                    return false;
+                }
+                
+                foreach (var user in usersWithRights)
+                {
+                    await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(player.Username));
+                }
+
+                await client.WriteToStreamAsync(new RoomDoorbellWriter());
+                return false;
+            }
+            case RoomAccessType.Open:
+                break;
+            case RoomAccessType.Invisible:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        return true;
+    }
+
+    public static async Task<bool> TryChargeForCatalogItemPurchaseAsync(INetworkClient client, CatalogItem item, int amount)
+    {
+        var costInCredits = item.CostCredits * amount;
+        var costInPoints = item.CostPoints * amount;
+
+        var playerData = client.Player.Data;
+        
+        if (playerData.CreditBalance < costInCredits || 
+            (item.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||
+            (item.CostPointsType != 0 && playerData.SeasonalBalance < costInPoints))
+        {
+            return false;
+        }
+
+        playerData.CreditBalance -= costInCredits;
+
+        if (item.CostPointsType == 0)
+        {
+            playerData.PixelBalance -= costInPoints;
+        }
+        else
+        {
+            playerData.SeasonalBalance -= costInPoints;
+        }
+        
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance));
+        
+        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
+            playerData.PixelBalance, 
+            playerData.SeasonalBalance, 
+            playerData.GotwPoints));
+
+        return true;
+    }
+    
     internal static async Task EnterRoomAsync<T>(
         INetworkClient client, 
         RoomLogic room, 
@@ -141,164 +278,5 @@ internal static class NetworkPacketEventHelpers
         }
 
         await client.WriteToStreamAsync(new RoomLoadedWriter());
-    }
-
-    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
-    {
-        await client.WriteToStreamAsync(new NotificationWriter(NotificationType.FurniturePlacementError,
-            new Dictionary<string, string>
-            {
-                { "message", error.ToString() }
-            }));
-    }
-
-    public static async Task ProcessChatMessageAsync(
-        INetworkClient client,
-        RoomUserChatEventParser parser,
-        bool shouting,
-        ServerRoomConstants roomConstants,
-        RoomRepository roomRepository,
-        IRoomChatCommandRepository commandRepository,
-        SadieContext dbContext)
-    {
-        var message = parser.Message;
-        
-        if (string.IsNullOrEmpty(message) || message.Length > roomConstants.MaxChatMessageLength)
-        {
-            return;
-        }
-        
-        if (!TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
-        {
-            return;
-        }
-        
-        if (!shouting && message.StartsWith(":"))
-        {
-            var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
-            var roomOwner = room.OwnerId == roomUser.Id;
-            
-            if (command != null && 
-                ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 
-                 command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x))))
-            {
-                await command.ExecuteAsync(roomUser!, message.Split(" ").Skip(1));
-                return;
-            }
-        }
-
-        var chatMessage = new RoomChatMessage
-        {
-            RoomId = room.Id,
-            PlayerId = roomUser.Id,
-            Message = message,
-            ChatBubbleId = parser.Bubble,
-            EmotionId = 0,
-            TypeId = RoomChatMessageType.Shout,
-            CreatedAt = DateTime.Now
-        };
-
-        await room!.UserRepository.BroadcastDataAsync(
-            shouting ? 
-            new RoomUserShoutWriter(chatMessage!, 0) : 
-            new RoomUserChatWriter(chatMessage!, 0)
-        );
-        
-        roomUser.UpdateLastAction();
-
-        room.ChatMessages.Add(chatMessage);
-
-        dbContext.Add(chatMessage);
-        await dbContext.SaveChangesAsync();
-    }
-
-    public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, RoomLogic room, string password)
-    {
-        var player = client.Player!;
-        
-        switch (room.Settings.AccessType)
-        {
-            case RoomAccessType.Password when password != room.Settings.Password:
-                await client.WriteToStreamAsync(new GenericErrorWriter(GenericErrorCode.IncorrectRoomPassword));
-                await client.WriteToStreamAsync(new PlayerHotelViewWriter());
-                return false;
-            case RoomAccessType.Doorbell:
-            {
-                var usersWithRights = room.UserRepository.GetAllWithRights();
-                
-                if (usersWithRights.Count < 1)
-                {
-                    await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter(player.Username));
-                }
-                else
-                {
-                    foreach (var user in usersWithRights)
-                    {
-                        await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter(player.Username)
-                            );
-                    }
-
-                    await client.WriteToStreamAsync(new RoomDoorbellWriter());
-                }
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static async Task<bool> TryChargeForCatalogItemPurchaseAsync(INetworkClient client, CatalogItem item, int amount)
-    {
-        var costInCredits = item.CostCredits * amount;
-        var costInPoints = item.CostPoints * amount;
-
-        var playerData = client.Player.Data;
-        
-        if (playerData.CreditBalance < costInCredits || 
-            (item.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||
-            (item.CostPointsType != 0 && playerData.SeasonalBalance < costInPoints))
-        {
-            return false;
-        }
-
-        playerData.CreditBalance -= costInCredits;
-
-        if (item.CostPointsType == 0)
-        {
-            playerData.PixelBalance -= costInPoints;
-        }
-        else
-        {
-            playerData.SeasonalBalance -= costInPoints;
-        }
-        
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter(playerData.CreditBalance));
-        
-        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
-            playerData.PixelBalance, 
-            playerData.SeasonalBalance, 
-            playerData.GotwPoints));
-
-        return true;
-    }
-
-    public static string CalculateMetaDataForCatalogItem(string metaData, CatalogItem item)
-    {
-        switch (item.FurnitureItems.First().InteractionType)
-        {
-            case "roomeffect":
-                if (string.IsNullOrEmpty(metaData))
-                {
-                    return 0.ToString();
-                }
-
-                return double
-                    .Parse(metaData)
-                    .ToString()
-                    .Replace(',', '.');
-            default:
-                return metaData;
-        }
     }
 }

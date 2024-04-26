@@ -2,11 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
-using Sadie.Game.Catalog.Club;
-using Sadie.Game.Catalog.FrontPage;
-using Sadie.Game.Catalog.Pages;
-using Sadie.Game.Furniture;
-using Sadie.Game.Navigator.Tabs;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
@@ -23,11 +18,8 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
     public async Task RunAsync()
     {
         var stopwatch = Stopwatch.StartNew();
-
         WriteHeaderToConsole();
-
         await CleanUpDataAsync();
-        await LoadInitialDataAsync();
 
         serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
 
@@ -52,36 +44,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         await context
             .PlayerData
             .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false));
-    }
-
-    private async Task LoadInitialDataAsync()
-    {
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync,
-            "navigator tabs");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync,
-            "furniture items");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync,
-            "catalog pages");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>().LoadInitialDataAsync,
-            "catalog front page items");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<CatalogClubOfferRepository>().LoadInitialDataAsync,
-            "player club offers");
-
-    }
-
-    private async Task LoadInitialDataAsync(Func<Task> action, string name)
-    {
-        logger.LogTrace($"Loading {name}...");
-        await action.Invoke();
     }
 
     private void WriteHeaderToConsole()

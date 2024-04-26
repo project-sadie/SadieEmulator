@@ -13,13 +13,8 @@ public class CatalogPageWriter : NetworkPacketWriter
     public CatalogPageWriter(
         int pageId, 
         string pageLayout,
-        string headerImage,
-        string teaserImage,
-        string specialImage,
-        string primaryText,
-        string secondaryText,
-        string teaserText,
-        string detailsText,
+        List<string> images,
+        List<string> texts,
         ICollection<CatalogItem> items, 
         string catalogMode,
         bool acceptSeasonCurrencyAsCredits,
@@ -28,123 +23,20 @@ public class CatalogPageWriter : NetworkPacketWriter
         WriteShort(ServerPacketId.CatalogPage);
         WriteInteger(pageId);
         WriteString(catalogMode);
+        WriteString(pageLayout);
 
-        switch (pageLayout)
+        WriteInteger(images.Count);
+
+        foreach (var image in images)
         {
-            case CatalogPageLayout.Guilds:
-            case CatalogPageLayout.SoundMachine:
-            case CatalogPageLayout.GuildForum:
-            case CatalogPageLayout.GuildsCustomFurniture:
-            case CatalogPageLayout.MarketplaceOwnItems:
-            case CatalogPageLayout.Marketplace:
-            case CatalogPageLayout.ClubGifts:
-            case CatalogPageLayout.InfoLoyalty:
-                WriteString(pageLayout);
-                WriteInteger(2);
-                WriteString(headerImage); 
-                WriteString(teaserImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                WriteString(teaserText);
-                break;
-            case CatalogPageLayout.RoomBundle:
-            case CatalogPageLayout.SingleBundle:
-                WriteString("single_bundle");
-                WriteInteger(3);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteString("");
-                WriteInteger(4);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                WriteString(teaserText);
-                WriteString(secondaryText);
-                break;
-            case CatalogPageLayout.PetCustomization:
-            case CatalogPageLayout.BadgeDisplay:
-                WriteString(pageLayout);
-                WriteInteger(3);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteString(specialImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                WriteString(teaserText);
-                break;
-            case CatalogPageLayout.Pets:
-                WriteString(pageLayout);
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(4);
-                WriteString(primaryText);
-                WriteString(secondaryText);
-                WriteString(detailsText);
-                WriteString(teaserText);
-                break;
-            case CatalogPageLayout.Bots:
-                WriteString(pageLayout);
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                WriteString(secondaryText);
-                break;
-            case CatalogPageLayout.VipBuy:
-                WriteString(pageLayout);
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(0);
-                break;
-            case CatalogPageLayout.FrontPage:
-                WriteString("frontpage4");
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(secondaryText);
-                WriteString(teaserText);
-                break;
-            case CatalogPageLayout.Default3X3ColorGrouping:
-            case CatalogPageLayout.SpacesNew:
-            case CatalogPageLayout.Trophies:
-                WriteString(pageLayout);
-                WriteInteger(3);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteString(specialImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(detailsText);
-                WriteString(teaserText);
-                break;
-            case CatalogPageLayout.Default3X3:
-            case CatalogPageLayout.RecentPurchases:
-                WriteString(pageLayout);
-                WriteInteger(3);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteString(specialImage);
-                WriteInteger(3);
-                WriteString(primaryText);
-                WriteString(secondaryText);
-                WriteString(teaserText);
-                break;
-            case CatalogPageLayout.RoomAds:
-                WriteString(pageLayout);
-                WriteInteger(2);
-                WriteString(headerImage);
-                WriteString(teaserImage);
-                WriteInteger(2);
-                WriteString(primaryText);
-                WriteString(secondaryText);
-                break;
+            WriteString(image);
+        }
+
+        WriteInteger(texts.Count);
+
+        foreach (var text in texts)
+        {
+            WriteString(text);
         }
         
         WriteInteger(items.Count);
