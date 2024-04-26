@@ -6,17 +6,29 @@ using System.Reflection;
 
 namespace Sadie.Shared.Unsorted.Networking.Packets;
 
-public abstract class AbstractPacketWriter : NetworkPacketWriter
+public abstract class AbstractPacketWriter
 {
-    public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> RulesForSerialize { get; } = new();
+    public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> BeforeRulesSerialize { get; } = new();
+    public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
+    public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> AfterRulesSerialize { get; } = new();
     
     public virtual void OnSerialize()
     {
         
     }
 
-    protected void AddRule(PropertyInfo propertyInfo, Action<NetworkPacketWriter> function)
+    protected void Before(PropertyInfo propertyInfo, Action<NetworkPacketWriter> function)
     {
-        RulesForSerialize.Add(propertyInfo, function);
+        BeforeRulesSerialize.Add(propertyInfo, function);
+    }
+
+    protected void Override(PropertyInfo propertyInfo, Action<NetworkPacketWriter> function)
+    {
+        InsteadRulesSerialize.Add(propertyInfo, function);
+    }
+
+    protected void After(PropertyInfo propertyInfo, Action<NetworkPacketWriter> function)
+    {
+        AfterRulesSerialize.Add(propertyInfo, function);
     }
 }
