@@ -26,7 +26,11 @@ public class CatalogModeEventHandler(
             .Where(x => x.CatalogPageId == -1)
             .ToListAsync();
 
-        await client.WriteToStreamAsync(new CatalogModeWriter(mode == "BUILDERS_CLUB" ? 1 : 0));
+        await client.WriteToStreamAsync(new CatalogModeWriter
+        {
+            Mode = mode == "BUILDERS_CLUB" ? 1 : 0
+        });
+        
         await client.WriteToStreamAsync(new CatalogTabsWriter(mode, parentlessPages));
     }
 }
