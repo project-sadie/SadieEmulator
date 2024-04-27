@@ -11,7 +11,10 @@ public class PlayerDataEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerDataWriter(client.Player));
+        await client.WriteToStreamAsync(new PlayerDataWriter(client.Player)
+        {
+            Player = null
+        });
 
         var perks = new List<PlayerPerk>
         {

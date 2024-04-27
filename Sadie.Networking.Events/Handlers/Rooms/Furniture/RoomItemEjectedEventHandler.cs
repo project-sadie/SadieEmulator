@@ -77,7 +77,11 @@ public class RoomItemEjectedEventHandler(
         {
             player.FurnitureItems.Add(playerItem);
             
-            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+            {
+                Items = [playerItem]
+            });
+            
             await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
         }
         else
@@ -86,7 +90,11 @@ public class RoomItemEjectedEventHandler(
 
             if (ownerOnline != null)
             {
-                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+                {
+                    Items = [playerItem]
+                });
+                
                 await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
                 
                 ownerOnline.FurnitureItems.Add(playerItem);

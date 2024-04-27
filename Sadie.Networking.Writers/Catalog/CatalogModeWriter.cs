@@ -1,13 +1,11 @@
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Catalog;
 
+[PacketId(ServerPacketId.CatalogMode)]
 public class CatalogModeWriter : AbstractPacketWriter
 {
-    public CatalogModeWriter(int mode)
-    {
-        WriteShort(ServerPacketId.CatalogMode);
-        WriteInteger(mode);
-    }
+    public required int Mode { get; init; }
 }

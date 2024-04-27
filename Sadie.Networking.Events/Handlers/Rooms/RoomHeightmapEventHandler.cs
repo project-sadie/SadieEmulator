@@ -26,10 +26,23 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
         var isOwner = room.OwnerId == client.Player.Id;
         
         await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomTileMap, room.FurnitureItems));
-        await client.WriteToStreamAsync(new RoomHeightMapWriter(true, -1, room.Layout.HeightMap.Replace("\r\n", "\r")));
         
-        await userRepository.BroadcastDataAsync(new RoomUserDataWriter(room.UserRepository.GetAll()));
-        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter(room.UserRepository.GetAll()));
+        await client.WriteToStreamAsync(new RoomHeightMapWriter
+        {
+            Unknown1 = true,
+            WallHeight = -1,
+            RelativeHeightmap = room.Layout.HeightMap.Replace("\r\n", "\r")
+        });
+        
+        await userRepository.BroadcastDataAsync(new RoomUserDataWriter
+        {
+            Users = room.UserRepository.GetAll()
+        });
+        
+        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter
+        {
+            Users = room.UserRepository.GetAll()
+        });
         
         var floorItems = room.FurnitureItems
             .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
@@ -51,9 +64,20 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
                 .Distinct()
                 .ToDictionary(x => x.Key, x => x.Value);
 
-        await client.WriteToStreamAsync(new RoomFloorItemsWriter(floorItems, floorFurnitureOwners));
+        await client.WriteToStreamAsync(new RoomFloorItemsWriter
+        {
+            FloorItems = floorItems,
+            FurnitureOwners = floorFurnitureOwners
+        });
+        
         await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems, wallFurnitureOwners));
         
-        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter(room, false, true, isOwner));
+        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter
+        {
+            Room = room,
+            RoomForward = false,
+            EnterRoom = true,
+            IsOwner = isOwner
+        });
     }
 }
