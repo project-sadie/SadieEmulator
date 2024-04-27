@@ -44,8 +44,16 @@ public class PlayerChangedAppearanceEventHandler(
             return;
         }
         
-        await client.WriteToStreamAsync(new PlayerChangedAppearanceWriter(figureCode, gender));
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }));
+        await client.WriteToStreamAsync(new PlayerChangedAppearanceWriter
+        {
+            FigureCode = figureCode,
+            Gender = gender.ToString()
+        });
+        
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter
+        {
+            Users = [roomUser]
+        });
         
         dbContext.PlayerAvatarData.Update(player.AvatarData);
         await dbContext.SaveChangesAsync();
