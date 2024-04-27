@@ -1,19 +1,11 @@
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Navigator;
 
-public class NavigatorMetaDataWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.NavigatorMetaData)]
+public class NavigatorMetaDataWriter : AbstractPacketWriter
 {
-    public NavigatorMetaDataWriter(Dictionary<string, int> metaData)
-    {
-        WriteShort(ServerPacketId.NavigatorMetaData);
-        WriteInteger(metaData.Count);
-
-        foreach (var (key, value) in metaData)
-        {
-            WriteString(key);
-            WriteInteger(value);
-        }
-    }
+    public required Dictionary<string, int> MetaData { get; init; }
 }
