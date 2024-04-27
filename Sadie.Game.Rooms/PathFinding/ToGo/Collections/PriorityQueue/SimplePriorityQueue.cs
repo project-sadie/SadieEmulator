@@ -1,4 +1,4 @@
-﻿namespace Sadie.Game.Rooms.PathFinding.Collections.PriorityQueue;
+﻿namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.PriorityQueue;
 
 internal class SimplePriorityQueue<T>(IComparer<T>? comparer = null) : IModelAPriorityQueue<T>
 {

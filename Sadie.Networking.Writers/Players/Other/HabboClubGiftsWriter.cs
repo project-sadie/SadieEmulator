@@ -1,8 +1,8 @@
 ﻿using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 

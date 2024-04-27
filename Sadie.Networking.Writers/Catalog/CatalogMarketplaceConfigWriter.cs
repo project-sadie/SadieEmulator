@@ -1,5 +1,5 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Catalog;
 

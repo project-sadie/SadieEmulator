@@ -1,7 +1,7 @@
 using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Wardrobe;
 

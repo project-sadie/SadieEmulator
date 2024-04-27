@@ -1,7 +1,7 @@
 using System.Buffers;
 using System.Text;
 
-namespace Sadie.Shared.Unsorted.Networking.Packets;
+namespace Sadie.Networking.Serialization;
 
 public class NetworkPacketWriter
 {

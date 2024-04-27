@@ -1,6 +1,6 @@
 using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 

@@ -1,16 +1,10 @@
-using Sadie.Game.Rooms.Enums;
-using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Networking.Serialization;
 
 namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomSettingsErrorWriter : AbstractPacketWriter
 {
-    public RoomSettingsErrorWriter(int roomId, RoomSettingsError error, string unknown = "")
-    {
-        WriteShort(ServerPacketId.RoomSettingsError);
-        WriteInteger(roomId);
-        WriteInteger((int) error);
-        WriteString(unknown);
-    }
+    public required int RoomId { get; init; }
+    public required int ErrorCode { get; init; }
+    public required string Unknown { get; init; }
 }

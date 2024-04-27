@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms.PathFinding.Heuristics;
+namespace Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
 
 public enum HeuristicFormula
 {

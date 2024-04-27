@@ -1,7 +1,6 @@
 ﻿using Sadie.Game.Players.Effects;
-using Sadie.Shared.Helpers;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Effects;

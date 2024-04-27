@@ -1,14 +1,17 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms.Users.Chat;
 
+[PacketId(ServerPacketId.RoomUserTyping)]
 public class RoomUserTypingWriter : AbstractPacketWriter
 {
-    public RoomUserTypingWriter(long userId, bool isTyping)
+    public required long UserId { get; init; }
+    public required bool IsTyping { get; init; }
+
+    public override void OnConfigureRules()
     {
-        WriteShort(ServerPacketId.RoomUserTyping);
-        WriteLong(userId);
-        WriteInteger(isTyping ? 1 : 0);
+        Convert<int>(GetType().GetProperty(nameof(IsTyping))!, o => (bool)o ? 1 : 0);
     }
 }

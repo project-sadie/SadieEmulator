@@ -1,6 +1,6 @@
 ﻿using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Users;
 
