@@ -1,17 +1,15 @@
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms;
 
+[PacketId(ServerPacketId.RoomChatSettings)]
 public class RoomChatSettingsWriter : AbstractPacketWriter
 {
-    public RoomChatSettingsWriter(int chatType, int chatWeight, int chatSpeed, int chatDistance, int chatProtection)
-    {
-        WriteShort(ServerPacketId.RoomChatSettings);
-        WriteInteger(chatType);
-        WriteInteger(chatWeight);
-        WriteInteger(chatSpeed);
-        WriteInteger(chatDistance);
-        WriteInteger(chatProtection);
-    }
+    public required int ChatType { get; init; }
+    public required int ChatWeight { get; init; }
+    public required int ChatSpeed { get; init; }
+    public required int ChatDistance { get; init; }
+    public required int ChatProtection { get; init; }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Rooms.Users;
 

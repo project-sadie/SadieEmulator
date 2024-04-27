@@ -1,34 +1,38 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Purse;
 
 public class PlayerActivityPointsBalanceWriter : AbstractPacketWriter
 {
-    public PlayerActivityPointsBalanceWriter(int pixelBalance, int seasonalBalance, int gotwPoints)
+    public required int PixelBalance { get; init; }
+    public required int SeasonalBalance { get; init; }
+    public required int GotwPoints { get; init; }
+
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
         var currencies = new Dictionary<int, long>
         {
-            {0, pixelBalance},
+            {0, PixelBalance},
             {1, 0}, // snowflakes
             {2, 0}, // hearts
             {3, 0}, // gift points
             {4, 0}, // shells
-            {5, seasonalBalance},
+            {5, SeasonalBalance},
             {101, 0}, // snowflakes
             {102, 0}, // unknown
-            {103, gotwPoints},
+            {103, GotwPoints},
             {104, 0}, // unknown
             {105, 0} // unknown
         };
         
-        WriteShort(ServerPacketId.PlayerActivityPointsBalance);
-        WriteInteger(currencies.Count);
+        writer.WriteShort(ServerPacketId.PlayerActivityPointsBalance);
+        writer.WriteInteger(currencies.Count);
 
         foreach (var (currency, value) in currencies)
         {
-            WriteInteger(currency);
-            WriteLong(value);
+            writer.WriteInteger(currency);
+            writer.WriteLong(value);
         }
     }
 }

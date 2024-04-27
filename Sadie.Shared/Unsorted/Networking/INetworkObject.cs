@@ -1,4 +1,4 @@
-﻿using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
 
 namespace Sadie.Shared.Unsorted.Networking;
 

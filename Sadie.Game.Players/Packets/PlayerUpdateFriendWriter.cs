@@ -1,6 +1,6 @@
 using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Players.Packets;
 

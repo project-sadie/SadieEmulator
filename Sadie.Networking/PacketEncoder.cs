@@ -1,7 +1,7 @@
 using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Networking.Serialization;
 
 namespace Sadie.Networking;
 

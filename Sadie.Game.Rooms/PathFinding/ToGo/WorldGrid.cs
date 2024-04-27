@@ -1,6 +1,6 @@
-using Sadie.Game.Rooms.PathFinding.Collections.MultiDimensional;
+using Sadie.Game.Rooms.PathFinding.ToGo.Collections.MultiDimensional;
 
-namespace Sadie.Game.Rooms.PathFinding;
+namespace Sadie.Game.Rooms.PathFinding.ToGo;
 
 /// <summary>
 /// A world grid consisting of integers where a closed cell is represented by 0

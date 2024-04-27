@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
-using Sadie.Game.Rooms.PathFinding.Collections.PathFinder;
-using Sadie.Game.Rooms.PathFinding.Heuristics;
-using Sadie.Game.Rooms.PathFinding.Options;
+using Sadie.Game.Rooms.PathFinding.ToGo.Collections.PathFinder;
+using Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
+using Sadie.Game.Rooms.PathFinding.ToGo.Options;
 
-namespace Sadie.Game.Rooms.PathFinding;
+namespace Sadie.Game.Rooms.PathFinding.ToGo;
 
 public class PathFinder
 {

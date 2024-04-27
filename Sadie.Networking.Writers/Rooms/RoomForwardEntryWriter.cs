@@ -1,13 +1,11 @@
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms;
 
+[PacketId(ServerPacketId.RoomForwardEntry)]
 public class RoomForwardEntryWriter : AbstractPacketWriter
 {
-    public RoomForwardEntryWriter(int roomId)
-    {
-        WriteShort(ServerPacketId.RoomForwardEntry);
-        WriteInteger(roomId);
-    }
+    public required int RoomId { get; init; }
 }

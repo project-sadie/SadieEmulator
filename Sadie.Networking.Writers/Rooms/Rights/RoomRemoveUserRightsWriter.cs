@@ -1,16 +1,12 @@
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms.Rights;
 
+[PacketId(ServerPacketId.RoomRemoveUserRights)]
 public class RoomRemoveUserRightsWriter : AbstractPacketWriter
 {
-    public RoomRemoveUserRightsWriter(
-        long roomId, 
-        long playerId)
-    {
-        WriteShort(ServerPacketId.RoomRemoveUserRights);
-        WriteLong(roomId);
-        WriteLong(playerId);
-    }
+    public required long RoomId { get; init; }
+    public required long PlayerId { get; init; }
 }

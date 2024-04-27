@@ -2,6 +2,7 @@ using Sadie.Database;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Users;
+using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Players.Purse;
 
 namespace SadieEmulator.Tasks.Game.Players;
@@ -75,27 +76,40 @@ public class PlayerCurrencyRewardsTask(
 
     private static async Task RewardPlayerAsync(PlayerLogic player, ServerPeriodicCurrencyReward reward)
     {
+        AbstractPacketWriter writer = null;
+        
         switch (reward.Type)
         {
             case "credits":
                 player.Data.CreditBalance += reward.Amount;
-                await player.NetworkObject!.WriteToStreamAsync(new PlayerCreditsBalanceWriter(
-                    player.Data.CreditBalance));
+                
+                writer = new PlayerCreditsBalanceWriter
+                {
+                    Credits = player.Data.CreditBalance
+                };
                 break;
             case "pixels":
                 player.Data.PixelBalance += reward.Amount;
-                await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
-                    player.Data.PixelBalance,
-                    player.Data.SeasonalBalance,
-                    player.Data.GotwPoints));
+                
+                writer = new PlayerActivityPointsBalanceWriter
+                {
+                    PixelBalance = player.Data.PixelBalance,
+                    SeasonalBalance = player.Data.SeasonalBalance,
+                    GotwPoints = player.Data.GotwPoints
+                };
                 break;
             case "seasonal":
                 player.Data.SeasonalBalance += reward.Amount;
-                await player.NetworkObject!.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter(
-                    player.Data.PixelBalance,
-                    player.Data.SeasonalBalance,
-                    player.Data.GotwPoints));
+                
+                writer = new PlayerActivityPointsBalanceWriter
+                {
+                    PixelBalance = player.Data.PixelBalance,
+                    SeasonalBalance = player.Data.SeasonalBalance,
+                    GotwPoints = player.Data.GotwPoints
+                };
                 break;
         }
+
+        await player.NetworkObject!.WriteToStreamAsync(writer);
     }
 }

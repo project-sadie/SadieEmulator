@@ -1,46 +1,46 @@
-using Sadie.Game.Rooms;
-using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Database.Models.Rooms;
+using Sadie.Networking.Serialization;
 
 namespace Sadie.Networking.Writers.Rooms;
 
 public class RoomSettingsWriter : AbstractPacketWriter
 {
-    public RoomSettingsWriter(RoomLogic roomData)
+    public required Room Room { get; init; }
+    
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.RoomSettings);
-        WriteInteger(roomData.Id);
-        WriteString(roomData.Name);
-        WriteString(roomData.Description);
-        WriteInteger((int) roomData.Settings.AccessType);
-        WriteInteger(0); // TODO: category
-        WriteInteger(roomData.MaxUsersAllowed);
-        WriteInteger(roomData.MaxUsersAllowed);
-        WriteInteger(roomData.Tags.Count);
+        writer.WriteInteger(Room.Id);
+        writer.WriteString(Room.Name);
+        writer.WriteString(Room.Description);
+        writer.WriteInteger((int) Room.Settings.AccessType);
+        writer.WriteInteger(0); // TODO: category
+        writer.WriteInteger(Room.MaxUsersAllowed);
+        writer.WriteInteger(Room.MaxUsersAllowed);
+        writer.WriteInteger(Room.Tags.Count);
 
-        foreach (var tag in roomData.Tags)
+        foreach (var tag in Room.Tags)
         {
-            WriteString(tag.Name);
+            writer.WriteString(tag.Name);
         }
 
-        var settings = roomData.Settings;
-        var chatSettings = roomData.ChatSettings;
+        var settings = Room.Settings;
+        var chatSettings = Room.ChatSettings;
         
-        WriteInteger(settings.TradeOption);
-        WriteInteger(settings.AllowPets ? 1 : 0);
-        WriteInteger(settings.CanPetsEat ? 1 : 0);
-        WriteInteger(settings.CanUsersOverlap ? 1 : 0);
-        WriteInteger(settings.HideWalls ? 1 : 0);
-        WriteInteger(settings.WallThickness);
-        WriteInteger(settings.FloorThickness);
-        WriteInteger(chatSettings.ChatType); 
-        WriteInteger(chatSettings.ChatWeight); 
-        WriteInteger(chatSettings.ChatSpeed); 
-        WriteInteger(chatSettings.ChatDistance); 
-        WriteInteger(chatSettings.ChatProtection); 
-        WriteBool(false); // TODO: unknown
-        WriteInteger(settings.WhoCanMute);
-        WriteInteger(settings.WhoCanKick);
-        WriteInteger(settings.WhoCanBan);
+        writer.WriteInteger(settings.TradeOption);
+        writer.WriteInteger(settings.AllowPets ? 1 : 0);
+        writer.WriteInteger(settings.CanPetsEat ? 1 : 0);
+        writer.WriteInteger(settings.CanUsersOverlap ? 1 : 0);
+        writer.WriteInteger(settings.HideWalls ? 1 : 0);
+        writer.WriteInteger(settings.WallThickness);
+        writer.WriteInteger(settings.FloorThickness);
+        writer.WriteInteger(chatSettings.ChatType); 
+        writer.WriteInteger(chatSettings.ChatWeight); 
+        writer.WriteInteger(chatSettings.ChatSpeed); 
+        writer.WriteInteger(chatSettings.ChatDistance); 
+        writer.WriteInteger(chatSettings.ChatProtection); 
+        writer.WriteBool(false); // TODO: unknown
+        writer.WriteInteger(settings.WhoCanMute);
+        writer.WriteInteger(settings.WhoCanKick);
+        writer.WriteInteger(settings.WhoCanBan);
     }
 }

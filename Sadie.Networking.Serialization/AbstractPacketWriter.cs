@@ -4,13 +4,14 @@ using System.Reflection;
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Sadie.Shared.Unsorted.Networking.Packets;
+namespace Sadie.Networking.Serialization;
 
 public abstract class AbstractPacketWriter
 {
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> BeforeRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> AfterRulesSerialize { get; } = new();
+    public readonly Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules = new();
     
     /// <summary>
     /// Register any rules needed for custom mapping
@@ -41,5 +42,10 @@ public abstract class AbstractPacketWriter
     protected void After(PropertyInfo propertyInfo, Action<NetworkPacketWriter> function)
     {
         AfterRulesSerialize.Add(propertyInfo, function);
+    }
+
+    protected void Convert<TType>(PropertyInfo propertyInfo, Func<object, object> conversion)
+    {
+        ConversionRules.Add(propertyInfo, new KeyValuePair<Type, Func<object, object>>(typeof(TType), conversion));
     }
 }

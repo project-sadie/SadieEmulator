@@ -1,6 +1,6 @@
-﻿using Sadie.Game.Rooms.PathFinding.Heuristics;
+﻿using Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
 
-namespace Sadie.Game.Rooms.PathFinding.Options;
+namespace Sadie.Game.Rooms.PathFinding.ToGo.Options;
 
 public class PathFinderOptions
 {
