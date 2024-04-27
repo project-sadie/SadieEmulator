@@ -5,9 +5,5 @@ namespace Sadie.Networking.Writers.Catalog;
 
 public class CatalogPurchaseFailedWriter : AbstractPacketWriter
 {
-    public CatalogPurchaseFailedWriter(int error)
-    {
-        WriteShort(ServerPacketId.CatalogPurchaseFailed);
-        WriteInteger(error);
-    }
+    public required int Error { get; init; }
 }

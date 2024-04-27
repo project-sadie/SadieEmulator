@@ -4,127 +4,129 @@ using Sadie.Networking.Serialization;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Catalog;
 
+[PacketId(ServerPacketId.CatalogPage)]
 public class CatalogPageWriter : AbstractPacketWriter
 {
-    public CatalogPageWriter(
-        int pageId, 
-        string pageLayout,
-        List<string> images,
-        List<string> texts,
-        ICollection<CatalogItem> items, 
-        string catalogMode,
-        bool acceptSeasonCurrencyAsCredits,
-        ICollection<CatalogFrontPageItem>? frontPageItems)
+    public required int PageId { get; init; }
+    public required string PageLayout { get; init; }
+    public required List<string> Images { get; init; }
+    public required List<string> Texts { get; init; }
+    public required ICollection<CatalogItem> Items { get; init; }
+    public required string CatalogMode { get; init; }
+    public required bool AcceptSeasonCurrencyAsCredits { get; init; }
+    public required ICollection<CatalogFrontPageItem>? FrontPageItems { get; init; }
+
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.CatalogPage);
-        WriteInteger(pageId);
-        WriteString(catalogMode);
-        WriteString(pageLayout);
+        writer.WriteInteger(PageId);
+        writer.WriteString(CatalogMode);
+        writer.WriteString(PageLayout);
 
-        WriteInteger(images.Count);
+        writer.WriteInteger(Images.Count);
 
-        foreach (var image in images)
+        foreach (var image in Images)
         {
-            WriteString(image);
+            writer.WriteString(image);
         }
 
-        WriteInteger(texts.Count);
+        writer.WriteInteger(Texts.Count);
 
-        foreach (var text in texts)
+        foreach (var text in Texts)
         {
-            WriteString(text);
+            writer.WriteString(text);
         }
         
-        WriteInteger(items.Count);
+        writer.WriteInteger(Items.Count);
 
-        foreach (var item in items)
+        foreach (var item in Items)
         {
-            WriteInteger(item.Id);
-            WriteString(item.Name);
-            WriteBool(false);
-            WriteInteger(item.CostCredits);
-            WriteInteger(item.CostPoints);
-            WriteInteger(item.CostPointsType);
-            WriteBool(item.FurnitureItems.First().CanGift);
-            WriteInteger(item.FurnitureItems.Count);
+            writer.WriteInteger(item.Id);
+            writer.WriteString(item.Name);
+            writer.WriteBool(false);
+            writer.WriteInteger(item.CostCredits);
+            writer.WriteInteger(item.CostPoints);
+            writer.WriteInteger(item.CostPointsType);
+            writer.WriteBool(item.FurnitureItems.First().CanGift);
+            writer.WriteInteger(item.FurnitureItems.Count);
 
             foreach (var furnitureItem in item.FurnitureItems)
             {
-                WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
+                writer.WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
 
                 if (furnitureItem.Type == FurnitureItemType.Badge)
                 {
-                    WriteString(furnitureItem.Name);
+                    writer.WriteString(furnitureItem.Name);
                 }
                 else
                 {
-                    WriteInteger(furnitureItem.AssetId);
+                    writer.WriteInteger(furnitureItem.AssetId);
 
                     if (item.Name.Contains("_single_"))
                     {
-                        WriteString(item.Name.Split("_")[2]);
+                        writer.WriteString(item.Name.Split("_")[2]);
                     }
                     else if (item.Name.Contains("bot") && furnitureItem.Type == FurnitureItemType.Bot)
                     {
                         var look = item.MetaData.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
-                        WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : item.MetaData);
+                        writer.WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : item.MetaData);
                     }
                     else if (furnitureItem.Type == FurnitureItemType.Bot || item.Name.ToLower() == "poster" || item.Name.StartsWith("SONG "))
                     {
-                        WriteString(item.MetaData);
+                        writer.WriteString(item.MetaData);
                     }
                     else
                     {
-                        WriteString("");
+                        writer.WriteString("");
                     }
                     
-                    WriteInteger(item.Amount);
-                    WriteBool(false); // is limited
+                    writer.WriteInteger(item.Amount);
+                    writer.WriteBool(false); // is limited
                 }
             }
 
-            WriteInteger(item.RequiresClubMembership ? 1 : 0);
-            WriteBool(item.Amount != 1);
-            WriteBool(false); // unknown
-            WriteString($"{item.Name}.png");
+            writer.WriteInteger(item.RequiresClubMembership ? 1 : 0);
+            writer.WriteBool(item.Amount != 1);
+            writer.WriteBool(false); // unknown
+            writer.WriteString($"{item.Name}.png");
         }
         
-        WriteInteger(0);
-        WriteBool(acceptSeasonCurrencyAsCredits);
+        writer.WriteInteger(0);
+        writer.WriteBool(AcceptSeasonCurrencyAsCredits);
 
-        if (pageLayout is not "frontpage" || frontPageItems == null)
+        if (PageLayout is not "frontpage" || FrontPageItems == null)
         {
             return;
         }
         
-        WriteInteger(frontPageItems.Count);
+        writer.WriteInteger(FrontPageItems.Count);
 
-        foreach (var item in frontPageItems)
+        foreach (var item in FrontPageItems)
         {
-            WriteInteger(item.Id);
-            WriteString(item.Title);
-            WriteString(item.Image);
-            WriteInteger((int) item.TypeId);
+            writer.WriteInteger(item.Id);
+            writer.WriteString(item.Title);
+            writer.WriteString(item.Image);
+            writer.WriteInteger((int) item.TypeId);
 
             switch (item.TypeId)
             {
                 case CatalogFrontPageItemType.PageId:
-                    WriteInteger(item.CatalogPage.Id);
+                    writer.WriteInteger(item.CatalogPage.Id);
                     break;
                 case CatalogFrontPageItemType.PageName:
-                    WriteString(item.CatalogPage.Name);
+                    writer.WriteString(item.CatalogPage.Name);
                     break;
                 case CatalogFrontPageItemType.ProductName:
-                    WriteString(item.ProductName);
+                    writer.WriteString(item.ProductName);
                     break;
                 default:
                     throw new Exception($"Unknown catalog front page item type {(int) item.TypeId}");
             }
 
-            WriteInteger(-1);
+            writer.WriteInteger(-1);
         }
     }
 }

@@ -31,7 +31,10 @@ public class CatalogPurchaseEventHandler(
         
         if ((DateTime.Now - player!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
         {
-            var bytes = new CatalogPurchaseFailedWriter((int)CatalogPurchaseError.Server);
+            var bytes = new CatalogPurchaseFailedWriter
+            {
+                Error = (int) CatalogPurchaseError.Server
+            };
             
             await client.WriteToStreamAsync(bytes);
             return;
@@ -45,7 +48,11 @@ public class CatalogPurchaseEventHandler(
 
         if (page == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server));
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
+            {
+                Error = (int) CatalogPurchaseError.Server
+            });
+            
             return;
         }
 
@@ -53,7 +60,11 @@ public class CatalogPurchaseEventHandler(
 
         if (item == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server));
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
+            {
+                Error = (int) CatalogPurchaseError.Server
+            });
+            
             return;
         }
 

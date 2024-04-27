@@ -33,14 +33,16 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
             .Set<CatalogFrontPageItem>()
             .ToListAsync();
 
-        await client.WriteToStreamAsync(new CatalogPageWriter(
-            page.Id,
-            page.Layout, 
-            page.ImagesJson,
-            page.TextsJson,
-            page.Items, 
-            eventParser.CatalogMode,
-            false,
-            frontPageItems));
+        await client.WriteToStreamAsync(new CatalogPageWriter
+        {
+            PageId = page.Id,
+            PageLayout = page.Layout,
+            Images = page.ImagesJson,
+            Texts = page.TextsJson,
+            Items = page.Items,
+            CatalogMode = eventParser.CatalogMode,
+            AcceptSeasonCurrencyAsCredits = false,
+            FrontPageItems = frontPageItems
+        });
     }
 }
