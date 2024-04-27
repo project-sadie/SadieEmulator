@@ -13,14 +13,16 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
         var player = client.Player!;
         var playerSettings = player.GameSettings;
         
-        await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter(
-            playerSettings.SystemVolume, 
-            playerSettings.FurnitureVolume, 
-            playerSettings.TraxVolume, 
-            playerSettings.PreferOldChat, 
-            playerSettings.BlockRoomInvites, 
-            playerSettings.BlockCameraFollow, 
-            playerSettings.UiFlags, 
-            player.AvatarData.ChatBubbleId));
+        await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter
+        {
+            SystemVolume = playerSettings.SystemVolume,
+            FurnitureVolume = playerSettings.FurnitureVolume,
+            TraxVolume = playerSettings.TraxVolume,
+            OldChat = playerSettings.PreferOldChat,
+            BlockRoomInvites = playerSettings.BlockRoomInvites,
+            BlockCameraFollow = playerSettings.BlockCameraFollow,
+            UiFlags = playerSettings.UiFlags,
+            ChatBubble = (int) player.AvatarData.ChatBubbleId
+        });
     }
 }
