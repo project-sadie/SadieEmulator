@@ -160,6 +160,18 @@ public class NetworkPacketSerializer
             var collection = (List<string>)property.GetValue(packet)!;
             WriteStringListPropertyToWriter(collection, writer);
         }
+        else if (type == typeof(Dictionary<string, int>))
+        {
+            var collection = (Dictionary<string, int>)property.GetValue(packet)!;
+            
+            writer.WriteInteger(collection.Count);
+            
+            foreach (var (key, value) in collection)
+            {
+                writer.WriteString(key);
+                writer.WriteInteger(value);
+            }
+        }
         else if (type == typeof(List<>))
         {
             WriteArbitraryListPropertyToWriter(property, writer, packet);
