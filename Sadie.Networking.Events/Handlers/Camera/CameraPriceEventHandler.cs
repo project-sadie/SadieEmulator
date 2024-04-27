@@ -10,10 +10,15 @@ public class CameraPriceEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var costCredits = 0;
-        var costPoints = 0;
-        var pointsType = 0;
+        const int costCredits = 0;
+        const int costPoints = 0;
+        const int pointsType = 0;
         
-        await client.WriteToStreamAsync(new CameraPriceWriter(costCredits, costPoints, pointsType));
+        await client.WriteToStreamAsync(new CameraPriceWriter
+        {
+            CostCredits = costCredits,
+            CostPoints = costPoints,
+            PointsType = pointsType
+        });
     }
 }

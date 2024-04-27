@@ -1,24 +1,30 @@
 using Sadie.Database.Models.Players;
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Generic;
 
+[PacketId(ServerPacketId.PlayerRelationships)]
 public class PlayerRelationshipsWriter : AbstractPacketWriter
 {
-    public PlayerRelationshipsWriter(long playerId, ICollection<PlayerRelationship> relationships)
-    {
-        WriteShort(ServerPacketId.PlayerRelationships);
-        WriteLong(playerId);
-        WriteInteger(relationships.Count);
+    public required long PlayerId { get; init; }
+    public required ICollection<PlayerRelationship> Relationships { get; init; }
 
-        foreach (var relationship in relationships)
+    public override void OnConfigureRules()
+    {
+        Override(GetType().GetProperty(nameof(Relationships))!, writer =>
         {
-            WriteInteger((int) relationship.TypeId);
-            WriteInteger(relationships.Count(x => x.TypeId == relationship.TypeId));
-            WriteLong(relationship.TargetPlayerId);
-            WriteString(relationship.TargetPlayer.Username);
-            WriteString(relationship.TargetPlayer.AvatarData.FigureCode);
-        }
+            writer.WriteInteger(Relationships.Count);
+
+            foreach (var relationship in Relationships)
+            {
+                writer.WriteInteger((int) relationship.TypeId);
+                writer.WriteInteger(Relationships.Count(x => x.TypeId == relationship.TypeId));
+                writer.WriteLong(relationship.TargetPlayerId);
+                writer.WriteString(relationship.TargetPlayer.Username);
+                writer.WriteString(relationship.TargetPlayer.AvatarData.FigureCode);
+            }
+        });
     }
 }

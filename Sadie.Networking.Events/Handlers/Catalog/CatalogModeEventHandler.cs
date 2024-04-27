@@ -31,6 +31,10 @@ public class CatalogModeEventHandler(
             Mode = mode == "BUILDERS_CLUB" ? 1 : 0
         });
         
-        await client.WriteToStreamAsync(new CatalogTabsWriter(mode, parentlessPages));
+        await client.WriteToStreamAsync(new CatalogTabsWriter
+        {
+            Mode = mode,
+            TabPages = parentlessPages
+        });
     }
 }
