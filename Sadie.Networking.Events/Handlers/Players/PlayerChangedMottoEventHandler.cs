@@ -37,7 +37,9 @@ public class PlayerChangedMottoEventHandler(
             return;
         }
         
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }));
+        await room.UserRepository.BroadcastDataAsync(new RoomUserDataWriter{
+            Users = [roomUser]
+        });
         
         dbContext.PlayerAvatarData.Update(player.AvatarData);
         await dbContext.SaveChangesAsync();

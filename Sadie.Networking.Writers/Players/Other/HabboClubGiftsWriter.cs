@@ -3,94 +3,100 @@ using Sadie.Networking.Serialization;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
+[PacketId(ServerPacketId.HabboClubGifts)]
 public class HabboClubGiftsWriter : AbstractPacketWriter
 {
-    public HabboClubGiftsWriter(int daysTillNext, int unclaimedGifts, int daysAsClub, CatalogPage? clubGiftPage)
-    {
-        WriteShort(ServerPacketId.HabboClubGifts);
-        WriteInteger(daysTillNext);
-        WriteInteger(unclaimedGifts * 4932);
+    public required int DaysTillNext { get; init; }
+    public required int UnclaimedGifts { get; init; }
+    public required int DaysAsClub { get; init; }
+    public required CatalogPage? ClubGiftPage { get; init; }
 
-        if (clubGiftPage == null)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(DaysTillNext);
+        writer.WriteInteger(UnclaimedGifts * 4932);
+
+        if (ClubGiftPage == null)
         {
-            WriteInteger(0);
-            WriteInteger(0);
+            writer.WriteInteger(0);
+            writer.WriteInteger(0);
             
             return;
         }
 
-        WriteInteger(clubGiftPage.Items.Count);
+        writer.WriteInteger(ClubGiftPage.Items.Count);
 
-        foreach (var item in clubGiftPage.Items)
+        foreach (var item in ClubGiftPage.Items)
         {
-            WriteInteger(item.Id);
-            WriteString(item.Name);
-            WriteBool(false);
-            WriteInteger(item.CostCredits);
-            WriteInteger(item.CostPoints);
-            WriteInteger(item.CostPointsType);
-            WriteBool(item.FurnitureItems.First().CanGift);
-            WriteInteger(item.FurnitureItems.Count);
+            writer.WriteInteger(item.Id);
+            writer.WriteString(item.Name);
+            writer.WriteBool(false);
+            writer.WriteInteger(item.CostCredits);
+            writer.WriteInteger(item.CostPoints);
+            writer.WriteInteger(item.CostPointsType);
+            writer.WriteBool(item.FurnitureItems.First().CanGift);
+            writer.WriteInteger(item.FurnitureItems.Count);
 
             foreach (var furnitureItem in item.FurnitureItems)
             {
-                WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
+                writer.WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
 
                 if (furnitureItem.Type == FurnitureItemType.Badge)
                 {
-                    WriteString(furnitureItem.Name);
+                    writer.WriteString(furnitureItem.Name);
                 }
                 else
                 {
-                    WriteInteger(furnitureItem.AssetId);
+                    writer.WriteInteger(furnitureItem.AssetId);
 
                     if (item.Name.Contains("wallpaper_single") || item.Name.Contains("floor_single") || item.Name.Contains("landscape_single"))
                     {
-                        WriteString(item.Name.Split("_")[2]);
+                        writer.WriteString(item.Name.Split("_")[2]);
                     }
                     else if (item.Name.Contains("bot") && furnitureItem.Type == FurnitureItemType.Bot)
                     {
                         var look = item.MetaData.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
                         
-                        WriteString(!string.IsNullOrEmpty(look)
+                        writer.WriteString(!string.IsNullOrEmpty(look)
                             ? look.Replace("figure:", "")
                             : item.MetaData);
                     }
                     else if (furnitureItem.Type == FurnitureItemType.Bot || item.Name.ToLower() == "poster" ||
                              item.Name.StartsWith("SONG "))
                     {
-                        WriteString(item.MetaData);
+                        writer.WriteString(item.MetaData);
                     }
                     else
                     {
-                        WriteString("");
+                        writer.WriteString("");
                     }
 
-                    WriteInteger(item.Amount);
-                    WriteBool(false); // is limited
+                    writer.WriteInteger(item.Amount);
+                    writer.WriteBool(false); // is limited
                 }
             }
         }
         
-        WriteInteger(clubGiftPage.Items.Count);
+        writer.WriteInteger(ClubGiftPage.Items.Count);
 
-        foreach (var item in clubGiftPage.Items)
+        foreach (var item in ClubGiftPage.Items)
         {
-            WriteInteger(item.Id);
-            WriteBool(item.RequiresClubMembership);
+            writer.WriteInteger(item.Id);
+            writer.WriteBool(item.RequiresClubMembership);
             
             if (int.TryParse(item.MetaData, out var daysRequired))
             {
-                WriteInteger(daysRequired);
-                WriteBool(daysRequired <= daysAsClub);
+                writer.WriteInteger(daysRequired);
+                writer.WriteBool(daysRequired <= DaysAsClub);
             }
             else
             {
-                WriteInteger(0);
-                WriteBool(false);
+                writer.WriteInteger(0);
+                writer.WriteBool(false);
             }
         }
     }
