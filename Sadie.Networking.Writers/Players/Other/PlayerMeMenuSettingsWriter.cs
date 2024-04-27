@@ -1,5 +1,4 @@
-﻿using Sadie.Shared.Unsorted.Game;
-using Sadie.Shared.Unsorted.Networking;
+﻿using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
 using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 

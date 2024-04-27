@@ -1,34 +1,21 @@
 ﻿using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
+[PacketId(ServerPacketId.PlayerSubscription)]
 public class PlayerSubscriptionWriter : AbstractPacketWriter
 {
-    public PlayerSubscriptionWriter(
-        string name,
-        int daysLeft,
-        int memberPeriods,
-        int periodsSubscribedAhead,
-        int responseType,
-        bool hasEverBeenMember,
-        bool isVip,
-        int pastClubDays,
-        int pastVipDays,
-        int minutesTillExpire,
-        int minutesSinceModified)
-    {
-        WriteShort(ServerPacketId.PlayerSubscription);
-        WriteString(name.ToLower());
-        WriteInteger(daysLeft);
-        WriteInteger(memberPeriods);
-        WriteInteger(periodsSubscribedAhead);
-        WriteInteger(responseType);
-        WriteBool(hasEverBeenMember);
-        WriteBool(isVip);
-        WriteInteger(pastClubDays);
-        WriteInteger(pastVipDays);
-        WriteInteger(minutesTillExpire);
-        WriteInteger(minutesSinceModified);
-    }
+    public required string Name { get; init; }
+    public required int DaysLeft { get; init; }
+    public required int MemberPeriods { get; init; }
+    public required int PeriodsSubscribedAhead { get; init; }
+    public required int ResponseType { get; init; }
+    public required bool HasEverBeenMember { get; init; }
+    public required bool IsVip { get; init; }
+    public required int PastClubDays { get; init; }
+    public required int PastVipDays { get; init; }
+    public required int MinutesTillExpire { get; init; }
+    public required int MinutesSinceModified { get; init; }
 }

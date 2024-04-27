@@ -10,6 +10,9 @@ public class NavigatorEventCategoriesEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new NavigatorEventCategoriesWriter([]));
+        await client.WriteToStreamAsync(new NavigatorEventCategoriesWriter
+        {
+            Categories = []
+        });
     }
 }

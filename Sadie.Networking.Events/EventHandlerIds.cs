@@ -17,7 +17,7 @@ public class EventHandlerIds
     public const short PlayerPing = 295;
     public const short PlayerPong = 2596;
     public const short HotelViewData = 2912;
-    public const short PlayerUsername = 3878;
+    public const short PlayerIgnoredUsers = 3878;
     public const short PlayerMeMenuSettings = 2388;
     public const short HotelViewBonusRare = 957;
     public const short GetBadgePointLimits = 1371;

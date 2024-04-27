@@ -10,6 +10,5 @@ public class GetBadgePointLimitsEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerIgnoredUsersWriter());
     }
 }
