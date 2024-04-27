@@ -113,8 +113,18 @@ public class SecureLoginEventHandler(
         {
             Level = 1
         });
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId));
-        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()));
+        
+        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+        {
+            HomeRoom = playerData.HomeRoomId,
+            RoomIdToEnter = playerData.HomeRoomId
+        });
+        
+        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter
+        {
+            Effects = []
+        });
+        
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
         
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
@@ -136,8 +146,16 @@ public class SecureLoginEventHandler(
         
         await networkObject.WriteToStreamAsync(navigatorSettingsWriter);
         await networkObject.WriteToStreamAsync(statusWriter);
-        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications));
-        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore));
+        
+        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter
+        {
+            ShowNotifications = player.GameSettings.ShowNotifications
+        });
+        
+        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter
+        {
+            AchievementScore = playerData.AchievementScore
+        });
 
         foreach (var playerSub in playerSubscriptions)
         {
