@@ -22,7 +22,12 @@ public class PlayerFriendRequestsEventHandler() : INetworkPacketEventHandler
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
             .Select(x => x.TargetPlayer)
             .ToList();
+
+        var requestsWriter = new PlayerFriendRequestsWriter
+        {
+            Requests = pending
+        };
         
-        await client.WriteToStreamAsync(new PlayerFriendRequestsWriter(pending));
+        await client.WriteToStreamAsync(requestsWriter);
     }
 }

@@ -127,8 +127,15 @@ public class SecureLoginEventHandler(
             NavigatorSettings = player.NavigatorSettings!
         };
         
-        await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true));
+        var statusWriter = new PlayerStatusWriter
+        {
+            IsOpen = true,
+            IsShuttingDown = false,
+            IsAuthentic = true
+        };
+        
         await networkObject.WriteToStreamAsync(navigatorSettingsWriter);
+        await networkObject.WriteToStreamAsync(statusWriter);
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications));
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore));
 
