@@ -1,21 +1,12 @@
 ﻿using Sadie.Game.Players;
 using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
+[PacketId(ServerPacketId.PlayerPerks)]
 public class PlayerPerksWriter : AbstractPacketWriter
 {
-    public PlayerPerksWriter(List<PlayerPerk> perks)
-    {
-        WriteShort(ServerPacketId.PlayerPerks);
-        WriteInteger(perks.Count);
-
-        foreach (var perk in perks)
-        {
-            WriteString(perk.Code);
-            WriteString(perk.ErrorMessage);
-            WriteBool(perk.Allowed);
-        }
-    }
+    public required List<PlayerPerk> Perks { get; init; }
 }

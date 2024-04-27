@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 namespace Sadie.Game.Rooms.Packets.Writers;
 
 [PacketId(ServerPacketId.RoomFurnitureItemRemoved)]
-public class RoomFloorFurnitureItemRemovedWriter : NetworkPacketWriter
+public class RoomFloorFurnitureItemRemovedWriter : AbstractPacketWriter
 {
     public required string Id { get; init; }
     public required bool Expired { get; init; }

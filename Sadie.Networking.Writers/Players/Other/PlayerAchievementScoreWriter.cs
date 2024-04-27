@@ -1,13 +1,11 @@
 ﻿using Sadie.Shared.Unsorted.Networking;
 using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
+[PacketId(ServerPacketId.PlayerAchievementScore)]
 public class PlayerAchievementScoreWriter : AbstractPacketWriter
 {
-    public PlayerAchievementScoreWriter(long achievementScore)
-    {
-        WriteShort(ServerPacketId.PlayerAchievementScore);
-        WriteLong(achievementScore);
-    }
+    public required long AchievementScore { get; init; }
 }

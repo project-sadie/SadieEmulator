@@ -63,12 +63,16 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
                     dbContext.PlayerFurnitureItems.Add(playerItem);
                 }
             }
+
+            var itemRemovedWriter = new RoomFloorFurnitureItemRemovedWriter
+            {
+                Id = item.Id.ToString(),
+                Expired = false,
+                OwnerId = item.OwnerId,
+                Delay = 0,
+            };
             
-            await user.Room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(
-                item.Id, 
-                false, 
-                item.OwnerId, 
-                0));
+            await user.Room.UserRepository.BroadcastDataAsync(itemRemovedWriter);
         }
 
         await dbContext.SaveChangesAsync();
