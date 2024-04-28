@@ -17,6 +17,9 @@ public class RoomCategoriesEventHandler(SadieContext dbContext) : INetworkPacket
             .Set<RoomCategory>()
             .ToListAsync();
         
-        await client.WriteToStreamAsync(new RoomCategoriesWriter(categories));
+        await client.WriteToStreamAsync(new RoomCategoriesWriter
+        {
+            Categories = categories
+        });
     }
 }

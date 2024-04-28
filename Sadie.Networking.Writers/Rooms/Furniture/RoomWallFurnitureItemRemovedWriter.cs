@@ -1,15 +1,18 @@
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
+[PacketId(ServerPacketId.RoomWallFurnitureItemRemoved)]
 public class RoomWallFurnitureItemRemovedWriter : AbstractPacketWriter
 {
-    public RoomWallFurnitureItemRemovedWriter(RoomFurnitureItem item)
+    public required RoomFurnitureItem Item { get; init; }
+
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.RoomWallFurnitureItemRemoved);
-        WriteString(item.Id.ToString());
-        WriteLong(item.OwnerId);
+        writer.WriteString(Item.Id.ToString());
+        writer.WriteLong(Item.OwnerId);
     }
 }

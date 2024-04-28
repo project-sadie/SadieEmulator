@@ -42,11 +42,13 @@ public class PlayerClubOffersEventHandler(
             .Set<CatalogClubOffer>()
             .ToListAsync();
         
-        await client.WriteToStreamAsync(new PlayerClubOffersWriter(
-            catalogClubOffers,
-            eventParser.WindowId,
-            false,
-            false,
-            daysRemaining));
+        await client.WriteToStreamAsync(new PlayerClubOffersWriter
+        {
+            Offers = catalogClubOffers,
+            WindowId = eventParser.WindowId,
+            Unused = false,
+            CanGift = false,
+            RemainingDays = daysRemaining
+        });
     }
 }
