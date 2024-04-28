@@ -135,7 +135,10 @@ public class RoomItemPlacedEventHandler(
         
         await dbContext.SaveChangesAsync();
 
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
+        {
+            ItemId = itemId
+        });
         
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter(
             roomFurnitureItem.Id,
@@ -187,9 +190,15 @@ public class RoomItemPlacedEventHandler(
         room.FurnitureItems.Add(roomFurnitureItem);
         player.FurnitureItems.Remove(playerItem);
         
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));
-        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter(roomFurnitureItem)
-            );
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
+        {
+            ItemId = itemId
+        });
+        
+        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
+        {
+            RoomFurnitureItem = roomFurnitureItem
+        });
     }
 }
     

@@ -36,16 +36,22 @@ public class RoomGiveUserRightsEventHandler(
             return;
         }
 
-        await room.UserRepository.BroadcastDataAsync(
-            new RoomGiveUserRightsWriter(room.Id, playerId, player.Username)
-        );
+        await room.UserRepository.BroadcastDataAsync(new RoomGiveUserRightsWriter 
+        {
+            RoomId = room.Id,
+            PlayerId = playerId,
+            PlayerUsername = player.Username
+        });
 
         if (room.UserRepository.TryGetById(playerId, out var targetRoomUser))
         {
             targetRoomUser!.ControllerLevel = RoomControllerLevel.Rights;
             targetRoomUser.ApplyFlatCtrlStatus();
             
-            await targetRoomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter(targetRoomUser.ControllerLevel));
+            await targetRoomUser.NetworkObject.WriteToStreamAsync(new RoomRightsWriter
+            {
+                ControllerLevel = (int) targetRoomUser.ControllerLevel
+            });
         }
         
         var roomPlayerRight = new RoomPlayerRight

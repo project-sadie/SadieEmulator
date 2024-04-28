@@ -6,5 +6,5 @@ public class PlayerMessageErrorWriter : AbstractPacketWriter
 {
     public required int Error { get; init; }
     public required int TargetId { get; init; }
-    public required string Unknown { get; init; }
+    public string Unknown { get; init; } = "";
 }
