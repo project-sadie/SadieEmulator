@@ -11,11 +11,10 @@ public class PlayerDirectMessageWriter : AbstractPacketWriter
 {
     public required PlayerMessage Message { get; init; }
 
-    public override void OnConfigureRules()
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        Override(PropertyHelper<PlayerDirectMessageWriter>.GetProperty(x => x.Message.CreatedAt), writer =>
-        {
-            writer.WriteLong(DateTime.Now.ToUnix() - Message.CreatedAt.ToUnix());
-        });
+        writer.WriteInteger(Message.OriginPlayerId);
+        writer.WriteString(Message.Message);
+        writer.WriteLong(DateTime.Now.ToUnix() - Message.CreatedAt.ToUnix());
     }
 }

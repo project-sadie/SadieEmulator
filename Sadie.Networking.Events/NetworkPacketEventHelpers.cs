@@ -245,7 +245,11 @@ internal static class NetworkPacketEventHelpers
 
         var canLikeRoom = player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) == null;
         
-        await client.WriteToStreamAsync(new RoomDataWriter(room.Id, room.Layout.Name));
+        await client.WriteToStreamAsync(new RoomDataWriter
+        {
+            LayoutName = room.Layout.Name,
+            RoomId = room.Id
+        });
 
         if (room.PaintSettings.FloorPaint != "0.0")
         {

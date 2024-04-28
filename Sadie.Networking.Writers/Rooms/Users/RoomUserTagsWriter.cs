@@ -1,20 +1,12 @@
-﻿using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
+﻿using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms.Users;
 
+[PacketId(ServerPacketId.RoomUserTags)]
 public class RoomUserTagsWriter : AbstractPacketWriter
 {
-    public RoomUserTagsWriter(int userId, ICollection<PlayerTag> tags)
-    {
-        WriteShort(ServerPacketId.RoomUserTags);
-        WriteInteger(userId);
-        WriteInteger(tags.Count);
-
-        foreach (var tag in tags)
-        {
-            WriteString(tag.Name);
-        }
-    }
+    public required int UserId { get; init; }
+    public required List<string> Tags { get; init; }
 }

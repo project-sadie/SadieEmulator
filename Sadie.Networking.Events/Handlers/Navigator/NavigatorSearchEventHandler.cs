@@ -55,11 +55,13 @@ public class NavigatorSearchEventHandler(
 
         categoryRoomMap = ApplyFilter(searchQuery, categoryRoomMap);
         
-        var searchResultPagesWriter = new NavigatorSearchResultPagesWriter(
-            tabName, 
-            searchQuery, 
-            categoryRoomMap,
-            roomRepository);
+        var searchResultPagesWriter = new NavigatorSearchResultPagesWriter
+        {
+            TabName = tabName,
+            SearchQuery = searchQuery,
+            CategoryRoomMap = categoryRoomMap,
+            RoomRepository = roomRepository
+        };
         
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }
