@@ -61,8 +61,6 @@ public class NetworkPacketSerializer
     
     private static void AddObjectToWriter(object packet, NetworkPacketWriter writer)
     {
-        writer.WriteShort(GetPacketIdentifierFromAttribute(packet));
-        
         var properties = packet.GetType().GetProperties()
             .Where(p => p.GetCustomAttributes(typeof(NotPacketDataAttribute), true).Length == 0);
         
@@ -102,6 +100,8 @@ public class NetworkPacketSerializer
     public static NetworkPacketWriter Serialize(object packet)
     {
         var writer = new NetworkPacketWriter();
+        
+        writer.WriteShort(GetPacketIdentifierFromAttribute(packet));
 
         if (InvokeOnSerializeIfExists(packet, writer))
         {
