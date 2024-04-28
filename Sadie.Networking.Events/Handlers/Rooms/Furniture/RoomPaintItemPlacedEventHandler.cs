@@ -65,7 +65,11 @@ public class RoomPaintItemPlacedEventHandler(
         player.FurnitureItems.Remove(playerItem);
         await dbContext.SaveChangesAsync();
         
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(parser.ItemId));
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
+        {
+            ItemId = parser.ItemId
+        });
+        
         await room.UserRepository.BroadcastDataAsync(new RoomPaintWriter(playerItem.FurnitureItem.AssetName, playerItem.MetaData));
     }
 }
