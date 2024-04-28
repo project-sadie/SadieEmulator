@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Database.Models.Players;
 

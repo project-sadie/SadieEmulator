@@ -29,7 +29,11 @@ public class PlayerSendFriendRequestEventHandler(
         
         if (player.GetAcceptedFriendshipCount() >= playerConstants.MaxFriendships)
         {
-            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter(0, PlayerFriendshipError.TooManyFriends));
+            await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter
+            {
+                Unknown1 = 0,
+                Error = (int) PlayerFriendshipError.TooManyFriends
+            });
             return;
         }
         
@@ -107,10 +111,12 @@ public class PlayerSendFriendRequestEventHandler(
             
         if (targetOnline && onlineTarget != null)
         {
-            var friendRequestWriter = new PlayerFriendRequestWriter(
-                player.Id,
-                player.Username, 
-                player.AvatarData.FigureCode);
+            var friendRequestWriter = new PlayerFriendRequestWriter
+            {
+                Id = player.Id,
+                Username = player.Username,
+                FigureCode = player.AvatarData.FigureCode
+            };
             
             onlineTarget.IncomingFriendships.Add(playerFriendship);
                 
