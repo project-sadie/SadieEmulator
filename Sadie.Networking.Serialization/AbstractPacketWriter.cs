@@ -11,7 +11,7 @@ public abstract class AbstractPacketWriter
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> BeforeRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> AfterRulesSerialize { get; } = new();
-    public readonly Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules = new();
+    public Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules { get; } = new();
     
     /// <summary>
     /// Register any rules needed for custom mapping
