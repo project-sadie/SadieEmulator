@@ -19,6 +19,11 @@ public class NetworkPacketSerializer
         {
             return false;
         }
+
+        if (onSerialize.GetBaseDefinition().DeclaringType != onSerialize.DeclaringType)
+        {
+            return false;
+        }
         
         onSerialize.Invoke(packet, [writer]);
         return true;
