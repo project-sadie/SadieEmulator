@@ -68,7 +68,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (!await NetworkPacketEventHelpers.TryChargeForCatalogItemPurchaseAsync(client, item, eventParser.Amount))
+        if (!await RoomHelpersToClean.TryChargeForCatalogItemPurchaseAsync(client, item, eventParser.Amount))
         {
             return;
         }
