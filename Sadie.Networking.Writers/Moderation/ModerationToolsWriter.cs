@@ -1,7 +1,10 @@
 using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Moderation;
 
+[PacketId(ServerPacketId.ModerationTools)]
 public class ModerationToolsWriter : AbstractPacketWriter
 {
     public required int Unknown1 { get; set; }

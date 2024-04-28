@@ -1,8 +1,10 @@
 ﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Purse;
 
+[PacketId(ServerPacketId.PlayerActivityPointsBalance)]
 public class PlayerActivityPointsBalanceWriter : AbstractPacketWriter
 {
     public required int PixelBalance { get; init; }
