@@ -19,8 +19,8 @@ public class NetworkPacketSerializer
         {
             return false;
         }
-
-        if (onSerialize.GetBaseDefinition().DeclaringType != onSerialize.DeclaringType)
+        
+        if (onSerialize.GetBaseDefinition().DeclaringType == onSerialize.DeclaringType)
         {
             return false;
         }
