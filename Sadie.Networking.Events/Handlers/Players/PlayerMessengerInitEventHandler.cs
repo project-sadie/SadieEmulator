@@ -13,11 +13,12 @@ public class PlayerMessengerInitEventHandler(
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerMessengerInitWriter(
-            playerConstants.MaxFriendships,
-            1337, 
-            playerConstants.MaxFriendships,
-            0
-        ));
+        await client.WriteToStreamAsync(new PlayerMessengerInitWriter
+        {
+            MaxFriends = playerConstants.MaxFriendships,
+            Unknown1 = 1337,
+            MaxFriendsHc = playerConstants.MaxFriendships,
+            Unknown2 = 0
+        });
     }
 }

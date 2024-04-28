@@ -10,12 +10,16 @@ public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var badges = client.Player.Badges;
+        var badges = client.Player.Badges.ToList();
         
         var equippedBadges = badges.
             Where(x => x.Slot is > 0 and <= 5).
             ToList();
         
-        await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter(badges, equippedBadges));
+        await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter
+        {
+            Badges = badges,
+            EquippedBadges = equippedBadges
+        });
     }
 }
