@@ -9,8 +9,8 @@ namespace Sadie.Networking.Writers.Rooms;
 [PacketId(ServerPacketId.RoomRelativeMap)]
 public class RoomRelativeMapWriter : AbstractPacketWriter
 {
-    public RoomTileMap TileMap { get; }
-    public ICollection<RoomFurnitureItem> Items { get; }
+    public required RoomTileMap TileMap { get; init; }
+    public required ICollection<RoomFurnitureItem> Items { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {

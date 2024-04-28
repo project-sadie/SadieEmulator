@@ -217,19 +217,22 @@ public class SecureLoginEventHandler(
                     .Relationships
                     .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId) : null;
 
-            await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 
-                1, 
-                0,
-                friend, 
-                isOnline, 
-                isInRoom, 
-                0, 
-                "", 
-                "", 
-                false, 
-                false, 
-                false,
-                relationship?.TypeId ?? PlayerRelationshipType.None));   
+            await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter
+            {
+                Unknown1 = 0,
+                Unknown2 = 1,
+                Unknown3 = 0,
+                Friendship = friend,
+                IsOnline = isOnline,
+                CanFollow = isInRoom,
+                CategoryId = 0,
+                RealName = "",
+                LastAccess = "",
+                PersistedMessageUser = false,
+                VipMember = false,
+                PocketUser = false,
+                RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
+            });   
         }
     }
 

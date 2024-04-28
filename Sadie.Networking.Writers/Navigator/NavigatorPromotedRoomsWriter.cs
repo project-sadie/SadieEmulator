@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Networking.Writers.Navigator;
 
 [PacketId(ServerPacketId.NavigatorPromotedRooms)]
-public class NavigatorPromotedRooms : AbstractPacketWriter
+public class NavigatorPromotedRoomsWriter : AbstractPacketWriter
 {
     public override void OnSerialize(NetworkPacketWriter writer)
     {

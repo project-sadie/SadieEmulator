@@ -25,7 +25,11 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
         var userRepository = room.UserRepository;
         var isOwner = room.OwnerId == client.Player.Id;
         
-        await client.WriteToStreamAsync(new RoomRelativeMapWriter(roomTileMap, room.FurnitureItems));
+        await client.WriteToStreamAsync(new RoomRelativeMapWriter
+        {
+            TileMap = roomTileMap,
+            Items = room.FurnitureItems
+        });
         
         await client.WriteToStreamAsync(new RoomHeightMapWriter
         {
