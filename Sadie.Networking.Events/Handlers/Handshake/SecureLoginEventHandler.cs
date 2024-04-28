@@ -108,6 +108,7 @@ public class SecureLoginEventHandler(
         var playerSubscriptions = player.Subscriptions;
         
         await networkObject.WriteToStreamAsync(new SecureLoginWriter());
+        
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
         {
             Level = 1
