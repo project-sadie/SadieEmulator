@@ -10,19 +10,21 @@ public class PlayerSanctionStatusEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerSanctionStatusWriter(
-            false,
-            false, 
-            "ALERT", 
-            0, 
-            30,
-            "cfh.reason.EMPTY", 
-            DateTime.Now, 
-            0,
-            "ALERT",
-            0,
-            30,
-            false, 
-            DateTime.MinValue));
+        await client.WriteToStreamAsync(new PlayerSanctionStatusWriter
+        {
+            HasPreviousSanction = false,
+            OnProbation = false,
+            LastSanctionType = "ALERT",
+            SanctionTime = 0,
+            Unknown1 = 30,
+            Reason = "cfh.reason.EMPTY",
+            ProbationStart = DateTime.Now,
+            Unknown2 = 0,
+            NextSanctionType = "ALERT",
+            HoursForNextSanction = 0,
+            Unknown3 = 30,
+            Muted = false,
+            TradeLockedUntil = DateTime.MinValue
+        });
     }
 }

@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Networking.Writers;
 
 [PacketId(ServerPacketId.GenericError)]
-public class GenericErrorWriter : NetworkPacketWriter
+public class GenericErrorWriter : AbstractPacketWriter
 {
     public required int ErrorCode { get; init; }
 }

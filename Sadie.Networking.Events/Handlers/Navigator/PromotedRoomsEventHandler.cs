@@ -1,5 +1,6 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 

@@ -18,6 +18,10 @@ public class RoomUserStartTypingEventHandler(RoomRepository roomRepository) : IN
 
         roomUser.UpdateLastAction();
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter(roomUser.Id, true));
+        await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
+        {
+            UserId = roomUser.Id,
+            IsTyping = true
+        });
     }
 }

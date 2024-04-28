@@ -68,21 +68,22 @@ public class PlayerChangeRelationshipEventHandler(
         var isOnline = onlineFriend != null;
         var inRoom = isOnline && onlineFriend!.CurrentRoomId != 0;
         
-        var updateFriendWriter = new PlayerUpdateFriendWriter(
-                0, 
-                1, 
-                0, 
-                friendship, 
-                isOnline, 
-                inRoom, 
-                0, 
-                "", 
-                "", 
-                false, 
-                false, 
-                false,
-                (PlayerRelationshipType) relationId)
-            ;
+        var updateFriendWriter = new PlayerUpdateFriendWriter
+        {
+            Unknown1 = 0,
+            Unknown2 = 1,
+            Unknown3 = 0,
+            Friendship = friendship,
+            IsOnline = isOnline,
+            CanFollow = inRoom,
+            CategoryId = 0,
+            RealName = "",
+            LastAccess = "",
+            PersistedMessageUser = false,
+            VipMember = false,
+            PocketUser = false,
+            RelationshipType = relationId
+        };
             
         await client.WriteToStreamAsync(updateFriendWriter);
     }

@@ -18,5 +18,5 @@ public class PlayerUpdateFriendWriter : AbstractPacketWriter
     public bool PersistedMessageUser { get; set; }
     public bool VipMember { get; set; }
     public bool PocketUser { get; set; }
-    public PlayerRelationshipType RelationshipType { get; set; }
+    public int RelationshipType { get; set; }
 }

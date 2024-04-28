@@ -159,7 +159,7 @@ public class PlayerRepository(
                 PersistedMessageUser = false,
                 VipMember = false,
                 PocketUser = false,
-                RelationshipType = relationship?.TypeId ?? PlayerRelationshipType.None
+                RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
             };
                 
             await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
