@@ -99,21 +99,22 @@ public class RoomFloorItemUpdatedEventHandler(
 
     private static async Task BroadcastUpdateAsync(RoomLogic room, RoomFurnitureItem roomFurnitureItem)
     {
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter(
-            roomFurnitureItem.Id,
-            roomFurnitureItem.FurnitureItem.AssetId,
-            roomFurnitureItem.PositionX,
-            roomFurnitureItem.PositionY,
-            roomFurnitureItem.PositionZ,
-            (int) roomFurnitureItem.Direction,
-            0,
-            1,
-            (int) ObjectDataKey.MapKey,
-            new Dictionary<string, string>(),
-            roomFurnitureItem.FurnitureItem.InteractionType,
-            roomFurnitureItem.MetaData,
-            roomFurnitureItem.FurnitureItem.InteractionModes,
-            -1,
-            roomFurnitureItem.OwnerId));
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter
+        {
+            Id = roomFurnitureItem.Id,
+            AssetId = roomFurnitureItem.FurnitureItem.AssetId,
+            PositionX = roomFurnitureItem.PositionX,
+            PositionY = roomFurnitureItem.PositionY,
+            Direction = (int)roomFurnitureItem.Direction,
+            PositionZ = roomFurnitureItem.PositionZ,
+            StackHeight = 0,
+            Extra = 1,
+            ObjectDataKey = (int)ObjectDataKey.MapKey,
+            ObjectData = new Dictionary<string, string>(),
+            MetaData = roomFurnitureItem.MetaData,
+            Expires = -1,
+            InteractionModes = 0,
+            OwnerId = roomFurnitureItem.OwnerId
+        });
     }
 }

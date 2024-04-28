@@ -46,6 +46,7 @@ public class RoomLoadedEventHandler(
         {
             logger.LogError($"Failed to load room {roomId} for player '{player.Username}'");
             await client.WriteToStreamAsync(new RoomUserHotelView());
+            
             return;
         }
 
@@ -53,7 +54,11 @@ public class RoomLoadedEventHandler(
 
         if (room.UserRepository.Count > room.MaxUsersAllowed && !isOwner)
         {
-            await client.WriteToStreamAsync(new RoomEnterErrorWriter(RoomEnterError.NoCapacity));
+            await client.WriteToStreamAsync(new RoomEnterErrorWriter
+            {
+                ErrorCode = (int) RoomEnterError.NoCapacity
+            });
+            
             return;
         }
 
