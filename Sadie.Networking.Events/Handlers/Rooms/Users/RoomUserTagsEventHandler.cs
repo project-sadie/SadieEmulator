@@ -24,7 +24,7 @@ public class RoomUserTagsEventHandler(RoomUserTagsEventParser eventParser, RoomR
             await specialUser!.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter
             {
                 UserId = specialUser.Id,
-                Tags = specialUser.Player.Tags
+                Tags = specialUser.Player.Tags.Select(x => x.Name).ToList()
             });
         }
     }
