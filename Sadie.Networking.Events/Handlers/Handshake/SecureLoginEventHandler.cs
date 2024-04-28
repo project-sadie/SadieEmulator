@@ -80,7 +80,37 @@ public class SecureLoginEventHandler(
         player.Authenticated = true;
 
         await SendExtraPacketsAsync(client, player);
+        await SendSubscriptionPacketsAsync(player);
+        await SendFriendUpdatesAsync(player);
         await SendWelcomeMessageAsync(player);
+    }
+
+    private async Task SendSubscriptionPacketsAsync(PlayerLogic player)
+    {
+        foreach (var playerSub in player.Subscriptions)
+        {
+            var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
+            var daysLeft = (int) tillExpire.TotalDays;
+            var minutesLeft = (int) tillExpire.TotalMinutes;
+            var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
+            
+            await player.NetworkObject.WriteToStreamAsync(new PlayerSubscriptionWriter
+            {
+                Name = playerSub.Subscription.Name,
+                DaysLeft = daysLeft,
+                MemberPeriods = 0,
+                PeriodsSubscribedAhead = 0,
+                ResponseType = 1,
+                HasEverBeenMember = true,
+                IsVip = true,
+                PastClubDays = 0,
+                PastVipDays = 0,
+                MinutesTillExpire = minutesLeft,
+                MinutesSinceModified = minutesSinceMod
+            });
+            
+            player.State.LastSubscriptionModification = DateTime.Now;
+        }
     }
 
     private async Task SendWelcomeMessageAsync(PlayerLogic player)
@@ -159,31 +189,6 @@ public class SecureLoginEventHandler(
             AchievementScore = playerData.AchievementScore
         });
 
-        foreach (var playerSub in playerSubscriptions)
-        {
-            var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
-            var daysLeft = (int) tillExpire.TotalDays;
-            var minutesLeft = (int) tillExpire.TotalMinutes;
-            var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
-            
-            await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter
-            {
-                Name = playerSub.Subscription.Name,
-                DaysLeft = daysLeft,
-                MemberPeriods = 0,
-                PeriodsSubscribedAhead = 0,
-                ResponseType = 1,
-                HasEverBeenMember = true,
-                IsVip = true,
-                PastClubDays = 0,
-                PastVipDays = 0,
-                MinutesTillExpire = minutesLeft,
-                MinutesSinceModified = minutesSinceMod
-            });
-            
-            player.State.LastSubscriptionModification = DateTime.Now;
-        }
-
         if (player.HasPermission("moderation_tools"))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter
@@ -201,7 +206,10 @@ public class SecureLoginEventHandler(
                 Unknown11 = 0
             });
         }
-
+    }
+    
+    private async Task SendFriendUpdatesAsync(PlayerLogic player)
+    {
         var allFriends = player.GetMergedFriendships();
         
         await playerRepository.UpdateMessengerStatusForFriends(player.Id,
@@ -218,7 +226,7 @@ public class SecureLoginEventHandler(
                     .Relationships
                     .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId) : null;
 
-            await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter
+            await player.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter
             {
                 Unknown1 = 0,
                 Unknown2 = 1,
