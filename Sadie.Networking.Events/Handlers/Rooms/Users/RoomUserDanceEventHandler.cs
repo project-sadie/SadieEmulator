@@ -19,6 +19,10 @@ public class RoomUserDanceEventHandler(RoomUserDanceEventParser eventParser, Roo
             return;
         }
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserDanceWriter(roomUser!.Id, eventParser.DanceId));
+        await room.UserRepository.BroadcastDataAsync(new RoomUserDanceWriter
+        {
+            UserId = roomUser.Id,
+            DanceId = eventParser.DanceId
+        });
     }
 }

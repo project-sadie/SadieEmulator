@@ -37,7 +37,7 @@ public class RoomUserRespectEventHandler(
         if (playerData.RespectPoints < 1 || 
             player.Id == eventParser.TargetId || 
             targetPlayer == null || 
-            targetPlayer!.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
+            targetPlayer.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
         {
             return;
         }
@@ -53,7 +53,16 @@ public class RoomUserRespectEventHandler(
 
         await dbContext.SaveChangesAsync();
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetPlayer.Respects.Count));
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp));
+        await room.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter
+        {
+            UserId = eventParser.TargetId,
+            TotalRespects = targetPlayer.Respects.Count
+        });
+        
+        await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
+        {
+            UserId = roomUser.Id,
+            Action = (int) RoomUserAction.ThumbsUp
+        });
     }
 }
