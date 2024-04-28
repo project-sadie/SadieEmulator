@@ -12,7 +12,7 @@ public class PlayerRemoveFriendsWriter : AbstractPacketWriter
 
     public override void OnConfigureRules()
     {
-        Override(PropertyHelper<PlayerRemoveFriendsWriter>.GetProperty(x => x.PlayerIds), writer =>
+        Override(GetType().GetProperty(nameof(PlayerIds))!, writer =>
         {
             foreach (var playerId in PlayerIds)
             {

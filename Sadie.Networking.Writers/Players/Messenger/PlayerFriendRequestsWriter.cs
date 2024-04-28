@@ -12,7 +12,7 @@ public class PlayerFriendRequestsWriter : AbstractPacketWriter
     
     public override void OnConfigureRules()
     {
-        Override(PropertyHelper<PlayerFriendRequestsWriter>.GetProperty(x => x.Requests), writer =>
+        Override(GetType().GetProperty(nameof(Requests))!, writer =>
         {
             writer.WriteInteger(Requests.Count);
             writer.WriteInteger(Requests.Count);

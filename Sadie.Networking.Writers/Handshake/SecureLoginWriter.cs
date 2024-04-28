@@ -1,12 +1,8 @@
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
 
 namespace Sadie.Networking.Writers.Handshake;
 
-public class SecureLoginWriter : AbstractPacketWriter
-{
-    public SecureLoginWriter()
-    {
-        WriteShort(ServerPacketId.SecureLogin);
-    }
-}
+[PacketId(ServerPacketId.SecureLogin)]
+public class SecureLoginWriter : AbstractPacketWriter;

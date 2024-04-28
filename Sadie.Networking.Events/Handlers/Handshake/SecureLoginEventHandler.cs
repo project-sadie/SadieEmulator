@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Handshake;
@@ -127,10 +126,12 @@ public class SecureLoginEventHandler(
         
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
         
-        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
-            playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
-            2,
-            true));
+        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
+        {
+            Club = playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
+            Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 0,
+            Ambassador = true
+        });
 
         var navigatorSettingsWriter = new PlayerNavigatorSettingsWriter
         {
@@ -164,18 +165,20 @@ public class SecureLoginEventHandler(
             var minutesLeft = (int) tillExpire.TotalMinutes;
             var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
             
-            await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter(
-                playerSub.Subscription.Name,
-                daysLeft,
-                0, 
-                0, 
-                1, 
-                true, 
-                true, 
-                0, 
-                0, 
-                minutesLeft,
-                minutesSinceMod));
+            await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter
+            {
+                Name = playerSub.Subscription.Name,
+                DaysLeft = daysLeft,
+                MemberPeriods = 0,
+                PeriodsSubscribedAhead = 0,
+                ResponseType = 1,
+                HasEverBeenMember = true,
+                IsVip = true,
+                PastClubDays = 0,
+                PastVipDays = 0,
+                MinutesTillExpire = minutesLeft,
+                MinutesSinceModified = minutesSinceMod
+            });
             
             player.State.LastSubscriptionModification = DateTime.Now;
         }

@@ -12,7 +12,7 @@ public class PlayerSavedSearchesWriter : AbstractPacketWriter
 
     public override void OnConfigureRules()
     {
-        Override(PropertyHelper<PlayerSavedSearchesWriter>.GetProperty(x => x.Searches), writer =>
+        Override(GetType().GetProperty(nameof(Searches))!, writer =>
         {
             writer.WriteInteger(Searches.Count);
 
