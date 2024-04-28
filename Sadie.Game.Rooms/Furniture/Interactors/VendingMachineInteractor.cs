@@ -25,22 +25,23 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             ItemId = new Random().Next(2, 9)
         });
 
-        var itemWriter = new RoomFloorItemUpdatedWriter(
-            item.Id,
-            item.FurnitureItem.AssetId,
-            item.PositionX,
-            item.PositionY,
-            item.PositionZ,
-            (int)item.Direction,
-            0,
-            1,
-            (int)ObjectDataKey.MapKey,
-            new Dictionary<string, string>(),
-            item.FurnitureItem.InteractionType,
-            item.MetaData,
-            item.FurnitureItem.InteractionModes,
-            -1,
-            item.OwnerId);
+        var itemWriter = new RoomFloorItemUpdatedWriter
+        {
+            Id = item.Id,
+            AssetId = item.FurnitureItem.AssetId,
+            PositionX = item.PositionX,
+            PositionY = item.PositionY,
+            Direction = (int)item.Direction,
+            PositionZ = item.PositionZ,
+            StackHeight = 0,
+            Extra = 1,
+            ObjectDataKey = (int)ObjectDataKey.MapKey,
+            ObjectData = new Dictionary<string, string>(),
+            MetaData = item.MetaData,
+            Expires = -1,
+            InteractionModes = 0,
+            OwnerId = item.OwnerId
+        };
         
         await room.UserRepository.BroadcastDataAsync(itemWriter);
     }

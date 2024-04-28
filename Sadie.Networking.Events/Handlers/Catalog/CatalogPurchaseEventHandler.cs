@@ -104,23 +104,24 @@ public class CatalogPurchaseEventHandler(
         
         await client.WriteToStreamAsync(writer);
         
-        await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(
-            item.Id,
-            item.Name,
-            false,
-            item.CostCredits,
-            item.CostPoints,
-            item.CostPointsType,
-            item.FurnitureItems.First().CanGift,
-            eventParser.Amount,
-            item.RequiresClubMembership ? 1 : 0,
-            item.Amount != 1,
-            item.MetaData,
-            false,
-            0,
-            0,
-            item.FurnitureItems
-            ));
+        await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Rented = false,
+            CostCredits = item.CostCredits,
+            CostPoints = item.CostPoints,
+            CostPointsType = item.CostPointsType,
+            CanGift = item.FurnitureItems.First().CanGift,
+            FurnitureItems = item.FurnitureItems,
+            Amount = eventParser.Amount,
+            ClubLevel = item.RequiresClubMembership ? 1 : 0,
+            CanPurchaseBundles = item.Amount != 1,
+            Metadata = item.MetaData,
+            IsLimited = false,
+            LimitedItemSeriesSize = 0,
+            AmountLeft = 0
+        });
         
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
     }
