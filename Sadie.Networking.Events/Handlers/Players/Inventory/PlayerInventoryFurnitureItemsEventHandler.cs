@@ -1,4 +1,3 @@
-using Sadie.Database.Models.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Players.Inventory;
@@ -16,16 +15,27 @@ public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHand
 
         if (furnitureItems.Count == 0)
         {
-            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(1, 0, new List<PlayerFurnitureItem>()));
+            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter
+            {
+                Pages = 1,
+                CurrentPage = 0,
+                Items = []
+            });
             return;
         }
 
         var page = 0;
-        var pages = (furnitureItems.Count() - 1) / 700 + 1;
+        var pages = (furnitureItems.Count - 1) / 700 + 1;
         
         foreach (var batch in furnitureItems.Batch(700))
         {
-            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter(pages, page, batch.ToList()));
+            await client.WriteToStreamAsync(new PlayerInventoryFurnitureItemsWriter
+            {
+                Pages = pages,
+                CurrentPage = page,
+                Items = batch.ToList()
+            });
+            
             page++;
         }
     }

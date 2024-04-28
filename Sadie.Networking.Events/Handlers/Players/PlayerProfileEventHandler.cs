@@ -31,12 +31,14 @@ public class PlayerProfileEventHandler(
         var friendCount = profilePlayer.GetAcceptedFriendshipCount();
         var friendship = profilePlayer.TryGetFriendshipFor(profileId);
 
-        var profileWriter = new PlayerProfileWriter(
-            profilePlayer, 
-            profilePlayer.Data.IsOnline, 
-            friendCount, 
-            friendship is { Status: PlayerFriendshipStatus.Accepted }, 
-            friendship != null);
+        var profileWriter = new PlayerProfileWriter
+        {
+            Player = profilePlayer,
+            Online = profilePlayer.Data.IsOnline,
+            FriendshipCount = friendCount,
+            FriendshipExists = friendship is { Status: PlayerFriendshipStatus.Accepted },
+            FriendshipRequestExists = friendship!= null
+        };
         
         await client.WriteToStreamAsync(profileWriter);
     }
