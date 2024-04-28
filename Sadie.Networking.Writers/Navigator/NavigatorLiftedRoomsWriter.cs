@@ -1,16 +1,17 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Navigator;
 
+[PacketId(ServerPacketId.NavigatorLiftedRooms)]
 public class NavigatorLiftedRoomsWriter : AbstractPacketWriter
 {
     public required List<RoomLogic> Rooms { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
-        writer.WriteShort(ServerPacketId.NavigatorLiftedRooms);
         writer.WriteInteger(Rooms.Count);
 
         foreach (var room in Rooms)
