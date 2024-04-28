@@ -70,7 +70,11 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
             FurnitureOwners = floorFurnitureOwners
         });
         
-        await client.WriteToStreamAsync(new RoomWallItemsWriter(wallItems, wallFurnitureOwners));
+        await client.WriteToStreamAsync(new RoomWallItemsWriter
+        {
+            FurnitureOwners = wallFurnitureOwners,
+            WallItems = wallItems
+        });
         
         await userRepository.BroadcastDataAsync(new RoomForwardDataWriter
         {
