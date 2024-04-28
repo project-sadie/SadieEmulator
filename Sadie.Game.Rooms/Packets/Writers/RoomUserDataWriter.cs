@@ -13,7 +13,7 @@ public class RoomUserDataWriter : AbstractPacketWriter
 
     public override void OnConfigureRules()
     {
-        Override(PropertyHelper<RoomUserDataWriter>.GetProperty(x => x.Users), writer =>
+        Override(GetType().GetProperty(nameof(Users))!, writer =>
         {
             writer.WriteInteger(Users.Count);
 
