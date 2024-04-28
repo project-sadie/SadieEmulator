@@ -2,7 +2,7 @@ using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Serialization;
-using Sadie.Shared.Unsorted.Networking.Packets.Attributes;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Navigator;
 

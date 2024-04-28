@@ -1,4 +1,4 @@
-namespace Sadie.Shared.Unsorted.Networking.Packets.Attributes;
+namespace Sadie.Networking.Serialization.Attributes;
 
 public class PacketDataAttribute : Attribute
 {
