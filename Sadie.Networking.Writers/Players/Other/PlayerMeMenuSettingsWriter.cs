@@ -1,29 +1,18 @@
-﻿using Sadie.Shared.Unsorted.Game;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerMeMenuSettingsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerMeMenuSettings)]
+public class PlayerMeMenuSettingsWriter : AbstractPacketWriter
 {
-    public PlayerMeMenuSettingsWriter(
-        int systemVolume, 
-        int furnitureVolume, 
-        int traxVolume, 
-        bool oldChat, 
-        bool blockRoomInvites, 
-        bool blockCameraFollow, 
-        int uiFlags, 
-        ChatBubble chatBubble)
-    {
-        WriteShort(ServerPacketId.PlayerMeMenuSettings);
-        WriteInteger(systemVolume);
-        WriteInteger(furnitureVolume);
-        WriteInteger(traxVolume);
-        WriteBool(oldChat);
-        WriteBool(blockRoomInvites);
-        WriteBool(blockCameraFollow);
-        WriteInteger(uiFlags);
-        WriteInteger((int) chatBubble);
-    }
+    public required int SystemVolume { get; init; }
+    public required int FurnitureVolume { get; init; }
+    public required int TraxVolume { get; init; }
+    public required bool OldChat { get; init; }
+    public required bool BlockRoomInvites { get; init; }
+    public required bool BlockCameraFollow { get; init; }
+    public required int UiFlags { get; init; }
+    public required int ChatBubble { get; init; }
 }

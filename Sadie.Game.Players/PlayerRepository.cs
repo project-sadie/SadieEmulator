@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Packets;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Players;
 
@@ -145,20 +145,22 @@ public class PlayerRepository(
                 .FirstOrDefault(x =>
                     x.TargetPlayerId == friendship.OriginPlayerId || x.TargetPlayerId == friendship.TargetPlayerId);
 
-            var updateFriendWriter = new PlayerUpdateFriendWriter(
-                0, 
-                1, 
-                0, 
-                friendship, 
-                isOnline, 
-                inRoom, 
-                0, 
-                "", 
-                "", 
-                false, 
-                false, 
-                false,
-                relationship?.TypeId ?? PlayerRelationshipType.None);
+            var updateFriendWriter = new PlayerUpdateFriendWriter
+            {
+                Unknown1 = 0,
+                Unknown2 = 1,
+                Unknown3 = 0,
+                Friendship = friendship,
+                IsOnline = isOnline,
+                CanFollow = inRoom,
+                CategoryId = 0,
+                RealName = "",
+                LastAccess = "",
+                PersistedMessageUser = false,
+                VipMember = false,
+                PocketUser = false,
+                RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
+            };
                 
             await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
         }
@@ -211,11 +213,11 @@ public class PlayerRepository(
             .ToListAsync();
     }
 
-    public async Task BroadcastDataAsync(NetworkPacketWriter data)
+    public async Task BroadcastDataAsync(AbstractPacketWriter writer)
     {
         foreach (var player in _players.Values)
         {
-            await player.NetworkObject.WriteToStreamAsync(data);
+            await player.NetworkObject.WriteToStreamAsync(writer);
         }
     }
 }

@@ -10,6 +10,12 @@ public class KissCommand : AbstractRoomChatCommand
     
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
-        await user.Room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(user.Id, (int) RoomUserAction.Kiss));
+        var actionWriter = new RoomUserActionWriter
+        {
+            UserId = user.Id,
+            Action = (int) RoomUserAction.Kiss
+        };
+        
+        await user.Room.UserRepository.BroadcastDataAsync(actionWriter);
     }
 }

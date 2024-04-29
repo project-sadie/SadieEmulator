@@ -1,12 +1,10 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class RoomUserClosedWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomUserClosed)]
+public class RoomUserClosedWriter : AbstractPacketWriter
 {
-    public RoomUserClosedWriter()
-    {
-        WriteShort(ServerPacketId.RoomUserClosed);
-    }
 }

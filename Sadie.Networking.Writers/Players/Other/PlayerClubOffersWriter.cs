@@ -1,22 +1,24 @@
 ﻿using Sadie.Database.Models.Catalog;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerClubOffersWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerClubOffers)]
+public class PlayerClubOffersWriter : AbstractPacketWriter
 {
-    public PlayerClubOffersWriter(
-        IReadOnlyCollection<CatalogClubOffer> offers, 
-        int windowId, 
-        bool unused, 
-        bool canGift,
-        int remainingDays)
-    {
-        WriteShort(ServerPacketId.PlayerClubOffers);
-        WriteInteger(offers.Count);
+    public required IReadOnlyCollection<CatalogClubOffer> Offers { get; init; }
+    public required int WindowId { get; init; }
+    public required bool Unused { get; init; }
+    public required bool CanGift { get; init; }
+    public required int RemainingDays { get; init; }
 
-        foreach (var offer in offers)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(Offers.Count);
+
+        foreach (var offer in Offers)
         {
             var duration = TimeSpan.FromDays(offer.DurationDays);
             var months = (int) duration.TotalDays / 31;
@@ -24,24 +26,24 @@ public class PlayerClubOffersWriter : NetworkPacketWriter
 
             var expires = DateTime.Now
                 .AddDays(duration.TotalDays)
-                .AddDays(remainingDays);
+                .AddDays(RemainingDays);
             
-            WriteInteger(offer.Id);
-            WriteString(offer.Name);
-            WriteBool(unused);
-            WriteInteger(offer.CostCredits); 
-            WriteInteger(offer.CostPoints);
-            WriteInteger(offer.CostPointsType);
-            WriteBool(offer.IsVip);
-            WriteInteger((int)duration.TotalDays / 31);
-            WriteInteger(days);
-            WriteBool(canGift);
-            WriteInteger(offer.DurationDays);
-            WriteInteger(expires.Year);
-            WriteInteger(expires.Month);
-            WriteInteger(expires.Day);
+            writer.WriteInteger(offer.Id);
+            writer.WriteString(offer.Name);
+            writer.WriteBool(Unused);
+            writer.WriteInteger(offer.CostCredits); 
+            writer.WriteInteger(offer.CostPoints);
+            writer.WriteInteger(offer.CostPointsType);
+            writer.WriteBool(offer.IsVip);
+            writer.WriteInteger((int)duration.TotalDays / 31);
+            writer.WriteInteger(days);
+            writer.WriteBool(CanGift);
+            writer.WriteInteger(offer.DurationDays);
+            writer.WriteInteger(expires.Year);
+            writer.WriteInteger(expires.Month);
+            writer.WriteInteger(expires.Day);
         }
         
-        WriteInteger(windowId);
+        writer.WriteInteger(WindowId);
     }
 }

@@ -1,23 +1,12 @@
-using Sadie.Shared.Unsorted;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Generic;
 
-public class NotificationWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.NotificationWriter)]
+public class NotificationWriter : AbstractPacketWriter
 {
-    public NotificationWriter(
-        NotificationType type, 
-        Dictionary<string, string> messages)
-    {
-        WriteShort(ServerPacketId.NotificationWriter);
-        WriteString(type.ToString());
-        WriteInteger(messages.Count);
-        
-        foreach (var pair in messages)
-        {
-            WriteString(pair.Key);
-            WriteString(pair.Value);
-        }
-    }
+    public required int Type { get; init; }
+    public required Dictionary<string, string> Messages { get; init; }
 }

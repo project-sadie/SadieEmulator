@@ -1,13 +1,18 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Purse;
 
-public class PlayerCreditsBalanceWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerCreditsBalance)]
+public class PlayerCreditsBalanceWriter : AbstractPacketWriter
 {
-    public PlayerCreditsBalanceWriter(long credits)
+    public required long Credits { get; init; }
+
+    public override void OnConfigureRules()
     {
-        WriteShort(ServerPacketId.PlayerCreditsBalance);
-        WriteString(credits + ".0");
+        Convert<string>(
+            GetType().GetProperty(nameof(Credits))!,
+            i => (long) i + ".0");
     }
 }

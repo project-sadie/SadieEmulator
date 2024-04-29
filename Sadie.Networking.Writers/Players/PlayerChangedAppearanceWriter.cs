@@ -1,15 +1,12 @@
-using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerChangedAppearanceWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerChangedAppearance)]
+public class PlayerChangedAppearanceWriter : AbstractPacketWriter
 {
-    public PlayerChangedAppearanceWriter(string figureCode, AvatarGender gender)
-    {
-        WriteShort(ServerPacketId.PlayerChangedAppearance);
-        WriteString(figureCode);
-        WriteString(gender == AvatarGender.Male ? "M" : "F");
-    }
+    public required string FigureCode { get; init; }
+    public required string Gender { get; init; }
 }

@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms.PathFinding.Collections.MultiDimensional;
+namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.MultiDimensional;
 
 public interface IModelAGrid<T>
 {

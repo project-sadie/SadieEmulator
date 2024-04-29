@@ -17,15 +17,17 @@ public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
             return;
         }
         
-        await client.WriteToStreamAsync(new PlayerClubCenterDataWriter(
-            subscription.CreatedAt.ToString("dd/MM/yyyy"),
-            0,
-            0.1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0));
+        await client.WriteToStreamAsync(new PlayerClubCenterDataWriter
+        {
+            StreakInDays = 0,
+            JoinDateString = subscription.CreatedAt.ToString("dd/MM/yyyy"),
+            KickbackPercentageString = 0.1.ToString(),
+            TotalCreditsMissed = 0,
+            TotalCreditsRewarded = 0,
+            TotalCreditsSpent = 0,
+            CreditRewardForStreakBonus = 0,
+            CreditRewardForMonthlySpent = 0,
+            TimeUntilPayday = 0
+        });
     }
 }

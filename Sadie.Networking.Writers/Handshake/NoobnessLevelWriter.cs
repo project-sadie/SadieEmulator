@@ -1,13 +1,11 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Handshake;
 
-public class NoobnessLevelWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.NoobnessLevel)]
+public class NoobnessLevelWriter : AbstractPacketWriter
 {
-    public NoobnessLevelWriter(int level)
-    {
-        WriteShort(ServerPacketId.NoobnessLevel);
-        WriteInteger(level);
-    }
+    public required int Level { get; init; }
 }

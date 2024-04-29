@@ -1,14 +1,12 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Navigator;
 
-public class RoomCreatedWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomCreated)]
+public class RoomCreatedWriter : AbstractPacketWriter
 {
-    public RoomCreatedWriter(int id, string name)
-    {
-        WriteShort(ServerPacketId.RoomCreated);
-        WriteInteger(id);
-        WriteString(name);
-    }
+    public required int Id { get; init; }
+    public required string Name { get; init; }
 }

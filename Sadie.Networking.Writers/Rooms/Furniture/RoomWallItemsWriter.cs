@@ -1,35 +1,32 @@
 using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomWallItemsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomWallItems)]
+public class RoomWallItemsWriter : AbstractPacketWriter
 {
-    public RoomWallItemsWriter(
-        ICollection<RoomFurnitureItem> wallItems,
-        Dictionary<int, string> furnitureOwners)
+    public required Dictionary<int, string> FurnitureOwners { get; init; }
+    public required ICollection<RoomFurnitureItem> WallItems { get; init; }
+
+    public override void OnConfigureRules()
     {
-       WriteShort(ServerPacketId.RoomWallItems);
-       WriteInteger(furnitureOwners.Count);
+        Override(GetType().GetProperty(nameof(WallItems))!, writer =>
+        {
+            writer.WriteInteger(WallItems.Count);
 
-       foreach (var owner in furnitureOwners)
-       {
-           WriteLong(owner.Key);
-           WriteString(owner.Value);
-       }
-       
-       WriteInteger(wallItems.Count);
-
-       foreach (var item in wallItems)
-       {
-           WriteString(item.Id + "");
-           WriteInteger(item.FurnitureItem.AssetId);
-           WriteString(item.WallPosition);
-           WriteString(item.MetaData);
-           WriteInteger(-1);
-           WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0);
-           WriteLong(item.OwnerId);
-       }
+            foreach (var item in WallItems)
+            {
+                writer.WriteString(item.Id + "");
+                writer.WriteInteger(item.FurnitureItem.AssetId);
+                writer.WriteString(item.WallPosition);
+                writer.WriteString(item.MetaData);
+                writer.WriteInteger(-1);
+                writer.WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0);
+                writer.WriteLong(item.OwnerId);
+            }
+        });
     }
 }

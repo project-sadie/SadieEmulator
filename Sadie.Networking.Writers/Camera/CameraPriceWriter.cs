@@ -1,18 +1,13 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Camera;
 
-public class CameraPriceWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.CameraPrice)]
+public class CameraPriceWriter : AbstractPacketWriter
 {
-    public CameraPriceWriter(
-        int costCredits, 
-        int costPoints, 
-        int pointsType)
-    {
-        WriteShort(ServerPacketId.CameraPrice);
-        WriteInteger(costCredits);
-        WriteInteger(costPoints);
-        WriteInteger(pointsType);
-    }
+    public required int CostCredits { get; init; }
+    public required int CostPoints { get; init; }
+    public required int PointsType { get; init; }
 }

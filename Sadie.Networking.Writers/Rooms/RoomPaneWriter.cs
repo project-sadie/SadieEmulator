@@ -1,14 +1,12 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomPaneWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomPane)]
+public class RoomPaneWriter : AbstractPacketWriter
 {
-    public RoomPaneWriter(int roomId, bool owner)
-    {
-        WriteShort(ServerPacketId.RoomPane);
-        WriteInteger(roomId);
-        WriteBool(owner);
-    }
+    public required int RoomId { get; init; }
+    public required bool Owner { get; init; }
 }

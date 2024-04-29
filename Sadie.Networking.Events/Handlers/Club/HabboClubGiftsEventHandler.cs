@@ -28,11 +28,13 @@ public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacket
         var claimedGifts = 0;
         var unclaimedGifts = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400; 
         
-        await client.WriteToStreamAsync(new HabboClubGiftsWriter(
-            daysTillNextClubGift, 
-            unclaimedGifts, 
-            daysAsClub, 
-            clubGiftPage));
+        await client.WriteToStreamAsync(new HabboClubGiftsWriter
+        {
+            DaysTillNext = daysTillNextClubGift,
+            UnclaimedGifts = unclaimedGifts,
+            DaysAsClub = daysAsClub,
+            ClubGiftPage = clubGiftPage
+        });
     }
 
     private int CalculateDaysAsClub(ICollection<PlayerSubscription> subscriptions)

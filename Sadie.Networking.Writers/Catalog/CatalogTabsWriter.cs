@@ -1,46 +1,48 @@
 using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogTabsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.CatalogPages)]
+public class CatalogTabsWriter : AbstractPacketWriter
 {
-    public CatalogTabsWriter(
-        string mode, 
-        List<CatalogPage> tabPages)
-    {
-        WriteShort(ServerPacketId.CatalogPages);
-        WriteBool(true);
-        WriteInteger(0);
-        WriteInteger(-1);
-        WriteString("root");
-        WriteString("");
-        WriteInteger(0);
-        WriteInteger(tabPages.Count);
+    public required string Mode { get; init; }
+    public required List<CatalogPage> TabPages { get; init; }
 
-        foreach (var page in tabPages)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteBool(true);
+        writer.WriteInteger(0);
+        writer.WriteInteger(-1);
+        writer.WriteString("root");
+        writer.WriteString("");
+        writer.WriteInteger(0);
+        writer.WriteInteger(TabPages.Count);
+
+        foreach (var page in TabPages)
         {
-            AppendPage(page);
+            AppendPage(page, writer);
         }
         
-        WriteBool(false);
-        WriteString(mode);
+        writer.WriteBool(false);
+        writer.WriteString(Mode);
     }
 
-    private void AppendPage(CatalogPage page)
+    private void AppendPage(CatalogPage page, NetworkPacketWriter writer)
     {
-        WriteBool(page.Visible);
-        WriteInteger(page.IconId);
-        WriteInteger(page.Enabled ? page.Id : -1);
-        WriteString(page.Name);
-        WriteString(page.Caption);
-        WriteInteger(0); // TODO: offer id count
-        WriteInteger(page.Pages.Count);
+        writer.WriteBool(page.Visible);
+        writer.WriteInteger(page.IconId);
+        writer.WriteInteger(page.Enabled ? page.Id : -1);
+        writer.WriteString(page.Name);
+        writer.WriteString(page.Caption);
+        writer.WriteInteger(0); // TODO: offer id count
+        writer.WriteInteger(page.Pages.Count);
         
         foreach (var childPage in page.Pages)
         {
-            AppendPage(childPage);
+            AppendPage(childPage, writer);
         }
     }
 }

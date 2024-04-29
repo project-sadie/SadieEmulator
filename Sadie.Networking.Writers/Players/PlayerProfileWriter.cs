@@ -1,35 +1,37 @@
 using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerProfileWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerProfile)]
+public class PlayerProfileWriter : AbstractPacketWriter
 {
-    public PlayerProfileWriter(
-        Player player, 
-        bool online, 
-        int friendshipCount, 
-        bool friendshipExists, 
-        bool friendshipRequestExists)
+    public required Player Player { get; init; }
+    public required bool Online { get; init; }
+    public required int FriendshipCount { get; init; }
+    public required bool FriendshipExists { get; init; }
+    public required bool FriendshipRequestExists { get; init; }
+
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        var lastOnline = player.Data.LastOnline == null
+        var lastOnline = Player.Data.LastOnline == null
             ? 0
-            : (int) (DateTime.Now - player.Data.LastOnline).Value.TotalSeconds;
+            : (int) (DateTime.Now - Player.Data.LastOnline).Value.TotalSeconds;
         
-        WriteShort(ServerPacketId.PlayerProfile);
-        WriteLong(player.Id);
-        WriteString(player.Username);
-        WriteString(player.AvatarData.FigureCode);
-        WriteString(player.AvatarData.Motto);
-        WriteString(player.CreatedAt.ToString("dd MMMM yyyy"));
-        WriteLong(player.Data.AchievementScore);
-        WriteLong(friendshipCount);
-        WriteBool(friendshipExists);
-        WriteBool(friendshipRequestExists);
-        WriteBool(online);
-        WriteInteger(0);
-        WriteInteger(lastOnline);
-        WriteBool(true);
+        writer.WriteLong(Player.Id);
+        writer.WriteString(Player.Username);
+        writer.WriteString(Player.AvatarData.FigureCode);
+        writer.WriteString(Player.AvatarData.Motto);
+        writer.WriteString(Player.CreatedAt.ToString("dd MMMM yyyy"));
+        writer.WriteLong(Player.Data.AchievementScore);
+        writer.WriteLong(FriendshipCount);
+        writer.WriteBool(FriendshipExists);
+        writer.WriteBool(FriendshipRequestExists);
+        writer.WriteBool(Online);
+        writer.WriteInteger(0);
+        writer.WriteInteger(lastOnline);
+        writer.WriteBool(true);
     }
 }

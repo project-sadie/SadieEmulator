@@ -1,14 +1,12 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class RoomUserHandItemWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomUserHandItem)]
+public class RoomUserHandItemWriter : AbstractPacketWriter
 {
-    public RoomUserHandItemWriter(int userId, int itemId)
-    {
-        WriteShort(ServerPacketId.RoomUserHandItem);
-        WriteInteger(userId);
-        WriteInteger(itemId);
-    }
+    public required int UserId { get; init; }
+    public required int ItemId { get; init; }
 }

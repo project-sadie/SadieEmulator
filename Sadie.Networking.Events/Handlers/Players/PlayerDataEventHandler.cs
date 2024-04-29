@@ -11,7 +11,10 @@ public class PlayerDataEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new PlayerDataWriter(client.Player));
+        await client.WriteToStreamAsync(new PlayerDataWriter
+        {
+            Player = client.Player
+        });
 
         var perks = new List<PlayerPerk>
         {
@@ -32,6 +35,9 @@ public class PlayerDataEventHandler : INetworkPacketEventHandler
             new("HABBO_CLUB_OFFER_BETA", "", true),
         };
         
-        await client.WriteToStreamAsync(new PlayerPerksWriter(perks));
+        await client.WriteToStreamAsync(new PlayerPerksWriter
+        {
+            Perks = perks
+        });
     }
 }

@@ -1,21 +1,24 @@
 using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomWallFurnitureItemPlacedWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomWallFurnitureItemPlaced)]
+public class RoomWallFurnitureItemPlacedWriter : AbstractPacketWriter
 {
-    public RoomWallFurnitureItemPlacedWriter(RoomFurnitureItem roomFurnitureItem)
+    public required RoomFurnitureItem RoomFurnitureItem { get; init; }
+
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.RoomWallFurnitureItemPlaced);
-        WriteString(roomFurnitureItem.Id + "");
-        WriteInteger(roomFurnitureItem.FurnitureItem.AssetId);
-        WriteString(roomFurnitureItem.WallPosition);
-        WriteString(roomFurnitureItem.MetaData);
-        WriteInteger(-1);
-        WriteInteger(roomFurnitureItem.FurnitureItem.InteractionModes > 1 ? 1 : 0);
-        WriteLong(roomFurnitureItem.OwnerId);
-        WriteString(roomFurnitureItem.OwnerUsername);
+        writer.WriteString(RoomFurnitureItem.Id + "");
+        writer.WriteInteger(RoomFurnitureItem.FurnitureItem.AssetId);
+        writer.WriteString(RoomFurnitureItem.WallPosition);
+        writer.WriteString(RoomFurnitureItem.MetaData);
+        writer.WriteInteger(-1);
+        writer.WriteInteger(RoomFurnitureItem.FurnitureItem.InteractionModes > 1 ? 1 : 0);
+        writer.WriteLong(RoomFurnitureItem.OwnerId);
+        writer.WriteString(RoomFurnitureItem.OwnerUsername);
     }
 }

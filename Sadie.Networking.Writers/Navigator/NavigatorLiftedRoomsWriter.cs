@@ -1,22 +1,25 @@
 using Sadie.Game.Rooms;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Navigator;
 
-public class NavigatorLiftedRoomsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.NavigatorLiftedRooms)]
+public class NavigatorLiftedRoomsWriter : AbstractPacketWriter
 {
-    public NavigatorLiftedRoomsWriter(List<RoomLogic> rooms)
-    {
-        WriteShort(ServerPacketId.NavigatorLiftedRooms);
-        WriteInteger(rooms.Count);
+    public required List<RoomLogic> Rooms { get; init; }
 
-        foreach (var room in rooms)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(Rooms.Count);
+
+        foreach (var room in Rooms)
         {
-            WriteLong(room.Id);
-            WriteInteger(0); // unknown
-            WriteString(""); // thumbnail?
-            WriteString(room.Name);
+            writer.WriteLong(room.Id);
+            writer.WriteInteger(0); // unknown
+            writer.WriteString(""); // thumbnail?
+            writer.WriteString(room.Name);
         }
     }
 }

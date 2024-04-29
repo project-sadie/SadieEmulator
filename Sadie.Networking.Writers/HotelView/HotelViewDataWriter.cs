@@ -1,14 +1,12 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.HotelView;
 
-public class HotelViewDataWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.HotelViewData)]
+public class HotelViewDataWriter : AbstractPacketWriter
 {
-    public HotelViewDataWriter(string key, string value)
-    {
-        WriteShort(ServerPacketId.HotelViewData);
-        WriteString(key);
-        WriteString(value);
-    }
+    public required string Key { get; init; }
+    public required string Value { get; init; }
 }

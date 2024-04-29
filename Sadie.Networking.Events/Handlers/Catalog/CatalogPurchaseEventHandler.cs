@@ -31,7 +31,10 @@ public class CatalogPurchaseEventHandler(
         
         if ((DateTime.Now - player!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
         {
-            var bytes = new CatalogPurchaseFailedWriter((int)CatalogPurchaseError.Server);
+            var bytes = new CatalogPurchaseFailedWriter
+            {
+                Error = (int) CatalogPurchaseError.Server
+            };
             
             await client.WriteToStreamAsync(bytes);
             return;
@@ -45,7 +48,11 @@ public class CatalogPurchaseEventHandler(
 
         if (page == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server));
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
+            {
+                Error = (int) CatalogPurchaseError.Server
+            });
+            
             return;
         }
 
@@ -53,11 +60,15 @@ public class CatalogPurchaseEventHandler(
 
         if (item == null)
         {
-            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter((int) CatalogPurchaseError.Server));
+            await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
+            {
+                Error = (int) CatalogPurchaseError.Server
+            });
+            
             return;
         }
 
-        if (!await NetworkPacketEventHelpers.TryChargeForCatalogItemPurchaseAsync(client, item, eventParser.Amount))
+        if (!await RoomHelpersToClean.TryChargeForCatalogItemPurchaseAsync(client, item, eventParser.Amount))
         {
             return;
         }
@@ -85,26 +96,32 @@ public class CatalogPurchaseEventHandler(
         }
 
         await dbContext.SaveChangesAsync();
+
+        var writer = new PlayerInventoryAddItemsWriter
+        {
+            Items = newItems
+        };
         
-        await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter(newItems));
+        await client.WriteToStreamAsync(writer);
         
-        await client.WriteToStreamAsync(new CatalogPurchaseOkWriter(
-            item.Id,
-            item.Name,
-            false,
-            item.CostCredits,
-            item.CostPoints,
-            item.CostPointsType,
-            item.FurnitureItems.First().CanGift,
-            eventParser.Amount,
-            item.RequiresClubMembership ? 1 : 0,
-            item.Amount != 1,
-            item.MetaData,
-            false,
-            0,
-            0,
-            item.FurnitureItems
-            ));
+        await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Rented = false,
+            CostCredits = item.CostCredits,
+            CostPoints = item.CostPoints,
+            CostPointsType = item.CostPointsType,
+            CanGift = item.FurnitureItems.First().CanGift,
+            FurnitureItems = item.FurnitureItems,
+            Amount = eventParser.Amount,
+            ClubLevel = item.RequiresClubMembership ? 1 : 0,
+            CanPurchaseBundles = item.Amount != 1,
+            Metadata = item.MetaData,
+            IsLimited = false,
+            LimitedItemSeriesSize = 0,
+            AmountLeft = 0
+        });
         
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
     }

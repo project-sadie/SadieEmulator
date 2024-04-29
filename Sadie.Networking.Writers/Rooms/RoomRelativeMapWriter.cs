@@ -1,27 +1,31 @@
 ﻿using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomRelativeMapWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomRelativeMap)]
+public class RoomRelativeMapWriter : AbstractPacketWriter
 {
-    public RoomRelativeMapWriter(RoomTileMap tileMap, ICollection<RoomFurnitureItem> items)
-    {
-        WriteShort(ServerPacketId.RoomRelativeMap);
-        WriteInteger(tileMap.Size / tileMap.SizeY);
-        WriteInteger(tileMap.Size);
+    public required RoomTileMap TileMap { get; init; }
+    public required ICollection<RoomFurnitureItem> Items { get; init; }
 
-        for (var y = 0; y < tileMap.SizeY; y++)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(TileMap.Size / TileMap.SizeY);
+        writer.WriteInteger(TileMap.Size);
+
+        for (var y = 0; y < TileMap.SizeY; y++)
         {
-            for (var x = 0; x < tileMap.SizeX; x++)
+            for (var x = 0; x < TileMap.SizeX; x++)
             {
                 var topItem = RoomTileMapHelpers
-                    .GetItemsForPosition(x, y, items)
+                    .GetItemsForPosition(x, y, Items)
                     .MaxBy(i => i.PositionZ);
                 
-                WriteShort((short)(topItem?.PositionZ ?? 0));
+                writer.WriteShort((short)(topItem?.PositionZ ?? 0));
             }
         }
     }

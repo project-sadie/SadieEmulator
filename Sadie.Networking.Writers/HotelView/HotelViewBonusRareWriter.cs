@@ -1,20 +1,14 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.HotelView;
 
-public class HotelViewBonusRareWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.HotelViewBonusRare)]
+public class HotelViewBonusRareWriter : AbstractPacketWriter
 {
-    public HotelViewBonusRareWriter(
-        string name, 
-        int id, 
-        int coins, 
-        int coinsRequiredToBuy)
-    {
-        WriteShort(ServerPacketId.HotelViewBonusRare);
-        WriteString(name);
-        WriteInteger(id);
-        WriteInteger(coins);
-        WriteInteger(coinsRequiredToBuy);
-    }
+    public required string Name { get; init; }
+    public required int Id { get; init; }
+    public required int Coins { get; init; }
+    public required int CoinsRequiredToBuy { get; init; }
 }

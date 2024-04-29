@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Database.Mappers", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Options", "Sadie.Options\Sadie.Options.csproj", "{6508F006-DE36-47D1-A812-F140DE3325A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Serialization", "Sadie.Networking.Serialization\Sadie.Networking.Serialization.csproj", "{9D884E48-D7CF-4654-A828-D32CFE782DED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{6508F006-DE36-47D1-A812-F140DE3325A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,7 +19,11 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
 
         if (!client.Player.IsFriendsWith(eventParser.PlayerId))
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.NotFriends));
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter
+            {
+                StalkError = (int) PlayerStalkError.NotFriends
+            });
+            
             return;
         }
 
@@ -27,13 +31,21 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
         
         if (targetPlayer == null)
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetOffline));
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter
+            {
+                StalkError = (int) PlayerStalkError.TargetOffline
+            });
+            
             return;
         }
 
         if (targetPlayer.CurrentRoomId == 0)
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetNotInRoom));
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter
+            {
+                StalkError = (int) PlayerStalkError.TargetNotInRoom
+            });
+            
             return;
         }
 
@@ -42,6 +54,9 @@ public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerR
             return;
         }
 
-        await client.WriteToStreamAsync(new RoomForwardEntryWriter(targetPlayer.CurrentRoomId));
+        await client.WriteToStreamAsync(new RoomForwardEntryWriter
+        {
+            RoomId = targetPlayer.CurrentRoomId
+        });
     }
 }

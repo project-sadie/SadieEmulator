@@ -1,15 +1,13 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Permission;
 
-public class PlayerPermissionsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerPermissions)]
+public class PlayerPermissionsWriter : AbstractPacketWriter
 {
-    public PlayerPermissionsWriter(int club, int rank, bool ambassador)
-    {
-        WriteShort(ServerPacketId.PlayerPermissions);
-        WriteInteger(club);
-        WriteInteger(rank);
-        WriteBool(ambassador);
-    }
+    public required int Club { get; init; }
+    public required int Rank { get; init; }
+    public required bool Ambassador { get; init; }
 }

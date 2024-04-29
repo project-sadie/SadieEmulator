@@ -12,7 +12,16 @@ public class MoonWalkCommand : AbstractRoomChatCommand
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
         user.MoonWalking = !user.MoonWalking;
+        
         var effectId = user.MoonWalking ? (int) EffectIds.Moonwalk : 0;
-        await user.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter(user.Id, effectId));
+        
+        var writer = new RoomUserEffectWriter
+        {
+            UserId = user.Id,
+            EffectId = effectId,
+            DelayMs = 0
+        };
+        
+        await user.Room.UserRepository.BroadcastDataAsync(writer);
     }
 }

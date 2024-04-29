@@ -1,12 +1,8 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomOwnerWriter : NetworkPacketWriter
-{
-    public RoomOwnerWriter()
-    {
-        WriteShort(ServerPacketId.RoomOwner);
-    }
-}
+[PacketId(ServerPacketId.RoomOwner)] 
+public class RoomOwnerWriter : AbstractPacketWriter; 

@@ -31,7 +31,12 @@ public class AboutCommand(
         message.AppendLine("Damien - Developer");
         message.AppendLine("Lucas - Creative Director");
         message.AppendLine("");
+
+        var writer = new PlayerAlertWriter
+        {
+            Message = message.ToString()
+        };
         
-        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(message.ToString()));
+        await user.NetworkObject.WriteToStreamAsync(writer);
     }
 }

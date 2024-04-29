@@ -1,27 +1,28 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.GameCentre;
 
-public class GameAchievementsListWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.GameCentreConfig)]
+public class GameAchievementsListWriter : AbstractPacketWriter
 {
-    public GameAchievementsListWriter()
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.GameCentreConfig);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(3);
-        WriteInteger(1);
-        WriteInteger(1);
-        WriteString("BaseJumpBigParachute");
-        WriteInteger(1);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(3);
+        writer.WriteInteger(1);
+        writer.WriteInteger(1);
+        writer.WriteString("BaseJumpBigParachute");
+        writer.WriteInteger(1);
     }
 }

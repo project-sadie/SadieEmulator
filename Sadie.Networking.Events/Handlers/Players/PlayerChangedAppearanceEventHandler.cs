@@ -1,7 +1,6 @@
 ﻿using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
@@ -44,8 +43,16 @@ public class PlayerChangedAppearanceEventHandler(
             return;
         }
         
-        await client.WriteToStreamAsync(new PlayerChangedAppearanceWriter(figureCode, gender));
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }));
+        await client.WriteToStreamAsync(new PlayerChangedAppearanceWriter
+        {
+            FigureCode = figureCode,
+            Gender = gender.ToString()
+        });
+        
+        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter
+        {
+            Users = [roomUser]
+        });
         
         dbContext.PlayerAvatarData.Update(player.AvatarData);
         await dbContext.SaveChangesAsync();

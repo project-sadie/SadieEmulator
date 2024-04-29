@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Effects;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Handshake;
@@ -81,7 +80,37 @@ public class SecureLoginEventHandler(
         player.Authenticated = true;
 
         await SendExtraPacketsAsync(client, player);
+        await SendSubscriptionPacketsAsync(player);
+        await SendFriendUpdatesAsync(player);
         await SendWelcomeMessageAsync(player);
+    }
+
+    private async Task SendSubscriptionPacketsAsync(PlayerLogic player)
+    {
+        foreach (var playerSub in player.Subscriptions)
+        {
+            var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
+            var daysLeft = (int) tillExpire.TotalDays;
+            var minutesLeft = (int) tillExpire.TotalMinutes;
+            var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
+            
+            await player.NetworkObject.WriteToStreamAsync(new PlayerSubscriptionWriter
+            {
+                Name = playerSub.Subscription.Name,
+                DaysLeft = daysLeft,
+                MemberPeriods = 0,
+                PeriodsSubscribedAhead = 0,
+                ResponseType = 1,
+                HasEverBeenMember = true,
+                IsVip = true,
+                PastClubDays = 0,
+                PastVipDays = 0,
+                MinutesTillExpire = minutesLeft,
+                MinutesSinceModified = minutesSinceMod
+            });
+            
+            player.State.LastSubscriptionModification = DateTime.Now;
+        }
     }
 
     private async Task SendWelcomeMessageAsync(PlayerLogic player)
@@ -94,8 +123,13 @@ public class SecureLoginEventHandler(
         var formattedMessage = serverSettings.PlayerWelcomeMessage
             .Replace("[username]", player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
+
+        var alertWriter = new PlayerAlertWriter
+        {
+            Message = formattedMessage
+        };
         
-        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(formattedMessage));
+        await player.NetworkObject.WriteToStreamAsync(alertWriter);
     }
 
     private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
@@ -104,49 +138,78 @@ public class SecureLoginEventHandler(
         var playerSubscriptions = player.Subscriptions;
         
         await networkObject.WriteToStreamAsync(new SecureLoginWriter());
-        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1));
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId));
-        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()));
+        
+        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
+        {
+            Level = 1
+        });
+        
+        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+        {
+            HomeRoom = playerData.HomeRoomId,
+            RoomIdToEnter = playerData.HomeRoomId
+        });
+        
+        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter
+        {
+            Effects = []
+        });
+        
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
         
-        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
-            playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
-            2,
-            true));
-        
-        await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true));
-        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings));
-        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications));
-        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore));
-
-        foreach (var playerSub in playerSubscriptions)
+        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
         {
-            var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
-            var daysLeft = (int) tillExpire.TotalDays;
-            var minutesLeft = (int) tillExpire.TotalMinutes;
-            var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
-            
-            await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter(
-                playerSub.Subscription.Name,
-                daysLeft,
-                0, 
-                0, 
-                1, 
-                true, 
-                true, 
-                0, 
-                0, 
-                minutesLeft,
-                minutesSinceMod));
-            
-            player.State.LastSubscriptionModification = DateTime.Now;
-        }
+            Club = playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
+            Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 0,
+            Ambassador = true
+        });
+
+        var navigatorSettingsWriter = new PlayerNavigatorSettingsWriter
+        {
+            NavigatorSettings = player.NavigatorSettings!
+        };
+        
+        var statusWriter = new PlayerStatusWriter
+        {
+            IsOpen = true,
+            IsShuttingDown = false,
+            IsAuthentic = true
+        };
+        
+        await networkObject.WriteToStreamAsync(navigatorSettingsWriter);
+        await networkObject.WriteToStreamAsync(statusWriter);
+        
+        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter
+        {
+            ShowNotifications = player.GameSettings.ShowNotifications
+        });
+        
+        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter
+        {
+            AchievementScore = playerData.AchievementScore
+        });
 
         if (player.HasPermission("moderation_tools"))
         {
-            await networkObject.WriteToStreamAsync(new ModerationToolsWriter());
+            await networkObject.WriteToStreamAsync(new ModerationToolsWriter
+            {
+                Unknown1 = 0,
+                Unknown2 = 0,
+                Unknown3 = 0,
+                Unknown4 = true,
+                Unknown5 = true,
+                Unknown6 = true,
+                Unknown7 = true,
+                Unknown8 = true,
+                Unknown9 = true,
+                Unknown10 = true,
+                Unknown11 = 0
+            });
         }
-
+    }
+    
+    private async Task SendFriendUpdatesAsync(PlayerLogic player)
+    {
         var allFriends = player.GetMergedFriendships();
         
         await playerRepository.UpdateMessengerStatusForFriends(player.Id,
@@ -163,19 +226,22 @@ public class SecureLoginEventHandler(
                     .Relationships
                     .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId) : null;
 
-            await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 
-                1, 
-                0,
-                friend, 
-                isOnline, 
-                isInRoom, 
-                0, 
-                "", 
-                "", 
-                false, 
-                false, 
-                false,
-                relationship?.TypeId ?? PlayerRelationshipType.None));   
+            await player.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter
+            {
+                Unknown1 = 0,
+                Unknown2 = 1,
+                Unknown3 = 0,
+                Friendship = friend,
+                IsOnline = isOnline,
+                CanFollow = isInRoom,
+                CategoryId = 0,
+                RealName = "",
+                LastAccess = "",
+                PersistedMessageUser = false,
+                VipMember = false,
+                PocketUser = false,
+                RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
+            });   
         }
     }
 

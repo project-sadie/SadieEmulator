@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace Sadie.Game.Rooms.PathFinding;
+namespace Sadie.Game.Rooms.PathFinding.ToGo;
 
 public static class PositionExtensions
 {

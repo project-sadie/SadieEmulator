@@ -36,19 +36,34 @@ public class RoomSettingsSaveEventHandler(
         
         if (eventParser.Tags.Any(x => x.Length > roomConstants.MaxTagLength))
         {
-            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.TagTooLong));
+            await client.WriteToStreamAsync(new RoomSettingsErrorWriter
+            {
+                RoomId = room.Id,
+                ErrorCode = (int)RoomSettingsError.TagTooLong,
+                Unknown = ""
+            });
             return;
         }
         
         if (string.IsNullOrEmpty(eventParser.Name))
         {
-            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.NameRequired));
+            await client.WriteToStreamAsync(new RoomSettingsErrorWriter
+            {
+                RoomId = room.Id,
+                ErrorCode = (int)RoomSettingsError.NameRequired,
+                Unknown = ""
+            });
             return;
         }
 
         if (eventParser.AccessType == RoomAccessType.Password && string.IsNullOrEmpty(eventParser.Password))
         {
-            await client.WriteToStreamAsync(new RoomSettingsErrorWriter(room.Id, RoomSettingsError.PasswordRequired));
+            await client.WriteToStreamAsync(new RoomSettingsErrorWriter
+            {
+                RoomId = room.Id,
+                ErrorCode = (int) RoomSettingsError.PasswordRequired,
+                Unknown = ""
+            });
             return;
         }
 
@@ -69,7 +84,11 @@ public class RoomSettingsSaveEventHandler(
         
         await roomRepository.SaveRoomAsync(room);
         await BroadcastUpdatesAsync(room);
-        await client.WriteToStreamAsync(new RoomSettingsSavedWriter(eventParser.RoomId));
+        
+        await client.WriteToStreamAsync(new RoomSettingsSavedWriter
+        {
+            RoomId = eventParser.RoomId
+        });
     }
 
     private void UpdateSettings(RoomSettings settings)
@@ -101,19 +120,26 @@ public class RoomSettingsSaveEventHandler(
         var settings = room.Settings;
         var chatSettings = room.ChatSettings;
         
-        var floorSettingsWriter = new RoomWallFloorSettingsWriter(
-            settings.HideWalls, 
-            settings.WallThickness, 
-            settings.FloorThickness);
+        var floorSettingsWriter = new RoomWallFloorSettingsWriter
+        {
+            HideWalls = settings.HideWalls,
+            WallThickness = settings.WallThickness,
+            FloorThickness = settings.FloorThickness
+        };
 
-        var settingsWriter = new RoomChatSettingsWriter(
-            chatSettings.ChatType, 
-            chatSettings.ChatWeight, 
-            chatSettings.ChatSpeed,
-            chatSettings.ChatDistance, 
-            chatSettings.ChatProtection);
+        var settingsWriter = new RoomChatSettingsWriter
+        {
+            ChatType = chatSettings.ChatType,
+            ChatWeight = chatSettings.ChatWeight,
+            ChatSpeed = chatSettings.ChatSpeed,
+            ChatDistance = chatSettings.ChatDistance,
+            ChatProtection = chatSettings.ChatProtection
+        };
 
-        var settingsUpdatedWriter = new RoomSettingsUpdatedWriter(eventParser.RoomId);
+        var settingsUpdatedWriter = new RoomSettingsUpdatedWriter
+        {
+            RoomId = eventParser.RoomId
+        };
 
         await room.UserRepository.BroadcastDataAsync(floorSettingsWriter);
         await room.UserRepository.BroadcastDataAsync(settingsWriter);

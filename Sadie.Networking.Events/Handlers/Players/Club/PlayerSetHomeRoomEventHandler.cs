@@ -16,12 +16,16 @@ public class PlayerSetHomeRoomEventHandler(
     {
         parser.Parse(reader);
 
-        if (client.Player == null || client.Player.NetworkObject == null)
+        if (client.Player?.NetworkObject == null)
         {
             return;
         }
 
-        await client.Player.NetworkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(parser.RoomId, parser.RoomId));
+        await client.Player.NetworkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+        {
+            HomeRoom = parser.RoomId,
+            RoomIdToEnter = 0,
+        });
         
         client.Player.Data.HomeRoomId = parser.RoomId;
 

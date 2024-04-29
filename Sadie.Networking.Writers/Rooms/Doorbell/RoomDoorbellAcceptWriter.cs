@@ -1,13 +1,11 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Doorbell;
 
-public class RoomDoorbellAcceptWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomDoorbellAccept)]
+public class RoomDoorbellAcceptWriter : AbstractPacketWriter
 {
-    public RoomDoorbellAcceptWriter(string username)
-    {
-        WriteShort(ServerPacketId.RoomDoorbellAccept);
-        WriteString(username);
-    }
+    public required string Username { get; init; }
 }

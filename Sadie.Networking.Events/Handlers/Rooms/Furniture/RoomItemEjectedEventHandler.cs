@@ -46,15 +46,20 @@ public class RoomItemEjectedEventHandler(
 
         if (roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
         {
-            await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(
-                roomFurnitureItem.Id, 
-                false, 
-                roomFurnitureItem.OwnerId, 
-                0));
+            await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
+            {
+                Id = roomFurnitureItem.Id.ToString(),
+                Expired = false,
+                OwnerId = roomFurnitureItem.OwnerId,
+                Delay = 0
+            });
         }
         else
         {
-            await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter(roomFurnitureItem));
+            await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter
+            {
+                Item = roomFurnitureItem
+            });
         }
 
         var ownsItem = roomFurnitureItem.OwnerId == player.Id;
@@ -77,7 +82,11 @@ public class RoomItemEjectedEventHandler(
         {
             player.FurnitureItems.Add(playerItem);
             
-            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+            {
+                Items = [playerItem]
+            });
+            
             await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
         }
         else
@@ -86,7 +95,11 @@ public class RoomItemEjectedEventHandler(
 
             if (ownerOnline != null)
             {
-                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+                {
+                    Items = [playerItem]
+                });
+                
                 await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
                 
                 ownerOnline.FurnitureItems.Add(playerItem);

@@ -1,21 +1,27 @@
 using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerWearingBadgesWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerBadges)]
+public class PlayerWearingBadgesWriter : AbstractPacketWriter
 {
-    public PlayerWearingBadgesWriter(int playerId, ICollection<PlayerBadge> badges)
-    {
-        WriteShort(ServerPacketId.PlayerBadges);
-        WriteInteger(playerId);
-        WriteInteger(badges.Count);
+    public required int PlayerId { get; init; }
+    public required ICollection<PlayerBadge> Badges { get; init; }
 
-        foreach (var item in badges)
+    public override void OnConfigureRules()
+    {
+        Override(GetType().GetProperty(nameof(Badges))!, writer =>
         {
-            WriteInteger(item.Slot);
-            WriteString(item.Badge.Code);
-        }
+            writer.WriteInteger(Badges.Count);
+
+            foreach (var item in Badges)
+            {
+                writer.WriteInteger(item.Slot);
+                writer.WriteString(item.Badge.Code);
+            }
+        });
     }
 }

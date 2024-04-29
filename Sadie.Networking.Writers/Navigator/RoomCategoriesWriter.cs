@@ -1,25 +1,28 @@
 ﻿using Sadie.Database.Models.Rooms;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Navigator;
 
-public class RoomCategoriesWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomCategories)]
+public class RoomCategoriesWriter : AbstractPacketWriter
 {
-    public RoomCategoriesWriter(List<RoomCategory> categories)
-    {
-        WriteShort(ServerPacketId.RoomCategories);
-        WriteInteger(categories.Count);
+    public required List<RoomCategory> Categories { get; init; }
 
-        foreach (var category in categories)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(Categories.Count);
+
+        foreach (var category in Categories)
         {
-            WriteInteger(category.Id);
-            WriteString(category.Caption);
-            WriteBool(category.IsVisible);
-            WriteBool(false); // unknown
-            WriteString(category.Caption);
-            WriteString(category.Caption.StartsWith("${") ? "" : category.Caption);
-            WriteBool(false); // unknown
+            writer.WriteInteger(category.Id);
+            writer.WriteString(category.Caption);
+            writer.WriteBool(category.IsVisible);
+            writer.WriteBool(false); // unknown
+            writer.WriteString(category.Caption);
+            writer.WriteString(category.Caption.StartsWith("${") ? "" : category.Caption);
+            writer.WriteBool(false); // unknown
         }
     }
 }
