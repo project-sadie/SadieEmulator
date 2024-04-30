@@ -21,7 +21,8 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
         var page = await dbContext
             .Set<CatalogPage>()
             .Where(x => x.Id == eventParser.PageId)
-            .Include(catalogPage => catalogPage.Items)
+            .Include(c => c.Items).ThenInclude(x => x.FurnitureItems)
+            .Include(c => c.Pages)
             .FirstOrDefaultAsync();
 
         if (page is not { Enabled: true } || !page.Visible)
