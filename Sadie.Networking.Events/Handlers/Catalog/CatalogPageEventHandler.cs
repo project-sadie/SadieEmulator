@@ -32,6 +32,7 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
 
         var frontPageItems = await dbContext
             .Set<CatalogFrontPageItem>()
+            .Include(x => x.CatalogPage)
             .ToListAsync();
 
         await client.WriteToStreamAsync(new CatalogPageWriter
