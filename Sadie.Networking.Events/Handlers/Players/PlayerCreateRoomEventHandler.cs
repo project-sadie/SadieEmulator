@@ -31,10 +31,8 @@ public class PlayerCreateRoomEventHandler(
         var newRoom = new Room
         {
             Name = eventParser.Name,
-            LayoutId = layout.Id,
-            Layout = layout,
             OwnerId = client.Player.Id,
-            Owner = client.Player,
+            LayoutId = layout.Id,
             MaxUsersAllowed = 50,
             Description = eventParser.Description,
             CreatedAt = DateTime.Now
@@ -54,8 +52,13 @@ public class PlayerCreateRoomEventHandler(
         {
             RoomId = newRoom.Id,
         };
-
+        
         dbContext.Rooms.Add(newRoom);
+        await dbContext.SaveChangesAsync();
+
+        newRoom.Owner = client.Player;
+        newRoom.Layout = layout;
+        
         roomRepository.AddRoom(newRoom);
         client.Player.Rooms.Add(newRoom);
 
@@ -64,7 +67,5 @@ public class PlayerCreateRoomEventHandler(
             Id = newRoom.Id,
             Name = newRoom.Name
         });
-        
-        await dbContext.SaveChangesAsync();
     }
 }
