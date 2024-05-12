@@ -8,6 +8,7 @@ using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
+using Sadie.Networking.Encryption;
 using Sadie.Networking.Events;
 using Sadie.Options;
 using Sadie.Shared;
@@ -32,10 +33,12 @@ public static class ServerServiceCollection
         OptionsServiceCollection.AddServices(serviceCollection, config);
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
-        serviceCollection.AddSingleton<ServerSettings>(p => 
+        NetworkingEncryptionCollection.AddServices(serviceCollection);
+
+        serviceCollection.AddSingleton<ServerSettings>(p =>
             p.GetRequiredService<SadieContext>().ServerSettings.First());
-        
-        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => 
+
+        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p =>
             p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());
 
         MapperServiceCollection.AddServices(serviceCollection);

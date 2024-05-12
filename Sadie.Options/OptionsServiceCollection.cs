@@ -15,6 +15,7 @@ public static class OptionsServiceCollection
         serviceCollection.Configure<DatabaseOptions>(options => config.GetSection("DatabaseOptions").Bind(options));
         serviceCollection.Configure<NetworkOptions>(options => config.GetSection("NetworkOptions").Bind(options));
         serviceCollection.Configure<NetworkPacketOptions>(options => config.GetSection("NetworkOptions:PacketOptions").Bind(options));
+        serviceCollection.Configure<EncryptionOptions>(options => config.GetSection("Encryption").Bind(options));
 
         serviceCollection.AddSingleton<IValidateOptions<DatabaseOptions>, DatabaseOptionsValidator>();
         serviceCollection.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
