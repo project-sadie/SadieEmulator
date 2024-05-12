@@ -31,10 +31,16 @@ public static class HexExtensions
         {
             uint i = (uint)(c - '0');
             if (i < 10)
+            {
                 return (int)i;
+            }
+
             i = (c & ~0x20u) - 'A';
             if (i < 6)
+            {
                 return (int)i + 10;
+            }
+
             throw new ArgumentException("Invalid nybble: " + c);
         }
     }

@@ -15,11 +15,9 @@ public class EncryptionEncoder(byte[] key) : ChunkedWriteHandler<object>
         var input = (IByteBuffer)message;
 
         var data = input.ReadBytes(input.ReadableBytes);
-
-        //release old object
-        ReferenceCountUtil.Release(input);
-
         rc4.Parse(data.Array);
+
+        ReferenceCountUtil.Release(input);
 
         return base.WriteAsync(context, data);
     }

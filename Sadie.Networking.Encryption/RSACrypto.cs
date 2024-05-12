@@ -57,12 +57,14 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
         byte[] bytes = new byte[n];
 
         int i = src.Length - 1;
+
         while (i >= 0 && n > 11)
         {
             bytes[--n] = src[i--];
         }
 
         bytes[--n] = 0;
+
         while (n > 2)
         {
             bytes[--n] = 0xFF;
@@ -70,6 +72,7 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
 
         bytes[--n] = 1;
         bytes[--n] = 0;
+
         return bytes;
     }
 

@@ -47,6 +47,7 @@ public class ARC4
         i = ++i & (POOLSIZE - 1);
         j = (j + bytes[i]) & (POOLSIZE - 1);
         (bytes[j], bytes[i]) = (bytes[i], bytes[j]);
+
         return bytes[(bytes[i] + bytes[j]) & 255];
     }
 }

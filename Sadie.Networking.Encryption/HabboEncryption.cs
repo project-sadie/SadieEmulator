@@ -15,6 +15,7 @@ public class HabboEncryption(IOptions<EncryptionOptions> options)
     {
         byte[] bytes = Encoding.Default.GetBytes(message);
         byte[] encryptedBytes = _crypto.Encrypt(bytes, true);
+
         return encryptedBytes.ToHexString();
     }
 
@@ -50,6 +51,7 @@ public class HabboEncryption(IOptions<EncryptionOptions> options)
         var sharedKey = _diffieHellman.CalculateSharedKey(BigInteger.Parse(publicKey));
         byte[] result = sharedKey.ToByteArray();
         Array.Reverse(result);
+
         return result;
     }
 }
