@@ -3,7 +3,7 @@ using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
 using Sadie.Networking.Serialization;
 
-namespace Sadie.Networking;
+namespace Sadie.Networking.Codecs;
 
 public class PacketEncoder : MessageToByteEncoder<NetworkPacketWriter>
 {

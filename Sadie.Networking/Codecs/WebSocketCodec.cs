@@ -3,7 +3,7 @@ using DotNetty.Codecs;
 using DotNetty.Codecs.Http.WebSockets;
 using DotNetty.Transport.Channels;
 
-namespace Sadie.Networking;
+namespace Sadie.Networking.Codecs;
 
 public class WebSocketCodec : MessageToMessageCodec<WebSocketFrame, IByteBuffer>
 {
