@@ -1,38 +1,33 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerSanctionStatusWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerSanctionStatus)]
+public class PlayerSanctionStatusWriter : AbstractPacketWriter
 {
-    public PlayerSanctionStatusWriter(
-        bool hasPreviousSanction, 
-        bool onProbation, 
-        string lastSanctionType, 
-        int sanctionTime, 
-        int unknown1,
-        string reason, 
-        DateTime probationStart, 
-        int unknown2,
-        string nextSanctionType, 
-        int hoursForNextSanction,
-        int unknown3,
-        bool muted, 
-        DateTime tradeLockedUntil)
+    public required bool HasPreviousSanction { get; init; }
+    public required bool OnProbation { get; init; }
+    public required string LastSanctionType { get; init; }
+    public required int SanctionTime { get; init; }
+    public required int Unknown1 { get; init; }
+    public required string Reason { get; init; }
+    public required DateTime ProbationStart { get; init; }
+    public required int Unknown2 { get; init; }
+    public required string NextSanctionType { get; init; }
+    public required int HoursForNextSanction { get; init; }
+    public required int Unknown3 { get; init; }
+    public required bool Muted { get; init; }
+    public required DateTime TradeLockedUntil { get; init; }
+
+    public override void OnConfigureRules()
     {
-        WriteShort(ServerPacketId.PlayerSanctionStatus);
-        WriteBool(hasPreviousSanction);
-        WriteBool(onProbation);
-        WriteString(lastSanctionType);
-        WriteInteger(sanctionTime);
-        WriteInteger(unknown1);
-        WriteString(reason);
-        WriteString(probationStart.ToString());
-        WriteInteger(unknown2);
-        WriteString(nextSanctionType);
-        WriteInteger(hoursForNextSanction);
-        WriteInteger(unknown3);
-        WriteBool(muted);
-        WriteString(tradeLockedUntil == DateTime.MinValue ? "" : tradeLockedUntil.ToString());
+        Convert<string>(GetType().GetProperty(nameof(ProbationStart))!, o => ((DateTime)o).ToString());
+        
+        Override(GetType().GetProperty(nameof(TradeLockedUntil))!, writer =>
+        {
+            writer.WriteString(TradeLockedUntil == DateTime.MinValue ? "" : TradeLockedUntil.ToString());
+        });
     }
 }

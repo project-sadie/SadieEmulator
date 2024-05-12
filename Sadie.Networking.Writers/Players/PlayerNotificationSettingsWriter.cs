@@ -1,13 +1,11 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerNotificationSettingsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.NotificationSettings)]
+public class PlayerNotificationSettingsWriter : AbstractPacketWriter
 {
-    public PlayerNotificationSettingsWriter(bool showNotifications)
-    {
-        WriteShort(ServerPacketId.NotificationSettings);
-        WriteBool(showNotifications);
-    }
+    public required bool ShowNotifications { get; init; }
 }

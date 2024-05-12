@@ -29,10 +29,14 @@ public class PlayerFriendListUpdateEventHandler(
                 Take(500).
                 ToList();
             
-            await client.WriteToStreamAsync(new PlayerFriendsListWriter(
-                pages, i, batch, 
-                playerRepository, 
-                player.Relationships));
+            await client.WriteToStreamAsync(new PlayerFriendsListWriter
+            {
+                Pages = pages,
+                Index = i,
+                Friends = batch,
+                PlayerRepository = playerRepository,
+                Relationships = player.Relationships
+            });
         }
     }
 }

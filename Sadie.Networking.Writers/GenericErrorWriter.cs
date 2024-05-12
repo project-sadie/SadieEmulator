@@ -1,14 +1,11 @@
-using Sadie.Shared.Unsorted;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers;
 
-public class GenericErrorWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.GenericError)]
+public class GenericErrorWriter : AbstractPacketWriter
 {
-    public GenericErrorWriter(GenericErrorCode errorCode)
-    {
-        WriteShort(ServerPacketId.GenericError);
-        WriteInteger((int) errorCode);
-    }
+    public required int ErrorCode { get; init; }
 }

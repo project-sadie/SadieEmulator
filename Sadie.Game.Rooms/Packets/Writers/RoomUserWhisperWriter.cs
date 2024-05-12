@@ -1,18 +1,14 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class RoomUserWhisperWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomUserWhisper)]
+public class RoomUserWhisperWriter : AbstractPacketWriter
 {
-    public RoomUserWhisperWriter(int senderId, string message, int emotionId, int bubble)
-    {
-        WriteShort(ServerPacketId.RoomUserWhisper);
-        WriteLong(senderId);
-        WriteString(message);
-        WriteLong(emotionId);
-        WriteLong(bubble);
-        WriteLong(0);
-        WriteLong(message.Length);
-    }
+    public required int SenderId { get; set; }
+    public required string Message { get; set; }
+    public required int EmotionId { get; set; }
+    public required int Bubble { get; set; }
 }

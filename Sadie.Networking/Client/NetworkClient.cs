@@ -5,8 +5,8 @@ using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization;
 using Sadie.Options.Options;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Client;
 
@@ -47,7 +47,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public DateTime LastPing { get; set; }
 
-    public async Task WriteToStreamAsync(NetworkPacketWriter data)
+    public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
         if (_disposed)
         {
@@ -56,7 +56,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         try
         {
-            await _channel.WriteAndFlushAsync(data);
+            await _channel.WriteAndFlushAsync(NetworkPacketSerializer.Serialize(writer));
         }
         catch (Exception e)
         {

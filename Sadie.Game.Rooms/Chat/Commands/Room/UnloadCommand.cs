@@ -12,9 +12,14 @@ public class UnloadCommand(RoomRepository roomRepository) : AbstractRoomChatComm
     {
         var userRepo = user.Room.UserRepository;
         
+        var writer = new PlayerAlertWriter
+        {
+            Message = "This room has been unloaded."
+        };
+        
         foreach (var roomUser in user.Room.UserRepository.GetAll())
         {
-            await roomUser.Player.NetworkObject!.WriteToStreamAsync(new PlayerAlertWriter("This room has been unloaded."));
+            await roomUser.Player.NetworkObject!.WriteToStreamAsync(writer);
             await userRepo.TryRemoveAsync(roomUser.Id, true);
         }
 

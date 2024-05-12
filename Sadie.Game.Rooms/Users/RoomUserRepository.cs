@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -26,7 +26,12 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
 
     public async Task TryRemoveAsync(int id, bool hotelView = false)
     {
-        await BroadcastDataAsync(new RoomUserLeftWriter(id));
+        var writer = new RoomUserLeftWriter
+        {
+            UserId = id.ToString()
+        };
+        
+        await BroadcastDataAsync(writer);
 
         var result = _users.TryRemove(id, out var roomUser);
 
@@ -38,7 +43,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
         
         if (hotelView)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(new PlayerHotelViewWriter());
+            await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelView());
         }
         
         await roomUser.DisposeAsync();
@@ -46,11 +51,11 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     
     public int Count => _users.Count;
     
-    public async Task BroadcastDataAsync(NetworkPacketWriter data)
+    public async Task BroadcastDataAsync(AbstractPacketWriter writer)
     {
         foreach (var roomUser in _users.Values)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(data);
+            await roomUser.NetworkObject.WriteToStreamAsync(writer);
         }
     }
 
@@ -68,8 +73,15 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
             await roomUser.RunPeriodicCheckAsync();
         }
 
-        var statusWriter = new RoomUserStatusWriter(users);
-        var dataWriter = new RoomUserDataWriter(users);
+        var statusWriter = new RoomUserStatusWriter
+        {
+            Users = users
+        };
+        
+        var dataWriter = new RoomUserDataWriter
+        {
+            Users = users
+        };
 
         await BroadcastDataAsync(statusWriter);
         await BroadcastDataAsync(dataWriter);

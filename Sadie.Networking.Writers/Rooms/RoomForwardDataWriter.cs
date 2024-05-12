@@ -1,50 +1,55 @@
 using Sadie.Game.Rooms;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomForwardDataWriter : NetworkPacketWriter
+public class RoomForwardDataWriter : AbstractPacketWriter
 {
-    public RoomForwardDataWriter(RoomLogic room, bool roomForward, bool enterRoom, bool isOwner)
-    {
-        var settings = room.Settings;
-        var chatSettings = room.ChatSettings;
-        
-        WriteShort(ServerPacketId.RoomForwardData);
-        WriteBool(enterRoom);
-        WriteLong(room.Id);
-        WriteString(room.Name);
-        WriteLong(room.OwnerId);
-        WriteString(room.Owner.Username);
-        WriteInteger((int) room.Settings.AccessType);
-        WriteInteger(room.UserRepository.Count);
-        WriteInteger(room.MaxUsersAllowed);
-        WriteString(room.Description);
-        WriteInteger(settings.TradeOption);
-        WriteInteger(2); // unknown
-        WriteInteger(room.PlayerLikes.Count);
-        WriteInteger(0); // category
-        WriteInteger(room.Tags.Count);
+    public required RoomLogic Room { get; init; }
+    public required bool RoomForward { get; init; }
+    public required bool EnterRoom { get; init; }
+    public required bool IsOwner { get; init; }
 
-        foreach (var tag in room.Tags)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        var settings = Room.Settings;
+        var chatSettings = Room.ChatSettings;
+        
+        writer.WriteShort(ServerPacketId.RoomForwardData);
+        writer.WriteBool(EnterRoom);
+        writer.WriteLong(Room.Id);
+        writer.WriteString(Room.Name);
+        writer.WriteLong(Room.OwnerId);
+        writer.WriteString(Room.Owner.Username);
+        writer.WriteInteger((int) Room.Settings.AccessType);
+        writer.WriteInteger(Room.UserRepository.Count);
+        writer.WriteInteger(Room.MaxUsersAllowed);
+        writer.WriteString(Room.Description);
+        writer.WriteInteger(settings.TradeOption);
+        writer.WriteInteger(2); // unknown
+        writer.WriteInteger(Room.PlayerLikes.Count);
+        writer.WriteInteger(0); // category
+        writer.WriteInteger(Room.Tags.Count);
+
+        foreach (var tag in Room.Tags)
         {
-            WriteString(tag.Name);
+            writer.WriteString(tag.Name);
         }
         
-        WriteInteger(0 | 8); // TODO: base
-        WriteBool(roomForward);
-        WriteBool(false); // TODO: staff picked?
-        WriteBool(false); // TODO: is group member?
-        WriteBool(room.IsMuted);
-        WriteInteger(settings.WhoCanMute);
-        WriteInteger(settings.WhoCanKick);
-        WriteInteger(settings.WhoCanBan);
-        WriteBool(isOwner); // mute all button
-        WriteInteger(chatSettings.ChatType); 
-        WriteInteger(chatSettings.ChatWeight); 
-        WriteInteger(chatSettings.ChatSpeed); 
-        WriteInteger(chatSettings.ChatDistance); 
-        WriteInteger(chatSettings.ChatProtection); 
+        writer.WriteInteger(0 | 8); // TODO: base
+        writer.WriteBool(RoomForward);
+        writer.WriteBool(false); // TODO: staff picked?
+        writer.WriteBool(false); // TODO: is group member?
+        writer.WriteBool(Room.IsMuted);
+        writer.WriteInteger(settings.WhoCanMute);
+        writer.WriteInteger(settings.WhoCanKick);
+        writer.WriteInteger(settings.WhoCanBan);
+        writer.WriteBool(IsOwner); // mute all button
+        writer.WriteInteger(chatSettings.ChatType); 
+        writer.WriteInteger(chatSettings.ChatWeight); 
+        writer.WriteInteger(chatSettings.ChatSpeed); 
+        writer.WriteInteger(chatSettings.ChatDistance); 
+        writer.WriteInteger(chatSettings.ChatProtection); 
     }
 }

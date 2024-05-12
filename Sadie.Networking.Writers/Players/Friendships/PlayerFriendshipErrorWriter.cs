@@ -1,15 +1,12 @@
-using Sadie.Shared.Unsorted;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
-public class PlayerFriendshipErrorWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerFriendshipError)]
+public class PlayerFriendshipErrorWriter : AbstractPacketWriter
 {
-    public PlayerFriendshipErrorWriter(int unknown1, PlayerFriendshipError error)
-    {
-        WriteShort(ServerPacketId.PlayerFriendshipError);
-        WriteInteger(unknown1);
-        WriteInteger((int) error);
-    }
+    public required int Unknown1 { get; init; }
+    public required int Error { get; init; }
 }

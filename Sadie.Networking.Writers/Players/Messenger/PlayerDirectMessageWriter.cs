@@ -1,17 +1,20 @@
 using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerDirectMessageWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerMessage)]
+public class PlayerDirectMessageWriter : AbstractPacketWriter
 {
-    public PlayerDirectMessageWriter(PlayerMessage message)
+    public required PlayerMessage Message { get; init; }
+
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.PlayerMessage);
-        WriteInteger(message.OriginPlayerId);
-        WriteString(message.Message);
-        WriteLong(DateTime.Now.ToUnix() - message.CreatedAt.ToUnix());
+        writer.WriteInteger(Message.OriginPlayerId);
+        writer.WriteString(Message.Message);
+        writer.WriteLong(DateTime.Now.ToUnix() - Message.CreatedAt.ToUnix());
     }
 }

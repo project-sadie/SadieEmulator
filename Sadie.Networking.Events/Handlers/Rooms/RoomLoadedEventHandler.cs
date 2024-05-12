@@ -7,7 +7,9 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
@@ -45,7 +47,8 @@ public class RoomLoadedEventHandler(
         if (room == null)
         {
             logger.LogError($"Failed to load room {roomId} for player '{player.Username}'");
-            await client.WriteToStreamAsync(new PlayerHotelViewWriter());
+            await client.WriteToStreamAsync(new RoomUserHotelView());
+            
             return;
         }
 
@@ -53,24 +56,83 @@ public class RoomLoadedEventHandler(
 
         if (room.UserRepository.Count > room.MaxUsersAllowed && !isOwner)
         {
-            await client.WriteToStreamAsync(new RoomEnterErrorWriter(RoomEnterError.NoCapacity));
+            await client.WriteToStreamAsync(new RoomEnterErrorWriter
+            {
+                ErrorCode = (int) RoomEnterError.NoCapacity
+            });
+            
             return;
         }
 
         if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
             !isOwner && 
             !player.HasPermission("enter_guarded_rooms") && 
-            !await NetworkPacketEventHelpers.ValidateRoomAccessForClientAsync(client, room, password))
+            !await ValidateRoomAccessForClientAsync(client, room, password))
         {
             return;
         }
         
-        await NetworkPacketEventHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await RoomHelpersToClean.EnterRoomAsync(client, room, logger, roomUserFactory);
         
         await playerRepository.UpdateMessengerStatusForFriends(
             player.Id,
             player.GetMergedFriendships(), 
             true, 
             true);
+    }
+    
+    public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, RoomLogic room, string password)
+    {
+        var player = client.Player!;
+        
+        switch (room.Settings.AccessType)
+        {
+            case RoomAccessType.Password when password != room.Settings.Password:
+                await client.WriteToStreamAsync(new GenericErrorWriter
+                {
+                    ErrorCode = (int) GenericErrorCode.IncorrectRoomPassword
+                });
+                await client.WriteToStreamAsync(new RoomUserHotelView());
+                return false;
+            
+            case RoomAccessType.Doorbell:
+            {
+                var usersWithRights = room.UserRepository.GetAllWithRights();
+
+                if (usersWithRights.Count < 1)
+                {
+                    await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter
+                    {
+                        Username = player.Username
+                    });
+                    
+                    return false;
+                }
+                
+                foreach (var user in usersWithRights)
+                {
+                    await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter
+                    {
+                        Username = player.Username
+                    });
+                    
+                }
+
+                await client.WriteToStreamAsync(new RoomDoorbellWriter
+                {
+                    Username = ""
+                });
+                
+                return false;
+            }
+            case RoomAccessType.Open:
+                break;
+            case RoomAccessType.Invisible:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        return true;
     }
 }

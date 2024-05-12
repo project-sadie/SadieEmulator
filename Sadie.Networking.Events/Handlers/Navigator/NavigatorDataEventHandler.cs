@@ -70,9 +70,24 @@ public class NavigatorDataEventHandler : INetworkPacketEventHandler
 
         var savedSearches = client.Player.SavedSearches;
         
-        await client.WriteToStreamAsync(new NavigatorMetaDataWriter(metaData));
-        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter([]));
-        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(categories));
-        await client.WriteToStreamAsync(new PlayerSavedSearchesWriter(savedSearches));
+        await client.WriteToStreamAsync(new NavigatorMetaDataWriter
+        {
+            MetaData = metaData
+        });
+        
+        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter
+        {
+            Rooms = []
+        });
+        
+        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter
+        {
+            Categories = categories
+        });
+        
+        await client.WriteToStreamAsync(new PlayerSavedSearchesWriter
+        {
+            Searches = savedSearches
+        });
     }
 }

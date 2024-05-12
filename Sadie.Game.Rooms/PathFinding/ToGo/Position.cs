@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms.PathFinding;
+namespace Sadie.Game.Rooms.PathFinding.ToGo;
 
 /// <summary>
 /// A point in a matrix. P(row, column)

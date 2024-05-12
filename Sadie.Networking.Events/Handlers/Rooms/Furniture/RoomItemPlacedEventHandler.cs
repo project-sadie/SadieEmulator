@@ -135,25 +135,29 @@ public class RoomItemPlacedEventHandler(
         
         await dbContext.SaveChangesAsync();
 
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));
-        
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter(
-            roomFurnitureItem.Id,
-            roomFurnitureItem.FurnitureItem.AssetId,
-            roomFurnitureItem.PositionX,
-            roomFurnitureItem.PositionY,
-            roomFurnitureItem.PositionZ,
-            (int) roomFurnitureItem.Direction,
-            roomFurnitureItem.FurnitureItem.StackHeight,
-            1,
-            (int) ObjectDataKey.MapKey,
-            new Dictionary<string, string>(),
-            roomFurnitureItem.FurnitureItem.InteractionType,
-            roomFurnitureItem.MetaData,
-            roomFurnitureItem.FurnitureItem.InteractionModes,
-            -1,
-            roomFurnitureItem.OwnerId,
-            roomFurnitureItem.OwnerUsername));
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
+        {
+            ItemId = itemId
+        });
+
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
+        {
+            Id = roomFurnitureItem.Id,
+            AssetId = roomFurnitureItem.FurnitureItem.AssetId,
+            PositionX = roomFurnitureItem.PositionX,
+            PositionY = roomFurnitureItem.PositionY,
+            Direction = (int)roomFurnitureItem.Direction,
+            PositionZ = roomFurnitureItem.PositionZ,
+            StackHeight = 0,
+            Extra = 1,
+            ObjectDataKey = (int)ObjectDataKey.MapKey,
+            ObjectData = new Dictionary<string, string>(),
+            MetaData = roomFurnitureItem.MetaData,
+            Expires = -1,
+            InteractionModes = 0,
+            OwnerId = roomFurnitureItem.OwnerId,
+            OwnerUsername = roomFurnitureItem.OwnerUsername
+        });
     }
 
     private async Task OnWallItemAsync(
@@ -187,9 +191,15 @@ public class RoomItemPlacedEventHandler(
         room.FurnitureItems.Add(roomFurnitureItem);
         player.FurnitureItems.Remove(playerItem);
         
-        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter(itemId));
-        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter(roomFurnitureItem)
-            );
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
+        {
+            ItemId = itemId
+        });
+        
+        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
+        {
+            RoomFurnitureItem = roomFurnitureItem
+        });
     }
 }
     

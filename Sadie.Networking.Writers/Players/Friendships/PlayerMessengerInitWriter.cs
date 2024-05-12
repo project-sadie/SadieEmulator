@@ -1,16 +1,14 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
-public class PlayerMessengerInitWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerMessengerInit)]
+public class PlayerMessengerInitWriter : AbstractPacketWriter
 {
-    public PlayerMessengerInitWriter(int maxFriends, int unknown1, int maxFriendsHc, int unknown2)
-    {
-        WriteShort(ServerPacketId.PlayerMessengerInit);
-        WriteInteger(maxFriends);
-        WriteInteger(unknown1);
-        WriteInteger(maxFriendsHc);
-        WriteInteger(unknown2);
-    }
+    public required int MaxFriends { get; init; }
+    public required int Unknown1 { get; init; }
+    public required int MaxFriendsHc { get; init; }
+    public required int Unknown2 { get; init; }
 }

@@ -10,6 +10,12 @@ public class IdleCommand : AbstractRoomChatCommand
     
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
-        await user.Room.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter(user.Id, true));
+        var writer = new RoomUserIdleWriter
+        {
+            UserId = user.Id,
+            IsIdle = true
+        };
+        
+        await user.Room.UserRepository.BroadcastDataAsync(writer);
     }
 }

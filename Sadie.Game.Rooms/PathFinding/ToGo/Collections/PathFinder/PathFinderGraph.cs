@@ -1,7 +1,7 @@
-using Sadie.Game.Rooms.PathFinding.Collections.MultiDimensional;
-using Sadie.Game.Rooms.PathFinding.Collections.PriorityQueue;
+using Sadie.Game.Rooms.PathFinding.ToGo.Collections.MultiDimensional;
+using Sadie.Game.Rooms.PathFinding.ToGo.Collections.PriorityQueue;
 
-namespace Sadie.Game.Rooms.PathFinding.Collections.PathFinder;
+namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.PathFinder;
 
 internal class PathFinderGraph : IModelAGraph<PathFinderNode>
 {

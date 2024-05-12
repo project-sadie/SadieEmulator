@@ -53,11 +53,13 @@ public class RoomUserWhisperEventHandler(
             CreatedAt = DateTime.Now
         };
 
-        var packetBytes = new RoomUserWhisperWriter(
-            chatMessage.PlayerId,
-            chatMessage.Message,
-            chatMessage.EmotionId,
-            (int) chatMessage.ChatBubbleId);
+        var packetBytes = new RoomUserWhisperWriter
+        {
+            SenderId = chatMessage.PlayerId,
+            Message = chatMessage.Message,
+            EmotionId = chatMessage.EmotionId,
+            Bubble = (int)chatMessage.ChatBubbleId
+        };
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);

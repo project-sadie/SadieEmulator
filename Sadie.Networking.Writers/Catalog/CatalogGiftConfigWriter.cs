@@ -1,18 +1,19 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogGiftConfigWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.CatalogGiftConfig)]
+public class CatalogGiftConfigWriter : AbstractPacketWriter
 {
-    public CatalogGiftConfigWriter()
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.CatalogGiftConfig);
-        WriteBool(true);
-        WriteInteger(3); // special price?
-        WriteInteger(0); // giftWrappers count
-        WriteInteger(0); // BOX_TYPES count
-        WriteInteger(0); // RIBBON_TYPES count
-        WriteInteger(0); // giftFurnis count
+        writer.WriteBool(true);
+        writer.WriteInteger(3); // special price?
+        writer.WriteInteger(0); // giftWrappers count
+        writer.WriteInteger(0); // BOX_TYPES count
+        writer.WriteInteger(0); // RIBBON_TYPES count
+        writer.WriteInteger(0); // giftFurnis count
     }
 }

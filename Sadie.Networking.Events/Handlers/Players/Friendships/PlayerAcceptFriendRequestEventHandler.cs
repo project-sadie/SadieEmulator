@@ -63,21 +63,23 @@ public class PlayerAcceptFriendRequestEventHandler(
                         .FirstOrDefault(x =>
                             x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 
-                var updateFriendWriter = new PlayerUpdateFriendWriter(
-                    0, 
-                    1, 
-                    0, 
-                    targetRequest, 
-                    isOnline, 
-                    inRoom, 
-                    0,
-                    "", 
-                    "", 
-                    false, 
-                    false, 
-                    false,
-                    relationship?.TypeId ?? PlayerRelationshipType.None);
-                
+                var updateFriendWriter = new PlayerUpdateFriendWriter
+                {
+                    Unknown1 = 0,
+                    Unknown2 = 1,
+                    Unknown3 = 0,
+                    Friendship = targetRequest,
+                    IsOnline = isOnline,
+                    CanFollow = inRoom,
+                    CategoryId = 0,
+                    RealName = "",
+                    LastAccess = "",
+                    PersistedMessageUser = false,
+                    VipMember = false,
+                    PocketUser = false,
+                    RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
+                };
+
                 await origin.NetworkObject.WriteToStreamAsync(updateFriendWriter);    
             }
         }
@@ -100,20 +102,22 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .Relationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
         
-        var updateFriendWriter2 = new PlayerUpdateFriendWriter(
-                0, 
-                1, 
-                0, 
-                request, 
-                targetOnline,
-                targetInRoom, 
-                0, 
-                "", 
-                "", 
-                false, 
-                false,
-                false,
-                targetRelationship?.TypeId ?? PlayerRelationshipType.None);
+        var updateFriendWriter2 = new PlayerUpdateFriendWriter
+        {
+            Unknown1 = 0,
+            Unknown2 = 1,
+            Unknown3 = 0,
+            Friendship = request,
+            IsOnline = targetOnline,
+            CanFollow = targetInRoom,
+            CategoryId = 0,
+            RealName = "",
+            LastAccess = "",
+            PersistedMessageUser = false,
+            VipMember = false,
+            PocketUser = false,
+            RelationshipType = (int)(targetRelationship?.TypeId ?? PlayerRelationshipType.None)
+        };
         
         await client.WriteToStreamAsync(updateFriendWriter2);
     }

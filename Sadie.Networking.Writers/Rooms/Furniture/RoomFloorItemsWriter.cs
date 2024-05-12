@@ -1,67 +1,67 @@
 using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
-public class RoomFloorItemsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomFloorItems)]
+public class RoomFloorItemsWriter : AbstractPacketWriter
 {
-    public RoomFloorItemsWriter(
-        ICollection<RoomFurnitureItem> floorItems, 
-        Dictionary<int, string> furnitureOwners)
-    {
-        
-        WriteShort(ServerPacketId.RoomFloorItems);
-        
-        WriteInteger(furnitureOwners.Count);
+    public required ICollection<RoomFurnitureItem> FloorItems { get; init; }
+    public required Dictionary<int, string> FurnitureOwners { get; init; }
 
-        foreach (var owner in furnitureOwners)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(FurnitureOwners.Count);
+
+        foreach (var owner in FurnitureOwners)
         {
-           WriteLong(owner.Key);
-           WriteString(owner.Value);
+           writer.WriteLong(owner.Key);
+           writer.WriteString(owner.Value);
         }
         
-        WriteInteger(floorItems.Count);
+        writer.WriteInteger(FloorItems.Count);
 
-        foreach (var item in floorItems)
+        foreach (var item in FloorItems)
         {
-            WriteItem(item);
+            WriteItem(item, writer);
         }
     }
 
-    private void WriteItem(RoomFurnitureItem item)
+    private void WriteItem(RoomFurnitureItem item, NetworkPacketWriter writer)
     {
         var height = -1; // TODO: height
         var extra = 1;
             
-        WriteLong(item.Id);
-        WriteInteger(item.FurnitureItem.AssetId);
-        WriteInteger(item.PositionX);
-        WriteInteger(item.PositionY);
-        WriteInteger((int) item.Direction);
-        WriteString($"{item.PositionZ.ToString():0.00}");
-        WriteString(height.ToString());
-        WriteInteger(extra);
+        writer.WriteLong(item.Id);
+        writer.WriteInteger(item.FurnitureItem.AssetId);
+        writer.WriteInteger(item.PositionX);
+        writer.WriteInteger(item.PositionY);
+        writer.WriteInteger((int) item.Direction);
+        writer.WriteString($"{item.PositionZ.ToString():0.00}");
+        writer.WriteString(height.ToString());
+        writer.WriteInteger(extra);
         
         var objectData = new Dictionary<string, string>();
             
         switch (item.FurnitureItem.InteractionType)
         {
             default:
-                WriteInteger((int) ObjectDataKey.MapKey); 
-                WriteInteger(objectData.Count);
+                writer.WriteInteger((int) ObjectDataKey.MapKey); 
+                writer.WriteInteger(objectData.Count);
 
                 foreach (var dataPair in objectData)
                 {
-                    WriteString(dataPair.Key);
-                    WriteString(dataPair.Value);
+                    writer.WriteString(dataPair.Key);
+                    writer.WriteString(dataPair.Value);
                 }
                 break;
         }
         
-        WriteInteger(-1);
-        WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0); 
-        WriteLong(item.OwnerId);
+        writer.WriteInteger(-1);
+        writer.WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0); 
+        writer.WriteLong(item.OwnerId);
     }
 }

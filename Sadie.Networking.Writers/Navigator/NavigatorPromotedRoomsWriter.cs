@@ -1,26 +1,27 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Navigator;
 
-public class NavigatorPromotedRoomsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.NavigatorPromotedRooms)]
+public class NavigatorPromotedRoomsWriter : AbstractPacketWriter
 {
-    public NavigatorPromotedRoomsWriter()
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.NavigatorPromotedRooms);
-        WriteInteger(2);
-        WriteString("");
-        WriteInteger(0);
-        WriteBool(true);
-        WriteInteger(0);
-        WriteString("A");
-        WriteString("B");
-        WriteInteger(1);
-        WriteString("C");
-        WriteString("D");
-        WriteInteger(1);
-        WriteInteger(1);
-        WriteInteger(1);
-        WriteString("E");
+        writer.WriteInteger(2);
+        writer.WriteString("");
+        writer.WriteInteger(0);
+        writer.WriteBool(true);
+        writer.WriteInteger(0);
+        writer.WriteString("A");
+        writer.WriteString("B");
+        writer.WriteInteger(1);
+        writer.WriteString("C");
+        writer.WriteString("D");
+        writer.WriteInteger(1);
+        writer.WriteInteger(1);
+        writer.WriteInteger(1);
+        writer.WriteString("E");
     }
 }

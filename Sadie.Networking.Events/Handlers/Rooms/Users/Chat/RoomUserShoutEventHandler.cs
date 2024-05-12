@@ -22,7 +22,7 @@ public class RoomUserShoutEventHandler(
     {
         parser.Parse(reader);
 
-        await NetworkPacketEventHelpers.ProcessChatMessageAsync(client,
+        await NetworkPacketEventHelpers.OnChatMessageAsync(client,
             parser,
             true,
             roomConstants,

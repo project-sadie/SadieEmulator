@@ -1,13 +1,11 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomSettingsUpdatedWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomSettingsUpdated)]
+public class RoomSettingsUpdatedWriter : AbstractPacketWriter
 {
-    public RoomSettingsUpdatedWriter(long roomId)
-    {
-        WriteShort(ServerPacketId.RoomSettingsUpdated);
-        WriteLong(roomId);
-    }
+    public required long RoomId { get; init; }
 }

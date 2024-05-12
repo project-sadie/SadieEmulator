@@ -1,13 +1,11 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Inventory;
 
-public class PlayerInventoryRemoveItemWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerInventoryRemoveItem)]
+public class PlayerInventoryRemoveItemWriter : AbstractPacketWriter
 {
-    public PlayerInventoryRemoveItemWriter(long itemId)
-    {
-        WriteShort(ServerPacketId.PlayerInventoryRemoveItem);
-        WriteLong(itemId);
-    }
+    public required long ItemId { get; init; }
 }

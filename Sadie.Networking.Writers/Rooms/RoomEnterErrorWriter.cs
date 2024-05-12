@@ -1,15 +1,19 @@
-using Sadie.Game.Rooms.Enums;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomEnterErrorWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomEnterError)]
+public class RoomEnterErrorWriter : AbstractPacketWriter
 {
-    public RoomEnterErrorWriter(RoomEnterError errorCode)
+    public required int ErrorCode { get; init; }
+
+    public override void OnConfigureRules()
     {
-        WriteShort(ServerPacketId.RoomEnterError);
-        WriteInteger((int) errorCode);
-        WriteString("");
+        After(GetType().GetProperty(nameof(ErrorCode))!, writer =>
+        {
+            writer.WriteString("");
+        });
     }
 }

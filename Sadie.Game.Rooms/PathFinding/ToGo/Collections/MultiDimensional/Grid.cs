@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace Sadie.Game.Rooms.PathFinding.Collections.MultiDimensional;
+namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.MultiDimensional;
 
 public class Grid<T> : IModelAGrid<T>
 {

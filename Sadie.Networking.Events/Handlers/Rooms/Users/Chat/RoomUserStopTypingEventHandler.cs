@@ -11,13 +11,19 @@ public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INe
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        var roomUser = client.RoomUser;
+        
+        if (roomUser == null)
         {
             return;
         }
 
         roomUser.UpdateLastAction();
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter(roomUser.Id, false));
+        await roomUser.Room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
+        {
+            UserId = roomUser.Id,
+            IsTyping = false
+        });
     }
 }

@@ -1,31 +1,33 @@
 using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Inventory;
 
-public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerInventoryFurnitureItems)]
+public class PlayerInventoryFurnitureItemsWriter : AbstractPacketWriter
 {
-    public PlayerInventoryFurnitureItemsWriter(
-        int pages, 
-        int currentPage, 
-        List<PlayerFurnitureItem> items)
-    {
-        WriteShort(ServerPacketId.PlayerInventoryFurnitureItems);
-        
-        WriteInteger(pages);
-        WriteInteger(currentPage);
-        WriteInteger(items.Count);
+    public required int Pages { get; init; }
+    public required int CurrentPage { get; init; }
+    public required List<PlayerFurnitureItem> Items { get; init; }
 
-        foreach (var item in items)
+    public override void OnConfigureRules()
+    {
+        Override(GetType().GetProperty(nameof(Items))!, writer =>
         {
-            WriteItem(item);
-        }
+            writer.WriteInteger(Items.Count);
+
+            foreach (var item in Items)
+            {
+                WriteItem(item, writer);
+            }
+        });
     }
-    
-    private void WriteItem(PlayerFurnitureItem item)
+
+    private static void WriteItem(PlayerFurnitureItem item, NetworkPacketWriter writer)
     {
         var furnitureItem = item.FurnitureItem;
         var hasRentPeriodStarted = false;
@@ -33,49 +35,49 @@ public class PlayerInventoryFurnitureItemsWriter : NetworkPacketWriter
         var extra = 1;
         var expiresInSeconds = -1;
         
-        WriteLong(item.Id);
-        WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type).ToUpper());
-        WriteLong(item.Id);
-        WriteInteger(furnitureItem.AssetId);
+        writer.WriteLong(item.Id);
+        writer.WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type).ToUpper());
+        writer.WriteLong(item.Id);
+        writer.WriteInteger(furnitureItem.AssetId);
         
         switch (furnitureItem.AssetName)
         {
             case "floor":
-                WriteInteger(3);
-                WriteInteger(0);
-                WriteString(item.MetaData);
+                writer.WriteInteger(3);
+                writer.WriteInteger(0);
+                writer.WriteString(item.MetaData);
                 break;
             case "wallpaper":
-                WriteInteger(2);
-                WriteInteger(0);
-                WriteString(item.MetaData);
+                writer.WriteInteger(2);
+                writer. WriteInteger(0);
+                writer. WriteString(item.MetaData);
                 break;
             case "landscape":
-                WriteInteger(4);
-                WriteInteger(0);
-                WriteString(item.MetaData);
+                writer.WriteInteger(4);
+                writer.WriteInteger(0);
+                writer.WriteString(item.MetaData);
                 break;
             default:
-                WriteInteger(1);
-                WriteInteger(1);
-                WriteInteger(0);
+                writer.WriteInteger(1);
+                writer.WriteInteger(1);
+                writer.WriteInteger(0);
                 break;
         }
         
-        WriteBool(furnitureItem.CanRecycle);
-        WriteBool(furnitureItem.CanTrade);
-        WriteBool(furnitureItem.CanInventoryStack);
-        WriteBool(furnitureItem.CanMarketplaceSell);
-        WriteInteger(expiresInSeconds);
-        WriteBool(hasRentPeriodStarted);
-        WriteInteger(-1);
+        writer.WriteBool(furnitureItem.CanRecycle);
+        writer.WriteBool(furnitureItem.CanTrade);
+        writer.WriteBool(furnitureItem.CanInventoryStack);
+        writer.WriteBool(furnitureItem.CanMarketplaceSell);
+        writer.WriteInteger(expiresInSeconds);
+        writer.WriteBool(hasRentPeriodStarted);
+        writer.WriteInteger(-1);
 
         if (furnitureItem.Type != FurnitureItemType.Floor)
         {
             return;
         }
         
-        WriteString(slotId);
-        WriteInteger(extra);
+        writer.WriteString(slotId);
+        writer.WriteInteger(extra);
     }
 }

@@ -1,13 +1,11 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Handshake;
 
-public class UniqueIdWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.UniqueId)]
+public class UniqueIdWriter : AbstractPacketWriter
 {
-    public UniqueIdWriter(string machineId)
-    {
-        WriteShort(ServerPacketId.UniqueId);
-        WriteString(machineId);
-    }
+    public required string MachineId { get; set; }
 }

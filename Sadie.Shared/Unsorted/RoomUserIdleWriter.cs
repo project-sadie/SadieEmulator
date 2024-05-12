@@ -1,14 +1,12 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Shared.Unsorted;
 
-public class RoomUserIdleWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomUserIdle)]
+public class RoomUserIdleWriter : AbstractPacketWriter
 {
-    public RoomUserIdleWriter(int userId, bool isIdle)
-    {
-        WriteShort(ServerPacketId.RoomUserIdle);
-        WriteInteger(userId);
-        WriteBool(isIdle);
-    }
+    public required int UserId { get; set; }
+    public required bool IsIdle { get; set; }
 }

@@ -1,17 +1,18 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogDiscountWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.CatalogDiscount)]
+public class CatalogDiscountWriter : AbstractPacketWriter
 {
-    public CatalogDiscountWriter()
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.CatalogDiscount);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0);
-        WriteInteger(0); // TODO: actual structure
-    }   
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0); // TODO: actual structure
+    }
 }

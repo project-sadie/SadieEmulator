@@ -1,84 +1,86 @@
 using Sadie.Database.Models.Furniture;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogPurchaseOkWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.CatalogPurchaseOk)]
+public class CatalogPurchaseOkWriter : AbstractPacketWriter
 {
-    public CatalogPurchaseOkWriter(
-        int id,
-        string name,
-        bool rented,
-        int costCredits,
-        int costPoints,
-        int costPointsType,
-        bool canGift,
-        int amount,
-        int clubLevel,
-        bool canPurchaseBundles,
-        string metadata,
-        bool isLimited,
-        int limitedItemSeriesSize,
-        int amountLeft,
-        ICollection<FurnitureItem> furnitureItems)
-    {
-        WriteShort(ServerPacketId.CatalogPurchaseOk);
-        WriteInteger(id);
-        WriteString(name);
-        WriteBool(rented);
-        WriteInteger(costCredits);
-        WriteInteger(costPoints);
-        WriteInteger(costPointsType);
-        WriteBool(canGift);
-        WriteInteger(furnitureItems.Count);
+    public required int Id { get; init; }
+    public required string Name { get; init; }
+    public required bool Rented { get; init; }
+    public required int CostCredits { get; init; }
+    public required int CostPoints { get; init; }
+    public required int CostPointsType { get; init; }
+    public required bool CanGift { get; init; }
+    public required ICollection<FurnitureItem> FurnitureItems { get; init; }
+    public required int Amount { get; init; }
+    public required int ClubLevel { get; init; }
+    public required bool CanPurchaseBundles { get; init; }
+    public required string Metadata { get; init; }
+    public required bool IsLimited { get; init; }
+    public required int LimitedItemSeriesSize { get; init; }
+    public required int AmountLeft { get; init; }
 
-        foreach (var furnitureItem in furnitureItems)
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(Id);
+        writer.WriteString(Name);
+        writer.WriteBool(Rented);
+        writer.WriteInteger(CostCredits);
+        writer.WriteInteger(CostPoints);
+        writer.WriteInteger(CostPointsType);
+        writer.WriteBool(CanGift);
+        writer.WriteInteger(FurnitureItems.Count);
+
+        foreach (var furnitureItem in FurnitureItems)
         {
-            WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
+            writer.WriteString(EnumHelpers.GetEnumDescription(furnitureItem.Type));
 
             if (furnitureItem.Type == FurnitureItemType.Badge)
             {
-                WriteString(furnitureItem.Name);
+                writer.WriteString(furnitureItem.Name);
             }
             else
             {
-                WriteInteger(furnitureItem.AssetId);
+                writer.WriteInteger(furnitureItem.AssetId);
 
-                if (name.Contains("wallpaper_single") || name.Contains("floor_single") || name.Contains("landscape_single"))
+                if (Name.Contains("wallpaper_single") || Name.Contains("floor_single") || Name.Contains("landscape_single"))
                 {
-                    WriteString(name.Split("_")[2]);
+                    writer.WriteString(Name.Split("_")[2]);
                 }
-                else if (name.Contains("bot") && furnitureItem.Type == FurnitureItemType.Bot)
+                else if (Name.Contains("bot") && furnitureItem.Type == FurnitureItemType.Bot)
                 {
-                    var look = metadata.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
-                    WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : metadata);
+                    var look = Metadata.Split(";").FirstOrDefault(x => x.StartsWith("figure:"));
+                    writer.WriteString(!string.IsNullOrEmpty(look) ? look.Replace("figure:", "") : Metadata);
                 }
-                else if (furnitureItem.Type == FurnitureItemType.Bot || name.ToLower() == "poster" || name.StartsWith("SONG "))
+                else if (furnitureItem.Type == FurnitureItemType.Bot || Name.ToLower() == "poster" || Name.StartsWith("SONG "))
                 {
-                    WriteString(metadata);
+                    writer.WriteString(Metadata);
                 }
                 else
                 {
-                    WriteString("");
+                    writer.WriteString("");
                 }
                 
-                WriteInteger(amount);
-                WriteBool(isLimited);
+                writer.WriteInteger(Amount);
+                writer.WriteBool(IsLimited);
 
-                if (!isLimited)
+                if (!IsLimited)
                 {
                     continue;
                 }
                 
-                WriteInteger(limitedItemSeriesSize);
-                WriteInteger(amountLeft);
+                writer.WriteInteger(LimitedItemSeriesSize);
+                writer.WriteInteger(AmountLeft);
             }
         }
 
-        WriteInteger(clubLevel);
-        WriteBool(canPurchaseBundles);
+        writer.WriteInteger(ClubLevel);
+        writer.WriteBool(CanPurchaseBundles);
     }
 }

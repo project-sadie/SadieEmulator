@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms.PathFinding.Collections.PathFinder;
+namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.PathFinder;
 
 internal class ComparePathFinderNodeByFValue : IComparer<PathFinderNode>
 {

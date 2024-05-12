@@ -1,13 +1,11 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerPongWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerPong)]
+public class PlayerPongWriter : AbstractPacketWriter
 {
-    public PlayerPongWriter(int id)
-    {
-        WriteShort(ServerPacketId.PlayerPong);
-        WriteInteger(id);
-    }
+    public required int Id { get; init; }
 }

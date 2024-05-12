@@ -1,32 +1,30 @@
 using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Generic;
 
-public class PlayerRelationshipsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerRelationships)]
+public class PlayerRelationshipsWriter : AbstractPacketWriter
 {
-    public PlayerRelationshipsWriter(long playerId, ICollection<PlayerRelationship> relationships, ICollection<PlayerFriendship> friendships)
+    public required long PlayerId { get; init; }
+    public required ICollection<PlayerRelationship> Relationships { get; init; }
+
+    public override void OnConfigureRules()
     {
-        WriteShort(ServerPacketId.PlayerRelationships);
-        WriteLong(playerId);
-        WriteInteger(relationships.Count);
-
-        foreach (var relationship in relationships)
+        Override(GetType().GetProperty(nameof(Relationships))!, writer =>
         {
-            var friend = friendships
-                .FirstOrDefault(x => x.OriginPlayerId == relationship.TargetPlayerId || x.TargetPlayerId == relationship.TargetPlayerId);
+            writer.WriteInteger(Relationships.Count);
 
-            if (friend == null)
+            foreach (var relationship in Relationships)
             {
-                continue;
+                writer.WriteInteger((int) relationship.TypeId);
+                writer.WriteInteger(Relationships.Count(x => x.TypeId == relationship.TypeId));
+                writer.WriteLong(relationship.TargetPlayerId);
+                writer.WriteString(relationship.TargetPlayer.Username);
+                writer.WriteString(relationship.TargetPlayer.AvatarData.FigureCode);
             }
-            
-            WriteInteger((int) relationship.TypeId);
-            WriteInteger(relationships.Count(x => x.TypeId == relationship.TypeId));
-            WriteLong(relationship.TargetPlayerId);
-            WriteString(friend.TargetPlayer.Username);
-            WriteString(friend.TargetPlayer.AvatarData.FigureCode);
-        }
+        });
     }
 }

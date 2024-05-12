@@ -1,22 +1,28 @@
 ﻿using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
-public class PlayerFriendRequestsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerFriendRequests)]
+public class PlayerFriendRequestsWriter : AbstractPacketWriter
 {
-    public PlayerFriendRequestsWriter(List<Player> requests)
+    public required List<Player> Requests { get; init; }
+    
+    public override void OnConfigureRules()
     {
-        WriteShort(ServerPacketId.PlayerFriendRequests);
-        WriteInteger(requests.Count);
-        WriteInteger(requests.Count);
-
-        foreach (var request in requests)
+        Override(GetType().GetProperty(nameof(Requests))!, writer =>
         {
-            WriteLong(request.Id);
-            WriteString(request.Username);
-            WriteString(request.AvatarData.FigureCode);
-        }
+            writer.WriteInteger(Requests.Count);
+            writer.WriteInteger(Requests.Count);
+
+            foreach (var request in Requests)
+            {
+                writer.WriteLong(request.Id);
+                writer.WriteString(request.Username);
+                writer.WriteString(request.AvatarData.FigureCode);
+            }
+        });
     }
 }

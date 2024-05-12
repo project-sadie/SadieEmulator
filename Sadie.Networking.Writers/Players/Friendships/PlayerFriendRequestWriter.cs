@@ -1,15 +1,13 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
-public class PlayerFriendRequestWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerFriendRequest)]
+public class PlayerFriendRequestWriter : AbstractPacketWriter
 {
-    public PlayerFriendRequestWriter(int id, string username, string figureCode)
-    {
-        WriteShort(ServerPacketId.PlayerFriendRequest);
-        WriteInteger(id);
-        WriteString(username);
-        WriteString(figureCode);
-    }
+    public required int Id { get; set; }
+    public required string Username { get; set; }
+    public required string FigureCode { get; set; }
 }

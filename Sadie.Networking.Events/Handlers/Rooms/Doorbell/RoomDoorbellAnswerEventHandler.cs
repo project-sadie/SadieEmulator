@@ -27,7 +27,7 @@ public class RoomDoorbellAnswerEventHandler(
         }
 
         await player.NetworkObject.WriteToStreamAsync(eventParser.Accept
-            ? new RoomDoorbellAcceptWriter(username)
-            : new RoomDoorbellNoAnswerWriter(username));
+            ? new RoomDoorbellAcceptWriter { Username = username }
+            : new RoomDoorbellNoAnswerWriter { Username = username });
     }
 }

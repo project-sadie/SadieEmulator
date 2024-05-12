@@ -1,13 +1,11 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerIgnoredUsersWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerIgnoredUsers)]
+public class PlayerIgnoredUsersWriter : AbstractPacketWriter
 {
-    public PlayerIgnoredUsersWriter()
-    {
-        WriteShort(ServerPacketId.PlayerIgnoredUsers);
-        WriteInteger(0);
-    }
+    public required List<string> IgnoredUsernames { get; init; }
 }

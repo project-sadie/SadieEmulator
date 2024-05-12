@@ -10,10 +10,12 @@ public class HotelViewBonusRareEventHandler : INetworkPacketEventHandler
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        await client.WriteToStreamAsync(new HotelViewBonusRareWriter(
-            "", 
-            -1, 
-            -1, 
-            -1));
+        await client.WriteToStreamAsync(new HotelViewBonusRareWriter
+        {
+            Name = "",
+            Id = -1,
+            Coins = -1,
+            CoinsRequiredToBuy = -1
+        });
     }
 }

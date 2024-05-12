@@ -1,14 +1,12 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Rooms;
 
-public class RoomScoreWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomScore)]
+public class RoomScoreWriter : AbstractPacketWriter
 {
-    public RoomScoreWriter(int score, bool canUpvote)
-    {
-        WriteShort(ServerPacketId.RoomScore);
-        WriteInteger(score);
-        WriteBool(canUpvote);
-    }
+    public required int Score { get; init; }
+    public required bool CanUpvote { get; init; }
 }

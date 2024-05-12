@@ -1,15 +1,15 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Networking.Writers.Players;
 
-public class PlayerAchievementsWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerAchievements)]
+public class PlayerAchievementsWriter : AbstractPacketWriter
 {
-    public PlayerAchievementsWriter()
+    public override void OnSerialize(NetworkPacketWriter writer)
     {
-        WriteShort(ServerPacketId.PlayerAchievements);
-        WriteInteger(0);
-        // TODO: foreach
-        WriteString("");
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
     }
 }

@@ -1,12 +1,10 @@
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Players.Packets;
 
-public class PlayerInventoryRefreshWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.PlayerInventoryRefresh)]
+public class PlayerInventoryRefreshWriter : AbstractPacketWriter
 {
-    public PlayerInventoryRefreshWriter()
-    {
-        WriteShort(ServerPacketId.PlayerInventoryRefresh);
-    }
 }

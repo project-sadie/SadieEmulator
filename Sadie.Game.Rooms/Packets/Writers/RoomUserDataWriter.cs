@@ -1,36 +1,42 @@
 ﻿using Sadie.Game.Rooms.Users;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-public class RoomUserDataWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.RoomUserData)]
+public class RoomUserDataWriter : AbstractPacketWriter
 {
-    public RoomUserDataWriter(ICollection<IRoomUser> users)
-    {
-        WriteShort(ServerPacketId.RoomUserData);
-        WriteInteger(users.Count);
+    public required ICollection<IRoomUser> Users { get; init; }
 
-        foreach (var user in users)
+    public override void OnConfigureRules()
+    {
+        Override(GetType().GetProperty(nameof(Users))!, writer =>
         {
-            WriteInteger(user.Id);
-            WriteString(user.Player.Username);
-            WriteString(user.Player.AvatarData.Motto);
-            WriteString(user.Player.AvatarData.FigureCode);
-            WriteInteger(user.Id);
-            WriteInteger(user.Point.X);
-            WriteInteger(user.Point.Y);
-            WriteString(user.PointZ + "");
-            WriteInteger((int) user.Direction);
-            WriteInteger(1); // type, 1 = user, 2 = pet, 3 = bot, 4 = rent bot
-            WriteString(user.Player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
-            WriteInteger(-1); // group id
-            WriteInteger(-1); // group status
-            WriteString(""); // group name
-            WriteString(""); // swim figure
-            WriteInteger(user.Player.Data.AchievementScore);
-            WriteBool(true); // is moderator
-        }
+            writer.WriteInteger(Users.Count);
+
+            foreach (var user in Users)
+            {
+                writer.WriteInteger(user.Id);
+                writer.WriteString(user.Player.Username);
+                writer.WriteString(user.Player.AvatarData.Motto);
+                writer.WriteString(user.Player.AvatarData.FigureCode);
+                writer.WriteInteger(user.Id);
+                writer.WriteInteger(user.Point.X);
+                writer.WriteInteger(user.Point.Y);
+                writer.WriteString(user.PointZ + "");
+                writer.WriteInteger((int) user.Direction);
+                writer.WriteInteger(1); // type, 1 = user, 2 = pet, 3 = bot, 4 = rent bot
+                writer.WriteString(user.Player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
+                writer.WriteInteger(-1); // group id
+                writer.WriteInteger(-1); // group status
+                writer.WriteString(""); // group name
+                writer.WriteString(""); // swim figure
+                writer.WriteInteger(user.Player.Data.AchievementScore);
+                writer.WriteBool(true); // is moderator
+            }
+        });
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Sadie.Game.Rooms.PathFinding.Collections.PathFinder;
+namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.PathFinder;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 internal readonly struct PathFinderNode(Position position, int g, int h, Position parentNodePosition)

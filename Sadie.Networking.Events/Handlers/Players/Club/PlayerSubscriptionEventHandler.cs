@@ -25,18 +25,20 @@ public class PlayerSubscriptionEventHandler(PlayerSubscriptionEventParser eventP
         var minutesLeft = (int) tillExpire.TotalMinutes;
         var lastMod = client.Player.State.LastSubscriptionModification;
             
-        await client.WriteToStreamAsync(new PlayerSubscriptionWriter(
-            playerSub.Subscription.Name,
-            daysLeft,
-            1, 
-            2, 
-            0, 
-            true, 
-            true, 
-            0, 
-            0, 
-            minutesLeft,
-            (int)(DateTime.Now - lastMod).TotalMinutes));
+        await client.WriteToStreamAsync(new PlayerSubscriptionWriter
+        {
+            Name = playerSub.Subscription.Name,
+            DaysLeft = daysLeft,
+            MemberPeriods = 1,
+            PeriodsSubscribedAhead = 2,
+            ResponseType = 0,
+            HasEverBeenMember = true,
+            IsVip = true,
+            PastClubDays = 0,
+            PastVipDays = 0,
+            MinutesTillExpire = minutesLeft,
+            MinutesSinceModified = (int)(DateTime.Now - lastMod).TotalMinutes
+        });
 
         client.Player.State.LastSubscriptionModification = DateTime.Now;
     }

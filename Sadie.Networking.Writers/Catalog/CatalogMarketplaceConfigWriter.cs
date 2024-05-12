@@ -1,28 +1,18 @@
-﻿using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+﻿using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Catalog;
 
-public class CatalogMarketplaceConfigWriter : NetworkPacketWriter
+[PacketId(ServerPacketId.CatalogMarketplaceConfig)]
+public class CatalogMarketplaceConfigWriter : AbstractPacketWriter
 {
-    public CatalogMarketplaceConfigWriter(
-        bool unknown, 
-        int commissionPercent,
-        int credits, 
-        int advertisements,
-        int minPrice, 
-        int maxPrice, 
-        int hoursInMarketplace, 
-        int daysToDisplay)
-    {
-        WriteShort(ServerPacketId.CatalogMarketplaceConfig);
-        WriteBool(unknown);
-        WriteInteger(commissionPercent);
-        WriteInteger(credits);
-        WriteInteger(advertisements);
-        WriteInteger(minPrice);
-        WriteInteger(maxPrice);
-        WriteInteger(hoursInMarketplace);
-        WriteInteger(daysToDisplay);
-    }
+    public required bool Unknown { get; init; }
+    public required int CommissionPercent { get; init; }
+    public required int Credits { get; init; }
+    public required int Advertisements { get; init; }
+    public required int MinPrice { get; init; }
+    public required int MaxPrice { get; init; }
+    public required int HoursInMarketplace { get; init; }
+    public required int DaysToDisplay { get; init; }
 }

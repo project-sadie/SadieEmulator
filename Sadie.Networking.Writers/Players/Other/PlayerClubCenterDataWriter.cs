@@ -1,30 +1,16 @@
-using Sadie.Shared.Unsorted.Networking;
-using Sadie.Shared.Unsorted.Networking.Packets;
+using Sadie.Networking.Serialization;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-public class PlayerClubCenterDataWriter : NetworkPacketWriter
+public class PlayerClubCenterDataWriter : AbstractPacketWriter
 {
-    public PlayerClubCenterDataWriter(
-        string joinDateString, 
-        int streakInDays,
-        double kickbackPercentage,
-        int totalCreditsMissed,
-        int totalCreditsRewarded,
-        int totalCreditsSpent,
-        int creditRewardForStreakBonus,
-        int creditRewardForMonthlySpent,
-        int timeUntilPayday)
-    {
-        WriteShort(ServerPacketId.HabboClubCenter);
-        WriteInteger(streakInDays);
-        WriteString(joinDateString);
-        WriteString(kickbackPercentage.ToString());
-        WriteInteger(totalCreditsMissed);
-        WriteInteger(totalCreditsRewarded);
-        WriteInteger(totalCreditsSpent);
-        WriteInteger(creditRewardForStreakBonus);
-        WriteInteger(creditRewardForMonthlySpent);
-        WriteInteger(timeUntilPayday);
-    }
+    public required int StreakInDays { get; init; }
+    public required string JoinDateString { get; init; }
+    public required string KickbackPercentageString { get; init; }
+    public required int TotalCreditsMissed { get; init; }
+    public required int TotalCreditsRewarded { get; init; }
+    public required int TotalCreditsSpent { get; init; }
+    public required int CreditRewardForStreakBonus { get; init; }
+    public required int CreditRewardForMonthlySpent { get; init; }
+    public required int TimeUntilPayday { get; init; }
 }

@@ -36,7 +36,10 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
             {
                 player.FurnitureItems.Add(playerItem);
             
-                await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+                await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+                {
+                    Items = [playerItem]
+                });
                 await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
             }
             else
@@ -45,7 +48,12 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
 
                 if (ownerOnline != null)
                 {
-                    await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter([playerItem]));
+                    var writer = new PlayerInventoryAddItemsWriter
+                    {
+                        Items = [playerItem]
+                    };
+                    
+                    await ownerOnline.NetworkObject.WriteToStreamAsync(writer);
                     await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
                 
                     ownerOnline.FurnitureItems.Add(playerItem);
@@ -55,12 +63,16 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
                     dbContext.PlayerFurnitureItems.Add(playerItem);
                 }
             }
+
+            var itemRemovedWriter = new RoomFloorFurnitureItemRemovedWriter
+            {
+                Id = item.Id.ToString(),
+                Expired = false,
+                OwnerId = item.OwnerId,
+                Delay = 0,
+            };
             
-            await user.Room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter(
-                item.Id, 
-                false, 
-                item.OwnerId, 
-                0));
+            await user.Room.UserRepository.BroadcastDataAsync(itemRemovedWriter);
         }
 
         await dbContext.SaveChangesAsync();
