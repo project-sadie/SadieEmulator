@@ -4,6 +4,8 @@ public class ServerPacketId
 {
     public const short SecureLogin = 2491;
     public const short PlayerHomeRoom = 2875;
+    public const short InitDiffieHandshake = 1347;
+    public const short CompleteDiffieHandshake = 773;
     public const short UniqueId = 1488;
     public const short PlayerEffectList = 340;
     public const short PlayerClothingList = 1450;

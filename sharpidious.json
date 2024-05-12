@@ -9,7 +9,10 @@
 
     "ignoredClassNames": [
         "NetworkPacketEventHelpers",
-        "RoomFloorItemUpdatedEventHandler"
+        "RoomFloorItemUpdatedEventHandler",
+	"CatalogPageWriter", 
+	"CatalogPurchaseEventHandler", 
+	"PlayerSendFriendRequestEventHandler"
     ],
 
     "rules.override": {

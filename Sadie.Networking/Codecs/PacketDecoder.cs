@@ -3,7 +3,7 @@ using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
 using Sadie.Networking.Packets;
 
-namespace Sadie.Networking;
+namespace Sadie.Networking.Codecs;
 
 public class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
 {
@@ -11,7 +11,7 @@ public class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
     {
         var packetId = message.ReadShort();
         var bytes = message.ReadBytes(message.ReadableBytes);
-        
+
         output.Add(new NetworkPacket(packetId, bytes.Array));
     }
 }

@@ -1,5 +1,6 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
@@ -16,6 +17,7 @@ using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
+using Sadie.Options.Options;
 using Sadie.Shared;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
@@ -25,6 +27,7 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
+    IOptions<EncryptionOptions> encryptionOptions,
     PlayerRepository playerRepository,
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
@@ -37,7 +40,14 @@ public class SecureLoginEventHandler(
     {
         eventParser.Parse(reader);
 
-        if (!ValidateSso(eventParser.Token)) 
+        if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
+        {
+            logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
+            await DisconnectAsync(client.Channel.Id);
+            return;
+        }
+
+        if (!ValidateSso(eventParser.Token))
         {
             logger.LogWarning("Rejected an insecure sso token");
             await DisconnectAsync(client.Channel.Id);
@@ -52,7 +62,7 @@ public class SecureLoginEventHandler(
             await DisconnectAsync(client.Channel.Id);
             return;
         }
-        
+
         var player = await playerRepository.CreatePlayerInstanceWithIdAsync(client, token.PlayerId);
 
         if (player == null)
@@ -63,16 +73,16 @@ public class SecureLoginEventHandler(
         }
 
         var playerId = player.Id;
-            
+
         client.Player = player;
-        
+
         if (!playerRepository.TryAddPlayer(player))
         {
             logger.LogError($"Player {playerId} could not be registered");
             await DisconnectAsync(client.Channel.Id);
             return;
         }
-            
+
         logger.LogInformation($"Player '{player.Username}' has logged in");
         await playerRepository.UpdateOnlineStatusAsync(playerId, true);
 
@@ -90,10 +100,10 @@ public class SecureLoginEventHandler(
         foreach (var playerSub in player.Subscriptions)
         {
             var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
-            var daysLeft = (int) tillExpire.TotalDays;
-            var minutesLeft = (int) tillExpire.TotalMinutes;
+            var daysLeft = (int)tillExpire.TotalDays;
+            var minutesLeft = (int)tillExpire.TotalMinutes;
             var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
-            
+
             await player.NetworkObject.WriteToStreamAsync(new PlayerSubscriptionWriter
             {
                 Name = playerSub.Subscription.Name,
@@ -108,7 +118,7 @@ public class SecureLoginEventHandler(
                 MinutesTillExpire = minutesLeft,
                 MinutesSinceModified = minutesSinceMod
             });
-            
+
             player.State.LastSubscriptionModification = DateTime.Now;
         }
     }
@@ -128,7 +138,7 @@ public class SecureLoginEventHandler(
         {
             Message = formattedMessage
         };
-        
+
         await player.NetworkObject.WriteToStreamAsync(alertWriter);
     }
 
@@ -136,27 +146,27 @@ public class SecureLoginEventHandler(
     {
         var playerData = player.Data;
         var playerSubscriptions = player.Subscriptions;
-        
+
         await networkObject.WriteToStreamAsync(new SecureLoginWriter());
-        
+
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
         {
             Level = 1
         });
-        
+
         await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
         {
             HomeRoom = playerData.HomeRoomId,
             RoomIdToEnter = playerData.HomeRoomId
         });
-        
+
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter
         {
             Effects = []
         });
-        
+
         await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
-        
+
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
         {
             Club = playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
@@ -168,22 +178,22 @@ public class SecureLoginEventHandler(
         {
             NavigatorSettings = player.NavigatorSettings!
         };
-        
+
         var statusWriter = new PlayerStatusWriter
         {
             IsOpen = true,
             IsShuttingDown = false,
             IsAuthentic = true
         };
-        
+
         await networkObject.WriteToStreamAsync(navigatorSettingsWriter);
         await networkObject.WriteToStreamAsync(statusWriter);
-        
+
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter
         {
             ShowNotifications = player.GameSettings.ShowNotifications
         });
-        
+
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter
         {
             AchievementScore = playerData.AchievementScore
@@ -207,11 +217,11 @@ public class SecureLoginEventHandler(
             });
         }
     }
-    
+
     private async Task SendFriendUpdatesAsync(PlayerLogic player)
     {
         var allFriends = player.GetMergedFriendships();
-        
+
         await playerRepository.UpdateMessengerStatusForFriends(player.Id,
             allFriends, true, player.CurrentRoomId != 0);
 
@@ -220,7 +230,7 @@ public class SecureLoginEventHandler(
             var friendPlayer = playerRepository.GetPlayerLogicById(friend.TargetPlayerId);
             var isOnline = friendPlayer != null;
             var isInRoom = isOnline && friendPlayer!.CurrentRoomId != 0;
-                    
+
             var relationship = isOnline
                 ? friendPlayer!
                     .Relationships
@@ -241,7 +251,7 @@ public class SecureLoginEventHandler(
                 VipMember = false,
                 PocketUser = false,
                 RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
-            });   
+            });
         }
     }
 

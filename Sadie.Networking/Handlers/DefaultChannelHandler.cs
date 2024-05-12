@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 
-namespace Sadie.Networking;
+namespace Sadie.Networking.Handlers;
 
 public class DefaultChannelHandler(
     ILogger<DefaultChannelHandler> logger,

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Writers\Sadie.Networking.Writers.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
