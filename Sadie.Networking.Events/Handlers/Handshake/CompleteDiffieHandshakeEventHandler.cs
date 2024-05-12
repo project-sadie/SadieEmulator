@@ -22,6 +22,6 @@ public class CompleteDiffieHandshakeEventHandler(
             ClientEncryption = true
         });
 
-        // TODO: Enable encryption for player
+        client.EnableEncryption(sharedKey);
     }
 }

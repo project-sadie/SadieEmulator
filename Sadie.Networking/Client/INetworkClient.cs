@@ -10,6 +10,8 @@ public interface INetworkClient : IAsyncDisposable, INetworkObject
     IChannel Channel { get; set; }
     PlayerLogic? Player { get; set; }
     RoomUser? RoomUser { get; set; }
+    bool EncryptionEnabled { get; }
+    void EnableEncryption(byte[] sharedKey);
     Task ListenAsync();
     DateTime LastPing { get; set; }
     Task OnReceivedAsync(byte[] data);

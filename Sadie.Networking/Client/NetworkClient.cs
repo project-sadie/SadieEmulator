@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
+using Sadie.Networking.Codecs.Encryption;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization;
 using Sadie.Options.Options;
@@ -39,10 +40,19 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public PlayerLogic? Player { get; set; }
     public RoomUser? RoomUser { get; set; }
+    public bool EncryptionEnabled { get; private set; }
 
     public Task ListenAsync()
     {
         return Task.CompletedTask;
+    }
+
+    public void EnableEncryption(byte[] sharedKey)
+    {
+        Channel.Pipeline.AddFirst(new EncryptionDecoder(sharedKey));
+        Channel.Pipeline.AddFirst(new EncryptionEncoder(sharedKey));
+
+        EncryptionEnabled = true;
     }
 
     public DateTime LastPing { get; set; }
