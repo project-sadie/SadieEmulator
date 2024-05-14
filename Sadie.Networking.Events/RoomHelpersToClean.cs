@@ -10,6 +10,7 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events;
 
@@ -194,5 +195,35 @@ public static class RoomHelpersToClean
         }
 
         await client.WriteToStreamAsync(new RoomLoadedWriter());
+    }
+
+    public static RoomUserEmotion GetEmotionFromMessage(string message)
+    {
+        List<string> smileStrings = [":)", ":-)", ":]", ":d"];
+        List<string> angryStrings = [":@", ">:("];
+        List<string> shockedStrings = [":o", ":0", "o.o", "0.0"];
+        List<string> sadString = [":(", ":-(", ":["];
+
+        if (smileStrings.Any(message.Contains))
+        {
+            return RoomUserEmotion.Smile;
+        }
+
+        if (angryStrings.Any(message.Contains))
+        {
+            return RoomUserEmotion.Angry;
+        }
+
+        if (shockedStrings.Any(message.Contains))
+        {
+            return RoomUserEmotion.Shocked;
+        }
+
+        if (sadString.Any(message.Contains))
+        {
+            return RoomUserEmotion.Sad;
+        }
+        
+        return RoomUserEmotion.None;
     }
 }

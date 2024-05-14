@@ -15,7 +15,7 @@ public class RoomUserChatWriter : AbstractPacketWriter
     {
         writer.WriteInteger(Message.PlayerId);
         writer.WriteString(Message.Message);
-        writer.WriteInteger(Message.EmotionId);
+        writer.WriteInteger((int) Message.EmotionId);
         writer.WriteInteger((int) Message.ChatBubbleId);
         writer.WriteInteger(Unknown1);
         writer.WriteInteger(Message.Message.Length);
