@@ -33,7 +33,10 @@ public static class ServerServiceCollection
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
         serviceCollection.AddSingleton<ServerSettings>(p => 
-            p.GetRequiredService<SadieContext>().ServerSettings.First());
+            p.GetRequiredService<SadieContext>()
+                .ServerSettings
+                .OrderByDescending(x => x.CreatedAt)
+                .First());
         
         serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => 
             p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());

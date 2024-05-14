@@ -11,9 +11,17 @@ public static class DatabaseServiceCollection
         serviceCollection.AddDbContext<SadieContext>(ServiceLifetime.Transient);
 
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
-            provider.GetRequiredService<SadieContext>().ServerPlayerConstants.First());
+            provider.GetRequiredService<SadieContext>()
+                .ServerPlayerConstants
+                .OrderByDescending(x => x.CreatedAt)
+                .First()
+            );
 
         serviceCollection.AddSingleton<ServerRoomConstants>(provider =>
-            provider.GetRequiredService<SadieContext>().ServerRoomConstants.First());
+            provider.GetRequiredService<SadieContext>()
+                .ServerRoomConstants
+                .OrderByDescending(x => x.CreatedAt)
+                .First()
+            );
     }
 }
