@@ -36,7 +36,7 @@ public class ARC4
 
     public void Parse(byte[] src)
     {
-        for (int k = 0; k < src.Length; k++)
+        for (var k = 0; k < src.Length; k++)
         {
             src[k] ^= Next();
         }

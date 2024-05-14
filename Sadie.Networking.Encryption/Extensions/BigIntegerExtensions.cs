@@ -14,7 +14,7 @@ public static class BigIntegerExtensions
 
         data = method(data);
 
-        byte[] result = data.ToByteArray();
+        var result = data.ToByteArray();
         Array.Reverse(result);
 
         return result;
@@ -22,7 +22,7 @@ public static class BigIntegerExtensions
 
     public static BigInteger GeneratePseudoPrime(int bitLength, int certainty)
     {
-        byte[] bytes = new byte[(bitLength + 7) / 8];
+        var bytes = new byte[(bitLength + 7) / 8];
 
         BigInteger result;
         do
@@ -48,8 +48,8 @@ public static class BigIntegerExtensions
             return false;
         }
 
-        BigInteger d = source - 1;
-        int s = 0;
+        var d = source - 1;
+        var s = 0;
 
         while (d % 2 == 0)
         {
@@ -57,17 +57,17 @@ public static class BigIntegerExtensions
             s += 1;
         }
 
-        for (int i = 0; i < certainty; i++)
+        for (var i = 0; i < certainty; i++)
         {
-            BigInteger a = RandomBigInteger(2, source - 2);
-            BigInteger x = BigInteger.ModPow(a, d, source);
+            var a = RandomBigInteger(2, source - 2);
+            var x = BigInteger.ModPow(a, d, source);
 
             if (x == 1 || x == source - 1)
             {
                 continue;
             }
 
-            for (int r = 1; r < s; r++)
+            for (var r = 1; r < s; r++)
             {
                 x = BigInteger.ModPow(x, 2, source);
 
@@ -98,9 +98,9 @@ public static class BigIntegerExtensions
             throw new ArgumentException("minValue must be less than or equal to maxValue");
         }
 
-        BigInteger range = maxValue - minValue + 1;
-        int length = range.GetByteCount();
-        byte[] buffer = new byte[length];
+        var range = maxValue - minValue + 1;
+        var length = range.GetByteCount();
+        var buffer = new byte[length];
 
         BigInteger result;
         do
