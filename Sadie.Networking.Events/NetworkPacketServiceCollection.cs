@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.Networking.Encryption;
 using Sadie.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers.Rooms;
 using Sadie.Networking.Events.Parsers;
@@ -22,6 +23,7 @@ public static class NetworkPacketServiceCollection
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 
+        serviceCollection.AddSingleton<HabboEncryption>();
         serviceCollection.AddSingleton<RoomHeightmapEventHandler>();
         
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
