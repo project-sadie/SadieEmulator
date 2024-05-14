@@ -25,4 +25,5 @@ public class FurnitureItem
     public string? InteractionType { get; init; }
     public int InteractionModes { get; init; }
     public ICollection<CatalogItem> CatalogItems { get; init; } = [];
+    public ICollection<HandItem> HandItems { get; init; } = [];
 }

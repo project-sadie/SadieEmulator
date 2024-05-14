@@ -123,6 +123,7 @@ public class SadieContext(
         modelBuilder.Entity<PlayerFriendship>().ToTable("player_friendships");
         modelBuilder.Entity<PlayerMessage>().ToTable("player_messages");
         modelBuilder.Entity<Role>().ToTable("roles");
+        modelBuilder.Entity<HandItem>().ToTable("hand_items");
 
         modelBuilder.Entity<PlayerAvatarData>()
             .Property(e => e.Gender)
@@ -151,5 +152,17 @@ public class SadieContext(
         modelBuilder.Entity<ServerPlayerConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerRoomConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerSettings>(builder => builder.HasNoKey());
+
+        modelBuilder.Entity<CatalogPage>()
+            .Navigation(x => x.Pages)
+            .AutoInclude();
+
+        modelBuilder.Entity<FurnitureItem>()
+            .Navigation(x => x.HandItems)
+            .AutoInclude();
+        
+        modelBuilder.Entity<FurnitureItem>()
+            .HasMany(c => c.HandItems)
+            .WithMany(x => x.FurnitureItems);
     }
 }

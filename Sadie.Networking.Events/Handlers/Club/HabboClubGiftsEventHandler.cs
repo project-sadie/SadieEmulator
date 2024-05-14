@@ -21,6 +21,7 @@ public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacket
 
         var clubGiftPage = await dbContext
             .Set<CatalogPage>()
+            .IgnoreAutoIncludes()
             .FirstOrDefaultAsync(x => x.Layout == "club_gift");
 
         var daysAsClub = CalculateDaysAsClub(client.Player.Subscriptions);

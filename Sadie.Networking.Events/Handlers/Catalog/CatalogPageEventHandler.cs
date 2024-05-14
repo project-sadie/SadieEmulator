@@ -41,7 +41,7 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
             PageLayout = page.Layout,
             Images = page.ImagesJson,
             Texts = page.TextsJson,
-            Items = page.Items,
+            Items = page.Items.ToList(),
             CatalogMode = eventParser.CatalogMode,
             AcceptSeasonCurrencyAsCredits = false,
             FrontPageItems = frontPageItems

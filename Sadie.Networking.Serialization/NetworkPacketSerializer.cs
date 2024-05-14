@@ -1,6 +1,6 @@
+using System.Collections.ObjectModel;
 using System.Reflection;
 using Sadie.Networking.Serialization.Attributes;
-using Serilog;
 
 namespace Sadie.Networking.Serialization;
 
