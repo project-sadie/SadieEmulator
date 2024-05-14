@@ -76,26 +76,26 @@ public class NetworkPacketSerializer
 
         foreach (var property in properties)
         {
-            if (conversionRules.TryGetValue(property, out var rule))
+            if (conversionRules != null && conversionRules.TryGetValue(property, out var rule))
             {
                 WriteType(rule.Key, rule.Value.Invoke(property.GetValue(packet)!), writer);
                 continue;
             }
             
-            if (insteadRuleMap.ContainsKey(property))
+            if (insteadRuleMap != null && insteadRuleMap.ContainsKey(property))
             {
                 insteadRuleMap[property].Invoke(writer);
                 continue;
             }
 
-            if (beforeRuleMap.ContainsKey(property))
+            if (beforeRuleMap != null && beforeRuleMap.ContainsKey(property))
             {
                 beforeRuleMap[property].Invoke(writer);
             }
             
             WriteProperty(property, writer, packet);
 
-            if (afterRuleMap.ContainsKey(property))
+            if (afterRuleMap != null && afterRuleMap.ContainsKey(property))
             {
                 afterRuleMap[property].Invoke(writer);
             }
@@ -129,21 +129,6 @@ public class NetworkPacketSerializer
         }
     }
 
-    private static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
-    {
-        var collection = (List<object>)propertyInfo.GetValue(packet)!;
-        writer.WriteInteger(collection.Count);
-
-        var properties = collection
-            .SelectMany(element =>
-                element.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(PacketDataAttribute))));
-        
-        foreach (var elementProperty in properties)
-        {
-            WriteProperty(elementProperty, writer, packet);
-        }
-    }
-    
     private static void WriteProperty(PropertyInfo property, NetworkPacketWriter writer, object packet)
     {
         var type = property.PropertyType;
@@ -156,6 +141,10 @@ public class NetworkPacketSerializer
         {
             WriteType(typeof(int), property.GetValue(packet)!, writer);
         }
+        else if (type == typeof(long))
+        {
+            WriteType(typeof(long), property.GetValue(packet)!, writer);
+        }
         else if (type == typeof(bool))
         {
             WriteType(typeof(bool), property.GetValue(packet)!, writer);
@@ -164,6 +153,18 @@ public class NetworkPacketSerializer
         {
             var collection = (List<string>)property.GetValue(packet)!;
             WriteStringListPropertyToWriter(collection, writer);
+        }
+        else if (type == typeof(Dictionary<int, string>))
+        {
+            var collection = (Dictionary<int, string>)property.GetValue(packet)!;
+            
+            writer.WriteInteger(collection.Count);
+            
+            foreach (var (key, value) in collection)
+            {
+                writer.WriteInteger(key);
+                writer.WriteString(value);
+            }
         }
         else if (type == typeof(Dictionary<string, int>))
         {
@@ -189,9 +190,10 @@ public class NetworkPacketSerializer
                 writer.WriteString(value);
             }
         }
-        else if (type == typeof(List<>))
+        else if (type != typeof(Dictionary<PropertyInfo, Action<NetworkPacketWriter>>) && 
+                 type != typeof(Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>>))
         {
-            WriteArbitraryListPropertyToWriter(property, writer, packet);
+            AddObjectToWriter(property.GetValue(packet)!, writer);
         }
     }
 
@@ -203,11 +205,15 @@ public class NetworkPacketSerializer
         }
         else if (type == typeof(int))
         {
-            writer.WriteInteger((int)value!);
+            writer.WriteInteger((int)value);
+        }
+        else if (type == typeof(long))
+        {
+            writer.WriteLong((long)value);
         }
         else if (type == typeof(bool))
         {
-            writer.WriteBool((bool) value!);
+            writer.WriteBool((bool) value);
         }
     }
 }

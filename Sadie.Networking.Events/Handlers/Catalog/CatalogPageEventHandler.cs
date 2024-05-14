@@ -21,7 +21,8 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
         var page = await dbContext
             .Set<CatalogPage>()
             .Where(x => x.Id == eventParser.PageId)
-            .Include(catalogPage => catalogPage.Items)
+            .Include(c => c.Items).ThenInclude(x => x.FurnitureItems)
+            .Include(c => c.Pages)
             .FirstOrDefaultAsync();
 
         if (page is not { Enabled: true } || !page.Visible)
@@ -31,6 +32,7 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
 
         var frontPageItems = await dbContext
             .Set<CatalogFrontPageItem>()
+            .Include(x => x.CatalogPage)
             .ToListAsync();
 
         await client.WriteToStreamAsync(new CatalogPageWriter
@@ -39,7 +41,7 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
             PageLayout = page.Layout,
             Images = page.ImagesJson,
             Texts = page.TextsJson,
-            Items = page.Items,
+            Items = page.Items.ToList(),
             CatalogMode = eventParser.CatalogMode,
             AcceptSeasonCurrencyAsCredits = false,
             FrontPageItems = frontPageItems

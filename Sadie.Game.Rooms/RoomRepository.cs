@@ -29,6 +29,7 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
             .Include(x => x.Layout)
             .Include(x => x.Settings)
             .Include(x => x.PaintSettings)
+            .Include(x => x.ChatSettings)
             .Include(x => x.PlayerRights)
             .Include(x => x.ChatMessages)
             .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
@@ -53,27 +54,6 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
     {
         return mapper.Map<List<Room>>(_rooms.Values.Where(x => x.UserRepository.Count > 0)
             .OrderByDescending(x => x.UserRepository.Count).Take(amount).ToList());
-    }
-
-    public async Task<List<Room>> GetAllByOwnerIdAsync(int ownerId, int amount)
-    {
-        var rooms = await dbContext
-            .Rooms
-            .Where(x => x.OwnerId == ownerId)
-            .Include(x => x.Owner)
-            .Include(x => x.Layout)
-            .Include(x => x.Settings)
-            .Include(x => x.PaintSettings)
-            .Include(x => x.PlayerRights)
-            .Include(x => x.ChatMessages)
-            .Include(x => x.FurnitureItems)
-            .Include(x => x.PlayerLikes)
-            .Include(x => x.Tags)
-            .OrderByDescending(x => x.CreatedAt)
-            .Take(amount)
-            .ToListAsync();
-
-        return rooms;
     }
 
     public int Count => _rooms.Count;

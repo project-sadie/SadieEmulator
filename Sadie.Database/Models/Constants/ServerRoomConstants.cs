@@ -7,4 +7,5 @@ public class ServerRoomConstants
     public int MaxNameLength { get; init; }
     public int MaxDescriptionLength { get; init; }
     public int MaxTagLength { get; init; }
+    public DateTime CreatedAt { get; init; }
 }

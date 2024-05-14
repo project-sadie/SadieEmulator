@@ -10,9 +10,9 @@ public class Room
     public int Id { get; init; }
     public string? Name { get; set; }
     public int LayoutId { get; init; }
-    public RoomLayout? Layout { get; init; }
+    public RoomLayout? Layout { get; set; }
     public int OwnerId { get; init; }
-    public Player? Owner { get; init; }
+    public Player? Owner { get; set; }
     public int MaxUsersAllowed { get; set; }
     public string? Description { get; set; }
     public bool IsMuted { get; init; }

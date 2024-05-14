@@ -1,7 +1,9 @@
+using Sadie.Database.Models;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
+using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
@@ -18,11 +20,21 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 
         roomUser.Direction = direction;
         roomUser.DirectionHead = direction;
+
+        var handItems = item
+            .FurnitureItem
+            .HandItems
+            .ToList();
+        
+        if (handItems.Count < 1)
+        {
+            return;
+        }
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
             UserId = roomUser.Id,
-            ItemId = new Random().Next(2, 9)
+            ItemId = handItems.PickRandom().Id
         });
 
         var itemWriter = new RoomFloorItemUpdatedWriter
