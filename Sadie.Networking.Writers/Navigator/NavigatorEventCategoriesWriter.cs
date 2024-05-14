@@ -9,4 +9,19 @@ namespace Sadie.Networking.Writers.Navigator;
 public class NavigatorEventCategoriesWriter : AbstractPacketWriter
 {
     public required List<RoomCategory> Categories { get; init; }
+
+    public override void OnConfigureRules()
+    {
+        Override(GetType().GetProperty(nameof(Categories))!, writer =>
+        {
+            writer.WriteInteger(Categories.Count);
+
+            foreach (var item in Categories)
+            {
+                writer.WriteInteger(item.Id);
+                writer.WriteString(item.Caption);
+                writer.WriteBool(item.IsVisible);
+            }
+        });
+    }
 }

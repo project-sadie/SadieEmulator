@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Reflection;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -130,21 +129,6 @@ public class NetworkPacketSerializer
         }
     }
 
-    private static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
-    {
-        var collection = (List<object>)propertyInfo.GetValue(packet)!;
-        writer.WriteInteger(collection.Count);
-
-        var properties = collection
-            .SelectMany(element =>
-                element.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(PacketDataAttribute))));
-        
-        foreach (var elementProperty in properties)
-        {
-            WriteProperty(elementProperty, writer, packet);
-        }
-    }
-    
     private static void WriteProperty(PropertyInfo property, NetworkPacketWriter writer, object packet)
     {
         var type = property.PropertyType;
@@ -205,10 +189,6 @@ public class NetworkPacketSerializer
                 writer.WriteString(key);
                 writer.WriteString(value);
             }
-        }
-        else if (type == typeof(List<>))
-        {
-            WriteArbitraryListPropertyToWriter(property, writer, packet);
         }
         else if (type != typeof(Dictionary<PropertyInfo, Action<NetworkPacketWriter>>) && 
                  type != typeof(Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>>))
