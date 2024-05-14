@@ -4,11 +4,10 @@ namespace Sadie.Networking.Encryption.Extensions;
 
 public static class BigIntegerExtensions
 {
-    private static readonly Random random = new();
+    private static readonly Random Random = new();
 
     public static byte[] PerformCalculation(this byte[] src, RSACalculateDelegate method)
     {
-        // Big integer requires little endian order!
         Array.Reverse(src);
         BigInteger data = new(src);
 
@@ -27,8 +26,8 @@ public static class BigIntegerExtensions
         BigInteger result;
         do
         {
-            random.NextBytes(bytes);
-            bytes[^1] &= 127; // Ensure non-negative
+            Random.NextBytes(bytes);
+            bytes[^1] &= 127;
             result = new BigInteger(bytes);
         }
         while (result.IsProbablePrime(certainty));
@@ -105,8 +104,8 @@ public static class BigIntegerExtensions
         BigInteger result;
         do
         {
-            random.NextBytes(buffer);
-            buffer[^1] &= 127; // Ensure non-negative
+            Random.NextBytes(buffer);
+            buffer[^1] &= 127;
             result = new BigInteger(buffer);
         } while (result < minValue || result >= maxValue);
 

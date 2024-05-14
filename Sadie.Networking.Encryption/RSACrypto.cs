@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace Sadie.Networking.Encryption;
 
-public class RSACrypto(string exponent, string modules, string privateExponent)
+public class RsaCrypto(string exponent, string modules, string privateExponent)
 {
     private readonly BigInteger _exponent = BigInteger.Parse(exponent, NumberStyles.HexNumber);
     private readonly BigInteger _modules = BigInteger.Parse(modules, NumberStyles.HexNumber);

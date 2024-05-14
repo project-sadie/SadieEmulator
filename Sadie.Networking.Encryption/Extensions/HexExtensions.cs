@@ -15,6 +15,7 @@ public static class HexExtensions
         }
 
         var bytes = new byte[hex.Length / 2];
+        
         for (var i = 0; i < bytes.Length; i++)
         {
             var high = ParseNybble(hex[i * 2]);
@@ -30,12 +31,14 @@ public static class HexExtensions
         unchecked
         {
             var i = (uint)(c - '0');
+            
             if (i < 10)
             {
                 return (int)i;
             }
 
             i = (c & ~32u) - 'A';
+            
             if (i < 6)
             {
                 return (int)i + 10;

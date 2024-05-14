@@ -8,7 +8,7 @@ namespace Sadie.Networking.Encryption;
 
 public class HabboEncryption(IOptions<EncryptionOptions> options)
 {
-    private readonly RSACrypto _crypto = new(options.Value.E, options.Value.N, options.Value.D);
+    private readonly RsaCrypto _crypto = new(options.Value.E, options.Value.N, options.Value.D);
     private readonly DiffieHellman _diffieHellman = new();
 
     private string GetRSAEncryptedString(string message)
