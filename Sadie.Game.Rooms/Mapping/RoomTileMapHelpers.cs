@@ -234,4 +234,57 @@ public class RoomTileMapHelpers
     {
         return users.Where(user => points.Contains(user.Point)).ToList();
     }
+
+    public static Point GetPointInFront(int x, int y, HDirection direction, int offset = 0)
+    {
+        var offsetX = 0;
+        var offsetY = 0;
+        
+        switch ((int) direction % 8) {
+            case 0:
+                offsetY--;
+                break;
+            case 1:
+                offsetX++;
+                offsetY--;
+                break;
+            case 2:
+                offsetX++;
+                break;
+            case 3:
+                offsetX++;
+                offsetY++;
+                break;
+            case 4:
+                offsetY++;
+                break;
+            case 5:
+                offsetX--;
+                offsetY++;
+                break;
+            case 6:
+                offsetX--;
+                break;
+            case 7:
+                offsetX--;
+                offsetY--;
+                break;
+        }
+
+        for (var i = 0; i <= offset; i++) 
+        {
+            x += offsetX;
+            y += offsetY;
+        }
+
+        return new Point(x, y);
+    }
+
+    public static int SquaresAway(Point one, Point two)
+    {
+        var x = one.X - two.X;
+        var y = one.Y - two.Y;
+        
+        return (int) Math.Sqrt(x * x + y * y);
+    }
 }
