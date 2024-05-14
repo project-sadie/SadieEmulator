@@ -28,7 +28,7 @@ public static class BigIntegerExtensions
         do
         {
             random.NextBytes(bytes);
-            bytes[^1] &= 0x7F; // Ensure non-negative
+            bytes[^1] &= 127; // Ensure non-negative
             result = new BigInteger(bytes);
         }
         while (result.IsProbablePrime(certainty));
@@ -106,7 +106,7 @@ public static class BigIntegerExtensions
         do
         {
             random.NextBytes(buffer);
-            buffer[^1] &= 0x7F; // Ensure non-negative
+            buffer[^1] &= 127; // Ensure non-negative
             result = new BigInteger(buffer);
         } while (result < minValue || result >= maxValue);
 

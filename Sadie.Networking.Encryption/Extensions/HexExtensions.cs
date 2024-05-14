@@ -35,7 +35,7 @@ public static class HexExtensions
                 return (int)i;
             }
 
-            i = (c & ~0x20u) - 'A';
+            i = (c & ~32u) - 'A';
             if (i < 6)
             {
                 return (int)i + 10;

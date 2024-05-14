@@ -67,7 +67,7 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
 
         while (n > 2)
         {
-            bytes[--n] = 0xFF;
+            bytes[--n] = 255;
         }
 
         bytes[--n] = 1;
