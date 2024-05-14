@@ -6,5 +6,5 @@ public enum RoomUserEmotion
     Smile = 1,
     Angry = 2,
     Shocked = 3,
-    Sad = 3
+    Sad = 4
 }
