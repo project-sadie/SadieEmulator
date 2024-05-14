@@ -14,11 +14,12 @@ public static class HexExtensions
             throw new ArgumentException("Input must have even number of characters");
         }
 
-        byte[] bytes = new byte[hex.Length / 2];
-        for (int i = 0; i < bytes.Length; i++)
+        var bytes = new byte[hex.Length / 2];
+        
+        for (var i = 0; i < bytes.Length; i++)
         {
-            int high = ParseNybble(hex[i * 2]);
-            int low = ParseNybble(hex[i * 2 + 1]);
+            var high = ParseNybble(hex[i * 2]);
+            var low = ParseNybble(hex[i * 2 + 1]);
             bytes[i] = (byte)((high << 4) | low);
         }
 
@@ -29,13 +30,15 @@ public static class HexExtensions
     {
         unchecked
         {
-            uint i = (uint)(c - '0');
+            var i = (uint)(c - '0');
+            
             if (i < 10)
             {
                 return (int)i;
             }
 
-            i = (c & ~0x20u) - 'A';
+            i = (c & ~32u) - 'A';
+            
             if (i < 6)
             {
                 return (int)i + 10;

@@ -1,42 +1,43 @@
 ﻿namespace Sadie.Networking.Encryption;
 
-public class ARC4
+public class Arc4
 {
-    private int i;
-    private int j;
-    private readonly byte[] bytes = new byte[POOLSIZE];
+    private int _i;
+    private int _j;
+    
+    private readonly byte[] _bytes = new byte[PoolSize];
 
-    public const int POOLSIZE = byte.MaxValue + 1;
+    public const int PoolSize = byte.MaxValue + 1;
 
-    public ARC4(byte[] key)
+    public Arc4(byte[] key)
     {
-        bytes = new byte[POOLSIZE];
+        _bytes = new byte[PoolSize];
         Initialize(key);
     }
 
     public void Initialize(byte[] key)
     {
-        for (i = 0; i < POOLSIZE; ++i)
+        for (_i = 0; _i < PoolSize; ++_i)
         {
-            bytes[i] = (byte)i;
+            _bytes[_i] = (byte)_i;
         }
 
-        i = 0;
-        j = 0;
+        _i = 0;
+        _j = 0;
 
-        for (i = 0; i < POOLSIZE; ++i)
+        for (_i = 0; _i < PoolSize; ++_i)
         {
-            j = (j + bytes[i] + key[i % key.Length]) & (POOLSIZE - 1);
-            (bytes[j], bytes[i]) = (bytes[i], bytes[j]);
+            _j = (_j + _bytes[_i] + key[_i % key.Length]) & (PoolSize - 1);
+            (_bytes[_j], _bytes[_i]) = (_bytes[_i], _bytes[_j]);
         }
 
-        i = 0;
-        j = 0;
+        _i = 0;
+        _j = 0;
     }
 
     public void Parse(byte[] src)
     {
-        for (int k = 0; k < src.Length; k++)
+        for (var k = 0; k < src.Length; k++)
         {
             src[k] ^= Next();
         }
@@ -44,10 +45,10 @@ public class ARC4
 
     private byte Next()
     {
-        i = ++i & (POOLSIZE - 1);
-        j = (j + bytes[i]) & (POOLSIZE - 1);
-        (bytes[j], bytes[i]) = (bytes[i], bytes[j]);
+        _i = ++_i & (PoolSize - 1);
+        _j = (_j + _bytes[_i]) & (PoolSize - 1);
+        (_bytes[_j], _bytes[_i]) = (_bytes[_i], _bytes[_j]);
 
-        return bytes[(bytes[i] + bytes[j]) & 255];
+        return _bytes[(_bytes[_i] + _bytes[_j]) & 255];
     }
 }

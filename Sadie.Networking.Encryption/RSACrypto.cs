@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace Sadie.Networking.Encryption;
 
-public class RSACrypto(string exponent, string modules, string privateExponent)
+public class RsaCrypto(string exponent, string modules, string privateExponent)
 {
     private readonly BigInteger _exponent = BigInteger.Parse(exponent, NumberStyles.HexNumber);
     private readonly BigInteger _modules = BigInteger.Parse(modules, NumberStyles.HexNumber);
@@ -53,10 +53,10 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
 
     private byte[] Pkcs1pad(byte[] src)
     {
-        int n = GetBlockSize();
-        byte[] bytes = new byte[n];
+        var n = GetBlockSize();
+        var bytes = new byte[n];
 
-        int i = src.Length - 1;
+        var i = src.Length - 1;
 
         while (i >= 0 && n > 11)
         {
@@ -67,7 +67,7 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
 
         while (n > 2)
         {
-            bytes[--n] = 0xFF;
+            bytes[--n] = 255;
         }
 
         bytes[--n] = 1;
@@ -80,7 +80,7 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
     {
         if (src[0] == 2)
         {
-            byte[] temp = new byte[src.Length + 1];
+            var temp = new byte[src.Length + 1];
             Array.Copy(src, 0, temp, 1, src.Length);
             src = temp;
         }
@@ -90,7 +90,7 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
             throw new CryptographicException("PKCS v1.5 Decode Error");
         }
 
-        int startIndex = 2;
+        var startIndex = 2;
         do
         {
             if (src.Length < startIndex)
@@ -100,7 +100,7 @@ public class RSACrypto(string exponent, string modules, string privateExponent)
         }
         while (src[startIndex++] != 0);
 
-        byte[] bytes = new byte[src.Length - startIndex];
+        var bytes = new byte[src.Length - startIndex];
         Array.Copy(src, startIndex, bytes, 0, bytes.Length);
 
         return bytes;

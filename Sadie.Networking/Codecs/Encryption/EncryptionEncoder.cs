@@ -8,7 +8,7 @@ namespace Sadie.Networking.Codecs.Encryption;
 
 public class EncryptionEncoder(byte[] key) : ChunkedWriteHandler<object>
 {
-    private readonly ARC4 rc4 = new(key);
+    private readonly Arc4 rc4 = new(key);
 
     public override Task WriteAsync(IChannelHandlerContext context, object message)
     {
