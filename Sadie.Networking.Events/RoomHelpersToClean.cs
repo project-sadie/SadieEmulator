@@ -199,31 +199,26 @@ public static class RoomHelpersToClean
 
     public static RoomUserEmotion GetEmotionFromMessage(string message)
     {
-        List<string> smileStrings = [":)", ":-)", ":]", ":d"];
-        List<string> angryStrings = [":@", ">:("];
-        List<string> shockedStrings = [":o", ":0", "o.o", "0.0"];
-        List<string> sadString = [":(", ":-(", ":["];
+        List<string> happyEmojis = [":)", ":-)", ":]", ":d"];
+        List<string> angryEmojis = [":@", ">:("];
+        List<string> shockedEmojis = [":o", ":0", "o.o", "0.0"];
+        List<string> sadEmojis = [":(", ":-(", ":["];
 
-        if (smileStrings.Any(message.Contains))
+        if (happyEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)))
         {
             return RoomUserEmotion.Smile;
         }
 
-        if (angryStrings.Any(message.Contains))
+        if (angryEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)))
         {
             return RoomUserEmotion.Angry;
         }
 
-        if (shockedStrings.Any(message.Contains))
+        if (shockedEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)))
         {
             return RoomUserEmotion.Shocked;
         }
 
-        if (sadString.Any(message.Contains))
-        {
-            return RoomUserEmotion.Sad;
-        }
-        
-        return RoomUserEmotion.None;
+        return sadEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)) ? RoomUserEmotion.Sad : RoomUserEmotion.None;
     }
 }
