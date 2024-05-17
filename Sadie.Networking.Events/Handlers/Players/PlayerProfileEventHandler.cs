@@ -1,7 +1,6 @@
 using AutoMapper;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;

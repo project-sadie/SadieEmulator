@@ -8,7 +8,7 @@ namespace Sadie.Networking.Writers.Catalog;
 [PacketId(ServerPacketId.CatalogPages)]
 public class CatalogTabsWriter : AbstractPacketWriter
 {
-    public required string Mode { get; init; }
+    public required string? Mode { get; init; }
     public required List<CatalogPage> TabPages { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)

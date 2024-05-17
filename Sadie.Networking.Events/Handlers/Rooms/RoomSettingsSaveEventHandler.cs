@@ -3,18 +3,15 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerIds.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
-    RoomSettingsSaveEventParser eventParser, 
     RoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {

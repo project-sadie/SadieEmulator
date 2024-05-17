@@ -5,7 +5,6 @@ using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted;
@@ -56,15 +55,13 @@ internal static class NetworkPacketEventHelpers
     
     public static async Task OnChatMessageAsync(
         INetworkClient client,
-        RoomUserChatEventParser parser,
+        string message,
         bool shouting,
         ServerRoomConstants roomConstants,
         RoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository,
         SadieContext dbContext)
     {
-        var message = parser.Message;
-        
         if (string.IsNullOrEmpty(message) || 
             message.Length > roomConstants.MaxChatMessageLength ||
             !NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))

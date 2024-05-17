@@ -5,7 +5,6 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
@@ -15,13 +14,10 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerIds.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
-    CatalogPurchaseEventParser eventParser,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
 
         if (client.Player == null)

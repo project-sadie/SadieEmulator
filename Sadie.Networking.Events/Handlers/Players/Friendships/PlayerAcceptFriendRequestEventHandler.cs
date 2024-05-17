@@ -3,7 +3,6 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
@@ -12,7 +11,6 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerIds.PlayerAcceptFriendRequest)]
 public class PlayerAcceptFriendRequestEventHandler(
-    PlayerAcceptFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
     RoomRepository roomRepository,
     SadieContext dbContext)

@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 

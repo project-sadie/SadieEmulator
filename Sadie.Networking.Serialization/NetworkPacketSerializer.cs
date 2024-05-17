@@ -66,8 +66,7 @@ public class NetworkPacketSerializer
     
     private static void AddObjectToWriter(object packet, NetworkPacketWriter writer)
     {
-        var properties = packet.GetType().GetProperties()
-            .Where(p => p.GetCustomAttributes(typeof(NotPacketDataAttribute), true).Length == 0);
+        var properties = packet.GetType().GetProperties();
         
         var conversionRules = GetConversionRules(packet);        
         var beforeRuleMap = GetBeforeRuleMap(packet);
@@ -119,7 +118,7 @@ public class NetworkPacketSerializer
         return writer;
     }
 
-    private static void WriteStringListPropertyToWriter(List<string> list, NetworkPacketWriter writer)
+    private static void WriteStringListPropertyToWriter(List<string?> list, NetworkPacketWriter writer)
     {
         writer.WriteInteger(list.Count);
             
@@ -151,12 +150,12 @@ public class NetworkPacketSerializer
         }
         else if (type == typeof(List<string>))
         {
-            var collection = (List<string>)property.GetValue(packet)!;
+            var collection = (List<string?>)property.GetValue(packet)!;
             WriteStringListPropertyToWriter(collection, writer);
         }
         else if (type == typeof(Dictionary<int, string>))
         {
-            var collection = (Dictionary<int, string>)property.GetValue(packet)!;
+            var collection = (Dictionary<int, string?>)property.GetValue(packet)!;
             
             writer.WriteInteger(collection.Count);
             
@@ -168,7 +167,7 @@ public class NetworkPacketSerializer
         }
         else if (type == typeof(Dictionary<string, int>))
         {
-            var collection = (Dictionary<string, int>)property.GetValue(packet)!;
+            var collection = (Dictionary<string?, int>)property.GetValue(packet)!;
             
             writer.WriteInteger(collection.Count);
             
@@ -180,7 +179,7 @@ public class NetworkPacketSerializer
         }
         else if (type == typeof(Dictionary<string, string>))
         {
-            var collection = (Dictionary<string, string>)property.GetValue(packet)!;
+            var collection = (Dictionary<string?, string>)property.GetValue(packet)!;
             
             writer.WriteInteger(collection.Count);
             

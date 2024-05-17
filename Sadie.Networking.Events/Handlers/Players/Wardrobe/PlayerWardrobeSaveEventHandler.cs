@@ -1,7 +1,6 @@
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Wardrobe;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Game.Avatar;

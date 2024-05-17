@@ -1,6 +1,5 @@
 using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Rooms;
@@ -9,7 +8,6 @@ namespace Sadie.Networking.Events.Handlers.Players.Club;
 
 [PacketId(EventHandlerIds.PlayerSetHomeRoom)]
 public class PlayerSetHomeRoomEventHandler(
-    PlayerSetHomeRoomEventParser parser,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)

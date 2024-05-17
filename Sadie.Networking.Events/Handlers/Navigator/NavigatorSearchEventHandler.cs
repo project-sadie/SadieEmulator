@@ -5,7 +5,6 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Game.Navigator;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
@@ -14,7 +13,6 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerIds.NavigatorSearch)]
 public class NavigatorSearchEventHandler(
-    NavigatorSearchEventParser eventParser,
     SadieContext dbContext,
     NavigatorRoomProvider navigatorRoomProvider,
     RoomRepository roomRepository)

@@ -1,6 +1,5 @@
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Generic;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
@@ -9,7 +8,6 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 
 [PacketId(EventHandlerIds.PlayerRelationships)]
 public class PlayerRelationshipsEventHandler(
-    PlayerRelationshipsEventParser eventParser,
     PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)

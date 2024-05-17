@@ -7,7 +7,7 @@ public class NetworkPacketWriter
 {
     private readonly ArrayBufferWriter<byte> _packet = new();
 
-    public void WriteString(string data)
+    public void WriteString(string? data)
     {
         WriteShort((short) data.Length);
         WriteBytes(Encoding.Default.GetBytes(data));

@@ -28,8 +28,34 @@ public class ClientPacketHandler(
             return;
         }
 
-        var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
+        var parameters = GetParametersForHandler(packetEventType, packet);
+        var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType, parameters);
         await ExecuteAsync(client, packet, eventHandler);
+    }
+
+    private object[] GetParametersForHandler(Type packetEventType, INetworkPacket packet)
+    {
+        var parameters = new List<object>();
+        
+        foreach (var property in packetEventType.GetProperties())
+        {
+            var type = property.PropertyType;
+
+            if (type == typeof(int))
+            {
+                parameters.Add(packet.ReadInt());
+            }
+            else if (type == typeof(string))
+            {
+                parameters.Add(packet.ReadString());
+            }
+            else
+            {
+                throw new Exception($"{type.FullName}");
+            }
+        }
+
+        return parameters.ToArray();
     }
 
     private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEventHandler eventHandler)

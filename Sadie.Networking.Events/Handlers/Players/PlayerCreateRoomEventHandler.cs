@@ -2,7 +2,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
@@ -12,7 +11,6 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerIds.PlayerCreateRoom)]
 public class PlayerCreateRoomEventHandler(
     SadieContext dbContext,
-    PlayerCreateRoomEventParser eventParser,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)

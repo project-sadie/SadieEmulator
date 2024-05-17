@@ -1,5 +1,4 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Handshake;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;

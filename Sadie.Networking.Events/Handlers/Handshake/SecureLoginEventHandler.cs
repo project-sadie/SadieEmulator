@@ -6,7 +6,6 @@ using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Handshake;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
@@ -27,7 +26,6 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 
 [PacketId(EventHandlerIds.SecureLogin)]
 public class SecureLoginEventHandler(
-    SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
     IOptions<EncryptionOptions> encryptionOptions,
     PlayerRepository playerRepository,
