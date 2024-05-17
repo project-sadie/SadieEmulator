@@ -5,18 +5,18 @@ using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
     PlayerChangeRelationshipEventParser eventParser,
     PlayerRepository playerRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerChangeRelationship;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

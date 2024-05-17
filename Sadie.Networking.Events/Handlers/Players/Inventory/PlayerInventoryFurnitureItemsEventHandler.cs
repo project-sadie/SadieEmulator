@@ -1,14 +1,14 @@
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 
+[PacketId(EventHandlerIds.PlayerInventoryFurnitureItems)]
 public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerInventoryFurnitureItems;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var furnitureItems = client.Player.FurnitureItems;

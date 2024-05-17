@@ -2,15 +2,15 @@ using Sadie.Database;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
+[PacketId(EventHandlerIds.SaveNavigatorSettings)]
 public class SaveNavigatorSettingsEventHandler(
     SaveNavigatorSettingsEventParser eventParser,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.SaveNavigatorSettings;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

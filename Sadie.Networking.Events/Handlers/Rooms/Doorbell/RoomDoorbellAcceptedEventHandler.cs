@@ -4,9 +4,11 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Doorbell;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
+[PacketId(EventHandlerIds.RoomDoorbellAccepted)]
 public class RoomDoorbellAcceptedEventHandler(
     RoomDoorbellAcceptedEventParser eventParser,
     RoomRepository roomRepository,
@@ -14,8 +16,6 @@ public class RoomDoorbellAcceptedEventHandler(
     RoomUserFactory roomUserFactory)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomDoorbellAccepted;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

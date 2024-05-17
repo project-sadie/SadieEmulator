@@ -6,10 +6,12 @@ using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
+[PacketId(EventHandlerIds.RoomUserWhisper)]
 public class RoomUserWhisperEventHandler(
     RoomUserWhisperEventParser eventParser,
     RoomRepository roomRepository, 
@@ -17,8 +19,6 @@ public class RoomUserWhisperEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserWhisper;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

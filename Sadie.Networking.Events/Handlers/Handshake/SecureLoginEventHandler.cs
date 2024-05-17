@@ -8,6 +8,7 @@ using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Handshake;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Networking.Writers.Moderation;
 using Sadie.Networking.Writers.Players;
@@ -24,6 +25,7 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
+[PacketId(EventHandlerIds.SecureLogin)]
 public class SecureLoginEventHandler(
     SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
@@ -34,8 +36,6 @@ public class SecureLoginEventHandler(
     ServerSettings serverSettings)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.SecureLogin;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

@@ -5,18 +5,18 @@ using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerChangedMotto)]
 public class PlayerChangedMottoEventHandler(
     PlayerChangedMottoEventParser eventParser,
     RoomRepository roomRepository, 
     ServerPlayerConstants constants,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerChangedMotto;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null)

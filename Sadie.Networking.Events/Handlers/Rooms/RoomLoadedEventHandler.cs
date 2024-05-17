@@ -7,6 +7,7 @@ using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
@@ -14,6 +15,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
+[PacketId(EventHandlerIds.RoomLoaded)]
 public class RoomLoadedEventHandler(
     RoomLoadedEventParser eventParser,
     ILogger<RoomLoadedEventHandler> logger,
@@ -22,8 +24,6 @@ public class RoomLoadedEventHandler(
     PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomLoaded;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader readers)
     {
         eventParser.Parse(readers);

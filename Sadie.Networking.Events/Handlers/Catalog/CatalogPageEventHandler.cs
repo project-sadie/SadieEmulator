@@ -5,15 +5,15 @@ using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
+[PacketId(EventHandlerIds.CatalogPage)]
 public class CatalogPageEventHandler(CatalogPageEventParser eventParser, 
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.CatalogPage;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

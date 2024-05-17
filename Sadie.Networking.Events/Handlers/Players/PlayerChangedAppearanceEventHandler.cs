@@ -4,18 +4,18 @@ using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
     PlayerChangedAppearanceEventParser eventParser, 
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerChangedAppearance;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null)

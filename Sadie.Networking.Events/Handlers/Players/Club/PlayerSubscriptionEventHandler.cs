@@ -1,14 +1,14 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Club;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
+[PacketId(EventHandlerIds.PlayerSubscription)]
 public class PlayerSubscriptionEventHandler(PlayerSubscriptionEventParser eventParser) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerSubscription;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

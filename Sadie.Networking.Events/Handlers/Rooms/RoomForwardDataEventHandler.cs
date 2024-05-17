@@ -2,14 +2,14 @@ using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
+[PacketId(EventHandlerIds.RoomForwardData)]
 public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomForwardData;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

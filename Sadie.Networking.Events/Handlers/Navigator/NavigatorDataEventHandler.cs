@@ -1,14 +1,14 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 using Sadie.Networking.Writers.Players.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
+[PacketId(EventHandlerIds.NavigatorData)]
 public class NavigatorDataEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.NavigatorData;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var metaData = new Dictionary<string, int>

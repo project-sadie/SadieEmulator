@@ -5,11 +5,13 @@ using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
+[PacketId(EventHandlerIds.PlayerFriendRequests)]
 public class PlayerSendFriendRequestEventHandler(
     PlayerSendFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
@@ -17,8 +19,6 @@ public class PlayerSendFriendRequestEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerFriendRequests;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

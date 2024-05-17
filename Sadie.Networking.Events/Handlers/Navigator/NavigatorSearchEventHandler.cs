@@ -7,10 +7,12 @@ using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
+[PacketId(EventHandlerIds.NavigatorSearch)]
 public class NavigatorSearchEventHandler(
     NavigatorSearchEventParser eventParser,
     SadieContext dbContext,
@@ -18,8 +20,6 @@ public class NavigatorSearchEventHandler(
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.NavigatorSearch;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

@@ -3,19 +3,19 @@ using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerProfile)]
 public class PlayerProfileEventHandler(
     PlayerProfileEventParser eventParser,
     PlayerRepository playerRepository,
     IMapper mapper)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerProfile;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

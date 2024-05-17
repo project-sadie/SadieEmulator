@@ -6,18 +6,18 @@ using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
+[PacketId(EventHandlerIds.RoomFloorFurnitureItemUpdated)]
 public class RoomFloorItemUpdatedEventHandler(
     SadieContext dbContext,
     RoomFloorItemUpdatedEventParser eventParser,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomFloorFurnitureItemUpdated;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);

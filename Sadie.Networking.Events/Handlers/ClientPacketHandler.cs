@@ -1,26 +1,20 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Handlers;
 
-public class ClientPacketHandler : INetworkPacketHandler
+public class ClientPacketHandler(
+    ILogger<ClientPacketHandler> logger,
+    Dictionary<short, Type> packetHandlerTypeMap,
+    IServiceProvider serviceProvider)
+    : INetworkPacketHandler
 {
-    private readonly ILogger<ClientPacketHandler> _logger;
-    private readonly Dictionary<int, INetworkPacketEventHandler> _packets;
-
-    public ClientPacketHandler(
-        ILogger<ClientPacketHandler> logger, 
-        IEnumerable<INetworkPacketEventHandler> packetHandlers)
-    {
-        _logger = logger;
-        _packets = packetHandlers.ToDictionary(i => i.Id, h => h);
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
-        if (!_packets.TryGetValue(packet.PacketId, out var packetEvent))
+        if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
         {
             var writer = new ServerErrorWriter
             {
@@ -30,16 +24,17 @@ public class ClientPacketHandler : INetworkPacketHandler
             };
                 
             await client.WriteToStreamAsync(writer);
-            _logger.LogWarning($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
+            logger.LogWarning($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
             return;
         }
 
-        await ExecuteAsync(client, packet, packetEvent);
+        var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
+        await ExecuteAsync(client, packet, eventHandler);
     }
 
     private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEventHandler eventHandler)
     {
-        _logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
+        logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
         
         try
         {
@@ -47,7 +42,7 @@ public class ClientPacketHandler : INetworkPacketHandler
         }
         catch (Exception e)
         {
-            _logger.LogError(e.ToString());
+            logger.LogError(e.ToString());
         }
     }
 }

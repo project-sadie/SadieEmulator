@@ -5,18 +5,18 @@ using Sadie.Game.Rooms.Enums;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Parsers.Rooms.Rights;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Rights;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
+[PacketId(EventHandlerIds.RoomGiveUserRights)]
 public class RoomGiveUserRightsEventHandler(
     SadieContext dbContext,
     RoomGiveUserRightsEventParser eventParser,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomGiveUserRights;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         eventParser.Parse(reader);
