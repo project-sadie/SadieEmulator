@@ -11,17 +11,14 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerIds.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
-    PlayerChangeRelationshipEventParser eventParser,
     PlayerRepository playerRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var playerId = eventParser.PlayerId;
-        var relationId = eventParser.RelationId;
+        var playerId = PlayerId;
+        var relationId = RelationId;
 
         var friendship = client.Player.TryGetAcceptedFriendshipFor(playerId);
         

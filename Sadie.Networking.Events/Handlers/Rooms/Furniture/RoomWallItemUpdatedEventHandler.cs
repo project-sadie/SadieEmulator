@@ -11,14 +11,11 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerIds.RoomWallItemUpdated)]
 public class RoomWallItemUpdatedEventHandler(
     SadieContext dbContext,
-    RoomWallItemUpdatedEventParser eventParser,
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null || client.RoomUser == null)
         {
             return;

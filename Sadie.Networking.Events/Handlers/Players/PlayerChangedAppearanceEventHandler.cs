@@ -11,7 +11,6 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerIds.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
-    PlayerChangedAppearanceEventParser eventParser, 
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
@@ -22,15 +21,13 @@ public class PlayerChangedAppearanceEventHandler(
             return;
         }
 
-        eventParser.Parse(reader);
-        
         var player = client.Player;
         
-        var gender = eventParser.Gender == "M" ? 
+        var gender = Gender == "M" ? 
             AvatarGender.Male : 
             AvatarGender.Female;
 
-        var figureCode = eventParser.FigureCode;
+        var figureCode = FigureCode;
         
         // TODO: Validate inputs above
 

@@ -8,12 +8,10 @@ using Sadie.Networking.Writers.Rooms;
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 [PacketId(EventHandlerIds.PlayerStalk)]
-public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerRepository playerRepository) : INetworkPacketEventHandler
+public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var playerId = eventParser.PlayerId;
 
         if (!client.Player.IsFriendsWith(eventParser.PlayerId))

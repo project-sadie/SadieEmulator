@@ -9,18 +9,14 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerIds.PlayerProfile)]
-public class PlayerProfileEventHandler(
-    PlayerProfileEventParser eventParser,
-    PlayerRepository playerRepository,
-    IMapper mapper)
+public class PlayerProfileEventHandler(PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
+    public int ProfileId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var profileId = eventParser.ProfileId;
-        var profilePlayer = await playerRepository.GetPlayerByIdAsync(profileId);
+        var profilePlayer = await playerRepository.GetPlayerByIdAsync(ProfileId);
         
         if (profilePlayer == null)
         {
@@ -28,7 +24,7 @@ public class PlayerProfileEventHandler(
         }
         
         var friendCount = profilePlayer.GetAcceptedFriendshipCount();
-        var friendship = profilePlayer.TryGetFriendshipFor(profileId);
+        var friendship = profilePlayer.TryGetFriendshipFor(ProfileId);
 
         var profileWriter = new PlayerProfileWriter
         {

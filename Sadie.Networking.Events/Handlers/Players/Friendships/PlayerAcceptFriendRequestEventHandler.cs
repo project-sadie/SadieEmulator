@@ -18,8 +18,6 @@ public class PlayerAcceptFriendRequestEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
         foreach (var originId in eventParser.Ids)
         {
             await AcceptAsync(client, originId);

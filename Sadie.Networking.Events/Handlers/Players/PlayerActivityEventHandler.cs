@@ -5,12 +5,10 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerIds.PlayerActivity)]
-public class PlayerActivityEventHandler(
-    PlayerActivityEventParser eventParser) : INetworkPacketEventHandler
+public class PlayerActivityEventHandler : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
         return Task.CompletedTask;
     }
 }

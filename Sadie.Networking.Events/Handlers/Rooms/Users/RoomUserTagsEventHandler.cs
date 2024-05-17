@@ -7,12 +7,10 @@ using Sadie.Networking.Writers.Rooms.Users;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerIds.RoomUserTags)]
-public class RoomUserTagsEventHandler(RoomUserTagsEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTagsEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;

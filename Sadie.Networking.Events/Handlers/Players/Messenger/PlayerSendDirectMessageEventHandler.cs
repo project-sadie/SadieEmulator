@@ -12,15 +12,12 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 [PacketId(EventHandlerIds.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
-    PlayerSendDirectMessageEventParser eventParser,
     PlayerRepository playerRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalMilliseconds < CooldownIntervals.PlayerDirectMessage)
         {
             return;
@@ -36,10 +33,7 @@ public class PlayerSendDirectMessageEventHandler(
             return;
         }
 
-        if (message.Length > 500)
-        {
-            message = message.Truncate(500);
-        }
+        message = message.Truncate(500);
 
         if (!client.Player.IsFriendsWith(eventParser.PlayerId))
         {

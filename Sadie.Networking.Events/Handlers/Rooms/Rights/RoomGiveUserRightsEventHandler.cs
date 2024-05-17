@@ -13,13 +13,10 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 [PacketId(EventHandlerIds.RoomGiveUserRights)]
 public class RoomGiveUserRightsEventHandler(
     SadieContext dbContext,
-    RoomGiveUserRightsEventParser eventParser,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var playerId = eventParser.PlayerId;
         var player = client.Player;
         

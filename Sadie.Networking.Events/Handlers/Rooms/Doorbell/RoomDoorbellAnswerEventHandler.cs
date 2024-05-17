@@ -14,9 +14,7 @@ public class RoomDoorbellAnswerEventHandler(
         INetworkClient client, 
         INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var username = eventParser.Username;
+        var username = Username;
         var player = playerRepository.GetPlayerLogicByUsername(username);
         
         if (player == null)
@@ -24,7 +22,7 @@ public class RoomDoorbellAnswerEventHandler(
             return;
         }
 
-        await player.NetworkObject.WriteToStreamAsync(eventParser.Accept
+        await player.NetworkObject.WriteToStreamAsync(Accept
             ? new RoomDoorbellAcceptWriter { Username = username }
             : new RoomDoorbellNoAnswerWriter { Username = username });
     }

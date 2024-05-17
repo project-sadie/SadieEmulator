@@ -15,8 +15,6 @@ public class PlayerCreateRoomEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var layout = dbContext
             .RoomLayouts
             .FirstOrDefault(x => x.Name == eventParser.LayoutName);

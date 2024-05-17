@@ -15,14 +15,11 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerIds.RoomFurnitureItemEjected)]
 public class RoomItemEjectedEventHandler(
     SadieContext dbContext,
-    RoomFurnitureItemEjectedEventParser eventParser,
     RoomRepository roomRepository,
     PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null || client.RoomUser == null)
         {
             return;

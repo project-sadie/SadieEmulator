@@ -12,19 +12,16 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerIds.PlayerFriendRequests)]
 public class PlayerSendFriendRequestEventHandler(
-    PlayerSendFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
     ServerPlayerConstants playerConstants,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
+    public string? TargetUsername { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
-
-        var targetUsername = eventParser.TargetUsername;
         
         if (player.GetAcceptedFriendshipCount() >= playerConstants.MaxFriendships)
         {
@@ -36,14 +33,14 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        if (targetUsername == player.Username)
+        if (TargetUsername == player.Username)
         {
             return;
         }
         
         Player? targetPlayer;
         var targetOnline = false;
-        var onlineTarget = playerRepository.GetPlayerLogicByUsername(targetUsername);
+        var onlineTarget = playerRepository.GetPlayerLogicByUsername(TargetUsername);
         
         if (onlineTarget != null)
         {
@@ -52,7 +49,7 @@ public class PlayerSendFriendRequestEventHandler(
         }
         else
         {
-            targetPlayer = await playerRepository.GetPlayerByUsernameAsync(targetUsername);
+            targetPlayer = await playerRepository.GetPlayerByUsernameAsync(TargetUsername);
         }
         
         if (targetPlayer == null)

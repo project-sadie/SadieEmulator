@@ -9,13 +9,14 @@ namespace Sadie.Networking.Events.Handlers.Players.Wardrobe;
 
 [PacketId(EventHandlerIds.PlayerWardrobeSave)]
 public class PlayerWardrobeSaveEventHandler(
-    PlayerWardrobeSaveEventParser eventParser,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
+    public int SlotId { get; set; }
+    public required string FigureCode { get; set; }
+    public required string Gender { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
 
         if (player == null)
@@ -25,9 +26,9 @@ public class PlayerWardrobeSaveEventHandler(
 
         var wardrobeItem = new PlayerWardrobeItem
         {
-            SlotId = eventParser.SlotId,
-            FigureCode = eventParser.FigureCode,
-            Gender = eventParser.Gender == "M" ? AvatarGender.Male : AvatarGender.Female
+            SlotId = SlotId,
+            FigureCode = FigureCode,
+            Gender = Gender == "M" ? AvatarGender.Male : AvatarGender.Female
         };
             
         player.WardrobeItems.Add(wardrobeItem);

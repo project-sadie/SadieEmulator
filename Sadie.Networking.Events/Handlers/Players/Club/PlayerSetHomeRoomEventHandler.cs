@@ -10,10 +10,10 @@ namespace Sadie.Networking.Events.Handlers.Players.Club;
 public class PlayerSetHomeRoomEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {
+    public int RoomId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        parser.Parse(reader);
-
         if (client.Player?.NetworkObject == null)
         {
             return;
@@ -21,11 +21,11 @@ public class PlayerSetHomeRoomEventHandler(
 
         await client.Player.NetworkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
         {
-            HomeRoom = parser.RoomId,
+            HomeRoom = RoomId,
             RoomIdToEnter = 0,
         });
         
-        client.Player.Data.HomeRoomId = parser.RoomId;
+        client.Player.Data.HomeRoomId = RoomId;
 
         dbContext.PlayerData.Update(client.Player.Data);
         await dbContext.SaveChangesAsync();

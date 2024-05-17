@@ -17,8 +17,6 @@ public class PlayerDeclineFriendRequestEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
         var playerId = player.Id;
 

@@ -11,14 +11,11 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerIds.RoomPaintItemPlaced)]
 public class RoomPaintItemPlacedEventHandler(
-    RoomPaintItemPlacedEventParser parser, 
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        parser.Parse(reader);
-
         if (client.Player == null || client.RoomUser == null)
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);

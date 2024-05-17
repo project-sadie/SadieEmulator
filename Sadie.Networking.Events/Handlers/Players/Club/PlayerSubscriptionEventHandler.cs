@@ -6,13 +6,13 @@ using Sadie.Networking.Writers.Players.Other;
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
 [PacketId(EventHandlerIds.PlayerSubscription)]
-public class PlayerSubscriptionEventHandler(PlayerSubscriptionEventParser eventParser) : INetworkPacketEventHandler
+public class PlayerSubscriptionEventHandler : INetworkPacketEventHandler
 {
+    public string? Name { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var playerSub = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == eventParser.Name);
+        var playerSub = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == Name);
         
         if (playerSub == null)
         {

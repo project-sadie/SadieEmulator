@@ -21,10 +21,8 @@ public class PlayerChangedMottoEventHandler(
             return;
         }
         
-        eventParser.Parse(reader);
-
         var player = client.Player!;
-        var newMotto = eventParser.Motto.Truncate(constants.MaxMottoLength);
+        var newMotto = Motto.Truncate(constants.MaxMottoLength);
 
         player.AvatarData.Motto = newMotto;
         

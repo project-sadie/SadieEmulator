@@ -17,8 +17,6 @@ public class RoomRemoveUserRightsEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
         if (client.Player == null)
         {
             return;

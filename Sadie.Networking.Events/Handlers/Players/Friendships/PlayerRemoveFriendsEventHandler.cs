@@ -11,15 +11,12 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerIds.PlayerRemoveFriends)]
 public class PlayerRemoveFriendsEventHandler(
-    PlayerRemoveFriendsEventParser eventParser,
     PlayerRepository playerRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var playerId = client.Player.Id;
         
         for (var i = 0; i < eventParser.Amount; i++)

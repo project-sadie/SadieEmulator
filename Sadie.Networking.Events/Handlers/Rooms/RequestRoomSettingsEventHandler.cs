@@ -12,8 +12,6 @@ public class RequestRoomSettingsEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
         var room = roomRepository.TryGetRoomById(eventParser.RoomId);
         
         if (room != null)

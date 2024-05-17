@@ -16,7 +16,6 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerIds.RoomLoaded)]
 public class RoomLoadedEventHandler(
-    RoomLoadedEventParser eventParser,
     ILogger<RoomLoadedEventHandler> logger,
     RoomRepository roomRepository,
     RoomUserFactory roomUserFactory,
@@ -25,8 +24,6 @@ public class RoomLoadedEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader readers)
     {
-        eventParser.Parse(readers);
-
         var player = client.Player;
 
         var (roomId, password) = (eventParser.RoomId, eventParser.Password);

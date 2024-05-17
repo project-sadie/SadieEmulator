@@ -9,7 +9,6 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
 [PacketId(EventHandlerIds.RoomDoorbellAccepted)]
 public class RoomDoorbellAcceptedEventHandler(
-    RoomDoorbellAcceptedEventParser eventParser,
     RoomRepository roomRepository,
     ILogger<RoomDoorbellAcceptedEventHandler> logger,
     RoomUserFactory roomUserFactory)
@@ -17,9 +16,7 @@ public class RoomDoorbellAcceptedEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
+        var room = roomRepository.TryGetRoomById(RoomId);
 
         if (room == null)
         {
