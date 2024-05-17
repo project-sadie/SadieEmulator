@@ -12,8 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 [PacketId(EventHandlerIds.CatalogPage)]
 public class CatalogPageEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int PageId { get; set; }
-    public string? CatalogMode { get; set; }
+    [PacketData] public int PageId { get; set; }
+    [PacketData] public string? CatalogMode { get; set; }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {

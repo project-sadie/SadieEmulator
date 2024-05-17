@@ -12,6 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Club;
 public class PlayerClubOffersEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {
+    [PacketData] public int WindowId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null)
@@ -41,7 +43,7 @@ public class PlayerClubOffersEventHandler(
         await client.WriteToStreamAsync(new PlayerClubOffersWriter
         {
             Offers = catalogClubOffers,
-            WindowId = eventParser.WindowId,
+            WindowId = WindowId,
             Unused = false,
             CanGift = false,
             RemainingDays = daysRemaining
