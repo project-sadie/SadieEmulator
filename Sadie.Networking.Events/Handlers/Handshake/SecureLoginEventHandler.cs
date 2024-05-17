@@ -34,10 +34,11 @@ public class SecureLoginEventHandler(
     ServerSettings serverSettings)
     : INetworkPacketEventHandler
 {
+    public string? Token { get; set; }
+    public int DelayMs { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
         {
             logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
@@ -45,14 +46,14 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        if (!ValidateSso(eventParser.Token))
+        if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
             logger.LogWarning("Rejected an insecure sso token");
             await DisconnectAsync(client.Channel.Id);
             return;
         }
 
-        var token = await playerRepository.GetSsoTokenAsync(eventParser.Token, eventParser.Delay);
+        var token = await playerRepository.GetSsoTokenAsync(Token, TimeSpan.FromMilliseconds(DelayMs));
 
         if (token == null)
         {
@@ -253,7 +254,7 @@ public class SecureLoginEventHandler(
         }
     }
 
-    private bool ValidateSso(string sso) => !string.IsNullOrEmpty(sso) && sso.Length >= constants.MinSsoLength;
+    private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;
 
     private async Task DisconnectAsync(IChannelId channelId)
     {

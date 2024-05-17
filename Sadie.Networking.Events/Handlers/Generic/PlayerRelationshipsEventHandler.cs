@@ -12,8 +12,6 @@ public class PlayerRelationshipsEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var playerId = eventParser.PlayerId;
         var player = await playerRepository.GetPlayerByIdAsync(playerId);
 

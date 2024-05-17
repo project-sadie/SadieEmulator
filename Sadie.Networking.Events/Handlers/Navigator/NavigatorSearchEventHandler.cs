@@ -18,21 +18,19 @@ public class NavigatorSearchEventHandler(
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
+    [PacketData] public string? TabName { get; set; }
+    [PacketData] public string? SearchQuery { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null)
         {
             return;
         }
-
-        var tabName = eventParser.TabName;
-        var searchQuery = eventParser.SearchQuery;
-
+        
         var tab = await dbContext.Set<NavigatorTab>()
             .Include(x => x.Categories)
-            .FirstOrDefaultAsync(x => x.Name == tabName);
+            .FirstOrDefaultAsync(x => x.Name == TabName);
 
         if (tab == null)
         {
@@ -51,12 +49,12 @@ public class NavigatorSearchEventHandler(
             categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
         }
 
-        categoryRoomMap = ApplyFilter(searchQuery, categoryRoomMap);
+        categoryRoomMap = ApplyFilter(SearchQuery, categoryRoomMap);
         
         var searchResultPagesWriter = new NavigatorSearchResultPagesWriter
         {
-            TabName = tabName,
-            SearchQuery = searchQuery,
+            TabName = TabName,
+            SearchQuery = SearchQuery,
             CategoryRoomMap = categoryRoomMap,
             RoomRepository = roomRepository
         };

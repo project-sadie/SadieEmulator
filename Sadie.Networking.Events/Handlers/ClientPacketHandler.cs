@@ -49,6 +49,10 @@ public class ClientPacketHandler(
             {
                 parameters.Add(packet.ReadString());
             }
+            else if (type == typeof(bool))
+            {
+                parameters.Add(packet.ReadBool());
+            }
             else
             {
                 throw new Exception($"{type.FullName}");

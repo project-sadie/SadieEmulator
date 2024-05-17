@@ -8,14 +8,13 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 
 [PacketId(EventHandlerIds.CompleteDiffieHandshake)]
 public class CompleteDiffieHandshakeEventHandler(
-    CompleteDiffieHandshakeEventParser eventParser,
     HabboEncryption habboEncryption) : INetworkPacketEventHandler
 {
+    public string? PublicKey { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var sharedKey = habboEncryption.CalculateDiffieHellmanSharedKey(eventParser.PublicKey!);
+        var sharedKey = habboEncryption.CalculateDiffieHellmanSharedKey(PublicKey);
 
         await client.WriteToStreamAsync(new CompleteDiffieHandshakeWriter
         {

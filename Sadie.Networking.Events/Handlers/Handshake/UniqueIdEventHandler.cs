@@ -6,15 +6,15 @@ using Sadie.Networking.Writers.Handshake;
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
 [PacketId(EventHandlerIds.UniqueId)]
-public class UniqueIdEventHandler(UniqueIdEventParser eventParser) : INetworkPacketEventHandler
+public class UniqueIdEventHandler : INetworkPacketEventHandler
 {
+    [PacketData] public string? Fingerprint { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
         await client.WriteToStreamAsync(new UniqueIdWriter
         {
-            MachineId = eventParser.Fingerprint
+            MachineId = Fingerprint
         });
     }
 }
