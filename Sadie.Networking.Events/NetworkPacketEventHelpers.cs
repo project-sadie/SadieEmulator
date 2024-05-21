@@ -93,7 +93,7 @@ internal static class NetworkPacketEventHelpers
             PlayerId = roomUser.Id,
             Message = message,
             ChatBubbleId = parser.Bubble,
-            EmotionId = 0,
+            EmotionId = RoomHelpersToClean.GetEmotionFromMessage(message),
             TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };

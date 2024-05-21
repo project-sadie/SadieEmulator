@@ -10,7 +10,7 @@ public class RoomChatMessage
     public int PlayerId { get; init; }
     public string? Message { get; init; }
     public ChatBubble ChatBubbleId { get; init; }
-    public int EmotionId { get; init; }
+    public RoomUserEmotion EmotionId { get; init; }
     public RoomChatMessageType TypeId { get; init; }
     public DateTime CreatedAt { get; init; }
 }
