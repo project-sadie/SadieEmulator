@@ -18,6 +18,8 @@ public class RoomUserRespectEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
+    public int TargetId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))

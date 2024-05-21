@@ -15,6 +15,8 @@ public class RoomGiveUserRightsEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int PlayerId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = PlayerId;

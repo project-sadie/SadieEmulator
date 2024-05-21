@@ -16,7 +16,7 @@ public class RoomUserTagsEventHandler(RoomRepository roomRepository) : INetworkP
             return;
         }
 
-        if (room.UserRepository.TryGet(eventParser.UserId, out var specialUser))
+        if (room.UserRepository.TryGet(UserId, out var specialUser))
         {        
             await specialUser!.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter
             {

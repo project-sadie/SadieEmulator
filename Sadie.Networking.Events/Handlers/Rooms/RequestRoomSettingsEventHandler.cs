@@ -10,6 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RequestRoomSettingsEventHandler(
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int RoomId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var room = roomRepository.TryGetRoomById(RoomId);

@@ -9,6 +9,10 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 [PacketId(EventHandlerIds.RoomForwardData)]
 public class RoomForwardDataEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int RoomId { get; set; }
+    public int Unknown1 { get; set; }
+    public int Unknown2 { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var room = roomRepository.TryGetRoomById(RoomId);

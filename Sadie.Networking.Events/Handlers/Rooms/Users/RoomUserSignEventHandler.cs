@@ -9,6 +9,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 [PacketId(EventHandlerIds.RoomUserSign)]
 public class RoomUserSignEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int SignId { get; set; }
+    
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))

@@ -21,6 +21,8 @@ public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public string PlacementData { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null || client.RoomUser == null)
@@ -44,7 +46,7 @@ public class RoomItemPlacedEventHandler(
         }
         
         var player = client.Player;
-        var placementData = PlacementData;
+        var placementData = PlacementData.Split(" ");
         
         if (!int.TryParse(placementData[0], out var itemId))
         {

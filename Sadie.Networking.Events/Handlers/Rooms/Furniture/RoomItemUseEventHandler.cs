@@ -11,6 +11,8 @@ public class RoomItemUseEventHandler(
     RoomRepository roomRepository,
     RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
+    public int ItemId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null || client.RoomUser == null)
