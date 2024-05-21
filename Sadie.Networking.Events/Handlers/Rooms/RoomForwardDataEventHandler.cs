@@ -10,8 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RoomForwardDataEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
-    public int Unknown1 { get; set; }
-    public int Unknown2 { get; set; }
+    public int EnterRoom { get; set; }
+    public int ForwardRoom { get; set; }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -26,15 +26,14 @@ public class RoomForwardDataEventHandler(RoomRepository roomRepository) : INetwo
         {
             return;
         }
-        
-        var unknown3 = eventParser is not { Unknown1: 0, Unknown2: 1 };
+
         var isOwner = room.OwnerId == client.Player.Id;
         
         await client.WriteToStreamAsync(new  RoomForwardDataWriter
         {
             Room = room,
             RoomForward = true,
-            EnterRoom = unknown3,
+            EnterRoom = EnterRoom != 0 || ForwardRoom != 1,
             IsOwner = isOwner
         });
     }
