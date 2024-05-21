@@ -69,7 +69,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (!await RoomHelpersToClean.TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
+        if (!await RoomHelpers.TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
         {
             return;
         }

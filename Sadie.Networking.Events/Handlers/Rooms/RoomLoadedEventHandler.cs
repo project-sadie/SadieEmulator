@@ -71,7 +71,7 @@ public class RoomLoadedEventHandler(
             return;
         }
         
-        await RoomHelpersToClean.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await RoomHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
         
         await playerRepository.UpdateMessengerStatusForFriends(
             player.Id,

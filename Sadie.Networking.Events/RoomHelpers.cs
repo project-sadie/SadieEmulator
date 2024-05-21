@@ -13,7 +13,7 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events;
 
-public static class RoomHelpersToClean
+public static class RoomHelpers
 {
     public static async Task<bool> TryChargeForCatalogItemPurchaseAsync(INetworkClient client, CatalogItem item, int amount)
     {

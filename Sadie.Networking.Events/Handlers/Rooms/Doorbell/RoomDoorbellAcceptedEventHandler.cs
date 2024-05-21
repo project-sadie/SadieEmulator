@@ -25,6 +25,6 @@ public class RoomDoorbellAcceptedEventHandler(
             return;
         }
         
-        await RoomHelpersToClean.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await RoomHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
     }
 }
