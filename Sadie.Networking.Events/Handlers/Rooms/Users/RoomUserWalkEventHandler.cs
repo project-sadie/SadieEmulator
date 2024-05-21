@@ -19,8 +19,8 @@ public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, RoomR
         }
         
         roomUser.LastAction = DateTime.Now;
-        
         roomUser.WalkToPoint(eventParser.Point);
+        
         return Task.CompletedTask;
     }
 }

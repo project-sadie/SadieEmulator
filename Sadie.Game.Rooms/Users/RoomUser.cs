@@ -37,10 +37,11 @@ public class RoomUser(
             RoomUserStatus.Move);
     }
     
-    public void WalkToPoint(Point point)
+    public void WalkToPoint(Point point, Action onReachedGoal)
     {
         PathGoal = point;
         NeedsPathCalculated = true;
+        OnReachedGoal = onReachedGoal;
     }
 
     public void LookAtPoint(Point point)
@@ -123,6 +124,12 @@ public class RoomUser(
         IsWalking = false;
         RemoveStatuses(RoomUserStatus.Move);
         CheckStatusForCurrentTile();
+
+        if (OnReachedGoal != null)
+        {
+            OnReachedGoal.Invoke();
+            OnReachedGoal = null;
+        }
     }
     
     private void ProcessMovement()
