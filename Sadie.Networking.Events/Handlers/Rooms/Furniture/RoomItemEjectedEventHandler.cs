@@ -18,6 +18,9 @@ public class RoomItemEjectedEventHandler(
     RoomRepository roomRepository,
     PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
+    public int Category { get; set; }
+    public int ItemId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null || client.RoomUser == null)
@@ -26,7 +29,7 @@ public class RoomItemEjectedEventHandler(
         }
 
         var player = client.Player;
-        var itemId = eventParser.ItemId;
+        var itemId = ItemId;
         var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
 

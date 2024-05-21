@@ -29,7 +29,7 @@ public class RoomRemoveUserRightsEventHandler(
             return;
         }
         
-        foreach (var playerId in eventParser.Ids)
+        foreach (var playerId in Ids)
         {
             var right = room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId);
             

@@ -7,27 +7,28 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 [PacketId(EventHandlerIds.RoomUserWhisper)]
 public class RoomUserWhisperEventHandler(
-    RoomUserWhisperEventParser eventParser,
     RoomRepository roomRepository, 
     ServerRoomConstants roomConstants,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
+    public required string Data { get; set; }
+    public int Bubble { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
 
-        var whisperData = eventParser.Data.Split(" ");
+        var whisperData = Data.Split(" ");
         var whisperUsername = whisperData.First();
         var whisperMessage = string.Join("", whisperData.Skip(1));
 
@@ -46,7 +47,7 @@ public class RoomUserWhisperEventHandler(
             RoomId = room.Id,
             PlayerId = roomUser.Id,
             Message = whisperMessage,
-            ChatBubbleId = eventParser.Bubble,
+            ChatBubbleId = (ChatBubble) Bubble,
             EmotionId = 0,
             TypeId = RoomChatMessageType.Whisper,
             CreatedAt = DateTime.Now
@@ -57,7 +58,7 @@ public class RoomUserWhisperEventHandler(
             SenderId = chatMessage.PlayerId,
             Message = chatMessage.Message,
             EmotionId = chatMessage.EmotionId,
-            Bubble = (int)chatMessage.ChatBubbleId
+            Bubble = Bubble
         };
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);

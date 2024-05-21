@@ -22,11 +22,14 @@ public class RoomLoadedEventHandler(
     PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
+    public int RoomId { get; set; }
+    public required string Password { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader readers)
     {
         var player = client.Player;
 
-        var (roomId, password) = (eventParser.RoomId, eventParser.Password);
+        var (roomId, password) = (RoomId, Password);
         var room = await roomRepository.TryLoadRoomByIdAsync(roomId);
         var lastRoomId = player.CurrentRoomId;
         

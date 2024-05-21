@@ -6,6 +6,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
@@ -15,9 +16,33 @@ public class RoomSettingsSaveEventHandler(
     RoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {
+    public long RoomId { get; set; }
+    public required string Name { get; set; }
+    public required string Description { get; set; }
+    public RoomAccessType AccessType { get; set; }
+    public required string Password { get; set; }
+    public int MaxUsers { get; set; }
+    public int CategoryId { get; set; }
+    public List<string> Tags { get; set; } = [];
+    public int TradeOption { get; set; }
+    public bool AllowPets { get; set; }
+    public bool CanPetsEat { get; set; }
+    public bool CanUsersOverlap { get; set; }
+    public bool HideWall { get; set; }
+    public int WallSize { get; set; }
+    public int FloorSize { get; set; }
+    public int WhoCanMute { get; set; }
+    public int WhoCanKick { get; set; }
+    public int WhoCanBan { get; set; }
+    public int ChatType { get; set; }
+    public int ChatWeight { get; set; }
+    public int ChatSpeed { get; set; }
+    public int ChatDistance { get; set; }
+    public int ChatProtection { get; set; }
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
+        var room = roomRepository.TryGetRoomById(RoomId);
 
         if (room == null)
         {
@@ -29,7 +54,7 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
         
-        if (eventParser.Tags.Any(x => x.Length > roomConstants.MaxTagLength))
+        if (Tags.Any(x => x.Length > roomConstants.MaxTagLength))
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter
             {
@@ -40,7 +65,7 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
         
-        if (string.IsNullOrEmpty(eventParser.Name))
+        if (string.IsNullOrEmpty(Name))
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter
             {
@@ -51,7 +76,7 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
 
-        if (eventParser.AccessType == RoomAccessType.Password && string.IsNullOrEmpty(eventParser.Password))
+        if (AccessType == RoomAccessType.Password && string.IsNullOrEmpty(Password))
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter
             {
@@ -62,11 +87,11 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
 
-        room.Name = eventParser.Name.Truncate(roomConstants.MaxNameLength);
-        room.Description = eventParser.Description.Truncate(roomConstants.MaxDescriptionLength);
-        room.MaxUsersAllowed = eventParser.MaxUsers;
+        room.Name = Name.Truncate(roomConstants.MaxNameLength);
+        room.Description = Description.Truncate(roomConstants.MaxDescriptionLength);
+        room.MaxUsersAllowed = MaxUsers;
 
-        foreach (var tag in eventParser.Tags)
+        foreach (var tag in Tags)
         {
             room.Tags.Add(new RoomTag
             {
@@ -82,33 +107,33 @@ public class RoomSettingsSaveEventHandler(
         
         await client.WriteToStreamAsync(new RoomSettingsSavedWriter
         {
-            RoomId = eventParser.RoomId
+            RoomId = RoomId
         });
     }
 
     private void UpdateSettings(RoomSettings settings)
     {
-        settings.AccessType = eventParser.AccessType;
-        settings.Password = eventParser.Password;
-        settings.TradeOption = eventParser.TradeOption;
-        settings.AllowPets = eventParser.AllowPets;
-        settings.CanPetsEat = eventParser.CanPetsEat;
-        settings.CanUsersOverlap = eventParser.CanUsersOverlap;
-        settings.HideWalls = eventParser.HideWall;
-        settings.WallThickness = eventParser.WallSize;
-        settings.FloorThickness = eventParser.FloorSize;
-        settings.WhoCanMute = eventParser.WhoCanMute;
-        settings.WhoCanKick = eventParser.WhoCanKick;
-        settings.WhoCanBan = eventParser.WhoCanBan;
+        settings.AccessType = AccessType;
+        settings.Password = Password;
+        settings.TradeOption = TradeOption;
+        settings.AllowPets = AllowPets;
+        settings.CanPetsEat = CanPetsEat;
+        settings.CanUsersOverlap = CanUsersOverlap;
+        settings.HideWalls = HideWall;
+        settings.WallThickness = WallSize;
+        settings.FloorThickness = FloorSize;
+        settings.WhoCanMute = WhoCanMute;
+        settings.WhoCanKick = WhoCanKick;
+        settings.WhoCanBan = WhoCanBan;
     }
 
     private void UpdateChatSettings(RoomChatSettings chatSettings)
     {
-        chatSettings.ChatType = eventParser.ChatType;
-        chatSettings.ChatWeight = eventParser.ChatWeight;
-        chatSettings.ChatSpeed = eventParser.ChatSpeed;
-        chatSettings.ChatDistance = eventParser.ChatDistance;
-        chatSettings.ChatProtection = eventParser.ChatProtection;
+        chatSettings.ChatType = ChatType;
+        chatSettings.ChatWeight = ChatWeight;
+        chatSettings.ChatSpeed = ChatSpeed;
+        chatSettings.ChatDistance = ChatDistance;
+        chatSettings.ChatProtection = ChatProtection;
     }
     private async Task BroadcastUpdatesAsync(RoomLogic room)
     {
@@ -133,7 +158,7 @@ public class RoomSettingsSaveEventHandler(
 
         var settingsUpdatedWriter = new RoomSettingsUpdatedWriter
         {
-            RoomId = eventParser.RoomId
+            RoomId = RoomId
         };
 
         await room.UserRepository.BroadcastDataAsync(floorSettingsWriter);

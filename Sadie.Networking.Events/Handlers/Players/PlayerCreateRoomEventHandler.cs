@@ -13,11 +13,18 @@ public class PlayerCreateRoomEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public required string Name { get; set; }
+    public required string Description { get; set; }
+    public required string LayoutName { get; set; }
+    public int CategoryId { get; set; }
+    public int MaxUsersAllowed { get; set; }
+    public int TradingPermission { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var layout = dbContext
             .RoomLayouts
-            .FirstOrDefault(x => x.Name == eventParser.LayoutName);
+            .FirstOrDefault(x => x.Name == LayoutName);
 
         if (layout == null)
         {
@@ -26,11 +33,11 @@ public class PlayerCreateRoomEventHandler(
 
         var newRoom = new Room
         {
-            Name = eventParser.Name,
+            Name = Name,
             OwnerId = client.Player.Id,
             LayoutId = layout.Id,
             MaxUsersAllowed = 50,
-            Description = eventParser.Description,
+            Description = Description,
             CreatedAt = DateTime.Now
         };
 

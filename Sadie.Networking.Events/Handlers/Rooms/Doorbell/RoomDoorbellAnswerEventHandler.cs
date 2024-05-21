@@ -10,6 +10,9 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 public class RoomDoorbellAnswerEventHandler(
     PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
+    public required string Username { get; set; }
+    public bool Accept { get; set; }
+    
     public async Task HandleAsync(
         INetworkClient client, 
         INetworkPacketReader reader)

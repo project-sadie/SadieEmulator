@@ -10,8 +10,6 @@ public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkP
 {
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
@@ -19,7 +17,7 @@ public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkP
         
         roomUser.LastAction = DateTime.Now;
         
-        roomUser.WalkToPoint(eventParser.Point);
+        roomUser.WalkToPoint(Point);
         return Task.CompletedTask;
     }
 }

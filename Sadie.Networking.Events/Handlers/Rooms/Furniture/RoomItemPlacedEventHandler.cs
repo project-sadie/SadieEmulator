@@ -44,7 +44,7 @@ public class RoomItemPlacedEventHandler(
         }
         
         var player = client.Player;
-        var placementData = eventParser.PlacementData;
+        var placementData = PlacementData;
         
         if (!int.TryParse(placementData[0], out var itemId))
         {

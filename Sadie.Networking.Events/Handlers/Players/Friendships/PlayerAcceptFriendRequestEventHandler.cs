@@ -16,9 +16,12 @@ public class PlayerAcceptFriendRequestEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
+    public int Amount { get; set; }
+    public List<int> Ids { get; } = [];
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        foreach (var originId in eventParser.Ids)
+        foreach (var originId in Ids)
         {
             await AcceptAsync(client, originId);
         }

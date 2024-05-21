@@ -15,12 +15,15 @@ public class PlayerDeclineFriendRequestEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
+    public bool DeclineAll { get; set; }
+    public required List<int> Ids { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;
         var playerId = player.Id;
 
-        if (eventParser.DeclineAll)
+        if (DeclineAll)
         {
             player.IncomingFriendships.Clear();
             
@@ -30,7 +33,7 @@ public class PlayerDeclineFriendRequestEventHandler(
         }
         else
         {
-            foreach (var originId in eventParser.Ids) 
+            foreach (var originId in Ids) 
             {
                 var targetId = playerId;
                 

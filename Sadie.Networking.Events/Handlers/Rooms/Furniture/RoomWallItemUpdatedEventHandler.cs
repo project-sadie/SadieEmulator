@@ -14,6 +14,9 @@ public class RoomWallItemUpdatedEventHandler(
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
+    public int ItemId { get; set; }
+    public string WallPosition { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null || client.RoomUser == null)
@@ -34,14 +37,14 @@ public class RoomWallItemUpdatedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null)
         {
             return;
         }
 
-        var wallPosition = eventParser.WallPosition;
+        var wallPosition = WallPosition;
 
         if (string.IsNullOrEmpty(wallPosition))
         {

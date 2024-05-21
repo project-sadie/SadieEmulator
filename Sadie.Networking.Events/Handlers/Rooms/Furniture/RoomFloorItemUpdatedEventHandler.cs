@@ -16,6 +16,11 @@ public class RoomFloorItemUpdatedEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int ItemId { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Direction { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null || client.RoomUser == null)
@@ -23,7 +28,7 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var itemId = eventParser.ItemId;
+        var itemId = ItemId;
         
         var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
@@ -46,10 +51,10 @@ public class RoomFloorItemUpdatedEventHandler(
         }
 
         var newPoints = RoomTileMapHelpers.GetPointsForPlacement(
-            eventParser.X, eventParser.Y, 
+            X, Y, 
             roomFurnitureItem.FurnitureItem.TileSpanX,
             roomFurnitureItem.FurnitureItem.TileSpanY, 
-            eventParser.Direction);
+            Direction);
         
         if (!RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
         {
@@ -58,11 +63,11 @@ public class RoomFloorItemUpdatedEventHandler(
         }
 
         var position = new HPoint(
-            eventParser.X,
-            eventParser.Y, 
+            X,
+            Y, 
             roomFurnitureItem.PositionZ);
 
-        var direction = eventParser.Direction;
+        var direction = Direction;
         
         var oldPoints = RoomTileMapHelpers.GetPointsForPlacement(
             roomFurnitureItem.PositionX, 

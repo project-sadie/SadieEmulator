@@ -20,8 +20,6 @@ public class RoomUserRespectEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
@@ -30,10 +28,10 @@ public class RoomUserRespectEventHandler(
         var player = client.Player!;
         var playerData = player.Data;
         var lastRoom = player.CurrentRoomId;
-        var targetPlayer = playerRepository.GetPlayerLogicById(eventParser.TargetId);
+        var targetPlayer = playerRepository.GetPlayerLogicById(TargetId);
         
         if (playerData.RespectPoints < 1 || 
-            player.Id == eventParser.TargetId || 
+            player.Id == TargetId || 
             targetPlayer == null || 
             targetPlayer.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
         {
@@ -53,7 +51,7 @@ public class RoomUserRespectEventHandler(
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter
         {
-            UserId = eventParser.TargetId,
+            UserId = TargetId,
             TotalRespects = targetPlayer.Respects.Count
         });
         

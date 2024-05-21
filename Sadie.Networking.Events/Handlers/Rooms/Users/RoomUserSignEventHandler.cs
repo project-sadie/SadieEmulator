@@ -7,18 +7,16 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerIds.RoomUserSign)]
-public class RoomUserSignEventHandler(RoomUserSignEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserSignEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }
 
-        roomUser.AddStatus(RoomUserStatus.Sign, eventParser.SignId.ToString());
+        roomUser.AddStatus(RoomUserStatus.Sign, SignId.ToString());
         
         return Task.CompletedTask;
     }

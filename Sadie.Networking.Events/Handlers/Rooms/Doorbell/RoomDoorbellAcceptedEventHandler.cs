@@ -14,6 +14,8 @@ public class RoomDoorbellAcceptedEventHandler(
     RoomUserFactory roomUserFactory)
     : INetworkPacketEventHandler
 {
+    public int RoomId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var room = roomRepository.TryGetRoomById(RoomId);

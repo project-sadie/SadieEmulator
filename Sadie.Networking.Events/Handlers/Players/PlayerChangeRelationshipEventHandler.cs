@@ -15,6 +15,9 @@ public class PlayerChangeRelationshipEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
+    public int PlayerId { get; set; }
+    public int RelationId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var playerId = PlayerId;

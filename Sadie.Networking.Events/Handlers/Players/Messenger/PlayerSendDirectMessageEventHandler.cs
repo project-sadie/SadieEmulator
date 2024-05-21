@@ -6,6 +6,7 @@ using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Shared;
+using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
@@ -16,6 +17,9 @@ public class PlayerSendDirectMessageEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
+    public int PlayerId { get; set; }
+    public required string Message { get; set; }
+
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalMilliseconds < CooldownIntervals.PlayerDirectMessage)
@@ -25,8 +29,8 @@ public class PlayerSendDirectMessageEventHandler(
         
         client.Player.State.LastDirectMessage = DateTime.Now;
 
-        var playerId = eventParser.PlayerId;
-        var message = eventParser.Message;
+        var playerId = PlayerId;
+        var message = Message;
 
         if (string.IsNullOrEmpty(message))
         {
@@ -35,7 +39,7 @@ public class PlayerSendDirectMessageEventHandler(
 
         message = message.Truncate(500);
 
-        if (!client.Player.IsFriendsWith(eventParser.PlayerId))
+        if (!client.Player.IsFriendsWith(PlayerId))
         {
             await client.WriteToStreamAsync(new PlayerMessageErrorWriter
             {

@@ -10,11 +10,13 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 [PacketId(EventHandlerIds.PlayerStalk)]
 public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
+    public int PlayerId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerId = eventParser.PlayerId;
+        var playerId = PlayerId;
 
-        if (!client.Player.IsFriendsWith(eventParser.PlayerId))
+        if (!client.Player.IsFriendsWith(PlayerId))
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter
             {

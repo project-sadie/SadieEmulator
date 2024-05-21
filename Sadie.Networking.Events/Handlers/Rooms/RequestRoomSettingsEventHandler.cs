@@ -12,7 +12,7 @@ public class RequestRoomSettingsEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
+        var room = roomRepository.TryGetRoomById(RoomId);
         
         if (room != null)
         {

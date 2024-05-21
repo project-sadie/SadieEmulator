@@ -9,8 +9,10 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerIds.RoomUserAction)]
-public class RoomUserActionEventHandler(RoomUserActionEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserActionEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int Action { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
@@ -18,7 +20,7 @@ public class RoomUserActionEventHandler(RoomUserActionEventParser eventParser, R
             return;
         }
 
-        if (eventParser.Action == RoomUserAction.Idle)
+        if (Action == (int) RoomUserAction.Idle)
         {
             if (!roomUser.IsIdle)
             {
@@ -39,7 +41,7 @@ public class RoomUserActionEventHandler(RoomUserActionEventParser eventParser, R
         await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
         {
             UserId = roomUser.Id,
-            Action = (int) eventParser.Action
+            Action = Action
         });
     }
 }

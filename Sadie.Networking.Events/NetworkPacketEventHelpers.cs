@@ -8,6 +8,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events;
@@ -60,11 +61,12 @@ internal static class NetworkPacketEventHelpers
         ServerRoomConstants roomConstants,
         RoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository,
-        SadieContext dbContext)
+        SadieContext dbContext,
+        ChatBubble bubble)
     {
         if (string.IsNullOrEmpty(message) || 
             message.Length > roomConstants.MaxChatMessageLength ||
-            !NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+            !TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
@@ -89,7 +91,7 @@ internal static class NetworkPacketEventHelpers
             RoomId = room.Id,
             PlayerId = roomUser.Id,
             Message = message,
-            ChatBubbleId = parser.Bubble,
+            ChatBubbleId = bubble,
             EmotionId = 0,
             TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now

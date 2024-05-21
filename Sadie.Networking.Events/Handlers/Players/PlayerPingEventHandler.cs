@@ -8,11 +8,13 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerIds.PlayerPing)]
 public class PlayerPingEventHandler : INetworkPacketEventHandler
 {
+    public int Id { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         await client.WriteToStreamAsync(new PlayerPongWriter
         {
-            Id = eventParser.Id
+            Id = Id
         });
     }
 }

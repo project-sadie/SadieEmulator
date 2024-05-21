@@ -17,7 +17,7 @@ public class RoomGiveUserRightsEventHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var playerId = eventParser.PlayerId;
+        var playerId = PlayerId;
         var player = client.Player;
         
         var room = roomRepository.TryGetRoomById(player.CurrentRoomId);

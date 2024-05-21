@@ -14,6 +14,9 @@ public class PlayerChangedAppearanceEventHandler(
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
+    public required string Gender { get; set; }
+    public required string FigureCode { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null)

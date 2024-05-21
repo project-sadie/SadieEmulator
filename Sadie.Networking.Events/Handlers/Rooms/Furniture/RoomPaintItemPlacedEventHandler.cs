@@ -14,6 +14,8 @@ public class RoomPaintItemPlacedEventHandler(
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
+    public int ItemId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null || client.RoomUser == null)
@@ -37,7 +39,7 @@ public class RoomPaintItemPlacedEventHandler(
         }
         
         var player = client.Player;
-        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == parser.ItemId);
+        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (playerItem == null)
         {
@@ -63,7 +65,7 @@ public class RoomPaintItemPlacedEventHandler(
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {
-            ItemId = parser.ItemId
+            ItemId = ItemId
         });
         
         await room.UserRepository.BroadcastDataAsync(new RoomPaintWriter

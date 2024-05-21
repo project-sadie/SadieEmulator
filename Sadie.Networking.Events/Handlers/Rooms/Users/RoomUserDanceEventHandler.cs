@@ -7,8 +7,10 @@ using Sadie.Networking.Writers.Rooms.Users;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerIds.RoomUserDance)]
-public class RoomUserDanceEventHandler(RoomUserDanceEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserDanceEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
+    public int DanceId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
@@ -19,7 +21,7 @@ public class RoomUserDanceEventHandler(RoomUserDanceEventParser eventParser, Roo
         await room.UserRepository.BroadcastDataAsync(new RoomUserDanceWriter
         {
             UserId = roomUser.Id,
-            DanceId = eventParser.DanceId
+            DanceId = DanceId
         });
     }
 }

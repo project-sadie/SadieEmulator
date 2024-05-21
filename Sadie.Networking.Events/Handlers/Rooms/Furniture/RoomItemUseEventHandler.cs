@@ -25,7 +25,7 @@ public class RoomItemUseEventHandler(
             return;
         }
         
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null)
         {
