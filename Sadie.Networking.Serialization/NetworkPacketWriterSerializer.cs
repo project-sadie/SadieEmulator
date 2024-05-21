@@ -3,7 +3,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Serialization;
 
-public class NetworkPacketSerializer
+public class NetworkPacketWriterSerializer
 {
     private static void InvokeOnConfigureRules(object packet)
     {

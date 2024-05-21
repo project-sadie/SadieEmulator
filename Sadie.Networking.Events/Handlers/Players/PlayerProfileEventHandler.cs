@@ -1,4 +1,3 @@
-using AutoMapper;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
