@@ -26,10 +26,42 @@ public class EventSerializer
             {
                 property.SetValue(handler, packet.ReadBool(), null);
             }
+            else if (type == typeof(List<int>))
+            {
+                property.SetValue(handler, ReadStringList(packet), null);
+            }
+            else if (type == typeof(List<int>))
+            {
+                property.SetValue(handler, ReadIntegerList(packet), null);
+            }
             else
             {
                 throw new Exception($"{type.FullName}");
             }
         }
+    }
+
+    private static List<int> ReadIntegerList(INetworkPacket packet)
+    {
+        var tempList = new List<int>();
+
+        for (var i = 0; i < packet.ReadInt(); i++)
+        {
+            tempList.Add(packet.ReadInt());
+        }
+
+        return tempList;
+    }
+
+    private static List<string> ReadStringList(INetworkPacketReader packet)
+    {
+        var tempList = new List<string>();
+
+        for (var i = 0; i < packet.ReadInt(); i++)
+        {
+            tempList.Add(packet.ReadString());
+        }
+
+        return tempList;
     }
 }
