@@ -127,5 +127,6 @@ public class ServerPacketId
     public const short ServerError = 1004;
     public const short RoomUserEffect = 1167;
     public const short CommunityGoalHallOfFame = 3005;
-    public const short PlayerGroupBadges = 2402;
+    public const short RoomUserGroupBadgeData = 2402;
+    public const short PlayerGroupBadgeParts = 2238;
 }

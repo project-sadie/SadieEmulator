@@ -3,10 +3,10 @@ using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
-namespace Sadie.Networking.Writers.Players.Groups;
+namespace Sadie.Networking.Writers.Rooms.Users.Groups;
 
-[PacketId(ServerPacketId.PlayerGroupBadges)]
-public class PlayerGroupBadgesWriter : AbstractPacketWriter
+[PacketId(ServerPacketId.RoomUserGroupBadgeData)]
+public class RoomUserGroupBadgeDataWriter : AbstractPacketWriter
 {
     public required List<GroupBadgeData> BadgeData { get; set; }
 }

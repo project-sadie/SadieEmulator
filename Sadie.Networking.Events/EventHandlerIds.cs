@@ -102,4 +102,5 @@ public class EventHandlerIds
     public const short PlayerSetHomeRoom = 1740;
     public const short GetCommunityGoalHallOfFame = 2167;
     public const short PlayerGroupBadges = 21;
+    public const short GetPlayerGroupBadgeParts = 813;
 }
