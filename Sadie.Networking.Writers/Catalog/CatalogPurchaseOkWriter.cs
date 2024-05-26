@@ -11,7 +11,7 @@ namespace Sadie.Networking.Writers.Catalog;
 public class CatalogPurchaseOkWriter : AbstractPacketWriter
 {
     public required int Id { get; init; }
-    public required string Name { get; init; }
+    public required string? Name { get; init; }
     public required bool Rented { get; init; }
     public required int CostCredits { get; init; }
     public required int CostPoints { get; init; }
@@ -21,7 +21,7 @@ public class CatalogPurchaseOkWriter : AbstractPacketWriter
     public required int Amount { get; init; }
     public required int ClubLevel { get; init; }
     public required bool CanPurchaseBundles { get; init; }
-    public required string Metadata { get; init; }
+    public required string? Metadata { get; init; }
     public required bool IsLimited { get; init; }
     public required int LimitedItemSeriesSize { get; init; }
     public required int AmountLeft { get; init; }

@@ -3,24 +3,22 @@ using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Rights;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Rights;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
+[PacketId(EventHandlerIds.RoomRemoveUserRights)]
 public class RoomRemoveUserRightsEventHandler(
     SadieContext dbContext,
-    RoomRemoveUserRightsEventParser eventParser,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomRemoveUserRights;
-
+    public required List<int> Ids { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
         if (client.Player == null)
         {
             return;
@@ -33,7 +31,7 @@ public class RoomRemoveUserRightsEventHandler(
             return;
         }
         
-        foreach (var playerId in eventParser.Ids)
+        foreach (var playerId in Ids)
         {
             var right = room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId);
             

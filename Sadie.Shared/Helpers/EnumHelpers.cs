@@ -21,7 +21,7 @@ public static class EnumHelpers
         throw new Exception($"Failed to resolve enum from description '{description}'");
     }
     
-    public static string GetEnumDescription(Enum value)
+    public static string? GetEnumDescription(Enum value)
     {
         return value.GetType()
             .GetField(value.ToString())

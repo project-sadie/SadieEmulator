@@ -1,13 +1,13 @@
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
+[PacketId(EventHandlerIds.HabboClubCenter)]
 public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.HabboClubCenter;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var subscription = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");

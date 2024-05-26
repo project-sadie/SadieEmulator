@@ -1,23 +1,20 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.HotelView;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.HotelView;
 
 namespace Sadie.Networking.Events.Handlers.HotelView;
 
-public class HotelViewDataEventHandler(HotelViewDataEventParser eventParser) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.HotelViewData)]
+public class HotelViewDataEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.HotelViewData;
-
+    public string? Unknown1 { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var unknown1 = eventParser.Unknown1;
-        
-        if (unknown1.Contains(';'))
+        if (Unknown1.Contains(';'))
         {
-            var pieces = unknown1.Split(";");
+            var pieces = Unknown1.Split(";");
 
             foreach (var piece in pieces)
             {
@@ -33,7 +30,7 @@ public class HotelViewDataEventHandler(HotelViewDataEventParser eventParser) : I
                 {
                     await client.WriteToStreamAsync(new HotelViewDataWriter
                     {
-                        Key = unknown1,
+                        Key = Unknown1,
                         Value = piece
                     });
                 }
@@ -43,8 +40,8 @@ public class HotelViewDataEventHandler(HotelViewDataEventParser eventParser) : I
         {
             await client.WriteToStreamAsync(new HotelViewDataWriter
             {
-                Key = unknown1,
-                Value = unknown1.Split(",").Last()
+                Key = Unknown1,
+                Value = Unknown1.Split(",").Last()
             });
         }
     }

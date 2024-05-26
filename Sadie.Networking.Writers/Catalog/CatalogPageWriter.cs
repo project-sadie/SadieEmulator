@@ -12,10 +12,10 @@ namespace Sadie.Networking.Writers.Catalog;
 public class CatalogPageWriter : AbstractPacketWriter
 {
     public required int PageId { get; init; }
-    public required string CatalogMode { get; init; }
-    public required string PageLayout { get; init; }
-    public required List<string> Images { get; init; }
-    public required List<string> Texts { get; init; }
+    public required string? CatalogMode { get; init; }
+    public required string? PageLayout { get; init; }
+    public required List<string?> Images { get; init; }
+    public required List<string?> Texts { get; init; }
     public required List<CatalogItem> Items { get; init; }
     public required bool AcceptSeasonCurrencyAsCredits { get; init; }
     public required List<CatalogFrontPageItem>? FrontPageItems { get; init; }

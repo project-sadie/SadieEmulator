@@ -1,17 +1,17 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-public class RoomUserChangeChatBubbleEventHandler(RoomUserChangeChatBubbleEventParser eventParser) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.RoomUserChangeChatBubble)]
+public class RoomUserChangeChatBubbleEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserChangeChatBubble;
-
+    public int Bubble { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        client.Player.AvatarData.ChatBubbleId = eventParser.Bubble;
+        client.Player.AvatarData.ChatBubbleId = (ChatBubble) Bubble;
     }
 }

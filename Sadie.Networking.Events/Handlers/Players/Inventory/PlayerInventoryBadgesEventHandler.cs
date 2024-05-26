@@ -1,13 +1,13 @@
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 
 namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 
+[PacketId(EventHandlerIds.PlayerInventoryBadges)]
 public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerInventoryBadges;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var badges = client.Player.Badges.ToList();

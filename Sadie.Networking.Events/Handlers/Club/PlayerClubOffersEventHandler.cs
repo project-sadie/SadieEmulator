@@ -2,22 +2,20 @@
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Club;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
+[PacketId(EventHandlerIds.HabboClubData)]
 public class PlayerClubOffersEventHandler(
-    PlayerClubOffersEventParser eventParser, 
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.HabboClubData;
-
+    [PacketData] public int WindowId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null)
         {
             return;
@@ -45,7 +43,7 @@ public class PlayerClubOffersEventHandler(
         await client.WriteToStreamAsync(new PlayerClubOffersWriter
         {
             Offers = catalogClubOffers,
-            WindowId = eventParser.WindowId,
+            WindowId = WindowId,
             Unused = false,
             CanGift = false,
             RemainingDays = daysRemaining

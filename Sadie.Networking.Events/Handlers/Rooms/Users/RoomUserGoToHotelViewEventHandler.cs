@@ -1,13 +1,13 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
+[PacketId(EventHandlerIds.RoomUserGoToHotelView)]
 public class RoomUserGoToHotelViewEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserGoToHotelView;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player;

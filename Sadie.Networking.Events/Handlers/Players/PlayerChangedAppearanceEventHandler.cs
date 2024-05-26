@@ -2,20 +2,21 @@
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
-    PlayerChangedAppearanceEventParser eventParser, 
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerChangedAppearance;
-
+    public required string Gender { get; set; }
+    public required string FigureCode { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         if (client.Player == null)
@@ -23,15 +24,13 @@ public class PlayerChangedAppearanceEventHandler(
             return;
         }
 
-        eventParser.Parse(reader);
-        
         var player = client.Player;
         
-        var gender = eventParser.Gender == "M" ? 
+        var gender = Gender == "M" ? 
             AvatarGender.Male : 
             AvatarGender.Female;
 
-        var figureCode = eventParser.FigureCode;
+        var figureCode = FigureCode;
         
         // TODO: Validate inputs above
 

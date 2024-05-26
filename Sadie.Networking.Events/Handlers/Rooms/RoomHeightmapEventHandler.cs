@@ -2,16 +2,16 @@
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
+[PacketId(EventHandlerIds.RoomHeightmap)]
 public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomHeightmap;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);

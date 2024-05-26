@@ -1,25 +1,26 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Drawing;
+using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.RoomUserWalk)]
+public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserWalk;
-
+    public int X { get; set; }
+    public int Y { get; set; }
+    
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }
         
         roomUser.LastAction = DateTime.Now;
-        roomUser.WalkToPoint(eventParser.Point);
+        roomUser.WalkToPoint(new Point(X, Y));
         
         return Task.CompletedTask;
     }

@@ -7,13 +7,13 @@ namespace Sadie.Networking.Codecs.Encryption;
 
 public class EncryptionDecoder(byte[] key) : ByteToMessageDecoder
 {
-    private readonly Arc4 rc4 = new(key);
+    private readonly Arc4 _rc4 = new(key);
 
     protected override void Decode(IChannelHandlerContext context, IByteBuffer input, List<object> output)
     {
         var data = input.ReadBytes(input.ReadableBytes);
 
-        rc4.Parse(data.Array);
+        _rc4.Parse(data.Array);
 
         output.Add(data);
     }

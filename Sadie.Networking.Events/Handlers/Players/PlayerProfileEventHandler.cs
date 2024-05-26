@@ -1,27 +1,21 @@
-using AutoMapper;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-public class PlayerProfileEventHandler(
-    PlayerProfileEventParser eventParser,
-    PlayerRepository playerRepository,
-    IMapper mapper)
+[PacketId(EventHandlerIds.PlayerProfile)]
+public class PlayerProfileEventHandler(PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerProfile;
-
+    public int ProfileId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var profileId = eventParser.ProfileId;
-        var profilePlayer = await playerRepository.GetPlayerByIdAsync(profileId);
+        var profilePlayer = await playerRepository.GetPlayerByIdAsync(ProfileId);
         
         if (profilePlayer == null)
         {
@@ -29,7 +23,7 @@ public class PlayerProfileEventHandler(
         }
         
         var friendCount = profilePlayer.GetAcceptedFriendshipCount();
-        var friendship = profilePlayer.TryGetFriendshipFor(profileId);
+        var friendship = profilePlayer.TryGetFriendshipFor(ProfileId);
 
         var profileWriter = new PlayerProfileWriter
         {

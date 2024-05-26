@@ -1,13 +1,13 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerMeMenuSettings)]
 public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerMeMenuSettings;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var player = client.Player!;

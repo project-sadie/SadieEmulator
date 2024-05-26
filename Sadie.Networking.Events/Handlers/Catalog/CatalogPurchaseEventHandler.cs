@@ -5,23 +5,24 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
+[PacketId(EventHandlerIds.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
-    CatalogPurchaseEventParser eventParser,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.CatalogPurchase;
-
+    [PacketData] public int PageId { get; set; }
+    [PacketData] public int ItemId { get; set; }
+    [PacketData] public string? ExtraData { get; set; }
+    [PacketData] public int Amount { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
 
         if (client.Player == null)
@@ -44,7 +45,7 @@ public class CatalogPurchaseEventHandler(
             .Set<CatalogPage>()
             .Include(catalogPage => catalogPage.Items)
             .ThenInclude(catalogItem => catalogItem.FurnitureItems)
-            .FirstOrDefaultAsync(x => x.Id == eventParser.PageId);
+            .FirstOrDefaultAsync(x => x.Id == PageId);
 
         if (page == null)
         {
@@ -56,7 +57,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        var item = page.Items.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var item = page.Items.FirstOrDefault(x => x.Id == ItemId);
 
         if (item == null)
         {
@@ -68,7 +69,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (!await RoomHelpersToClean.TryChargeForCatalogItemPurchaseAsync(client, item, eventParser.Amount))
+        if (!await RoomHelpers.TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
         {
             return;
         }
@@ -79,14 +80,14 @@ public class CatalogPurchaseEventHandler(
         var newItems = new List<PlayerFurnitureItem>();
         var furnitureItem = item.FurnitureItems.First();
 
-        for (var i = 0; i < eventParser.Amount; i++)
+        for (var i = 0; i < Amount; i++)
         {
             var newItem = new PlayerFurnitureItem
             {
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = $"1:1",
-                MetaData = eventParser.ExtraData,
+                MetaData = ExtraData,
                 CreatedAt = created
             };
             
@@ -114,7 +115,7 @@ public class CatalogPurchaseEventHandler(
             CostPointsType = item.CostPointsType,
             CanGift = item.FurnitureItems.First().CanGift,
             FurnitureItems = item.FurnitureItems,
-            Amount = eventParser.Amount,
+            Amount = Amount,
             ClubLevel = item.RequiresClubMembership ? 1 : 0,
             CanPurchaseBundles = item.Amount != 1,
             Metadata = item.MetaData,

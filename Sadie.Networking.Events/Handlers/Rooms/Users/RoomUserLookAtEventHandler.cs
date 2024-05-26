@@ -1,19 +1,19 @@
 ﻿using System.Drawing;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.RoomUserLookAt)]
+public class RoomUserLookAtEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserLookAt;
-
+    public int X { get; set; }
+    public int Y { get; set; }
+    
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
@@ -25,8 +25,8 @@ public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, R
         }
 
         var currentPoint = roomUser.Point;
-        var x = eventParser.X;
-        var y = eventParser.Y;
+        var x = X;
+        var y = Y;
 
         if (currentPoint.X == x && currentPoint.Y == y)
         {

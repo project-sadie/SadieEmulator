@@ -1,20 +1,22 @@
 using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-public class SaveNavigatorSettingsEventHandler(
-    SaveNavigatorSettingsEventParser eventParser,
-    SadieContext dbContext) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.SaveNavigatorSettings)]
+public class SaveNavigatorSettingsEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.SaveNavigatorSettings;
+    public int WindowX { get; set; }
+    public int WindowY { get; set; }
+    public int WindowWidth { get; set; }
+    public int WindowHeight { get; set; }
+    public bool OpenSearches { get; set; }
+    public int Mode { get; set; }
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
 
         if (player?.NavigatorSettings == null)
@@ -24,11 +26,11 @@ public class SaveNavigatorSettingsEventHandler(
         
         var navigatorSettings = player.NavigatorSettings;
 
-        navigatorSettings.WindowX = eventParser.WindowX;
-        navigatorSettings.WindowY = eventParser.WindowY;
-        navigatorSettings.WindowWidth = eventParser.WindowWidth;
-        navigatorSettings.WindowHeight = eventParser.WindowHeight;
-        navigatorSettings.OpenSearches = eventParser.OpenSearches;
+        navigatorSettings.WindowX = WindowX;
+        navigatorSettings.WindowY = WindowY;
+        navigatorSettings.WindowWidth = WindowWidth;
+        navigatorSettings.WindowHeight = WindowHeight;
+        navigatorSettings.OpenSearches = OpenSearches;
 
         dbContext.PlayerNavigatorSettings.Update(player.NavigatorSettings);
         await dbContext.SaveChangesAsync();

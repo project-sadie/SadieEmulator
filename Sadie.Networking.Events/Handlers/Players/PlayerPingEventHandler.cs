@@ -1,21 +1,20 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-public class PlayerPingEventHandler(PlayerPingEventParser eventParser) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.PlayerPing)]
+public class PlayerPingEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerPing;
-
+    public int Id { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-     
         await client.WriteToStreamAsync(new PlayerPongWriter
         {
-            Id = eventParser.Id
+            Id = Id
         });
     }
 }

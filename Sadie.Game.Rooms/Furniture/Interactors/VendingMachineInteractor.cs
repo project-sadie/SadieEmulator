@@ -1,5 +1,3 @@
-using System.Drawing;
-using Sadie.Database.Models;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -12,11 +10,6 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "vending_machine";
-
-    private static bool InCorrectPosition(Point userPoint, Point itemPoint)
-    {
-        return userPoint == itemPoint;
-    }
     
     public async Task OnClickAsync(RoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
@@ -31,18 +24,10 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             .FurnitureItem
             .HandItems
             .ToList();
-
-        var squareInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
-        if (handItems.Count < 1 || roomUser.Point != squareInFront)
+        if (handItems.Count < 1)
         {
-            roomUser.WalkToPoint(squareInFront, OnReachedGoal);
             return;
-
-            async void OnReachedGoal()
-            {
-                await OnClickAsync(room, item, roomUser);
-            }
         }
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter

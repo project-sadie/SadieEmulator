@@ -1,20 +1,21 @@
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.RoomForwardData)]
+public class RoomForwardDataEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomForwardData;
-
+    public int RoomId { get; set; }
+    public int EnterRoom { get; set; }
+    public int ForwardRoom { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
-        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
+        var room = roomRepository.TryGetRoomById(RoomId);
 
         if (room == null)
         {
@@ -25,15 +26,14 @@ public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser,
         {
             return;
         }
-        
-        var unknown3 = eventParser is not { Unknown1: 0, Unknown2: 1 };
+
         var isOwner = room.OwnerId == client.Player.Id;
         
         await client.WriteToStreamAsync(new  RoomForwardDataWriter
         {
             Room = room,
             RoomForward = true,
-            EnterRoom = unknown3,
+            EnterRoom = EnterRoom != 0 || ForwardRoom != 1,
             IsOwner = isOwner
         });
     }

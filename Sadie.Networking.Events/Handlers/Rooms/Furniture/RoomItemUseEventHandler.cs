@@ -1,22 +1,20 @@
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
+[PacketId(EventHandlerIds.RoomFurnitureItemUse)]
 public class RoomItemUseEventHandler(
-    RoomFurnitureItemUseEventParser eventParser,
     RoomRepository roomRepository,
     RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomFurnitureItemUse;
-
+    public int ItemId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null || client.RoomUser == null)
         {
             return;
@@ -29,7 +27,7 @@ public class RoomItemUseEventHandler(
             return;
         }
         
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null)
         {

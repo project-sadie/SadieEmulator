@@ -10,7 +10,7 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 public class RoomFloorItemsWriter : AbstractPacketWriter
 {
     public required ICollection<RoomFurnitureItem> FloorItems { get; init; }
-    public required Dictionary<int, string> FurnitureOwners { get; init; }
+    public required Dictionary<int, string?> FurnitureOwners { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
@@ -44,7 +44,7 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         writer.WriteString(height.ToString());
         writer.WriteInteger(extra);
         
-        var objectData = new Dictionary<string, string>();
+        var objectData = new Dictionary<string?, string>();
             
         switch (item.FurnitureItem.InteractionType)
         {

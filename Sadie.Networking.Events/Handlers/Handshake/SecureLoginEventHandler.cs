@@ -6,8 +6,8 @@ using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Handshake;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Networking.Writers.Moderation;
 using Sadie.Networking.Writers.Players;
@@ -24,8 +24,8 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
+[PacketId(EventHandlerIds.SecureLogin)]
 public class SecureLoginEventHandler(
-    SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
     IOptions<EncryptionOptions> encryptionOptions,
     PlayerRepository playerRepository,
@@ -34,12 +34,11 @@ public class SecureLoginEventHandler(
     ServerSettings serverSettings)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.SecureLogin;
-
+    public string? Token { get; set; }
+    public int DelayMs { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
         {
             logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
@@ -47,14 +46,14 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        if (!ValidateSso(eventParser.Token))
+        if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
             logger.LogWarning("Rejected an insecure sso token");
             await DisconnectAsync(client.Channel.Id);
             return;
         }
 
-        var token = await playerRepository.GetSsoTokenAsync(eventParser.Token, eventParser.Delay);
+        var token = await playerRepository.GetSsoTokenAsync(Token, TimeSpan.FromMilliseconds(DelayMs));
 
         if (token == null)
         {
@@ -255,7 +254,7 @@ public class SecureLoginEventHandler(
         }
     }
 
-    private bool ValidateSso(string sso) => !string.IsNullOrEmpty(sso) && sso.Length >= constants.MinSsoLength;
+    private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;
 
     private async Task DisconnectAsync(IChannelId channelId)
     {

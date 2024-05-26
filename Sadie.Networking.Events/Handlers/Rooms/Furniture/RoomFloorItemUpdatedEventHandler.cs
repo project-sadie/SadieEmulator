@@ -4,30 +4,31 @@ using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
+[PacketId(EventHandlerIds.RoomFloorFurnitureItemUpdated)]
 public class RoomFloorItemUpdatedEventHandler(
     SadieContext dbContext,
-    RoomFloorItemUpdatedEventParser eventParser,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomFloorFurnitureItemUpdated;
-
+    public int ItemId { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Direction { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null || client.RoomUser == null)
         {
             return;
         }
 
-        var itemId = eventParser.ItemId;
+        var itemId = ItemId;
         
         var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
         
@@ -50,10 +51,10 @@ public class RoomFloorItemUpdatedEventHandler(
         }
 
         var newPoints = RoomTileMapHelpers.GetPointsForPlacement(
-            eventParser.X, eventParser.Y, 
+            X, Y, 
             roomFurnitureItem.FurnitureItem.TileSpanX,
             roomFurnitureItem.FurnitureItem.TileSpanY, 
-            eventParser.Direction);
+            Direction);
         
         if (!RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
         {
@@ -62,11 +63,11 @@ public class RoomFloorItemUpdatedEventHandler(
         }
 
         var position = new HPoint(
-            eventParser.X,
-            eventParser.Y, 
+            X,
+            Y, 
             roomFurnitureItem.PositionZ);
 
-        var direction = eventParser.Direction;
+        var direction = Direction;
         
         var oldPoints = RoomTileMapHelpers.GetPointsForPlacement(
             roomFurnitureItem.PositionX, 

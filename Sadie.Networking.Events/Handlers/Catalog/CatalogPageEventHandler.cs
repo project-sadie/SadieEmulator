@@ -3,24 +3,23 @@ using Sadie.Database;
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Catalog;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-public class CatalogPageEventHandler(CatalogPageEventParser eventParser, 
-    SadieContext dbContext) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.CatalogPage)]
+public class CatalogPageEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.CatalogPage;
-
+    [PacketData] public int PageId { get; set; }
+    [PacketData] public string? CatalogMode { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         var page = await dbContext
             .Set<CatalogPage>()
-            .Where(x => x.Id == eventParser.PageId)
+            .Where(x => x.Id == PageId)
             .Include(c => c.Items).ThenInclude(x => x.FurnitureItems)
             .Include(c => c.Pages)
             .FirstOrDefaultAsync();
@@ -42,7 +41,7 @@ public class CatalogPageEventHandler(CatalogPageEventParser eventParser,
             Images = page.ImagesJson,
             Texts = page.TextsJson,
             Items = page.Items.ToList(),
-            CatalogMode = eventParser.CatalogMode,
+            CatalogMode = CatalogMode,
             AcceptSeasonCurrencyAsCredits = false,
             FrontPageItems = frontPageItems
         });
