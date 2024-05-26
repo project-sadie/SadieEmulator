@@ -7,7 +7,7 @@ public class NetworkPacketWriter
 {
     private readonly ArrayBufferWriter<byte> _packet = new();
 
-    public void WriteString(string? data)
+    public void WriteString(string data)
     {
         WriteShort((short) data.Length);
         WriteBytes(Encoding.Default.GetBytes(data));
@@ -35,7 +35,7 @@ public class NetworkPacketWriter
 
     public void WriteBool(bool boolean)
     {
-        WriteBytes(new[] {(byte) (boolean ? 1 : 0)});
+        WriteBytes([(byte) (boolean ? 1 : 0)]);
     }
 
     public byte[] GetAllBytes()

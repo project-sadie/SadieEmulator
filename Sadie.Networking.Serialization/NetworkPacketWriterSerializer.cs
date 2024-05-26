@@ -65,9 +65,12 @@ public class NetworkPacketWriterSerializer
             .BaseType?.GetProperty("ConversionRules")
             ?.GetValue(classObject)!;
     
-    private static void AddObjectToWriter(object packet, NetworkPacketWriter writer)
+    private static void AddObjectToWriter(object packet, NetworkPacketWriter writer, bool needsAttribute = false)
     {
-        var properties = packet.GetType().GetProperties();
+        var properties = packet
+            .GetType()
+            .GetProperties()
+            .Where(p => !needsAttribute || Attribute.IsDefined(p, typeof(PacketDataAttribute)));
         
         var conversionRules = GetConversionRules(packet);        
         var beforeRuleMap = GetBeforeRuleMap(packet);
@@ -196,7 +199,7 @@ public class NetworkPacketWriterSerializer
         }
         else if (type == typeof(Dictionary<string, string>))
         {
-            var collection = (Dictionary<string?, string>)property.GetValue(packet)!;
+            var collection = (Dictionary<string, string>)property.GetValue(packet)!;
             
             writer.WriteInteger(collection.Count);
             
@@ -213,7 +216,7 @@ public class NetworkPacketWriterSerializer
         else if (type != typeof(Dictionary<PropertyInfo, Action<NetworkPacketWriter>>) && 
                  type != typeof(Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>>))
         {
-            AddObjectToWriter(property.GetValue(packet)!, writer);
+            AddObjectToWriter(property.GetValue(packet)!, writer, true);
         }
     }
 
