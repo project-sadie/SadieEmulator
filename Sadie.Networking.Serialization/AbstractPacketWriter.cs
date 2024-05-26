@@ -8,7 +8,6 @@ namespace Sadie.Networking.Serialization;
 
 public abstract class AbstractPacketWriter
 {
-    public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> BeforeRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, Action<NetworkPacketWriter>> AfterRulesSerialize { get; } = new();
     public Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules { get; } = new();
@@ -27,11 +26,6 @@ public abstract class AbstractPacketWriter
     public virtual void OnSerialize(NetworkPacketWriter writer)
     {
         
-    }
-
-    protected void Before(PropertyInfo propertyInfo, Action<NetworkPacketWriter> function)
-    {
-        BeforeRulesSerialize.Add(propertyInfo, function);
     }
 
     protected void Override(PropertyInfo propertyInfo, Action<NetworkPacketWriter> function)
