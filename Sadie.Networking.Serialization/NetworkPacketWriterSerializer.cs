@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Reflection;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -127,6 +128,23 @@ public class NetworkPacketWriterSerializer
             writer.WriteString(item);
         }
     }
+    
+    public static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
+    {
+        var elements = (IList)propertyInfo.GetValue(packet)!;
+        writer.WriteInteger(elements.Count);
+
+        foreach (var element in elements)
+        {
+            var properties = element.GetType().GetProperties();
+            
+            foreach (var elementProperty in properties)
+            {
+                var value = elementProperty.GetValue(element);
+                var x = value;
+            }
+        }
+    }
 
     private static void WriteProperty(PropertyInfo property, NetworkPacketWriter writer, object packet)
     {
@@ -152,6 +170,10 @@ public class NetworkPacketWriterSerializer
         {
             var collection = (List<string?>)property.GetValue(packet)!;
             WriteStringListPropertyToWriter(collection, writer);
+        }
+        else if (type.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            WriteArbitraryListPropertyToWriter(property, writer, packet);
         }
         else if (type == typeof(Dictionary<int, string>))
         {
