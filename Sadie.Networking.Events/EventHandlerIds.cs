@@ -101,4 +101,5 @@ public class EventHandlerIds
     public const short RoomPaintItemPlaced = 711;
     public const short PlayerSetHomeRoom = 1740;
     public const short GetCommunityGoalHallOfFame = 2167;
+    public const short PlayerGroupBadges = 21;
 }
