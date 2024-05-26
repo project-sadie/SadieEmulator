@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers.Rooms;

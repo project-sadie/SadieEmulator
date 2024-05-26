@@ -15,7 +15,7 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     double PointZ { get; }
     HDirection DirectionHead { get; set; }
     HDirection Direction { get; set; }
-    void WalkToPoint(Point point);
+    void WalkToPoint(Point point, Action onReachedGoal = null);
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();
     void AddStatus(string key, string value);

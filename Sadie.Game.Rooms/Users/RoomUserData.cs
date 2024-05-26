@@ -34,6 +34,7 @@ public class RoomUserData : IRoomUserData
     protected Point PathGoal { get; set; }
     protected List<Point> PathPoints { get; set; } = [];
     protected bool NeedsPathCalculated { get; set; }
+    protected Action? OnReachedGoal { get; set; } = null;
     protected Point? NextPoint { get; set; }
     protected int StepsWalked { get; set; }
 }
