@@ -1,11 +1,11 @@
 ﻿using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 
-namespace Sadie.Networking.Events.Handlers.Unknown;
+namespace Sadie.Networking.Events.Handlers.Unsorted;
 
-public class GetInterstitialEventHandler : INetworkPacketEventHandler
+public class GetBadgePointLimitsEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.GetInterstitial;
+    public int Id => EventHandlerIds.GetBadgePointLimits;
 
     public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
