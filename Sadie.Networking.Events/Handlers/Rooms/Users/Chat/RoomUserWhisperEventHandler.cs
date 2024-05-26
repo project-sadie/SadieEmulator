@@ -57,7 +57,7 @@ public class RoomUserWhisperEventHandler(
         {
             SenderId = chatMessage.PlayerId,
             Message = chatMessage.Message,
-            EmotionId = chatMessage.EmotionId,
+            EmotionId = (int) chatMessage.EmotionId,
             Bubble = Bubble
         };
         
