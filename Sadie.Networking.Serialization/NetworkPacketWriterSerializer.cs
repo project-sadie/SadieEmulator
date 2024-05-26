@@ -140,8 +140,7 @@ public class NetworkPacketWriterSerializer
             
             foreach (var elementProperty in properties)
             {
-                var value = elementProperty.GetValue(element);
-                var x = value;
+                WriteProperty(elementProperty, writer, element);
             }
         }
     }
