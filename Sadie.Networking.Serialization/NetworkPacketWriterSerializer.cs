@@ -1,9 +1,10 @@
+using System.Collections;
 using System.Reflection;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Serialization;
 
-public class NetworkPacketSerializer
+public class NetworkPacketWriterSerializer
 {
     private static void InvokeOnConfigureRules(object packet)
     {
@@ -64,10 +65,12 @@ public class NetworkPacketSerializer
             .BaseType?.GetProperty("ConversionRules")
             ?.GetValue(classObject)!;
     
-    private static void AddObjectToWriter(object packet, NetworkPacketWriter writer)
+    private static void AddObjectToWriter(object packet, NetworkPacketWriter writer, bool needsAttribute = false)
     {
-        var properties = packet.GetType().GetProperties()
-            .Where(p => p.GetCustomAttributes(typeof(NotPacketDataAttribute), true).Length == 0);
+        var properties = packet
+            .GetType()
+            .GetProperties()
+            .Where(p => !needsAttribute || Attribute.IsDefined(p, typeof(PacketDataAttribute)));
         
         var conversionRules = GetConversionRules(packet);        
         var beforeRuleMap = GetBeforeRuleMap(packet);
@@ -119,13 +122,29 @@ public class NetworkPacketSerializer
         return writer;
     }
 
-    private static void WriteStringListPropertyToWriter(List<string> list, NetworkPacketWriter writer)
+    private static void WriteStringListPropertyToWriter(List<string?> list, NetworkPacketWriter writer)
     {
         writer.WriteInteger(list.Count);
             
         foreach (var item in list)
         {
             writer.WriteString(item);
+        }
+    }
+    
+    public static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
+    {
+        var elements = (IList)propertyInfo.GetValue(packet)!;
+        writer.WriteInteger(elements.Count);
+
+        foreach (var element in elements)
+        {
+            var properties = element.GetType().GetProperties();
+            
+            foreach (var elementProperty in properties)
+            {
+                WriteProperty(elementProperty, writer, element);
+            }
         }
     }
 
@@ -151,12 +170,12 @@ public class NetworkPacketSerializer
         }
         else if (type == typeof(List<string>))
         {
-            var collection = (List<string>)property.GetValue(packet)!;
+            var collection = (List<string?>)property.GetValue(packet)!;
             WriteStringListPropertyToWriter(collection, writer);
         }
         else if (type == typeof(Dictionary<int, string>))
         {
-            var collection = (Dictionary<int, string>)property.GetValue(packet)!;
+            var collection = (Dictionary<int, string?>)property.GetValue(packet)!;
             
             writer.WriteInteger(collection.Count);
             
@@ -168,7 +187,7 @@ public class NetworkPacketSerializer
         }
         else if (type == typeof(Dictionary<string, int>))
         {
-            var collection = (Dictionary<string, int>)property.GetValue(packet)!;
+            var collection = (Dictionary<string?, int>)property.GetValue(packet)!;
             
             writer.WriteInteger(collection.Count);
             
@@ -190,10 +209,14 @@ public class NetworkPacketSerializer
                 writer.WriteString(value);
             }
         }
+        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            WriteArbitraryListPropertyToWriter(property, writer, packet);
+        }
         else if (type != typeof(Dictionary<PropertyInfo, Action<NetworkPacketWriter>>) && 
                  type != typeof(Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>>))
         {
-            AddObjectToWriter(property.GetValue(packet)!, writer);
+            AddObjectToWriter(property.GetValue(packet)!, writer, true);
         }
     }
 

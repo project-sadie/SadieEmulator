@@ -1,14 +1,14 @@
 ﻿using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerData)]
 public class PlayerDataEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerData;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         await client.WriteToStreamAsync(new PlayerDataWriter

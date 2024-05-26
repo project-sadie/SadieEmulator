@@ -11,10 +11,10 @@ namespace Sadie.Networking.Writers.Players.Friendships;
 [PacketId(ServerPacketId.PlayerFriendsList)]
 public class PlayerFriendsListWriter : AbstractPacketWriter
 {
-    public required int Pages { get; init; }
-    public required int Index { get; init; }
+    [PacketData] public required int Pages { get; init; }
+    [PacketData] public required int Index { get; init; }
     public required ICollection<PlayerFriendship> Friends { get; init; }
-    [NotPacketData] public required PlayerRepository PlayerRepository { get; init; }
+    public required PlayerRepository PlayerRepository { get; init; }
     public required ICollection<PlayerRelationship> Relationships { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)

@@ -3,26 +3,25 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Friendships;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
+[PacketId(EventHandlerIds.PlayerAcceptFriendRequest)]
 public class PlayerAcceptFriendRequestEventHandler(
-    PlayerAcceptFriendRequestEventParser eventParser,
     PlayerRepository playerRepository,
     RoomRepository roomRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerAcceptFriendRequest;
-
+    public int Amount { get; set; }
+    public List<int> Ids { get; } = [];
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
-        foreach (var originId in eventParser.Ids)
+        foreach (var originId in Ids)
         {
             await AcceptAsync(client, originId);
         }

@@ -1,13 +1,13 @@
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Camera;
 
 namespace Sadie.Networking.Events.Handlers.Camera;
 
+[PacketId(EventHandlerIds.CameraPrice)]
 public class CameraPriceEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.CameraPrice;
-
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         const int costCredits = 0;

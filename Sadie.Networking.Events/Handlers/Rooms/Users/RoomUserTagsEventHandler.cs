@@ -1,25 +1,24 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserTagsEventHandler(RoomUserTagsEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerIds.RoomUserTags)]
+public class RoomUserTagsEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserTags;
+    public int UserId { get; set; }
 
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-        
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }
 
-        if (room.UserRepository.TryGet(eventParser.UserId, out var specialUser))
+        if (room.UserRepository.TryGet(UserId, out var specialUser))
         {        
             await specialUser!.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter
             {

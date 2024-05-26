@@ -4,31 +4,28 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerIds.PlayerWearingBadges)]
 public class PlayerWearingBadgesEventHandler(
-    PlayerWearingBadgesEventParser eventParser,
     SadieContext dbContext,
     PlayerRepository playerRepository,
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerWearingBadges;
-
+    public int PlayerId { get; set; }
+    
     public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var playerId = eventParser.PlayerId;
-        var player = playerRepository.GetPlayerLogicById(playerId);
+        var player = playerRepository.GetPlayerLogicById(PlayerId);
 
         var playerBadges = player != null
             ? player!.Badges
-            : await dbContext.Set<PlayerBadge>().Where(x => x.PlayerId == playerId).ToListAsync();
+            : await dbContext.Set<PlayerBadge>().Where(x => x.PlayerId == PlayerId).ToListAsync();
 
         playerBadges = playerBadges.
             Where(x => x.Slot != 0 && x.Slot <= 5).
@@ -42,7 +39,7 @@ public class PlayerWearingBadgesEventHandler(
         
         await networkClient.WriteToStreamAsync(new PlayerWearingBadgesWriter
         {
-            PlayerId = playerId,
+            PlayerId = PlayerId,
             Badges = playerBadges
         });
     }

@@ -5,36 +5,32 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Game.Navigator;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Navigator;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
+[PacketId(EventHandlerIds.NavigatorSearch)]
 public class NavigatorSearchEventHandler(
-    NavigatorSearchEventParser eventParser,
     SadieContext dbContext,
     NavigatorRoomProvider navigatorRoomProvider,
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.NavigatorSearch;
-
+    [PacketData] public string? TabName { get; set; }
+    [PacketData] public string? SearchQuery { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null)
         {
             return;
         }
-
-        var tabName = eventParser.TabName;
-        var searchQuery = eventParser.SearchQuery;
-
+        
         var tab = await dbContext.Set<NavigatorTab>()
             .Include(x => x.Categories)
-            .FirstOrDefaultAsync(x => x.Name == tabName);
+            .FirstOrDefaultAsync(x => x.Name == TabName);
 
         if (tab == null)
         {
@@ -53,12 +49,12 @@ public class NavigatorSearchEventHandler(
             categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
         }
 
-        categoryRoomMap = ApplyFilter(searchQuery, categoryRoomMap);
+        categoryRoomMap = ApplyFilter(SearchQuery, categoryRoomMap);
         
         var searchResultPagesWriter = new NavigatorSearchResultPagesWriter
         {
-            TabName = tabName,
-            SearchQuery = searchQuery,
+            TabName = TabName,
+            SearchQuery = SearchQuery,
             CategoryRoomMap = categoryRoomMap,
             RoomRepository = roomRepository
         };

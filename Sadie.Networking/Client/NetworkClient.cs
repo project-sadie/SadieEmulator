@@ -66,7 +66,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         try
         {
-            var serializedObject = NetworkPacketSerializer.Serialize(writer);
+            var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
             await _channel.WriteAndFlushAsync(serializedObject);
         }
         catch (Exception e)

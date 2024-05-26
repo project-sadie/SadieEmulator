@@ -1,31 +1,28 @@
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Generic;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Handlers.Generic;
 
+[PacketId(EventHandlerIds.PlayerRelationships)]
 public class PlayerRelationshipsEventHandler(
-    PlayerRelationshipsEventParser eventParser,
     PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerRelationships;
-
+    public int PlayerId { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
-        var playerId = eventParser.PlayerId;
-        var player = await playerRepository.GetPlayerByIdAsync(playerId);
+        var player = await playerRepository.GetPlayerByIdAsync(PlayerId);
 
         var relationships = player != null ? 
                 player.Relationships : 
-                await playerRepository.GetRelationshipsForPlayerAsync(playerId);
+                await playerRepository.GetRelationshipsForPlayerAsync(PlayerId);
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter
         {
-            PlayerId = playerId,
+            PlayerId = PlayerId,
             Relationships = relationships
         });
     }

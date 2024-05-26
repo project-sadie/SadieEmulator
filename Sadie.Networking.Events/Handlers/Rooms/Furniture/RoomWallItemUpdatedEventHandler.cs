@@ -1,25 +1,24 @@
 using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
+[PacketId(EventHandlerIds.RoomWallItemUpdated)]
 public class RoomWallItemUpdatedEventHandler(
     SadieContext dbContext,
-    RoomWallItemUpdatedEventParser eventParser,
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomWallItemUpdated;
-
+    public int ItemId { get; set; }
+    public string WallPosition { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null || client.RoomUser == null)
         {
             return;
@@ -38,14 +37,14 @@ public class RoomWallItemUpdatedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null)
         {
             return;
         }
 
-        var wallPosition = eventParser.WallPosition;
+        var wallPosition = WallPosition;
 
         if (string.IsNullOrEmpty(wallPosition))
         {

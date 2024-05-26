@@ -6,8 +6,8 @@ using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Furniture;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
@@ -16,17 +16,15 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
+[PacketId(EventHandlerIds.RoomFurnitureItemPlaced)]
 public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
-    RoomFurnitureItemPlacedEventParser eventParser,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomFurnitureItemPlaced;
-
+    public string PlacementData { get; set; }
+    
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null || client.RoomUser == null)
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
@@ -48,7 +46,7 @@ public class RoomItemPlacedEventHandler(
         }
         
         var player = client.Player;
-        var placementData = eventParser.PlacementData;
+        var placementData = PlacementData.Split(" ");
         
         if (!int.TryParse(placementData[0], out var itemId))
         {

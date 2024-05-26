@@ -5,6 +5,5 @@ namespace Sadie.Networking.Events.Handlers;
 
 public interface INetworkPacketEventHandler
 {
-    int Id { get; }
     Task HandleAsync(INetworkClient client, INetworkPacketReader reader);
 }
