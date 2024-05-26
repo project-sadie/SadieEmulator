@@ -1,5 +1,4 @@
 using System.Drawing;
-using Sadie.Database.Models;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
