@@ -170,10 +170,6 @@ public class NetworkPacketWriterSerializer
             var collection = (List<string?>)property.GetValue(packet)!;
             WriteStringListPropertyToWriter(collection, writer);
         }
-        else if (type.GetGenericTypeDefinition() == typeof(List<>))
-        {
-            WriteArbitraryListPropertyToWriter(property, writer, packet);
-        }
         else if (type == typeof(Dictionary<int, string>))
         {
             var collection = (Dictionary<int, string?>)property.GetValue(packet)!;
@@ -209,6 +205,10 @@ public class NetworkPacketWriterSerializer
                 writer.WriteString(key);
                 writer.WriteString(value);
             }
+        }
+        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        {
+            WriteArbitraryListPropertyToWriter(property, writer, packet);
         }
         else if (type != typeof(Dictionary<PropertyInfo, Action<NetworkPacketWriter>>) && 
                  type != typeof(Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>>))
