@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
@@ -37,7 +38,7 @@ public class RoomUser(
             RoomUserStatus.Move);
     }
     
-    public void WalkToPoint(Point point, Action onReachedGoal)
+    public void WalkToPoint(Point point, Action? onReachedGoal)
     {
         PathGoal = point;
         NeedsPathCalculated = true;

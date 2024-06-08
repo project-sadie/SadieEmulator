@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
 using Sadie.Shared.Unsorted.Game.Rooms;
 

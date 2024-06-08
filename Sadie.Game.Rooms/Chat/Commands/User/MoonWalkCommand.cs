@@ -1,5 +1,5 @@
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Users;
 using Sadie.Shared;
 
 namespace Sadie.Game.Rooms.Chat.Commands.User;

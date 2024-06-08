@@ -1,5 +1,5 @@
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Users;
 using Sadie.Shared;
 using Sadie.Shared.Unsorted;
 

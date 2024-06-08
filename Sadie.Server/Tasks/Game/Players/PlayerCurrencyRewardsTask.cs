@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;

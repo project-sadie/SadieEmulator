@@ -1,9 +1,9 @@
-﻿using Sadie.Database;
+﻿using Sadie.API.Game.Rooms.Users;
+using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms.Users;

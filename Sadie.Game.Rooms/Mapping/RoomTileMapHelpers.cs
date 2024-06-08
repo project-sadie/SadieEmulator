@@ -1,6 +1,6 @@
 using System.Drawing;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms.Furniture;
-using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 

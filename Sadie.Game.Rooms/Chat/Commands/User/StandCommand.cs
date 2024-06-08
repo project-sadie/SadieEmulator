@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Chat.Commands.User;

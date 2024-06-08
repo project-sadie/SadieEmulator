@@ -1,4 +1,6 @@
-﻿using Sadie.Database.Models.Players;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Users;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Furniture;
@@ -8,7 +10,7 @@ using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomLogic : Room
+public class RoomLogic : Room, IRoomLogic
 {
     public RoomLogic(int id,
         string name,

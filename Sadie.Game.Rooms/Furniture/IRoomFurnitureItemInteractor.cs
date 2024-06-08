@@ -1,5 +1,5 @@
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms.Furniture;
-using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Furniture;
 
