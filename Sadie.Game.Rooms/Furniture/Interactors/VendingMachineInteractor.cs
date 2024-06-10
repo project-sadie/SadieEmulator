@@ -13,11 +13,6 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "vending_machine";
-
-    private static bool InCorrectPosition(Point userPoint, Point itemPoint)
-    {
-        return userPoint == itemPoint;
-    }
     
     public async Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
