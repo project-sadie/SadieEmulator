@@ -14,9 +14,6 @@ public static class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
-        Assembly.LoadFile("/mnt/storage/dev/habbo/sadie/SadieEmulator/PluginTest/bin/Debug/net8.0/PluginTest.dll");
-        // /mnt/storage/dev/habbo/sadie/SadieEmulator/PluginTest/bin/Debug/net8.0/PluginTest.dll
-        
         serviceCollection.Scan(scan => scan
             .FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
             .AddClasses(classes => classes.Where(x => x is { IsClass: true, IsAbstract: false } && x.IsSubclassOf(typeof(AbstractRoomChatCommand))))

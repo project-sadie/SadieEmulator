@@ -8,6 +8,9 @@ using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace SadieEmulator;
 
@@ -20,7 +23,9 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         var stopwatch = Stopwatch.StartNew();
         WriteHeaderToConsole();
         await CleanUpDataAsync();
-
+        
+        LoadPlugins();
+        
         serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
@@ -30,10 +35,28 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         await StartListeningForConnectionsAsync();
     }
 
+    private void LoadPlugins()
+    {
+        var config = serviceProvider.GetRequiredService<IConfiguration>();
+        var pluginLocation = config.GetValue<string>("PluginDirectory");
+
+        if (!Directory.Exists(pluginLocation))
+        {
+            return;
+        }
+        
+        foreach (var plugin in Directory.GetFiles(pluginLocation, "*.dll", SearchOption.AllDirectories))
+        {
+            Log.Logger.Warning($"Loading plugin '{plugin}'");
+            Assembly.LoadFile(plugin);
+        }
+    }
+
     private async Task StartListeningForConnectionsAsync()
     {
         var networkListener = serviceProvider.GetRequiredService<INetworkListener>();
         networkListener.Bootstrap();
+        
         await networkListener.ListenAsync();
     }
 
