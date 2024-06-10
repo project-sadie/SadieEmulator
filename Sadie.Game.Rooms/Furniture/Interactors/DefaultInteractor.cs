@@ -23,7 +23,7 @@ public class DefaultInteractor : IRoomFurnitureItemInteractor
             return;
         }
 
-        if (state > item.FurnitureItem.InteractionModes)
+        if (state >= item.FurnitureItem.InteractionModes)
         {
             state = 0;
         }
