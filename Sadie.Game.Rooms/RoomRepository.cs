@@ -35,6 +35,7 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
             .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
             .Include(x => x.PlayerLikes)
             .Include(x => x.Tags)
+            .Include(x => x.Group)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (room == null)
