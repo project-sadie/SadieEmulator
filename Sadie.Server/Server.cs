@@ -8,9 +8,6 @@ using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
-using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Serilog;
 
 namespace SadieEmulator;
 
