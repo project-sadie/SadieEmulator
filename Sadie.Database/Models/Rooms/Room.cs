@@ -25,4 +25,5 @@ public class Room
     public ICollection<PlayerRoomLike> PlayerLikes { get; init; } = [];
     public ICollection<RoomFurnitureItem> FurnitureItems { get; init; } = [];
     public DateTime CreatedAt { get; init; }
+    public Group? Group { get; init; }
 }

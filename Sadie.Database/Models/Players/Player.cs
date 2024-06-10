@@ -33,6 +33,7 @@ public class Player
     [InverseProperty("TargetPlayer")] public ICollection<PlayerMessage> MessagesReceived { get; init; } = [];
     public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; set; }
     public ICollection<Room> Rooms { get; set; } = [];
+    public ICollection<Group> Groups { get; init; } = [];
     
     public int GetAcceptedFriendshipCount()
     {
