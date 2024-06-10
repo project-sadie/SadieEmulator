@@ -154,10 +154,6 @@ public class SadieContext(
         modelBuilder.Entity<ServerRoomConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerSettings>(builder => builder.HasNoKey());
 
-        modelBuilder.Entity<CatalogPage>()
-            .Navigation(x => x.Pages)
-            .AutoInclude();
-
         modelBuilder.Entity<FurnitureItem>()
             .Navigation(x => x.HandItems)
             .AutoInclude();
