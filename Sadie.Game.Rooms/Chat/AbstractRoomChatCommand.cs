@@ -20,7 +20,8 @@ public abstract class AbstractRoomChatCommand : IRoomChatCommand
             SenderId = user.Id,
             Message = message,
             EmotionId = 0,
-            Bubble = (int)ChatBubble.Default
+            Bubble = (int)ChatBubble.Default,
+            Unknown = 0
         };
         
         await user.NetworkObject.WriteToStreamAsync(writer);
