@@ -1,3 +1,5 @@
+using Sadie.API.Game.Rooms.Furniture;
+
 namespace Sadie.Game.Rooms.Furniture;
 
 public class RoomFurnitureItemInteractorRepository(

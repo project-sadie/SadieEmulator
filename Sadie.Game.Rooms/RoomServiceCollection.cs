@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Game.Rooms.Chat.Commands;
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.Chat.Commands;
