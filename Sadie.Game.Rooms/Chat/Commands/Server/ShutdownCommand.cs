@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
 using Sadie.Shared;
@@ -7,7 +8,7 @@ namespace Sadie.Game.Rooms.Chat.Commands.Server;
 
 public class ShutdownCommand(
     IServer server,
-    PlayerRepository playerRepository) : AbstractRoomChatCommand
+    PlayerRepository playerRepository) : AbstractRoomChatCommand, IRoomChatCommand
 {
     public override string Trigger => "shutdown";
     public override string Description => "Shuts down the server";

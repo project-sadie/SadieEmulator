@@ -4,7 +4,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Enums;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;

@@ -1,7 +1,6 @@
 using DotNetty.Transport.Channels;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Client;

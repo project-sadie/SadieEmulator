@@ -2,7 +2,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Enums;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;

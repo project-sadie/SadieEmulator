@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Codecs.Encryption;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization;

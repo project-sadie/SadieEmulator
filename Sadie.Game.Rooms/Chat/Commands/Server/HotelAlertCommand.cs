@@ -1,10 +1,11 @@
+using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Server;
 
-public class HotelAlertCommand(PlayerRepository playerRepository) : AbstractRoomChatCommand
+public class HotelAlertCommand(PlayerRepository playerRepository) : AbstractRoomChatCommand, IRoomChatCommand
 {
     public override string Trigger => "ha";
     public override string Description => "Sends an alert to all online players";

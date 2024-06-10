@@ -1,10 +1,11 @@
+using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Shared;
 
 namespace Sadie.Game.Rooms.Chat.Commands.User;
 
-public class MoonWalkCommand : AbstractRoomChatCommand
+public class MoonWalkCommand : AbstractRoomChatCommand, IRoomChatCommand
 {
     public override string Trigger => "moonwalk";
     public override string Description => "Your avatar falls asleep";

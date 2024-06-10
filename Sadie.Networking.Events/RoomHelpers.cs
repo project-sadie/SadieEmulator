@@ -6,7 +6,6 @@ using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
 using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Enums;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players.Purse;
