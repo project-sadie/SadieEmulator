@@ -24,7 +24,12 @@ public class RoomTileMapHelpers
         };
     }
     
-    public static List<Point> GetPointsForPlacement(int x, int y, int width, int length, int direction)
+    public static List<Point> GetPointsForPlacement(
+        int x, 
+        int y, 
+        int width, 
+        int length, 
+        int direction)
     {
         var points = new List<Point>();
         
