@@ -14,16 +14,18 @@ public static class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        
         serviceCollection.Scan(scan => scan
-            .FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
+            .FromAssemblies(assemblies)
             .AddClasses(classes => classes.Where(x => x is { IsClass: true, IsAbstract: false } && x.IsSubclassOf(typeof(AbstractRoomChatCommand))))
             .As<IRoomChatCommand>()
             .WithSingletonLifetime());
 
         serviceCollection.Scan(scan => scan
-            .FromAssemblies()
-            .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemInteractor>())
-            .AsSelfWithInterfaces()
+            .FromAssemblies(assemblies)
+            .AddClasses(classes => classes.Where(x => x is { IsClass: true, IsAbstract: false, IsInterface: false } && x.IsSubclassOf(typeof(IRoomFurnitureItemInteractor))))
+            .As<IRoomFurnitureItemInteractor>()
             .WithSingletonLifetime());
 
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();

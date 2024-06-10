@@ -21,10 +21,16 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .CreateLogger();
+        var pluginFolder = config.GetValue<string>("PluginDirectory");
 
+        if (!string.IsNullOrEmpty(pluginFolder) && Directory.Exists(pluginFolder))
+        {
+            foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
+            {
+                Assembly.LoadFile(plugin);
+            }
+        }
+        
         serviceCollection.Scan(scan => scan
             .FromAssemblyOf<IServerTask>()
             .AddClasses(classes => classes.AssignableTo<IServerTask>())

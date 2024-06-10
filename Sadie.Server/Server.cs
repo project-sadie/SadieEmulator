@@ -24,8 +24,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         WriteHeaderToConsole();
         await CleanUpDataAsync();
         
-        LoadPlugins();
-        
         serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
@@ -33,23 +31,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
 
         await StartListeningForConnectionsAsync();
-    }
-
-    private void LoadPlugins()
-    {
-        var config = serviceProvider.GetRequiredService<IConfiguration>();
-        var pluginLocation = config.GetValue<string>("PluginDirectory");
-
-        if (!Directory.Exists(pluginLocation))
-        {
-            return;
-        }
-        
-        foreach (var plugin in Directory.GetFiles(pluginLocation, "*.dll", SearchOption.AllDirectories))
-        {
-            Log.Logger.Warning($"Loading plugin '{plugin}'");
-            Assembly.LoadFile(plugin);
-        }
     }
 
     private async Task StartListeningForConnectionsAsync()
