@@ -24,7 +24,7 @@ public class PlayerDataWriter : AbstractPacketWriter
         writer.WriteInteger(Player.Data.RespectPoints);
         writer.WriteInteger(Player.Data.RespectPointsPet);
         writer.WriteBool(false);
-        writer.WriteString(Player.Data.LastOnline.ToString());
+        writer.WriteString(Player.Data.LastOnline!.Value.ToString("dd-MM-yyyy HH:mm:ss"));
         writer.WriteBool(false);
         writer.WriteBool(false);
     }
