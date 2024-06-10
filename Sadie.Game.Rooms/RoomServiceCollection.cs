@@ -18,13 +18,17 @@ public static class RoomServiceCollection
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.Where(x => x is { IsClass: true, IsAbstract: false } && x.IsSubclassOf(typeof(AbstractRoomChatCommand))))
+            .AddClasses(classes => classes.Where(x => 
+                x is { IsClass: true, IsAbstract: false } && 
+                x.IsSubclassOf(typeof(AbstractRoomChatCommand))))
             .As<IRoomChatCommand>()
             .WithSingletonLifetime());
 
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.Where(x => x is { IsClass: true, IsAbstract: false, IsInterface: false } && x.IsSubclassOf(typeof(IRoomFurnitureItemInteractor))))
+            .AddClasses(classes => classes.Where(x => 
+                x is { IsClass: true, IsAbstract: false, IsInterface: false } && 
+                x.IsSubclassOf(typeof(IRoomFurnitureItemInteractor))))
             .As<IRoomFurnitureItemInteractor>()
             .WithSingletonLifetime());
 
