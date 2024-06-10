@@ -28,7 +28,7 @@ public static class RoomServiceCollection
             .FromAssemblies(assemblies)
             .AddClasses(classes => classes.Where(x => 
                 x is { IsClass: true, IsAbstract: false, IsInterface: false } && 
-                x.IsSubclassOf(typeof(IRoomFurnitureItemInteractor))))
+                x.IsAssignableTo(typeof(IRoomFurnitureItemInteractor))))
             .As<IRoomFurnitureItemInteractor>()
             .WithSingletonLifetime());
 

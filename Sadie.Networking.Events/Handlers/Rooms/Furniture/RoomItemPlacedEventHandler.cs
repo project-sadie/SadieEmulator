@@ -152,7 +152,7 @@ public class RoomItemPlacedEventHandler(
             ObjectData = new Dictionary<string, string>(),
             MetaData = roomFurnitureItem.MetaData,
             Expires = -1,
-            InteractionModes = 0,
+            InteractionModes = 1,
             OwnerId = roomFurnitureItem.OwnerId,
             OwnerUsername = roomFurnitureItem.OwnerUsername
         });

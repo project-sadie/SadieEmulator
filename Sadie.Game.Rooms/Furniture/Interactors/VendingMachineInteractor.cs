@@ -15,7 +15,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
     
     public async Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
-        item.MetaData = "1";
+        item.MetaData = "0";
 
         var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 
@@ -54,13 +54,12 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             PositionY = item.PositionY,
             Direction = (int)item.Direction,
             PositionZ = item.PositionZ,
-            StackHeight = 0,
-            Extra = 1,
-            ObjectDataKey = (int)ObjectDataKey.MapKey,
-            ObjectData = new Dictionary<string, string>(),
-            MetaData = item.MetaData,
+            StackHeight = 0.ToString(),
+            Extra = 0,
+            ObjectDataKey = 0,
+            ExtraData = item.MetaData,
             Expires = -1,
-            InteractionModes = 0,
+            InteractionModes = 1,
             OwnerId = item.OwnerId
         };
         
