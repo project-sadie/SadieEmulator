@@ -9,4 +9,5 @@ public interface IPlayerState
     List<PlayerRoomVisit> RoomVisits { get; }
     DateTime LastCatalogPurchase { get; set; }
     DateTime LastSubscriptionModification { get; set; }
+    string CatalogMode { get; set; }
 }

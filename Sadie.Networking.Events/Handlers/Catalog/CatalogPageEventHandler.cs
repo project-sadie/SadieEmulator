@@ -13,15 +13,18 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 public class CatalogPageEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     [PacketData] public int PageId { get; set; }
+    [PacketData] public int OfferId { get; set; }
     [PacketData] public string? CatalogMode { get; set; }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
         var page = await dbContext
             .Set<CatalogPage>()
-            .Where(x => x.Id == PageId)
+            .Include("Pages")
+            .Include("Pages.Pages")
+            .Include("Pages.Pages.Pages")
             .Include(c => c.Items).ThenInclude(x => x.FurnitureItems)
-            .Include(c => c.Pages)
+            .Where(x => x.Id == PageId)
             .FirstOrDefaultAsync();
 
         if (page is not { Enabled: true } || !page.Visible)
