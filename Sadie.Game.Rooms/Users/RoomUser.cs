@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
+using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Game.Rooms.Mapping;
@@ -26,7 +28,7 @@ public class RoomUser(
         IRoomUser
 {
     public int Id { get; } = id;
-    public RoomLogic Room { get; } = room;
+    public IRoomLogic Room { get; } = room;
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 

@@ -4,7 +4,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
-using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Database.Mappers;
 

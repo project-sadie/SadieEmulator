@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database.Models.Players;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms.Enums;
 using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;

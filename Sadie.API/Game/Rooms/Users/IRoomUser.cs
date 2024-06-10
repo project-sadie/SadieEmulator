@@ -1,18 +1,16 @@
 ﻿using System.Drawing;
-using Sadie.Shared.Unsorted.Game.Rooms;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.API.Game.Rooms.Users;
 
-public interface IRoomUser : IRoomUserData
+public interface IRoomUser : IRoomUserData, IAsyncDisposable
 {
     int Id { get; }
     IRoomLogic Room { get; }
+    RoomControllerLevel ControllerLevel { get; set; }
     INetworkObject NetworkObject { get; }
-    Point Point { get; }
     double PointZ { get; }
-    HDirection DirectionHead { get; set; }
-    HDirection Direction { get; set; }
     void WalkToPoint(Point point, Action? onReachedGoal = null);
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();

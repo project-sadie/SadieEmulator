@@ -2,7 +2,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Players.Purse;
 

@@ -2,6 +2,7 @@ using System.Drawing;
 using Microsoft.Extensions.Logging;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
 using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;

@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Logging;
+using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
-public class PlayerLogic : Player
+public class PlayerLogic : Player, IPlayerLogic
 {
     private readonly ILogger<PlayerLogic> _logger;
 
