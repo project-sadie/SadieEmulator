@@ -1,10 +1,10 @@
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms.Furniture;
 
-namespace Sadie.Game.Rooms.Furniture;
+namespace Sadie.API.Game.Rooms.Furniture;
 
 public interface IRoomFurnitureItemInteractor
 {
     string InteractionType { get; }
-    Task OnClickAsync(RoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
+    Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
 }

@@ -1,4 +1,6 @@
 using System.Drawing;
+using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
@@ -17,7 +19,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
         return userPoint == itemPoint;
     }
     
-    public async Task OnClickAsync(RoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
+    public async Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
         item.MetaData = "1";
 
