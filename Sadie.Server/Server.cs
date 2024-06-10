@@ -8,6 +8,9 @@ using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace SadieEmulator;
 
@@ -20,7 +23,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         var stopwatch = Stopwatch.StartNew();
         WriteHeaderToConsole();
         await CleanUpDataAsync();
-
+        
         serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
@@ -34,6 +37,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
     {
         var networkListener = serviceProvider.GetRequiredService<INetworkListener>();
         networkListener.Bootstrap();
+        
         await networkListener.ListenAsync();
     }
 

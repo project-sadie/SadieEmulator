@@ -28,7 +28,6 @@ public class PlayerActivityPointsBalanceWriter : AbstractPacketWriter
             {105, 0} // unknown
         };
         
-        writer.WriteShort(ServerPacketId.PlayerActivityPointsBalance);
         writer.WriteInteger(currencies.Count);
 
         foreach (var (currency, value) in currencies)

@@ -1,6 +1,6 @@
-using Sadie.Game.Rooms.Chat.Commands;
+using Sadie.API.Game.Rooms.Chat.Commands;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Game.Rooms.Chat;
@@ -20,7 +20,8 @@ public abstract class AbstractRoomChatCommand : IRoomChatCommand
             SenderId = user.Id,
             Message = message,
             EmotionId = 0,
-            Bubble = (int)ChatBubble.Default
+            Bubble = (int)ChatBubble.Default,
+            Unknown = 0
         };
         
         await user.NetworkObject.WriteToStreamAsync(writer);

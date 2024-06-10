@@ -18,7 +18,6 @@ public class RoomForwardDataWriter : AbstractPacketWriter
         var settings = Room.Settings;
         var chatSettings = Room.ChatSettings;
         
-        writer.WriteShort(ServerPacketId.RoomForwardData);
         writer.WriteBool(EnterRoom);
         writer.WriteLong(Room.Id);
         writer.WriteString(Room.Name);

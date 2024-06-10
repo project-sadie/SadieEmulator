@@ -1,3 +1,5 @@
+using Sadie.API.Game.Rooms.Chat.Commands;
+
 namespace Sadie.Game.Rooms.Chat.Commands;
 
 public class RoomChatCommandRepository : IRoomChatCommandRepository

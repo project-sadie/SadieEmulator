@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Sadie.API\Sadie.API.csproj" />
       <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
     </ItemGroup>
 

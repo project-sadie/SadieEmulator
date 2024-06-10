@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database;
@@ -12,6 +13,7 @@ using Sadie.Networking.Events;
 using Sadie.Options;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
+using Serilog;
 
 namespace SadieEmulator;
 
@@ -19,6 +21,16 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        var pluginFolder = config.GetValue<string>("PluginDirectory");
+
+        if (!string.IsNullOrEmpty(pluginFolder) && Directory.Exists(pluginFolder))
+        {
+            foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
+            {
+                Assembly.LoadFile(plugin);
+            }
+        }
+        
         serviceCollection.Scan(scan => scan
             .FromAssemblyOf<IServerTask>()
             .AddClasses(classes => classes.AssignableTo<IServerTask>())

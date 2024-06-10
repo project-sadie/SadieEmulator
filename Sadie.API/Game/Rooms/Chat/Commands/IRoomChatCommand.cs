@@ -1,6 +1,6 @@
-using Sadie.Game.Rooms.Users;
+using Sadie.API.Game.Rooms.Users;
 
-namespace Sadie.Game.Rooms.Chat.Commands;
+namespace Sadie.API.Game.Rooms.Chat.Commands;
 
 public interface IRoomChatCommand
 {

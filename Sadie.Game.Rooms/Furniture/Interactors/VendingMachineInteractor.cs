@@ -1,8 +1,8 @@
 using System.Drawing;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Extensions;
 using Sadie.Shared.Unsorted;
 

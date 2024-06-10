@@ -1,8 +1,10 @@
+using Sadie.API.Game.Rooms.Chat.Commands;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Chat.Commands.User;
 
-public class SitCommand : AbstractRoomChatCommand
+public class SitCommand : AbstractRoomChatCommand, IRoomChatCommand
 {
     public override string Trigger => "sit";
     public override string Description => "Makes your avatar sit down";

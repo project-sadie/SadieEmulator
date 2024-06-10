@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Serialization;
 

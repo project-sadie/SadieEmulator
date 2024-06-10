@@ -1,9 +1,10 @@
-using Sadie.Game.Rooms.Users;
+using Sadie.API.Game.Rooms.Chat.Commands;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Chat.Commands.User;
 
-public class IdleCommand : AbstractRoomChatCommand
+public class IdleCommand : AbstractRoomChatCommand, IRoomChatCommand
 {
     public override string Trigger => "idle";
     public override string Description => "Your avatar falls asleep";

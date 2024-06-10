@@ -1,6 +1,6 @@
 using Sadie.Networking.Serialization;
 
-namespace Sadie.Game.Rooms.Users;
+namespace Sadie.API.Game.Rooms.Users;
 
 public interface IRoomUserRepository : IAsyncDisposable
 {

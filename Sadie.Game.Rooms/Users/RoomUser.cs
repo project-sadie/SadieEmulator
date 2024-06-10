@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
+using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Enums;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
@@ -25,7 +27,7 @@ public class RoomUser(
         IRoomUser
 {
     public int Id { get; } = id;
-    public RoomLogic Room { get; } = room;
+    public IRoomLogic Room { get; } = room;
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 
@@ -37,7 +39,7 @@ public class RoomUser(
             RoomUserStatus.Move);
     }
     
-    public void WalkToPoint(Point point, Action onReachedGoal)
+    public void WalkToPoint(Point point, Action? onReachedGoal)
     {
         PathGoal = point;
         NeedsPathCalculated = true;

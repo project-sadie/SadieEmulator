@@ -11,4 +11,14 @@ public class RoomUserWhisperWriter : AbstractPacketWriter
     public required string Message { get; set; }
     public required int EmotionId { get; set; }
     public required int Bubble { get; set; }
+    public required int Unknown { get; set; }
+
+    public override void OnConfigureRules()
+    {
+        After(GetType().GetProperty(nameof(Bubble))!, writer =>
+        {
+            writer.WriteInteger(Unknown);
+            writer.WriteInteger(Message.Length);
+        });
+    }
 }

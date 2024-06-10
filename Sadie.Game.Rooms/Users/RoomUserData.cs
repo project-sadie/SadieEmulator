@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -10,7 +12,7 @@ public class RoomUserData : IRoomUserData
     public double PointZ { get; protected set;  }
     public HDirection DirectionHead { get; set; }
     public HDirection Direction { get; set; }
-    public PlayerLogic Player { get; }
+    public IPlayerLogic Player { get; }
     public Dictionary<string, string> StatusMap { get; }
     public DateTime LastAction { get; set; }
     public TimeSpan IdleTime { get; }
