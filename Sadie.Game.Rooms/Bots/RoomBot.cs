@@ -1,17 +1,34 @@
-using System.Drawing;
+using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.Database.Models.Players;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Bots;
 
-public class RoomBot : IRoomBot
+public class RoomBot(IRoomLogic room) : RoomUnitMovementData(room), IRoomBot
 {
     public required int Id { get; init; }
     public required PlayerBot Bot { get; init; }
-    public required Point Point { get; set; }
-    public required double PointZ { get; set; }
-    public HDirection DirectionHead { get; set; }
-    public HDirection Direction { get; set; }
-    public Dictionary<string, string> StatusMap { get; set; } = [];
+    public IRoomLogic Room { get; } = room;
+
+    public async Task RunPeriodicCheckAsync()
+    {
+        if (NextPoint != null)
+        {
+            Room.TileMap.BotMap[Point].Remove(this);
+            Room.TileMap.AddBotToMap(NextPoint.Value, this);
+            
+            Point = NextPoint.Value;
+            NextPoint = null;
+        }
+
+        if (NeedsPathCalculated)
+        {
+            CalculatePath(room.Settings.WalkDiagonal);
+        }
+
+        if (IsWalking)
+        {
+            ProcessMovement();
+        }
+    }
 }

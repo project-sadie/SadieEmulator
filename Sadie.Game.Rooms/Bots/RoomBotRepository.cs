@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using Sadie.API.Game.Rooms.Bots;
-using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Bots;
 
