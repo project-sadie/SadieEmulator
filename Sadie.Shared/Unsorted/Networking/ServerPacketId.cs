@@ -133,4 +133,5 @@ public class ServerPacketId
     public const short PlayerInventoryBotItems = 3086;
     public const short RoomBotError = 639;
     public const short PlayerInventoryRemoveBot = 233;
+    public const short PlayerInventoryAddBot = 1352;
 }

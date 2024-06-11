@@ -93,7 +93,7 @@ internal static class NetworkPacketEventHelpers
             PlayerId = roomUser.Id,
             Message = message,
             ChatBubbleId = bubble,
-            EmotionId = 0,
+            EmotionId = RoomHelpers.GetEmotionFromMessage(message),
             TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };
@@ -104,7 +104,7 @@ internal static class NetworkPacketEventHelpers
             {
                 UserId = roomUser.Id,
                 Message = message,
-                EmotionId = 0,
+                EmotionId = (int) RoomHelpers.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
                 Unknown1 = 0
             };
@@ -117,7 +117,7 @@ internal static class NetworkPacketEventHelpers
             {
                 UserId = roomUser.Id,
                 Message = message,
-                EmotionId = 0,
+                EmotionId = (int) RoomHelpers.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
                 Unknown1 = 0
             };

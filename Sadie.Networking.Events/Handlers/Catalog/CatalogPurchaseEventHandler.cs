@@ -11,6 +11,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
+using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Shared;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
@@ -156,22 +157,44 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (page.Layout == CatalogPageLayout.Bots)
+        if (page.Layout == CatalogPageLayout.Bots && 
+            item.Name.Contains("bot_") &&
+            !string.IsNullOrEmpty(item.MetaData))
         {
+            var metaData = item.MetaData;
+
+            if (string.IsNullOrEmpty(metaData))
+            {
+                return;
+            }
+            
+            var information = metaData
+                .Split(";")
+                .ToDictionary(k => k.Split(":")[0], v => v.Split(":")[1]);
+
             var bot = new PlayerBot
             {
                 PlayerId = client.Player.Id,
                 RoomId = null,
-                Username = "",
-                FigureCode = "",
-                Motto = "",
-                Gender = AvatarGender.Male
+                Username = information["name"],
+                FigureCode = information["figure"],
+                Motto = information["motto"],
+                Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female
             };
 
-            dbContext.PlayerBots.Add(bot);
+            dbContext.Entry(bot).State = EntityState.Added;
             await dbContext.SaveChangesAsync();
 
-            player.Bots.Add(bot);
+            client.Player.Bots.Add(bot);
+
+            await client.WriteToStreamAsync(new PlayerInventoryAddBotWriter
+            {
+                Id = bot.Id,
+                Username = bot.Username,
+                Motto = bot.Motto,
+                Gender = bot.Gender == AvatarGender.Male ? "m" : "f",
+                FigureCode = bot.FigureCode
+            });
             
             await ConfirmPurchaseAsync(client, item);
             return;
