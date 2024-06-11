@@ -138,7 +138,8 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
         
         if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
             (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
-            room.TileMap.UserMap.GetValueOrDefault(nextStep, [])!.Count > 0)
+            room.TileMap.UserMap.GetValueOrDefault(nextStep, []).Count > 0 ||
+            room.TileMap.BotMap.GetValueOrDefault(nextStep, []).Count > 0)
         {
             NeedsPathCalculated = true;
             return;
