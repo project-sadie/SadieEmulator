@@ -10,6 +10,7 @@ public class RoomBotRepository : IRoomBotRepository
     public ICollection<IRoomBot> GetAll() => _bots.Values;
     public bool TryAdd(IRoomBot bot) => _bots.TryAdd(bot.Bot.Id, bot);
     public bool TryGetById(int id, out IRoomBot? bot) => _bots.TryGetValue(id, out bot);
+    public int Count => _bots.Count;
 
     public async ValueTask DisposeAsync()
     {

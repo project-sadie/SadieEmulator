@@ -8,7 +8,6 @@ using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Bots;
-using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
@@ -53,6 +52,7 @@ public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomReposit
 
         var roomBot = new RoomBot
         {
+            Id = room.MaxUsersAllowed + bot.Id,
             Bot = bot,
             Point = new Point(X, Y),
             PointZ = 0,
@@ -70,11 +70,18 @@ public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomReposit
         dbContext.Entry(bot).Property(x => x.RoomId).IsModified = true;
         await dbContext.SaveChangesAsync();
 
+        room.TileMap.AddBotToMap(new Point(X, Y), roomBot);
+        
         await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
         {
-            Bot = roomBot
+            Bots = [roomBot]
         });
 
+        await room.UserRepository.BroadcastDataAsync(new RoomBotStatusWriter
+        {
+            Bots = [roomBot]
+        });
+        
         await client.WriteToStreamAsync(new PlayerInventoryRemoveBotWriter
         {
             Id = bot.Id

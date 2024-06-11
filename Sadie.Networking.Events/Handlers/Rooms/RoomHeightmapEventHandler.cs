@@ -47,6 +47,19 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
         {
             Users = room.UserRepository.GetAll()
         });
+
+        if (room.BotRepository.Count > 0)
+        {
+            await client.WriteToStreamAsync(new RoomBotDataWriter
+            {
+                Bots = room.BotRepository.GetAll()
+            });
+        
+            await client.WriteToStreamAsync(new RoomBotStatusWriter
+            {
+                Bots = room.BotRepository.GetAll()
+            });
+        }
         
         var floorItems = room.FurnitureItems
             .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)

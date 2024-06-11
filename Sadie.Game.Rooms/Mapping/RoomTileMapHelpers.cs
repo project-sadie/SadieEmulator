@@ -202,9 +202,10 @@ public class RoomTileMapHelpers
                     continue;
                 }
                 
-                // If the tile has other users on it skip it
+                // If the tile has other users or bots on it skip it
 
-                if (map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0)
+                if ((map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0) ||
+                    (map.BotMap.TryGetValue(new Point(x, y), out var bots) && bots.Count > 0))
                 {
                     tmp[y, x] = 0;
                     continue;

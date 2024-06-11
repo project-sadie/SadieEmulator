@@ -7,9 +7,11 @@ namespace Sadie.Game.Rooms.Bots;
 
 public class RoomBot : IRoomBot
 {
+    public required int Id { get; init; }
     public required PlayerBot Bot { get; init; }
-    public required Point Point { get; set;  }
-    public required double PointZ { get; set;  }
+    public required Point Point { get; set; }
+    public required double PointZ { get; set; }
     public HDirection DirectionHead { get; set; }
     public HDirection Direction { get; set; }
+    public Dictionary<string, string> StatusMap { get; set; } = [];
 }
