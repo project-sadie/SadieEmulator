@@ -14,7 +14,7 @@ public class EventSerializer
         {
             var type = property.PropertyType;
 
-            if (type == typeof(int))
+            if (type == typeof(int) || type == typeof(long))
             {
                 property.SetValue(handler, packet.ReadInt(), null);
             }
@@ -26,7 +26,7 @@ public class EventSerializer
             {
                 property.SetValue(handler, packet.ReadBool(), null);
             }
-            else if (type == typeof(List<int>))
+            else if (type == typeof(List<string>))
             {
                 property.SetValue(handler, ReadStringList(packet), null);
             }

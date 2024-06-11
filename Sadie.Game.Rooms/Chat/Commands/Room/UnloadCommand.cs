@@ -1,10 +1,12 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Database;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Room;
 
-public class UnloadCommand(RoomRepository roomRepository) : AbstractRoomChatCommand, IRoomChatCommand
+public class UnloadCommand(SadieContext dbContext, RoomRepository roomRepository) : AbstractRoomChatCommand, IRoomChatCommand
 {
     public override string Trigger => "unload";
     public override string Description => "Unloads all users from your room";
@@ -25,7 +27,9 @@ public class UnloadCommand(RoomRepository roomRepository) : AbstractRoomChatComm
         }
 
         roomRepository.TryUnloadRoom(user.Room.Id, out var room);
-        await roomRepository.SaveRoomAsync(room);
+        
+        dbContext.Entry(room).State = EntityState.Modified;
+        await dbContext.SaveChangesAsync();
     }
 
     public override List<string> PermissionsRequired { get; set; } = ["command_unload"];

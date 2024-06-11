@@ -88,7 +88,7 @@ public class CatalogPurchaseEventHandler(
                 return;
             }
 
-            if (!await RoomHelpers.TryChargeForClubOfferPurchaseAsync(client, offer))
+            if (!await RoomHelpersDirty.TryChargeForClubOfferPurchaseAsync(client, offer))
             {
                 return;
             }
@@ -152,7 +152,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (!await RoomHelpers.TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
+        if (!await RoomHelpersDirty.TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
         {
             return;
         }

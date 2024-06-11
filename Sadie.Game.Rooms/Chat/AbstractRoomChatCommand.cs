@@ -1,6 +1,7 @@
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Game.Rooms.Chat;
@@ -19,7 +20,7 @@ public abstract class AbstractRoomChatCommand : IRoomChatCommand
         {
             SenderId = user.Id,
             Message = message,
-            EmotionId = 0,
+            EmotionId = (int) RoomHelpers.GetEmotionFromMessage(message),
             Bubble = (int)ChatBubble.Default,
             Unknown = 0
         };
