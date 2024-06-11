@@ -4,6 +4,7 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -97,10 +98,32 @@ internal static class NetworkPacketEventHelpers
             CreatedAt = DateTime.Now
         };
 
-        await room!.UserRepository.BroadcastDataAsync(
-            shouting ? 
-            new RoomUserShoutWriter { Message = chatMessage, Unknown1 = 0 } : 
-            new RoomUserChatWriter { Message = chatMessage, Unknown1 = 0 });
+        if (shouting)
+        {
+            var writer = new RoomUserShoutWriter
+            {
+                UserId = roomUser.Id,
+                Message = message,
+                EmotionId = 0,
+                ChatBubbleId = (int)bubble,
+                Unknown1 = 0
+            };
+            
+            await room.UserRepository.BroadcastDataAsync(writer);
+        }
+        else
+        {
+            var writer = new RoomUserChatWriter
+            {
+                UserId = roomUser.Id,
+                Message = message,
+                EmotionId = 0,
+                ChatBubbleId = (int)bubble,
+                Unknown1 = 0
+            };
+            
+            await room.UserRepository.BroadcastDataAsync(writer);
+        }
         
         roomUser.UpdateLastAction();
         room.ChatMessages.Add(chatMessage);

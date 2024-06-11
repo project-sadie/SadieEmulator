@@ -50,7 +50,7 @@ public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomReposit
             return;
         }
 
-        var roomBot = new RoomBot
+        var roomBot = new RoomBot(room)
         {
             Id = room.MaxUsersAllowed + bot.Id,
             Bot = bot,

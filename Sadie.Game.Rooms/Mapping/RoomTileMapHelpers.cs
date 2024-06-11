@@ -1,4 +1,5 @@
 using System.Drawing;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
@@ -186,7 +187,7 @@ public class RoomTileMapHelpers
         return map; 
     }
 
-    public static short[,] GetWorldArrayFromTileMap(RoomTileMap map, Point goalPoint)
+    public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint)
     {
         var tmp = new short[map.SizeY, map.SizeX];
         
@@ -220,7 +221,7 @@ public class RoomTileMapHelpers
 
     public static void UpdateTileStatesForPoints(
         List<Point> points, 
-        RoomTileMap tileMap, 
+        IRoomTileMap tileMap, 
         ICollection<RoomFurnitureItem> furnitureItems)
     {
         foreach (var point in points)
@@ -231,7 +232,7 @@ public class RoomTileMapHelpers
     
     public static bool CanPlaceAt(
         IEnumerable<Point> points,  
-        RoomTileMap tileMap)
+        IRoomTileMap tileMap)
     {
         return points.All(point => tileMap.SquareStateMap[point.Y, point.X] != 0);
     }

@@ -10,7 +10,6 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     IRoomLogic Room { get; }
     RoomControllerLevel ControllerLevel { get; set; }
     INetworkObject NetworkObject { get; }
-    double PointZ { get; }
     void WalkToPoint(Point point, Action? onReachedGoal = null);
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();
