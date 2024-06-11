@@ -127,8 +127,15 @@ public class SadieContext(
         modelBuilder.Entity<PlayerMessage>().ToTable("player_messages");
         modelBuilder.Entity<Role>().ToTable("roles");
         modelBuilder.Entity<HandItem>().ToTable("hand_items");
+        modelBuilder.Entity<PlayerBot>().ToTable("player_bots");
 
         modelBuilder.Entity<PlayerAvatarData>()
+            .Property(e => e.Gender)
+            .HasConversion(
+                v => EnumHelpers.GetEnumDescription(v),
+                v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v));
+        
+        modelBuilder.Entity<PlayerBot>()
             .Property(e => e.Gender)
             .HasConversion(
                 v => EnumHelpers.GetEnumDescription(v),
@@ -143,6 +150,15 @@ public class SadieContext(
                 l => l.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
                 r => r.HasOne(typeof(Player)).WithMany().HasForeignKey("player_id").HasPrincipalKey(nameof(Player.Id)),
                 j => j.HasKey("role_id", "player_id"));
+        
+
+        modelBuilder.Entity<Player>()
+            .HasMany(r => r.Groups)
+            .WithMany(p => p.Players)
+            .UsingEntity("group_player",
+                l => l.HasOne(typeof(Group)).WithMany().HasForeignKey("group_id").HasPrincipalKey(nameof(Group.Id)),
+                r => r.HasOne(typeof(Player)).WithMany().HasForeignKey("player_id").HasPrincipalKey(nameof(Player.Id)),
+                j => j.HasKey("group_id", "player_id"));
 
         modelBuilder.Entity<Role>()
             .HasMany(r => r.Permissions)

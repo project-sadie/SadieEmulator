@@ -130,4 +130,5 @@ public class ServerPacketId
     public const short RoomUserGroupBadgeData = 2402;
     public const short PlayerGroupBadgeParts = 2238;
     public const short CatalogPurchaseUnavailable = 3770;
+    public const short PlayerInventoryBotItems = 3086;
 }

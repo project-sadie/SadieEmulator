@@ -1,0 +1,27 @@
+using Sadie.Database.Models.Players;
+using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Game.Avatar;
+using Sadie.Shared.Unsorted.Networking;
+
+namespace Sadie.Networking.Writers.Players.Inventory;
+
+[PacketId(ServerPacketId.PlayerInventoryBotItems)]
+public class PlayerInventoryBotItemsWriter : AbstractPacketWriter
+{
+    public required ICollection<PlayerBot> Bots { get; init; }
+
+    public override void OnSerialize(NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(Bots.Count);
+
+        foreach (var bot in Bots)
+        {
+            writer.WriteInteger(bot.Id);
+            writer.WriteString(bot.Username);
+            writer.WriteString(bot.Motto);
+            writer.WriteString(bot.Gender == AvatarGender.Male ? "m" : "f");
+            writer.WriteString(bot.FigureCode);
+        }
+    }
+}

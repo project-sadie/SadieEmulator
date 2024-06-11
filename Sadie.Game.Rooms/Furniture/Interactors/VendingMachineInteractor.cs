@@ -5,7 +5,6 @@ using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Shared.Extensions;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
