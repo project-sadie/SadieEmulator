@@ -53,6 +53,8 @@ public class SadieContext(
     public DbSet<ServerPeriodicCurrencyRewardLog> ServerPeriodicCurrencyRewardLogs { get; init; }
     public DbSet<PlayerSsoToken> PlayerSsoToken { get; init; }
     public DbSet<PlayerNavigatorSettings> PlayerNavigatorSettings { get; init; }
+    public DbSet<Subscription> Subscriptions { get; init; }
+    public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

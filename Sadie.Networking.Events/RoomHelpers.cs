@@ -1,5 +1,6 @@
 using System.Drawing;
 using Microsoft.Extensions.Logging;
+using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
@@ -220,5 +221,45 @@ public static class RoomHelpers
         }
 
         return sadEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)) ? RoomUserEmotion.Sad : RoomUserEmotion.None;
+    }
+
+    public static async Task<bool> TryChargeForClubOfferPurchaseAsync(INetworkClient client, CatalogClubOffer offer)
+    {
+        var costInCredits = offer.CostCredits;
+        var costInPoints = offer.CostPoints;
+
+        var playerData = client.Player.Data;
+        
+        if (playerData.CreditBalance < costInCredits || 
+            (offer.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||
+            (offer.CostPointsType != 0 && playerData.SeasonalBalance < costInPoints))
+        {
+            return false;
+        }
+
+        playerData.CreditBalance -= costInCredits;
+
+        if (offer.CostPointsType == 0)
+        {
+            playerData.PixelBalance -= costInPoints;
+        }
+        else
+        {
+            playerData.SeasonalBalance -= costInPoints;
+        }
+        
+        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
+        {
+            Credits = playerData.CreditBalance
+        });
+        
+        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
+        {
+            PixelBalance = playerData.PixelBalance,
+            SeasonalBalance = playerData.SeasonalBalance,
+            GotwPoints = playerData.GotwPoints
+        });
+
+        return true;
     }
 }
