@@ -131,4 +131,6 @@ public class ServerPacketId
     public const short PlayerGroupBadgeParts = 2238;
     public const short CatalogPurchaseUnavailable = 3770;
     public const short PlayerInventoryBotItems = 3086;
+    public const short RoomBotError = 639;
+    public const short PlayerInventoryRemoveBot = 233;
 }

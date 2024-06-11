@@ -21,6 +21,7 @@ public class RoomLogic : Room, IRoomLogic
         int maxUsersAllowed,
         bool isMuted,
         IRoomUserRepository userRepository,
+        IRoomBotRepository botRepository,
         ICollection<RoomFurnitureItem> furnitureItems,
         RoomSettings settings,
         RoomChatSettings chatSettings,
@@ -47,6 +48,7 @@ public class RoomLogic : Room, IRoomLogic
         FurnitureItems = furnitureItems;
         TileMap = tileMap;
         UserRepository = userRepository;
+        BotRepository = botRepository;
     }
     
     public RoomTileMap TileMap { get; }

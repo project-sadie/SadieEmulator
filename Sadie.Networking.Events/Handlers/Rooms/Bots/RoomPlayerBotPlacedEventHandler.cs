@@ -1,12 +1,20 @@
+using System.Drawing;
+using Sadie.Database;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Bots;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Players.Inventory;
+using Sadie.Networking.Writers.Rooms.Bots;
+using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 
 [PacketId(EventHandlerIds.RoomPlayerBotPlaced)]
-public class RoomPlayerBotPlacedEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required int Id { get; init; }
     public required int X { get; init; }
@@ -26,11 +34,50 @@ public class RoomPlayerBotPlacedEventHandler(RoomRepository roomRepository) : IN
             return;
         }
 
-        if (!room.BotRepository.TryAdd(bot))
+        if (room.OwnerId != roomUser.Id)
         {
-            // TODO; handle
+            return;
         }
+
+        var placePoint = new Point(X, Y);
         
-        //
+        if (room.TileMap.UserMap.ContainsKey(placePoint) && room.TileMap.UserMap[placePoint].Count > 0 && !room.Settings.CanUsersOverlap)
+        {
+            await client.WriteToStreamAsync(new RoomBotErrorWriter
+            {
+                ErrorCode = 3
+            });
+            
+            return;
+        }
+
+        var roomBot = new RoomBot
+        {
+            Bot = bot,
+            Point = new Point(X, Y),
+            PointZ = 0,
+            Direction = HDirection.South,
+            DirectionHead = HDirection.South
+        };
+
+        if (!room.BotRepository.TryAdd(roomBot))
+        {
+            return;
+        }
+
+        bot.RoomId = room.Id;
+
+        dbContext.Entry(bot).Property(x => x.RoomId).IsModified = true;
+        await dbContext.SaveChangesAsync();
+
+        await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
+        {
+            Bot = roomBot
+        });
+
+        await client.WriteToStreamAsync(new PlayerInventoryRemoveBotWriter
+        {
+            Id = bot.Id
+        });
     }
 }
