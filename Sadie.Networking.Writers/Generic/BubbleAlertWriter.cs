@@ -4,9 +4,9 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Generic;
 
-[PacketId(ServerPacketId.NotificationWriter)]
-public class NotificationWriter : AbstractPacketWriter
+[PacketId(ServerPacketId.BubbleAlert)]
+public class BubbleAlertWriter : AbstractPacketWriter
 {
-    public required int Type { get; init; }
+    public required string Key { get; init; }
     public required Dictionary<string, string> Messages { get; init; }
 }

@@ -87,6 +87,7 @@ public class RoomSettingsSaveEventHandler(
                 ErrorCode = (int) RoomSettingsError.PasswordRequired,
                 Unknown = ""
             });
+            
             return;
         }
 

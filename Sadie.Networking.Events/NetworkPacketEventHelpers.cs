@@ -46,9 +46,9 @@ internal static class NetworkPacketEventHelpers
 
     public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
     {
-        await client.WriteToStreamAsync(new NotificationWriter
+        await client.WriteToStreamAsync(new BubbleAlertWriter
         {
-            Type = (int) NotificationType.FurniturePlacementError,
+            Key = EnumHelpers.GetEnumDescription(NotificationType.FurniturePlacementError)!,
             Messages = new Dictionary<string, string>
             {
                 { "message", error.ToString() }
