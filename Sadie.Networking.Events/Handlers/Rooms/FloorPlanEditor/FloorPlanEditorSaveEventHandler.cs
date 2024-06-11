@@ -1,5 +1,7 @@
-using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -8,16 +10,19 @@ using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
 [PacketId(EventHandlerIds.FloorPlanEditorSave)]
-public partial class FloorPlanEditorSaveEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class FloorPlanEditorSaveEventHandler(
+    SadieContext dbContext,
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required string HeightMap { get; set; }
     public required int DoorX { get; set; }
     public required int DoorY { get; set; }
-    public required int DoorRotation { get; set; }
+    public required int DoorDirection { get; set; }
     public required int WallSize { get; set; }
     public required int FloorSize { get; set; }
     public required int WallHeight { get; set; }
@@ -29,14 +34,14 @@ public partial class FloorPlanEditorSaveEventHandler(RoomRepository roomReposito
             return;
         }
 
-        if (room.OwnerId != client.Player.Id)
+        if (room.OwnerId != client.Player.Id || room.Layout == null)
         {
             return;
         }
 
         var errors = new List<string>();
 
-        if (!ValidHeightMap().IsMatch(HeightMap))
+        if (!Regex.IsMatch(HeightMap, "[a-zA-Z0-9\r]+"))
         {
             errors.Add("${notification.floorplan_editor.error.title}");
         }
@@ -58,7 +63,7 @@ public partial class FloorPlanEditorSaveEventHandler(RoomRepository roomReposito
             errors.Add("${notification.floorplan_editor.error.message.entry_not_on_tile}");
         }
 
-        if (DoorRotation is < 0 or > 7)
+        if (DoorDirection is < 0 or > 7)
         {
             errors.Add("${notification.floorplan_editor.error.message.invalid_entry_tile_direction}");
         }
@@ -91,15 +96,46 @@ public partial class FloorPlanEditorSaveEventHandler(RoomRepository roomReposito
             
             return;
         }
-        
-        // TODO; Update
 
+        bool newLayout = false;
+
+        if (!room.Layout.Name!.Contains("custom_"))
+        {
+            room.Layout = new RoomLayout
+            {
+                Name = $"custom_{Guid.NewGuid().ToString().Replace("-", "")[..15]}",
+                DoorDirection = (HDirection)DoorDirection,
+                DoorX = DoorX,
+                DoorY = DoorY,
+                HeightMap = HeightMap
+            };
+            
+            dbContext.Entry(room.Layout).State = EntityState.Added;
+            newLayout = true;
+        }
+        else
+        {
+            room.Layout.DoorDirection = (HDirection) DoorDirection;
+            room.Layout.DoorX = DoorX;
+            room.Layout.DoorY = DoorY;
+            room.Layout.HeightMap = HeightMap;
+            
+            dbContext.Entry(room.Layout).State = EntityState.Modified;
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        if (newLayout)
+        {
+            room.LayoutId = room.Layout.Id;
+            
+            dbContext.Entry(room).Property(x => x.LayoutId).IsModified = true;
+            await dbContext.SaveChangesAsync();
+        }
+        
         await room.UserRepository.BroadcastDataAsync(new RoomForwardEntryWriter
         {
             RoomId = room.Id
         });
     }
-
-    [GeneratedRegex("[a-zA-Z0-9\r]+")]
-    private static partial Regex ValidHeightMap();
 }

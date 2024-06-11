@@ -16,27 +16,23 @@ public class FloorPlanEditorGetOccupiedTilesEventHandler(RoomRepository roomRepo
             return;
         }
 
-        var blockedUserTiles = room
+        var blockedUserPoints = room
             .TileMap
             .UserMap
             .Where(x => x.Value.Count > 0)
-            .Select(x => x.Key)
-            .ToDictionary(k => k.X, v => v.Y);
+            .ToList()
+            .Select(x => x.Key);
 
-        var blockedBotTiles = room
+        var blockedBotPoints = room
             .TileMap
             .BotMap
             .Where(x => x.Value.Count > 0)
-            .Select(x => x.Key)
-            .ToDictionary(k => k.X, v => v.Y);
-
-        blockedUserTiles
             .ToList()
-            .ForEach(x => blockedBotTiles.Add(x.Key, x.Value));
+            .Select(x => x.Key);
 
         await client.WriteToStreamAsync(new FloorPlanEditorOccupiedTilesWriter
         {
-            Tiles = blockedBotTiles
+            Points = blockedUserPoints.Concat(blockedBotPoints).ToList()
         });
     }
 }
