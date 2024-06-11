@@ -53,6 +53,8 @@ public class SadieContext(
     public DbSet<ServerPeriodicCurrencyRewardLog> ServerPeriodicCurrencyRewardLogs { get; init; }
     public DbSet<PlayerSsoToken> PlayerSsoToken { get; init; }
     public DbSet<PlayerNavigatorSettings> PlayerNavigatorSettings { get; init; }
+    public DbSet<Subscription> Subscriptions { get; init; }
+    public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -153,10 +155,6 @@ public class SadieContext(
         modelBuilder.Entity<ServerPlayerConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerRoomConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerSettings>(builder => builder.HasNoKey());
-
-        modelBuilder.Entity<CatalogPage>()
-            .Navigation(x => x.Pages)
-            .AutoInclude();
 
         modelBuilder.Entity<FurnitureItem>()
             .Navigation(x => x.HandItems)

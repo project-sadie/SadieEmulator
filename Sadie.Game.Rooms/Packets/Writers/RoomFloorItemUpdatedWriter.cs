@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
-[PacketId(ServerPacketId.RoomFloorFurnitureItemMoved)]
+[PacketId(ServerPacketId.RoomFloorFurnitureItemUpdated)]
 public class RoomFloorItemUpdatedWriter : AbstractPacketWriter
 {
     public required long Id { get; init; }
@@ -13,11 +13,10 @@ public class RoomFloorItemUpdatedWriter : AbstractPacketWriter
     public required int PositionY { get; init; }
     public required int Direction { get; init; }
     public required double PositionZ { get; init; }
-    public required int StackHeight { get; init; }
+    public required string StackHeight { get; init; }
     public required int Extra { get; init; }
     public required int ObjectDataKey { get; init; }
-    public required Dictionary<string, string> ObjectData { get; init; }
-    public required string MetaData { get; init; }
+    public required string ExtraData { get; set; }
     public required int Expires { get; init; }
     public required int InteractionModes { get; init; }
     public required long OwnerId { get; init; }

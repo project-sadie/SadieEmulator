@@ -9,4 +9,5 @@ public class PlayerState : IPlayerState
     public List<PlayerRoomVisit> RoomVisits { get; } = new();
     public DateTime LastCatalogPurchase { get; set; }
     public DateTime LastSubscriptionModification { get; set; }
+    public string CatalogMode { get; set; }
 }

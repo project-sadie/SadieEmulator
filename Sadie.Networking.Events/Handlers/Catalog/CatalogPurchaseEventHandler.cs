@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
+using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -57,6 +59,73 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
+        if (page.Layout == CatalogPageLayout.VipBuy)
+        {
+            var offer = await dbContext
+                .Set<CatalogClubOffer>()
+                .FirstOrDefaultAsync(x => x.Id == ItemId);
+
+            if (offer == null)
+            {
+                await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
+                {
+                    Error = (int) CatalogPurchaseError.Server
+                });
+                
+                return;
+            }
+
+            var clubSubscription = await dbContext
+                .Subscriptions
+                .Where(x => x.Name == "HABBO_CLUB")
+                .FirstOrDefaultAsync();
+
+            if (clubSubscription == null)
+            {
+                return;
+            }
+
+            if (!await RoomHelpers.TryChargeForClubOfferPurchaseAsync(client, offer))
+            {
+                return;
+            }
+
+            var subscription = new PlayerSubscription
+            {
+                PlayerId = player.Id,
+                SubscriptionId = clubSubscription.Id,
+                CreatedAt = DateTime.Now,
+                ExpiresAt = DateTime.Now.AddDays(offer.DurationDays)
+            };
+
+            player.Subscriptions.Add(subscription);
+            
+            dbContext.PlayerSubscriptions.Add(subscription);
+            await dbContext.SaveChangesAsync();
+            
+            await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
+            {
+                Id = offer.Id,
+                Name = offer.Name,
+                Rented = false,
+                CostCredits = offer.CostCredits,
+                CostPoints = offer.CostPoints,
+                CostPointsType = offer.CostPointsType,
+                CanGift = true,
+                FurnitureItems = [],
+                Amount = Amount,
+                ClubLevel = 0,
+                CanPurchaseBundles = false,
+                Metadata = "",
+                IsLimited = false,
+                LimitedItemSeriesSize = 0,
+                AmountLeft = 0
+            });
+        
+            await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+            return;
+        }
+
         var item = page.Items.FirstOrDefault(x => x.Id == ItemId);
 
         if (item == null)
@@ -64,6 +133,17 @@ public class CatalogPurchaseEventHandler(
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
             {
                 Error = (int) CatalogPurchaseError.Server
+            });
+            
+            return;
+        }
+
+        if (item.RequiresClubMembership &&
+            client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB") == null)
+        {
+            await client.WriteToStreamAsync(new CatalogPurchaseUnavailableWriter
+            {
+                Code = 1
             });
             
             return;
@@ -86,7 +166,7 @@ public class CatalogPurchaseEventHandler(
             {
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
-                LimitedData = $"1:1",
+                LimitedData = "1:1",
                 MetaData = ExtraData,
                 CreatedAt = created
             };

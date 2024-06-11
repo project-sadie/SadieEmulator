@@ -24,7 +24,12 @@ public class RoomTileMapHelpers
         };
     }
     
-    public static List<Point> GetPointsForPlacement(int x, int y, int width, int length, int direction)
+    public static List<Point> GetPointsForPlacement(
+        int x, 
+        int y, 
+        int width, 
+        int length, 
+        int direction)
     {
         var points = new List<Point>();
         
@@ -278,13 +283,5 @@ public class RoomTileMapHelpers
         }
 
         return new Point(x, y);
-    }
-
-    public static int SquaresAway(Point one, Point two)
-    {
-        var x = one.X - two.X;
-        var y = one.Y - two.Y;
-        
-        return (int) Math.Sqrt(x * x + y * y);
     }
 }

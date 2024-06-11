@@ -105,7 +105,7 @@ public class SecureLoginEventHandler(
 
             await player.NetworkObject.WriteToStreamAsync(new PlayerSubscriptionWriter
             {
-                Name = playerSub.Subscription.Name,
+                Name = playerSub.Subscription.Name.ToLower(),
                 DaysLeft = daysLeft,
                 MemberPeriods = 0,
                 PeriodsSubscribedAhead = 0,
@@ -169,7 +169,7 @@ public class SecureLoginEventHandler(
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
         {
             Club = playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
-            Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 0,
+            Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
             Ambassador = true
         });
 

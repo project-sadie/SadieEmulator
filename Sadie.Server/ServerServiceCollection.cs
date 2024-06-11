@@ -13,7 +13,6 @@ using Sadie.Networking.Events;
 using Sadie.Options;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
-using Serilog;
 
 namespace SadieEmulator;
 
