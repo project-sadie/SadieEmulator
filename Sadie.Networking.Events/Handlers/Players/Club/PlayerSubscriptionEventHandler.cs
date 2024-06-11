@@ -26,7 +26,7 @@ public class PlayerSubscriptionEventHandler : INetworkPacketEventHandler
             
         await client.WriteToStreamAsync(new PlayerSubscriptionWriter
         {
-            Name = playerSub.Subscription.Name,
+            Name = playerSub.Subscription.Name.ToLower(),
             DaysLeft = daysLeft,
             MemberPeriods = 1,
             PeriodsSubscribedAhead = 2,
