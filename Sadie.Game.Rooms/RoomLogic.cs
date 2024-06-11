@@ -1,4 +1,5 @@
 ﻿using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
@@ -50,6 +51,7 @@ public class RoomLogic : Room, IRoomLogic
     
     public RoomTileMap TileMap { get; }
     public IRoomUserRepository UserRepository { get; }
+    public IRoomBotRepository BotRepository { get; }
 
     public async ValueTask DisposeAsync()
     {

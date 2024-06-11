@@ -90,7 +90,7 @@ public class PlayerAcceptFriendRequestEventHandler(
         {
             var lastRoom = roomRepository.TryGetRoomById(origin.CurrentRoomId);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGet(origin.Id, out _))
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(origin.Id, out _))
             {
                 targetInRoom = true;
             }
