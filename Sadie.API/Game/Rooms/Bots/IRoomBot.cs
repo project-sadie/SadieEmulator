@@ -13,4 +13,5 @@ public interface IRoomBot
     HDirection DirectionHead { get; set; }
     HDirection Direction { get; set; }
     Dictionary<string, string> StatusMap { get; }
+    Task RunPeriodicCheckAsync();
 }

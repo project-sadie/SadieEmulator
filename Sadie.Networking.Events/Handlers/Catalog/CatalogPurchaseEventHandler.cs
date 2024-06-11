@@ -11,6 +11,7 @@ using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Shared;
+using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
@@ -151,6 +152,23 @@ public class CatalogPurchaseEventHandler(
 
         if (!await RoomHelpers.TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
         {
+            return;
+        }
+
+        if (page.Layout == CatalogPageLayout.Bots)
+        {
+            var bot = new PlayerBot
+            {
+                PlayerId = client.Player.Id,
+                RoomId = null,
+                Username = "",
+                FigureCode = "",
+                Motto = "",
+                Gender = AvatarGender.Male
+            };
+
+            player.Bots.Add(bot);
+            
             return;
         }
         

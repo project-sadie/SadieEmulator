@@ -11,7 +11,7 @@ public class CatalogPage
     public string? Caption { get; init; }
     public string? Layout { get; init; }
     public int? RoleId { get; init; }
-    public int CatalogPageId { get; init; }
+    public int? CatalogPageId { get; init; }
     public int OrderId { get; init; }
     public int IconId { get; init; }
     public bool Enabled { get; init; }

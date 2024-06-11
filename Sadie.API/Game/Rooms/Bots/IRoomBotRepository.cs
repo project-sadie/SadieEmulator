@@ -6,4 +6,5 @@ public interface IRoomBotRepository : IAsyncDisposable
     bool TryAdd(IRoomBot bot);
     bool TryGetById(int id, out IRoomBot? bot);
     int Count { get; }
+    Task RunPeriodicCheckAsync();
 }

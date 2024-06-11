@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Sadie.API.Game.Rooms.Bots;
+using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Bots;
 
@@ -11,6 +12,16 @@ public class RoomBotRepository : IRoomBotRepository
     public bool TryAdd(IRoomBot bot) => _bots.TryAdd(bot.Bot.Id, bot);
     public bool TryGetById(int id, out IRoomBot? bot) => _bots.TryGetValue(id, out bot);
     public int Count => _bots.Count;
+    
+    public async Task RunPeriodicCheckAsync()
+    {
+        var bots = _bots.Values;
+        
+        foreach (var bot in bots)
+        {
+            await bot.RunPeriodicCheckAsync();
+        }
+    }
 
     public async ValueTask DisposeAsync()
     {

@@ -5,7 +5,7 @@ namespace Sadie.Database.Models.Players;
 
 public class PlayerBot
 {
-    public required int Id { get; init; }
+    public int Id { get; set; }
     public required int PlayerId { get; init; }
     public required int? RoomId { get; set; }
     public required string Username { get; init; }

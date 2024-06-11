@@ -110,11 +110,6 @@ public class SadieContext(
         modelBuilder.Entity<PlayerSsoToken>().ToTable("player_sso_tokens");
         modelBuilder.Entity<PlayerRoomLike>().ToTable("player_room_likes");
         modelBuilder.Entity<RoomTag>().ToTable("room_tags");
-
-        modelBuilder.Entity<RoomLayout>()
-            .Property(x => x.HeightMap)
-            .HasColumnName("heightmap");
-
         modelBuilder.Entity<PlayerTag>().ToTable("player_tags");
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");
         modelBuilder.Entity<PlayerFurnitureItem>().ToTable("player_furniture_items");
@@ -129,6 +124,10 @@ public class SadieContext(
         modelBuilder.Entity<HandItem>().ToTable("hand_items");
         modelBuilder.Entity<PlayerBot>().ToTable("player_bots");
 
+        modelBuilder.Entity<RoomLayout>()
+            .Property(x => x.HeightMap)
+            .HasColumnName("heightmap");
+        
         modelBuilder.Entity<PlayerAvatarData>()
             .Property(e => e.Gender)
             .HasConversion(

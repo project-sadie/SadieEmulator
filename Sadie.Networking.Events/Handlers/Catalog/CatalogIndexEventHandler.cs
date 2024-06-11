@@ -17,7 +17,7 @@ public class CatalogIndexEventHandler(SadieContext dbContext) : INetworkPacketEv
             .Include("Pages")
             .Include("Pages.Pages")
             .Include("Pages.Pages.Pages")
-            .Where(x => x.CatalogPageId == -1)
+            .Where(x => x.CatalogPageId == null)
             .ToListAsync();
 
         await client.WriteToStreamAsync(new CatalogTabsWriter
