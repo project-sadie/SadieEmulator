@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
+using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
@@ -167,8 +168,12 @@ public class CatalogPurchaseEventHandler(
                 Gender = AvatarGender.Male
             };
 
+            dbContext.PlayerBots.Add(bot);
+            await dbContext.SaveChangesAsync();
+
             player.Bots.Add(bot);
             
+            await ConfirmPurchaseAsync(client, item);
             return;
         }
         
@@ -202,7 +207,11 @@ public class CatalogPurchaseEventHandler(
         };
         
         await client.WriteToStreamAsync(writer);
-        
+        await ConfirmPurchaseAsync(client, item);
+    }
+
+    private async Task ConfirmPurchaseAsync(INetworkClient client, CatalogItem item)
+    {
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
         {
             Id = item.Id,

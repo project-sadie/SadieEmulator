@@ -55,6 +55,7 @@ public class SadieContext(
     public DbSet<PlayerNavigatorSettings> PlayerNavigatorSettings { get; init; }
     public DbSet<Subscription> Subscriptions { get; init; }
     public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
+    public DbSet<PlayerBot> PlayerBots { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
