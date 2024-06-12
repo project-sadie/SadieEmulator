@@ -1,3 +1,4 @@
+using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
@@ -7,7 +8,9 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerIds.RoomDimmerToggle)]
-public class RoomDimmerToggleEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomDimmerToggleEventHandler(
+    SadieContext dbContext,
+    RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -30,7 +33,20 @@ public class RoomDimmerToggleEventHandler(RoomRepository roomRepository) : INetw
             return;
         }
 
-        dimmer.MetaData = "2,1,2,#FF00FF,255";
+        var preset = dbContext.RoomDimmerPresets
+            .FirstOrDefault(x => x.RoomId == room.Id && x.PresetId == room.DimmerSettings.PresetId);
+
+        if (preset == null)
+        {
+            return;
+        }
+        
+        room.DimmerSettings.Enabled = !room.DimmerSettings.Enabled;
+        
+        dimmer.MetaData = $"{(room.DimmerSettings.Enabled ? 2 : 0)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}";
         await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, dimmer);
+        
+        dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
+        await dbContext.SaveChangesAsync();
     }
 }

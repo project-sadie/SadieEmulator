@@ -1,7 +1,6 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;

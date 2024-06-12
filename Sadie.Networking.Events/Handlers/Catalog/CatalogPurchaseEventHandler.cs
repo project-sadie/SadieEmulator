@@ -247,11 +247,6 @@ public class CatalogPurchaseEventHandler(
         
         player.State.LastCatalogPurchase = DateTime.Now;
 
-        if (item.FurnitureItems.Any(x => x.InteractionType == "dimmer"))
-        {
-            MetaData = "1,1,1,#000000,255";
-        }
-
         for (var i = 0; i < Amount; i++)
         {
             var newItem = new PlayerFurnitureItem
