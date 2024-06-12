@@ -160,7 +160,7 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
         NextPoint = nextStep;
     }
     
-    public void WalkToPoint(Point point, Action? onReachedGoal)
+    public void WalkToPoint(Point point, Action? onReachedGoal = null)
     {
         PathGoal = point;
         NeedsPathCalculated = true;

@@ -139,13 +139,15 @@ public static class RoomHelpersDirty
             var squareInFront = RoomTileMapHelpers
                 .GetPointInFront(teleport.PositionX, teleport.PositionY, teleport.Direction);
 
-            async void OnReachedGoal()
+            roomUser.WalkToPoint(squareInFront);
+            
+            Task.Factory.StartNew(async () =>
             {
+                await Task.Delay(800);
+                
                 teleport.MetaData = "0";
                 await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, teleport);
-            }
-
-            roomUser.WalkToPoint(squareInFront, OnReachedGoal);
+            });
         }
         
         CreateRoomVisitForPlayer(player, room.Id);

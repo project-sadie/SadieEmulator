@@ -55,6 +55,14 @@ public class TeleportInteractor(
             .FurnitureItems
             .FirstOrDefault(x => x.Id == targetItemId);
         
+        Task.Factory.StartNew(async () =>
+        {
+            await Task.Delay(800);
+                
+            item.MetaData = "0";
+            await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
+        });
+        
         if (targetRoomItem != null)
         {
             await UseTeleportInSameRoomAsync(
@@ -79,9 +87,6 @@ public class TeleportInteractor(
         long targetItemId,
         IRoomLogic room)
     {
-        item.MetaData = "0";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
-            
         var targetRoomId = await dbContext
             .RoomFurnitureItems
             .Where(x => x.Id == targetItemId)
@@ -97,15 +102,15 @@ public class TeleportInteractor(
 
             if (targetItem != null)
             {
-                targetItem.MetaData = "1";
-                await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(targetRoom!, targetItem);
-                    
                 roomUser.Player.State.Teleport = targetItem;
                     
                 await roomUser.NetworkObject.WriteToStreamAsync(new RoomForwardEntryWriter
                 {
                     RoomId = targetRoomId
                 });
+                
+                targetItem.MetaData = "1";
+                await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(targetRoom!, targetItem);
             }
         }
     }
@@ -124,9 +129,6 @@ public class TeleportInteractor(
         roomUser.Point = newPoint;
         roomUser.Direction = targetItem.Direction;
         roomUser.DirectionHead = targetItem.Direction;
-
-        item.MetaData = "0";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
             
         targetItem.MetaData = "1";
         await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, targetItem);
