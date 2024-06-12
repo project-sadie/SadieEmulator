@@ -55,6 +55,8 @@ public class SadieContext(
     public DbSet<PlayerNavigatorSettings> PlayerNavigatorSettings { get; init; }
     public DbSet<Subscription> Subscriptions { get; init; }
     public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
+    public DbSet<PlayerBot> PlayerBots { get; init; }
+    public DbSet<RoomFurnitureItemTeleportLink> RoomFurnitureItemTeleportLinks { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -110,11 +112,6 @@ public class SadieContext(
         modelBuilder.Entity<PlayerSsoToken>().ToTable("player_sso_tokens");
         modelBuilder.Entity<PlayerRoomLike>().ToTable("player_room_likes");
         modelBuilder.Entity<RoomTag>().ToTable("room_tags");
-
-        modelBuilder.Entity<RoomLayout>()
-            .Property(x => x.HeightMap)
-            .HasColumnName("heightmap");
-
         modelBuilder.Entity<PlayerTag>().ToTable("player_tags");
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");
         modelBuilder.Entity<PlayerFurnitureItem>().ToTable("player_furniture_items");
@@ -127,8 +124,19 @@ public class SadieContext(
         modelBuilder.Entity<PlayerMessage>().ToTable("player_messages");
         modelBuilder.Entity<Role>().ToTable("roles");
         modelBuilder.Entity<HandItem>().ToTable("hand_items");
+        modelBuilder.Entity<PlayerBot>().ToTable("player_bots");
 
+        modelBuilder.Entity<RoomLayout>()
+            .Property(x => x.HeightMap)
+            .HasColumnName("heightmap");
+        
         modelBuilder.Entity<PlayerAvatarData>()
+            .Property(e => e.Gender)
+            .HasConversion(
+                v => EnumHelpers.GetEnumDescription(v),
+                v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v));
+        
+        modelBuilder.Entity<PlayerBot>()
             .Property(e => e.Gender)
             .HasConversion(
                 v => EnumHelpers.GetEnumDescription(v),
@@ -143,6 +151,15 @@ public class SadieContext(
                 l => l.HasOne(typeof(Role)).WithMany().HasForeignKey("role_id").HasPrincipalKey(nameof(Role.Id)),
                 r => r.HasOne(typeof(Player)).WithMany().HasForeignKey("player_id").HasPrincipalKey(nameof(Player.Id)),
                 j => j.HasKey("role_id", "player_id"));
+        
+
+        modelBuilder.Entity<Player>()
+            .HasMany(r => r.Groups)
+            .WithMany(p => p.Players)
+            .UsingEntity("group_player",
+                l => l.HasOne(typeof(Group)).WithMany().HasForeignKey("group_id").HasPrincipalKey(nameof(Group.Id)),
+                r => r.HasOne(typeof(Player)).WithMany().HasForeignKey("player_id").HasPrincipalKey(nameof(Player.Id)),
+                j => j.HasKey("group_id", "player_id"));
 
         modelBuilder.Entity<Role>()
             .HasMany(r => r.Permissions)

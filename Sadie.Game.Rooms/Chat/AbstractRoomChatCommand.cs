@@ -19,7 +19,7 @@ public abstract class AbstractRoomChatCommand : IRoomChatCommand
         {
             SenderId = user.Id,
             Message = message,
-            EmotionId = 0,
+            EmotionId = (int) Shared.Helpers.RoomHelpers.GetEmotionFromMessage(message),
             Bubble = (int)ChatBubble.Default,
             Unknown = 0
         };

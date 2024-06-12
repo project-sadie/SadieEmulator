@@ -37,7 +37,7 @@ public class RoomLoadedEventHandler(
         {
             var lastRoom = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
             {
                 await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id);
             }
@@ -71,7 +71,7 @@ public class RoomLoadedEventHandler(
             return;
         }
         
-        await RoomHelpers.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await RoomHelpersDirty.EnterRoomAsync(client, room, logger, roomUserFactory);
         
         await playerRepository.UpdateMessengerStatusForFriends(
             player.Id,

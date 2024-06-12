@@ -6,8 +6,8 @@ public class RoomLayout
 {
     public int Id { get; init; }
     public string? Name { get; init; }
-    public string? HeightMap { get; init; }
-    public int DoorX { get; init; }
-    public int DoorY { get; init; }
-    public HDirection DoorDirection { get; init; }
+    public string? HeightMap { get; set; }
+    public int DoorX { get; set; }
+    public int DoorY { get; set; }
+    public HDirection DoorDirection { get; set; }
 }

@@ -8,16 +8,11 @@ namespace Sadie.Game.Rooms.Users;
 
 public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserRepository
 {
-    private readonly ConcurrentDictionary<int, IRoomUser> _users = new();
+    private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 
     public ICollection<IRoomUser> GetAll() => _users.Values;
     public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Id, user);
-    public bool TryGet(int id, out IRoomUser? user) => _users.TryGetValue(id, out user);
-    public bool TryGetById(long id, out IRoomUser? user)
-    {
-        user = _users.Values.FirstOrDefault(x => x.Id == id);
-        return user != null;
-    }
+    public bool TryGetById(long id, out IRoomUser? user) => _users.TryGetValue(id, out user);
 
     public bool TryGetByUsername(string username, out IRoomUser? user)
     {
@@ -25,7 +20,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
         return user != null;
     }
 
-    public async Task TryRemoveAsync(int id, bool hotelView = false)
+    public async Task TryRemoveAsync(long id, bool hotelView = false)
     {
         var writer = new RoomUserLeftWriter
         {
@@ -54,9 +49,11 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     
     public async Task BroadcastDataAsync(AbstractPacketWriter writer)
     {
+        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        
         foreach (var roomUser in _users.Values)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(writer);
+            await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
         }
     }
 

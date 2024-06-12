@@ -111,7 +111,7 @@ public class ServerPacketId
     public const short PlayerInventoryAddItems = 2103;
     public const short PlayerInventoryRemoveItem = 159;
     public const short RoomFloorFurnitureItemPlaced = 1534;
-    public const short NotificationWriter = 1992;
+    public const short BubbleAlert = 1992;
     public const short RoomFloorItems = 1778;
     public const short RoomWallItems = 1369;
     public const short RoomFurnitureItemRemoved = 2703;
@@ -130,4 +130,10 @@ public class ServerPacketId
     public const short RoomUserGroupBadgeData = 2402;
     public const short PlayerGroupBadgeParts = 2238;
     public const short CatalogPurchaseUnavailable = 3770;
+    public const short PlayerInventoryBotItems = 3086;
+    public const short RoomBotError = 639;
+    public const short PlayerInventoryRemoveBot = 233;
+    public const short PlayerInventoryAddBot = 1352;
+    public const short FloorPlanEditorDoorCoords = 1664;
+    public const short FloorPlanEditorOccupiedTiles = 3990;
 }

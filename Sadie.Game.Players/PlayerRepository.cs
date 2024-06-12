@@ -99,6 +99,8 @@ public class PlayerRepository(
             .Include(x => x.MessagesSent)
             .Include(x => x.MessagesReceived)
             .Include(x => x.Rooms).ThenInclude(x => x.Settings)
+            .Include(x => x.Groups)
+            .Include(x => x.Bots)
             .FirstOrDefaultAsync();
 
         if (player == null)

@@ -1,12 +1,14 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
+using Sadie.API.Game.Rooms.Bots;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Mapping;
 
-public class RoomTileMap
+public class RoomTileMap : IRoomTileMap
 {
     private List<string> HeightmapRows { get; }
     public int SizeX { get; }
@@ -15,6 +17,7 @@ public class RoomTileMap
     public short[,] SquareStateMap { get; }
     public short[,] Map { get; }
     public ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; } = [];
+    public ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; } = [];
 
     public RoomTileMap(string heightmap, ICollection<RoomFurnitureItem> furnitureItems)
     {
@@ -28,4 +31,7 @@ public class RoomTileMap
 
     public void AddUserToMap(Point point, IRoomUser user) => 
         UserMap.GetOrInsert(point, () => []).Add(user);
+
+    public void AddBotToMap(Point point, IRoomBot bot) => 
+        BotMap.GetOrInsert(point, () => []).Add(bot);
 }

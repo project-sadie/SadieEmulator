@@ -8,6 +8,7 @@ using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game;
+using RoomHelpers = Sadie.Shared.Helpers.RoomHelpers;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
@@ -48,7 +49,7 @@ public class RoomUserWhisperEventHandler(
             PlayerId = roomUser.Id,
             Message = whisperMessage,
             ChatBubbleId = (ChatBubble) Bubble,
-            EmotionId = 0,
+            EmotionId = RoomHelpers.GetEmotionFromMessage(whisperMessage),
             TypeId = RoomChatMessageType.Whisper,
             CreatedAt = DateTime.Now
         };

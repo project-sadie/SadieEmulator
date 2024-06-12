@@ -1,4 +1,6 @@
 ﻿using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Bots;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
@@ -20,6 +22,7 @@ public class RoomLogic : Room, IRoomLogic
         int maxUsersAllowed,
         bool isMuted,
         IRoomUserRepository userRepository,
+        IRoomBotRepository botRepository,
         ICollection<RoomFurnitureItem> furnitureItems,
         RoomSettings settings,
         RoomChatSettings chatSettings,
@@ -46,10 +49,12 @@ public class RoomLogic : Room, IRoomLogic
         FurnitureItems = furnitureItems;
         TileMap = tileMap;
         UserRepository = userRepository;
+        BotRepository = botRepository;
     }
     
-    public RoomTileMap TileMap { get; }
+    public IRoomTileMap TileMap { get; }
     public IRoomUserRepository UserRepository { get; }
+    public IRoomBotRepository BotRepository { get; }
 
     public async ValueTask DisposeAsync()
     {

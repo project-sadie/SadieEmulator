@@ -46,7 +46,7 @@ public class RoomRemoveUserRightsEventHandler(
 
     private async Task RemoveRoomPlayerRightAsync(long playerId, RoomLogic room, RoomPlayerRight right)
     {
-        if (room.UserRepository.TryGetById(playerId, out var roomUser))
+        if (room.UserRepository.TryGetById((int) playerId, out var roomUser))
         {
             roomUser!.ControllerLevel = RoomControllerLevel.None;
             roomUser.ApplyFlatCtrlStatus();

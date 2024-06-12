@@ -4,12 +4,15 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Networking;
+using RoomHelpers = Sadie.Shared.Helpers.RoomHelpers;
 
 namespace Sadie.Networking.Events;
 
@@ -44,9 +47,9 @@ internal static class NetworkPacketEventHelpers
 
     public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
     {
-        await client.WriteToStreamAsync(new NotificationWriter
+        await client.WriteToStreamAsync(new BubbleAlertWriter
         {
-            Type = (int) NotificationType.FurniturePlacementError,
+            Key = EnumHelpers.GetEnumDescription(NotificationType.FurniturePlacementError)!,
             Messages = new Dictionary<string, string>
             {
                 { "message", error.ToString() }
@@ -92,15 +95,37 @@ internal static class NetworkPacketEventHelpers
             PlayerId = roomUser.Id,
             Message = message,
             ChatBubbleId = bubble,
-            EmotionId = 0,
+            EmotionId = RoomHelpers.GetEmotionFromMessage(message),
             TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };
 
-        await room!.UserRepository.BroadcastDataAsync(
-            shouting ? 
-            new RoomUserShoutWriter { Message = chatMessage, Unknown1 = 0 } : 
-            new RoomUserChatWriter { Message = chatMessage, Unknown1 = 0 });
+        if (shouting)
+        {
+            var writer = new RoomUserShoutWriter
+            {
+                UserId = roomUser.Id,
+                Message = message,
+                EmotionId = (int) RoomHelpers.GetEmotionFromMessage(message),
+                ChatBubbleId = (int)bubble,
+                Unknown1 = 0
+            };
+            
+            await room.UserRepository.BroadcastDataAsync(writer);
+        }
+        else
+        {
+            var writer = new RoomUserChatWriter
+            {
+                UserId = roomUser.Id,
+                Message = message,
+                EmotionId = (int) RoomHelpers.GetEmotionFromMessage(message),
+                ChatBubbleId = (int)bubble,
+                Unknown1 = 0
+            };
+            
+            await room.UserRepository.BroadcastDataAsync(writer);
+        }
         
         roomUser.UpdateLastAction();
         room.ChatMessages.Add(chatMessage);

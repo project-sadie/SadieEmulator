@@ -41,8 +41,8 @@ public class CatalogPageEventHandler(SadieContext dbContext) : INetworkPacketEve
         {
             PageId = page.Id,
             PageLayout = page.Layout,
-            Images = page.ImagesJson,
-            Texts = page.TextsJson,
+            Images = page.ImagesJson.Where(x => !string.IsNullOrEmpty(x)).ToList(),
+            Texts = page.TextsJson.Where(x => !string.IsNullOrEmpty(x)).ToList(),
             Items = page.Items.ToList(),
             CatalogMode = CatalogMode,
             AcceptSeasonCurrencyAsCredits = false,

@@ -4,7 +4,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Mapping;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -23,28 +23,13 @@ public class RoomUser(
     PlayerLogic player,
     ServerRoomConstants constants,
     RoomControllerLevel controllerLevel)
-    : RoomUserData(point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
+    : RoomUserData(room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
 {
     public int Id { get; } = id;
     public IRoomLogic Room { get; } = room;
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
-
-    private void ClearStatuses()
-    {
-        RemoveStatuses(
-            RoomUserStatus.Sit,
-            RoomUserStatus.Lay,
-            RoomUserStatus.Move);
-    }
-    
-    public void WalkToPoint(Point point, Action? onReachedGoal)
-    {
-        PathGoal = point;
-        NeedsPathCalculated = true;
-        OnReachedGoal = onReachedGoal;
-    }
 
     public void LookAtPoint(Point point)
     {
@@ -76,27 +61,6 @@ public class RoomUser(
         NeedsStatusUpdate = true;
     }
 
-    private void CalculatePath()
-    {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal);
-
-        if (PathPoints.Count > 1)
-        {
-            StepsWalked = 0;
-            IsWalking = true;
-            NeedsPathCalculated = false;
-        }
-        else
-        {
-            NeedsPathCalculated = false;
-                
-            if (PathPoints.Count > 0)
-            {
-                PathPoints.Clear();
-            }
-        }
-    }
-
     public async Task RunPeriodicCheckAsync()
     {
         if (NextPoint != null)
@@ -110,7 +74,7 @@ public class RoomUser(
 
         if (NeedsPathCalculated)
         {
-            CalculatePath();
+            CalculatePath(room.Settings.WalkDiagonal);
         }
 
         if (IsWalking)
@@ -119,55 +83,6 @@ public class RoomUser(
         }
 
         await UpdateIdleStatusAsync();
-    }
-
-    private void ClearWalking()
-    {
-        IsWalking = false;
-        RemoveStatuses(RoomUserStatus.Move);
-        CheckStatusForCurrentTile();
-
-        if (OnReachedGoal != null)
-        {
-            OnReachedGoal.Invoke();
-            OnReachedGoal = null;
-        }
-    }
-    
-    private void ProcessMovement()
-    {
-        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
-        {
-            ClearWalking();
-            return;
-        }
-        
-        StepsWalked++;
-        
-        var nextStep = PathPoints[StepsWalked];
-        var lastStep = PathPoints.Count == StepsWalked + 1;
-        
-        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
-            (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
-            room.TileMap.UserMap.GetValueOrDefault(nextStep, [])!.Count > 0)
-        {
-            NeedsPathCalculated = true;
-            return;
-        }
-        
-        var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
-        var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
-
-        ClearStatuses();
-
-        AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextZ}");
-
-        var newDirection = RoomPathFinderHelpers.GetDirectionForNextStep(Point, nextStep);
-                
-        Direction = newDirection;
-        DirectionHead = newDirection;
-                
-        NextPoint = nextStep;
     }
 
     private async Task UpdateIdleStatusAsync()
@@ -191,55 +106,6 @@ public class RoomUser(
     public void UpdateLastAction()
     {
         LastAction = DateTime.Now;
-    }
-
-    public void CheckStatusForCurrentTile()
-    {
-        if (IsWalking)
-        {
-            return;
-        }
-        
-        var tileItems = RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
-
-        if (tileItems.Count == 0)
-        {
-            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            return;
-        }
-
-        var topItem = tileItems.MaxBy(item => item.PositionZ);
-
-        if (topItem == null)
-        {
-            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            return;
-        }
-        
-        if (topItem.FurnitureItem.CanSit)
-        {
-            AddStatus(
-                RoomUserStatus.Sit, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
-            
-            Direction = topItem.Direction;
-            DirectionHead = topItem.Direction;
-        }
-        else if (topItem.FurnitureItem.CanLay)
-        {
-            AddStatus(
-                RoomUserStatus.Lay, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
-            
-            Direction = topItem.Direction;
-            DirectionHead = topItem.Direction;
-        }
-        else
-        {
-            RemoveStatuses(
-                RoomUserStatus.Sit,
-                RoomUserStatus.Lay);
-        }
     }
 
     public bool HasRights()

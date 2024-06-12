@@ -34,6 +34,7 @@ public class Player
     public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; set; }
     public ICollection<Room> Rooms { get; set; } = [];
     public ICollection<Group> Groups { get; init; } = [];
+    public ICollection<PlayerBot> Bots { get; init; } = [];
     
     public int GetAcceptedFriendshipCount()
     {

@@ -103,4 +103,9 @@ public class EventHandlerIds
     public const short GetCommunityGoalHallOfFame = 2167;
     public const short PlayerGroupBadges = 21;
     public const short GetPlayerGroupBadgeParts = 813;
+    public const short PlayerInventoryBotItems = 3848;
+    public const short RoomPlayerBotPlaced = 1592;
+    public const short FloorPlanEditorDoorCoords = 3559;
+    public const short FloorPlanEditorGetOccupiedTiles = 1687;
+    public const short FloorPlanEditorSave = 875;
 }

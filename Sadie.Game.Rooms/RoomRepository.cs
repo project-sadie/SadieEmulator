@@ -60,12 +60,6 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
     public int Count => _rooms.Count;
     public IEnumerable<RoomLogic?> GetAllRooms() => _rooms.Values;
 
-    public async Task SaveRoomAsync(RoomLogic? room)
-    {
-        dbContext.Rooms.Add(mapper.Map<Room>(room));
-        await dbContext.SaveChangesAsync();
-    }
-
     public bool TryUnloadRoom(long id, out RoomLogic? roomLogic)
     {
         return _rooms.TryRemove(id, out roomLogic);
@@ -75,7 +69,8 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
     {
         foreach (var room in _rooms.Values)
         {
-            await SaveRoomAsync(room);
+            dbContext.Entry(room).State = EntityState.Modified;
+            await dbContext.SaveChangesAsync();
             await room.DisposeAsync();
         }
         

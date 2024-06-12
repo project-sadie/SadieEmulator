@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
@@ -13,13 +15,14 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerIds.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
+    SadieContext dbContext,
     RoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {
     public long RoomId { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
-    public RoomAccessType AccessType { get; set; }
+    public int AccessType { get; set; }
     public required string Password { get; set; }
     public int MaxUsers { get; set; }
     public int CategoryId { get; set; }
@@ -76,7 +79,7 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
 
-        if (AccessType == RoomAccessType.Password && string.IsNullOrEmpty(Password))
+        if (AccessType == (int) RoomAccessType.Password && string.IsNullOrEmpty(Password))
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter
             {
@@ -84,6 +87,7 @@ public class RoomSettingsSaveEventHandler(
                 ErrorCode = (int) RoomSettingsError.PasswordRequired,
                 Unknown = ""
             });
+            
             return;
         }
 
@@ -102,7 +106,8 @@ public class RoomSettingsSaveEventHandler(
         UpdateSettings(room.Settings);
         UpdateChatSettings(room.ChatSettings);
         
-        await roomRepository.SaveRoomAsync(room);
+        dbContext.Entry(room).State = EntityState.Modified;
+        await dbContext.SaveChangesAsync();
         await BroadcastUpdatesAsync(room);
         
         await client.WriteToStreamAsync(new RoomSettingsSavedWriter
@@ -113,7 +118,7 @@ public class RoomSettingsSaveEventHandler(
 
     private void UpdateSettings(RoomSettings settings)
     {
-        settings.AccessType = AccessType;
+        settings.AccessType = (RoomAccessType) AccessType;
         settings.Password = Password;
         settings.TradeOption = TradeOption;
         settings.AllowPets = AllowPets;

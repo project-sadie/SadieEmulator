@@ -1,4 +1,5 @@
 using System.Drawing;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding.ToGo;
 using Sadie.Game.Rooms.PathFinding.ToGo.Options;
@@ -48,7 +49,7 @@ public class RoomPathFinderHelpers
         return rotation;
     }
     
-    public static List<Point> BuildPathForWalk(RoomTileMap tileMap, Point start, Point end, bool useDiagonal)
+    public static List<Point> BuildPathForWalk(IRoomTileMap tileMap, Point start, Point end, bool useDiagonal)
     {
         var pathfinderOptions = new PathFinderOptions
         {

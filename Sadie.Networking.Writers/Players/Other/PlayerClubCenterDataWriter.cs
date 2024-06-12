@@ -1,7 +1,10 @@
 using Sadie.Networking.Serialization;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
+[PacketId(ServerPacketId.HabboClubCenter)]
 public class PlayerClubCenterDataWriter : AbstractPacketWriter
 {
     public required int StreakInDays { get; init; }

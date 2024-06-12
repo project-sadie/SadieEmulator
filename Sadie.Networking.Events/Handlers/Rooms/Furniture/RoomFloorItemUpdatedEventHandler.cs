@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
@@ -14,7 +16,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerIds.RoomFloorFurnitureItemUpdated)]
 public class RoomFloorItemUpdatedEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository,
+    RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
     public int ItemId { get; set; }
     public int X { get; set; }
@@ -81,6 +84,13 @@ public class RoomFloorItemUpdatedEventHandler(
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = (HDirection) direction;
         
+        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+
+        if (interactor != null)
+        {
+            await interactor.OnMoveAsync(room, roomFurnitureItem, client.RoomUser);
+        }
+        
         foreach (var user in RoomTileMapHelpers.GetUsersForPoints(oldPoints, room.UserRepository.GetAll()))
         {
             user.CheckStatusForCurrentTile();
@@ -93,8 +103,10 @@ public class RoomFloorItemUpdatedEventHandler(
         
         RoomTileMapHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
         RoomTileMapHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
-        
+
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();
+        
         await BroadcastUpdateAsync(room, roomFurnitureItem);
     }
 
