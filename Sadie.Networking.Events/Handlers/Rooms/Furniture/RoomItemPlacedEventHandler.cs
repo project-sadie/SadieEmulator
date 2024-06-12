@@ -77,6 +77,13 @@ public class RoomItemPlacedEventHandler(
         }
         else if (playerItem.FurnitureItem.Type == FurnitureItemType.Wall)
         {
+            if (playerItem.FurnitureItem.InteractionType == "dimmer" && 
+                room.FurnitureItems.Any(x => x.FurnitureItem.InteractionType == "dimmer"))
+            {
+                await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MaxDimmers);
+                return;
+            }
+            
             await OnWallItemAsync(placementData, room, player, playerItem, itemId, client);
         }
     }

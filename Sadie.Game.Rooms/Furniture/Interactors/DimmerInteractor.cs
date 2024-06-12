@@ -15,6 +15,8 @@ public class DimmerInteractor : IRoomFurnitureItemInteractor
 
     public async Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
+        item.MetaData = "";
+        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
     }
 
     public async Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)

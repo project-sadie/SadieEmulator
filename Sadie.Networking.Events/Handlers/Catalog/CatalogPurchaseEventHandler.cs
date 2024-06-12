@@ -3,6 +3,7 @@ using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
@@ -23,7 +24,7 @@ public class CatalogPurchaseEventHandler(
 {
     [PacketData] public int PageId { get; set; }
     [PacketData] public int ItemId { get; set; }
-    [PacketData] public string? ExtraData { get; set; }
+    [PacketData] public string? MetaData { get; set; }
     [PacketData] public int Amount { get; set; }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -212,7 +213,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
-                MetaData = ExtraData,
+                MetaData = MetaData,
                 CreatedAt = created
             };
             
@@ -221,7 +222,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
-                MetaData = ExtraData,
+                MetaData = MetaData,
                 CreatedAt = created
             };
             
@@ -247,6 +248,11 @@ public class CatalogPurchaseEventHandler(
         
         player.State.LastCatalogPurchase = DateTime.Now;
 
+        if (item.FurnitureItems.Any(x => x.InteractionType == "dimmer"))
+        {
+            MetaData = "1,1,1,#000000,255";
+        }
+
         for (var i = 0; i < Amount; i++)
         {
             var newItem = new PlayerFurnitureItem
@@ -254,7 +260,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
-                MetaData = ExtraData,
+                MetaData = MetaData,
                 CreatedAt = created
             };
             
