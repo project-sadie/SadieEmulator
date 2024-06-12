@@ -77,6 +77,11 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public async Task WriteToStreamAsync(NetworkPacketWriter writer)
     {
+        if (!_channel.IsWritable)
+        {
+            return;
+        }
+        
         await _channel.WriteAndFlushAsync(writer);
     }
 
