@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
@@ -31,6 +32,15 @@ public class RoomDimmerSaveEventHandler(
             return;
         }
 
+        var dimmer = room
+            .FurnitureItems
+            .FirstOrDefault(x => x.FurnitureItem.InteractionType == "dimmer");
+
+        if (dimmer == null)
+        {
+            return;
+        }
+
         var presets = dbContext.RoomDimmerPresets.Where(x => x.RoomId == room.Id).ToList();
         var preset = presets.FirstOrDefault(x => x.PresetId == Id);
 
@@ -44,6 +54,9 @@ public class RoomDimmerSaveEventHandler(
         preset.Intensity = Intensity;
 
         room.DimmerSettings.Enabled = Apply;
+        
+        dimmer.MetaData = $"{(room.DimmerSettings.Enabled ? 2 : 0)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}";
+        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, dimmer);
 
         dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         dbContext.Entry(preset).State = EntityState.Modified;
