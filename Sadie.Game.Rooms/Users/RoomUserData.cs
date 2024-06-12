@@ -15,9 +15,8 @@ public class RoomUserData : RoomUnitMovementData, IRoomUserData
     public bool IsIdle { get; protected set; }
     public bool MoonWalking { get; set; }
     
-    protected RoomUserData(IRoomLogic room, Point point, double pointZ, HDirection directionHead, HDirection direction, PlayerLogic player, TimeSpan idleTime) : base(room)
+    protected RoomUserData(IRoomLogic room, Point point, double pointZ, HDirection directionHead, HDirection direction, PlayerLogic player, TimeSpan idleTime) : base(room, point)
     {
-        Point = point;
         PointZ = pointZ;
         DirectionHead = directionHead;
         Direction = direction;
@@ -25,4 +24,11 @@ public class RoomUserData : RoomUnitMovementData, IRoomUserData
         LastAction = DateTime.Now;
         IdleTime = idleTime;
     }
+    
+    protected Point PathGoal { get; set; }
+    protected List<Point> PathPoints { get; set; } = [];
+    protected bool NeedsPathCalculated { get; set; }
+    protected Action? OnReachedGoal { get; set; } = null;
+    protected Point? NextPoint { get; set; }
+    protected int StepsWalked { get; set; }
 }

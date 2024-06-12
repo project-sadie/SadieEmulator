@@ -144,4 +144,8 @@ public class TeleportInteractor(
             await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, targetItem);
         }
     }
+
+    public async Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
+    {
+    }
 }

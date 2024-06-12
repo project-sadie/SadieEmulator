@@ -7,11 +7,11 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
+public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovementData
 {
     public HDirection DirectionHead { get; set; }
     public HDirection Direction { get; set; }
-    public Point Point { get; set;  }
+    public Point Point { get; set; } = point;
     public double PointZ { get; init;  }
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }

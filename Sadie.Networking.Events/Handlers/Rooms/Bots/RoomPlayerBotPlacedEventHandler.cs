@@ -50,11 +50,10 @@ public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomReposit
             return;
         }
 
-        var roomBot = new RoomBot(room)
+        var roomBot = new RoomBot(room, new Point(X, Y))
         {
             Id = room.MaxUsersAllowed + bot.Id,
             Bot = bot,
-            Point = new Point(X, Y),
             PointZ = 0,
             Direction = HDirection.South,
             DirectionHead = HDirection.South
