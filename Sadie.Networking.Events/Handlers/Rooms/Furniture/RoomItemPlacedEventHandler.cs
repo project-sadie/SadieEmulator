@@ -1,9 +1,11 @@
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -19,7 +21,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerIds.RoomFurnitureItemPlaced)]
 public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository,
+    RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
     public string PlacementData { get; set; }
     
@@ -81,7 +84,7 @@ public class RoomItemPlacedEventHandler(
     private async Task OnFloorItemAsync(
         IReadOnlyList<string> placementData, 
         RoomLogic room, 
-        INetworkObject client, 
+        INetworkClient client, 
         PlayerLogic player, 
         PlayerFurnitureItem playerItem, 
         int itemId)
@@ -124,14 +127,11 @@ public class RoomItemPlacedEventHandler(
         };
 
         player.FurnitureItems.Remove(playerItem);
-        dbContext.PlayerFurnitureItems.Remove(playerItem);
-        
         room.FurnitureItems.Add(roomFurnitureItem);
-        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
 
         RoomTileMapHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
         
-        await dbContext.SaveChangesAsync();
+        roomFurnitureItem.FurnitureItem = playerItem.FurnitureItem;
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {
@@ -156,6 +156,20 @@ public class RoomItemPlacedEventHandler(
             OwnerId = roomFurnitureItem.OwnerId,
             OwnerUsername = roomFurnitureItem.OwnerUsername
         });
+        
+        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+
+        if (interactor == null)
+        {
+            return;
+        }
+
+        await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
+        
+        dbContext.Entry(playerItem).State = EntityState.Deleted;
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
+        
+        await dbContext.SaveChangesAsync();
     }
 
     private async Task OnWallItemAsync(
@@ -164,12 +178,13 @@ public class RoomItemPlacedEventHandler(
         Player player,
         PlayerFurnitureItem playerItem,
         int itemId,
-        INetworkObject client)
+        INetworkClient client)
     {
         var wallPosition = $"{placementData[1]} {placementData[2]} {placementData[3]}";
 
         var roomFurnitureItem = new RoomFurnitureItem
         {
+            RoomId = room.Id,
             OwnerId = player.Id,
             OwnerUsername = player.Username,
             FurnitureItem = playerItem.FurnitureItem,
@@ -183,9 +198,6 @@ public class RoomItemPlacedEventHandler(
             CreatedAt = DateTime.Now
         };
         
-        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
-        await dbContext.SaveChangesAsync();
-
         room.FurnitureItems.Add(roomFurnitureItem);
         player.FurnitureItems.Remove(playerItem);
         
@@ -198,6 +210,20 @@ public class RoomItemPlacedEventHandler(
         {
             RoomFurnitureItem = roomFurnitureItem
         });
+        
+        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+
+        if (interactor == null)
+        {
+            return;
+        }
+
+        await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
+
+        dbContext.Entry(playerItem).State = EntityState.Deleted;
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
+        
+        await dbContext.SaveChangesAsync();
     }
 }
     

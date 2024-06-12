@@ -45,4 +45,6 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             ItemId = handItems.PickRandom().Id
         });
     }
+
+    public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
 }

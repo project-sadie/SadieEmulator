@@ -66,8 +66,7 @@ public class TeleportInteractor(
         if (targetRoomItem != null)
         {
             await UseTeleportInSameRoomAsync(
-                roomUser, 
-                item,
+                roomUser,
                 targetRoomItem,
                 room);
         }
@@ -80,6 +79,8 @@ public class TeleportInteractor(
                 room);
         }
     }
+
+    public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
 
     private async Task UseTeleportInDifferentRoomAsync(
         IRoomUser roomUser, 
@@ -116,8 +117,7 @@ public class TeleportInteractor(
     }
 
     private async Task UseTeleportInSameRoomAsync(
-        IRoomUser roomUser, 
-        RoomFurnitureItem item,
+        IRoomUser roomUser,
         RoomFurnitureItem targetItem,
         IRoomLogic room)
     {

@@ -7,4 +7,5 @@ public interface IRoomFurnitureItemInteractor
 {
     string InteractionType { get; }
     Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
+    Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
 }
