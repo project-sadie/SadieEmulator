@@ -200,11 +200,52 @@ public class CatalogPurchaseEventHandler(
             return;
         }
         
-        player.State.LastCatalogPurchase = DateTime.Now;
-        
         var created = DateTime.Now;
         var newItems = new List<PlayerFurnitureItem>();
+        
         var furnitureItem = item.FurnitureItems.First();
+
+        if (item.FurnitureItems.Any(x => x.InteractionType == "teleport"))
+        {
+            var parent = new PlayerFurnitureItem
+            {
+                PlayerId = client.Player.Id,
+                FurnitureItem = furnitureItem,
+                LimitedData = "1:1",
+                MetaData = ExtraData,
+                CreatedAt = created
+            };
+            
+            var child = new PlayerFurnitureItem
+            {
+                PlayerId = client.Player.Id,
+                FurnitureItem = furnitureItem,
+                LimitedData = "1:1",
+                MetaData = ExtraData,
+                CreatedAt = created
+            };
+            
+            client.Player.FurnitureItems.Add(parent);
+            client.Player.FurnitureItems.Add(child);
+            
+            dbContext.Entry(parent).State = EntityState.Added;
+            dbContext.Entry(child).State = EntityState.Added;
+            
+            newItems.AddRange([parent, child]);
+
+            await dbContext.SaveChangesAsync();
+
+            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+            {
+                Items = newItems
+            });
+            
+            await ConfirmPurchaseAsync(client, item);
+            
+            return;
+        }
+        
+        player.State.LastCatalogPurchase = DateTime.Now;
 
         for (var i = 0; i < Amount; i++)
         {

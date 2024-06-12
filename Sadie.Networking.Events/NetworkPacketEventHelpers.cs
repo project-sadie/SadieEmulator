@@ -12,6 +12,7 @@ using Sadie.Shared.Helpers;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Networking;
+using RoomHelpers = Sadie.Shared.Helpers.RoomHelpers;
 
 namespace Sadie.Networking.Events;
 

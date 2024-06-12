@@ -75,6 +75,11 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         }
     }
 
+    public async Task WriteToStreamAsync(NetworkPacketWriter writer)
+    {
+        await _channel.WriteAndFlushAsync(writer);
+    }
+
     public async Task OnReceivedAsync(byte[] data)
     {
         foreach (var packet in DecodePacketsFromBytes(data))

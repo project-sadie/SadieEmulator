@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Networking;

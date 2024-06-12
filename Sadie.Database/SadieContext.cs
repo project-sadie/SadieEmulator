@@ -56,6 +56,7 @@ public class SadieContext(
     public DbSet<Subscription> Subscriptions { get; init; }
     public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
     public DbSet<PlayerBot> PlayerBots { get; init; }
+    public DbSet<RoomFurnitureItemTeleportLink> RoomFurnitureItemTeleportLinks { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

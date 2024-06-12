@@ -6,6 +6,7 @@ namespace Sadie.API.Game.Players;
 
 public interface IPlayerLogic
 {
+    IPlayerState State { get; }
     PlayerData? Data { get; }
     PlayerAvatarData? AvatarData { get; }
     ICollection<PlayerFurnitureItem> FurnitureItems { get; }

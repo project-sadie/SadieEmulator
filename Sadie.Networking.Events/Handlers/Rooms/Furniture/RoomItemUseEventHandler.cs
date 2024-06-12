@@ -33,11 +33,12 @@ public class RoomItemUseEventHandler(
         {
             return;
         }
-
+        
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
         if (interactor == null)
         {
+            await RoomFurnitureItemHelpers.CycleInteractionStateForItemAsync(room, roomFurnitureItem);
             return;
         }
 

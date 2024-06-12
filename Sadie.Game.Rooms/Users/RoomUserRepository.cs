@@ -49,9 +49,11 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     
     public async Task BroadcastDataAsync(AbstractPacketWriter writer)
     {
+        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        
         foreach (var roomUser in _users.Values)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(writer);
+            await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
         }
     }
 

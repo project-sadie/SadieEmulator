@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms;
@@ -93,8 +94,10 @@ public class RoomFloorItemUpdatedEventHandler(
         
         RoomTileMapHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
         RoomTileMapHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
-        
+
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();
+        
         await BroadcastUpdateAsync(room, roomFurnitureItem);
     }
 

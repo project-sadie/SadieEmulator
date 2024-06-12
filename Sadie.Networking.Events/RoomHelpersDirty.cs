@@ -2,15 +2,18 @@ using System.Drawing;
 using Microsoft.Extensions.Logging;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
-using Sadie.Game.Players.RoomVisits;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Furniture;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events;
 
@@ -75,15 +78,20 @@ public static class RoomHelpersDirty
 
     private static void CreateRoomVisitForPlayer(PlayerLogic player, int roomId)
     {
-        player.State.RoomVisits.Add(new PlayerRoomVisit(player.Id, roomId));
-        // TODO; add to context
+        player.State.RoomVisits.Add(new PlayerRoomVisit
+        {
+            PlayerId = player.Id,
+            RoomId = roomId,
+            CreatedAt = DateTime.Now
+        });
     }
 
     private static RoomUser CreateUserForEntry(
         RoomUserFactory roomUserFactory, 
         RoomLogic room, 
         PlayerLogic player,
-        Point spawnPoint)
+        Point spawnPoint,
+        HDirection direction)
     {
         var z = 0; // TODO: Calculate this
         
@@ -93,8 +101,8 @@ public static class RoomHelpersDirty
             player.Id,
             spawnPoint,
             z,
-            room.Layout.DoorDirection,
-            room.Layout.DoorDirection,
+            direction,
+            direction,
             player,
             GetControllerLevelForUser(room, player.Id));
     }
@@ -106,8 +114,19 @@ public static class RoomHelpersDirty
         RoomUserFactory roomUserFactory)
     {
         var player = client.Player;
-        var doorPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
-        var roomUser = CreateUserForEntry(roomUserFactory, room, player, doorPoint);
+        var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
+        var entryDirection = room.Layout.DoorDirection;
+        var teleport = player.State.Teleport;
+
+        if (teleport != null)
+        {
+            entryPoint = new Point(teleport.PositionX, teleport.PositionY);
+            entryDirection = teleport.Direction;
+            
+            player.State.Teleport = null;
+        }
+        
+        var roomUser = CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
         
         if (!room.UserRepository.TryAdd(roomUser))
         {
@@ -115,10 +134,24 @@ public static class RoomHelpersDirty
             return;
         }
         
+        if (teleport != null)
+        {
+            var squareInFront = RoomTileMapHelpers
+                .GetPointInFront(teleport.PositionX, teleport.PositionY, teleport.Direction);
+
+            async void OnReachedGoal()
+            {
+                teleport.MetaData = "0";
+                await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, teleport);
+            }
+
+            roomUser.WalkToPoint(squareInFront, OnReachedGoal);
+        }
+        
         CreateRoomVisitForPlayer(player, room.Id);
         player.CurrentRoomId = room.Id;
 
-        room.TileMap.AddUserToMap(doorPoint, roomUser);
+        room.TileMap.AddUserToMap(entryPoint, roomUser);
         roomUser.ApplyFlatCtrlStatus();
         
         client.RoomUser = roomUser;
