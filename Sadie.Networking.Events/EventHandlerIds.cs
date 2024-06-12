@@ -110,4 +110,5 @@ public class EventHandlerIds
     public const short FloorPlanEditorSave = 875;
     public const short RoomDimmerSettings = 2813;
     public const short RoomDimmerToggle = 2296;
+    public const short RoomDimmerSave = 1648;
 }
