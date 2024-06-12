@@ -108,4 +108,6 @@ public class EventHandlerIds
     public const short FloorPlanEditorDoorCoords = 3559;
     public const short FloorPlanEditorGetOccupiedTiles = 1687;
     public const short FloorPlanEditorSave = 875;
+    public const short RoomDimmerSettings = 2813;
+    public const short RoomDimmerToggle = 2296;
 }

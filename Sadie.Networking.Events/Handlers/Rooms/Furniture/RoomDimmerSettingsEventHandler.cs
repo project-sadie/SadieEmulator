@@ -1,0 +1,37 @@
+using Sadie.Database;
+using Sadie.Game.Rooms;
+using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Furniture;
+
+namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
+
+[PacketId(EventHandlerIds.RoomDimmerSettings)]
+public class RoomDimmerSettingsEventHandler(
+    SadieContext dbContext, 
+    RoomRepository roomRepository) : INetworkPacketEventHandler
+{
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    {
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        {
+            return;
+        }
+
+        var dimmer = room
+            .FurnitureItems
+            .FirstOrDefault(x => x.FurnitureItem.InteractionType == "dimmer");
+
+        if (dimmer == null)
+        {
+            return;
+        }
+        
+        await client.WriteToStreamAsync(new RoomDimmerSettingsWriter
+        {
+            DimmerSettings = room.DimmerSettings,
+            DimmerPresets = dbContext.RoomDimmerPresets.Where(x => x.RoomId == room.Id).ToList()
+        });
+    }
+}

@@ -1,6 +1,7 @@
 using Sadie.API.Game.Rooms;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Furniture;
@@ -35,7 +36,7 @@ public class RoomFurnitureItemHelpers
         IRoomLogic room, 
         RoomFurnitureItem roomFurnitureItem)
     {
-        var itemWriter = new RoomFloorItemUpdatedWriter
+        AbstractPacketWriter itemWriter = roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor ? new RoomFloorItemUpdatedWriter
         {
             Id = roomFurnitureItem.Id,
             AssetId = roomFurnitureItem.FurnitureItem.AssetId,
@@ -50,6 +51,9 @@ public class RoomFurnitureItemHelpers
             Expires = -1,
             InteractionModes = 1,
             OwnerId = roomFurnitureItem.OwnerId,
+        } : new RoomWallFurnitureItemUpdatedWriter
+        {
+            Item = roomFurnitureItem
         };
         
         await room.UserRepository.BroadcastDataAsync(itemWriter);

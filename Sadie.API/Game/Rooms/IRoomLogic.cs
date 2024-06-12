@@ -12,4 +12,5 @@ public interface IRoomLogic
     IRoomTileMap TileMap { get; }
     IRoomUserRepository UserRepository { get; }
     RoomSettings Settings { get; set; }
+    RoomDimmerSettings DimmerSettings { get; set; }
 }

@@ -57,6 +57,8 @@ public class SadieContext(
     public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
     public DbSet<PlayerBot> PlayerBots { get; init; }
     public DbSet<RoomFurnitureItemTeleportLink> RoomFurnitureItemTeleportLinks { get; init; }
+    public DbSet<RoomDimmerSettings> RoomDimmerSettings { get; init; }
+    public DbSet<RoomDimmerPreset> RoomDimmerPresets { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -125,6 +127,7 @@ public class SadieContext(
         modelBuilder.Entity<Role>().ToTable("roles");
         modelBuilder.Entity<HandItem>().ToTable("hand_items");
         modelBuilder.Entity<PlayerBot>().ToTable("player_bots");
+        modelBuilder.Entity<RoomDimmerPreset>().ToTable("room_dimmer_presets");
 
         modelBuilder.Entity<RoomLayout>()
             .Property(x => x.HeightMap)

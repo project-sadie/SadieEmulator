@@ -2,6 +2,7 @@ using System.Drawing;
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -14,7 +15,6 @@ using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -137,8 +137,6 @@ public class RoomItemPlacedEventHandler(
         room.FurnitureItems.Add(roomFurnitureItem);
 
         RoomTileMapHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
-        
-        roomFurnitureItem.FurnitureItem = playerItem.FurnitureItem;
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {
@@ -217,6 +215,48 @@ public class RoomItemPlacedEventHandler(
         {
             RoomFurnitureItem = roomFurnitureItem
         });
+
+        if (roomFurnitureItem.FurnitureItem.InteractionType == "dimmer" && room.DimmerSettings == null)
+        {
+            var presetOne = new RoomDimmerPreset
+            {
+                RoomId = room.Id,
+                PresetId = 1,
+                BackgroundOnly = false,
+                Color = "",
+                Intensity = 255
+            };
+
+            var presetTwo = new RoomDimmerPreset
+            {
+                RoomId = room.Id,
+                PresetId = 2,
+                BackgroundOnly = false,
+                Color = "",
+                Intensity = 255
+            };
+
+            var presetThree = new RoomDimmerPreset
+            {
+                RoomId = room.Id,
+                PresetId = 3,
+                BackgroundOnly = false,
+                Color = "",
+                Intensity = 255
+            };
+            
+            room.DimmerSettings = new RoomDimmerSettings
+            {
+                RoomId = room.Id,
+                Enabled = false,
+                PresetId = 1
+            };
+
+            dbContext.RoomDimmerPresets.Add(presetOne);
+            dbContext.RoomDimmerPresets.Add(presetTwo);
+            dbContext.RoomDimmerPresets.Add(presetThree);
+            dbContext.RoomDimmerSettings.Add(room.DimmerSettings);
+        }
         
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
 

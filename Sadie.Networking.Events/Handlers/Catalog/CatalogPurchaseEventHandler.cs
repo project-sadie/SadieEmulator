@@ -3,7 +3,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
-using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
