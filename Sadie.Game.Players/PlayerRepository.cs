@@ -30,6 +30,7 @@ public class PlayerRepository(
         return await dbContext
             .Set<Player>()
             .Include(x => x.Data)
+            .Include(x => x.AvatarData)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
     
