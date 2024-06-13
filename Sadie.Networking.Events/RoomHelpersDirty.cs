@@ -41,28 +41,34 @@ public static class RoomHelpersDirty
             return false;
         }
 
-        playerData.CreditBalance -= costInCredits;
+        if (costInCredits > 0)
+        {
+            playerData.CreditBalance -= costInCredits;
+        
+            await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
+            {
+                Credits = playerData.CreditBalance
+            });
+        }
 
-        if (item.CostPointsType == 0)
+        if (costInPoints > 0)
         {
-            playerData.PixelBalance -= costInPoints;
-        }
-        else
-        {
-            playerData.SeasonalBalance -= costInPoints;
-        }
+            if (item.CostPointsType == 0)
+            {
+                playerData.PixelBalance -= costInPoints;
+            }
+            else
+            {
+                playerData.SeasonalBalance -= costInPoints;
+            }
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
-        {
-            Credits = playerData.CreditBalance
-        });
-        
-        await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
-        {
-            PixelBalance = playerData.PixelBalance,
-            SeasonalBalance = playerData.SeasonalBalance,
-            GotwPoints = playerData.GotwPoints
-        });
+            await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
+            {
+                PixelBalance = playerData.PixelBalance,
+                SeasonalBalance = playerData.SeasonalBalance,
+                GotwPoints = playerData.GotwPoints
+            });
+        }
 
         return true;
     }
@@ -263,21 +269,27 @@ public static class RoomHelpersDirty
             return false;
         }
 
-        playerData.CreditBalance -= costInCredits;
-
-        if (offer.CostPointsType == 0)
+        if (costInCredits > 0)
         {
-            playerData.PixelBalance -= costInPoints;
-        }
-        else
-        {
-            playerData.SeasonalBalance -= costInPoints;
-        }
+            playerData.CreditBalance -= costInCredits;
         
-        await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
+            await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
+            {
+                Credits = playerData.CreditBalance
+            });
+        }
+
+        if (costInPoints > 0)
         {
-            Credits = playerData.CreditBalance
-        });
+            if (offer.CostPointsType == 0)
+            {
+                playerData.PixelBalance -= costInPoints;
+            }
+            else
+            {
+                playerData.SeasonalBalance -= costInPoints;
+            }
+        }
         
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
         {
