@@ -88,12 +88,7 @@ public class RoomUser(
         }
         else
         {
-            NeedsPathCalculated = false;
-                
-            if (PathPoints.Count > 0)
-            {
-                PathPoints.Clear();
-            }
+            NeedsPathCalculated = true;
         }
     }
 
@@ -120,19 +115,6 @@ public class RoomUser(
 
         await UpdateIdleStatusAsync();
     }
-
-    private void ClearWalking()
-    {
-        IsWalking = false;
-        RemoveStatuses(RoomUserStatus.Move);
-        CheckStatusForCurrentTile();
-
-        if (OnReachedGoal != null)
-        {
-            OnReachedGoal.Invoke();
-            OnReachedGoal = null;
-        }
-    }
     
     private void ProcessMovement()
     {
@@ -147,7 +129,7 @@ public class RoomUser(
         var nextStep = PathPoints[StepsWalked];
         var lastStep = PathPoints.Count == StepsWalked + 1;
         
-        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
+        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 && !OverridePoints.Contains(nextStep) || 
             (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
             room.TileMap.UserMap.GetValueOrDefault(nextStep, [])!.Count > 0)
         {

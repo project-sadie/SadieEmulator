@@ -33,13 +33,13 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
         NeedsStatusUpdate = true;
     }
 
-    private void ClearWalking()
+    public void ClearWalking(bool reachedGoal = true)
     {
         IsWalking = false;
         RemoveStatuses(RoomUserStatus.Move);
         CheckStatusForCurrentTile();
 
-        if (OnReachedGoal != null)
+        if (reachedGoal && OnReachedGoal != null)
         {
             OnReachedGoal.Invoke();
             OnReachedGoal = null;
@@ -137,7 +137,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
         var nextStep = PathPoints[StepsWalked];
         var lastStep = PathPoints.Count == StepsWalked + 1;
         
-        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
+        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 && !OverridePoints.Contains(nextStep) || 
             (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
             room.TileMap.UserMap.GetValueOrDefault(nextStep, []).Count > 0 ||
             room.TileMap.BotMap.GetValueOrDefault(nextStep, []).Count > 0)
