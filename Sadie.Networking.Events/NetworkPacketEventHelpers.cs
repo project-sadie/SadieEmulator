@@ -2,6 +2,7 @@
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
@@ -191,7 +192,7 @@ public static class NetworkPacketEventHelpers
         if (!shouting && message.StartsWith(":"))
         {
             var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
-            var roomOwner = room.OwnerId == roomUser.Id;
+            var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
             
             if (command != null && 
                 ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 

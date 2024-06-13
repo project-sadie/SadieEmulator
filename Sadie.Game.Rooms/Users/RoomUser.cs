@@ -106,9 +106,9 @@ public class RoomUser(
 
     public bool HasRights()
     {
-        return room.OwnerId == Id || 
-               player.HasPermission("any_room_rights") ||
-               room.PlayerRights.FirstOrDefault(x => x.PlayerId == Id) != null;
+        return ControllerLevel is 
+            RoomControllerLevel.Owner or 
+            RoomControllerLevel.Rights;
     }
 
     public async ValueTask DisposeAsync()

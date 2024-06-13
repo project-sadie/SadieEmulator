@@ -72,18 +72,28 @@ public static class RoomHelpersDirty
         return true;
     }
 
-    private static RoomControllerLevel GetControllerLevelForUser(Room room, int userId)
+    private static RoomControllerLevel GetControllerLevelForUser(Room room, Player player)
     {
         var controllerLevel = RoomControllerLevel.None;
         
-        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == userId) != null)
+        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Id) != null)
         {
             controllerLevel = RoomControllerLevel.Rights;
         }
 
-        if (room.OwnerId == userId)
+        if (room.OwnerId == player.Id)
         {
             controllerLevel = RoomControllerLevel.Owner;
+        }
+
+        if (player.HasPermission("any_room_owner"))
+        {
+            controllerLevel = RoomControllerLevel.Owner;
+        }
+
+        if (player.HasPermission("any_room_rights"))
+        {
+            controllerLevel = RoomControllerLevel.Rights;
         }
 
         return controllerLevel;
@@ -132,7 +142,7 @@ public static class RoomHelpersDirty
             direction,
             direction,
             player,
-            GetControllerLevelForUser(room, player.Id));
+            GetControllerLevelForUser(room, player));
     }
     
     public static async Task EnterRoomAsync<T>(
