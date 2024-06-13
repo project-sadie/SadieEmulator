@@ -107,6 +107,7 @@ public class RoomUser(
     public bool HasRights()
     {
         return room.OwnerId == Id || 
+               player.HasPermission("any_room_rights") ||
                room.PlayerRights.FirstOrDefault(x => x.PlayerId == Id) != null;
     }
 
