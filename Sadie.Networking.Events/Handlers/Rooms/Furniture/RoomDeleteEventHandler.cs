@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -24,43 +26,20 @@ public class RoomDeleteEventHandler(
 
         // TODO; Return items to users inventory?
 
-        dbContext.RoomFurnitureItems.RemoveRange(room.FurnitureItems);
-        dbContext.RoomChatMessages.RemoveRange(room.ChatMessages);
-
-        if (room.ChatSettings != null)
+        if (!roomRepository.TryRemove(RoomId, out _))
         {
-            dbContext.RoomChatSettings.Remove(room.ChatSettings);
+            return;
         }
 
-        dbContext.RoomPaintSettings.Remove(room.PaintSettings);
-        dbContext.RoomSettings.Remove(room.Settings);
-        dbContext.RoomLayouts.Remove(room.Layout);
-
-        if (room.DimmerSettings != null)
-        {
-            dbContext.RoomDimmerSettings.Remove(room.DimmerSettings);
-        }
-
-        dbContext
-            .RoomDimmerPresets
-            .RemoveRange(dbContext.RoomDimmerPresets.Where(x => x.RoomId == room.Id));
-
-        dbContext
-            .PlayerRoomVisits
-            .RemoveRange(dbContext.PlayerRoomVisits.Where(x => x.RoomId == RoomId));
-
-        dbContext
-            .PlayerRoomLikes
-            .RemoveRange(dbContext.PlayerRoomLikes.Where(x => x.RoomId == RoomId));
-
-        await dbContext.SaveChangesAsync();
-        
-        dbContext.Rooms.Remove(room);
+        dbContext.Entry<Room>(room).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {
             await room.UserRepository.TryRemoveAsync(roomUser.Id, true);
         }
+
+        await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = 0 WHERE home_room_id = {0}}",
+            RoomId);
     }
 }

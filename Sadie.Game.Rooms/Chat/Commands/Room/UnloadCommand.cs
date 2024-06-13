@@ -26,7 +26,7 @@ public class UnloadCommand(SadieContext dbContext, RoomRepository roomRepository
             await userRepo.TryRemoveAsync(roomUser.Id, true);
         }
 
-        roomRepository.TryUnloadRoom(user.Room.Id, out var room);
+        roomRepository.TryRemove(user.Room.Id, out var room);
         
         dbContext.Entry(room).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();

@@ -73,7 +73,8 @@ public class SadieContext(
             Server = databaseSettings.Host,
             Database = databaseSettings.Database,
             Port = databaseSettings.Port,
-            Password = databaseSettings.Password
+            Password = databaseSettings.Password,
+            AllowZeroDateTime = true
         };
 
         var connectionString = stringBuilder.ToString();

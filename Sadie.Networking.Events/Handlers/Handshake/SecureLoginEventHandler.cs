@@ -57,7 +57,7 @@ public class SecureLoginEventHandler(
             .PlayerSsoToken
             .FirstOrDefaultAsync(x =>
                 x.Token == Token &&
-                x.ExpiresAt > expires &&
+                //x.ExpiresAt > expires &&
                 x.UsedAt == null);
 
         if (tokenRecord == null)
