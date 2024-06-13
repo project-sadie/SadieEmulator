@@ -1,8 +1,9 @@
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms.Unit;
 
 namespace Sadie.API.Game.Rooms.Users;
 
-public interface IRoomUserData : IRoomUnitMovementData
+public interface IRoomUserData : IRoomUnit
 {
     public IPlayerLogic Player { get; }
     Dictionary<string, string> StatusMap { get; }

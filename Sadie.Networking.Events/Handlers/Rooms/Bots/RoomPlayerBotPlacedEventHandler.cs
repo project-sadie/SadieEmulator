@@ -13,7 +13,10 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 
 [PacketId(EventHandlerIds.RoomPlayerBotPlaced)]
-public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomPlayerBotPlacedEventHandler(
+    SadieContext dbContext, 
+    RoomRepository roomRepository,
+    RoomBotFactory roomBotFactory) : INetworkPacketEventHandler
 {
     public required int Id { get; init; }
     public required int X { get; init; }
@@ -50,14 +53,7 @@ public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomReposit
             return;
         }
 
-        var roomBot = new RoomBot(room, new Point(X, Y))
-        {
-            Id = room.MaxUsersAllowed + bot.Id,
-            Bot = bot,
-            PointZ = 0,
-            Direction = HDirection.South,
-            DirectionHead = HDirection.South
-        };
+        var roomBot = RoomHelpersDirty.CreateBot(room.MaxUsersAllowed + bot.Id, room, new Point(X, Y), roomBotFactory);
 
         if (!room.BotRepository.TryAdd(roomBot))
         {

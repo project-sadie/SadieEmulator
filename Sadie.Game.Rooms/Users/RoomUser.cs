@@ -4,6 +4,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
@@ -22,8 +23,9 @@ public class RoomUser(
     HDirection direction,
     PlayerLogic player,
     ServerRoomConstants constants,
-    RoomControllerLevel controllerLevel)
-    : RoomUserData(room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
+    RoomControllerLevel controllerLevel,
+    RoomFurnitureItemInteractorRepository interactorRepository)
+    : RoomUserData(id, room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle), interactorRepository),
         IRoomUser
 {
     public int Id { get; } = id;
@@ -37,13 +39,6 @@ public class RoomUser(
             RoomUserStatus.Sit,
             RoomUserStatus.Lay,
             RoomUserStatus.Move);
-    }
-    
-    public void WalkToPoint(Point point, Action? onReachedGoal = null)
-    {
-        PathGoal = point;
-        NeedsPathCalculated = true;
-        OnReachedGoal = onReachedGoal;
     }
 
     public void LookAtPoint(Point point)
@@ -101,6 +96,16 @@ public class RoomUser(
             
             Point = NextPoint.Value;
             NextPoint = null;
+            
+            foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))
+            {
+                var interactor = interactorRepository.GetInteractorForType(item.FurnitureItem.InteractionType);
+            
+                if (interactor != null)
+                {
+                    await interactor.OnStepOnAsync(room, item, Unit);
+                }
+            }
         }
 
         if (NeedsPathCalculated)
@@ -110,7 +115,7 @@ public class RoomUser(
 
         if (IsWalking)
         {
-            ProcessMovement();
+            await ProcessMovementAsync();
         }
 
         await UpdateIdleStatusAsync();

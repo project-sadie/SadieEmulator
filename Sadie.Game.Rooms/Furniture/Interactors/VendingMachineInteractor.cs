@@ -1,6 +1,6 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -12,12 +12,12 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "vending_machine";
     
-    public async Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
+    public async Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit)
     {
         var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 
-        roomUser.Direction = direction;
-        roomUser.DirectionHead = direction;
+        roomUnit.Direction = direction;
+        roomUnit.DirectionHead = direction;
 
         var handItems = item
             .FurnitureItem
@@ -26,14 +26,14 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 
         var squareInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
-        if (handItems.Count < 1 || roomUser.Point != squareInFront)
+        if (handItems.Count < 1 || roomUnit.Point != squareInFront)
         {
-            roomUser.WalkToPoint(squareInFront, OnReachedGoal);
+            roomUnit.WalkToPoint(squareInFront, OnReachedGoal);
             return;
 
             async void OnReachedGoal()
             {
-                await OnTriggerAsync(room, item, roomUser);
+                await OnTriggerAsync(room, item, roomUnit);
             }
         }
         
@@ -41,14 +41,14 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUnit.Id,
             ItemId = handItems.PickRandom().Id
         });
     }
 
-    public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
-    public Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
+    public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
+    public Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
 
-    public Task OnWalkOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
-    public Task OnWalkOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
+    public Task OnStepOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
+    public Task OnStepOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
 }

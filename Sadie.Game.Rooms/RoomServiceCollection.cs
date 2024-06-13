@@ -37,6 +37,7 @@ public static class RoomServiceCollection
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddTransient<IRoomBotRepository, RoomBotRepository>();
         serviceCollection.AddSingleton<RoomUserFactory>();
+        serviceCollection.AddSingleton<RoomBotFactory>();
         serviceCollection.AddSingleton<RoomRepository, RoomRepository>();
 
         serviceCollection.AddSingleton<AboutCommand>();

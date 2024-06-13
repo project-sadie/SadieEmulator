@@ -1,14 +1,17 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Unit;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
-namespace Sadie.Game.Rooms;
+namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovementData
+public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureItemInteractorRepository interactorRepository) : IRoomUnitMovementData
 {
+    public RoomUnit Unit { get; set; }
     public HDirection DirectionHead { get; set; }
     public HDirection Direction { get; set; }
     public Point Point { get; set; } = point;
@@ -46,7 +49,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
         }
     }
     
-    protected Action? OnReachedGoal { get; set; } = null;
+    protected Action? OnReachedGoal { get; set; }
 
     public void CheckStatusForCurrentTile()
     {
@@ -123,8 +126,28 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
             }
         }
     }
+    
+    public void WalkToPoint(Point point, Action? onReachedGoal = null)
+    {
+        PathGoal = point;
+        NeedsPathCalculated = true;
+        OnReachedGoal = onReachedGoal;
+    }
 
-    protected void ProcessMovement()
+    private async Task CheckWalkOffInteractionsAsync()
+    {
+        foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))
+        {
+            var interactor = interactorRepository.GetInteractorForType(item.FurnitureItem.InteractionType);
+            
+            if (interactor != null)
+            {
+                await interactor.OnStepOffAsync(room, item, Unit);
+            }
+        }
+    }
+
+    protected async Task ProcessMovementAsync()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
         {
@@ -145,6 +168,8 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
             NeedsPathCalculated = true;
             return;
         }
+
+        await CheckWalkOffInteractionsAsync();
         
         var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
         var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
