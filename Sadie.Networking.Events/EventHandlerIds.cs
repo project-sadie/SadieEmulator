@@ -112,4 +112,5 @@ public class EventHandlerIds
     public const short RoomDimmerToggle = 2296;
     public const short RoomDimmerSave = 1648;
     public const short RoomTriggerOneWayGate = 2765;
+    public const short RoomDelete = 532;
 }

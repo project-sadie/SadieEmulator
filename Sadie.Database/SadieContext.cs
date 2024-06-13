@@ -36,7 +36,9 @@ public class SadieContext(
     public DbSet<RoomChatMessage> RoomChatMessages { get; init; }
     public DbSet<RoomFurnitureItem> RoomFurnitureItems { get; init; }
     public DbSet<RoomPlayerRight> RoomPlayerRights { get; init; }
+    public DbSet<RoomPaintSettings> RoomPaintSettings { get; init; }
     public DbSet<RoomSettings> RoomSettings { get; init; }
+    public DbSet<RoomChatSettings> RoomChatSettings { get; init; }
     public DbSet<RoomLayout> RoomLayouts { get; init; }
     public DbSet<Room> Rooms { get; init; }
     public DbSet<Player> Players { get; init; }
@@ -60,6 +62,7 @@ public class SadieContext(
     public DbSet<RoomDimmerSettings?> RoomDimmerSettings { get; init; }
     public DbSet<RoomDimmerPreset> RoomDimmerPresets { get; init; }
     public DbSet<PlayerRoomVisit> PlayerRoomVisits { get; init; }
+    public DbSet<PlayerRoomLike> PlayerRoomLikes { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

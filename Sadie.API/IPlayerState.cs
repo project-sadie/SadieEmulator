@@ -1,4 +1,3 @@
-using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Furniture;
 
 namespace Sadie.API;
