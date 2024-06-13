@@ -59,7 +59,7 @@ public class PlayerRepository(
             .PlayerSsoToken
             .FirstOrDefaultAsync(x => 
                 x.Token == token && 
-                // x.ExpiresAt > expireDt && 
+                x.ExpiresAt > expireDt && 
                 x.UsedAt == null);
 
         if (record == null)

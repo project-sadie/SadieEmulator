@@ -36,6 +36,7 @@ public class OneWayGateInteractor : IRoomFurnitureItemInteractor
         roomUnit.DirectionHead = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
         roomUnit.Direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
         roomUnit.OverridePoints.Add(itemPoint);
+        roomUnit.CanWalk = false;
         roomUnit.WalkToPoint(squareBehind, OnReachedGoal);
         
         return;
@@ -46,11 +47,12 @@ public class OneWayGateInteractor : IRoomFurnitureItemInteractor
             await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
 
             roomUnit.OverridePoints.Remove(itemPoint);
+            roomUnit.CanWalk = true;
         }
     }
 
     public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
     public Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnStepOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
+    public Task OnStepOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit) => Task.CompletedTask;
+    public Task OnStepOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }

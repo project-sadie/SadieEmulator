@@ -11,9 +11,10 @@ namespace Sadie.Game.Rooms.Unit;
 
 public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureItemInteractorRepository interactorRepository) : IRoomUnitMovementData
 {
-    public RoomUnit Unit { get; set; }
+    protected RoomUnit? Unit { get; set; }
     public HDirection DirectionHead { get; set; }
     public HDirection Direction { get; set; }
+    public bool CanWalk { get; set; } = true;
     public Point Point { get; set; } = point;
     public double PointZ { get; init;  }
     public bool IsWalking { get; set; }

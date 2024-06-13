@@ -9,6 +9,6 @@ public interface IRoomFurnitureItemInteractor
     Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit);
     Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit);
     Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit);
-    Task OnStepOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit);
-    Task OnStepOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit);
+    Task OnStepOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit);
+    Task OnStepOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit);
 }
