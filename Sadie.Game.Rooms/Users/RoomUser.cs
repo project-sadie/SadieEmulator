@@ -33,14 +33,6 @@ public class RoomUser(
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
 
-    private void ClearStatuses()
-    {
-        RemoveStatuses(
-            RoomUserStatus.Sit,
-            RoomUserStatus.Lay,
-            RoomUserStatus.Move);
-    }
-
     public void LookAtPoint(Point point)
     {
         var direction = RoomPathFinderHelpers.GetDirectionForNextStep(Point, point);
@@ -53,22 +45,6 @@ public class RoomUser(
     public void ApplyFlatCtrlStatus()
     {
         AddStatus(RoomUserStatus.FlatCtrl, ((int)controllerLevel).ToString());
-    }
-
-    public void AddStatus(string key, string value)
-    {
-        StatusMap[key] = value;
-        NeedsStatusUpdate = true;
-    }
-
-    public void RemoveStatuses(params string[] statuses)
-    {
-        foreach (var status in statuses)
-        {
-            StatusMap.Remove(status);
-        }
-
-        NeedsStatusUpdate = true;
     }
 
     private void CalculatePath()
@@ -142,55 +118,6 @@ public class RoomUser(
     public void UpdateLastAction()
     {
         LastAction = DateTime.Now;
-    }
-
-    public void CheckStatusForCurrentTile()
-    {
-        if (IsWalking)
-        {
-            return;
-        }
-        
-        var tileItems = RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
-
-        if (tileItems.Count == 0)
-        {
-            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            return;
-        }
-
-        var topItem = tileItems.MaxBy(item => item.PositionZ);
-
-        if (topItem == null)
-        {
-            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            return;
-        }
-        
-        if (topItem.FurnitureItem.CanSit)
-        {
-            AddStatus(
-                RoomUserStatus.Sit, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
-            
-            Direction = topItem.Direction;
-            DirectionHead = topItem.Direction;
-        }
-        else if (topItem.FurnitureItem.CanLay)
-        {
-            AddStatus(
-                RoomUserStatus.Lay, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
-            
-            Direction = topItem.Direction;
-            DirectionHead = topItem.Direction;
-        }
-        else
-        {
-            RemoveStatuses(
-                RoomUserStatus.Sit,
-                RoomUserStatus.Lay);
-        }
     }
 
     public bool HasRights()
