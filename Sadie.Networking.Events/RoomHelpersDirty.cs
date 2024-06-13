@@ -89,14 +89,20 @@ public static class RoomHelpersDirty
         return controllerLevel;
     }
 
-    private static void CreateRoomVisitForPlayer(PlayerLogic player, int roomId)
+    private static async Task CreateRoomVisitForPlayerAsync(
+        PlayerLogic player, int roomId, SadieContext dbContext)
     {
-        player.State.RoomVisits.Add(new PlayerRoomVisit
+        var roomVisit = new PlayerRoomVisit
         {
             PlayerId = player.Id,
             RoomId = roomId,
             CreatedAt = DateTime.Now
-        });
+        };
+        
+        player.RoomVisits.Add(roomVisit);
+
+        dbContext.PlayerRoomVisits.Add(roomVisit);
+        await dbContext.SaveChangesAsync();
     }
 
     public static RoomBot CreateBot(
@@ -133,7 +139,8 @@ public static class RoomHelpersDirty
         INetworkClient client, 
         RoomLogic room, 
         ILogger<T> logger, 
-        RoomUserFactory roomUserFactory)
+        RoomUserFactory roomUserFactory,
+        SadieContext dbContext)
     {
         var player = client.Player;
         var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
@@ -172,14 +179,15 @@ public static class RoomHelpersDirty
             });
         }
         
-        CreateRoomVisitForPlayer(player, room.Id);
         player.CurrentRoomId = room.Id;
 
         room.TileMap.AddUserToMap(entryPoint, roomUser);
         roomUser.ApplyFlatCtrlStatus();
         
         client.RoomUser = roomUser;
+        
         await SendRoomEntryPacketsToUserAsync(client, room);
+        await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, Room room)
@@ -318,18 +326,19 @@ public static class RoomHelpersDirty
             return;
         }
 
-        if (!RoomTileMapHelpers
-            .GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX, playerItem.FurnitureItem.TileSpanY,
-                direction).All(x => RoomTileMapHelpers.CanPlaceAt((List<Point>)[new Point(x.X, x.Y)], room.TileMap)))
+        var pointsForPlacement = RoomTileMapHelpers.GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX,
+            playerItem.FurnitureItem.TileSpanY, direction);
+
+        if (!pointsForPlacement
+            .All(x => RoomTileMapHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
 
-        var points = RoomTileMapHelpers.GetPointsForPlacement(x, y, playerItem.FurnitureItem.TileSpanX,
-            playerItem.FurnitureItem.TileSpanY, direction);
-
-        var z = 0; // TODO: Calculate this
+        var z = RoomTileMapHelpers.GetItemPlacementHeight(
+            pointsForPlacement,
+            room.FurnitureItems);
         
         var roomFurnitureItem = new RoomFurnitureItem
         {
@@ -350,7 +359,7 @@ public static class RoomHelpersDirty
         player.FurnitureItems.Remove(playerItem);
         room.FurnitureItems.Add(roomFurnitureItem);
 
-        RoomTileMapHelpers.UpdateTileStatesForPoints(points, room.TileMap, room.FurnitureItems);
+        RoomTileMapHelpers.UpdateTileStatesForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {

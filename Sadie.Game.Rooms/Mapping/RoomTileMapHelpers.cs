@@ -291,4 +291,24 @@ public class RoomTileMapHelpers
 
         return new Point(x, y);
     }
+
+    public static double GetItemPlacementHeight(
+        IEnumerable<Point> pointsForPlacement, 
+        ICollection<RoomFurnitureItem> roomFurnitureItems)
+    {
+        var i = new List<RoomFurnitureItem>();
+        
+        foreach (var p in pointsForPlacement)
+        {
+            i.AddRange(GetItemsForPosition(p.X, p.Y, roomFurnitureItems));
+        }
+        
+        if (!i.Any())
+        {
+            return 0;
+        }
+
+        var highestItem = i.MaxBy(x => x.PositionZ)!;
+        return highestItem.PositionZ + highestItem.FurnitureItem.StackHeight;
+    }
 }

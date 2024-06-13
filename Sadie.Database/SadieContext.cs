@@ -59,6 +59,7 @@ public class SadieContext(
     public DbSet<RoomFurnitureItemTeleportLink> RoomFurnitureItemTeleportLinks { get; init; }
     public DbSet<RoomDimmerSettings?> RoomDimmerSettings { get; init; }
     public DbSet<RoomDimmerPreset> RoomDimmerPresets { get; init; }
+    public DbSet<PlayerRoomVisit> PlayerRoomVisits { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

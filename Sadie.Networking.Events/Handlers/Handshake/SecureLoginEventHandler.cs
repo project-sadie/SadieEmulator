@@ -129,6 +129,7 @@ public class SecureLoginEventHandler(
 
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
+        
         await SendFriendUpdatesAsync(playerLogic);
         await SendWelcomeMessageAsync(playerLogic);
     }

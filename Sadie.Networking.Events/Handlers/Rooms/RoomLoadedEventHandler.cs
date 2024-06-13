@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Enums;
@@ -19,7 +20,8 @@ public class RoomLoadedEventHandler(
     ILogger<RoomLoadedEventHandler> logger,
     RoomRepository roomRepository,
     RoomUserFactory roomUserFactory,
-    PlayerRepository playerRepository)
+    PlayerRepository playerRepository,
+    SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
@@ -71,7 +73,7 @@ public class RoomLoadedEventHandler(
             return;
         }
         
-        await RoomHelpersDirty.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await RoomHelpersDirty.EnterRoomAsync(client, room, logger, roomUserFactory, dbContext);
         
         await playerRepository.UpdateMessengerStatusForFriends(
             player.Id,

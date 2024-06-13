@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -11,7 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 public class RoomDoorbellAcceptedEventHandler(
     RoomRepository roomRepository,
     ILogger<RoomDoorbellAcceptedEventHandler> logger,
-    RoomUserFactory roomUserFactory)
+    RoomUserFactory roomUserFactory,
+    SadieContext dbContext)
     : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
@@ -25,6 +27,6 @@ public class RoomDoorbellAcceptedEventHandler(
             return;
         }
         
-        await RoomHelpersDirty.EnterRoomAsync(client, room, logger, roomUserFactory);
+        await RoomHelpersDirty.EnterRoomAsync(client, room, logger, roomUserFactory, dbContext);
     }
 }
