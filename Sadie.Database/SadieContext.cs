@@ -118,6 +118,7 @@ public class SadieContext(
         modelBuilder.Entity<Group>().ToTable("groups");
         modelBuilder.Entity<PlayerSsoToken>().ToTable("player_sso_tokens");
         modelBuilder.Entity<PlayerRoomLike>().ToTable("player_room_likes");
+        modelBuilder.Entity<PlayerRoomBan>().ToTable("player_room_bans");
         modelBuilder.Entity<RoomTag>().ToTable("room_tags");
         modelBuilder.Entity<PlayerTag>().ToTable("player_tags");
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");

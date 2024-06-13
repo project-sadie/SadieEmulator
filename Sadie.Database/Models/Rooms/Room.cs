@@ -27,4 +27,5 @@ public class Room
     public DateTime CreatedAt { get; init; }
     public Group? Group { get; init; }
     public RoomDimmerSettings? DimmerSettings { get; set; }
+    public ICollection<PlayerRoomBan> PlayerBans { get; set; } = [];
 }

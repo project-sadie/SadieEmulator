@@ -113,4 +113,5 @@ public class EventHandlerIds
     public const short RoomDimmerSave = 1648;
     public const short RoomTriggerOneWayGate = 2765;
     public const short RoomDelete = 532;
+    public const short RoomBannedUsers = 2267;
 }
