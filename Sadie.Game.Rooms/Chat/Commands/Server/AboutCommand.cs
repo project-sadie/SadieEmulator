@@ -28,7 +28,7 @@ public class AboutCommand(
         message.AppendLine($"Memory Used: {memoryMb} MB");
         message.AppendLine("");
         message.AppendLine("Credits:");
-        message.AppendLine("Habtard - Lead Developer");
+        message.AppendLine("habtard - Lead Developer");
         message.AppendLine("Damien - Developer");
         message.AppendLine("Lucas - Creative Director");
         message.AppendLine("");
