@@ -48,4 +48,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 
     public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
     public Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
+
+    public Task OnWalkOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
+    public Task OnWalkOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
 }

@@ -116,42 +116,6 @@ public class RoomUser(
         await UpdateIdleStatusAsync();
     }
     
-    private void ProcessMovement()
-    {
-        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
-        {
-            ClearWalking();
-            return;
-        }
-        
-        StepsWalked++;
-        
-        var nextStep = PathPoints[StepsWalked];
-        var lastStep = PathPoints.Count == StepsWalked + 1;
-        
-        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 && !OverridePoints.Contains(nextStep) || 
-            (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
-            room.TileMap.UserMap.GetValueOrDefault(nextStep, [])!.Count > 0)
-        {
-            NeedsPathCalculated = true;
-            return;
-        }
-        
-        var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
-        var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
-
-        ClearStatuses();
-
-        AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextZ}");
-
-        var newDirection = RoomPathFinderHelpers.GetDirectionForNextStep(Point, nextStep);
-                
-        Direction = newDirection;
-        DirectionHead = newDirection;
-                
-        NextPoint = nextStep;
-    }
-
     private async Task UpdateIdleStatusAsync()
     {
         var shouldBeIdle = DateTime.Now - LastAction > IdleTime;

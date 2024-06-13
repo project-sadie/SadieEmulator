@@ -20,4 +20,7 @@ public class DimmerInteractor : IRoomFurnitureItemInteractor
     public async Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
     }
+
+    public Task OnWalkOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
+    public Task OnWalkOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser) => Task.CompletedTask;
 }
