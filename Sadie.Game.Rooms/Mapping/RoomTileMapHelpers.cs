@@ -187,7 +187,7 @@ public class RoomTileMapHelpers
         return map; 
     }
 
-    public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint)
+    public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint, List<Point> overridePoints)
     {
         var tmp = new short[map.SizeY, map.SizeX];
         
@@ -195,6 +195,12 @@ public class RoomTileMapHelpers
         {
             for (var x = 0; x < map.SizeX; x++)
             {
+                if (overridePoints.Count > 0 && overridePoints.Contains(new Point(x, y)))
+                {
+                    tmp[y, x] = 1;
+                    continue;
+                }
+                
                 // If it's a seat tile, don't include it unless it's our goal
                 
                 if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))

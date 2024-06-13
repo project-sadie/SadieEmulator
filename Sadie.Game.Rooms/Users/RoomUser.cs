@@ -78,7 +78,7 @@ public class RoomUser(
 
     private void CalculatePath()
     {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal);
+        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
