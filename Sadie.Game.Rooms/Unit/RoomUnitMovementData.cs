@@ -107,9 +107,9 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         NeedsStatusUpdate = true;
     }
 
-    protected void CalculatePath(bool diagonal)
+    protected void CalculatePath()
     {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, diagonal, OverridePoints);
+        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
@@ -119,12 +119,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         }
         else
         {
-            NeedsPathCalculated = false;
-                
-            if (PathPoints.Count > 0)
-            {
-                PathPoints.Clear();
-            }
+            NeedsPathCalculated = true;
         }
     }
     

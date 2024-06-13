@@ -47,22 +47,6 @@ public class RoomUser(
         AddStatus(RoomUserStatus.FlatCtrl, ((int)controllerLevel).ToString());
     }
 
-    private void CalculatePath()
-    {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
-
-        if (PathPoints.Count > 1)
-        {
-            StepsWalked = 0;
-            IsWalking = true;
-            NeedsPathCalculated = false;
-        }
-        else
-        {
-            NeedsPathCalculated = true;
-        }
-    }
-
     public async Task RunPeriodicCheckAsync()
     {
         if (NextPoint != null)

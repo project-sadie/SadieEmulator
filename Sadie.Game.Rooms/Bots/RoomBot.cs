@@ -10,15 +10,14 @@ namespace Sadie.Game.Rooms.Bots;
 
 public class RoomBot(int id, IRoomLogic room, Point spawnPoint, RoomFurnitureItemInteractorRepository interactorRepository) : RoomUnit(id, RoomUnitType.Bot, room, spawnPoint, interactorRepository), IRoomBot
 {
-    public int Id { get; } = id;
-    private readonly IRoomLogic _room = room;
+    public new int Id { get; } = id;
     public required PlayerBot Bot { get; init; }
 
     public async Task RunPeriodicCheckAsync()
     {
         if (NeedsPathCalculated)
         {
-            CalculatePath(_room.Settings.WalkDiagonal);
+            CalculatePath();
         }
 
         if (IsWalking)
