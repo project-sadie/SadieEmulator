@@ -11,4 +11,5 @@ public interface IRoomUnitMovementData
     HDirection Direction { get; set; }
     void AddStatus(string key, string value);
     void RemoveStatuses(params string[] statuses);
+    List<Point> OverridePoints { get; }
 }

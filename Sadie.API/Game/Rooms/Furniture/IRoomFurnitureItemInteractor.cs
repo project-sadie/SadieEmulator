@@ -6,7 +6,7 @@ namespace Sadie.API.Game.Rooms.Furniture;
 public interface IRoomFurnitureItemInteractor
 {
     string InteractionType { get; }
-    Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
+    Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
     Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
     Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser);
 }

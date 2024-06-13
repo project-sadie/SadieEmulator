@@ -12,7 +12,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "vending_machine";
     
-    public async Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
+    public async Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
         var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 
@@ -33,7 +33,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 
             async void OnReachedGoal()
             {
-                await OnClickAsync(room, item, roomUser);
+                await OnTriggerAsync(room, item, roomUser);
             }
         }
         

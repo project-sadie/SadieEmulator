@@ -9,7 +9,7 @@ public class DimmerInteractor : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "dimmer";
     
-    public async Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
+    public async Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
     }
 

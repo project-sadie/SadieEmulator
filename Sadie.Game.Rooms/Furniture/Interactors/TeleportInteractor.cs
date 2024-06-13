@@ -16,7 +16,7 @@ public class TeleportInteractor(
 {
     public string InteractionType => "teleport";
     
-    public async Task OnClickAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
+    public async Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUser roomUser)
     {
         var itemPosition = new Point(item.PositionX, item.PositionY);
         
@@ -27,7 +27,7 @@ public class TeleportInteractor(
 
             async void OnReachedGoal()
             {
-                await OnClickAsync(room, item, roomUser);
+                await OnTriggerAsync(room, item, roomUser);
             }
         }
         
