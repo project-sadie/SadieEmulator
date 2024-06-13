@@ -1,7 +1,6 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
