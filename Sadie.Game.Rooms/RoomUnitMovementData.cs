@@ -21,6 +21,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
     protected List<Point> PathPoints { get; set; } = [];
     public Dictionary<string, string> StatusMap { get; } = [];
     public bool NeedsStatusUpdate { get; set; }
+    public List<Point> OverridePoints { get; set; } = [];
 
     public void RemoveStatuses(params string[] statuses)
     {
@@ -104,7 +105,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
 
     protected void CalculatePath(bool diagonal)
     {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, diagonal);
+        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, diagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
@@ -158,13 +159,6 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
         DirectionHead = newDirection;
                 
         NextPoint = nextStep;
-    }
-    
-    public void WalkToPoint(Point point, Action? onReachedGoal = null)
-    {
-        PathGoal = point;
-        NeedsPathCalculated = true;
-        OnReachedGoal = onReachedGoal;
     }
     
     private void ClearStatuses()

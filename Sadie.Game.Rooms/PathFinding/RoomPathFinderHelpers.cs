@@ -49,14 +49,14 @@ public class RoomPathFinderHelpers
         return rotation;
     }
     
-    public static List<Point> BuildPathForWalk(IRoomTileMap tileMap, Point start, Point end, bool useDiagonal)
+    public static List<Point> BuildPathForWalk(IRoomTileMap tileMap, Point start, Point end, bool useDiagonal, List<Point> overridePoints)
     {
         var pathfinderOptions = new PathFinderOptions
         {
             UseDiagonals = useDiagonal
         };
 
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(tileMap, end);
+        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(tileMap, end, overridePoints);
         var worldGrid = new WorldGrid(worldArray);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
 
