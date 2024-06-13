@@ -84,6 +84,7 @@ public class TeleportInteractor(
     }
 
     public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
+    public Task OnPickUpAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
 
     private async Task UseTeleportInDifferentRoomAsync(
         IRoomUser roomUser, 

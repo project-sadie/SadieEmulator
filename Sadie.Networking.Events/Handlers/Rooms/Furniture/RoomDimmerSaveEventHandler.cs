@@ -14,7 +14,7 @@ public class RoomDimmerSaveEventHandler(
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public required int Id { get; init; }
+    public required int PresetId { get; init; }
     public required int BackgroundOnly { get; init; }
     public required string Color { get; init; }
     public required int Intensity { get; init; }
@@ -42,7 +42,7 @@ public class RoomDimmerSaveEventHandler(
         }
 
         var presets = dbContext.RoomDimmerPresets.Where(x => x.RoomId == room.Id).ToList();
-        var preset = presets.FirstOrDefault(x => x.PresetId == Id);
+        var preset = presets.FirstOrDefault(x => x.PresetId == PresetId);
 
         if (preset == null)
         {

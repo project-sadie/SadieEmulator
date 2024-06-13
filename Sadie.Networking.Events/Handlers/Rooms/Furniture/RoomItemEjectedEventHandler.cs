@@ -3,6 +3,7 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -16,7 +17,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemEjectedEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository,
-    PlayerRepository playerRepository) : INetworkPacketEventHandler
+    PlayerRepository playerRepository,
+    RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
     public int Category { get; set; }
     public int ItemId { get; set; }
@@ -43,6 +45,13 @@ public class RoomItemEjectedEventHandler(
             return;
         }
 
+        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+
+        if (interactor != null)
+        {
+            await interactor.OnPickUpAsync(room, roomFurnitureItem, client.RoomUser);
+        }
+        
         if (roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
         {
             await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter

@@ -436,48 +436,6 @@ public static class RoomHelpersDirty
         {
             RoomFurnitureItem = roomFurnitureItem
         });
-
-        if (roomFurnitureItem.FurnitureItem.InteractionType == "dimmer" && room.DimmerSettings == null)
-        {
-            var presetOne = new RoomDimmerPreset
-            {
-                RoomId = room.Id,
-                PresetId = 1,
-                BackgroundOnly = false,
-                Color = "",
-                Intensity = 255
-            };
-
-            var presetTwo = new RoomDimmerPreset
-            {
-                RoomId = room.Id,
-                PresetId = 2,
-                BackgroundOnly = false,
-                Color = "",
-                Intensity = 255
-            };
-
-            var presetThree = new RoomDimmerPreset
-            {
-                RoomId = room.Id,
-                PresetId = 3,
-                BackgroundOnly = false,
-                Color = "",
-                Intensity = 255
-            };
-            
-            room.DimmerSettings = new RoomDimmerSettings
-            {
-                RoomId = room.Id,
-                Enabled = false,
-                PresetId = 1
-            };
-
-            dbContext.RoomDimmerPresets.Add(presetOne);
-            dbContext.RoomDimmerPresets.Add(presetTwo);
-            dbContext.RoomDimmerPresets.Add(presetThree);
-            dbContext.RoomDimmerSettings.Add(room.DimmerSettings);
-        }
         
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
