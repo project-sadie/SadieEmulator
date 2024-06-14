@@ -44,8 +44,9 @@ public class EventSerializer
     private static List<int> ReadIntegerList(INetworkPacket packet)
     {
         var tempList = new List<int>();
+        var amount = packet.ReadInt();
 
-        for (var i = 0; i < packet.ReadInt(); i++)
+        for (var i = 0; i < amount; i++)
         {
             tempList.Add(packet.ReadInt());
         }
