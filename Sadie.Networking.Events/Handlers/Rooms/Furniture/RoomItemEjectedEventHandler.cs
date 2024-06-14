@@ -1,5 +1,5 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
-using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
@@ -40,7 +40,7 @@ public class RoomItemEjectedEventHandler(
             return;
         }
 
-        if (roomFurnitureItem.OwnerId != player.Id)
+        if (roomFurnitureItem.PlayerFurnitureItem.PlayerId != player.Id)
         {
             return;
         }
@@ -58,7 +58,7 @@ public class RoomItemEjectedEventHandler(
             {
                 Id = roomFurnitureItem.Id.ToString(),
                 Expired = false,
-                OwnerId = roomFurnitureItem.OwnerId,
+                OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
                 Delay = 0
             });
         }
@@ -70,42 +70,33 @@ public class RoomItemEjectedEventHandler(
             });
         }
 
-        var ownsItem = roomFurnitureItem.OwnerId == player.Id;
-        var created = DateTime.Now;
-
-        var playerItem = new PlayerFurnitureItem
-        {
-            FurnitureItem = roomFurnitureItem.FurnitureItem,
-            LimitedData = roomFurnitureItem.LimitedData,
-            MetaData = roomFurnitureItem.MetaData,
-            CreatedAt = created
-        };
+        var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Id;
+        var playerItem = roomFurnitureItem.PlayerFurnitureItem;
 
         room.FurnitureItems.Remove(roomFurnitureItem);
-
-        dbContext.RoomFurnitureItems.Remove(roomFurnitureItem);
+        playerItem.PlacementData.Remove(roomFurnitureItem);
+        
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
         
         if (ownsItem)
         {
-            player.FurnitureItems.Add(playerItem);
-            
             await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
             {
-                Items = [playerItem]
+                FurnitureItems = [playerItem]
             });
             
             await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
         }
         else
         {
-            var ownerOnline = playerRepository.GetPlayerLogicById(roomFurnitureItem.OwnerId);
+            var ownerOnline = playerRepository.GetPlayerLogicById(roomFurnitureItem.PlayerFurnitureItem.PlayerId);
 
             if (ownerOnline != null)
             {
                 await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
                 {
-                    Items = [playerItem]
+                    FurnitureItems = [playerItem]
                 });
                 
                 await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
