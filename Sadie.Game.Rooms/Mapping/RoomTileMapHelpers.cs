@@ -1,7 +1,7 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -69,7 +69,7 @@ public class RoomTileMapHelpers
         int mapSizeX,
         int mapSizeY,
         string heightMap, 
-        ICollection<RoomFurnitureItem> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
         var heightmapLines = heightMap.Split("\n").ToList();
         var map = new short[mapSizeY, mapSizeX];
@@ -98,7 +98,7 @@ public class RoomTileMapHelpers
     private static short GetStateNumberForTile(
         int x, 
         int y, 
-        IEnumerable<RoomFurnitureItem> furnitureItems)
+        IEnumerable<PlayerFurnitureItemPlacementData> furnitureItems)
     {
         var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
 
@@ -120,9 +120,9 @@ public class RoomTileMapHelpers
         return item.FurnitureItem.CanLay ? (short) 3 : (short) 0;
     }
 
-    public static List<RoomFurnitureItem> GetItemsForPosition(int x, int y, IEnumerable<RoomFurnitureItem> items)
+    public static List<PlayerFurnitureItemPlacementData> GetItemsForPosition(int x, int y, IEnumerable<PlayerFurnitureItemPlacementData> items)
     {
-        var tileItems = new List<RoomFurnitureItem>();
+        var tileItems = new List<PlayerFurnitureItemPlacementData>();
         
         foreach (var item in items)
         {
@@ -227,7 +227,7 @@ public class RoomTileMapHelpers
     public static void UpdateTileStatesForPoints(
         List<Point> points, 
         IRoomTileMap tileMap, 
-        ICollection<RoomFurnitureItem> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
         foreach (var point in points)
         {
@@ -294,9 +294,9 @@ public class RoomTileMapHelpers
 
     public static double GetItemPlacementHeight(
         IEnumerable<Point> pointsForPlacement, 
-        ICollection<RoomFurnitureItem> roomFurnitureItems)
+        ICollection<PlayerFurnitureItemPlacementData> roomFurnitureItems)
     {
-        var i = new List<RoomFurnitureItem>();
+        var i = new List<PlayerFurnitureItemPlacementData>();
         
         foreach (var p in pointsForPlacement)
         {

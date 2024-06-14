@@ -4,6 +4,7 @@ using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players.Packets;
@@ -209,7 +210,7 @@ public class CatalogPurchaseEventHandler(
         {
             var parent = new PlayerFurnitureItem
             {
-                PlayerId = client.Player.Id,
+                Player = client.Player,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData,
@@ -218,7 +219,7 @@ public class CatalogPurchaseEventHandler(
             
             var child = new PlayerFurnitureItem
             {
-                PlayerId = client.Player.Id,
+                Player = client.Player,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData,
@@ -235,9 +236,17 @@ public class CatalogPurchaseEventHandler(
 
             await dbContext.SaveChangesAsync();
 
+            dbContext.PlayerFurnitureItemLinks.Add(new PlayerFurnitureItemLink
+            {
+                ParentId = parent.Id,
+                ChildId = child.Id
+            });
+
+            await dbContext.SaveChangesAsync();
+
             await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
             {
-                Items = newItems
+                FurnitureItems = newItems
             });
             
             await ConfirmPurchaseAsync(client, item);
@@ -251,7 +260,7 @@ public class CatalogPurchaseEventHandler(
         {
             var newItem = new PlayerFurnitureItem
             {
-                PlayerId = client.Player.Id,
+                Player = client.Player,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData,
@@ -259,6 +268,7 @@ public class CatalogPurchaseEventHandler(
             };
             
             client.Player.FurnitureItems.Add(newItem);
+            dbContext.Attach(client.Player).State = EntityState.Unchanged;
             dbContext.Entry(newItem).State = EntityState.Added;
             newItems.Add(newItem);
         }
@@ -267,7 +277,7 @@ public class CatalogPurchaseEventHandler(
 
         var writer = new PlayerInventoryAddItemsWriter
         {
-            Items = newItems
+            FurnitureItems = newItems
         };
         
         await client.WriteToStreamAsync(writer);
