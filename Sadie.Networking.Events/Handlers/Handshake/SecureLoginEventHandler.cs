@@ -175,7 +175,7 @@ public class SecureLoginEventHandler(
             {
                 Type = 0,
                 Friend = friendPlayer ?? await playerRepository.GetPlayerByIdAsync(friendId),
-                FriendOnline = true,
+                FriendOnline = friendPlayer != null,
                 FriendInRoom = friendInRoom,
                 Relation = relationship?.TypeId ?? PlayerRelationshipType.None
             });
