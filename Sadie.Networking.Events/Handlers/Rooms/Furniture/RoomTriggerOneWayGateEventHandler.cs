@@ -18,7 +18,7 @@ public class RoomTriggerOneWayGateEventHandler(RoomFurnitureItemInteractorReposi
             .FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
         
-        if (roomFurnitureItem is not { MetaData: "0" })
+        if (roomFurnitureItem is not { PlayerFurnitureItem.MetaData: "0" })
         {
             // return;
         }

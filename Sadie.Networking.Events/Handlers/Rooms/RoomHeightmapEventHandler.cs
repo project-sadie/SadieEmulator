@@ -71,13 +71,13 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
 
         var floorFurnitureOwners = 
             floorItems
-                .Select(item => new { Key = item.OwnerId, Value = item.OwnerUsername })
+                .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
                 .Distinct()
                 .ToDictionary(x => x.Key, x => x.Value);
 
         var wallFurnitureOwners = 
             wallItems
-                .Select(item => new { Key = item.OwnerId, Value = item.OwnerUsername })
+                .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
                 .Distinct()
                 .ToDictionary(x => x.Key, x => x.Value);
 

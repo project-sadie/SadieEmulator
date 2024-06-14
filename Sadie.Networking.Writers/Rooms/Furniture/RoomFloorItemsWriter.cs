@@ -1,4 +1,4 @@
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 public class RoomFloorItemsWriter : AbstractPacketWriter
 {
     public required Dictionary<int, string?> FurnitureOwners { get; init; }
-    public required ICollection<RoomFurnitureItem> FloorItems { get; init; }
+    public required ICollection<PlayerFurnitureItemPlacementData> FloorItems { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
@@ -30,7 +30,7 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         }
     }
 
-    private void WriteItem(RoomFurnitureItem item, NetworkPacketWriter writer)
+    private void WriteItem(PlayerFurnitureItemPlacementData item, NetworkPacketWriter writer)
     {
         var height = -1; // TODO: height
         var extra = 1;
@@ -44,9 +44,9 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         writer.WriteString(height.ToString());
         writer.WriteInteger(extra);
         writer.WriteInteger((int) ObjectDataKey.LegacyKey); 
-        writer.WriteString(item.MetaData);
+        writer.WriteString(item.PlayerFurnitureItem.MetaData);
         writer.WriteInteger(-1);
         writer.WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0); 
-        writer.WriteLong(item.OwnerId);
+        writer.WriteLong(item.PlayerFurnitureItem.PlayerId);
     }
 }
