@@ -19,7 +19,7 @@ public class PlayerChangeRelationshipEventHandler(
     public int PlayerId { get; set; }
     public int RelationId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var playerId = PlayerId;
         var relationId = RelationId;

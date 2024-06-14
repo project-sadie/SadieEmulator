@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 [PacketId(EventHandlerIds.CatalogIndex)]
 public class CatalogIndexEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var parentlessPages = await dbContext.Set<CatalogPage>()
             .Include("Pages")

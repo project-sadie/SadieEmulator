@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RoomLikeEventHandler(RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {

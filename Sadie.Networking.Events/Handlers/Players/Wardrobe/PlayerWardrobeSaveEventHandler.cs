@@ -15,7 +15,7 @@ public class PlayerWardrobeSaveEventHandler(
     public required string FigureCode { get; set; }
     public required string Gender { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
 

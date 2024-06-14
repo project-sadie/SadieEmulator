@@ -12,7 +12,7 @@ public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetwo
 {
     public int PlayerId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var playerId = PlayerId;
 

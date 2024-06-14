@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 [PacketId(EventHandlerIds.NavigatorData)]
 public class NavigatorDataEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var metaData = new Dictionary<string, int>
         {

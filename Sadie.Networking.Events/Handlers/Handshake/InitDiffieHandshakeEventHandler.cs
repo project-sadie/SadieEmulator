@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 [PacketId(EventHandlerIds.InitDiffieHandshake)]
 public class InitDiffieHandshakeEventHandler(HabboEncryption habboEncryption) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new InitDiffieHandshakeWriter
         {

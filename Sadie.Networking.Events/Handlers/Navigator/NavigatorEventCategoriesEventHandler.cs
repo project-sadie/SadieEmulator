@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 [PacketId(EventHandlerIds.NavigatorEventCategories)]
 public class NavigatorEventCategoriesEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new NavigatorEventCategoriesWriter
         {

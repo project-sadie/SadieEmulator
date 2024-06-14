@@ -20,7 +20,7 @@ public class PlayerCreateRoomEventHandler(
     public int MaxUsersAllowed { get; set; }
     public int TradingPermission { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var layout = dbContext
             .RoomLayouts

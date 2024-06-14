@@ -17,7 +17,7 @@ public class PlayerChangedMottoEventHandler(
 {
     public required string Motto { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {

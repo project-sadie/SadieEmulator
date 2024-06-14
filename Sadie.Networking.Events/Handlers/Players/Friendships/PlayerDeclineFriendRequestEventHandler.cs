@@ -18,7 +18,7 @@ public class PlayerDeclineFriendRequestEventHandler(
     public bool DeclineAll { get; set; }
     public required List<int> Ids { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
         var playerId = player.Id;

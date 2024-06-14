@@ -10,7 +10,7 @@ public class HotelViewDataEventHandler : INetworkPacketEventHandler
 {
     public string? Unknown1 { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (Unknown1.Contains(';'))
         {

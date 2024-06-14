@@ -21,7 +21,7 @@ public class NavigatorSearchEventHandler(
     [PacketData] public string? TabName { get; set; }
     [PacketData] public string? SearchQuery { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {

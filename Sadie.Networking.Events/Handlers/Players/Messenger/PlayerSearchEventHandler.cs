@@ -13,7 +13,7 @@ public class PlayerSearchEventHandler(PlayerRepository playerRepository) : INetw
 {
     public string? SearchQuery { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownIntervals.PlayerSearch)
         {

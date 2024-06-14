@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.HotelView;
 [PacketId(EventHandlerIds.HotelViewBonusRare)]
 public class HotelViewBonusRareEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new HotelViewBonusRareWriter
         {

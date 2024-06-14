@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 [PacketId(EventHandlerIds.RoomUserStartTyping)]
 public class RoomUserStartTypingEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {

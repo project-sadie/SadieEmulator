@@ -27,7 +27,7 @@ public class CatalogPurchaseEventHandler(
     [PacketData] public string? MetaData { get; set; }
     [PacketData] public int Amount { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
 

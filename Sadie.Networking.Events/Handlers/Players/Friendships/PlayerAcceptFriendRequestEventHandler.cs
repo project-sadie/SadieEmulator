@@ -19,7 +19,7 @@ public class PlayerAcceptFriendRequestEventHandler(
 {
     public List<int> Ids { get; set; } = [];
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         foreach (var originId in Ids)
         {

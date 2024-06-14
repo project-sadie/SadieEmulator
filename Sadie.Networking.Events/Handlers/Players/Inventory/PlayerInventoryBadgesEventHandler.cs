@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 [PacketId(EventHandlerIds.PlayerInventoryBadges)]
 public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var badges = client.Player.Badges.ToList();
         

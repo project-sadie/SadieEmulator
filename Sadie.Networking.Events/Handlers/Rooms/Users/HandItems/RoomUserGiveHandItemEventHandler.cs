@@ -10,7 +10,7 @@ public class RoomUserGiveHandItemEventHandler : INetworkPacketEventHandler
 {
     public required int UserId { get; init; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var room = client.RoomUser.Room;
         

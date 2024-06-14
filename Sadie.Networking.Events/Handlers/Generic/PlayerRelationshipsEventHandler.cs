@@ -12,7 +12,7 @@ public class PlayerRelationshipsEventHandler(
 {
     public int PlayerId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = await playerRepository.GetPlayerByIdAsync(PlayerId);
 

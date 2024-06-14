@@ -10,7 +10,7 @@ public class UniqueIdEventHandler : INetworkPacketEventHandler
 {
     [PacketData] public required string Fingerprint { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new UniqueIdWriter
         {

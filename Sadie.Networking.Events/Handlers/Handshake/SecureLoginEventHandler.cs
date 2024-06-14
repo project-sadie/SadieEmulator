@@ -33,7 +33,7 @@ public class SecureLoginEventHandler(
     public string? Token { get; set; }
     public int DelayMs { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
         {

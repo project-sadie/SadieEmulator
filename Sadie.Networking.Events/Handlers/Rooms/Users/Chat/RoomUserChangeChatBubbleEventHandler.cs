@@ -10,7 +10,7 @@ public class RoomUserChangeChatBubbleEventHandler : INetworkPacketEventHandler
 {
     public int Bubble { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         client.Player.AvatarData.ChatBubbleId = (ChatBubble) Bubble;
     }

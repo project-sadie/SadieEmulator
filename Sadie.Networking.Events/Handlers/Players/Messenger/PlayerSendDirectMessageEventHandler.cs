@@ -20,7 +20,7 @@ public class PlayerSendDirectMessageEventHandler(
     public int PlayerId { get; set; }
     public required string Message { get; set; }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalMilliseconds < CooldownIntervals.PlayerDirectMessage)
         {

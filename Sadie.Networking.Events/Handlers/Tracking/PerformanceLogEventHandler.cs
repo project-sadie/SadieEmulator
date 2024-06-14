@@ -7,7 +7,7 @@ namespace Sadie.Networking.Events.Handlers.Tracking;
 [PacketId(EventHandlerIds.PerformanceLog)]
 public class PerformanceLogEventHandler : INetworkPacketEventHandler
 {
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client)
     {
         return Task.CompletedTask;
     }

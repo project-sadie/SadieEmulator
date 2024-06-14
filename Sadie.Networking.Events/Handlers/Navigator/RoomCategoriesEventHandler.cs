@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 [PacketId(EventHandlerIds.RoomCategories)]
 public class RoomCategoriesEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var categories = await dbContext
             .Set<RoomCategory>()

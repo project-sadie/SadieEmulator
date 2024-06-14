@@ -16,7 +16,7 @@ public class CatalogPageEventHandler(SadieContext dbContext) : INetworkPacketEve
     [PacketData] public int OfferId { get; set; }
     [PacketData] public string? CatalogMode { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var page = await dbContext
             .Set<CatalogPage>()

@@ -13,9 +13,7 @@ public class RoomDoorbellAnswerEventHandler(
     public required string Username { get; set; }
     public bool Accept { get; set; }
     
-    public async Task HandleAsync(
-        INetworkClient client, 
-        INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var username = Username;
         var player = playerRepository.GetPlayerLogicByUsername(username);

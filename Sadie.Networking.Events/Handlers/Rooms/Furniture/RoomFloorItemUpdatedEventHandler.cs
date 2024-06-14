@@ -25,7 +25,7 @@ public class RoomFloorItemUpdatedEventHandler(
     public int Y { get; set; }
     public int Direction { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null || client.RoomUser == null)
         {

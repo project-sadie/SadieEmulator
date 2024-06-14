@@ -10,7 +10,7 @@ public class CatalogModeEventHandler() : INetworkPacketEventHandler
 {
     [PacketData] public string? Mode { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (string.IsNullOrWhiteSpace(Mode))
         {

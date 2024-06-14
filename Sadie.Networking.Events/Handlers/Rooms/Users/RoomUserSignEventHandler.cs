@@ -11,7 +11,7 @@ public class RoomUserSignEventHandler(RoomRepository roomRepository) : INetworkP
 {
     public int SignId { get; set; }
     
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {

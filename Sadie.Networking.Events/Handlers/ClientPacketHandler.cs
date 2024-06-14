@@ -31,16 +31,16 @@ public class ClientPacketHandler(
         var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
         EventSerializer.SetEventHandlerProperties(eventHandler, packet);
         
-        await ExecuteAsync(client, packet, eventHandler);
+        await ExecuteAsync(client, eventHandler);
     }
 
-    private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEventHandler eventHandler)
+    private async Task ExecuteAsync(INetworkClient client, INetworkPacketEventHandler eventHandler)
     {
         logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
         
         try
         {
-            await eventHandler.HandleAsync(client, packet);
+            await eventHandler.HandleAsync(client);
         }
         catch (Exception e)
         {

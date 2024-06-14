@@ -12,7 +12,7 @@ public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkP
     public int X { get; set; }
     public int Y { get; set; }
     
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {

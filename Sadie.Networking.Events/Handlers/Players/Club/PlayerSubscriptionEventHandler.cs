@@ -10,7 +10,7 @@ public class PlayerSubscriptionEventHandler : INetworkPacketEventHandler
 {
     public string? Name { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var playerSub = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == Name);
         

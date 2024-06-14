@@ -15,7 +15,7 @@ public class RoomDeleteEventHandler(
 {
     public required int RoomId { get; init; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var room = await roomRepository.TryLoadRoomByIdAsync(RoomId);
 

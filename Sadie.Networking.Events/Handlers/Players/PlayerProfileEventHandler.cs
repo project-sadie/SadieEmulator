@@ -13,7 +13,7 @@ public class PlayerProfileEventHandler(PlayerRepository playerRepository)
 {
     public int ProfileId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var profilePlayer = await playerRepository.GetPlayerByIdAsync(ProfileId);
         

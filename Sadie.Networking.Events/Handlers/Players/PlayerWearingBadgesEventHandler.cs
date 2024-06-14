@@ -19,7 +19,7 @@ public class PlayerWearingBadgesEventHandler(
 {
     public int PlayerId { get; set; }
     
-    public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient networkClient)
     {
         var player = playerRepository.GetPlayerLogicById(PlayerId);
 

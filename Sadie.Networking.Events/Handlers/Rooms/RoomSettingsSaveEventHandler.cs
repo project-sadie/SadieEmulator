@@ -43,7 +43,7 @@ public class RoomSettingsSaveEventHandler(
     public int ChatDistance { get; set; }
     public int ChatProtection { get; set; }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var room = roomRepository.TryGetRoomById(RoomId);
 

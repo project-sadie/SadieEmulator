@@ -19,7 +19,7 @@ public class PlayerSendFriendRequestEventHandler(
 {
     public string? TargetUsername { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
         

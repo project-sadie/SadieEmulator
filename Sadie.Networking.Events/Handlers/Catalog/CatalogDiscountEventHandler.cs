@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 [PacketId(EventHandlerIds.CatalogDiscount)]
 public class CatalogDiscountEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new CatalogDiscountWriter());
     }

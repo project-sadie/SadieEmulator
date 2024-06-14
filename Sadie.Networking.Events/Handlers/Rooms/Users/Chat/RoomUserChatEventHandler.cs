@@ -20,9 +20,7 @@ public class RoomUserChatEventHandler(
     public required string Message { get; set; }
     public int Bubble { get; set; }
     
-    public async Task HandleAsync(
-        INetworkClient client, 
-        INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await NetworkPacketEventHelpers.OnChatMessageAsync(client,
             Message,

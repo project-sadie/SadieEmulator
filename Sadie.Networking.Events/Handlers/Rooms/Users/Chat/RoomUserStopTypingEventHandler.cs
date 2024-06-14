@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 [PacketId(EventHandlerIds.RoomUserStopTyping)]
 public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var roomUser = client.RoomUser;
         

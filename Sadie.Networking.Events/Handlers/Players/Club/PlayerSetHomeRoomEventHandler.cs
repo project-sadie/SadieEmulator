@@ -12,7 +12,7 @@ public class PlayerSetHomeRoomEventHandler(
 {
     public int RoomId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player?.NetworkObject == null ||
             client.Player.Data.HomeRoomId == RoomId)

@@ -10,8 +10,8 @@ public class RoomHeightmap2EventHandler(RoomHeightmapEventHandler eventHandler) 
     // Nitro sends a different header based on if the user is exiting a room to enter another
     // Just call the original / other event
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        await eventHandler.HandleAsync(client, reader);
+        await eventHandler.HandleAsync(client);
     }
 }

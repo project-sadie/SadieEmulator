@@ -12,7 +12,7 @@ public class CompleteDiffieHandshakeEventHandler(
 {
     public string? PublicKey { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var sharedKey = habboEncryption.CalculateDiffieHellmanSharedKey(PublicKey);
 

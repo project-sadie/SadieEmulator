@@ -27,7 +27,7 @@ public class RoomLoadedEventHandler(
     public int RoomId { get; set; }
     public required string Password { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader readers)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
 

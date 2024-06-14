@@ -23,7 +23,7 @@ public class RoomItemEjectedEventHandler(
     public int Category { get; set; }
     public int ItemId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null || client.RoomUser == null)
         {

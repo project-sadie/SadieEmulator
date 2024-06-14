@@ -7,5 +7,5 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 [PacketId(EventHandlerIds.ClientVersion)]
 public class ClientVersionEventHandler : INetworkPacketEventHandler
 {
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader) => Task.CompletedTask;
+    public Task HandleAsync(INetworkClient client) => Task.CompletedTask;
 }

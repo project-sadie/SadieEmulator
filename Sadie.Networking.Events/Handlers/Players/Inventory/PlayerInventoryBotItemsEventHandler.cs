@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 [PacketId(EventHandlerIds.PlayerInventoryBotItems)]
 public class PlayerInventoryBotItemsEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new PlayerInventoryBotItemsWriter
         {

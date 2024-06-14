@@ -18,7 +18,7 @@ public class RoomDoorbellAcceptedEventHandler(
 {
     public int RoomId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var room = roomRepository.TryGetRoomById(RoomId);
 

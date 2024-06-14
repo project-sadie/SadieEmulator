@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerIds.PlayerMeMenuSettings)]
 public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player!;
         var playerSettings = player.GameSettings;

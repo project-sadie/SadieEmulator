@@ -12,7 +12,7 @@ public class PlayerFriendListUpdateEventHandler(
     PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player!;
         

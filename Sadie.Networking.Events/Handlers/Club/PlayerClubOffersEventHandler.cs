@@ -14,7 +14,7 @@ public class PlayerClubOffersEventHandler(
 {
     [PacketData] public int WindowId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {

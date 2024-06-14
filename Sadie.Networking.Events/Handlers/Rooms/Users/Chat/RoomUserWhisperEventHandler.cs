@@ -22,7 +22,7 @@ public class RoomUserWhisperEventHandler(
     public required string Data { get; set; }
     public int Bubble { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
