@@ -84,15 +84,14 @@ public class SecureLoginEventHandler(
             .Include(x => x.GameSettings)
             .Include(x => x.Badges)
             .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
+            .Include(x => x.FurnitureItems).ThenInclude(x => x.PlacementData)
             .Include(x => x.WardrobeItems)
             .Include(x => x.Roles).ThenInclude(x => x.Permissions)
             .Include(x => x.Subscriptions).ThenInclude(x => x.Subscription)
             .Include(x => x.Respects)
             .Include(x => x.SavedSearches)
-            .Include(x => x.OutgoingFriendships)
-            .Include(x => x.OutgoingFriendships)
-            .Include(x => x.IncomingFriendships)
-            .Include(x => x.IncomingFriendships)
+            .Include(x => x.OutgoingFriendships).ThenInclude(x => x.TargetPlayer).ThenInclude(x => x.AvatarData)
+            .Include(x => x.IncomingFriendships).ThenInclude(x => x.OriginPlayer).ThenInclude(x => x.AvatarData)
             .Include(x => x.MessagesSent)
             .Include(x => x.MessagesReceived)
             .Include(x => x.Rooms).ThenInclude(x => x.Settings)
@@ -130,7 +129,7 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
-        await SendFriendUpdatesAsync(playerLogic);
+        await SendFriendsAsync(playerLogic);
         await SendWelcomeMessageAsync(playerLogic);
     }
 
@@ -153,41 +152,36 @@ public class SecureLoginEventHandler(
         await player.NetworkObject.WriteToStreamAsync(alertWriter);
     }
 
-    private async Task SendFriendUpdatesAsync(PlayerLogic player)
+    private async Task SendFriendsAsync(PlayerLogic player)
     {
-        var allFriends = player.GetMergedFriendships();
+        var allFriends = player.GetMergedFriendships()
+            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
+            .ToList();
 
-        await playerRepository.UpdateMessengerStatusForFriends(player.Id,
-            allFriends, true, player.CurrentRoomId != 0);
+        var updates = new List<FriendshipUpdate>();
 
         foreach (var friend in allFriends)
         {
             var friendPlayer = playerRepository.GetPlayerLogicById(friend.TargetPlayerId);
-            var isOnline = friendPlayer != null;
-            var isInRoom = isOnline && friendPlayer!.CurrentRoomId != 0;
+            var friendInRoom = friendPlayer != null && friendPlayer.CurrentRoomId != 0;
 
-            var relationship = isOnline
-                ? friendPlayer!
+            var relationship = friendPlayer == null ? null : 
+                friendPlayer!
                     .Relationships
-                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId) : null;
+                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId);
 
-            await player.NetworkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter
+            updates.Add(new FriendshipUpdate
             {
-                Unknown1 = 0,
-                Unknown2 = 1,
-                Unknown3 = 0,
-                Friendship = friend,
-                IsOnline = isOnline,
-                CanFollow = isInRoom,
-                CategoryId = 0,
-                RealName = "",
-                LastAccess = "",
-                PersistedMessageUser = false,
-                VipMember = false,
-                PocketUser = false,
-                RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
+                Type = 0,
+                Friend = friendPlayer,
+                FriendOnline = true,
+                FriendInRoom = friendInRoom,
+                Relation = relationship?.TypeId ?? PlayerRelationshipType.None
             });
         }
+
+        await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(player, updates);
+        await playerRepository.UpdateStatusForFriendsAsync(player, allFriends, true, player.CurrentRoomId != 0);
     }
 
     private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;

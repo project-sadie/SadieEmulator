@@ -74,10 +74,15 @@ public class RoomLoadedEventHandler(
         }
         
         await RoomHelpersDirty.EnterRoomAsync(client, room, logger, roomUserFactory, dbContext);
+
+        var friends = player
+            .GetMergedFriendships()
+            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
+            .ToList();
         
-        await playerRepository.UpdateMessengerStatusForFriends(
-            player.Id,
-            player.GetMergedFriendships(), 
+        await playerRepository.UpdateStatusForFriendsAsync(
+            player,
+            friends, 
             true, 
             true);
     }

@@ -63,47 +63,39 @@ public class PlayerRepository(
         }
 
         await UpdateOnlineStatusAsync(player.Id, false);
-        await UpdateMessengerStatusForFriends(player.Id, player.GetMergedFriendships(), false, false);
+        await UpdateStatusForFriendsAsync(player, player.GetMergedFriendships(), false, false);
         await player.DisposeAsync();
 
         return result;
     }
 
-    public async Task UpdateMessengerStatusForFriends(long playerId, IEnumerable<PlayerFriendship> friendships, bool isOnline, bool inRoom)
+    public async Task UpdateStatusForFriendsAsync(
+        PlayerLogic player, 
+        IEnumerable<PlayerFriendship> friendships, 
+        bool isOnline, 
+        bool inRoom)
     {
-        foreach (var friendId in friendships.Select(x => x.TargetPlayer.Id).Distinct())
+        var update = new FriendshipUpdate
         {
-            var friend = GetPlayerLogicById(friendId);
-            var friendship = friend?.GetMergedFriendships().FirstOrDefault(x => x.TargetPlayerId == playerId);
+            Type = 0,
+            Friend = player,
+            FriendOnline = isOnline,
+            FriendInRoom = inRoom,
+            Relation = PlayerRelationshipType.None
+        };
+        
+        foreach (var friend in friendships)
+        {
+            var targetId = friend.OriginPlayerId == player.Id ? 
+                friend.TargetPlayerId : 
+                friend.OriginPlayerId;
 
-            if (friendship == null)
+            var targetPlayer = GetPlayerLogicById(targetId);
+
+            if (targetPlayer != null)
             {
-                continue;
+                await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [update]);
             }
-            
-            var relationship = friend
-                .Relationships
-                .FirstOrDefault(x =>
-                    x.TargetPlayerId == friendship.OriginPlayerId || x.TargetPlayerId == friendship.TargetPlayerId);
-
-            var updateFriendWriter = new PlayerUpdateFriendWriter
-            {
-                Unknown1 = 0,
-                Unknown2 = 1,
-                Unknown3 = 0,
-                Friendship = friendship,
-                IsOnline = isOnline,
-                CanFollow = inRoom,
-                CategoryId = 0,
-                RealName = "",
-                LastAccess = "",
-                PersistedMessageUser = false,
-                VipMember = false,
-                PocketUser = false,
-                RelationshipType = (int)(relationship?.TypeId ?? PlayerRelationshipType.None)
-            };
-                
-            await friend.NetworkObject.WriteToStreamAsync(updateFriendWriter);
         }
     }
     

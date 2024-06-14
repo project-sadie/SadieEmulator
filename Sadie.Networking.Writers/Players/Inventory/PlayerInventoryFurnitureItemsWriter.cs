@@ -1,4 +1,4 @@
-using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
