@@ -1,6 +1,7 @@
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -71,7 +72,7 @@ public class PlayerChangeRelationshipEventHandler(
         {
             Updates =
             [
-                new FriendshipUpdate
+                new PlayerFriendshipUpdate
                 {
                     Type = 0,
                     Friend = isOnline ? onlineFriend : await playerRepository.GetPlayerByIdAsync(playerId),

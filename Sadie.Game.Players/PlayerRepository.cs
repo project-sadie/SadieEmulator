@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted;
 
@@ -75,7 +75,7 @@ public class PlayerRepository(
         bool isOnline, 
         bool inRoom)
     {
-        var update = new FriendshipUpdate
+        var update = new PlayerFriendshipUpdate
         {
             Type = 0,
             Friend = player,

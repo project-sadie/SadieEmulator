@@ -8,7 +8,7 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
@@ -158,7 +158,7 @@ public class SecureLoginEventHandler(
             .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
             .ToList();
 
-        var updates = new List<FriendshipUpdate>();
+        var updates = new List<PlayerFriendshipUpdate>();
 
         foreach (var friend in allFriends)
         {
@@ -170,7 +170,7 @@ public class SecureLoginEventHandler(
                     .Relationships
                     .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId);
 
-            updates.Add(new FriendshipUpdate
+            updates.Add(new PlayerFriendshipUpdate
             {
                 Type = 0,
                 Friend = friendPlayer,
