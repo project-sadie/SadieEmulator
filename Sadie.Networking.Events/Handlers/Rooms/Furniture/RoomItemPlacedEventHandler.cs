@@ -61,7 +61,6 @@ public class RoomItemPlacedEventHandler(
                 placementData, 
                 room, 
                 client, 
-                player, 
                 playerItem,
                 itemId,
                 dbContext, 
