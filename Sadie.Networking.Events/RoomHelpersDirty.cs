@@ -5,8 +5,8 @@ using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
-using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -184,7 +184,7 @@ public static class RoomHelpersDirty
             {
                 await Task.Delay(800);
                 
-                teleport.MetaData = "0";
+                teleport.PlayerFurnitureItem.MetaData = "0";
                 await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, teleport);
             });
         }
@@ -322,7 +322,6 @@ public static class RoomHelpersDirty
         IReadOnlyList<string> placementData, 
         RoomLogic room, 
         INetworkClient client, 
-        PlayerLogic player, 
         PlayerFurnitureItem playerItem, 
         int itemId,
         SadieContext dbContext,
@@ -350,23 +349,19 @@ public static class RoomHelpersDirty
             pointsForPlacement,
             room.FurnitureItems);
         
-        var roomFurnitureItem = new RoomFurnitureItem
+        var roomFurnitureItem = new PlayerFurnitureItemPlacementData
         {
             RoomId = room.Id,
-            OwnerId = player.Id,
-            OwnerUsername = player.Username,
-            FurnitureItem = playerItem.FurnitureItem,
+            PlayerFurnitureItem = playerItem,
             PositionX = x,
             PositionY = y,
             PositionZ = z,
             WallPosition = string.Empty,
             Direction = (HDirection) direction,
-            LimitedData = playerItem.LimitedData,
-            MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
 
-        player.FurnitureItems.Remove(playerItem);
+        playerItem.PlacementData.Add(roomFurnitureItem);
         room.FurnitureItems.Add(roomFurnitureItem);
 
         RoomTileMapHelpers.UpdateTileStatesForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
@@ -376,7 +371,6 @@ public static class RoomHelpersDirty
             ItemId = itemId
         });
         
-        dbContext.Entry(playerItem).State = EntityState.Deleted;
         dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
         
         await dbContext.SaveChangesAsync();
@@ -392,11 +386,11 @@ public static class RoomHelpersDirty
             StackHeight = 0,
             Extra = 1,
             ObjectDataKey = (int)ObjectDataKey.LegacyKey,
-            MetaData = roomFurnitureItem.MetaData,
+            MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
             Expires = -1,
             InteractionModes = roomFurnitureItem.FurnitureItem.InteractionModes,
-            OwnerId = roomFurnitureItem.OwnerId,
-            OwnerUsername = roomFurnitureItem.OwnerUsername
+            OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
+            OwnerUsername = roomFurnitureItem.PlayerFurnitureItem.Player.Username
         });
         
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
@@ -426,24 +420,19 @@ public static class RoomHelpersDirty
         
         var wallPosition = $"{placementData[1]} {placementData[2]} {placementData[3]}";
 
-        var roomFurnitureItem = new RoomFurnitureItem
+        var roomFurnitureItem = new PlayerFurnitureItemPlacementData
         {
             RoomId = room.Id,
-            OwnerId = player.Id,
-            OwnerUsername = player.Username,
-            FurnitureItem = playerItem.FurnitureItem,
+            PlayerFurnitureItem = playerItem,
             PositionX = 0,
             PositionY = 0,
             PositionZ = 0,
             WallPosition = wallPosition,
             Direction = 0,
-            LimitedData = playerItem.LimitedData,
-            MetaData = playerItem.MetaData,
             CreatedAt = DateTime.Now
         };
         
         room.FurnitureItems.Add(roomFurnitureItem);
-        player.FurnitureItems.Remove(playerItem);
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {
@@ -462,8 +451,8 @@ public static class RoomHelpersDirty
             await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
         }
 
-        dbContext.Entry(playerItem).State = EntityState.Deleted;
         dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
+        dbContext.Attach(playerItem).State = EntityState.Unchanged;
         
         await dbContext.SaveChangesAsync();
     }

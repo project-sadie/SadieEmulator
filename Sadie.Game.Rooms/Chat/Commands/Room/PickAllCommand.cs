@@ -1,7 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
-using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -20,48 +20,36 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
         
         foreach (var item in user.Room.FurnitureItems.Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor))
         {
-            user.Room.FurnitureItems.Remove(item);
-            dbContext.RoomFurnitureItems.Remove(item);
+            var playerItem = item.PlayerFurnitureItem;
+            var ownsItem = item.PlayerFurnitureItem.PlayerId == user.Id;
 
-            var playerItem = new PlayerFurnitureItem
-            {
-                FurnitureItem = item.FurnitureItem,
-                LimitedData = item.LimitedData,
-                MetaData = item.MetaData,
-                CreatedAt = DateTime.Now
-            };
+            playerItem.PlacementData.Remove(item);
+            user.Room.FurnitureItems.Remove(item);
             
-            var ownsItem = item.OwnerId == user.Id;
+            dbContext.Entry(item).State = EntityState.Deleted;
             
             if (ownsItem)
             {
-                player.FurnitureItems.Add(playerItem);
-            
                 await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
                 {
-                    Items = [playerItem]
+                    FurnitureItems = [playerItem]
                 });
+                
                 await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
             }
             else
             {
-                var ownerOnline = playerRepository.GetPlayerLogicById(item.OwnerId);
+                var ownerOnline = playerRepository.GetPlayerLogicById(item.PlayerFurnitureItem.PlayerId);
 
                 if (ownerOnline != null)
                 {
                     var writer = new PlayerInventoryAddItemsWriter
                     {
-                        Items = [playerItem]
+                        FurnitureItems = [playerItem]
                     };
                     
                     await ownerOnline.NetworkObject.WriteToStreamAsync(writer);
                     await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
-                
-                    ownerOnline.FurnitureItems.Add(playerItem);
-                }
-                else
-                {
-                    dbContext.PlayerFurnitureItems.Add(playerItem);
                 }
             }
 
@@ -69,7 +57,7 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
             {
                 Id = item.Id.ToString(),
                 Expired = false,
-                OwnerId = item.OwnerId,
+                OwnerId = item.PlayerFurnitureItem.PlayerId,
                 Delay = 0,
             };
             

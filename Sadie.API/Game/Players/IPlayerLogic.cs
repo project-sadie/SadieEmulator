@@ -1,5 +1,6 @@
 using Sadie.Database.Models;
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.API.Game.Players;

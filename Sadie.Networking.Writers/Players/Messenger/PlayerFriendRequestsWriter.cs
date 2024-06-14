@@ -1,4 +1,5 @@
-﻿using Sadie.Database.Models.Players;
+﻿using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Packets;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
@@ -8,7 +9,7 @@ namespace Sadie.Networking.Writers.Players.Messenger;
 [PacketId(ServerPacketId.PlayerFriendRequests)]
 public class PlayerFriendRequestsWriter : AbstractPacketWriter
 {
-    public required List<Player> Requests { get; init; }
+    public required List<PlayerFriendshipRequestData> Requests { get; init; }
     
     public override void OnConfigureRules()
     {
@@ -21,7 +22,7 @@ public class PlayerFriendRequestsWriter : AbstractPacketWriter
             {
                 writer.WriteLong(request.Id);
                 writer.WriteString(request.Username);
-                writer.WriteString(request.AvatarData.FigureCode);
+                writer.WriteString(request.FigureCode);
             }
         });
     }

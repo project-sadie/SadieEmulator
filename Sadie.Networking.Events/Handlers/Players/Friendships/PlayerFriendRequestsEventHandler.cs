@@ -1,4 +1,6 @@
-﻿using Sadie.Networking.Client;
+﻿using Sadie.Game.Players.Friendships;
+using Sadie.Game.Players.Packets;
+using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
@@ -7,7 +9,7 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerIds.PlayerFriendRequestsList)]
-public class PlayerFriendRequestsEventHandler() : INetworkPacketEventHandler
+public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
@@ -16,16 +18,21 @@ public class PlayerFriendRequestsEventHandler() : INetworkPacketEventHandler
             return;
         }
         
-        var pending = client
+        var friendRequests = client
             .Player
-            .OutgoingFriendships
+            .IncomingFriendships
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
-            .Select(x => x.TargetPlayer)
+            .ToList();
+
+        var requests = (from request in friendRequests 
+            let data = request.TargetPlayerId == client.Player.Id ? 
+                request.OriginPlayer : 
+                request.TargetPlayer select new PlayerFriendshipRequestData { Id = request.Id, Username = data.Username, FigureCode = data.AvatarData.FigureCode })
             .ToList();
 
         var requestsWriter = new PlayerFriendRequestsWriter
         {
-            Requests = pending
+            Requests = requests
         };
         
         await client.WriteToStreamAsync(requestsWriter);

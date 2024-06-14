@@ -100,7 +100,8 @@ public class PlayerSendFriendRequestEventHandler(
         var playerFriendship = new PlayerFriendship
         {
             OriginPlayerId = player.Id,
-            TargetPlayerId = targetPlayer.Id
+            TargetPlayerId = targetPlayer.Id,
+            Status = PlayerFriendshipStatus.Pending
         };
             
         player.OutgoingFriendships.Add(playerFriendship);
@@ -120,6 +121,7 @@ public class PlayerSendFriendRequestEventHandler(
         }
 
         dbContext.Set<PlayerFriendship>().Add(playerFriendship);
+        await dbContext.SaveChangesAsync();
     }
 
     private async Task AcceptPendingAsync(

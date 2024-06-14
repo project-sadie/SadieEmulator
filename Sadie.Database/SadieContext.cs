@@ -10,9 +10,9 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
-using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Database.Models.Server;
 using Sadie.Options.Options;
@@ -34,7 +34,7 @@ public class SadieContext(
     public DbSet<CatalogFrontPageItem> CatalogFrontPageItems { get; init; }
     public DbSet<RoomCategory> RoomCategories { get; init; }
     public DbSet<RoomChatMessage> RoomChatMessages { get; init; }
-    public DbSet<RoomFurnitureItem> RoomFurnitureItems { get; init; }
+    public DbSet<PlayerFurnitureItemPlacementData> RoomFurnitureItems { get; init; }
     public DbSet<RoomPlayerRight> RoomPlayerRights { get; init; }
     public DbSet<RoomPaintSettings> RoomPaintSettings { get; init; }
     public DbSet<RoomSettings> RoomSettings { get; init; }
@@ -45,6 +45,7 @@ public class SadieContext(
     public DbSet<PlayerData> PlayerData { get; init; }
     public DbSet<PlayerAvatarData> PlayerAvatarData { get; init; }
     public DbSet<PlayerFurnitureItem> PlayerFurnitureItems { get; init; }
+    public DbSet<PlayerFurnitureItemLink> PlayerFurnitureItemLinks { get; init; }
     public DbSet<PlayerBadge> PlayerBadges { get; init; }
     public DbSet<Badge> Badges { get; init; }
     public DbSet<CatalogClubOffer> CatalogClubOffers { get; init; }
@@ -58,7 +59,6 @@ public class SadieContext(
     public DbSet<Subscription> Subscriptions { get; init; }
     public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
     public DbSet<PlayerBot> PlayerBots { get; init; }
-    public DbSet<RoomFurnitureItemTeleportLink> RoomFurnitureItemTeleportLinks { get; init; }
     public DbSet<RoomDimmerSettings?> RoomDimmerSettings { get; init; }
     public DbSet<RoomDimmerPreset> RoomDimmerPresets { get; init; }
     public DbSet<PlayerRoomVisit> PlayerRoomVisits { get; init; }
@@ -104,7 +104,7 @@ public class SadieContext(
             .HasConversion(
                 v => EnumHelpers.GetEnumDescription(v),
                 v => EnumHelpers.GetEnumValueFromDescription<FurnitureItemType>(v));
-
+        
         modelBuilder.Entity<CatalogItem>()
             .HasMany(c => c.FurnitureItems)
             .WithMany(x => x.CatalogItems);
@@ -134,6 +134,7 @@ public class SadieContext(
         modelBuilder.Entity<HandItem>().ToTable("hand_items");
         modelBuilder.Entity<PlayerBot>().ToTable("player_bots");
         modelBuilder.Entity<RoomDimmerPreset>().ToTable("room_dimmer_presets");
+        modelBuilder.Entity<PlayerFurnitureItemPlacementData>().ToTable("player_furniture_item_placement_data");
 
         modelBuilder.Entity<RoomLayout>()
             .Property(x => x.HeightMap)
@@ -189,5 +190,10 @@ public class SadieContext(
         modelBuilder.Entity<FurnitureItem>()
             .HasMany(c => c.HandItems)
             .WithMany(x => x.FurnitureItems);
+
+        modelBuilder.Entity<Room>()
+            .HasMany(c => c.FurnitureItems)
+            .WithOne(x => x.Room)
+            .HasForeignKey(e => e.RoomId);
     }
 }

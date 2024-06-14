@@ -1,5 +1,5 @@
 using Sadie.Database.Models.Furniture;
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -12,7 +12,7 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetItemsForPosition_ReturnsCorrect()
     {
-        var someItems = new List<RoomFurnitureItem>
+        var someItems = new List<PlayerFurnitureItemPlacementData>
         {
             new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
         };
@@ -23,7 +23,7 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetItemsForPosition_NotFound_ReturnsCorrect()
     {
-        var someItems = new List<RoomFurnitureItem>
+        var someItems = new List<PlayerFurnitureItemPlacementData>
         {
             new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
         };
@@ -34,7 +34,7 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetItemsForPosition_ReturnsCorrectForBulk()
     {
-        var someItems = new List<RoomFurnitureItem>
+        var someItems = new List<PlayerFurnitureItemPlacementData>
         {
             new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
             new() { PositionX = 4, PositionY = 5, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },

@@ -3,8 +3,8 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
-using Sadie.Database.Models.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
@@ -12,11 +12,11 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
 {
     public string InteractionType => "dimmer";
     
-    public async Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit)
+    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
     }
 
-    public async Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit)
+    public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         if (room.DimmerSettings == null)
         {
@@ -63,7 +63,7 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
         }
     }
 
-    public async Task OnPickUpAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit)
+    public async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         await dbContext
             .RoomDimmerPresets
@@ -79,10 +79,10 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
         }
     }
 
-    public async Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit)
+    public async Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
     }
 
-    public Task OnStepOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit) => Task.CompletedTask;
+    public Task OnStepOnAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
+    public Task OnStepOffAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }

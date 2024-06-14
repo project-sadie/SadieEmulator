@@ -1,5 +1,5 @@
 using Sadie.API.Game.Rooms;
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted;
@@ -10,14 +10,14 @@ public class RoomFurnitureItemHelpers
 {
     public static async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
-        RoomFurnitureItem roomFurnitureItem)
+        PlayerFurnitureItemPlacementData roomFurnitureItem)
     {
-        if (string.IsNullOrEmpty(roomFurnitureItem.MetaData))
+        if (string.IsNullOrEmpty(roomFurnitureItem.PlayerFurnitureItem.MetaData))
         {
-            roomFurnitureItem.MetaData = 0.ToString();
+            roomFurnitureItem.PlayerFurnitureItem.MetaData = 0.ToString();
         }
 
-        if (roomFurnitureItem.FurnitureItem.InteractionModes < 1 || !int.TryParse(roomFurnitureItem.MetaData, out var state))
+        if (roomFurnitureItem.FurnitureItem.InteractionModes < 1 || !int.TryParse(roomFurnitureItem.PlayerFurnitureItem.MetaData, out var state))
         {
             return;
         }
@@ -27,14 +27,14 @@ public class RoomFurnitureItemHelpers
             state = 0;
         }
         
-        roomFurnitureItem.MetaData = (state + 1).ToString();
+        roomFurnitureItem.PlayerFurnitureItem.MetaData = (state + 1).ToString();
 
         await BroadcastItemUpdateToRoomAsync(room, roomFurnitureItem);
     }
 
     public static async Task BroadcastItemUpdateToRoomAsync(
         IRoomLogic room, 
-        RoomFurnitureItem roomFurnitureItem)
+        PlayerFurnitureItemPlacementData roomFurnitureItem)
     {
         AbstractPacketWriter itemWriter = roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor ? new RoomFloorItemUpdatedWriter
         {
@@ -47,10 +47,10 @@ public class RoomFurnitureItemHelpers
             StackHeight = 0.ToString(),
             Extra = 0,
             ObjectDataKey = (int)ObjectDataKey.LegacyKey,
-            ExtraData = roomFurnitureItem.MetaData,
+            ExtraData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
             Expires = -1,
             InteractionModes = 1,
-            OwnerId = roomFurnitureItem.OwnerId,
+            OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
         } : new RoomWallFurnitureItemUpdatedWriter
         {
             Item = roomFurnitureItem

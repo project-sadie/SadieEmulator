@@ -1,7 +1,7 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Unit;
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Shared.Extensions;
@@ -12,7 +12,7 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "vending_machine";
     
-    public async Task OnTriggerAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit)
+    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 
@@ -46,9 +46,9 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
         });
     }
 
-    public Task OnPlaceAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnPickUpAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnMoveAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnStepOnAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, RoomFurnitureItem item, IRoomUnit? roomUnit) => Task.CompletedTask;
+    public Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
+    public Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
+    public Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
+    public Task OnStepOnAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
+    public Task OnStepOffAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }

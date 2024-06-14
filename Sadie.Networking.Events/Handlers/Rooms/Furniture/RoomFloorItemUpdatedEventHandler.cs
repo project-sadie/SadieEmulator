@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
@@ -110,7 +111,7 @@ public class RoomFloorItemUpdatedEventHandler(
         await BroadcastUpdateAsync(room, roomFurnitureItem);
     }
 
-    private static async Task BroadcastUpdateAsync(RoomLogic room, RoomFurnitureItem roomFurnitureItem)
+    private static async Task BroadcastUpdateAsync(IRoomLogic room, PlayerFurnitureItemPlacementData roomFurnitureItem)
     {
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter
         {
@@ -123,10 +124,10 @@ public class RoomFloorItemUpdatedEventHandler(
             StackHeight = 0.ToString(),
             Extra = 0,
             ObjectDataKey = 0,
-            ExtraData = roomFurnitureItem.MetaData,
+            ExtraData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
             Expires = -1,
             InteractionModes = 0,
-            OwnerId = roomFurnitureItem.OwnerId
+            OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId
         });
     }
 }

@@ -1,6 +1,7 @@
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -69,19 +70,17 @@ public class PlayerChangeRelationshipEventHandler(
         
         var updateFriendWriter = new PlayerUpdateFriendWriter
         {
-            Unknown1 = 0,
-            Unknown2 = 1,
-            Unknown3 = 0,
-            Friendship = friendship,
-            IsOnline = isOnline,
-            CanFollow = inRoom,
-            CategoryId = 0,
-            RealName = "",
-            LastAccess = "",
-            PersistedMessageUser = false,
-            VipMember = false,
-            PocketUser = false,
-            RelationshipType = relationId
+            Updates =
+            [
+                new PlayerFriendshipUpdate
+                {
+                    Type = 0,
+                    Friend = isOnline ? onlineFriend : await playerRepository.GetPlayerByIdAsync(playerId),
+                    FriendOnline = isOnline,
+                    FriendInRoom = inRoom,
+                    Relation = (PlayerRelationshipType)relationId
+                }
+            ]
         };
             
         await client.WriteToStreamAsync(updateFriendWriter);

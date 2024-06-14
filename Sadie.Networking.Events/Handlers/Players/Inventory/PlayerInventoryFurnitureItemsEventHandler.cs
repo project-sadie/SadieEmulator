@@ -11,7 +11,11 @@ public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHand
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        var furnitureItems = client.Player.FurnitureItems;
+        var furnitureItems = client
+            .Player
+            .FurnitureItems
+            .Where(x => !x.PlacementData.Any())
+            .ToList();
 
         if (furnitureItems.Count == 0)
         {

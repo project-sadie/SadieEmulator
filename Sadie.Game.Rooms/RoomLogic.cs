@@ -3,9 +3,9 @@ using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
-using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Game.Rooms.Mapping;
 
@@ -23,7 +23,7 @@ public class RoomLogic : Room, IRoomLogic
         bool isMuted,
         IRoomUserRepository userRepository,
         IRoomBotRepository botRepository,
-        ICollection<RoomFurnitureItem> furnitureItems,
+        ICollection<PlayerFurnitureItemPlacementData> furnitureItems,
         RoomSettings settings,
         RoomChatSettings chatSettings,
         ICollection<RoomChatMessage> chatMessages,

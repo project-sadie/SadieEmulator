@@ -1,6 +1,6 @@
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms.Chat;
-using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Database.Models.Rooms.Rights;
 
 namespace Sadie.Database.Models.Rooms;
@@ -23,7 +23,7 @@ public class Room
     public ICollection<RoomChatMessage> ChatMessages { get; init; } = [];
     public ICollection<RoomTag> Tags { get; init; } = [];
     public ICollection<PlayerRoomLike> PlayerLikes { get; init; } = [];
-    public ICollection<RoomFurnitureItem> FurnitureItems { get; init; } = [];
+    public ICollection<PlayerFurnitureItemPlacementData> FurnitureItems { get; init; } = [];
     public DateTime CreatedAt { get; init; }
     public Group? Group { get; init; }
     public RoomDimmerSettings? DimmerSettings { get; set; }
