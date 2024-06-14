@@ -13,4 +13,5 @@ public interface IRoomUserData : IRoomUnit
     bool NeedsStatusUpdate { get; set; }
     bool IsWalking { get; set; }
     bool MoonWalking { get; set; }
+    int HandItemId { get; set; }
 }

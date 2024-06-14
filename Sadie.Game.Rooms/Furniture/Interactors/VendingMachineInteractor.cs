@@ -3,7 +3,7 @@ using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database.Models.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
-using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
