@@ -1,4 +1,4 @@
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
@@ -9,7 +9,7 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 public class RoomWallItemsWriter : AbstractPacketWriter
 {
     public required Dictionary<int, string> FurnitureOwners { get; init; }
-    public required ICollection<RoomFurnitureItem> WallItems { get; init; }
+    public required ICollection<PlayerFurnitureItemPlacementData> WallItems { get; init; }
 
     public override void OnConfigureRules()
     {
@@ -22,10 +22,10 @@ public class RoomWallItemsWriter : AbstractPacketWriter
                 writer.WriteString(item.Id + "");
                 writer.WriteInteger(item.FurnitureItem.AssetId);
                 writer.WriteString(item.WallPosition);
-                writer.WriteString(item.MetaData);
+                writer.WriteString(item.PlayerFurnitureItem.MetaData);
                 writer.WriteInteger(-1);
                 writer.WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0);
-                writer.WriteLong(item.OwnerId);
+                writer.WriteLong(item.PlayerFurnitureItem.PlayerId);
             }
         });
     }

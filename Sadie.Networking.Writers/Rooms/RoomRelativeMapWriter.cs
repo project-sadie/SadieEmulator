@@ -1,5 +1,5 @@
 ﻿using Sadie.API.Game.Rooms.Mapping;
-using Sadie.Database.Models.Rooms.Furniture;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
@@ -11,7 +11,7 @@ namespace Sadie.Networking.Writers.Rooms;
 public class RoomRelativeMapWriter : AbstractPacketWriter
 {
     public required IRoomTileMap TileMap { get; init; }
-    public required ICollection<RoomFurnitureItem> Items { get; init; }
+    public required ICollection<PlayerFurnitureItemPlacementData> Items { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
