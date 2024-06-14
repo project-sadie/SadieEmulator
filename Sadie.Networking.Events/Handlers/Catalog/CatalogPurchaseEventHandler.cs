@@ -268,7 +268,6 @@ public class CatalogPurchaseEventHandler(
             };
             
             client.Player.FurnitureItems.Add(newItem);
-            dbContext.Attach(client.Player).State = EntityState.Unchanged;
             dbContext.Entry(newItem).State = EntityState.Added;
             newItems.Add(newItem);
         }

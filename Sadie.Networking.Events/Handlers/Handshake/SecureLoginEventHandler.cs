@@ -162,7 +162,8 @@ public class SecureLoginEventHandler(
 
         foreach (var friend in allFriends)
         {
-            var friendPlayer = playerRepository.GetPlayerLogicById(friend.TargetPlayerId);
+            var friendId = friend.OriginPlayerId == player.Id ? friend.TargetPlayerId : friend.OriginPlayerId;
+            var friendPlayer = playerRepository.GetPlayerLogicById(friendId);
             var friendInRoom = friendPlayer != null && friendPlayer.CurrentRoomId != 0;
 
             var relationship = friendPlayer == null ? null : 
@@ -173,7 +174,7 @@ public class SecureLoginEventHandler(
             updates.Add(new PlayerFriendshipUpdate
             {
                 Type = 0,
-                Friend = friendPlayer,
+                Friend = friendPlayer ?? await playerRepository.GetPlayerByIdAsync(friendId),
                 FriendOnline = true,
                 FriendInRoom = friendInRoom,
                 Relation = relationship?.TypeId ?? PlayerRelationshipType.None
