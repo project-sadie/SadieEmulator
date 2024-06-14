@@ -42,6 +42,6 @@ public class RoomItemUseEventHandler(
             return;
         }
 
-        await interactor.OnClickAsync(room, roomFurnitureItem, client.RoomUser);
+        await interactor.OnTriggerAsync(room, roomFurnitureItem, client.RoomUser);
     }
 }

@@ -187,7 +187,7 @@ public class RoomTileMapHelpers
         return map; 
     }
 
-    public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint)
+    public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint, List<Point> overridePoints)
     {
         var tmp = new short[map.SizeY, map.SizeX];
         
@@ -195,6 +195,12 @@ public class RoomTileMapHelpers
         {
             for (var x = 0; x < map.SizeX; x++)
             {
+                if (overridePoints.Count > 0 && overridePoints.Contains(new Point(x, y)))
+                {
+                    tmp[y, x] = 1;
+                    continue;
+                }
+                
                 // If it's a seat tile, don't include it unless it's our goal
                 
                 if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))
@@ -203,10 +209,9 @@ public class RoomTileMapHelpers
                     continue;
                 }
                 
-                // If the tile has other users or bots on it skip it
+                // If the tile has other users on it skip it
 
-                if ((map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0) ||
-                    (map.BotMap.TryGetValue(new Point(x, y), out var bots) && bots.Count > 0))
+                if (map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0)
                 {
                     tmp[y, x] = 0;
                     continue;
@@ -285,5 +290,25 @@ public class RoomTileMapHelpers
         }
 
         return new Point(x, y);
+    }
+
+    public static double GetItemPlacementHeight(
+        IEnumerable<Point> pointsForPlacement, 
+        ICollection<RoomFurnitureItem> roomFurnitureItems)
+    {
+        var i = new List<RoomFurnitureItem>();
+        
+        foreach (var p in pointsForPlacement)
+        {
+            i.AddRange(GetItemsForPosition(p.X, p.Y, roomFurnitureItems));
+        }
+        
+        if (!i.Any())
+        {
+            return 0;
+        }
+
+        var highestItem = i.MaxBy(x => x.PositionZ)!;
+        return highestItem.PositionZ + highestItem.FurnitureItem.StackHeight;
     }
 }

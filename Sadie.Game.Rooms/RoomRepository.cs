@@ -36,6 +36,8 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
             .Include(x => x.PlayerLikes)
             .Include(x => x.Tags)
             .Include(x => x.Group)
+            .Include(x => x.DimmerSettings)
+            .Include(x => x.PlayerBans).ThenInclude(x => x.Player)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (room == null)
@@ -60,7 +62,7 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
     public int Count => _rooms.Count;
     public IEnumerable<RoomLogic?> GetAllRooms() => _rooms.Values;
 
-    public bool TryUnloadRoom(long id, out RoomLogic? roomLogic)
+    public bool TryRemove(long id, out RoomLogic? roomLogic)
     {
         return _rooms.TryRemove(id, out roomLogic);
     }

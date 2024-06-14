@@ -14,7 +14,8 @@ public class PlayerSetHomeRoomEventHandler(
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
     {
-        if (client.Player?.NetworkObject == null)
+        if (client.Player?.NetworkObject == null ||
+            client.Player.Data.HomeRoomId == RoomId)
         {
             return;
         }

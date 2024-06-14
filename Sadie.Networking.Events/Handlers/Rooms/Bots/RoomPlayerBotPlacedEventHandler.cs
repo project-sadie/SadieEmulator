@@ -8,12 +8,14 @@ using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Bots;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 
 [PacketId(EventHandlerIds.RoomPlayerBotPlaced)]
-public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomPlayerBotPlacedEventHandler(
+    SadieContext dbContext, 
+    RoomRepository roomRepository,
+    RoomBotFactory roomBotFactory) : INetworkPacketEventHandler
 {
     public required int Id { get; init; }
     public required int X { get; init; }
@@ -50,15 +52,7 @@ public class RoomPlayerBotPlacedEventHandler(SadieContext dbContext, RoomReposit
             return;
         }
 
-        var roomBot = new RoomBot(room)
-        {
-            Id = room.MaxUsersAllowed + bot.Id,
-            Bot = bot,
-            Point = new Point(X, Y),
-            PointZ = 0,
-            Direction = HDirection.South,
-            DirectionHead = HDirection.South
-        };
+        var roomBot = RoomHelpersDirty.CreateBot(room.MaxUsersAllowed + bot.Id, room, new Point(X, Y), roomBotFactory);
 
         if (!room.BotRepository.TryAdd(roomBot))
         {

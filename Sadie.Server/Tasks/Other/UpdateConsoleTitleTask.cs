@@ -16,7 +16,7 @@ public class UpdateConsoleTitleTask(
         var usersOnline = playerRepository.Count();
         var roomCount = roomRepository.Count;
         
-        Console.Title = $"Sadie {GlobalState.Version} - Players Online: {usersOnline} - Rooms Loaded: {roomCount}";
+        Console.Title = $"Sadie {GlobalState.Version} - Started: {GlobalState.Started.ToString("HH:mm:ss")} - Players: {usersOnline} - Rooms: {roomCount}";
         
         return Task.CompletedTask;
     }

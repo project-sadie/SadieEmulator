@@ -1,0 +1,25 @@
+using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
+using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
+
+namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
+
+[PacketId(EventHandlerIds.RoomUserDropHandItem)]
+public class RoomUserDropHandItemEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+{
+    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    {
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        {
+            return;
+        }
+
+        await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
+        {
+            UserId = roomUser.Id,
+            ItemId = 0
+        });
+    }
+}

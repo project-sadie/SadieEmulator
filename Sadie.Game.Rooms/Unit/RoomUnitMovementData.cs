@@ -1,17 +1,21 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Unit;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Users;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
-namespace Sadie.Game.Rooms;
+namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
+public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureItemInteractorRepository interactorRepository) : IRoomUnitMovementData
 {
+    protected RoomUnit? Unit { get; set; }
     public HDirection DirectionHead { get; set; }
     public HDirection Direction { get; set; }
-    public Point Point { get; set;  }
+    public bool CanWalk { get; set; } = true;
+    public Point Point { get; set; } = point;
     public double PointZ { get; init;  }
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
@@ -21,6 +25,7 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
     protected List<Point> PathPoints { get; set; } = [];
     public Dictionary<string, string> StatusMap { get; } = [];
     public bool NeedsStatusUpdate { get; set; }
+    public List<Point> OverridePoints { get; set; } = [];
 
     public void RemoveStatuses(params string[] statuses)
     {
@@ -32,20 +37,20 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
         NeedsStatusUpdate = true;
     }
 
-    private void ClearWalking()
+    public void ClearWalking(bool reachedGoal = true)
     {
         IsWalking = false;
         RemoveStatuses(RoomUserStatus.Move);
         CheckStatusForCurrentTile();
 
-        if (OnReachedGoal != null)
+        if (reachedGoal && OnReachedGoal != null)
         {
             OnReachedGoal.Invoke();
             OnReachedGoal = null;
         }
     }
     
-    protected Action? OnReachedGoal { get; set; } = null;
+    protected Action? OnReachedGoal { get; set; }
 
     public void CheckStatusForCurrentTile()
     {
@@ -102,9 +107,9 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
         NeedsStatusUpdate = true;
     }
 
-    protected void CalculatePath(bool diagonal)
+    protected void CalculatePath()
     {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, diagonal);
+        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
@@ -114,16 +119,31 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
         }
         else
         {
-            NeedsPathCalculated = false;
-                
-            if (PathPoints.Count > 0)
+            NeedsPathCalculated = true;
+        }
+    }
+    
+    public void WalkToPoint(Point point, Action? onReachedGoal = null)
+    {
+        PathGoal = point;
+        NeedsPathCalculated = true;
+        OnReachedGoal = onReachedGoal;
+    }
+
+    private async Task CheckWalkOffInteractionsAsync()
+    {
+        foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))
+        {
+            var interactor = interactorRepository.GetInteractorForType(item.FurnitureItem.InteractionType);
+            
+            if (interactor != null)
             {
-                PathPoints.Clear();
+                await interactor.OnStepOffAsync(room, item, Unit);
             }
         }
     }
 
-    protected void ProcessMovement()
+    protected async Task ProcessMovementAsync()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
         {
@@ -136,7 +156,7 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
         var nextStep = PathPoints[StepsWalked];
         var lastStep = PathPoints.Count == StepsWalked + 1;
         
-        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 || 
+        if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 && !OverridePoints.Contains(nextStep) || 
             (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
             room.TileMap.UserMap.GetValueOrDefault(nextStep, []).Count > 0 ||
             room.TileMap.BotMap.GetValueOrDefault(nextStep, []).Count > 0)
@@ -144,6 +164,8 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
             NeedsPathCalculated = true;
             return;
         }
+
+        await CheckWalkOffInteractionsAsync();
         
         var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
         var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
@@ -158,13 +180,6 @@ public class RoomUnitMovementData(IRoomLogic room) : IRoomUnitMovementData
         DirectionHead = newDirection;
                 
         NextPoint = nextStep;
-    }
-    
-    public void WalkToPoint(Point point, Action? onReachedGoal = null)
-    {
-        PathGoal = point;
-        NeedsPathCalculated = true;
-        OnReachedGoal = onReachedGoal;
     }
     
     private void ClearStatuses()

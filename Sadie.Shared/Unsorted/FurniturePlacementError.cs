@@ -14,5 +14,8 @@ public enum FurniturePlacementError
     CantSetItem,
     
     [Description("${room.error.max_furniture}")]
-    MaxItems
+    MaxItems,
+    
+    [Description("${room.error.max_dimmers}")]
+    MaxDimmers
 }

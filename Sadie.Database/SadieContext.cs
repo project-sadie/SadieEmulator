@@ -36,7 +36,9 @@ public class SadieContext(
     public DbSet<RoomChatMessage> RoomChatMessages { get; init; }
     public DbSet<RoomFurnitureItem> RoomFurnitureItems { get; init; }
     public DbSet<RoomPlayerRight> RoomPlayerRights { get; init; }
+    public DbSet<RoomPaintSettings> RoomPaintSettings { get; init; }
     public DbSet<RoomSettings> RoomSettings { get; init; }
+    public DbSet<RoomChatSettings> RoomChatSettings { get; init; }
     public DbSet<RoomLayout> RoomLayouts { get; init; }
     public DbSet<Room> Rooms { get; init; }
     public DbSet<Player> Players { get; init; }
@@ -57,6 +59,10 @@ public class SadieContext(
     public DbSet<PlayerSubscription> PlayerSubscriptions { get; init; }
     public DbSet<PlayerBot> PlayerBots { get; init; }
     public DbSet<RoomFurnitureItemTeleportLink> RoomFurnitureItemTeleportLinks { get; init; }
+    public DbSet<RoomDimmerSettings?> RoomDimmerSettings { get; init; }
+    public DbSet<RoomDimmerPreset> RoomDimmerPresets { get; init; }
+    public DbSet<PlayerRoomVisit> PlayerRoomVisits { get; init; }
+    public DbSet<PlayerRoomLike> PlayerRoomLikes { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -67,7 +73,8 @@ public class SadieContext(
             Server = databaseSettings.Host,
             Database = databaseSettings.Database,
             Port = databaseSettings.Port,
-            Password = databaseSettings.Password
+            Password = databaseSettings.Password,
+            AllowZeroDateTime = true
         };
 
         var connectionString = stringBuilder.ToString();
@@ -111,6 +118,7 @@ public class SadieContext(
         modelBuilder.Entity<Group>().ToTable("groups");
         modelBuilder.Entity<PlayerSsoToken>().ToTable("player_sso_tokens");
         modelBuilder.Entity<PlayerRoomLike>().ToTable("player_room_likes");
+        modelBuilder.Entity<PlayerRoomBan>().ToTable("player_room_bans");
         modelBuilder.Entity<RoomTag>().ToTable("room_tags");
         modelBuilder.Entity<PlayerTag>().ToTable("player_tags");
         modelBuilder.Entity<PlayerRelationship>().ToTable("player_relationships");
@@ -125,6 +133,7 @@ public class SadieContext(
         modelBuilder.Entity<Role>().ToTable("roles");
         modelBuilder.Entity<HandItem>().ToTable("hand_items");
         modelBuilder.Entity<PlayerBot>().ToTable("player_bots");
+        modelBuilder.Entity<RoomDimmerPreset>().ToTable("room_dimmer_presets");
 
         modelBuilder.Entity<RoomLayout>()
             .Property(x => x.HeightMap)

@@ -1,26 +1,20 @@
+using AutoMapper;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Sadie.Database;
 using Sadie.Database.Models.Constants;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Networking.Writers.Handshake;
-using Sadie.Networking.Writers.Moderation;
-using Sadie.Networking.Writers.Players;
-using Sadie.Networking.Writers.Players.Clothing;
-using Sadie.Networking.Writers.Players.Effects;
-using Sadie.Networking.Writers.Players.Navigator;
-using Sadie.Networking.Writers.Players.Other;
-using Sadie.Networking.Writers.Players.Permission;
-using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Options.Options;
 using Sadie.Shared;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
@@ -31,7 +25,9 @@ public class SecureLoginEventHandler(
     PlayerRepository playerRepository,
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
-    ServerSettings serverSettings)
+    ServerSettings serverSettings,
+    SadieContext dbContext,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public string? Token { get; set; }
@@ -53,16 +49,56 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var token = await playerRepository.GetSsoTokenAsync(Token, TimeSpan.FromMilliseconds(DelayMs));
+        var expires = DateTime
+            .Now
+            .Subtract(TimeSpan.FromMilliseconds(DelayMs));
 
-        if (token == null)
+        var tokenRecord = await dbContext
+            .PlayerSsoToken
+            .FirstOrDefaultAsync(x =>
+                x.Token == Token &&
+                x.ExpiresAt > expires &&
+                x.UsedAt == null);
+
+        if (tokenRecord == null)
         {
             logger.LogWarning("Failed to find token record for provided sso.");
             await DisconnectAsync(client.Channel.Id);
             return;
         }
+        
+        tokenRecord.UsedAt = DateTime.Now;
 
-        var player = await playerRepository.CreatePlayerInstanceWithIdAsync(client, token.PlayerId);
+        dbContext.Entry(tokenRecord).State = EntityState.Modified;
+        await dbContext.SaveChangesAsync();
+
+        var player = await dbContext
+            .Set<Player>()
+            .Where(x => x.Id == tokenRecord.PlayerId)
+            .Include(x => x.Data)
+            .Include(x => x.AvatarData)
+            .Include(x => x.Tags)
+            .Include(x => x.RoomLikes)
+            .Include(x => x.Relationships)
+            .Include(x => x.NavigatorSettings)
+            .Include(x => x.GameSettings)
+            .Include(x => x.Badges)
+            .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
+            .Include(x => x.WardrobeItems)
+            .Include(x => x.Roles).ThenInclude(x => x.Permissions)
+            .Include(x => x.Subscriptions).ThenInclude(x => x.Subscription)
+            .Include(x => x.Respects)
+            .Include(x => x.SavedSearches)
+            .Include(x => x.OutgoingFriendships)
+            .Include(x => x.OutgoingFriendships)
+            .Include(x => x.IncomingFriendships)
+            .Include(x => x.IncomingFriendships)
+            .Include(x => x.MessagesSent)
+            .Include(x => x.MessagesReceived)
+            .Include(x => x.Rooms).ThenInclude(x => x.Settings)
+            .Include(x => x.Groups)
+            .Include(x => x.Bots)
+            .FirstOrDefaultAsync();
 
         if (player == null)
         {
@@ -70,56 +106,32 @@ public class SecureLoginEventHandler(
             await DisconnectAsync(client.Channel.Id);
             return;
         }
+        
+        var playerLogic = mapper.Map<PlayerLogic>(player, opt => 
+            opt.AfterMap((src, dest) => dest.NetworkObject = client));
 
         var playerId = player.Id;
 
-        client.Player = player;
+        client.Player = playerLogic;
 
-        if (!playerRepository.TryAddPlayer(player))
+        if (!playerRepository.TryAddPlayer(playerLogic))
         {
             logger.LogError($"Player {playerId} could not be registered");
             await DisconnectAsync(client.Channel.Id);
             return;
         }
 
-        logger.LogInformation($"Player '{player.Username}' has logged in");
+        logger.LogInformation($"Player '{playerLogic.Username}' has logged in");
         await playerRepository.UpdateOnlineStatusAsync(playerId, true);
 
-        player.Data.LastOnline = DateTime.Now;
-        player.Authenticated = true;
+        playerLogic.Data.LastOnline = DateTime.Now;
+        playerLogic.Authenticated = true;
 
-        await SendExtraPacketsAsync(client, player);
-        await SendSubscriptionPacketsAsync(player);
-        await SendFriendUpdatesAsync(player);
-        await SendWelcomeMessageAsync(player);
-    }
-
-    private async Task SendSubscriptionPacketsAsync(PlayerLogic player)
-    {
-        foreach (var playerSub in player.Subscriptions)
-        {
-            var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
-            var daysLeft = (int)tillExpire.TotalDays;
-            var minutesLeft = (int)tillExpire.TotalMinutes;
-            var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
-
-            await player.NetworkObject.WriteToStreamAsync(new PlayerSubscriptionWriter
-            {
-                Name = playerSub.Subscription.Name.ToLower(),
-                DaysLeft = daysLeft,
-                MemberPeriods = 0,
-                PeriodsSubscribedAhead = 0,
-                ResponseType = 1,
-                HasEverBeenMember = true,
-                IsVip = true,
-                PastClubDays = 0,
-                PastVipDays = 0,
-                MinutesTillExpire = minutesLeft,
-                MinutesSinceModified = minutesSinceMod
-            });
-
-            player.State.LastSubscriptionModification = DateTime.Now;
-        }
+        await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
+        await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
+        
+        await SendFriendUpdatesAsync(playerLogic);
+        await SendWelcomeMessageAsync(playerLogic);
     }
 
     private async Task SendWelcomeMessageAsync(PlayerLogic player)
@@ -139,82 +151,6 @@ public class SecureLoginEventHandler(
         };
 
         await player.NetworkObject.WriteToStreamAsync(alertWriter);
-    }
-
-    private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
-    {
-        var playerData = player.Data;
-        var playerSubscriptions = player.Subscriptions;
-
-        await networkObject.WriteToStreamAsync(new SecureLoginWriter());
-
-        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
-        {
-            Level = 1
-        });
-
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
-        {
-            HomeRoom = playerData.HomeRoomId,
-            RoomIdToEnter = playerData.HomeRoomId
-        });
-
-        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter
-        {
-            Effects = []
-        });
-
-        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
-
-        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
-        {
-            Club = playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
-            Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
-            Ambassador = true
-        });
-
-        var navigatorSettingsWriter = new PlayerNavigatorSettingsWriter
-        {
-            NavigatorSettings = player.NavigatorSettings!
-        };
-
-        var statusWriter = new PlayerStatusWriter
-        {
-            IsOpen = true,
-            IsShuttingDown = false,
-            IsAuthentic = true
-        };
-
-        await networkObject.WriteToStreamAsync(navigatorSettingsWriter);
-        await networkObject.WriteToStreamAsync(statusWriter);
-
-        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter
-        {
-            ShowNotifications = player.GameSettings.ShowNotifications
-        });
-
-        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter
-        {
-            AchievementScore = playerData.AchievementScore
-        });
-
-        if (player.HasPermission("moderation_tools"))
-        {
-            await networkObject.WriteToStreamAsync(new ModerationToolsWriter
-            {
-                Unknown1 = 0,
-                Unknown2 = 0,
-                Unknown3 = 0,
-                Unknown4 = true,
-                Unknown5 = true,
-                Unknown6 = true,
-                Unknown7 = true,
-                Unknown8 = true,
-                Unknown9 = true,
-                Unknown10 = true,
-                Unknown11 = 0
-            });
-        }
     }
 
     private async Task SendFriendUpdatesAsync(PlayerLogic player)

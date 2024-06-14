@@ -23,7 +23,7 @@ public class CatalogPurchaseEventHandler(
 {
     [PacketData] public int PageId { get; set; }
     [PacketData] public int ItemId { get; set; }
-    [PacketData] public string? ExtraData { get; set; }
+    [PacketData] public string? MetaData { get; set; }
     [PacketData] public int Amount { get; set; }
     
     public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
@@ -212,7 +212,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
-                MetaData = ExtraData,
+                MetaData = MetaData,
                 CreatedAt = created
             };
             
@@ -221,7 +221,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
-                MetaData = ExtraData,
+                MetaData = MetaData,
                 CreatedAt = created
             };
             
@@ -254,7 +254,7 @@ public class CatalogPurchaseEventHandler(
                 PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
-                MetaData = ExtraData,
+                MetaData = MetaData,
                 CreatedAt = created
             };
             

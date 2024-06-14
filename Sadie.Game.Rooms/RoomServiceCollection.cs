@@ -32,11 +32,12 @@ public static class RoomServiceCollection
                 x is { IsClass: true, IsAbstract: false, IsInterface: false } && 
                 x.IsAssignableTo(typeof(IRoomFurnitureItemInteractor))))
             .As<IRoomFurnitureItemInteractor>()
-            .WithSingletonLifetime());
+            .WithTransientLifetime());
 
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddTransient<IRoomBotRepository, RoomBotRepository>();
         serviceCollection.AddSingleton<RoomUserFactory>();
+        serviceCollection.AddSingleton<RoomBotFactory>();
         serviceCollection.AddSingleton<RoomRepository, RoomRepository>();
 
         serviceCollection.AddSingleton<AboutCommand>();

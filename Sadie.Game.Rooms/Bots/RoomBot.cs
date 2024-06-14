@@ -1,27 +1,28 @@
+using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.Database.Models.Players;
+using Sadie.Enums.Game.Rooms.Unit;
+using Sadie.Game.Rooms.Furniture;
+using Sadie.Game.Rooms.Unit;
 
 namespace Sadie.Game.Rooms.Bots;
 
-public class RoomBot(IRoomLogic room) : RoomUnitMovementData(room), IRoomBot
+public class RoomBot(int id, IRoomLogic room, Point spawnPoint, RoomFurnitureItemInteractorRepository interactorRepository) : RoomUnit(id, RoomUnitType.Bot, room, spawnPoint, interactorRepository), IRoomBot
 {
-    private readonly IRoomLogic _room = room;
-    public required int Id { get; init; }
+    public new int Id { get; } = id;
     public required PlayerBot Bot { get; init; }
 
-    public Task RunPeriodicCheckAsync()
+    public async Task RunPeriodicCheckAsync()
     {
         if (NeedsPathCalculated)
         {
-            CalculatePath(_room.Settings.WalkDiagonal);
+            CalculatePath();
         }
 
         if (IsWalking)
         {
-            ProcessMovement();
+            await ProcessMovementAsync();
         }
-
-        return Task.CompletedTask;
     }
 }

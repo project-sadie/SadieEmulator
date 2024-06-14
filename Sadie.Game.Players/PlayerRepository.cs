@@ -7,7 +7,6 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Serialization;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
 
@@ -31,6 +30,7 @@ public class PlayerRepository(
         return await dbContext
             .Set<Player>()
             .Include(x => x.Data)
+            .Include(x => x.AvatarData)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
     
@@ -51,67 +51,6 @@ public class PlayerRepository(
 
     public ICollection<PlayerLogic> GetAll() => _players.Values;
     
-    public async Task<PlayerSsoToken?> GetSsoTokenAsync(string token, TimeSpan delay)
-    {
-        var expireDt = DateTime.Now.Subtract(delay);
-        
-        var record = await dbContext
-            .PlayerSsoToken
-            .FirstOrDefaultAsync(x => 
-                x.Token == token && 
-                x.ExpiresAt > expireDt && 
-                x.UsedAt == null);
-
-        if (record == null)
-        {
-            return record;
-        }
-        
-        record.UsedAt = DateTime.Now;
-        dbContext.PlayerSsoToken.Update(record);
-
-        return record;
-    }
-    
-    public async Task<PlayerLogic?> CreatePlayerInstanceWithIdAsync(INetworkObject networkObject, int playerId)
-    {
-        var player = await dbContext
-            .Set<Player>()
-            .Where(x => x.Id == playerId)
-            .Include(x => x.Data)
-            .Include(x => x.AvatarData)
-            .Include(x => x.Tags)
-            .Include(x => x.RoomLikes)
-            .Include(x => x.Relationships)
-            .Include(x => x.NavigatorSettings)
-            .Include(x => x.GameSettings)
-            .Include(x => x.Badges)
-            .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
-            .Include(x => x.WardrobeItems)
-            .Include(x => x.Roles).ThenInclude(x => x.Permissions)
-            .Include(x => x.Subscriptions).ThenInclude(x => x.Subscription)
-            .Include(x => x.Respects)
-            .Include(x => x.SavedSearches)
-            .Include(x => x.OutgoingFriendships)
-            .Include(x => x.OutgoingFriendships)
-            .Include(x => x.IncomingFriendships)
-            .Include(x => x.IncomingFriendships)
-            .Include(x => x.MessagesSent)
-            .Include(x => x.MessagesReceived)
-            .Include(x => x.Rooms).ThenInclude(x => x.Settings)
-            .Include(x => x.Groups)
-            .Include(x => x.Bots)
-            .FirstOrDefaultAsync();
-
-        if (player == null)
-        {
-            return null;
-        }
-
-        return mapper.Map<PlayerLogic>(player, opt => 
-            opt.AfterMap((src, dest) => dest.NetworkObject = networkObject));
-    }
-
     public bool TryAddPlayer(PlayerLogic player) => _players.TryAdd(player.Id, player);
 
     public async Task<bool> TryRemovePlayerAsync(int playerId)

@@ -19,4 +19,8 @@
       <PackageReference Include="Scrutor" Version="4.2.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Chat\Commands\Room\StateCommand.cs" />
+    </ItemGroup>
+
 </Project>

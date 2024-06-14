@@ -4,7 +4,8 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Game.Rooms.Furniture;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -22,8 +23,9 @@ public class RoomUser(
     HDirection direction,
     PlayerLogic player,
     ServerRoomConstants constants,
-    RoomControllerLevel controllerLevel)
-    : RoomUserData(room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
+    RoomControllerLevel controllerLevel,
+    RoomFurnitureItemInteractorRepository interactorRepository)
+    : RoomUserData(id, room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle), interactorRepository),
         IRoomUser
 {
     public int Id { get; } = id;
@@ -45,22 +47,6 @@ public class RoomUser(
         AddStatus(RoomUserStatus.FlatCtrl, ((int)controllerLevel).ToString());
     }
 
-    public void AddStatus(string key, string value)
-    {
-        StatusMap[key] = value;
-        NeedsStatusUpdate = true;
-    }
-
-    public void RemoveStatuses(params string[] statuses)
-    {
-        foreach (var status in statuses)
-        {
-            StatusMap.Remove(status);
-        }
-
-        NeedsStatusUpdate = true;
-    }
-
     public async Task RunPeriodicCheckAsync()
     {
         if (NextPoint != null)
@@ -70,21 +56,31 @@ public class RoomUser(
             
             Point = NextPoint.Value;
             NextPoint = null;
+            
+            foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))
+            {
+                var interactor = interactorRepository.GetInteractorForType(item.FurnitureItem.InteractionType);
+            
+                if (interactor != null)
+                {
+                    await interactor.OnStepOnAsync(room, item, Unit);
+                }
+            }
         }
 
         if (NeedsPathCalculated)
         {
-            CalculatePath(room.Settings.WalkDiagonal);
+            CalculatePath();
         }
 
         if (IsWalking)
         {
-            ProcessMovement();
+            await ProcessMovementAsync();
         }
 
         await UpdateIdleStatusAsync();
     }
-
+    
     private async Task UpdateIdleStatusAsync()
     {
         var shouldBeIdle = DateTime.Now - LastAction > IdleTime;
@@ -110,8 +106,9 @@ public class RoomUser(
 
     public bool HasRights()
     {
-        return room.OwnerId == Id || 
-               room.PlayerRights.FirstOrDefault(x => x.PlayerId == Id) != null;
+        return ControllerLevel is 
+            RoomControllerLevel.Owner or 
+            RoomControllerLevel.Rights;
     }
 
     public async ValueTask DisposeAsync()

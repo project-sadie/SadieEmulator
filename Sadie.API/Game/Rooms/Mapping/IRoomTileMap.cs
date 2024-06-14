@@ -16,4 +16,5 @@ public interface IRoomTileMap
     ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; }
     void AddUserToMap(Point point, IRoomUser user);
     void AddBotToMap(Point point, IRoomBot bot);
+    bool HasUsers(Point point) => UserMap[point].Count > 0 || BotMap[point].Count > 0;
 }

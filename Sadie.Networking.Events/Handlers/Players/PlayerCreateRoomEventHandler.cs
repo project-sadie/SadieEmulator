@@ -43,7 +43,8 @@ public class PlayerCreateRoomEventHandler(
 
         newRoom.Settings = new RoomSettings
         {
-            RoomId = newRoom.Id
+            RoomId = newRoom.Id,
+            WalkDiagonal = true
         };
 
         newRoom.ChatSettings = new RoomChatSettings

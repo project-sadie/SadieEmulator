@@ -18,6 +18,11 @@ public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkP
         {
             return Task.CompletedTask;
         }
+
+        if (!roomUser.CanWalk)
+        {
+            return Task.CompletedTask;
+        }
         
         roomUser.LastAction = DateTime.Now;
         roomUser.WalkToPoint(new Point(X, Y));

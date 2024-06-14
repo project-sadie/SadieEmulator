@@ -136,4 +136,7 @@ public class ServerPacketId
     public const short PlayerInventoryAddBot = 1352;
     public const short FloorPlanEditorDoorCoords = 1664;
     public const short FloorPlanEditorOccupiedTiles = 3990;
+    public const short RoomDimmerSettings = 2710;
+    public const short RoomBannedUsers = 1869;
+    public const short RoomUserReceivedHandItem = 354;
 }

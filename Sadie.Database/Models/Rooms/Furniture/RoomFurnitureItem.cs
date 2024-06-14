@@ -9,7 +9,7 @@ public class RoomFurnitureItem
     public int RoomId { get; init; }
     public int OwnerId { get; init; }
     public string? OwnerUsername { get; init; }
-    public FurnitureItem? FurnitureItem { get; set; }
+    public required FurnitureItem FurnitureItem { get; init; }
     public int PositionX { get; set; }
     public int PositionY { get; set; }
     public double PositionZ { get; set; }

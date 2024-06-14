@@ -26,7 +26,8 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         stopwatch.Stop();
 
         logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
-
+        GlobalState.Started = DateTime.Now;
+        
         await StartListeningForConnectionsAsync();
     }
 

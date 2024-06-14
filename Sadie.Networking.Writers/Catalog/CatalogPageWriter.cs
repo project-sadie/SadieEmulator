@@ -90,7 +90,7 @@ public class CatalogPageWriter : AbstractPacketWriter
             }
 
             writer.WriteInteger(item.RequiresClubMembership ? 1 : 0);
-            writer.WriteBool(item.Amount != 1);
+            writer.WriteBool(item.Amount == 1);
             writer.WriteBool(false); // unknown
             writer.WriteString($"{item.Name}.png");
         }
