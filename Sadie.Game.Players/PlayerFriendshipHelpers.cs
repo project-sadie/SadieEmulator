@@ -1,5 +1,6 @@
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
+using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Players;
