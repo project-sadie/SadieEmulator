@@ -14,18 +14,16 @@ public class RoomTileMap : IRoomTileMap
     public int SizeX { get; }
     public int SizeY { get; }
     public int Size { get; }
-    public short[,] SquareStateMap { get; }
     public short[,] Map { get; }
     public ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; } = [];
     public ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; } = [];
 
     public RoomTileMap(string heightmap, ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
-        HeightmapRows = heightmap.Split("\r").ToList();
+        HeightmapRows = heightmap.Split("\r\n").ToList();
         SizeX = HeightmapRows.MaxBy(x => x.Length)!.Length;
         SizeY = HeightmapRows.Count;
         Size = SizeY * SizeX;
-        SquareStateMap = RoomTileMapHelpers.BuildSquareStateMapForRoom(SizeX, SizeY, heightmap);
         Map = RoomTileMapHelpers.BuildTileMapForRoom(SizeX, SizeY, heightmap, furnitureItems);
     }
 

@@ -22,11 +22,7 @@ public class RoomRelativeMapWriter : AbstractPacketWriter
         {
             for (var x = 0; x < TileMap.SizeX; x++)
             {
-                var topItem = RoomTileMapHelpers
-                    .GetItemsForPosition(x, y, Items)
-                    .MaxBy(i => i.PositionZ);
-                
-                writer.WriteShort((short)(topItem?.PositionZ ?? 0));
+                writer.WriteShort((short)(0 * 256.0));
             }
         }
     }

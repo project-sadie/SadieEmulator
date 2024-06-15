@@ -64,38 +64,8 @@ public class RoomTileMapHelpers
 
         return points;
     }
-    
-    public static short[,] BuildTileMapForRoom(
-        int mapSizeX,
-        int mapSizeY,
-        string heightMap, 
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
-    {
-        var heightmapLines = heightMap.Split("\r").ToList();
-        var map = new short[mapSizeY, mapSizeX];
-        
-        for (var y = 0; y < heightmapLines.Count; y++)
-        {
-            var currentLine = heightmapLines[y];
 
-            for (var x = 0; x < currentLine.Length; x++)
-            {
-                var open = int.TryParse(currentLine[x].ToString(), out var z);
-
-                if (!open)
-                {
-                    map[y, x] = 0;
-                    continue;
-                }
-                
-                map[y, x] = GetStateNumberForTile(x, y, furnitureItems);
-            }
-        }
-        
-        return map; 
-    }
-
-    private static short GetStateNumberForTile(
+    public static short GetStateNumberForTile(
         int x, 
         int y, 
         IEnumerable<PlayerFurnitureItemPlacementData> furnitureItems)
@@ -158,12 +128,13 @@ public class RoomTileMapHelpers
         return tileItems;
     }
     
-    public static short[,] BuildSquareStateMapForRoom(
+    public static short[,] BuildTileMapForRoom(
         int mapSizeX,
         int mapSizeY,
-        string heightMap)
+        string heightMap, 
+        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
-        var heightmapLines = heightMap.Split("\r").ToList();
+        var heightmapLines = heightMap.Split("\r\n").ToList();
         var map = new short[mapSizeY, mapSizeX];
         
         for (var y = 0; y < heightmapLines.Count; y++)
@@ -172,15 +143,15 @@ public class RoomTileMapHelpers
 
             for (var x = 0; x < currentLine.Length; x++)
             {
-                var open = short.TryParse(currentLine[x].ToString(), out var z);
+                var open = int.TryParse(currentLine[x].ToString(), out var z);
 
                 if (!open)
                 {
-                    map[y, x] = z;
+                    map[y, x] = 0;
                     continue;
                 }
-
-                map[y, x] = 1;
+                
+                map[y, x] = GetStateNumberForTile(x, y, furnitureItems);
             }
         }
         
@@ -239,7 +210,7 @@ public class RoomTileMapHelpers
         IEnumerable<Point> points,  
         IRoomTileMap tileMap)
     {
-        return points.All(point => tileMap.SquareStateMap[point.Y, point.X] != 0);
+        return points.All(point => tileMap.Map[point.Y, point.X] != 0);
     }
     
     public static List<IRoomUser> GetUsersForPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)

@@ -10,7 +10,6 @@ public interface IRoomTileMap
     int SizeX { get; }
     int SizeY { get; }
     int Size { get; }
-    short[,] SquareStateMap { get; }
     short[,] Map { get; }
     ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; }
     ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; }
