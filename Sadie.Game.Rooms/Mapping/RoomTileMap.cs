@@ -21,8 +21,8 @@ public class RoomTileMap : IRoomTileMap
 
     public RoomTileMap(string heightmap, ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
-        HeightmapRows = heightmap.Split("\n").ToList();
-        SizeX = HeightmapRows.First().Length;
+        HeightmapRows = heightmap.Split("\r").ToList();
+        SizeX = HeightmapRows.MaxBy(x => x.Length)!.Length;
         SizeY = HeightmapRows.Count;
         Size = SizeY * SizeX;
         SquareStateMap = RoomTileMapHelpers.BuildSquareStateMapForRoom(SizeX, SizeY, heightmap);

@@ -71,7 +71,7 @@ public class RoomTileMapHelpers
         string heightMap, 
         ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
-        var heightmapLines = heightMap.Split("\n").ToList();
+        var heightmapLines = heightMap.Split("\r").ToList();
         var map = new short[mapSizeY, mapSizeX];
         
         for (var y = 0; y < heightmapLines.Count; y++)
@@ -163,8 +163,8 @@ public class RoomTileMapHelpers
         int mapSizeY,
         string heightMap)
     {
-        var heightmapLines = heightMap.Split("\n").ToList();
-        var map = new short[mapSizeY, mapSizeX];
+        var heightmapLines = heightMap.Split("\r").ToList();
+        var map = new short[mapSizeX, mapSizeY];
         
         for (var y = 0; y < heightmapLines.Count; y++)
         {
@@ -176,11 +176,18 @@ public class RoomTileMapHelpers
 
                 if (!open)
                 {
-                    map[y, x] = 0;
+                    try
+                    {
+                        map[x, y] = 0;
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        
+                    }
                     continue;
                 }
 
-                map[y, x] = 1;
+                map[x, y] = 1;
             }
         }
         
