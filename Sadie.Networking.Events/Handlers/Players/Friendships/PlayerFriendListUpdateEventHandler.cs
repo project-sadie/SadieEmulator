@@ -13,30 +13,8 @@ public class PlayerFriendListUpdateEventHandler(
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var player = client.Player!;
-        
-        var friends = player
-            .GetMergedFriendships()
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-        
-        var pages = friends.Count / 500 + 1;
-        
-        for (var i = 0; i < pages; i++)
-        {
-            var batch = friends.Skip(i * 500).
-                Take(500).
-                ToList();
-            
-            await client.WriteToStreamAsync(new PlayerFriendsListWriter
-            {
-                Pages = pages,
-                Index = i,
-                PlayerId = client.Player.Id,
-                Friends = batch,
-                PlayerRepository = playerRepository,
-                Relationships = player.Relationships
-            });
-        }
+        await PlayerFriendshipHelpers.SendPlayerFriendListUpdate(
+            client.Player!, 
+            playerRepository);
     }
 }
