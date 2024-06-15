@@ -7,11 +7,13 @@ using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
+using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Inventory;
+using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Shared;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
@@ -108,24 +110,37 @@ public class CatalogPurchaseEventHandler(
             
             await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
             {
-                Id = offer.Id,
-                Name = offer.Name,
+                Id = 0,
+                Name = "",
                 Rented = false,
-                CostCredits = offer.CostCredits,
-                CostPoints = offer.CostPoints,
-                CostPointsType = offer.CostPointsType,
-                CanGift = true,
+                CostCredits = 0,
+                CostPoints = 0,
+                CostPointsType = 0,
+                CanGift = false,
                 FurnitureItems = [],
-                Amount = Amount,
+                Amount = 0,
                 ClubLevel = 0,
                 CanPurchaseBundles = false,
-                Metadata = "",
+                Metadata = null,
                 IsLimited = false,
                 LimitedItemSeriesSize = 0,
                 AmountLeft = 0
             });
-        
-            await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+
+            await client.WriteToStreamAsync(new PlayerPermissionsWriter
+            {
+                Club = 2,
+                Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
+                Ambassador = true
+            });
+            
+            var subWriter = PlayerHelpersDirty.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+
+            if (subWriter != null)
+            {
+                await client.WriteToStreamAsync(subWriter);
+            }
+
             return;
         }
 
