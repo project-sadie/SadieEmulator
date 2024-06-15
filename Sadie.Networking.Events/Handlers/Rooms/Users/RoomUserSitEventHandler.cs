@@ -15,6 +15,11 @@ public class RoomUserSitEventHandler(RoomRepository roomRepository) : INetworkPa
             return Task.CompletedTask;
         }
         
+        if ((int) roomUser.Direction % 2 != 0)
+        {
+            return Task.CompletedTask;
+        }
+        
         roomUser.AddStatus(RoomUserStatus.Sit, 0.5.ToString());
         
         return Task.CompletedTask;
