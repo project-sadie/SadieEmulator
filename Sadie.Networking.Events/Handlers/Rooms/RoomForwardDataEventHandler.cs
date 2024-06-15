@@ -14,8 +14,8 @@ public class RoomForwardDataEventHandler(RoomRepository roomRepository) : INetwo
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var room = roomRepository.TryGetRoomById(RoomId);
-
+        var room = await roomRepository.TryLoadRoomByIdAsync(RoomId);
+        
         if (room == null)
         {
             return;

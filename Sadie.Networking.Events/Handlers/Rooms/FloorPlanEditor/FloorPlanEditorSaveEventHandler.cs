@@ -1,8 +1,10 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
@@ -131,16 +133,30 @@ public class FloorPlanEditorSaveEventHandler(
             await dbContext.SaveChangesAsync();
         }
 
+        var playersToForward = new List<IPlayerLogic>();
+
         foreach (var user in room.UserRepository.GetAll())
         {
-            await room.UserRepository.TryRemoveAsync(user.Id, true);
+            await room.UserRepository.TryRemoveAsync(user.Id, false, true);
+            playersToForward.Add(user.Player);
         }
 
         if (!roomRepository.TryRemove(room.Id, out var roomLogic))
         {
             return;
         }
-        
-        // TODO; Enter room again
+
+        foreach (var player in playersToForward)
+        {
+            if (player.NetworkObject == null)
+            {
+                continue;
+            }
+            
+            await player.NetworkObject.WriteToStreamAsync(new RoomForwardEntryWriter
+            {
+                RoomId = roomLogic!.Id
+            });
+        }
     }
 }

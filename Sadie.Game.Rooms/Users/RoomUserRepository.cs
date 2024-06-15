@@ -20,14 +20,17 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
         return user != null;
     }
 
-    public async Task TryRemoveAsync(long id, bool hotelView = false)
+    public async Task TryRemoveAsync(long id, bool notifyLeft, bool hotelView = false)
     {
-        var writer = new RoomUserLeftWriter
+        if (notifyLeft)
         {
-            UserId = id.ToString()
-        };
-        
-        await BroadcastDataAsync(writer);
+            var writer = new RoomUserLeftWriter
+            {
+                UserId = id.ToString()
+            };
+
+            await BroadcastDataAsync(writer);
+        }
 
         var result = _users.TryRemove(id, out var roomUser);
 
@@ -89,7 +92,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     {
         foreach (var user in _users.Values)
         {
-            await TryRemoveAsync(user.Id);
+            await TryRemoveAsync(user.Id, false);
         }
         
         _users.Clear();

@@ -40,7 +40,7 @@ public class RoomLoadedEventHandler(
 
             if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id, true);
             }
         }
 

@@ -58,6 +58,5 @@ public class RoomLogic : Room, IRoomLogic
 
     public async ValueTask DisposeAsync()
     {
-        await UserRepository.DisposeAsync();
     }
 }

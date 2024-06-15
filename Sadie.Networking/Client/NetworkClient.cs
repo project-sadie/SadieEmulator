@@ -110,7 +110,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
             if (lastRoom != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(RoomUser.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(RoomUser.Id, true);
                 RoomUser = null;
             }
         }
