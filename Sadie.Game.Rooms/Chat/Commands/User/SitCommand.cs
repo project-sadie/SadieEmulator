@@ -11,7 +11,12 @@ public class SitCommand : AbstractRoomChatCommand, IRoomChatCommand
     
     public override Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
-        user.AddStatus(RoomUserStatus.Sit, "0");
+        if ((int) user.Direction % 2 != 0)
+        {
+            return Task.CompletedTask;
+        }
+        
+        user.AddStatus(RoomUserStatus.Sit, "0.5");
         return Task.CompletedTask;
     }
 }
