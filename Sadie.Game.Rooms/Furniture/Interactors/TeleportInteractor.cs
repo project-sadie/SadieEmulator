@@ -31,19 +31,26 @@ public class TeleportInteractor(
             roomUnit.Direction = facingDirection;
             roomUnit.DirectionHead = facingDirection;
             
+            item.PlayerFurnitureItem!.MetaData = "1";
+            await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
+
             await UseTeleportAsync(room, item, roomUnit);
         }
         else if (roomUnit.Point == itemInFront)
         {
+            item.PlayerFurnitureItem!.MetaData = "1";
+            await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
+
             roomUnit.OverridePoints.Add(itemPosition);
 
-            async void OnReachedGoal()
+            roomUnit.WalkToPoint(itemPosition, async () =>
             {
                 roomUnit.OverridePoints.Remove(itemPosition);
+                
+                item.PlayerFurnitureItem.MetaData = "0";
+                await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
                 await UseTeleportAsync(room, item, roomUnit);
-            }
-
-            roomUnit.WalkToPoint(itemPosition, OnReachedGoal);
+            });
         }
         else
         {
@@ -62,9 +69,6 @@ public class TeleportInteractor(
         PlayerFurnitureItemPlacementData item,
         IRoomUnit roomUnit)
     {
-        item.PlayerFurnitureItem!.MetaData = "1";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
-        
         var link = await dbContext
             .PlayerFurnitureItemLinks
             .Where(x => x.ParentId == item.PlayerFurnitureItem.Id || x.ChildId == item.PlayerFurnitureItem.Id)

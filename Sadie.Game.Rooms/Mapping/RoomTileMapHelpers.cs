@@ -164,7 +164,7 @@ public class RoomTileMapHelpers
         string heightMap)
     {
         var heightmapLines = heightMap.Split("\r").ToList();
-        var map = new short[mapSizeX, mapSizeY];
+        var map = new short[mapSizeY, mapSizeX];
         
         for (var y = 0; y < heightmapLines.Count; y++)
         {
@@ -176,11 +176,11 @@ public class RoomTileMapHelpers
 
                 if (!open)
                 {
-                    map[x, y] = z;
+                    map[y, x] = z;
                     continue;
                 }
 
-                map[x, y] = 1;
+                map[y, x] = 1;
             }
         }
         
