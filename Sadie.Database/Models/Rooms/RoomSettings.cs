@@ -4,7 +4,6 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Database.Models.Rooms;
 
-[PacketId(ServerPacketId.RoomSettingsError)]
 public class RoomSettings
 {
     public int Id { get; init; }
