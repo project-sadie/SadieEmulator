@@ -1,7 +1,5 @@
 ﻿using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Shared.Unsorted;

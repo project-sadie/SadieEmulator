@@ -1,6 +1,5 @@
 using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Rooms;
 

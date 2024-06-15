@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Shared.Helpers;
@@ -132,10 +130,17 @@ public class FloorPlanEditorSaveEventHandler(
             dbContext.Entry(room).Property(x => x.LayoutId).IsModified = true;
             await dbContext.SaveChangesAsync();
         }
-        
-        await room.UserRepository.BroadcastDataAsync(new RoomForwardEntryWriter
+
+        foreach (var user in room.UserRepository.GetAll())
         {
-            RoomId = room.Id
-        });
+            await room.UserRepository.TryRemoveAsync(user.Id, true);
+        }
+
+        if (!roomRepository.TryRemove(room.Id, out var roomLogic))
+        {
+            return;
+        }
+        
+        // TODO; Enter room again
     }
 }
