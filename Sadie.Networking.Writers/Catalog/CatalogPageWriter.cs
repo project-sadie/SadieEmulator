@@ -51,7 +51,7 @@ public class CatalogPageWriter : AbstractPacketWriter
             writer.WriteInteger(item.CostCredits);
             writer.WriteInteger(item.CostPoints);
             writer.WriteInteger(item.CostPointsType);
-            writer.WriteBool(item.FurnitureItems.First().CanGift);
+            writer.WriteBool(item.FurnitureItems.Any(x => x.CanGift));
             writer.WriteInteger(item.FurnitureItems.Count);
 
             foreach (var furnitureItem in item.FurnitureItems)
