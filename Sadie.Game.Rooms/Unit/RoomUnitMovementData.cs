@@ -168,7 +168,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         await CheckWalkOffInteractionsAsync();
         
         var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
-        var zHeightNextStep = 0.0D + room.TileMap.HeightMap[nextStep.X, nextStep.Y];
+        var zHeightNextStep = 0.0D + room.TileMap.ZMap[nextStep.Y, nextStep.X];
         var nextZ = zHeightNextStep + (itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)!.PositionZ);
 
         ClearStatuses();

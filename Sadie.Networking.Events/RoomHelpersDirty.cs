@@ -131,7 +131,7 @@ public static class RoomHelpersDirty
         Point spawnPoint,
         HDirection direction)
     {
-        var z = room.TileMap.HeightMap[spawnPoint.X, spawnPoint.Y]; // TODO: Calculate this
+        var z = room.TileMap.ZMap[spawnPoint.Y, spawnPoint.X];
         
         return roomUserFactory.Create(
             room,

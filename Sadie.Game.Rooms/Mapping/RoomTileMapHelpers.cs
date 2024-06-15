@@ -128,36 +128,6 @@ public class RoomTileMapHelpers
         return tileItems;
     }
     
-    public static short[,] BuildTileMapForRoom(
-        int mapSizeX,
-        int mapSizeY,
-        string heightMap, 
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
-    {
-        var heightmapLines = heightMap.Split("\r\n").ToList();
-        var map = new short[mapSizeY, mapSizeX];
-        
-        for (var y = 0; y < heightmapLines.Count; y++)
-        {
-            var currentLine = heightmapLines[y];
-
-            for (var x = 0; x < currentLine.Length; x++)
-            {
-                var open = int.TryParse(currentLine[x].ToString(), out var z);
-
-                if (!open)
-                {
-                    map[y, x] = 0;
-                    continue;
-                }
-                
-                map[y, x] = GetStateNumberForTile(x, y, furnitureItems);
-            }
-        }
-        
-        return map; 
-    }
-
     public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint, List<Point> overridePoints)
     {
         var tmp = new short[map.SizeY, map.SizeX];

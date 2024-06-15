@@ -13,7 +13,8 @@ public interface IRoomTileMap
     short[,] Map { get; }
     ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; }
     ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; }
+    short[,] ZMap { get; set; }
+    short[,] TileExistenceMap { get; set; }
     void AddUserToMap(Point point, IRoomUser user);
     void AddBotToMap(Point point, IRoomBot bot);
-    bool HasUsers(Point point) => UserMap[point].Count > 0 || BotMap[point].Count > 0;
 }
