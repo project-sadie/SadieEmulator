@@ -176,14 +176,7 @@ public class RoomTileMapHelpers
 
                 if (!open)
                 {
-                    try
-                    {
-                        map[x, y] = 0;
-                    }
-                    catch (IndexOutOfRangeException)
-                    {
-                        
-                    }
+                    map[x, y] = z;
                     continue;
                 }
 
