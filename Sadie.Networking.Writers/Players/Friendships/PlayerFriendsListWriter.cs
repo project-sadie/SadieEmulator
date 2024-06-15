@@ -13,6 +13,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
 {
     [PacketData] public required int Pages { get; init; }
     [PacketData] public required int Index { get; init; }
+    public required int PlayerId { get; init; }
     public required ICollection<PlayerFriendship> Friends { get; init; }
     public required PlayerRepository PlayerRepository { get; init; }
     public required ICollection<PlayerRelationship> Relationships { get; init; }
@@ -25,7 +26,10 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
 
         foreach (var friend in Friends)
         {
-            var friendData = friend.TargetPlayer;
+            var friendData = friend.OriginPlayerId == PlayerId ? 
+                friend.TargetPlayer : 
+                friend.OriginPlayer;
+            
             var onlineFriend = PlayerRepository.GetPlayerLogicById(friendData.Id);
             var isOnline = onlineFriend != null;
             var inRoom = isOnline && onlineFriend != null && onlineFriend.CurrentRoomId != 0;

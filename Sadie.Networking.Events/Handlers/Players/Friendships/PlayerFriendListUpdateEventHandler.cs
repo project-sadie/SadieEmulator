@@ -33,6 +33,7 @@ public class PlayerFriendListUpdateEventHandler(
             {
                 Pages = pages,
                 Index = i,
+                PlayerId = client.Player.Id,
                 Friends = batch,
                 PlayerRepository = playerRepository,
                 Relationships = player.Relationships
