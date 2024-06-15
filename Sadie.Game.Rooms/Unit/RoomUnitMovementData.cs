@@ -16,7 +16,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
     public HDirection Direction { get; set; }
     public bool CanWalk { get; set; } = true;
     public Point Point { get; set; } = point;
-    public double PointZ { get; init;  }
+    public double PointZ { get; set;  }
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
     protected Point? NextPoint { get; set; }
@@ -168,7 +168,8 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         await CheckWalkOffInteractionsAsync();
         
         var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
-        var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
+        var zHeightNextStep = 0.0D + room.TileMap.HeightMap[nextStep.X, nextStep.Y];
+        var nextZ = zHeightNextStep + (itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)!.PositionZ);
 
         ClearStatuses();
 
@@ -178,7 +179,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
                 
         Direction = newDirection;
         DirectionHead = newDirection;
-                
+        PointZ = nextZ;
         NextPoint = nextStep;
     }
     
