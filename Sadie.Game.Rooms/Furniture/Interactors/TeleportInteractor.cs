@@ -22,10 +22,32 @@ public class TeleportInteractor(
     public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         var itemPosition = new Point(item.PositionX, item.PositionY);
+        var itemInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
-        if (roomUnit.Point != itemPosition)
+        if (roomUnit.Point == itemPosition)
         {
+            var facingDirection = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
+        
+            roomUnit.Direction = facingDirection;
+            roomUnit.DirectionHead = facingDirection;
+            
+            await UseTeleportAsync(room, item, roomUnit);
+        }
+        else if (roomUnit.Point == itemInFront)
+        {
+            roomUnit.OverridePoints.Add(itemPosition);
+
+            async void OnReachedGoal()
+            {
+                roomUnit.OverridePoints.Remove(itemPosition);
+                await UseTeleportAsync(room, item, roomUnit);
+            }
+
             roomUnit.WalkToPoint(itemPosition, OnReachedGoal);
+        }
+        else
+        {
+            roomUnit.WalkToPoint(itemInFront, OnReachedGoal);
             return;
 
             async void OnReachedGoal()
@@ -33,13 +55,14 @@ public class TeleportInteractor(
                 await OnTriggerAsync(room, item, roomUnit);
             }
         }
-        
-        var facingDirection = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
-        
-        roomUnit.Direction = facingDirection;
-        roomUnit.DirectionHead = facingDirection;
-        
-        item.PlayerFurnitureItem.MetaData = "1";
+    }
+
+    private async Task UseTeleportAsync(
+        IRoomLogic room,
+        PlayerFurnitureItemPlacementData item,
+        IRoomUnit roomUnit)
+    {
+        item.PlayerFurnitureItem!.MetaData = "1";
         await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
         
         var link = await dbContext
