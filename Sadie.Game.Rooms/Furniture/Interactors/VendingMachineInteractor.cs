@@ -37,7 +37,9 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             }
         }
         
-        await RoomFurnitureItemHelpers.CycleInteractionStateForItemAsync(room, item);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
+        await Task.Delay(500);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
