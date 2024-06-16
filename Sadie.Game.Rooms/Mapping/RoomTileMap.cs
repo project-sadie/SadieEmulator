@@ -43,6 +43,7 @@ public class RoomTileMap : IRoomTileMap
                 
                 if (square == "X")
                 {
+                    TileExistenceMap[y, x] = 0;
                     continue;
                 }
 
@@ -65,5 +66,11 @@ public class RoomTileMap : IRoomTileMap
         BotMap.GetOrInsert(point, () => []).Add(bot);
 
     public bool IsTileFree(Point point) => 
-        UserMap[point].Count < 1 && BotMap[point].Count < 1;
+        (!UserMap.ContainsKey(point) || UserMap[point].Count < 1) && 
+        (!BotMap.ContainsKey(point) || BotMap[point].Count < 1);
+
+    public bool TileExists(Point point) =>
+        point.X <= SizeX && 
+        point.Y <= SizeY && 
+        TileExistenceMap[point.Y - 1, point.X - 1] == 1;
 }

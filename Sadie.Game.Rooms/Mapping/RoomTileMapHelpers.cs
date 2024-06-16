@@ -234,6 +234,7 @@ public class RoomTileMapHelpers
     }
 
     public static double GetItemPlacementHeight(
+        IRoomTileMap roomTileMap,
         IEnumerable<Point> pointsForPlacement, 
         ICollection<PlayerFurnitureItemPlacementData> roomFurnitureItems)
     {
@@ -246,7 +247,7 @@ public class RoomTileMapHelpers
         
         if (!i.Any())
         {
-            return 0;
+            return pointsForPlacement.Select(x => roomTileMap.ZMap[x.Y, x.X]).Max();
         }
 
         var highestItem = i.MaxBy(x => x.PositionZ)!;

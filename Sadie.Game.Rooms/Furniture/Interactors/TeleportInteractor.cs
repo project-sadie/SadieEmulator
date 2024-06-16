@@ -28,6 +28,8 @@ public class TeleportInteractor(
         
         if (roomUnit.Point == itemPosition)
         {
+            roomUnit.CanWalk = false;
+            
             var facingDirection = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
         
             roomUnit.Direction = facingDirection;
@@ -38,6 +40,8 @@ public class TeleportInteractor(
         }
         else if (roomUnit.Point == itemInFront)
         {
+            roomUnit.CanWalk = false;
+            
             await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
 
             roomUnit.OverridePoints.Add(itemPosition);
@@ -188,6 +192,8 @@ public class TeleportInteractor(
             await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
             await Task.Delay(_delay);
             await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, targetItem, "0");
+            
+            roomUnit.CanWalk = true;
         }
     }
 

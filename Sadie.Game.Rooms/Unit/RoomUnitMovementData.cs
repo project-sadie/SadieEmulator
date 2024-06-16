@@ -37,7 +37,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         NeedsStatusUpdate = true;
     }
 
-    public void ClearWalking(bool reachedGoal = true)
+    private void ClearWalking(bool reachedGoal = true)
     {
         IsWalking = false;
         RemoveStatuses(RoomUserStatus.Move);
@@ -175,7 +175,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         
         var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
         var zHeightNextStep = 0.0D + room.TileMap.ZMap[nextStep.Y, nextStep.X];
-        var nextZ = zHeightNextStep + (itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)!.PositionZ);
+        var nextZ = itemsAtNextStep.Count < 1 ? zHeightNextStep : itemsAtNextStep.MaxBy(x => x.PositionZ)!.PositionZ;
 
         ClearStatuses();
 
