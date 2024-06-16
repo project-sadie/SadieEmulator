@@ -18,7 +18,7 @@ public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkP
             return Task.CompletedTask;
         }
 
-        if (!roomUser.CanWalk || roomUser.OverridePoints.Count > 0)
+        if (!roomUser.CanWalk)
         {
             return Task.CompletedTask;
         }

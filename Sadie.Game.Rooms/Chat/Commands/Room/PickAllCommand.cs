@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -17,42 +18,31 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
         var player = user.Player;
-        
-        foreach (var item in user.Room.FurnitureItems.Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor))
-        {
-            var playerItem = item.PlayerFurnitureItem;
-            var ownsItem = item.PlayerFurnitureItem.PlayerId == user.Id;
+        var updateMap = new Dictionary<PlayerLogic, List<PlayerFurnitureItem>>();
 
-            playerItem.PlacementData.Remove(item);
+        var floorItems = user.Room.FurnitureItems.Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor).ToList();
+        
+        foreach (var item in floorItems)
+        {
+            var playerItem = item.PlayerFurnitureItem!;
+
+            playerItem.PlacementData = null;
             user.Room.FurnitureItems.Remove(item);
             
             dbContext.Entry(item).State = EntityState.Deleted;
             
-            if (ownsItem)
-            {
-                await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
-                {
-                    FurnitureItems = [playerItem]
-                });
-                
-                await player.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
-            }
-            else
-            {
-                var ownerOnline = playerRepository.GetPlayerLogicById(item.PlayerFurnitureItem.PlayerId);
+            var onlineOwner = playerRepository.GetPlayerLogicById(item.PlayerFurnitureItem.PlayerId);
 
-                if (ownerOnline != null)
+            if (onlineOwner != null)
+            {
+                if (!updateMap.ContainsKey(onlineOwner))
                 {
-                    var writer = new PlayerInventoryAddItemsWriter
-                    {
-                        FurnitureItems = [playerItem]
-                    };
-                    
-                    await ownerOnline.NetworkObject.WriteToStreamAsync(writer);
-                    await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+                    updateMap[onlineOwner] = [];
                 }
-            }
 
+                updateMap[onlineOwner].Add(item.PlayerFurnitureItem);
+            }
+            
             var itemRemovedWriter = new RoomFloorFurnitureItemRemovedWriter
             {
                 Id = item.Id.ToString(),
@@ -62,6 +52,18 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
             };
             
             await user.Room.UserRepository.BroadcastDataAsync(itemRemovedWriter);
+        }
+
+        foreach (var (updatePlayer, updatedItems) in updateMap)
+        {
+            await updatePlayer.NetworkObject!.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
+            {
+                Count = updatedItems.Count,
+                Category = 1,
+                FurnitureItems = updatedItems
+            });
+                
+            await updatePlayer.NetworkObject!.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
         }
 
         await dbContext.SaveChangesAsync();

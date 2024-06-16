@@ -1,6 +1,6 @@
 using Sadie.Database.Models.Players.Furniture;
 
-namespace Sadie.API;
+namespace Sadie.API.Game.Players;
 
 public interface IPlayerState
 {

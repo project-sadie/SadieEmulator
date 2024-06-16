@@ -125,6 +125,13 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
     
     public void WalkToPoint(Point point, Action? onReachedGoal = null)
     {
+        if (room.TileMap.UserMap[point].Count == 0 && 
+            room.TileMap.BotMap[point].Count == 0 &&
+            !room.Settings.CanUsersOverlap)
+        {
+            return;
+        }
+        
         PathGoal = point;
         NeedsPathCalculated = true;
         OnReachedGoal = onReachedGoal;

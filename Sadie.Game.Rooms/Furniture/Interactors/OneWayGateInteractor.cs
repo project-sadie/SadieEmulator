@@ -30,8 +30,7 @@ public class OneWayGateInteractor : IRoomFurnitureItemInteractor
 
         var itemPoint = new Point(item.PositionX, item.PositionY);
         
-        item.PlayerFurnitureItem.MetaData = "1";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
 
         roomUnit.DirectionHead = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
         roomUnit.Direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
@@ -43,8 +42,7 @@ public class OneWayGateInteractor : IRoomFurnitureItemInteractor
 
         async void OnReachedGoal()
         {
-            item.PlayerFurnitureItem.MetaData = "0";
-            await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
+            await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
 
             roomUnit.OverridePoints.Remove(itemPoint);
             roomUnit.CanWalk = true;

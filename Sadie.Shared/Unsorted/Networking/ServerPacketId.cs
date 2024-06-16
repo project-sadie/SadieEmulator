@@ -108,7 +108,7 @@ public class ServerPacketId
     public const short CatalogPurchaseOk = 869;
     public const short PlayerInventoryRefresh = 3151;
     public const short PlayerInventoryFurnitureItems = 994;
-    public const short PlayerInventoryAddItems = 2103;
+    public const short PlayerInventoryUnseenItems = 2103;
     public const short PlayerInventoryRemoveItem = 159;
     public const short RoomFloorFurnitureItemPlaced = 1534;
     public const short BubbleAlert = 1992;

@@ -18,7 +18,7 @@ public class RoomWallFurnitureItemPlacedWriter : AbstractPacketWriter
         writer.WriteString(RoomFurnitureItem.PlayerFurnitureItem.MetaData);
         writer.WriteInteger(-1);
         writer.WriteInteger(RoomFurnitureItem.FurnitureItem.InteractionModes > 1 ? 1 : 0);
-        writer.WriteLong(RoomFurnitureItem.PlayerFurnitureItem.Id);
+        writer.WriteLong(RoomFurnitureItem.Id);
         writer.WriteString(RoomFurnitureItem.PlayerFurnitureItem.Player.Username);
     }
 }
