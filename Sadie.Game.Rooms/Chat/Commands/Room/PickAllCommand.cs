@@ -17,7 +17,6 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
     
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
-        var player = user.Player;
         var updateMap = new Dictionary<PlayerLogic, List<PlayerFurnitureItem>>();
 
         var floorItems = user.Room.FurnitureItems.Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor).ToList();

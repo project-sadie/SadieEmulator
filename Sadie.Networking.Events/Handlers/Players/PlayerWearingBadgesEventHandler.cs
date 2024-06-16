@@ -31,7 +31,7 @@ public class PlayerWearingBadgesEventHandler(
             DistinctBy(x => x.Slot).
             ToList();
         
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, networkClient, out var room, out _))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, networkClient, out _, out _))
         {
             return;
         }
