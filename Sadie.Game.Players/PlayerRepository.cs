@@ -63,7 +63,7 @@ public class PlayerRepository(
         }
 
         player.Data.IsOnline = false;
-        dbContext.Entry(player).Property(x => x.Data).IsModified = true;
+        dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
         await dbContext.SaveChangesAsync();
         
         await UpdateStatusForFriendsAsync(player, player.GetMergedFriendships(), false, false);
