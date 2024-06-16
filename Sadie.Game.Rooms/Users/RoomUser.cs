@@ -55,6 +55,7 @@ public class RoomUser(
             room.TileMap.AddUserToMap(NextPoint.Value, this);
             
             Point = NextPoint.Value;
+            PointZ = NextZ;
             NextPoint = null;
             
             foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
@@ -10,13 +11,18 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerIds.RoomDelete)]
 public class RoomDeleteEventHandler(
     RoomRepository roomRepository,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    SadieContext dbContext,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public required int RoomId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var room = await roomRepository.TryLoadRoomByIdAsync(RoomId);
+        var room = await Game.Rooms.RoomHelpersDirty.TryLoadRoomByIdAsync(
+            RoomId, 
+            roomRepository, 
+            dbContext, 
+            mapper);
 
         if (room == null || room.OwnerId != client.Player.Id)
         {

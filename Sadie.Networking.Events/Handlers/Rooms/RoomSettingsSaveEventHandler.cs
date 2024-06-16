@@ -106,6 +106,9 @@ public class RoomSettingsSaveEventHandler(
         UpdateChatSettings(room.ChatSettings);
         
         dbContext.Entry(room).State = EntityState.Modified;
+        dbContext.Entry(room.Settings).State = EntityState.Modified;
+        dbContext.Entry(room.ChatSettings).State = EntityState.Modified;
+        
         await dbContext.SaveChangesAsync();
         await BroadcastUpdatesAsync(room);
         
@@ -113,6 +116,13 @@ public class RoomSettingsSaveEventHandler(
         {
             RoomId = RoomId
         });
+
+        client.Player.Rooms = await dbContext
+            .Rooms
+            .Include(x => x.Owner)
+            .Include(x => x.Settings)
+            .Where(x => x.OwnerId == client.Player.Id)
+            .ToListAsync();
     }
 
     private void UpdateSettings(RoomSettings settings)

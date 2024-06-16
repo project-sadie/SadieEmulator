@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -20,7 +21,8 @@ public class RoomLoadedEventHandler(
     RoomRepository roomRepository,
     RoomUserFactory roomUserFactory,
     PlayerRepository playerRepository,
-    SadieContext dbContext)
+    SadieContext dbContext,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
@@ -31,12 +33,21 @@ public class RoomLoadedEventHandler(
         var player = client.Player;
 
         var (roomId, password) = (RoomId, Password);
-        var room = await roomRepository.TryLoadRoomByIdAsync(roomId);
+        
+        var room = await Game.Rooms.RoomHelpersDirty.TryLoadRoomByIdAsync(
+            roomId,
+            roomRepository,
+            dbContext,
+            mapper);
+        
         var lastRoomId = player.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
-            var lastRoom = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
+            var lastRoom = await Game.Rooms.RoomHelpersDirty.TryLoadRoomByIdAsync(lastRoomId,
+                roomRepository,
+                dbContext, 
+                mapper);
 
             if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
             {

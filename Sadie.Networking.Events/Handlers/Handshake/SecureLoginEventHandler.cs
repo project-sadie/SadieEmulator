@@ -121,7 +121,10 @@ public class SecureLoginEventHandler(
         }
 
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in");
-        await playerRepository.UpdateOnlineStatusAsync(playerId, true);
+        
+        player.Data.IsOnline = true;
+        dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
+        await dbContext.SaveChangesAsync();
 
         playerLogic.Data.LastOnline = DateTime.Now;
         playerLogic.Authenticated = true;
