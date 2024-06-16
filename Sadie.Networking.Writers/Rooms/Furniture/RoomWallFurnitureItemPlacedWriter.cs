@@ -12,7 +12,7 @@ public class RoomWallFurnitureItemPlacedWriter : AbstractPacketWriter
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
-        writer.WriteString(RoomFurnitureItem.Id + "");
+        writer.WriteString(RoomFurnitureItem.PlayerFurnitureItemId + "");
         writer.WriteInteger(RoomFurnitureItem.FurnitureItem.AssetId);
         writer.WriteString(RoomFurnitureItem.WallPosition);
         writer.WriteString(RoomFurnitureItem.PlayerFurnitureItem.MetaData);

@@ -45,7 +45,7 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
             
             var itemRemovedWriter = new RoomFloorFurnitureItemRemovedWriter
             {
-                Id = item.PlayerFurnitureItem.Id.ToString(),
+                Id = item.PlayerFurnitureItemId.ToString(),
                 Expired = false,
                 OwnerId = item.PlayerFurnitureItem.PlayerId,
                 Delay = 0,
