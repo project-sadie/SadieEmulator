@@ -23,7 +23,7 @@ public class UnloadCommand(SadieContext dbContext, RoomRepository roomRepository
         foreach (var roomUser in user.Room.UserRepository.GetAll())
         {
             await roomUser.Player.NetworkObject!.WriteToStreamAsync(writer);
-            await userRepo.TryRemoveAsync(roomUser.Id, true);
+            await userRepo.TryRemoveAsync(roomUser.Id, true, true);
         }
 
         roomRepository.TryRemove(user.Room.Id, out var room);
