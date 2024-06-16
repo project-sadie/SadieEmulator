@@ -2,6 +2,7 @@ using System.Drawing;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Database.Models.Rooms;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -252,5 +253,16 @@ public class RoomTileMapHelpers
 
         var highestItem = i.MaxBy(x => x.PositionZ)!;
         return highestItem.PositionZ + highestItem.FurnitureItem.StackHeight;
+    }
+
+    public static void UpdatePointListForRoomMap(
+        List<Point> points, 
+        IRoomTileMap tileMap,
+        List<PlayerFurnitureItemPlacementData> roomItems)
+    {
+        foreach (var point in points)
+        {
+            tileMap.Map[point.Y, point.X] = GetStateNumberForTile(point.X, point.Y, roomItems);
+        }
     }
 }

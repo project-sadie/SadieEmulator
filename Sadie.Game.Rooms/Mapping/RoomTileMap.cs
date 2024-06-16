@@ -72,5 +72,5 @@ public class RoomTileMap : IRoomTileMap
     public bool TileExists(Point point) =>
         point.X <= SizeX && 
         point.Y <= SizeY && 
-        TileExistenceMap[point.Y - 1, point.X - 1] == 1;
+        TileExistenceMap[point.Y, point.X] == 1;
 }

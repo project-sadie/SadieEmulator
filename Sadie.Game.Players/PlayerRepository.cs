@@ -62,7 +62,10 @@ public class PlayerRepository(
             return result;
         }
 
-        await UpdateOnlineStatusAsync(player.Id, false);
+        player.Data.IsOnline = false;
+        dbContext.Entry(player).Property(x => x.Data).IsModified = true;
+        await dbContext.SaveChangesAsync();
+        
         await UpdateStatusForFriendsAsync(player, player.GetMergedFriendships(), false, false);
         await player.DisposeAsync();
 
@@ -96,19 +99,6 @@ public class PlayerRepository(
             {
                 await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [update]);
             }
-        }
-    }
-    
-    public async Task UpdateOnlineStatusAsync(int playerId, bool isOnline)
-    {
-        var playerData = await dbContext
-            .Set<PlayerData>()
-            .FirstOrDefaultAsync(x => x.PlayerId == playerId);
-
-        if (playerData != null)
-        {
-            playerData.IsOnline = isOnline;
-            await dbContext.SaveChangesAsync();
         }
     }
 

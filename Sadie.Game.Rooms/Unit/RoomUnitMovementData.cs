@@ -79,7 +79,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         {
             AddStatus(
                 RoomUserStatus.Sit, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
+                (topItem.FurnitureItem.StackHeight).ToString());
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
@@ -88,7 +88,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         {
             AddStatus(
                 RoomUserStatus.Lay, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight + 0.1).ToString());
+                (topItem.FurnitureItem.StackHeight + 0.1).ToString());
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;

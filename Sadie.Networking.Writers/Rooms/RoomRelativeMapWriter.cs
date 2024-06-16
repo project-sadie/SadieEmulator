@@ -20,10 +20,10 @@ public class RoomRelativeMapWriter : AbstractPacketWriter
             for (var x = 0; x < TileMap.SizeX; x++)
             {
                 var height = TileMap.TileExistenceMap[y, x] == 1 ? 
-                    TileMap.ZMap[y, x] : 
+                    TileMap.ZMap[y, x] *  256.0 : 
                     short.MaxValue;
                 
-                writer.WriteShort(height);
+                writer.WriteShort((short) height);
             }
         }
     }
