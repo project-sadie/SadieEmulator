@@ -111,8 +111,9 @@ public class PlayerRepository(
     {
         return await dbContext
             .Set<Player>()
+            .Include(x => x.AvatarData)
             .Where(x => 
-                x.Username.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) && 
+                x.Username.Contains(searchQuery) && 
                 !excludeIds.Contains(x.Id))
             .ToListAsync();
     }
