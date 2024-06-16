@@ -43,11 +43,6 @@ public class NavigatorSearchEventHandler(
 
         var categoryRoomMap = new Dictionary<NavigatorCategory, List<Room>>();
 
-        foreach (var category in categories)
-        {
-            categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
-        }
-
         if (!string.IsNullOrEmpty(SearchQuery))
         {
             categoryRoomMap[new NavigatorCategory
@@ -57,6 +52,13 @@ public class NavigatorSearchEventHandler(
                 OrderId = 0,
                 TabId = 1
             }] = await navigatorRoomProvider.GetRoomsForSearchQueryAsync(SearchQuery);
+        }
+        else
+        {
+            foreach (var category in categories)
+            {
+                categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
+            }
         }
         
         var searchResultPagesWriter = new NavigatorSearchResultPagesWriter

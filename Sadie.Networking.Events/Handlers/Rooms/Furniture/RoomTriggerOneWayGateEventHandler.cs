@@ -19,7 +19,7 @@ public class RoomTriggerOneWayGateEventHandler(RoomFurnitureItemInteractorReposi
         
         if (roomFurnitureItem is not { PlayerFurnitureItem.MetaData: "0" })
         {
-            // return;
+            return;
         }
         
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
