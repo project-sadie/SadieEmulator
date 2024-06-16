@@ -9,8 +9,8 @@ namespace Sadie.Database.Models.Players;
 public class Player
 {
     public int Id { get; init; }
-    public string? Username { get; init; }
-    public string? Email { get; init; }
+    public required string Username { get; init; }
+    public required string Email { get; init; }
     public ICollection<Role> Roles { get; init; } = [];
     public DateTime CreatedAt { get; init; }
     public PlayerData? Data { get; init; }

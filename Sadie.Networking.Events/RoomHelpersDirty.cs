@@ -347,6 +347,7 @@ public static class RoomHelpersDirty
         }
 
         var z = RoomTileMapHelpers.GetItemPlacementHeight(
+            room.TileMap,
             pointsForPlacement,
             room.FurnitureItems);
         
@@ -371,14 +372,10 @@ public static class RoomHelpersDirty
         {
             ItemId = itemId
         });
-        
-        dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
-        
-        await dbContext.SaveChangesAsync();
 
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
         {
-            Id = roomFurnitureItem.Id,
+            Id = roomFurnitureItem.PlayerFurnitureItem.Id,
             AssetId = roomFurnitureItem.FurnitureItem.AssetId,
             PositionX = roomFurnitureItem.PositionX,
             PositionY = roomFurnitureItem.PositionY,
@@ -400,6 +397,9 @@ public static class RoomHelpersDirty
         {
             await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
         }
+        
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
+        await dbContext.SaveChangesAsync();
     }
 
     public static async Task OnPlaceWallItemAsync(
@@ -453,8 +453,6 @@ public static class RoomHelpersDirty
         }
 
         dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
-        dbContext.Attach(playerItem).State = EntityState.Unchanged;
-        
         await dbContext.SaveChangesAsync();
     }
 }

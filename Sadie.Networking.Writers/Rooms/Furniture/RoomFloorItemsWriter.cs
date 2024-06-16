@@ -35,7 +35,7 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         var height = -1; // TODO: height
         var extra = 1;
             
-        writer.WriteLong(item.Id);
+        writer.WriteLong(item.PlayerFurnitureItem.Id);
         writer.WriteInteger(item.FurnitureItem.AssetId);
         writer.WriteInteger(item.PositionX);
         writer.WriteInteger(item.PositionY);

@@ -8,6 +8,6 @@ public static class NavigatorServiceCollection
     public static void AddServices(IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<NavigatorCategoryRepository>();
-        serviceCollection.AddSingleton<NavigatorRoomProvider>();
+        serviceCollection.AddTransient<NavigatorRoomProvider>();
     }
 }

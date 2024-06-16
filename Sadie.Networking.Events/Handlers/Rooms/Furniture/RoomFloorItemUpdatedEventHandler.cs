@@ -46,7 +46,7 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItem.Id == itemId);
 
         if (roomFurnitureItem == null)
         {
@@ -58,8 +58,12 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.FurnitureItem.TileSpanX,
             roomFurnitureItem.FurnitureItem.TileSpanY, 
             Direction);
+
+        var rotatingSingleTileItem = newPoints.Count == 1 && 
+             newPoints[0].X == roomFurnitureItem.PositionX &&
+             newPoints[0].Y == roomFurnitureItem.PositionY;
         
-        if (!RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
+        if (!rotatingSingleTileItem && !RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
@@ -67,8 +71,8 @@ public class RoomFloorItemUpdatedEventHandler(
 
         var position = new HPoint(
             X,
-            Y, 
-            roomFurnitureItem.PositionZ);
+            Y,
+            RoomTileMapHelpers.GetItemPlacementHeight(room.TileMap, newPoints, room.FurnitureItems));
 
         var direction = Direction;
         

@@ -16,7 +16,11 @@ public class PlayerProfile : Profile
                 provider.GetRequiredService<ILogger<PlayerLogic>>(),
                 x.Id,
                 x.Username,
-                x.Data))
+                x.Data)
+            {
+                Username = x.Username,
+                Email = x.Email
+            })
             .ForMember(x => x.NetworkObject, option => option.Ignore());
     }
 }

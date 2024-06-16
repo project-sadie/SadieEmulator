@@ -23,7 +23,7 @@ public class OneWayGateInteractor : IRoomFurnitureItemInteractor
         var squareBehind = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY,
             RoomTileMapHelpers.GetOppositeDirection((int) item.Direction));
 
-        if (room.TileMap.Map[squareBehind.Y, squareBehind.X] == 0)
+        if (!room.TileMap.TileExists(squareBehind))
         {
             return;
         }
