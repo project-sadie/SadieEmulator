@@ -1,8 +1,12 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
+using Sadie.Game.Players;
+using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -12,7 +16,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomDeleteEventHandler(
     RoomRepository roomRepository,
     SadieContext dbContext,
-    IMapper mapper) : INetworkPacketEventHandler
+    IMapper mapper,
+    PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public required int RoomId { get; init; }
     
@@ -29,7 +34,28 @@ public class RoomDeleteEventHandler(
             return;
         }
 
-        // TODO; Return items to users inventory?
+        var updateMap = new Dictionary<PlayerLogic, List<PlayerFurnitureItem>>();
+
+        foreach (var item in room.FurnitureItems)
+        {
+            var playerItem = item.PlayerFurnitureItem!;
+            playerItem.PlacementData = null;
+            dbContext.Entry(item).State = EntityState.Deleted;
+            
+            var onlineOwner = playerRepository.GetPlayerLogicById(item.PlayerFurnitureItem.PlayerId);
+
+            if (onlineOwner == null)
+            {
+                continue;
+            }
+            
+            if (!updateMap.ContainsKey(onlineOwner))
+            {
+                updateMap[onlineOwner] = [];
+            }
+
+            updateMap[onlineOwner].Add(item.PlayerFurnitureItem);
+        }
 
         if (!roomRepository.TryRemove(RoomId, out _))
         {
@@ -44,7 +70,6 @@ public class RoomDeleteEventHandler(
             await room.UserRepository.TryRemoveAsync(roomUser.Id, true);
         }
 
-        await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = 0 WHERE home_room_id = {0}}",
-            RoomId);
+        await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = NULL WHERE home_room_id = {0}}", RoomId);
     }
 }
