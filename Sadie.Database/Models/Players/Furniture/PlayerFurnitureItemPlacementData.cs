@@ -9,6 +9,7 @@ namespace Sadie.Database.Models.Players.Furniture;
 public class PlayerFurnitureItemPlacementData
 {
     [Key] public int Id { get; init; }
+    public int PlayerFurnitureItemId { get; init; }
     public PlayerFurnitureItem? PlayerFurnitureItem { get; init; }
     public int RoomId { get; init; }
     public Room? Room { get; init; }

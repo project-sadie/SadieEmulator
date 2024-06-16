@@ -17,4 +17,5 @@ public interface IRoomTileMap
     short[,] TileExistenceMap { get; set; }
     void AddUserToMap(Point point, IRoomUser user);
     void AddBotToMap(Point point, IRoomBot bot);
+    bool IsTileFree(Point point);
 }

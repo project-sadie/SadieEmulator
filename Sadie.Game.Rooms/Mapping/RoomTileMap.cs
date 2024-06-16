@@ -63,4 +63,7 @@ public class RoomTileMap : IRoomTileMap
 
     public void AddBotToMap(Point point, IRoomBot bot) => 
         BotMap.GetOrInsert(point, () => []).Add(bot);
+
+    public bool IsTileFree(Point point) => 
+        UserMap[point].Count < 1 && BotMap[point].Count < 1;
 }

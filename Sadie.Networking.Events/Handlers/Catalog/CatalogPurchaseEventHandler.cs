@@ -258,8 +258,10 @@ public class CatalogPurchaseEventHandler(
 
             await dbContext.SaveChangesAsync();
 
-            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+            await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
             {
+                Count = newItems.Count,
+                Category = 1,
                 FurnitureItems = newItems
             });
             
@@ -288,8 +290,10 @@ public class CatalogPurchaseEventHandler(
 
         await dbContext.SaveChangesAsync();
 
-        var writer = new PlayerInventoryAddItemsWriter
+        var writer = new PlayerInventoryUnseenItemsWriter
         {
+            Count = newItems.Count,
+            Category = 1,
             FurnitureItems = newItems
         };
         

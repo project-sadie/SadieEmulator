@@ -125,8 +125,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
     
     public void WalkToPoint(Point point, Action? onReachedGoal = null)
     {
-        if (room.TileMap.UserMap[point].Count == 0 && 
-            room.TileMap.BotMap[point].Count == 0 &&
+        if (!room.TileMap.IsTileFree(point) &&
             !room.Settings.CanUsersOverlap)
         {
             return;
