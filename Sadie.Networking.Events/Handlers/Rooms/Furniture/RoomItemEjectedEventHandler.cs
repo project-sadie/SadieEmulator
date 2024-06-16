@@ -70,18 +70,25 @@ public class RoomItemEjectedEventHandler(
         }
 
         var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Id;
-        var playerItem = roomFurnitureItem.PlayerFurnitureItem;
+        var playerItem = client.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
+
+        if (playerItem == null)
+        {
+            return;
+        }
 
         room.FurnitureItems.Remove(roomFurnitureItem);
-        playerItem.PlacementData.Remove(roomFurnitureItem);
+        playerItem.PlacementData = null;
         
         dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
         
         if (ownsItem)
         {
-            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+            await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
             {
+                Count = 1,
+                Category = 1,
                 FurnitureItems = [playerItem]
             });
             
@@ -93,8 +100,10 @@ public class RoomItemEjectedEventHandler(
 
             if (ownerOnline != null)
             {
-                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+                await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
                 {
+                    Count = 1,
+                    Category = 1,
                     FurnitureItems = [playerItem]
                 });
                 

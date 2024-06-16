@@ -42,8 +42,10 @@ public class RoomDimmerToggleEventHandler(
         
         room.DimmerSettings.Enabled = !room.DimmerSettings.Enabled;
         
-        dimmer.PlayerFurnitureItem.MetaData = $"{(room.DimmerSettings.Enabled ? 2 : 1)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, dimmer);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
+            room, 
+            dimmer, 
+            $"{(room.DimmerSettings.Enabled ? 2 : 1)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}");
         
         dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         await dbContext.SaveChangesAsync();

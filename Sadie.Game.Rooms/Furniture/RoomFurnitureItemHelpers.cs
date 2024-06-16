@@ -32,7 +32,16 @@ public class RoomFurnitureItemHelpers
         await BroadcastItemUpdateToRoomAsync(room, roomFurnitureItem);
     }
 
-    public static async Task BroadcastItemUpdateToRoomAsync(
+    public static async Task UpdateMetaDataForItemAsync(
+        IRoomLogic room, 
+        PlayerFurnitureItemPlacementData roomFurnitureItem, 
+        string metaData)
+    {
+        roomFurnitureItem.PlayerFurnitureItem.MetaData = metaData;
+        await BroadcastItemUpdateToRoomAsync(room, roomFurnitureItem);
+    }
+
+    private static async Task BroadcastItemUpdateToRoomAsync(
         IRoomLogic room, 
         PlayerFurnitureItemPlacementData roomFurnitureItem)
     {

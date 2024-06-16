@@ -54,8 +54,10 @@ public class RoomDimmerSaveEventHandler(
 
         room.DimmerSettings.Enabled = Apply;
         
-        dimmer.PlayerFurnitureItem.MetaData = $"{(room.DimmerSettings.Enabled ? 2 : 0)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, dimmer);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
+            room, 
+            dimmer,
+            $"{(room.DimmerSettings.Enabled ? 2 : 0)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}");
 
         dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         dbContext.Entry(preset).State = EntityState.Modified;
