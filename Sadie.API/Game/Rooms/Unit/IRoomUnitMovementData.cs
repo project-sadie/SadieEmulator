@@ -14,4 +14,5 @@ public interface IRoomUnitMovementData
     void RemoveStatuses(params string[] statuses);
     List<Point> OverridePoints { get; }
     void WalkToPoint(Point point, Action? onReachedGoal = null);
+    public double NextZ { get; set; }
 }

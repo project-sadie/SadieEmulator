@@ -1,4 +1,5 @@
 using System.Drawing;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
@@ -15,7 +16,8 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class TeleportInteractor(
     RoomRepository roomRepository,
-    SadieContext dbContext) : IRoomFurnitureItemInteractor
+    SadieContext dbContext,
+    IMapper mapper) : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "teleport";
 
@@ -128,7 +130,10 @@ public class TeleportInteractor(
 
         if (targetRoomId != 0)
         {
-            var targetRoom = await roomRepository.TryLoadRoomByIdAsync(targetRoomId);
+            var targetRoom = await RoomHelpersDirty.TryLoadRoomByIdAsync(targetRoomId,
+                roomRepository,
+                dbContext,
+                mapper);
 
             var targetItem = targetRoom?.FurnitureItems
                 .FirstOrDefault(x => x.PlayerFurnitureItemId == targetItemId);
