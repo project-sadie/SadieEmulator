@@ -19,9 +19,7 @@ public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbCo
     {
         var updateMap = new Dictionary<PlayerLogic, List<PlayerFurnitureItem>>();
 
-        var floorItems = user.Room.FurnitureItems.Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor).ToList();
-        
-        foreach (var item in floorItems)
+        foreach (var item in user.Room.FurnitureItems)
         {
             var playerItem = item.PlayerFurnitureItem!;
 
