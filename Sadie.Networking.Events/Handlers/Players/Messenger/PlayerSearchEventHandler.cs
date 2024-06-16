@@ -28,14 +28,22 @@ public class PlayerSearchEventHandler(PlayerRepository playerRepository) : INetw
 
         SearchQuery = SearchQuery.Truncate(20);
 
-        var friendships = client.Player!.GetMergedFriendships();
+        var outgoingFriends = client
+            .Player!
+            .OutgoingFriendships
+            .Select(x => x.TargetPlayer!);
         
-        var friendsList = friendships
-            .Where(x => x.TargetPlayer.Username.Contains(SearchQuery)).
-            Select(x => x.TargetPlayer).
-            ToList();
+        var incomingFriends = client
+            .Player!
+            .IncomingFriendships
+            .Select(x => x.OriginPlayer!);
 
-        var strangers = await playerRepository.GetPlayersForSearchAsync(SearchQuery, friendships.Select(x => x.Id).ToArray());
+        var friendsList = outgoingFriends
+            .Concat(incomingFriends)
+            .ToList();
+
+        var strangers = await playerRepository
+            .GetPlayersForSearchAsync(SearchQuery, friendsList.Select(x => x.Id).ToArray());
 
         await client.WriteToStreamAsync(new PlayerSearchResultWriter
         {
