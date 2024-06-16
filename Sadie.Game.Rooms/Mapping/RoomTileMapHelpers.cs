@@ -265,4 +265,9 @@ public class RoomTileMapHelpers
             tileMap.Map[point.Y, point.X] = GetStateNumberForTile(point.X, point.Y, roomItems);
         }
     }
+
+    public static int GetTilesBetween(Point a, Point b)
+    {
+        return Math.Abs((a.X + a.Y) - (b.X + b.Y));
+    }
 }
