@@ -41,7 +41,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         var placePoint = new Point(X, Y);
         
-        if (room.TileMap.UserMap.ContainsKey(placePoint) && room.TileMap.UserMap[placePoint].Count > 0 && !room.Settings.CanUsersOverlap)
+        if (!room.TileMap.IsTileFree(placePoint) && !room.Settings.CanUsersOverlap)
         {
             await client.WriteToStreamAsync(new RoomBotErrorWriter
             {

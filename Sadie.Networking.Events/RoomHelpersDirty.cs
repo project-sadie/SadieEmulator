@@ -178,14 +178,15 @@ public static class RoomHelpersDirty
             var squareInFront = RoomTileMapHelpers
                 .GetPointInFront(teleport.PositionX, teleport.PositionY, teleport.Direction);
 
-            roomUser.WalkToPoint(squareInFront);
+            if (room.TileMap.IsTileFree(squareInFront))
+            {
+                roomUser.WalkToPoint(squareInFront);
+            }
             
-            Task.Factory.StartNew(async () =>
+            await Task.Factory.StartNew(async () =>
             {
                 await Task.Delay(800);
-                
-                teleport.PlayerFurnitureItem.MetaData = "0";
-                await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, teleport);
+                await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, teleport, "0");
             });
         }
         
@@ -361,7 +362,7 @@ public static class RoomHelpersDirty
             CreatedAt = DateTime.Now
         };
 
-        playerItem.PlacementData.Add(roomFurnitureItem);
+        playerItem.PlacementData = roomFurnitureItem;
         room.FurnitureItems.Add(roomFurnitureItem);
 
         RoomTileMapHelpers.UpdateTileStatesForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
