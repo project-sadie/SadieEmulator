@@ -24,7 +24,7 @@ public class ClientPacketHandler(
             };
                 
             await client.WriteToStreamAsync(writer);
-            logger.LogWarning($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
+            logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
             return;
         }
 
