@@ -367,6 +367,11 @@ public static class RoomHelpersDirty
         room.FurnitureItems.Add(roomFurnitureItem);
 
         RoomTileMapHelpers.UpdateTileStatesForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
+        
+        foreach (var user in RoomTileMapHelpers.GetUsersForPoints(pointsForPlacement, room.UserRepository.GetAll()))
+        {
+            user.CheckStatusForCurrentTile();
+        }
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {
