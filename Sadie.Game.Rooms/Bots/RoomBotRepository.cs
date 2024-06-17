@@ -24,6 +24,5 @@ public class RoomBotRepository : IRoomBotRepository
 
     public async ValueTask DisposeAsync()
     {
-        // TODO release managed resources here
     }
 }

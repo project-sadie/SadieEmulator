@@ -30,11 +30,8 @@ public class RoomUserTradeUpdateWriter : AbstractPacketWriter
                 writer.WriteInteger(item.FurnitureItem.AssetId);
                 writer.WriteInteger(0);
                 writer.WriteBool(item.FurnitureItem.CanInventoryStack);
-                
-                // stuff data
                 writer.WriteInteger(0);
                 writer.WriteString(item.MetaData);
-                
                 writer.WriteInteger(0);
                 writer.WriteInteger(0);
                 writer.WriteInteger(0);
