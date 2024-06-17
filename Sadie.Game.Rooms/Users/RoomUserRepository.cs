@@ -1,12 +1,15 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Database.Models.Players;
+using Sadie.Game.Players;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserRepository
+public class RoomUserRepository(ILogger<RoomUserRepository> logger,
+    PlayerRepository playerRepository) : IRoomUserRepository
 {
     private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 
@@ -20,7 +23,10 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
         return user != null;
     }
 
-    public async Task TryRemoveAsync(long id, bool notifyLeft, bool hotelView = false)
+    public async Task TryRemoveAsync(
+        long id, 
+        bool notifyLeft, 
+        bool hotelView = false)
     {
         if (notifyLeft)
         {
@@ -39,10 +45,20 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
             logger.LogError($"Failed to remove a room user");
             return;
         }
+
+        var player = roomUser.Player;
+        
+        player.CurrentRoomId = 0;
+        
+        await playerRepository.UpdateStatusForFriendsAsync(
+            (Player) player, 
+            player.GetMergedFriendships(),
+            true, 
+            false);
         
         if (hotelView)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelView());
+            await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter());
         }
         
         await roomUser.DisposeAsync();
