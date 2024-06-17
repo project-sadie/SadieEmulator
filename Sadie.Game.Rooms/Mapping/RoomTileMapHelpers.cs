@@ -88,6 +88,11 @@ public class RoomTileMapHelpers
             return 2;
         }
 
+        if (item.FurnitureItem.InteractionType == "gate" && item.PlayerFurnitureItem.MetaData == "1")
+        {
+            return 1;
+        }
+
         return item.FurnitureItem.CanLay ? (short) 3 : (short) 0;
     }
 
@@ -268,6 +273,6 @@ public class RoomTileMapHelpers
 
     public static int GetTilesBetween(Point a, Point b)
     {
-        return Math.Abs((a.X + a.Y) - (b.X + b.Y));
+        return Math.Abs(a.X + a.Y - (b.X + b.Y));
     }
 }
