@@ -143,9 +143,9 @@ public class RoomTileMapHelpers
                     continue;
                 }
                 
-                // If it's a seat tile, don't include it unless it's our goal
+                // If it's a sit or lay tile, don't include it unless it's our goal
                 
-                if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))
+                if ((map.Map[y, x] == 2 || map.Map[y, x] == 3) && (goalPoint.X != x || goalPoint.Y != y))
                 {
                     tmp[y, x] = 0;
                     continue;
