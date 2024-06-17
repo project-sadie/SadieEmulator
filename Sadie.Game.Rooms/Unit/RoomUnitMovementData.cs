@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Security.Cryptography;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Game.Rooms.Furniture;
@@ -20,7 +19,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
     public double PointZ { get; set;  }
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
-    protected Point? NextPoint { get; set; }
+    public Point? NextPoint { get; set; }
     protected int StepsWalked { get; set; }
     protected Point PathGoal { get; set; }
     protected List<Point> PathPoints { get; set; } = [];
@@ -80,7 +79,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         {
             AddStatus(
                 RoomUserStatus.Sit, 
-                (topItem.FurnitureItem.StackHeight).ToString());
+                topItem.FurnitureItem.StackHeight.ToString());
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
