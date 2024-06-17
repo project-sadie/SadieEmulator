@@ -1,4 +1,5 @@
 using Sadie.API.Game.Rooms;
+using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Serialization;
@@ -10,7 +11,8 @@ public class RoomFurnitureItemHelpers
 {
     public static async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
-        PlayerFurnitureItemPlacementData roomFurnitureItem)
+        PlayerFurnitureItemPlacementData roomFurnitureItem,
+        SadieContext dbContext)
     {
         if (string.IsNullOrEmpty(roomFurnitureItem.PlayerFurnitureItem.MetaData))
         {
@@ -26,10 +28,11 @@ public class RoomFurnitureItemHelpers
         {
             state = 0;
         }
-        
-        roomFurnitureItem.PlayerFurnitureItem.MetaData = (state + 1).ToString();
 
-        await BroadcastItemUpdateToRoomAsync(room, roomFurnitureItem);
+        await UpdateMetaDataForItemAsync(room, roomFurnitureItem, (state + 1).ToString());
+        
+        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
+        await dbContext.SaveChangesAsync();
     }
 
     public static async Task UpdateMetaDataForItemAsync(
