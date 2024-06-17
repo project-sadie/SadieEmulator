@@ -5,6 +5,6 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Game.Rooms.Packets.Writers;
 
 [PacketId(ServerPacketId.RoomUserHotelView)]
-public class RoomUserHotelView : AbstractPacketWriter
+public class RoomUserHotelViewWriter : AbstractPacketWriter
 {
 }

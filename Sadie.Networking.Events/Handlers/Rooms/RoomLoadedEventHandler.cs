@@ -58,7 +58,7 @@ public class RoomLoadedEventHandler(
         if (room == null)
         {
             logger.LogError($"Failed to load room {roomId} for player '{player.Username}'");
-            await client.WriteToStreamAsync(new RoomUserHotelView());
+            await client.WriteToStreamAsync(new RoomUserHotelViewWriter());
             
             return;
         }
@@ -108,7 +108,7 @@ public class RoomLoadedEventHandler(
                 {
                     ErrorCode = (int) GenericErrorCode.IncorrectRoomPassword
                 });
-                await client.WriteToStreamAsync(new RoomUserHotelView());
+                await client.WriteToStreamAsync(new RoomUserHotelViewWriter());
                 return false;
             
             case RoomAccessType.Doorbell:
