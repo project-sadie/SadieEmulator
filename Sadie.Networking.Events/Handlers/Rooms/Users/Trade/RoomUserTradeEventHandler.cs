@@ -26,7 +26,7 @@ public class RoomUserTradeEventHandler(RoomRepository roomRepository) : INetwork
             return;
         }
 
-        if ((room.Settings.TradeOption == RoomTradeOption.IfRoomOwner && room.OwnerId != roomUser.Id) || 
+        if ((room.Settings.TradeOption == RoomTradeOption.RequiresRights && !roomUser.HasRights()) || 
             room.Settings.TradeOption != RoomTradeOption.Allowed)
         {
             await client.WriteToStreamAsync(new RoomUserTradeErrorWriter { Code = RoomUserTradeError.RoomTradingNotAllowed });
