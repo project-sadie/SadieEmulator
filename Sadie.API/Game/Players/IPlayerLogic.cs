@@ -26,4 +26,5 @@ public interface IPlayerLogic
     bool IsFriendsWith(int targetId);
     void DeleteFriendshipFor(int targetId);
     bool HasPermission(string name);
+    List<PlayerFriendship> GetMergedFriendships();
 }
