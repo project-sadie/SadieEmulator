@@ -46,7 +46,7 @@ public class PlayerCurrencyRewardsTask(
                 roomUser!.IsIdle;
             
             var failRoomCheck = reward.SkipHotelView && 
-                player.CurrentRoomId == 0;
+                player.State.CurrentRoomId == 0;
          
             if ((serverSettings.MakeCurrencyRewardsFair && 
                  !player.DeservesReward(reward.Type, reward.IntervalSeconds)) ||
