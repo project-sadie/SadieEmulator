@@ -17,6 +17,14 @@ public class GateInteractor(SadieContext dbContext) : IRoomFurnitureItemInteract
         {
             return;
         }
+
+        if (room
+            .UserRepository
+            .GetAll()
+            .Any(x => x.IsWalking && x.NextPoint == new Point(item.PositionX, item.PositionY)))
+        {
+            return;
+        }
         
         var newState = item.PlayerFurnitureItem.MetaData == "0" ? 1 : 0;
         
