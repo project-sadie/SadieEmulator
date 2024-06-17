@@ -1,6 +1,7 @@
 using AutoMapper;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -45,7 +46,8 @@ public class PlayerCreateRoomEventHandler(
         newRoom.Settings = new RoomSettings
         {
             RoomId = newRoom.Id,
-            WalkDiagonal = true
+            WalkDiagonal = true,
+            TradeOption = RoomTradeOption.Allowed
         };
 
         newRoom.ChatSettings = new RoomChatSettings

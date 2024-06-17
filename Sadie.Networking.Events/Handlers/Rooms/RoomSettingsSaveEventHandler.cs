@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Enums;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
@@ -129,7 +131,7 @@ public class RoomSettingsSaveEventHandler(
     {
         settings.AccessType = (RoomAccessType) AccessType;
         settings.Password = Password;
-        settings.TradeOption = TradeOption;
+        settings.TradeOption = (RoomTradeOption) TradeOption;
         settings.AllowPets = AllowPets;
         settings.CanPetsEat = CanPetsEat;
         settings.CanUsersOverlap = CanUsersOverlap;

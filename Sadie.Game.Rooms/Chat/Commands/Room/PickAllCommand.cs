@@ -6,7 +6,6 @@ using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Room;
 

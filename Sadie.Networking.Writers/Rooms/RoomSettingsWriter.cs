@@ -29,7 +29,7 @@ public class RoomSettingsWriter : AbstractPacketWriter
         var settings = Room.Settings;
         var chatSettings = Room.ChatSettings;
         
-        writer.WriteInteger(settings.TradeOption);
+        writer.WriteInteger((int) settings.TradeOption);
         writer.WriteInteger(settings.AllowPets ? 1 : 0);
         writer.WriteInteger(settings.CanPetsEat ? 1 : 0);
         writer.WriteInteger(settings.CanUsersOverlap ? 1 : 0);

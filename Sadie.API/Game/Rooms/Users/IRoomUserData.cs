@@ -14,4 +14,6 @@ public interface IRoomUserData : IRoomUnit
     bool IsWalking { get; set; }
     bool MoonWalking { get; set; }
     int HandItemId { get; set; }
+    IRoomUserTrade? Trade { get; set; }
+    int TradeStatus { get; set; }
 }

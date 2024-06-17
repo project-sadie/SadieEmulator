@@ -118,4 +118,10 @@ public class EventHandlerIds
     public const short RoomUserGiveHandItem = 2941;
     public const short RoomUserDropHandItem = 2814;
     public const short RoomCloseDice = 1533;
+    public const short RoomUserTrade = 1481;
+    public const short RoomUserTradeOfferItem = 3107;
+    public const short RoomUserTradeClosed = 2551;
+    public const short RoomUserTradeOfferItems = 1263;
+    public const short RoomUserTradeAccepted = 3863;
+    public const short RoomUserTradeConfirm = 2760;
 }

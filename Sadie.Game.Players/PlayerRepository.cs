@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players.Friendships;

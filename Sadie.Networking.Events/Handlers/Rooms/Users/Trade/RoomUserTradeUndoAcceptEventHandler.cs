@@ -1,0 +1,29 @@
+using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
+using Sadie.Networking.Client;
+
+namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
+
+public class RoomUserTradeUndoAcceptEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+{
+    public async Task HandleAsync(INetworkClient client)
+    {
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        {
+            return;
+        }
+
+        if (roomUser.Trade == null || roomUser.TradeStatus < 1)
+        {
+            return;
+        }
+
+        roomUser.TradeStatus = 0;
+        
+        await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeStatusWriter
+        {
+            UserId = roomUser.Id,
+            Status = roomUser.TradeStatus
+        });
+    }
+}

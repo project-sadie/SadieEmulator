@@ -1,6 +1,5 @@
-﻿using Sadie.Networking.Serialization.Attributes;
+﻿using Sadie.Enums.Game.Rooms;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Database.Models.Rooms;
 
@@ -20,5 +19,5 @@ public class RoomSettings
     public int WallThickness { get; set; }
     public int FloorThickness { get; set; }
     public bool CanUsersOverlap { get; set; }
-    public int TradeOption { get; set; }
+    public RoomTradeOption TradeOption { get; set; }
 }

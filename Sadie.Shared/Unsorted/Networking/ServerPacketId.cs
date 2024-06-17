@@ -139,4 +139,13 @@ public class ServerPacketId
     public const short RoomDimmerSettings = 2710;
     public const short RoomBannedUsers = 1869;
     public const short RoomUserReceivedHandItem = 354;
+    public const short RoomUserTradeStarted = 2505;
+    public const short RoomUserTradeError = 217;
+    public const short RoomUserTradeUpdate = 2024;
+    public const short RoomUserTradeClosed = 1373;
+    public const short RoomUserTradeStatus = 2568;
+    public const short RoomUserTradeWaitingConfirm = 2720;
+    public const short RoomUserTradeCompleted = 3128;
+    public const short RoomUserTradeCancel = 2341;
+    public const short RoomUserTradeCloseWindow = 1001;
 }

@@ -2,7 +2,6 @@ using System.Drawing;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Database.Models.Rooms;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 

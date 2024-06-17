@@ -22,7 +22,7 @@ public class FurnitureItem
     public bool CanMarketplaceSell { get; init; }
     public bool CanInventoryStack { get; init; }
     public bool CanGift { get; init; }
-    public string? InteractionType { get; init; }
+    public required string InteractionType { get; init; }
     public int InteractionModes { get; init; }
     public ICollection<CatalogItem> CatalogItems { get; init; } = [];
     public ICollection<HandItem> HandItems { get; init; } = [];
