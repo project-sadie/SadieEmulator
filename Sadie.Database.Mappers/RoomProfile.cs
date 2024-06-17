@@ -33,7 +33,8 @@ public class RoomProfile : Profile
                 x.Tags,
                 x.PlayerLikes)
             {
-                Name = x.Name
+                Name = x.Name,
+                Description = x.Description
             });
     }
 }
