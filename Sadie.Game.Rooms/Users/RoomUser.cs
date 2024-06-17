@@ -96,7 +96,7 @@ public class RoomUser(
                 IsIdle = IsIdle
             };
             
-            await room!.UserRepository.BroadcastDataAsync(writer);
+            await room.UserRepository.BroadcastDataAsync(writer);
         }
     }
 

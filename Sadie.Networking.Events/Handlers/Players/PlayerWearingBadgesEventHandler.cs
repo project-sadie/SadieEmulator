@@ -23,7 +23,7 @@ public class PlayerWearingBadgesEventHandler(
         var player = playerRepository.GetPlayerLogicById(PlayerId);
 
         var playerBadges = player != null
-            ? player!.Badges
+            ? player.Badges
             : await dbContext.Set<PlayerBadge>().Where(x => x.PlayerId == PlayerId).ToListAsync();
 
         playerBadges = playerBadges.

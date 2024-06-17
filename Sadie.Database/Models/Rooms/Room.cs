@@ -14,7 +14,7 @@ public class Room
     public int OwnerId { get; init; }
     public Player? Owner { get; set; }
     public int MaxUsersAllowed { get; set; }
-    public string? Description { get; set; }
+    public required string Description { get; set; }
     public bool IsMuted { get; init; }
     public RoomSettings? Settings { get; set; }
     public RoomPaintSettings? PaintSettings { get; set; }

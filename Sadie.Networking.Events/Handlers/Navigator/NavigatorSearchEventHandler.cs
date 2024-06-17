@@ -36,7 +36,7 @@ public class NavigatorSearchEventHandler(
             return;
         }
 
-        var categories = tab!.
+        var categories = tab.
             Categories.
             OrderBy(x => x.OrderId).
             ToList();
