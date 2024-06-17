@@ -2,12 +2,13 @@ using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Unit;
+using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class OneWayGateInteractor : IRoomFurnitureItemInteractor
+public class OneWayGateInteractor(SadieContext dbContext) : IRoomFurnitureItemInteractor
 {
     public string InteractionType => "onewaygate";
     
@@ -49,8 +50,12 @@ public class OneWayGateInteractor : IRoomFurnitureItemInteractor
         }
     }
 
-    public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) =>
+    public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    {
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
+        dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
+        await dbContext.SaveChangesAsync();
+    }
     
     public Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
     public Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
