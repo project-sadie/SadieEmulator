@@ -10,7 +10,6 @@ using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Options.Options;
 using Sadie.Shared;
@@ -49,10 +48,6 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var expires = DateTime
-            .Now
-            .Subtract(TimeSpan.FromMilliseconds(DelayMs));
-
         var tokenRecord = await dbContext
             .PlayerSsoToken
             .FirstOrDefaultAsync(x =>
@@ -79,7 +74,7 @@ public class SecureLoginEventHandler(
             .Include(x => x.AvatarData)
             .Include(x => x.Tags)
             .Include(x => x.RoomLikes)
-            .Include(x => x.Relationships)
+            .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
             .Include(x => x.NavigatorSettings)
             .Include(x => x.GameSettings)
             .Include(x => x.Badges)
@@ -106,8 +101,10 @@ public class SecureLoginEventHandler(
             return;
         }
         
-        var playerLogic = mapper.Map<PlayerLogic>(player, opt => 
-            opt.AfterMap((src, dest) => dest.NetworkObject = client));
+        var playerLogic = mapper.Map<PlayerLogic>(player);
+
+        playerLogic.NetworkObject = client;
+        playerLogic.Channel = client.Channel;
 
         var playerId = player.Id;
 
@@ -132,7 +129,7 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
-        await SendFriendsAsync(playerLogic);
+        await PlayerFriendshipHelpers.SendPlayerFriendListUpdate(playerLogic, playerRepository);
         await SendWelcomeMessageAsync(playerLogic);
     }
 
@@ -153,39 +150,6 @@ public class SecureLoginEventHandler(
         };
 
         await player.NetworkObject.WriteToStreamAsync(alertWriter);
-    }
-
-    private async Task SendFriendsAsync(PlayerLogic player)
-    {
-        var allFriends = player.GetMergedFriendships()
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-
-        var updates = new List<PlayerFriendshipUpdate>();
-
-        foreach (var friend in allFriends)
-        {
-            var friendId = friend.OriginPlayerId == player.Id ? friend.TargetPlayerId : friend.OriginPlayerId;
-            var friendPlayer = playerRepository.GetPlayerLogicById(friendId);
-            var friendInRoom = friendPlayer != null && friendPlayer.CurrentRoomId != 0;
-
-            var relationship = friendPlayer == null ? null : 
-                friendPlayer!
-                    .Relationships
-                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId);
-
-            updates.Add(new PlayerFriendshipUpdate
-            {
-                Type = 0,
-                Friend = friendPlayer ?? await playerRepository.GetPlayerByIdAsync(friendId),
-                FriendOnline = friendPlayer != null,
-                FriendInRoom = friendInRoom,
-                Relation = relationship?.TypeId ?? PlayerRelationshipType.None
-            });
-        }
-
-        await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(player, updates);
-        await playerRepository.UpdateStatusForFriendsAsync(player, allFriends, true, player.CurrentRoomId != 0);
     }
 
     private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;
