@@ -29,7 +29,7 @@ public static class RoomServiceCollection
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
             .AddClasses(classes => classes.Where(x => 
-                x is { IsClass: true, IsAbstract: false, IsInterface: false } && 
+                x is { IsClass: true, IsAbstract: false } && 
                 x.IsAssignableTo(typeof(IRoomFurnitureItemInteractor))))
             .As<IRoomFurnitureItemInteractor>()
             .WithTransientLifetime());

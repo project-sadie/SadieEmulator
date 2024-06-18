@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
@@ -12,8 +11,7 @@ namespace Sadie.Game.Players;
 
 public class PlayerRepository(
     ILogger<PlayerRepository> logger,
-    SadieContext dbContext,
-    IMapper mapper)
+    SadieContext dbContext)
 {
     private readonly ConcurrentDictionary<int, PlayerLogic> _players = new();
 

@@ -1,6 +1,5 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
@@ -13,7 +12,6 @@ using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players.Inventory;
@@ -22,6 +20,7 @@ using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
+using Serilog;
 
 namespace Sadie.Networking.Events;
 
@@ -146,12 +145,12 @@ public static class RoomHelpersDirty
             GetControllerLevelForUser(room, player));
     }
     
-    public static async Task EnterRoomAsync<T>(
+    public static async Task AfterEnterRoomAsync(
         INetworkClient client, 
         RoomLogic room, 
-        ILogger<T> logger, 
         RoomUserFactory roomUserFactory,
-        SadieContext dbContext)
+        SadieContext dbContext,
+        PlayerRepository playerRepository)
     {
         var player = client.Player;
         var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
@@ -169,8 +168,8 @@ public static class RoomHelpersDirty
         var roomUser = CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
         
         if (!room.UserRepository.TryAdd(roomUser))
-        {
-            logger.LogError($"Failed to add user {player.Id} to room {room.Id}");
+        { 
+            Log.Error($"Failed to add user {player.Id} to room {room.Id}");
             return;
         }
         
@@ -191,7 +190,7 @@ public static class RoomHelpersDirty
             });
         }
         
-        player.CurrentRoomId = room.Id;
+        player.State.CurrentRoomId = room.Id;
 
         room.TileMap.AddUserToMap(entryPoint, roomUser);
         roomUser.ApplyFlatCtrlStatus();
@@ -200,6 +199,19 @@ public static class RoomHelpersDirty
         
         await SendRoomEntryPacketsToUserAsync(client, room);
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
+        
+        // TODO; Actually check if this stuff needs to be sent (consecutive room load)
+        
+        var friends = player
+            .GetMergedFriendships()
+            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
+            .ToList();
+        
+        await playerRepository.UpdateStatusForFriendsAsync(
+            player,
+            friends, 
+            true, 
+            true);
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, Room room)
@@ -248,13 +260,6 @@ public static class RoomHelpersDirty
 
         var owner = room.OwnerId == player.Id;
         
-        await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter
-        {
-            HideWalls = room.Settings.HideWalls,
-            WallThickness = room.Settings.WallThickness,
-            FloorThickness = room.Settings.FloorThickness
-        });
-        
         await client.WriteToStreamAsync(new RoomPaneWriter
         {
             RoomId = room.Id,
@@ -270,7 +275,7 @@ public static class RoomHelpersDirty
         {
             await client.WriteToStreamAsync(new RoomOwnerWriter());
         }
-
+        
         await client.WriteToStreamAsync(new RoomLoadedWriter());
     }
 

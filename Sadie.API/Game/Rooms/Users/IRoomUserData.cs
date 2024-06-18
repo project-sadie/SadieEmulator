@@ -11,7 +11,6 @@ public interface IRoomUserData : IRoomUnit
     TimeSpan IdleTime { get; }
     bool IsIdle { get; }
     bool NeedsStatusUpdate { get; set; }
-    bool IsWalking { get; set; }
     bool MoonWalking { get; set; }
     int HandItemId { get; set; }
     IRoomUserTrade? Trade { get; set; }
