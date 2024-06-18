@@ -113,9 +113,6 @@ public class TeleportInteractor(
         }
     }
 
-    public Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-
     private async Task UseTeleportInDifferentRoomAsync(
         IRoomUser roomUser, 
         PlayerFurnitureItemPlacementData item,
@@ -201,8 +198,4 @@ public class TeleportInteractor(
             roomUnit.CanWalk = true;
         }
     }
-
-    public Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnStepOnAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }

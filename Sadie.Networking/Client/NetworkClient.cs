@@ -30,7 +30,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         IOptions<NetworkPacketOptions> options) : base(options)
     {
         Channel = channel;
-
+        
         _logger = logger;
         _channel = channel;
         _playerRepository = playerRepository;
@@ -106,7 +106,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         if (RoomUser != null)
         {
-            var lastRoom = _roomRepository.TryGetRoomById(RoomUser.Player.CurrentRoomId);
+            var lastRoom = _roomRepository.TryGetRoomById(RoomUser.Player.State.CurrentRoomId);
 
             if (lastRoom != null)
             {
