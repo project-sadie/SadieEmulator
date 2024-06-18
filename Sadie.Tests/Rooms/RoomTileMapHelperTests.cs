@@ -14,7 +14,12 @@ public class RoomTileMapHelperTests
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+                {
+                    Type = FurnitureItemType.Floor,
+                    InteractionType = "default"
+                }
+            }
         };
         
         Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(1));
@@ -25,7 +30,12 @@ public class RoomTileMapHelperTests
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } }
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+                {
+                    Type = FurnitureItemType.Floor,
+                    InteractionType = "default"
+                }
+            }
         };
         
         Assert.That(RoomTileMapHelpers.GetItemsForPosition(14, 10, someItems), Is.Empty);
@@ -36,10 +46,30 @@ public class RoomTileMapHelperTests
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
-            new() { PositionX = 4, PositionY = 5, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem { Type = FurnitureItemType.Floor } },
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+                {
+                    Type = FurnitureItemType.Floor,
+                    InteractionType = "default"
+                }
+            },
+            new() { PositionX = 4, PositionY = 5, FurnitureItem = new FurnitureItem
+                {
+                    Type = FurnitureItemType.Floor,
+                    InteractionType = "default"
+                }
+            },
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+                {
+                    Type = FurnitureItemType.Floor,
+                    InteractionType = "default"
+                }
+            },
+            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+                {
+                    Type = FurnitureItemType.Floor,
+                    InteractionType = "default"
+                }
+            },
         };
         
         Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(3));

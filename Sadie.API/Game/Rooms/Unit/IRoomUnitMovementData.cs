@@ -7,6 +7,7 @@ public interface IRoomUnitMovementData
 {
     Point Point { get; set; }
     double PointZ { get; }
+    bool IsWalking { get; set; }
     Point? NextPoint { get; set; }
     HDirection DirectionHead { get; set; }
     HDirection Direction { get; set; }
