@@ -1,7 +1,6 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Unit;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Users;
@@ -9,7 +8,7 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureItemInteractorRepository interactorRepository) : IRoomUnitMovementData
+public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovementData
 {
     protected RoomUnit? Unit { get; set; }
     public HDirection DirectionHead { get; set; }
@@ -136,19 +135,6 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         OnReachedGoal = onReachedGoal;
     }
 
-    private async Task CheckWalkOffInteractionsAsync()
-    {
-        foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))
-        {
-            var interactor = interactorRepository.GetInteractorForType(item.FurnitureItem.InteractionType);
-            
-            if (interactor != null)
-            {
-                await interactor.OnStepOffAsync(room, item, Unit);
-            }
-        }
-    }
-
     protected async Task ProcessMovementAsync()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
@@ -170,8 +156,6 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
             NeedsPathCalculated = true;
             return;
         }
-
-        await CheckWalkOffInteractionsAsync();
 
         var topItemNextStep = RoomTileMapHelpers
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)

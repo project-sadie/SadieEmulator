@@ -18,15 +18,15 @@ public class RoomUserLookAtEventHandler(RoomRepository roomRepository) : INetwor
         {
             return Task.CompletedTask;
         }
-
-        if (roomUser.StatusMap.ContainsKey(RoomUserStatus.Sit))
-        {
-            return Task.CompletedTask;
-        }
-
+        
         var currentPoint = roomUser.Point;
 
         if (currentPoint.X == X && currentPoint.Y == Y)
+        {
+            return Task.CompletedTask;
+        }
+        
+        if (roomUser.StatusMap.ContainsKey(RoomUserStatus.Lay) || roomUser.IsWalking)
         {
             return Task.CompletedTask;
         }
