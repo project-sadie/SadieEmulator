@@ -7,7 +7,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomFurnitureItemPlaced)]
+[PacketId(EventHandlerIds.RoomItemPlaced)]
 public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository,

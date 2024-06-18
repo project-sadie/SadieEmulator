@@ -243,6 +243,11 @@ public class RoomTileMapHelpers
         IEnumerable<Point> pointsForPlacement, 
         ICollection<PlayerFurnitureItemPlacementData> roomFurnitureItems)
     {
+        if (!pointsForPlacement.Any())
+        {
+            return default;
+        }
+        
         var i = new List<PlayerFurnitureItemPlacementData>();
         
         foreach (var p in pointsForPlacement)

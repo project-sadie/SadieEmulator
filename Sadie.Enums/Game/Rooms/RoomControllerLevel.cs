@@ -7,5 +7,5 @@ public enum RoomControllerLevel
     GuildRights = 2,
     GuildAdmin = 3,
     Owner = 4,
-    Admin = 5
+    Moderator = 5
 }

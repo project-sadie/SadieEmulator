@@ -1,4 +1,5 @@
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
@@ -43,8 +44,28 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         writer.WriteString($"{item.PositionZ.ToString():0.00}");
         writer.WriteString(height.ToString());
         writer.WriteInteger(extra);
-        writer.WriteInteger((int) ObjectDataKey.LegacyKey); 
-        writer.WriteString(item.PlayerFurnitureItem.MetaData);
+        
+        var objectDataKey = RoomFurnitureItemHelpers.GetObjectDataKeyForItem(item);
+        
+        writer.WriteInteger((int) objectDataKey);
+
+        if (objectDataKey == ObjectDataKey.MapKey)
+        {
+            var objectData = RoomFurnitureItemHelpers.GetObjectDataForItem(item);
+            
+            writer.WriteInteger(objectData.Count);
+
+            foreach (var pair in objectData)
+            {
+                writer.WriteString(pair.Key);
+                writer.WriteString(pair.Value);
+            }
+        }
+        else
+        {
+            writer.WriteString(item.PlayerFurnitureItem.MetaData);
+        }
+        
         writer.WriteInteger(-1);
         writer.WriteInteger(item.FurnitureItem.InteractionModes > 1 ? 1 : 0); 
         writer.WriteLong(item.PlayerFurnitureItem.PlayerId);

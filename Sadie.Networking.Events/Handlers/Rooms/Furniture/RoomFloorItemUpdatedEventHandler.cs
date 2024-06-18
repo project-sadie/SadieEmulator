@@ -149,8 +149,9 @@ public class RoomFloorItemUpdatedEventHandler(
             PositionZ = roomFurnitureItem.PositionZ,
             StackHeight = 0.ToString(),
             Extra = 0,
-            ObjectDataKey = 0,
-            ExtraData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
+            ObjectDataKey = (int) RoomFurnitureItemHelpers.GetObjectDataKeyForItem(roomFurnitureItem),
+            ObjectData = RoomFurnitureItemHelpers.GetObjectDataForItem(roomFurnitureItem),
+            MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
             Expires = -1,
             InteractionModes = 0,
             OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId

@@ -383,6 +383,13 @@ public static class RoomHelpersDirty
         {
             ItemId = itemId
         });
+        
+        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+
+        if (interactor != null)
+        {
+            await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
+        }
 
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
         {
@@ -392,22 +399,16 @@ public static class RoomHelpersDirty
             PositionY = roomFurnitureItem.PositionY,
             Direction = (int)roomFurnitureItem.Direction,
             PositionZ = roomFurnitureItem.PositionZ,
-            StackHeight = 0,
+            StackHeight = 0.ToString(),
             Extra = 1,
-            ObjectDataKey = (int)ObjectDataKey.LegacyKey,
+            ObjectDataKey = (int) RoomFurnitureItemHelpers.GetObjectDataKeyForItem(roomFurnitureItem),
+            ObjectData = RoomFurnitureItemHelpers.GetObjectDataForItem(roomFurnitureItem),
             MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
             Expires = -1,
             InteractionModes = roomFurnitureItem.FurnitureItem.InteractionModes,
             OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
             OwnerUsername = roomFurnitureItem.PlayerFurnitureItem.Player.Username
         });
-        
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
-
-        if (interactor != null)
-        {
-            await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
-        }
         
         dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
@@ -451,17 +452,17 @@ public static class RoomHelpersDirty
             ItemId = itemId
         });
         
-        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
-        {
-            RoomFurnitureItem = roomFurnitureItem
-        });
-        
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
         if (interactor != null)
         {
             await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
         }
+        
+        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
+        {
+            RoomFurnitureItem = roomFurnitureItem
+        });
 
         dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
