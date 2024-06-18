@@ -1,10 +1,9 @@
-using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Chat.Commands.User;
 
-public class StandCommand : AbstractRoomChatCommand, IRoomChatCommand
+public class StandCommand : AbstractRoomChatCommand
 {
     public override string Trigger => "stand";
     public override string Description => "Makes your avatar stand up";

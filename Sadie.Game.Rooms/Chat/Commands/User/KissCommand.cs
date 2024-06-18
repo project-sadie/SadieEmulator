@@ -1,11 +1,10 @@
-using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Chat.Commands.User;
 
-public class KissCommand : AbstractRoomChatCommand, IRoomChatCommand
+public class KissCommand : AbstractRoomChatCommand
 {
     public override string Trigger => "kiss";
     public override string Description => "Your avatar blows a kiss";

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
@@ -9,7 +8,7 @@ using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Room;
 
-public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbContext) : AbstractRoomChatCommand, IRoomChatCommand
+public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbContext) : AbstractRoomChatCommand
 {
     public override string Trigger => "pickall";
     public override string Description => "Picks up all pieces of furniture in the room placing it into your inventory.";

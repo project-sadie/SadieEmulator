@@ -1,10 +1,9 @@
-using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Moderation;
 
-public class KickAllCommand : AbstractRoomChatCommand, IRoomChatCommand
+public class KickAllCommand : AbstractRoomChatCommand
 {
     public override string Trigger => "kickall";
     public override string Description => "Kicks all users out of the current room";
