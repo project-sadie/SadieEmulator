@@ -22,7 +22,7 @@ public class PlayerProfileEventHandler(PlayerRepository playerRepository)
         }
         
         var friendCount = profilePlayer.GetAcceptedFriendshipCount();
-        var friendship = profilePlayer.TryGetFriendshipFor(ProfileId);
+        var friendship = client.Player.TryGetFriendshipFor(ProfileId);
 
         var profileWriter = new PlayerProfileWriter
         {
@@ -30,7 +30,7 @@ public class PlayerProfileEventHandler(PlayerRepository playerRepository)
             Online = profilePlayer.Data.IsOnline,
             FriendshipCount = friendCount,
             FriendshipExists = friendship is { Status: PlayerFriendshipStatus.Accepted },
-            FriendshipRequestExists = friendship!= null
+            FriendshipRequestExists = friendship is { Status: PlayerFriendshipStatus.Pending }
         };
         
         await client.WriteToStreamAsync(profileWriter);

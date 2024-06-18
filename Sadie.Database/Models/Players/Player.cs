@@ -45,7 +45,7 @@ public class Player
     public List<PlayerFriendship> GetMergedFriendships()
     {
         return OutgoingFriendships
-            .Union(IncomingFriendships)
+            .Concat(IncomingFriendships)
             .ToList();
     }
 
@@ -80,7 +80,7 @@ public class Player
         }
         
         return OutgoingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
+            .FirstOrDefault(x => x.TargetPlayerId == targetId);
     }
 
     public void DeleteFriendshipFor(int targetId)
