@@ -4,7 +4,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -22,8 +21,7 @@ public class RoomUser(
     HDirection direction,
     PlayerLogic player,
     ServerRoomConstants constants,
-    RoomControllerLevel controllerLevel,
-    RoomFurnitureItemInteractorRepository interactorRepository)
+    RoomControllerLevel controllerLevel)
     : RoomUserData(id, room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
 {

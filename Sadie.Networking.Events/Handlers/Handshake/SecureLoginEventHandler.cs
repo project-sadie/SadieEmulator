@@ -48,6 +48,10 @@ public class SecureLoginEventHandler(
             return;
         }
 
+        var expires = DateTime
+            .Now
+            .Subtract(TimeSpan.FromMilliseconds(DelayMs));
+
         var tokenRecord = await dbContext
             .PlayerSsoToken
             .FirstOrDefaultAsync(x =>
