@@ -16,7 +16,9 @@ public class RoomItemUseEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null || client.RoomUser == null)
+        if (client.Player == null || 
+            client.RoomUser == null ||
+            !client.RoomUser.HasRights())
         {
             return;
         }
