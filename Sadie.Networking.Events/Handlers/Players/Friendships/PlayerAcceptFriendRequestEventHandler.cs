@@ -47,7 +47,7 @@ public class PlayerAcceptFriendRequestEventHandler(
         
         var targetPlayer = playerRepository.GetPlayerLogicById(originId);
         var targetOnline = targetPlayer != null;
-        var targetInRoom = targetPlayer != null && targetPlayer.CurrentRoomId != 0;
+        var targetInRoom = targetPlayer != null && targetPlayer.State.CurrentRoomId != 0;
 
         var targetRelationship = targetOnline
             ? targetPlayer!
@@ -87,7 +87,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                     Type = 0,
                     Friend = player,
                     FriendOnline = true,
-                    FriendInRoom = player.CurrentRoomId != 0,
+                    FriendInRoom = player.State.CurrentRoomId != 0,
                     Relation = relationship?.TypeId ?? PlayerRelationshipType.None
                 }
             ]);

@@ -1,3 +1,4 @@
+using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
@@ -20,11 +21,11 @@ public class PlayerLogic : Player, IPlayerLogic
         Data = data;
     }
 
+    public IChannel? Channel { get; set; }
     public INetworkObject? NetworkObject { get; set; }
     public new PlayerData Data { get; }
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }
-    public int CurrentRoomId { get; set; }
 
     public ValueTask DisposeAsync()
     {

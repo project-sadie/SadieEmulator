@@ -11,4 +11,6 @@ public class PlayerState : IPlayerState
     public DateTime LastSubscriptionModification { get; set; }
     public string CatalogMode { get; set; }
     public PlayerFurnitureItemPlacementData? Teleport { get; set; }
+    public int CurrentRoomId { get; set; }
+    public int LoadingRoomId { get; set; }
 }

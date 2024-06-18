@@ -65,7 +65,7 @@ public class PlayerChangeRelationshipEventHandler(
 
         var onlineFriend = playerRepository.GetPlayerLogicById(playerId);
         var isOnline = onlineFriend != null;
-        var inRoom = isOnline && onlineFriend!.CurrentRoomId != 0;
+        var inRoom = isOnline && onlineFriend!.State.CurrentRoomId != 0;
         
         var updateFriendWriter = new PlayerUpdateFriendWriter
         {

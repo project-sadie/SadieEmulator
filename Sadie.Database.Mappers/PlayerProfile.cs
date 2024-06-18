@@ -21,6 +21,7 @@ public class PlayerProfile : Profile
                 Username = x.Username,
                 Email = x.Email
             })
-            .ForMember(x => x.NetworkObject, option => option.Ignore());
+            .ForMember(x => x.NetworkObject, option => option.Ignore())
+            .ForMember(x => x.Channel, option => option.Ignore());
     }
 }
