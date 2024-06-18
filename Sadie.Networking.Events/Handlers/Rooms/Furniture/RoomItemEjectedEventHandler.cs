@@ -31,7 +31,7 @@ public class RoomItemEjectedEventHandler(
 
         var player = client.Player;
         var itemId = ItemId;
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
         var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItem.Id == itemId);
 
         if (roomFurnitureItem == null)

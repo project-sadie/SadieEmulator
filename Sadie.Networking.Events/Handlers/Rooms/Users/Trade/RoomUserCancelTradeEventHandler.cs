@@ -1,4 +1,3 @@
-using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Game.Rooms.Users.Trading;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users.Trading;

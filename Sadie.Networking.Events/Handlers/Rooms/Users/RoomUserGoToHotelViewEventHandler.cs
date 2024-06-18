@@ -14,7 +14,7 @@ public class RoomUserGoToHotelViewEventHandler(RoomRepository roomRepository,
     public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
-        var lastRoomId = player.CurrentRoomId;
+        var lastRoomId = player.State.CurrentRoomId;
         
         if (lastRoomId != 0)
         {

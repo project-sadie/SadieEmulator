@@ -29,7 +29,7 @@ public class RoomPaintItemPlacedEventHandler(
             return;
         }
         
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
         
         if (room == null)
         {
