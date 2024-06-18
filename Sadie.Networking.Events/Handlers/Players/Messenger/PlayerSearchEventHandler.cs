@@ -14,7 +14,7 @@ public class PlayerSearchEventHandler(PlayerRepository playerRepository) : INetw
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalSeconds < CooldownIntervals.PlayerSearch)
+        if ((DateTime.Now - client.Player.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.PlayerSearch)
         {
             return;
         }
@@ -40,6 +40,8 @@ public class PlayerSearchEventHandler(PlayerRepository playerRepository) : INetw
 
         var friendsList = outgoingFriends
             .Concat(incomingFriends)
+            .DistinctBy(x => x.Id)
+            .Where(x => x.Username.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
         var strangers = await playerRepository

@@ -13,7 +13,6 @@ public interface IRoomUser : IRoomUserData, IAsyncDisposable
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();
     Task RunPeriodicCheckAsync();
-    void UpdateLastAction();
     void CheckStatusForCurrentTile();
     bool HasRights();
 }
