@@ -25,7 +25,7 @@ public class RoomUser(
     ServerRoomConstants constants,
     RoomControllerLevel controllerLevel,
     RoomFurnitureItemInteractorRepository interactorRepository)
-    : RoomUserData(id, room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle), interactorRepository),
+    : RoomUserData(id, room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),
         IRoomUser
 {
     public int Id { get; } = id;
@@ -35,24 +35,18 @@ public class RoomUser(
 
     public void LookAtPoint(Point point)
     {
-        if (StatusMap.ContainsKey(RoomUserStatus.Lay) || IsWalking)
-        {
-            return;
-        }
-        
         var direction = RoomPathFinderHelpers.GetDirectionForNextStep(Point, point);
+        var difference = DirectionHead - direction;
 
         if (!StatusMap.ContainsKey(RoomUserStatus.Sit))
         {
             Direction = direction;
         }
 
-        if (DirectionHead - direction < -1)
+        if (Math.Abs(difference) < 2)
         {
             DirectionHead = direction;
         }
-        
-        LastAction = DateTime.Now;
     }
 
     public void ApplyFlatCtrlStatus()
@@ -70,16 +64,6 @@ public class RoomUser(
             Point = NextPoint.Value;
             PointZ = NextZ;
             NextPoint = null;
-            
-            foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))
-            {
-                var interactor = interactorRepository.GetInteractorForType(item.FurnitureItem.InteractionType);
-            
-                if (interactor != null)
-                {
-                    await interactor.OnStepOnAsync(room, item, Unit);
-                }
-            }
         }
 
         if (NeedsPathCalculated)
@@ -111,11 +95,6 @@ public class RoomUser(
             
             await room.UserRepository.BroadcastDataAsync(writer);
         }
-    }
-
-    public void UpdateLastAction()
-    {
-        LastAction = DateTime.Now;
     }
 
     public bool HasRights()
