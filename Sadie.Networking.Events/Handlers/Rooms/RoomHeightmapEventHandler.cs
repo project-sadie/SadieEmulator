@@ -13,7 +13,7 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
         
         if (room == null)
         {
@@ -34,6 +34,13 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
             Unknown1 = true,
             WallHeight = -1,
             RelativeHeightmap = room.Layout.HeightMap.Replace("\r\n", "\r")
+        });
+        
+        await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter
+        {
+            HideWalls = room.Settings.HideWalls,
+            WallThickness = room.Settings.WallThickness,
+            FloorThickness = room.Settings.FloorThickness
         });
         
         await userRepository.BroadcastDataAsync(new RoomUserDataWriter
