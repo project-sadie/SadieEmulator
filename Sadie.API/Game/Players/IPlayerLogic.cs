@@ -23,6 +23,7 @@ public interface IPlayerLogic
     DateTime CreatedAt { get; init; }
     ValueTask DisposeAsync();
     bool DeservesReward(string? rewardType, int intervalInSeconds);
+    Task SendAlertAsync(string message);
     int GetAcceptedFriendshipCount();
     bool IsFriendsWith(int targetId);
     void DeleteFriendshipFor(int targetId);

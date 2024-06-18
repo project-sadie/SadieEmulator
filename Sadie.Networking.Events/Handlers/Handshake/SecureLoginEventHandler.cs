@@ -55,9 +55,9 @@ public class SecureLoginEventHandler(
         var tokenRecord = await dbContext
             .PlayerSsoToken
             .FirstOrDefaultAsync(x =>
-                x.Token == Token &&
-                x.ExpiresAt > expires &&
-                x.UsedAt == null);
+                x.Token == Token); //&&
+                //x.ExpiresAt > expires &&
+                //x.UsedAt == null);
 
         if (tokenRecord == null)
         {
@@ -112,21 +112,33 @@ public class SecureLoginEventHandler(
         playerLogic.Channel = client.Channel;
 
         var playerId = player.Id;
+        var alreadyOnline = playerRepository.GetPlayerLogicById(playerId) != null;
 
         client.Player = playerLogic;
 
+        if (alreadyOnline && 
+            !await playerRepository.TryRemovePlayerAsync(playerId))
+        {
+            logger.LogError($"Failed to disconnect already online session for ");
+            await DisconnectAsync(client.Channel.Id);
+            return;
+        }
+
         if (!playerRepository.TryAddPlayer(playerLogic))
         {
-            logger.LogError($"Player {playerId} could not be registered");
+            logger.LogError($"Player {playerLogic.Username} could not be registered");
             await DisconnectAsync(client.Channel.Id);
             return;
         }
 
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in");
-        
-        player.Data.IsOnline = true;
-        dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
-        await dbContext.SaveChangesAsync();
+
+        if (!alreadyOnline)
+        {
+            player.Data.IsOnline = true;
+            dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
+            await dbContext.SaveChangesAsync();
+        }
 
         playerLogic.Data.LastOnline = DateTime.Now;
         playerLogic.Authenticated = true;
@@ -149,12 +161,7 @@ public class SecureLoginEventHandler(
             .Replace("[username]", player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
 
-        var alertWriter = new PlayerAlertWriter
-        {
-            Message = formattedMessage
-        };
-
-        await player.NetworkObject.WriteToStreamAsync(alertWriter);
+        await player.SendAlertAsync(formattedMessage);
     }
 
     private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;

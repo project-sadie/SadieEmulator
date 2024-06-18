@@ -30,13 +30,9 @@ public class AboutCommand(
         message.AppendLine("habtard - Lead Developer");
         message.AppendLine("Damien - Developer");
         message.AppendLine("Lucas - Creative Director");
+        message.AppendLine("React - Project Manager");
         message.AppendLine("");
 
-        var writer = new PlayerAlertWriter
-        {
-            Message = message.ToString()
-        };
-        
-        await user.NetworkObject.WriteToStreamAsync(writer);
+        await user.Player.SendAlertAsync(message.ToString());
     }
 }

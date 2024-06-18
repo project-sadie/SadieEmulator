@@ -12,6 +12,8 @@ public class CatalogIndexEventHandler(SadieContext dbContext) : INetworkPacketEv
 {
     public async Task HandleAsync(INetworkClient client)
     {
+        var maxRole = client.Player?.Roles.MaxBy(x => x.Id)?.Id ?? 0;
+        
         var parentlessPages = await dbContext.Set<CatalogPage>()
             .Include("Pages")
             .Include("Pages.Pages")
@@ -21,7 +23,7 @@ public class CatalogIndexEventHandler(SadieContext dbContext) : INetworkPacketEv
 
         await client.WriteToStreamAsync(new CatalogTabsWriter
         {
-            Mode = client.Player.State.CatalogMode,
+            Mode = client.Player!.State.CatalogMode,
             TabPages = parentlessPages
         });
     }

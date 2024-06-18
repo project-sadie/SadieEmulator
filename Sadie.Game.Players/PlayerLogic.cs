@@ -2,6 +2,7 @@ using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
@@ -40,5 +41,20 @@ public class PlayerLogic : Player, IPlayerLogic
             .FirstOrDefault(x => x.Type == rewardType);
 
         return lastReward == null || lastReward.CreatedAt < DateTime.Now.AddSeconds(-intervalInSeconds);
+    }
+
+    public async Task SendAlertAsync(string message)
+    {
+        if (NetworkObject == null)
+        {
+            return;
+        }
+        
+        var writer = new PlayerAlertWriter
+        {
+            Message = message
+        };
+
+        await NetworkObject.WriteToStreamAsync(writer);
     }
 }
