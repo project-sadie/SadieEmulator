@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
@@ -37,6 +38,7 @@ public class PlayerChangeRelationshipEventHandler(
             if (relationship != null)
             {
                 client.Player.Relationships.Remove(relationship);
+                dbContext.Entry(relationship).State = EntityState.Deleted;
                 await dbContext.SaveChangesAsync();
             }
         }
@@ -50,15 +52,21 @@ public class PlayerChangeRelationshipEventHandler(
                 {
                     OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
+                    TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
                     TypeId = (PlayerRelationshipType)relationId
                 };
                 
                 client.Player.Relationships.Add(relationship);
+                
+                dbContext.Entry(relationship).State = EntityState.Added;
+                dbContext.Attach(relationship.TargetPlayer!).State = EntityState.Unchanged;
+                
                 await dbContext.SaveChangesAsync();
             }
             else
             {
                 relationship.TypeId = (PlayerRelationshipType)relationId;
+                dbContext.Entry(relationship).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
             }
         }
@@ -66,7 +74,7 @@ public class PlayerChangeRelationshipEventHandler(
         var onlineFriend = playerRepository.GetPlayerLogicById(playerId);
         var isOnline = onlineFriend != null;
         var inRoom = isOnline && onlineFriend!.State.CurrentRoomId != 0;
-        
+
         var updateFriendWriter = new PlayerUpdateFriendWriter
         {
             Updates =

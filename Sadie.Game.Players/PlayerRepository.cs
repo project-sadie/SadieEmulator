@@ -31,6 +31,7 @@ public class PlayerRepository(
             .Include(x => x.AvatarData)
             .Include(x => x.IncomingFriendships)
             .Include(x => x.OutgoingFriendships)
+            .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
     

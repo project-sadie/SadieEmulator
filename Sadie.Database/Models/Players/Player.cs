@@ -17,7 +17,7 @@ public class Player
     public PlayerAvatarData? AvatarData { get; init; }
     public List<PlayerTag> Tags { get; init; } = [];
     public ICollection<PlayerRoomLike> RoomLikes { get; init; } = [];
-    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = []; //
+    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = [];
     public PlayerNavigatorSettings? NavigatorSettings { get; init; }
     public PlayerGameSettings? GameSettings { get; init; }
     public ICollection<PlayerBadge> Badges { get; init; } = [];
