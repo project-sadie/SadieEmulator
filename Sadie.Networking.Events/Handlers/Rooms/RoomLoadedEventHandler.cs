@@ -32,15 +32,13 @@ public class RoomLoadedEventHandler(
     {
         var player = client.Player;
 
-        var (roomId, password) = (RoomId, Password);
-        
         var room = await Game.Rooms.RoomHelpersDirty.TryLoadRoomByIdAsync(
-            roomId,
+            RoomId,
             roomRepository,
             dbContext,
             mapper);
         
-        var lastRoomId = player.CurrentRoomId;
+        var lastRoomId = player.State.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
@@ -57,7 +55,7 @@ public class RoomLoadedEventHandler(
 
         if (room == null)
         {
-            logger.LogError($"Failed to load room {roomId} for player '{player.Username}'");
+            logger.LogError($"Failed to load room {RoomId} for player '{player.Username}'");
             await client.WriteToStreamAsync(new RoomUserHotelViewWriter());
             
             return;
@@ -77,24 +75,17 @@ public class RoomLoadedEventHandler(
 
         if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
             !isOwner && 
-            !player.HasPermission("enter_guarded_rooms") && 
-            !await ValidateRoomAccessForClientAsync(client, room, password))
+            !await ValidateRoomAccessForClientAsync(client, room, Password))
         {
             return;
         }
         
-        await RoomHelpersDirty.EnterRoomAsync(client, room, logger, roomUserFactory, dbContext);
-
-        var friends = player
-            .GetMergedFriendships()
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-        
-        await playerRepository.UpdateStatusForFriendsAsync(
-            player,
-            friends, 
-            true, 
-            true);
+        await RoomHelpersDirty.AfterEnterRoomAsync(
+            client, 
+            room, 
+            roomUserFactory, 
+            dbContext, 
+            playerRepository);
     }
     
     public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, RoomLogic room, string password)
@@ -103,11 +94,17 @@ public class RoomLoadedEventHandler(
         
         switch (room.Settings.AccessType)
         {
-            case RoomAccessType.Password when password != room.Settings.Password:
+            case RoomAccessType.Password:
+                if (room.Settings.Password == password)
+                {
+                    return true;
+                }
+                
                 await client.WriteToStreamAsync(new GenericErrorWriter
                 {
                     ErrorCode = (int) GenericErrorCode.IncorrectRoomPassword
                 });
+                
                 await client.WriteToStreamAsync(new RoomUserHotelViewWriter());
                 return false;
             

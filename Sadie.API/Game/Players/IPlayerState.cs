@@ -11,5 +11,4 @@ public interface IPlayerState
     string CatalogMode { get; set; }
     PlayerFurnitureItemPlacementData? Teleport { get; set; }
     int CurrentRoomId { get; set; }
-    int LoadingRoomId { get; set; }
 }

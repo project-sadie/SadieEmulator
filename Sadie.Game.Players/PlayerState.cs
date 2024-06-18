@@ -12,5 +12,4 @@ public class PlayerState : IPlayerState
     public string CatalogMode { get; set; }
     public PlayerFurnitureItemPlacementData? Teleport { get; set; }
     public int CurrentRoomId { get; set; }
-    public int LoadingRoomId { get; set; }
 }

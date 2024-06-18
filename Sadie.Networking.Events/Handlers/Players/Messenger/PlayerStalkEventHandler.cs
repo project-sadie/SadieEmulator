@@ -37,7 +37,7 @@ public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetwo
             return;
         }
 
-        if (targetPlayer.CurrentRoomId == 0)
+        if (targetPlayer.State.CurrentRoomId == 0)
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter
             {
@@ -47,14 +47,14 @@ public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetwo
             return;
         }
 
-        if (client.Player.CurrentRoomId == targetPlayer.CurrentRoomId)
+        if (client.Player.State.CurrentRoomId == targetPlayer.State.CurrentRoomId)
         {
             return;
         }
 
         await client.WriteToStreamAsync(new RoomForwardEntryWriter
         {
-            RoomId = targetPlayer.CurrentRoomId
+            RoomId = targetPlayer.State.CurrentRoomId
         });
     }
 }

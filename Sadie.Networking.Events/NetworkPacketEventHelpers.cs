@@ -146,7 +146,7 @@ public static class NetworkPacketEventHelpers
             return false;
         }
         
-        var roomId = player.CurrentRoomId;
+        var roomId = player.State.CurrentRoomId;
         var roomObject = roomRepository.TryGetRoomById(roomId);
 
         if (roomObject == null || client.RoomUser == null)
