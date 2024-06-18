@@ -8,11 +8,11 @@ using Sadie.Database.Models.Rooms;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemInteractor
+public class DimmerInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "dimmer";
+    public override string InteractionType => "dimmer";
     
-    public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         if (room.DimmerSettings == null)
         {
@@ -59,7 +59,7 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
         }
     }
 
-    public async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         await dbContext
             .RoomDimmerPresets

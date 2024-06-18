@@ -7,11 +7,11 @@ using Sadie.Database.Models.Players.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class GateInteractor(SadieContext dbContext) : IRoomFurnitureItemInteractor
+public class GateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "gate";
+    public override string InteractionType => "gate";
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         if (!room.TileMap.IsTileFree(new Point(item.PositionX, item.PositionY)))
         {
@@ -36,7 +36,7 @@ public class GateInteractor(SadieContext dbContext) : IRoomFurnitureItemInteract
         room.TileMap.Map[item.PositionY, item.PositionX] = (short) (newState == 1 ? 1 : 0);
     }
 
-    public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
         dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;

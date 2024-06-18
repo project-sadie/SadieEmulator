@@ -6,11 +6,11 @@ using Sadie.Shared;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class DiceInteractor : IRoomFurnitureItemInteractor
+public class DiceInteractor : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "dice";
+    public override string InteractionType => "dice";
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "-1");
         await Task.Delay(1500);

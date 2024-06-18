@@ -8,11 +8,11 @@ using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class OneWayGateInteractor(SadieContext dbContext) : IRoomFurnitureItemInteractor
+public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "onewaygate";
+    public override string InteractionType => "onewaygate";
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         var squareInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
@@ -50,7 +50,7 @@ public class OneWayGateInteractor(SadieContext dbContext) : IRoomFurnitureItemIn
         }
     }
 
-    public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
         dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
