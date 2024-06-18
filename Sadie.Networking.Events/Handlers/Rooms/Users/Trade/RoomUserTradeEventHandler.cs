@@ -44,22 +44,6 @@ public class RoomUserTradeEventHandler(RoomRepository roomRepository) : INetwork
             await client.WriteToStreamAsync(new RoomUserTradeErrorWriter { Code = RoomUserTradeError.TargetAlreadyTrading });
             return;
         }
-
-        if (!roomUser.IsWalking)
-        {
-            await roomUser.Room.UserRepository.BroadcastDataAsync(new RoomUserStatusWriter
-            {
-                Users = [roomUser]
-            });
-        }
-
-        if (!targetUser.IsWalking)
-        {
-            await targetUser.Room.UserRepository.BroadcastDataAsync(new RoomUserStatusWriter
-            {
-                Users = [targetUser]
-            });
-        }
         
         await roomUser.NetworkObject.WriteToStreamAsync(writer: new RoomUserTradeStartedWriter
         {

@@ -48,7 +48,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
         var player = roomUser.Player;
         
-        player.CurrentRoomId = 0;
+        player.State.CurrentRoomId = 0;
         
         await playerRepository.UpdateStatusForFriendsAsync(
             (Player) player, 

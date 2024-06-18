@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Sadie.Game.Rooms;
+using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -18,21 +19,19 @@ public class RoomUserLookAtEventHandler(RoomRepository roomRepository) : INetwor
             return Task.CompletedTask;
         }
 
-        if (roomUser.IsWalking)
+        if (roomUser.StatusMap.ContainsKey(RoomUserStatus.Sit))
         {
             return Task.CompletedTask;
         }
 
         var currentPoint = roomUser.Point;
-        var x = X;
-        var y = Y;
 
-        if (currentPoint.X == x && currentPoint.Y == y)
+        if (currentPoint.X == X && currentPoint.Y == Y)
         {
             return Task.CompletedTask;
         }
 
-        roomUser.LookAtPoint(new Point(x, y));
+        roomUser.LookAtPoint(new Point(X, Y));
         return Task.CompletedTask;
     }
 }
