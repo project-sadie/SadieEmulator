@@ -2,7 +2,6 @@ using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Enums.Game.Rooms.Unit;
-using Sadie.Game.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Unit;
 
@@ -11,8 +10,7 @@ public class RoomUnit :
 {
     protected RoomUnit(int id, RoomUnitType type, 
         IRoomLogic room, 
-        Point point, 
-        RoomFurnitureItemInteractorRepository interactorRepository) : base(room, point, interactorRepository)
+        Point point) : base(room, point)
     {
         Id = id;
         Type = type;

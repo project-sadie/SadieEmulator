@@ -8,11 +8,11 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class VendingMachineInteractor : IRoomFurnitureItemInteractor
+public class VendingInteractor : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "vending_machine";
+    public override string InteractionType => "vending_machine";
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 

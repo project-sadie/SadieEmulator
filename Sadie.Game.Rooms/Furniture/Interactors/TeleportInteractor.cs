@@ -17,13 +17,13 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 public class TeleportInteractor(
     RoomRepository roomRepository,
     SadieContext dbContext,
-    IMapper mapper) : IRoomFurnitureItemInteractor
+    IMapper mapper) : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "teleport";
+    public override string InteractionType => "teleport";
 
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         var itemPosition = new Point(item.PositionX, item.PositionY);
         var itemInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
