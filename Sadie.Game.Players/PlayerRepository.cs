@@ -32,6 +32,7 @@ public class PlayerRepository(
             .Include(x => x.IncomingFriendships)
             .Include(x => x.OutgoingFriendships)
             .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
     

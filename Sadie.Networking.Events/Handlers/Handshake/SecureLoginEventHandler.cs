@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,6 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Options.Options;
@@ -96,6 +96,7 @@ public class SecureLoginEventHandler(
             .Include(x => x.Rooms).ThenInclude(x => x.Settings)
             .Include(x => x.Groups)
             .Include(x => x.Bots)
+            .AsSplitQuery()
             .FirstOrDefaultAsync();
 
         if (player == null)
