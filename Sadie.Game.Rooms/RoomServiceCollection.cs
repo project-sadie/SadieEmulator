@@ -8,6 +8,7 @@ using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Chat.Commands.Server;
 using Sadie.Game.Rooms.Furniture;
+using Sadie.Game.Rooms.Furniture.Interactors;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -29,8 +30,8 @@ public static class RoomServiceCollection
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
             .AddClasses(classes => classes.Where(x => 
-                x is { IsClass: true, IsAbstract: false } && 
-                x.IsAssignableTo(typeof(IRoomFurnitureItemInteractor))))
+                x is { IsClass: true, IsAbstract: false, IsInterface: false } && 
+                x.IsSubclassOf(typeof(AbstractRoomFurnitureItemInteractor))))
             .As<IRoomFurnitureItemInteractor>()
             .WithTransientLifetime());
 
