@@ -12,10 +12,6 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
 {
     public string InteractionType => "dimmer";
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
-    {
-    }
-
     public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         if (room.DimmerSettings == null)
@@ -78,11 +74,4 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
             await dbContext.SaveChangesAsync();
         }
     }
-
-    public async Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
-    {
-    }
-
-    public Task OnStepOnAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }

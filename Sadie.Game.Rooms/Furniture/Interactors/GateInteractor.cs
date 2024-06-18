@@ -42,9 +42,4 @@ public class GateInteractor(SadieContext dbContext) : IRoomFurnitureItemInteract
         dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
-    
-    public Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnStepOnAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }
