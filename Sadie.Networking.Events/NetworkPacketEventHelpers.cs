@@ -243,7 +243,6 @@ public static class NetworkPacketEventHelpers
             await room.UserRepository.BroadcastDataAsync(writer);
         }
         
-        roomUser.UpdateLastAction();
         room.ChatMessages.Add(chatMessage);
 
         dbContext.Add(chatMessage);

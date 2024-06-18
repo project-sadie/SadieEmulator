@@ -34,8 +34,6 @@ public class RoomUserActionEventHandler(RoomRepository roomRepository) : INetwor
             
             return;
         }
-        
-        roomUser.UpdateLastAction();
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
         {

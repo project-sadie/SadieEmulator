@@ -17,8 +17,6 @@ public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INe
             return;
         }
 
-        roomUser.UpdateLastAction();
-        
         await roomUser.Room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
         {
             UserId = roomUser.Id,
