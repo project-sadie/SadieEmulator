@@ -35,10 +35,23 @@ public class RoomUser(
 
     public void LookAtPoint(Point point)
     {
+        if (StatusMap.ContainsKey(RoomUserStatus.Lay) || IsWalking)
+        {
+            return;
+        }
+        
         var direction = RoomPathFinderHelpers.GetDirectionForNextStep(Point, point);
 
-        Direction = direction;
-        DirectionHead = direction;
+        if (!StatusMap.ContainsKey(RoomUserStatus.Sit))
+        {
+            Direction = direction;
+        }
+
+        if (DirectionHead - direction < -1)
+        {
+            DirectionHead = direction;
+        }
+        
         LastAction = DateTime.Now;
     }
 
