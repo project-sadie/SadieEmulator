@@ -44,7 +44,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
             writer.WriteString(friendData.AvatarData.Motto);
             writer.WriteString(friendData.Username); // real name
             writer.WriteString(""); // last access?
-            writer.WriteBool(false); // TODO: offline messaging
+            writer.WriteBool(false);
             writer.WriteBool(false); // unknown
             writer.WriteBool(false); // unknown
             writer.WriteShort((short) relationshipType);

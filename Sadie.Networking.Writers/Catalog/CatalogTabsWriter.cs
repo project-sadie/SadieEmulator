@@ -37,7 +37,7 @@ public class CatalogTabsWriter : AbstractPacketWriter
         writer.WriteInteger(page.Enabled ? page.Id : -1);
         writer.WriteString(page.Name);
         writer.WriteString(page.Caption);
-        writer.WriteInteger(0); // TODO: offer id count
+        writer.WriteInteger(0);
         writer.WriteInteger(page.Pages.Count);
         
         foreach (var childPage in page.Pages)

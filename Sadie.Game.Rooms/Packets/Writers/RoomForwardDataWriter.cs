@@ -37,7 +37,7 @@ public class RoomForwardDataWriter : AbstractPacketWriter
             writer.WriteString(tag.Name);
         }
         
-        writer.WriteInteger(0 | 8); // TODO: base
+        writer.WriteInteger(0 | 8);
         writer.WriteBool(RoomForward);
         writer.WriteBool(false); // TODO: staff picked?
         writer.WriteBool(false); // TODO: is group member?
