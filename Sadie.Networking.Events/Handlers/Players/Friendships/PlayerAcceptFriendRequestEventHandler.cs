@@ -54,7 +54,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .Relationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
 
-        await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(client.Player, [
+        await PlayerHelpersToClean.SendFriendUpdatesToPlayerAsync(client.Player, [
             new PlayerFriendshipUpdate
             {
                 Type = 0,
@@ -81,7 +81,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .FirstOrDefault(x =>
                     x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 
-            await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [
+            await PlayerHelpersToClean.SendFriendUpdatesToPlayerAsync(targetPlayer, [
                 new PlayerFriendshipUpdate
                 {
                     Type = 0,

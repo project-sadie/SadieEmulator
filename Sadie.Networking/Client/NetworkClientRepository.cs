@@ -1,10 +1,17 @@
 ﻿using System.Collections.Concurrent;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MySqlConnector;
+using Sadie.Database;
+using Sadie.Game.Players;
 
 namespace Sadie.Networking.Client;
 
-public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : INetworkClientRepository
+public class NetworkClientRepository(
+    ILogger<NetworkClientRepository> logger,
+    PlayerRepository playerRepository,
+    SadieContext dbContext) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
 
@@ -15,19 +22,48 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
 
     public async Task<bool> TryRemoveAsync(IChannelId channelId)
     {
-        if (!_clients.ContainsKey(channelId))
-        {
-            return true;
-        }
-        
         try
         {
             var result = _clients.TryRemove(channelId, out var client);
-
-            if (client != null)
+            
+            if (client == null)
             {
-                await client.DisposeAsync();
+                logger.LogError("Failed to find network client to dispose.");
+                return false;
             }
+
+            var player = client.Player;
+
+            if (player != null)
+            {
+                await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+                    player, 
+                    player.GetMergedFriendships(), 
+                    false, 
+                    false, 
+                    playerRepository);
+                
+                player.Data.IsOnline = false;
+                
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    $"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId",
+                    0, player.Id);
+                
+                if (!await playerRepository.TryRemovePlayerAsync(client.Player.Id))
+                {
+                    logger.LogError("Failed to remove player whilst disposing network client.");
+                    return false;
+                }
+            }
+
+            if (client.RoomUser != null)
+            {
+                await client.RoomUser.Room.UserRepository.TryRemoveAsync(
+                    client.RoomUser.Id, 
+                    false, true);
+            }
+            
+            await client.DisposeAsync();
 
             return result;
             

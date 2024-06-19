@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Club;
 public class PlayerClubOffersEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    [PacketData] public int WindowId { get; set; }
+    public int WindowId { get; set; }
     
     public async Task HandleAsync(INetworkClient client)
     {
