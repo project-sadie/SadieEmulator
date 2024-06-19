@@ -55,9 +55,9 @@ public class SecureLoginEventHandler(
         var tokenRecord = await dbContext
             .PlayerSsoToken
             .FirstOrDefaultAsync(x =>
-                x.Token == Token); //&&
-                //x.ExpiresAt > expires &&
-                //x.UsedAt == null);
+                x.Token == Token &&
+                x.ExpiresAt > expires &&
+                x.UsedAt == null);
 
         if (tokenRecord == null)
         {
