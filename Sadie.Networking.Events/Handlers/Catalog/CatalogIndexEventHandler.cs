@@ -15,9 +15,9 @@ public class CatalogIndexEventHandler(SadieContext dbContext) : INetworkPacketEv
         var maxRole = client.Player?.Roles.MaxBy(x => x.Id)?.Id ?? 0;
         
         var parentlessPages = await dbContext.Set<CatalogPage>()
-            .Include("Pages")
-            .Include("Pages.Pages")
-            .Include("Pages.Pages.Pages")
+            .Include(x => x.Pages.OrderBy(y => y.OrderId))
+            .ThenInclude(x => x.Pages.OrderBy(y => y.OrderId))
+            .ThenInclude(x => x.Pages.OrderBy(y => y.OrderId))
             .Where(x => x.CatalogPageId == null)
             .ToListAsync();
 
