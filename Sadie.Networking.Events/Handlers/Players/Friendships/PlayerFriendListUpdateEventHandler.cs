@@ -11,7 +11,7 @@ public class PlayerFriendListUpdateEventHandler(
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        await PlayerFriendshipHelpers.SendPlayerFriendListUpdate(
+        await PlayerHelpersToClean.SendPlayerFriendListUpdate(
             client.Player!, 
             playerRepository);
     }

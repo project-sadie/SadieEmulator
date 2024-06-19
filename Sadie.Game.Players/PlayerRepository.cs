@@ -63,45 +63,10 @@ public class PlayerRepository(
         {
             return result;
         }
-
-        player.Data.IsOnline = false;
-        dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
-        await dbContext.SaveChangesAsync();
         
-        await UpdateStatusForFriendsAsync(player, player.GetMergedFriendships(), false, false);
         await player.DisposeAsync();
 
         return result;
-    }
-
-    public async Task UpdateStatusForFriendsAsync(
-        Player player, 
-        IEnumerable<PlayerFriendship> friendships, 
-        bool isOnline, 
-        bool inRoom)
-    {
-        var update = new PlayerFriendshipUpdate
-        {
-            Type = 0,
-            Friend = player,
-            FriendOnline = isOnline,
-            FriendInRoom = inRoom,
-            Relation = PlayerRelationshipType.None
-        };
-        
-        foreach (var friend in friendships)
-        {
-            var targetId = friend.OriginPlayerId == player.Id ? 
-                friend.TargetPlayerId : 
-                friend.OriginPlayerId;
-
-            var targetPlayer = GetPlayerLogicById(targetId);
-
-            if (targetPlayer != null)
-            {
-                await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [update]);
-            }
-        }
     }
 
     public int Count()
@@ -118,17 +83,6 @@ public class PlayerRepository(
                 x.Username.Contains(searchQuery) && 
                 !excludeIds.Contains(x.Id))
             .ToListAsync();
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        foreach (var player in _players.Values)
-        {
-            if (!await TryRemovePlayerAsync(player.Id))
-            {
-                logger.LogError("Failed to dispose of player");
-            }
-        }
     }
 
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)

@@ -6,6 +6,7 @@ using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -89,6 +90,11 @@ public static class RoomHelpersDirty
         if (player.HasPermission("any_room_owner"))
         {
             controllerLevel = RoomControllerLevel.Owner;
+        }
+
+        if (player.HasPermission("moderator"))
+        {
+            controllerLevel = RoomControllerLevel.Moderator;
         }
 
         if (player.HasPermission("any_room_rights"))
@@ -207,11 +213,12 @@ public static class RoomHelpersDirty
             .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
             .ToList();
         
-        await playerRepository.UpdateStatusForFriendsAsync(
+        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
             player,
             friends, 
             true, 
-            true);
+            true,
+            playerRepository);
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, Room room)
@@ -424,8 +431,8 @@ public static class RoomHelpersDirty
         SadieContext dbContext,
         RoomFurnitureItemInteractorRepository interactorRepository)
     {
-        if (playerItem.FurnitureItem.InteractionType == "dimmer" && 
-            room.FurnitureItems.Any(x => x.FurnitureItem.InteractionType == "dimmer"))
+        if (playerItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer && 
+            room.FurnitureItems.Any(x => x.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MaxDimmers);
             return;

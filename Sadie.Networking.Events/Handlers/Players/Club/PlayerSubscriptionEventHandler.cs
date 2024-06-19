@@ -16,7 +16,7 @@ public class PlayerSubscriptionEventHandler : INetworkPacketEventHandler
             return;
         }
 
-        var writer = PlayerHelpersDirty.GetSubscriptionWriterAsync(client.Player, Name);
+        var writer = PlayerHelpersToClean.GetSubscriptionWriterAsync(client.Player, Name);
 
         if (writer == null)
         {
