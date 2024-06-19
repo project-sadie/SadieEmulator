@@ -10,8 +10,8 @@ namespace Sadie.Networking.Writers.Navigator;
 [PacketId(ServerPacketId.NavigatorRooms)]
 public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
 {
-    [PacketData] public required string? TabName { get; init; }
-    [PacketData] public required string? SearchQuery { get; init; }
+    public required string? TabName { get; init; }
+    public required string? SearchQuery { get; init; }
     public required Dictionary<NavigatorCategory, List<Room>> CategoryRoomMap { get; init; }
     public required RoomRepository RoomRepository { get; init; }
 

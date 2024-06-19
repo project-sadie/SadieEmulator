@@ -17,8 +17,8 @@ public class NavigatorSearchEventHandler(
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    [PacketData] public string? TabName { get; set; }
-    [PacketData] public string? SearchQuery { get; set; }
+    public string? TabName { get; set; }
+    public string? SearchQuery { get; set; }
     
     public async Task HandleAsync(INetworkClient client)
     {

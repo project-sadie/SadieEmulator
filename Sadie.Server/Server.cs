@@ -8,6 +8,7 @@ using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
+using Sadie.Networking.Client;
 
 namespace SadieEmulator;
 
@@ -77,13 +78,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         
         logger.LogWarning("Server is about to shut down...");
 
-        var roomRepository = serviceProvider.GetRequiredService<RoomRepository>();
-        var playerRepository = serviceProvider.GetRequiredService<PlayerRepository>();
-
-        logger.LogInformation("Disposing rooms...");
-        await roomRepository.DisposeAsync();
-
-        logger.LogInformation("Disposing players...");
-        await playerRepository.DisposeAsync();
+        var networkClientRepository = serviceProvider.GetRequiredService<INetworkClientRepository>();
+        await networkClientRepository.DisposeAsync();
     }
 }

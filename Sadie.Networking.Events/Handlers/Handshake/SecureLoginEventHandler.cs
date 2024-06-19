@@ -37,14 +37,14 @@ public class SecureLoginEventHandler(
         if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
         {
             logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
 
         if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
             logger.LogWarning("Rejected an insecure sso token");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
 
@@ -62,7 +62,7 @@ public class SecureLoginEventHandler(
         if (tokenRecord == null)
         {
             logger.LogWarning("Failed to find token record for provided sso.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
         
@@ -94,7 +94,6 @@ public class SecureLoginEventHandler(
             .Include(x => x.MessagesSent)
             .Include(x => x.MessagesReceived)
             .Include(x => x.Rooms).ThenInclude(x => x.Settings)
-            .Include(x => x.Groups)
             .Include(x => x.Bots)
             .AsSplitQuery()
             .FirstOrDefaultAsync();
@@ -102,7 +101,7 @@ public class SecureLoginEventHandler(
         if (player == null)
         {
             logger.LogError("Failed to resolve player record.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
         
@@ -116,18 +115,16 @@ public class SecureLoginEventHandler(
 
         client.Player = playerLogic;
 
-        if (alreadyOnline && 
-            !await playerRepository.TryRemovePlayerAsync(playerId))
+        if (alreadyOnline)
         {
-            logger.LogError($"Failed to disconnect already online session for ");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
 
         if (!playerRepository.TryAddPlayer(playerLogic))
         {
             logger.LogError($"Player {playerLogic.Username} could not be registered");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
 
@@ -146,7 +143,15 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
-        await PlayerFriendshipHelpers.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+        await PlayerHelpersToClean.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+        
+        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+            player, 
+            player.GetMergedFriendships(), 
+            true, 
+            false, 
+            playerRepository);
+        
         await SendWelcomeMessageAsync(playerLogic);
     }
 
@@ -166,7 +171,7 @@ public class SecureLoginEventHandler(
 
     private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;
 
-    private async Task DisconnectAsync(IChannelId channelId)
+    private async Task DisconnectNetworkClientAsync(IChannelId channelId)
     {
         if (!await networkClientRepository.TryRemoveAsync(channelId))
         {

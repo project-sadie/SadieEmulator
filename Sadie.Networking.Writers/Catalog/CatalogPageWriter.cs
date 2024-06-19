@@ -18,7 +18,7 @@ public class CatalogPageWriter : AbstractPacketWriter
     public required List<string?> Texts { get; init; }
     public required List<CatalogItem> Items { get; init; }
     public required bool AcceptSeasonCurrencyAsCredits { get; init; }
-    public required List<CatalogFrontPageItem>? FrontPageItems { get; init; }
+    public required IEnumerable<CatalogFrontPageItem> FrontPageItems { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
@@ -31,6 +31,12 @@ public class CatalogPageWriter : AbstractPacketWriter
 
         foreach (var image in Images)
         {
+            if (string.IsNullOrEmpty(image))
+            {
+                writer.WriteString("");
+                continue;
+            }
+            
             writer.WriteString(image);
         }
         
@@ -38,6 +44,12 @@ public class CatalogPageWriter : AbstractPacketWriter
 
         foreach (var text in Texts)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                writer.WriteString("");
+                continue;
+            }
+            
             writer.WriteString(text);
         }
         
@@ -95,15 +107,15 @@ public class CatalogPageWriter : AbstractPacketWriter
             writer.WriteString($"{item.Name}.png");
         }
         
-        writer.WriteInteger(0);
+        writer.WriteInteger(-1);
         writer.WriteBool(AcceptSeasonCurrencyAsCredits);
 
-        if (PageLayout is not "frontpage" || FrontPageItems == null)
+        if (PageLayout is not "frontpage4")
         {
             return;
         }
         
-        writer.WriteInteger(FrontPageItems.Count);
+        writer.WriteInteger(FrontPageItems.Count());
 
         foreach (var item in FrontPageItems)
         {

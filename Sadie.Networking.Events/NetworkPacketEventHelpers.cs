@@ -115,7 +115,7 @@ public static class NetworkPacketEventHelpers
             AchievementScore = playerData.AchievementScore
         });
 
-        if (player.HasPermission("moderation_tools"))
+        if (player.HasPermission("moderator"))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter
             {

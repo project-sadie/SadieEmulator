@@ -1,4 +1,5 @@
 using Sadie.Database;
+using Sadie.Enums;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -20,7 +21,7 @@ public class RoomDimmerSettingsEventHandler(
 
         var dimmer = room
             .FurnitureItems
-            .FirstOrDefault(x => x.FurnitureItem.InteractionType == "dimmer");
+            .FirstOrDefault(x => x.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
 
         if (dimmer == null)
         {

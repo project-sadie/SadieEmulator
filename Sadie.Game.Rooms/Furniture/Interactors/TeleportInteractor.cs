@@ -8,6 +8,7 @@ using Sadie.API.Game.Rooms.Unit;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums;
 using Sadie.Enums.Game.Rooms.Unit;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -19,7 +20,7 @@ public class TeleportInteractor(
     SadieContext dbContext,
     IMapper mapper) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => "teleport";
+    public override string InteractionType => FurnitureItemInteractionType.Teleport;
 
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     

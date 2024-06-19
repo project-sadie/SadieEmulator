@@ -7,7 +7,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 [PacketId(EventHandlerIds.CatalogMode)]
 public class CatalogModeEventHandler() : INetworkPacketEventHandler
 {
-    [PacketData] public string? Mode { get; set; }
+    public string? Mode { get; set; }
     
     public async Task HandleAsync(INetworkClient client)
     {

@@ -5,6 +5,7 @@ using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players;
@@ -23,10 +24,10 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 public class CatalogPurchaseEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    [PacketData] public int PageId { get; set; }
-    [PacketData] public int ItemId { get; set; }
-    [PacketData] public string? MetaData { get; set; }
-    [PacketData] public int Amount { get; set; }
+    public int PageId { get; set; }
+    public int ItemId { get; set; }
+    public string? MetaData { get; set; }
+    public int Amount { get; set; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -134,7 +135,7 @@ public class CatalogPurchaseEventHandler(
                 Ambassador = true
             });
             
-            var subWriter = PlayerHelpersDirty.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+            var subWriter = PlayerHelpersToClean.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
 
             if (subWriter != null)
             {
@@ -220,7 +221,7 @@ public class CatalogPurchaseEventHandler(
         
         var furnitureItem = item.FurnitureItems.First();
 
-        if (item.FurnitureItems.Any(x => x.InteractionType == "teleport"))
+        if (item.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
         {
             var parent = new PlayerFurnitureItem
             {

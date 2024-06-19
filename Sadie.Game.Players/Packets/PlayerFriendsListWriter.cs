@@ -10,8 +10,8 @@ namespace Sadie.Game.Players.Packets;
 [PacketId(ServerPacketId.PlayerFriendsList)]
 public class PlayerFriendsListWriter : AbstractPacketWriter
 {
-    [PacketData] public required int Pages { get; init; }
-    [PacketData] public required int Index { get; init; }
+    public required int Pages { get; init; }
+    public required int Index { get; init; }
     public required int PlayerId { get; init; }
     public required ICollection<PlayerFriendship> Friends { get; init; }
     public required PlayerRepository PlayerRepository { get; init; }

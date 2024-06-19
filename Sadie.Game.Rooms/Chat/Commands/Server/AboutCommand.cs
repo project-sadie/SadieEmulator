@@ -27,10 +27,9 @@ public class AboutCommand(
         message.AppendLine($"Memory Used: {memoryMb} MB");
         message.AppendLine("");
         message.AppendLine("Credits:");
-        message.AppendLine("habtard - Lead Developer");
-        message.AppendLine("Damien - Developer");
-        message.AppendLine("Lucas - Creative Director");
-        message.AppendLine("React - Project Manager");
+        message.AppendLine("habtard - Developer");
+        message.AppendLine("Lucas - Graphics");
+        message.AppendLine("React - Testing");
         message.AppendLine("");
 
         await user.Player.SendAlertAsync(message.ToString());
