@@ -13,7 +13,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Options.Options;
 using Sadie.Shared;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
@@ -129,6 +128,8 @@ public class SecureLoginEventHandler(
         }
 
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in");
+
+        await client.WriteToStreamAsync(new PlayerPingWriter());
 
         if (!alreadyOnline)
         {

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using DotNetty.Transport.Channels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using MySqlConnector;
 using Sadie.Database;
 using Sadie.Game.Players;
 
@@ -22,17 +20,25 @@ public class NetworkClientRepository(
 
     public async Task<bool> TryRemoveAsync(IChannelId channelId)
     {
+        if (!_clients.ContainsKey(channelId))
+        {
+            return true;
+        }
+        
         try
         {
             var result = _clients.TryRemove(channelId, out var client);
             
-            if (client == null)
+            if (!result)
             {
-                logger.LogError("Failed to find network client to dispose.");
+                logger.LogError("Failed to remove a network client.");
                 return false;
             }
 
             var player = client.Player;
+            var roomUser = client.RoomUser;
+            
+            await client.DisposeAsync();
 
             if (player != null)
             {
@@ -44,10 +50,7 @@ public class NetworkClientRepository(
                     playerRepository);
                 
                 player.Data.IsOnline = false;
-                
-                await dbContext.Database.ExecuteSqlRawAsync(
-                    $"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId",
-                    0, player.Id);
+                // await dbContext.Database.ExecuteSqlRawAsync($"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId", 0, player.Id);
                 
                 if (!await playerRepository.TryRemovePlayerAsync(client.Player.Id))
                 {
@@ -56,14 +59,10 @@ public class NetworkClientRepository(
                 }
             }
 
-            if (client.RoomUser != null)
+            if (roomUser != null)
             {
-                await client.RoomUser.Room.UserRepository.TryRemoveAsync(
-                    client.RoomUser.Id, 
-                    false, true);
+                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true, true);
             }
-            
-            await client.DisposeAsync();
 
             return result;
             
@@ -78,8 +77,8 @@ public class NetworkClientRepository(
     public async Task DisconnectIdleClientsAsync()
     {
         var idleClients = _clients.Values
-            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 60)
-            .Take(100)
+            .Where(x => (DateTime.Now - x.LastPing).TotalSeconds >= 60)
+            .Take(50)
             .ToList();
 
         if (idleClients.Count < 1)
