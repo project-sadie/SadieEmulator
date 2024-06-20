@@ -1,5 +1,3 @@
-using Sadie.Networking.Serialization.Attributes;
-
 namespace Sadie.Database.Models.Players;
 
 public class PlayerMessage

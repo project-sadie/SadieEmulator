@@ -1,6 +1,5 @@
 using System.Reflection;
 using Sadie.Networking.Packets;
-using Serilog;
 
 namespace Sadie.Networking;
 

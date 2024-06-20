@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
 using Sadie.Database.Models.Catalog.FrontPage;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Networking.Client;

@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
