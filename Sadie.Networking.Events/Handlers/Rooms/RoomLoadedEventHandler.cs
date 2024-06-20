@@ -32,6 +32,11 @@ public class RoomLoadedEventHandler(
     {
         var player = client.Player;
 
+        if (player == null)
+        {
+            return;
+        }
+
         var room = await Game.Rooms.RoomHelpersDirty.TryLoadRoomByIdAsync(
             RoomId,
             roomRepository,

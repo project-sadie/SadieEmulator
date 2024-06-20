@@ -32,6 +32,8 @@ public class RoomDeleteEventHandler(
             return;
         }
 
+        await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = NULL WHERE home_room_id = {0}", RoomId);
+
         var updateMap = new Dictionary<PlayerLogic, List<PlayerFurnitureItem>>();
 
         foreach (var item in room.FurnitureItems)
@@ -62,12 +64,12 @@ public class RoomDeleteEventHandler(
 
         dbContext.Entry<Room>(room).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
+
+        client.Player.Rooms.Remove(room);
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {
             await room.UserRepository.TryRemoveAsync(roomUser.Id, true);
         }
-
-        await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = NULL WHERE home_room_id = {0}}", RoomId);
     }
 }
