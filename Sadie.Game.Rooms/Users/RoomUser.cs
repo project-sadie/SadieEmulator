@@ -44,6 +44,8 @@ public class RoomUser(
         {
             DirectionHead = direction;
         }
+
+        NeedsStatusUpdate = true;
     }
 
     public void ApplyFlatCtrlStatus()

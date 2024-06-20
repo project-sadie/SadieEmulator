@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Database.Models.Players;
 
