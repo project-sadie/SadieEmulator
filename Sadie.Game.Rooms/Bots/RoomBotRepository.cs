@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Sadie.API.Game.Rooms.Bots;
+using Serilog;
 
 namespace Sadie.Game.Rooms.Bots;
 
@@ -14,11 +15,18 @@ public class RoomBotRepository : IRoomBotRepository
     
     public async Task RunPeriodicCheckAsync()
     {
-        var bots = _bots.Values;
-        
-        foreach (var bot in bots)
+        try
         {
-            await bot.RunPeriodicCheckAsync();
+            var bots = _bots.Values;
+
+            foreach (var bot in bots)
+            {
+                await bot.RunPeriodicCheckAsync();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Logger.Error(e.ToString());
         }
     }
 
