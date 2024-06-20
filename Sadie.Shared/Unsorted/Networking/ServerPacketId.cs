@@ -23,7 +23,6 @@ public class ServerPacketId
     public const short NavigatorSettings = 518;
     public const short PlayerMessengerInit = 1605;
     public const short PlayerFriendsList = 3130;
-    public const short PlayerPong = 10;
     public const short HotelViewData = 1745;
     public const short PlayerMeMenuSettings = 513;
     public const short HotelViewBonusRare = 1533;
@@ -148,4 +147,6 @@ public class ServerPacketId
     public const short RoomUserTradeCompleted = 3128;
     public const short RoomUserTradeCancel = 2341;
     public const short RoomUserTradeCloseWindow = 1001;
+    public const short ClientLatency = 10;
+    public const short PlayerPing = 3928;
 }

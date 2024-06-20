@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Serialization;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Players;
 

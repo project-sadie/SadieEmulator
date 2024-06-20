@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Codecs.Encryption;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization;
@@ -49,24 +48,17 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         EncryptionEnabled = true;
     }
 
-    public DateTime LastPing { get; set; }
+    public DateTime LastPing { get; set; } = DateTime.Now;
 
     public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
-        if (_disposed)
+        if (!_channel.IsWritable)
         {
             return;
         }
 
-        try
-        {
-            var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
-            await _channel.WriteAndFlushAsync(serializedObject);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError($"Error whilst writing to stream: {e}");
-        }
+        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        await _channel.WriteAndFlushAsync(serializedObject);
     }
 
     public async Task WriteToStreamAsync(NetworkPacketWriter writer)
@@ -75,8 +67,19 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         {
             return;
         }
-        
-        await _channel.WriteAndFlushAsync(writer);
+
+        try
+        {
+            await _channel.WriteAndFlushAsync(writer);
+        }
+        catch (ClosedChannelException)
+        {
+            
+        }
+        catch (ObjectDisposedException)
+        {
+            
+        }
     }
 
     public async Task OnReceivedAsync(byte[] data)

@@ -5,6 +5,7 @@ using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
+using Serilog;
 
 namespace Sadie.Networking.Events.Handlers;
 
@@ -40,7 +41,8 @@ public class ClientPacketHandler(
              packetEventType == typeof(RoomUserActionEventHandler) ||
              packetEventType == typeof(RoomUserDanceEventHandler) ||
              packetEventType == typeof(RoomUserSignEventHandler) ||
-             packetEventType == typeof(RoomUserSitEventHandler)))
+             packetEventType == typeof(RoomUserSitEventHandler) ||
+             packetEventType == typeof(RoomUserLookAtEventHandler)))
         {
             client.RoomUser.LastAction = DateTime.Now;
         }

@@ -16,7 +16,6 @@ public class EventHandlerIds
     public const short NavigatorData = 2110;
     public const short PlayerFriendsList = 1523;
     public const short PlayerMessengerInit = 2781;
-    public const short PlayerPing = 295;
     public const short PlayerPong = 2596;
     public const short HotelViewData = 2912;
     public const short PlayerIgnoredUsers = 3878;
@@ -125,4 +124,6 @@ public class EventHandlerIds
     public const short RoomUserTradeAccepted = 3863;
     public const short RoomUserTradeConfirm = 2760;
     public const short RoomItemUpdateObjectData = 3608;
+    public const short RoomBackgroundTonerApply = 2880;
+    public const short ClientLatency = 295;
 }

@@ -4,8 +4,7 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
-[PacketId(ServerPacketId.PlayerPong)]
-public class PlayerPongWriter : AbstractPacketWriter
+[PacketId(ServerPacketId.PlayerPing)]
+public class PlayerPingWriter : AbstractPacketWriter
 {
-    public required int Id { get; init; }
 }

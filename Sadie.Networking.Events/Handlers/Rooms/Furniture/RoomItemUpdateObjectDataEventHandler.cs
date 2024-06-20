@@ -1,4 +1,3 @@
-using System.Text;
 using Sadie.Database;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
