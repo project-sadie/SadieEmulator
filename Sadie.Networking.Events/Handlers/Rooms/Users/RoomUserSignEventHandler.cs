@@ -1,7 +1,6 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
@@ -11,7 +10,7 @@ public class RoomUserSignEventHandler(RoomRepository roomRepository) : INetworkP
 {
     public int SignId { get; set; }
     
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {

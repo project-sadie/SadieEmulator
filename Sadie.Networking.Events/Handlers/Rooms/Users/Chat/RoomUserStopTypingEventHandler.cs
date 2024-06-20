@@ -1,6 +1,5 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
 
@@ -9,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 [PacketId(EventHandlerIds.RoomUserStopTyping)]
 public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var roomUser = client.RoomUser;
         
@@ -18,8 +17,6 @@ public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INe
             return;
         }
 
-        roomUser.UpdateLastAction();
-        
         await roomUser.Room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
         {
             UserId = roomUser.Id,

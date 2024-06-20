@@ -1,5 +1,4 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 
@@ -8,9 +7,9 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 [PacketId(EventHandlerIds.CatalogMode)]
 public class CatalogModeEventHandler() : INetworkPacketEventHandler
 {
-    [PacketData] public string? Mode { get; set; }
+    public string? Mode { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (string.IsNullOrWhiteSpace(Mode))
         {

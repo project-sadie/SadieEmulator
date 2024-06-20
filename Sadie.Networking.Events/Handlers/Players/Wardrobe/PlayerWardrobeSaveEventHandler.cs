@@ -1,7 +1,6 @@
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
@@ -15,7 +14,7 @@ public class PlayerWardrobeSaveEventHandler(
     public required string FigureCode { get; set; }
     public required string Gender { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
 

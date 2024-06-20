@@ -1,7 +1,6 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Unit;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Users;
@@ -9,17 +8,17 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureItemInteractorRepository interactorRepository) : IRoomUnitMovementData
+public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovementData
 {
     protected RoomUnit? Unit { get; set; }
     public HDirection DirectionHead { get; set; }
     public HDirection Direction { get; set; }
     public bool CanWalk { get; set; } = true;
     public Point Point { get; set; } = point;
-    public double PointZ { get; init;  }
+    public double PointZ { get; set;  }
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
-    protected Point? NextPoint { get; set; }
+    public Point? NextPoint { get; set; }
     protected int StepsWalked { get; set; }
     protected Point PathGoal { get; set; }
     protected List<Point> PathPoints { get; set; } = [];
@@ -37,7 +36,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         NeedsStatusUpdate = true;
     }
 
-    public void ClearWalking(bool reachedGoal = true)
+    private void ClearWalking(bool reachedGoal = true)
     {
         IsWalking = false;
         RemoveStatuses(RoomUserStatus.Move);
@@ -79,7 +78,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         {
             AddStatus(
                 RoomUserStatus.Sit, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight).ToString());
+                topItem.FurnitureItem.StackHeight.ToString());
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
@@ -88,7 +87,7 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
         {
             AddStatus(
                 RoomUserStatus.Lay, 
-                (topItem.PositionZ + topItem.FurnitureItem.StackHeight + 0.1).ToString());
+                (topItem.FurnitureItem.StackHeight + 0.1).ToString());
             
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
@@ -125,22 +124,15 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
     
     public void WalkToPoint(Point point, Action? onReachedGoal = null)
     {
+        if (!room.TileMap.IsTileFree(point) &&
+            !room.Settings.CanUsersOverlap)
+        {
+            return;
+        }
+        
         PathGoal = point;
         NeedsPathCalculated = true;
         OnReachedGoal = onReachedGoal;
-    }
-
-    private async Task CheckWalkOffInteractionsAsync()
-    {
-        foreach (var item in RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems))
-        {
-            var interactor = interactorRepository.GetInteractorForType(item.FurnitureItem.InteractionType);
-            
-            if (interactor != null)
-            {
-                await interactor.OnStepOffAsync(room, item, Unit);
-            }
-        }
     }
 
     protected async Task ProcessMovementAsync()
@@ -165,10 +157,12 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
             return;
         }
 
-        await CheckWalkOffInteractionsAsync();
+        var topItemNextStep = RoomTileMapHelpers
+            .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
+            .MaxBy(x => x.PositionZ);
         
-        var itemsAtNextStep = RoomTileMapHelpers.GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems);
-        var nextZ = itemsAtNextStep.Count < 1 ? 0 : itemsAtNextStep.MaxBy(x => x.PositionZ)?.PositionZ;
+        var zHeightNextStep = 0.0D + room.TileMap.ZMap[nextStep.Y, nextStep.X];
+        var nextZ = topItemNextStep?.PositionZ ?? zHeightNextStep;
 
         ClearStatuses();
 
@@ -178,10 +172,12 @@ public class RoomUnitMovementData(IRoomLogic room, Point point, RoomFurnitureIte
                 
         Direction = newDirection;
         DirectionHead = newDirection;
-                
+        NextZ = nextZ;
         NextPoint = nextStep;
     }
-    
+
+    public double NextZ { get; set; }
+
     private void ClearStatuses()
     {
         RemoveStatuses(

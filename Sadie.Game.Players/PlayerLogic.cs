@@ -1,7 +1,8 @@
+using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
-using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Players;
@@ -21,11 +22,11 @@ public class PlayerLogic : Player, IPlayerLogic
         Data = data;
     }
 
+    public IChannel? Channel { get; set; }
     public INetworkObject? NetworkObject { get; set; }
     public new PlayerData Data { get; }
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }
-    public int CurrentRoomId { get; set; }
 
     public ValueTask DisposeAsync()
     {
@@ -40,5 +41,20 @@ public class PlayerLogic : Player, IPlayerLogic
             .FirstOrDefault(x => x.Type == rewardType);
 
         return lastReward == null || lastReward.CreatedAt < DateTime.Now.AddSeconds(-intervalInSeconds);
+    }
+
+    public async Task SendAlertAsync(string message)
+    {
+        if (NetworkObject == null)
+        {
+            return;
+        }
+        
+        var writer = new PlayerAlertWriter
+        {
+            Message = message
+        };
+
+        await NetworkObject.WriteToStreamAsync(writer);
     }
 }

@@ -1,12 +1,10 @@
 using System.Text;
-using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Moderation;
 
-public class UserInfoCommand(PlayerRepository playerRepository) : AbstractRoomChatCommand, IRoomChatCommand
+public class UserInfoCommand(PlayerRepository playerRepository) : AbstractRoomChatCommand
 {
     public override string Trigger => "userinfo";
     public override string Description => "Displays basic info about a user";
@@ -30,11 +28,8 @@ public class UserInfoCommand(PlayerRepository playerRepository) : AbstractRoomCh
         sb.AppendLine($"Email: {target.Email}");
         sb.AppendLine($"Last Online: {(target.Data.IsOnline ? "now" : target.Data.LastOnline)}");
         sb.AppendLine($"Created: {target.CreatedAt}");
-        
-        await user.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter
-        {
-            Message = sb.ToString()
-        });
+
+        await user.Player.SendAlertAsync(sb.ToString());
     }
 
     public override List<string> PermissionsRequired { get; set; } = ["command_user_info"];

@@ -1,5 +1,4 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.HotelView;
 
@@ -10,7 +9,7 @@ public class HotelViewDataEventHandler : INetworkPacketEventHandler
 {
     public string? Unknown1 { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (Unknown1.Contains(';'))
         {

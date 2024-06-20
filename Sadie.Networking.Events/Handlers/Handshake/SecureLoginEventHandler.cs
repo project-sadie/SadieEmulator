@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
@@ -8,13 +9,10 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Options.Options;
 using Sadie.Shared;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
@@ -33,19 +31,19 @@ public class SecureLoginEventHandler(
     public string? Token { get; set; }
     public int DelayMs { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
         {
             logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
 
         if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
             logger.LogWarning("Rejected an insecure sso token");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
 
@@ -63,7 +61,7 @@ public class SecureLoginEventHandler(
         if (tokenRecord == null)
         {
             logger.LogWarning("Failed to find token record for provided sso.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
         
@@ -79,7 +77,7 @@ public class SecureLoginEventHandler(
             .Include(x => x.AvatarData)
             .Include(x => x.Tags)
             .Include(x => x.RoomLikes)
-            .Include(x => x.Relationships)
+            .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
             .Include(x => x.NavigatorSettings)
             .Include(x => x.GameSettings)
             .Include(x => x.Badges)
@@ -95,33 +93,50 @@ public class SecureLoginEventHandler(
             .Include(x => x.MessagesSent)
             .Include(x => x.MessagesReceived)
             .Include(x => x.Rooms).ThenInclude(x => x.Settings)
-            .Include(x => x.Groups)
             .Include(x => x.Bots)
+            .AsSplitQuery()
             .FirstOrDefaultAsync();
 
         if (player == null)
         {
             logger.LogError("Failed to resolve player record.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
         
-        var playerLogic = mapper.Map<PlayerLogic>(player, opt => 
-            opt.AfterMap((src, dest) => dest.NetworkObject = client));
+        var playerLogic = mapper.Map<PlayerLogic>(player);
+
+        playerLogic.NetworkObject = client;
+        playerLogic.Channel = client.Channel;
 
         var playerId = player.Id;
+        var alreadyOnline = playerRepository.GetPlayerLogicById(playerId) != null;
 
         client.Player = playerLogic;
 
+        if (alreadyOnline)
+        {
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+
         if (!playerRepository.TryAddPlayer(playerLogic))
         {
-            logger.LogError($"Player {playerId} could not be registered");
-            await DisconnectAsync(client.Channel.Id);
+            logger.LogError($"Player {playerLogic.Username} could not be registered");
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
 
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in");
-        await playerRepository.UpdateOnlineStatusAsync(playerId, true);
+
+        await client.WriteToStreamAsync(new PlayerPingWriter());
+
+        if (!alreadyOnline)
+        {
+            player.Data.IsOnline = true;
+            dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
+            await dbContext.SaveChangesAsync();
+        }
 
         playerLogic.Data.LastOnline = DateTime.Now;
         playerLogic.Authenticated = true;
@@ -129,7 +144,15 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
-        await SendFriendsAsync(playerLogic);
+        await PlayerHelpersToClean.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+        
+        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+            player, 
+            player.GetMergedFriendships(), 
+            true, 
+            false, 
+            playerRepository);
+        
         await SendWelcomeMessageAsync(playerLogic);
     }
 
@@ -144,50 +167,12 @@ public class SecureLoginEventHandler(
             .Replace("[username]", player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
 
-        var alertWriter = new PlayerAlertWriter
-        {
-            Message = formattedMessage
-        };
-
-        await player.NetworkObject.WriteToStreamAsync(alertWriter);
-    }
-
-    private async Task SendFriendsAsync(PlayerLogic player)
-    {
-        var allFriends = player.GetMergedFriendships()
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-
-        var updates = new List<PlayerFriendshipUpdate>();
-
-        foreach (var friend in allFriends)
-        {
-            var friendId = friend.OriginPlayerId == player.Id ? friend.TargetPlayerId : friend.OriginPlayerId;
-            var friendPlayer = playerRepository.GetPlayerLogicById(friendId);
-            var friendInRoom = friendPlayer != null && friendPlayer.CurrentRoomId != 0;
-
-            var relationship = friendPlayer == null ? null : 
-                friendPlayer!
-                    .Relationships
-                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId);
-
-            updates.Add(new PlayerFriendshipUpdate
-            {
-                Type = 0,
-                Friend = friendPlayer ?? await playerRepository.GetPlayerByIdAsync(friendId),
-                FriendOnline = friendPlayer != null,
-                FriendInRoom = friendInRoom,
-                Relation = relationship?.TypeId ?? PlayerRelationshipType.None
-            });
-        }
-
-        await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(player, updates);
-        await playerRepository.UpdateStatusForFriendsAsync(player, allFriends, true, player.CurrentRoomId != 0);
+        await player.SendAlertAsync(formattedMessage);
     }
 
     private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;
 
-    private async Task DisconnectAsync(IChannelId channelId)
+    private async Task DisconnectNetworkClientAsync(IChannelId channelId)
     {
         if (!await networkClientRepository.TryRemoveAsync(channelId))
         {

@@ -7,12 +7,14 @@ public interface IRoomUnitMovementData
 {
     Point Point { get; set; }
     double PointZ { get; }
+    bool IsWalking { get; set; }
+    Point? NextPoint { get; set; }
     HDirection DirectionHead { get; set; }
     HDirection Direction { get; set; }
     bool CanWalk { get; set; }
     void AddStatus(string key, string value);
     void RemoveStatuses(params string[] statuses);
     List<Point> OverridePoints { get; }
-    void ClearWalking(bool reachedGoal = true);
     void WalkToPoint(Point point, Action? onReachedGoal = null);
+    public double NextZ { get; set; }
 }

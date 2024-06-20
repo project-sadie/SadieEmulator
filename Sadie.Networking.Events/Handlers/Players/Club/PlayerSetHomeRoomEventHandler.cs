@@ -1,6 +1,5 @@
 using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Rooms;
 
@@ -12,7 +11,7 @@ public class PlayerSetHomeRoomEventHandler(
 {
     public int RoomId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player?.NetworkObject == null ||
             client.Player.Data.HomeRoomId == RoomId)
@@ -28,7 +27,11 @@ public class PlayerSetHomeRoomEventHandler(
         
         client.Player.Data.HomeRoomId = RoomId;
 
-        dbContext.PlayerData.Update(client.Player.Data);
+        dbContext
+            .Entry(client.Player.Data)
+            .Property(x => x.HomeRoomId)
+            .IsModified = true;
+        
         await dbContext.SaveChangesAsync();
     }
 }

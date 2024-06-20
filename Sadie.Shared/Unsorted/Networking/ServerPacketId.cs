@@ -23,7 +23,6 @@ public class ServerPacketId
     public const short NavigatorSettings = 518;
     public const short PlayerMessengerInit = 1605;
     public const short PlayerFriendsList = 3130;
-    public const short PlayerPong = 10;
     public const short HotelViewData = 1745;
     public const short PlayerMeMenuSettings = 513;
     public const short HotelViewBonusRare = 1533;
@@ -108,7 +107,7 @@ public class ServerPacketId
     public const short CatalogPurchaseOk = 869;
     public const short PlayerInventoryRefresh = 3151;
     public const short PlayerInventoryFurnitureItems = 994;
-    public const short PlayerInventoryAddItems = 2103;
+    public const short PlayerInventoryUnseenItems = 2103;
     public const short PlayerInventoryRemoveItem = 159;
     public const short RoomFloorFurnitureItemPlaced = 1534;
     public const short BubbleAlert = 1992;
@@ -139,4 +138,15 @@ public class ServerPacketId
     public const short RoomDimmerSettings = 2710;
     public const short RoomBannedUsers = 1869;
     public const short RoomUserReceivedHandItem = 354;
+    public const short RoomUserTradeStarted = 2505;
+    public const short RoomUserTradeError = 217;
+    public const short RoomUserTradeUpdate = 2024;
+    public const short RoomUserTradeClosed = 1373;
+    public const short RoomUserTradeStatus = 2568;
+    public const short RoomUserTradeWaitingConfirm = 2720;
+    public const short RoomUserTradeCompleted = 3128;
+    public const short RoomUserTradeCancel = 2341;
+    public const short RoomUserTradeCloseWindow = 1001;
+    public const short ClientLatency = 10;
+    public const short PlayerPing = 3928;
 }

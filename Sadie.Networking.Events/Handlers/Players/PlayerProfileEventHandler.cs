@@ -1,6 +1,5 @@
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Shared.Unsorted;
@@ -13,7 +12,7 @@ public class PlayerProfileEventHandler(PlayerRepository playerRepository)
 {
     public int ProfileId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var profilePlayer = await playerRepository.GetPlayerByIdAsync(ProfileId);
         
@@ -23,7 +22,7 @@ public class PlayerProfileEventHandler(PlayerRepository playerRepository)
         }
         
         var friendCount = profilePlayer.GetAcceptedFriendshipCount();
-        var friendship = profilePlayer.TryGetFriendshipFor(ProfileId);
+        var friendship = client.Player.TryGetFriendshipFor(ProfileId);
 
         var profileWriter = new PlayerProfileWriter
         {
@@ -31,7 +30,7 @@ public class PlayerProfileEventHandler(PlayerRepository playerRepository)
             Online = profilePlayer.Data.IsOnline,
             FriendshipCount = friendCount,
             FriendshipExists = friendship is { Status: PlayerFriendshipStatus.Accepted },
-            FriendshipRequestExists = friendship!= null
+            FriendshipRequestExists = friendship is { Status: PlayerFriendshipStatus.Pending }
         };
         
         await client.WriteToStreamAsync(profileWriter);

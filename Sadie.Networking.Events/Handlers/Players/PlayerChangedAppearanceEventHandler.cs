@@ -2,7 +2,6 @@
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Shared.Unsorted.Game.Avatar;
@@ -17,7 +16,7 @@ public class PlayerChangedAppearanceEventHandler(
     public required string Gender { get; set; }
     public required string FigureCode { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {
@@ -48,7 +47,7 @@ public class PlayerChangedAppearanceEventHandler(
             Gender = gender.ToString()
         });
         
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter
+        await room.UserRepository.BroadcastDataAsync(new RoomUserDataWriter
         {
             Users = [roomUser]
         });

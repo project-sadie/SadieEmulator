@@ -1,6 +1,5 @@
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
@@ -10,17 +9,17 @@ public class RoomTriggerOneWayGateEventHandler(RoomFurnitureItemInteractorReposi
 {
     public required int ItemId { get; init; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var roomFurnitureItem = client
             .RoomUser
             .Room
             .FurnitureItems
-            .FirstOrDefault(x => x.Id == ItemId);
+            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
         
         if (roomFurnitureItem is not { PlayerFurnitureItem.MetaData: "0" })
         {
-            // return;
+            return;
         }
         
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);

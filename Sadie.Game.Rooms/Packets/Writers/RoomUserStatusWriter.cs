@@ -23,7 +23,7 @@ public class RoomUserStatusWriter : AbstractPacketWriter
             writer.WriteLong(user.Id);
             writer.WriteInteger(user.Point.X);
             writer.WriteInteger(user.Point.Y);
-            writer.WriteString(user.PointZ + "");
+            writer.WriteString(user.PointZ.ToString("0.00"));
             writer.WriteInteger((int) user.DirectionHead);
             writer.WriteInteger((int) user.Direction);
             writer.WriteString("/" + string.Join("/", statusList).TrimEnd('/'));

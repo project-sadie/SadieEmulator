@@ -1,33 +1,36 @@
+using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomFurnitureItemUse)]
+[PacketId(EventHandlerIds.RoomItemUse)]
 public class RoomItemUseEventHandler(
     RoomRepository roomRepository,
-    RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
+    RoomFurnitureItemInteractorRepository interactorRepository,
+    SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int ItemId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null || client.RoomUser == null)
+        if (client.Player == null || 
+            client.RoomUser == null ||
+            !client.RoomUser.HasRights())
         {
             return;
         }
         
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
 
         if (room == null)
         {
             return;
         }
         
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItem.Id == ItemId);
 
         if (roomFurnitureItem == null)
         {
@@ -38,7 +41,7 @@ public class RoomItemUseEventHandler(
 
         if (interactor == null)
         {
-            await RoomFurnitureItemHelpers.CycleInteractionStateForItemAsync(room, roomFurnitureItem);
+            await RoomFurnitureItemHelpers.CycleInteractionStateForItemAsync(room, roomFurnitureItem, dbContext);
             return;
         }
 

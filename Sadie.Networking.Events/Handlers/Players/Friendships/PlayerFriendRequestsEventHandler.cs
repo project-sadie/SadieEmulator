@@ -1,7 +1,5 @@
 ﻿using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Shared.Unsorted;
@@ -11,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 [PacketId(EventHandlerIds.PlayerFriendRequestsList)]
 public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {

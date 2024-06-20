@@ -5,7 +5,7 @@ namespace Sadie.Networking;
 
 public class EventSerializer
 {
-    public static void SetEventHandlerProperties(object handler, INetworkPacket packet)
+    public static void SetPropertiesForEventHandler(object handler, INetworkPacket packet)
     {
         var t = handler.GetType();
         var properties = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -34,6 +34,10 @@ public class EventSerializer
             {
                 property.SetValue(handler, ReadIntegerList(packet), null);
             }
+            else if (type == typeof(Dictionary<string, string>))
+            {
+                property.SetValue(handler, ReadAllStringDictionary(packet), null);
+            }
             else
             {
                 throw new Exception($"{type.FullName}");
@@ -41,7 +45,20 @@ public class EventSerializer
         }
     }
 
-    private static List<int> ReadIntegerList(INetworkPacket packet)
+    private static Dictionary<string, string> ReadAllStringDictionary(INetworkPacket packet)
+    {
+        var temp = new Dictionary<string, string>();
+        var amount = packet.ReadInt();
+
+        for (var i = 0; i < amount / 2; i++)
+        {
+            temp[packet.ReadString()] = packet.ReadString();
+        }
+
+        return temp;
+    }
+
+    private static List<int> ReadIntegerList(INetworkPacketReader packet)
     {
         var tempList = new List<int>();
         var amount = packet.ReadInt();

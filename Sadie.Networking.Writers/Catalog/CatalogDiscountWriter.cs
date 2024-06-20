@@ -13,6 +13,6 @@ public class CatalogDiscountWriter : AbstractPacketWriter
         writer.WriteInteger(0);
         writer.WriteInteger(0);
         writer.WriteInteger(0);
-        writer.WriteInteger(0); // TODO: actual structure
+        writer.WriteInteger(0);
     }
 }

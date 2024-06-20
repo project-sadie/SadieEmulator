@@ -1,11 +1,11 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Shared.Helpers;
@@ -27,9 +27,9 @@ public class FloorPlanEditorSaveEventHandler(
     public required int FloorSize { get; set; }
     public required int WallHeight { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }
@@ -132,10 +132,31 @@ public class FloorPlanEditorSaveEventHandler(
             dbContext.Entry(room).Property(x => x.LayoutId).IsModified = true;
             await dbContext.SaveChangesAsync();
         }
-        
-        await room.UserRepository.BroadcastDataAsync(new RoomForwardEntryWriter
+
+        var playersToForward = new List<IPlayerLogic>();
+
+        foreach (var user in room.UserRepository.GetAll())
         {
-            RoomId = room.Id
-        });
+            await room.UserRepository.TryRemoveAsync(user.Id, false, true);
+            playersToForward.Add(user.Player);
+        }
+
+        if (!roomRepository.TryRemove(room.Id, out var roomLogic))
+        {
+            return;
+        }
+
+        foreach (var player in playersToForward)
+        {
+            if (player.NetworkObject == null)
+            {
+                continue;
+            }
+            
+            await player.NetworkObject.WriteToStreamAsync(new RoomForwardEntryWriter
+            {
+                RoomId = roomLogic!.Id
+            });
+        }
     }
 }

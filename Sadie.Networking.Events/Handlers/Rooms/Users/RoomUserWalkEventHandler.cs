@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
@@ -12,7 +11,7 @@ public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkP
     public int X { get; set; }
     public int Y { get; set; }
     
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
@@ -24,7 +23,6 @@ public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkP
             return Task.CompletedTask;
         }
         
-        roomUser.LastAction = DateTime.Now;
         roomUser.WalkToPoint(new Point(X, Y));
         
         return Task.CompletedTask;

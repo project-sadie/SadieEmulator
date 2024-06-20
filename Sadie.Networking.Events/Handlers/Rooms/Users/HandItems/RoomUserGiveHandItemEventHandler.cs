@@ -1,6 +1,5 @@
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
@@ -10,7 +9,7 @@ public class RoomUserGiveHandItemEventHandler : INetworkPacketEventHandler
 {
     public required int UserId { get; init; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var room = client.RoomUser.Room;
         

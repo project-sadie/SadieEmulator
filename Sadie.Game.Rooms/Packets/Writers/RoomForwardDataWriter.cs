@@ -26,7 +26,7 @@ public class RoomForwardDataWriter : AbstractPacketWriter
         writer.WriteInteger(Room.UserRepository.Count);
         writer.WriteInteger(Room.MaxUsersAllowed);
         writer.WriteString(Room.Description);
-        writer.WriteInteger(settings.TradeOption);
+        writer.WriteInteger((int) settings.TradeOption);
         writer.WriteInteger(2); // unknown
         writer.WriteInteger(Room.PlayerLikes.Count);
         writer.WriteInteger(0); // category
@@ -37,7 +37,7 @@ public class RoomForwardDataWriter : AbstractPacketWriter
             writer.WriteString(tag.Name);
         }
         
-        writer.WriteInteger(0 | 8); // TODO: base
+        writer.WriteInteger(0 | 8);
         writer.WriteBool(RoomForward);
         writer.WriteBool(false); // TODO: staff picked?
         writer.WriteBool(false); // TODO: is group member?

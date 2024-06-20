@@ -2,7 +2,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
@@ -11,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RoomLikeEventHandler(RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {

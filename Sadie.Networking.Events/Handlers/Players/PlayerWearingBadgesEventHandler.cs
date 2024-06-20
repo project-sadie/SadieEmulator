@@ -4,7 +4,6 @@ using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 
@@ -19,12 +18,12 @@ public class PlayerWearingBadgesEventHandler(
 {
     public int PlayerId { get; set; }
     
-    public async Task HandleAsync(INetworkClient networkClient, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient networkClient)
     {
         var player = playerRepository.GetPlayerLogicById(PlayerId);
 
         var playerBadges = player != null
-            ? player!.Badges
+            ? player.Badges
             : await dbContext.Set<PlayerBadge>().Where(x => x.PlayerId == PlayerId).ToListAsync();
 
         playerBadges = playerBadges.
@@ -32,7 +31,7 @@ public class PlayerWearingBadgesEventHandler(
             DistinctBy(x => x.Slot).
             ToList();
         
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, networkClient, out var room, out _))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, networkClient, out _, out _))
         {
             return;
         }

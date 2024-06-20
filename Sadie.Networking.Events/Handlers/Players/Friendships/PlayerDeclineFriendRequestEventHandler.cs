@@ -3,7 +3,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 
@@ -18,7 +17,7 @@ public class PlayerDeclineFriendRequestEventHandler(
     public bool DeclineAll { get; set; }
     public required List<int> Ids { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
         var playerId = player.Id;

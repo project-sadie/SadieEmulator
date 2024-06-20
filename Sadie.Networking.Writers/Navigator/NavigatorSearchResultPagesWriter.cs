@@ -10,8 +10,8 @@ namespace Sadie.Networking.Writers.Navigator;
 [PacketId(ServerPacketId.NavigatorRooms)]
 public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
 {
-    [PacketData] public required string? TabName { get; init; }
-    [PacketData] public required string? SearchQuery { get; init; }
+    public required string? TabName { get; init; }
+    public required string? SearchQuery { get; init; }
     public required Dictionary<NavigatorCategory, List<Room>> CategoryRoomMap { get; init; }
     public required RoomRepository RoomRepository { get; init; }
 
@@ -26,9 +26,9 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
         {
             writer.WriteString(category.CodeName);
             writer.WriteString(category.Name);
-            writer.WriteInteger(0); // TODO: SEARCH ACTION?
-            writer.WriteBool(false); // TODO: is it collapsed?
-            writer.WriteInteger(0); // TODO: Show thumbnail? display mode
+            writer.WriteInteger(0);
+            writer.WriteBool(false);
+            writer.WriteInteger(0);
 
             writer.WriteInteger(rooms.Count);
             
@@ -56,7 +56,7 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
                     writer.WriteString(tag.Name);
                 }
                 
-                writer.WriteInteger(0 | 8); // TODO: base
+                writer.WriteInteger(0 | 8);
             }
         }
     }

@@ -5,18 +5,15 @@ using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemInteractor
+public class DimmerInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "dimmer";
+    public override string InteractionType => FurnitureItemInteractionType.Dimmer;
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
-    {
-    }
-
-    public async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         if (room.DimmerSettings == null)
         {
@@ -63,7 +60,7 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
         }
     }
 
-    public async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         await dbContext
             .RoomDimmerPresets
@@ -78,11 +75,4 @@ public class DimmerInteractor(SadieContext dbContext) : IRoomFurnitureItemIntera
             await dbContext.SaveChangesAsync();
         }
     }
-
-    public async Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
-    {
-    }
-
-    public Task OnStepOnAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }

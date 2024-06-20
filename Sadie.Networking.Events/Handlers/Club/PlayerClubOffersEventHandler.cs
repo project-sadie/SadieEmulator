@@ -2,7 +2,6 @@
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
@@ -12,9 +11,9 @@ namespace Sadie.Networking.Events.Handlers.Club;
 public class PlayerClubOffersEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    [PacketData] public int WindowId { get; set; }
+    public int WindowId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {

@@ -1,6 +1,5 @@
 using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
@@ -15,7 +14,7 @@ public class SaveNavigatorSettingsEventHandler(SadieContext dbContext) : INetwor
     public bool OpenSearches { get; set; }
     public int Mode { get; set; }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
 

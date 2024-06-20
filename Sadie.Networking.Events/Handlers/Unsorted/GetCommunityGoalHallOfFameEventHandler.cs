@@ -1,5 +1,4 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Unsorted;
 
@@ -10,7 +9,7 @@ public class GetCommunityGoalHallOfFameEventHandler : INetworkPacketEventHandler
 {
     public string K { get; init; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new CommunityGoalHallOfFameWriter
         {

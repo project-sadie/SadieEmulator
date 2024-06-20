@@ -3,7 +3,6 @@ using Sadie.Database.Models.Constants;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Extensions;
 
@@ -17,7 +16,7 @@ public class PlayerChangedMottoEventHandler(
 {
     public required string Motto { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {

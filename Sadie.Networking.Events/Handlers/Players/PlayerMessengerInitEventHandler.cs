@@ -1,6 +1,5 @@
 ﻿using Sadie.Database.Models.Constants;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
 
@@ -11,7 +10,7 @@ public class PlayerMessengerInitEventHandler(
     ServerPlayerConstants playerConstants)
     : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         await client.WriteToStreamAsync(new PlayerMessengerInitWriter
         {

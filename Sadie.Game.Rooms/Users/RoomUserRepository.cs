@@ -1,12 +1,15 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Database.Models.Players;
+using Sadie.Game.Players;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserRepository
+public class RoomUserRepository(ILogger<RoomUserRepository> logger,
+    PlayerRepository playerRepository) : IRoomUserRepository
 {
     private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 
@@ -20,14 +23,20 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
         return user != null;
     }
 
-    public async Task TryRemoveAsync(long id, bool hotelView = false)
+    public async Task TryRemoveAsync(
+        long id, 
+        bool notifyLeft, 
+        bool hotelView = false)
     {
-        var writer = new RoomUserLeftWriter
+        if (notifyLeft)
         {
-            UserId = id.ToString()
-        };
-        
-        await BroadcastDataAsync(writer);
+            var writer = new RoomUserLeftWriter
+            {
+                UserId = id.ToString()
+            };
+
+            await BroadcastDataAsync(writer, [id]);
+        }
 
         var result = _users.TryRemove(id, out var roomUser);
 
@@ -36,10 +45,21 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
             logger.LogError($"Failed to remove a room user");
             return;
         }
+
+        var player = roomUser.Player;
+        
+        player.State.CurrentRoomId = 0;
+        
+        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+            (Player) player, 
+            player.GetMergedFriendships(),
+            player.Data.IsOnline, 
+            false,
+            playerRepository);
         
         if (hotelView)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelView());
+            await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter());
         }
         
         await roomUser.DisposeAsync();
@@ -47,11 +67,13 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
     
     public int Count => _users.Count;
     
-    public async Task BroadcastDataAsync(AbstractPacketWriter writer)
+    public async Task BroadcastDataAsync(AbstractPacketWriter writer, List<long>? excludedIds = null)
     {
         var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
         
-        foreach (var roomUser in _users.Values)
+        foreach (var roomUser in _users
+                     .Values
+                     .Where(x => excludedIds == null || !excludedIds.Contains(x.Id)))
         {
             await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
         }
@@ -64,32 +86,39 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger) : IRoomUserR
 
     public async Task RunPeriodicCheckAsync()
     {
-        var users = _users.Values;
-        
-        foreach (var roomUser in users)
+        try
         {
-            await roomUser.RunPeriodicCheckAsync();
+            var users = _users.Values;
+
+            foreach (var roomUser in users)
+            {
+                await roomUser.RunPeriodicCheckAsync();
+            }
+
+            var statusWriter = new RoomUserStatusWriter
+            {
+                Users = users.Where(x => x.NeedsStatusUpdate).ToList()
+            };
+
+            var dataWriter = new RoomUserDataWriter
+            {
+                Users = users
+            };
+
+            await BroadcastDataAsync(statusWriter);
+            await BroadcastDataAsync(dataWriter);
         }
-
-        var statusWriter = new RoomUserStatusWriter
+        catch (Exception e)
         {
-            Users = users
-        };
-        
-        var dataWriter = new RoomUserDataWriter
-        {
-            Users = users
-        };
-
-        await BroadcastDataAsync(statusWriter);
-        await BroadcastDataAsync(dataWriter);
+            logger.LogError(e.ToString());
+        }
     }
 
     public async ValueTask DisposeAsync()
     {
         foreach (var user in _users.Values)
         {
-            await TryRemoveAsync(user.Id);
+            await TryRemoveAsync(user.Id, false);
         }
         
         _users.Clear();

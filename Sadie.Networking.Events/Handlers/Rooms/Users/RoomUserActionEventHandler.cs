@@ -2,7 +2,6 @@
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 
@@ -13,7 +12,7 @@ public class RoomUserActionEventHandler(RoomRepository roomRepository) : INetwor
 {
     public int Action { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
@@ -35,8 +34,6 @@ public class RoomUserActionEventHandler(RoomRepository roomRepository) : INetwor
             
             return;
         }
-        
-        roomUser.UpdateLastAction();
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
         {

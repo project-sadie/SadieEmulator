@@ -5,7 +5,6 @@ using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
 
@@ -20,7 +19,7 @@ public class RoomUserRespectEventHandler(
 {
     public int TargetId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
@@ -29,13 +28,13 @@ public class RoomUserRespectEventHandler(
         
         var player = client.Player!;
         var playerData = player.Data;
-        var lastRoom = player.CurrentRoomId;
+        var lastRoom = player.State.CurrentRoomId;
         var targetPlayer = playerRepository.GetPlayerLogicById(TargetId);
         
         if (playerData.RespectPoints < 1 || 
             player.Id == TargetId || 
             targetPlayer == null || 
-            targetPlayer.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
+            targetPlayer.State.CurrentRoomId != 0 && lastRoom != targetPlayer.State.CurrentRoomId)
         {
             return;
         }

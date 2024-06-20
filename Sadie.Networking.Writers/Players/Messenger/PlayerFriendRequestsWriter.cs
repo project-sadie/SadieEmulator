@@ -1,5 +1,4 @@
 ﻿using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Packets;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;

@@ -1,10 +1,15 @@
 ﻿using System.Collections.Concurrent;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using Sadie.Database;
+using Sadie.Game.Players;
 
 namespace Sadie.Networking.Client;
 
-public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : INetworkClientRepository
+public class NetworkClientRepository(
+    ILogger<NetworkClientRepository> logger,
+    PlayerRepository playerRepository,
+    SadieContext dbContext) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
 
@@ -23,10 +28,40 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
         try
         {
             var result = _clients.TryRemove(channelId, out var client);
-
-            if (client != null)
+            
+            if (!result)
             {
-                await client.DisposeAsync();
+                logger.LogError("Failed to remove a network client.");
+                return false;
+            }
+
+            var player = client.Player;
+            var roomUser = client.RoomUser;
+            
+            await client.DisposeAsync();
+
+            if (player != null)
+            {
+                await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+                    player, 
+                    player.GetMergedFriendships(), 
+                    false, 
+                    false, 
+                    playerRepository);
+                
+                player.Data.IsOnline = false;
+                // await dbContext.Database.ExecuteSqlRawAsync($"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId", 0, player.Id);
+                
+                if (!await playerRepository.TryRemovePlayerAsync(client.Player.Id))
+                {
+                    logger.LogError("Failed to remove player whilst disposing network client.");
+                    return false;
+                }
+            }
+
+            if (roomUser != null)
+            {
+                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true, true);
             }
 
             return result;
@@ -42,8 +77,8 @@ public class NetworkClientRepository(ILogger<NetworkClientRepository> logger) : 
     public async Task DisconnectIdleClientsAsync()
     {
         var idleClients = _clients.Values
-            .Where(x => x.LastPing != default && (DateTime.Now - x.LastPing).TotalSeconds >= 60)
-            .Take(100)
+            .Where(x => (DateTime.Now - x.LastPing).TotalSeconds >= 60)
+            .Take(50)
             .ToList();
 
         if (idleClients.Count < 1)

@@ -5,14 +5,16 @@ using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
+using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Inventory;
+using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Shared;
 using Sadie.Shared.Unsorted.Game.Avatar;
 
@@ -22,12 +24,12 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 public class CatalogPurchaseEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    [PacketData] public int PageId { get; set; }
-    [PacketData] public int ItemId { get; set; }
-    [PacketData] public string? MetaData { get; set; }
-    [PacketData] public int Amount { get; set; }
+    public int PageId { get; set; }
+    public int ItemId { get; set; }
+    public string? MetaData { get; set; }
+    public int Amount { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
 
@@ -109,24 +111,37 @@ public class CatalogPurchaseEventHandler(
             
             await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
             {
-                Id = offer.Id,
-                Name = offer.Name,
+                Id = 0,
+                Name = "",
                 Rented = false,
-                CostCredits = offer.CostCredits,
-                CostPoints = offer.CostPoints,
-                CostPointsType = offer.CostPointsType,
-                CanGift = true,
+                CostCredits = 0,
+                CostPoints = 0,
+                CostPointsType = 0,
+                CanGift = false,
                 FurnitureItems = [],
-                Amount = Amount,
+                Amount = 0,
                 ClubLevel = 0,
                 CanPurchaseBundles = false,
-                Metadata = "",
+                Metadata = null,
                 IsLimited = false,
                 LimitedItemSeriesSize = 0,
                 AmountLeft = 0
             });
-        
-            await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+
+            await client.WriteToStreamAsync(new PlayerPermissionsWriter
+            {
+                Club = 2,
+                Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
+                Ambassador = true
+            });
+            
+            var subWriter = PlayerHelpersToClean.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+
+            if (subWriter != null)
+            {
+                await client.WriteToStreamAsync(subWriter);
+            }
+
             return;
         }
 
@@ -206,7 +221,7 @@ public class CatalogPurchaseEventHandler(
         
         var furnitureItem = item.FurnitureItems.First();
 
-        if (item.FurnitureItems.Any(x => x.InteractionType == "teleport"))
+        if (item.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
         {
             var parent = new PlayerFurnitureItem
             {
@@ -244,8 +259,10 @@ public class CatalogPurchaseEventHandler(
 
             await dbContext.SaveChangesAsync();
 
-            await client.WriteToStreamAsync(new PlayerInventoryAddItemsWriter
+            await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
             {
+                Count = newItems.Count,
+                Category = 1,
                 FurnitureItems = newItems
             });
             
@@ -274,8 +291,10 @@ public class CatalogPurchaseEventHandler(
 
         await dbContext.SaveChangesAsync();
 
-        var writer = new PlayerInventoryAddItemsWriter
+        var writer = new PlayerInventoryUnseenItemsWriter
         {
+            Count = newItems.Count,
+            Category = 1,
             FurnitureItems = newItems
         };
         

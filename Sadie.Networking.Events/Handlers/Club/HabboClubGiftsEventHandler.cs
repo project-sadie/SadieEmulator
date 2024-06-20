@@ -3,7 +3,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
@@ -12,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Club;
 [PacketId(EventHandlerIds.HabboClubGifts)]
 public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {

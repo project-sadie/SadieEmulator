@@ -1,7 +1,6 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
@@ -9,9 +8,14 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 [PacketId(EventHandlerIds.RoomUserSit)]
 public class RoomUserSitEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
+        {
+            return Task.CompletedTask;
+        }
+        
+        if ((int) roomUser.Direction % 2 != 0)
         {
             return Task.CompletedTask;
         }

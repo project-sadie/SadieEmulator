@@ -16,7 +16,7 @@ public class RoomSettingsWriter : AbstractPacketWriter
         writer.WriteString(Room.Name);
         writer.WriteString(Room.Description);
         writer.WriteInteger((int) Room.Settings.AccessType);
-        writer.WriteInteger(0); // TODO: category
+        writer.WriteInteger(0);
         writer.WriteInteger(Room.MaxUsersAllowed);
         writer.WriteInteger(Room.MaxUsersAllowed);
         writer.WriteInteger(Room.Tags.Count);
@@ -29,7 +29,7 @@ public class RoomSettingsWriter : AbstractPacketWriter
         var settings = Room.Settings;
         var chatSettings = Room.ChatSettings;
         
-        writer.WriteInteger(settings.TradeOption);
+        writer.WriteInteger((int) settings.TradeOption);
         writer.WriteInteger(settings.AllowPets ? 1 : 0);
         writer.WriteInteger(settings.CanPetsEat ? 1 : 0);
         writer.WriteInteger(settings.CanUsersOverlap ? 1 : 0);
@@ -41,7 +41,7 @@ public class RoomSettingsWriter : AbstractPacketWriter
         writer.WriteInteger(chatSettings.ChatSpeed); 
         writer.WriteInteger(chatSettings.ChatDistance); 
         writer.WriteInteger(chatSettings.ChatProtection); 
-        writer.WriteBool(false); // TODO: unknown
+        writer.WriteBool(false);
         writer.WriteInteger(settings.WhoCanMute);
         writer.WriteInteger(settings.WhoCanKick);
         writer.WriteInteger(settings.WhoCanBan);

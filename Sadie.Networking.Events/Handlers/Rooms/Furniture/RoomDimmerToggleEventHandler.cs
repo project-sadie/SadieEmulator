@@ -1,8 +1,8 @@
 using Sadie.Database;
+using Sadie.Enums;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
@@ -12,9 +12,9 @@ public class RoomDimmerToggleEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }
@@ -26,7 +26,7 @@ public class RoomDimmerToggleEventHandler(
 
         var dimmer = room
             .FurnitureItems
-            .FirstOrDefault(x => x.FurnitureItem.InteractionType == "dimmer");
+            .FirstOrDefault(x => x.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
 
         if (dimmer == null)
         {
@@ -43,8 +43,10 @@ public class RoomDimmerToggleEventHandler(
         
         room.DimmerSettings.Enabled = !room.DimmerSettings.Enabled;
         
-        dimmer.PlayerFurnitureItem.MetaData = $"{(room.DimmerSettings.Enabled ? 2 : 1)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, dimmer);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
+            room, 
+            dimmer, 
+            $"{(room.DimmerSettings.Enabled ? 2 : 1)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}");
         
         dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         await dbContext.SaveChangesAsync();

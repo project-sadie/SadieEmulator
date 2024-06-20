@@ -3,7 +3,6 @@ using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Rights;
@@ -17,12 +16,12 @@ public class RoomGiveUserRightsEventHandler(
 {
     public int PlayerId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var playerId = PlayerId;
         var player = client.Player;
         
-        var room = roomRepository.TryGetRoomById(player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(player.State.CurrentRoomId);
 
         if (room == null)
         {

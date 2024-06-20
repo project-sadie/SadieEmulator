@@ -9,15 +9,15 @@ namespace Sadie.Database.Models.Players;
 public class Player
 {
     public int Id { get; init; }
-    public string? Username { get; init; }
-    public string? Email { get; init; }
+    public required string Username { get; init; }
+    public required string Email { get; init; }
     public ICollection<Role> Roles { get; init; } = [];
     public DateTime CreatedAt { get; init; }
     public PlayerData? Data { get; init; }
     public PlayerAvatarData? AvatarData { get; init; }
     public List<PlayerTag> Tags { get; init; } = [];
     public ICollection<PlayerRoomLike> RoomLikes { get; init; } = [];
-    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = []; //
+    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = [];
     public PlayerNavigatorSettings? NavigatorSettings { get; init; }
     public PlayerGameSettings? GameSettings { get; init; }
     public ICollection<PlayerBadge> Badges { get; init; } = [];
@@ -45,7 +45,7 @@ public class Player
     public List<PlayerFriendship> GetMergedFriendships()
     {
         return OutgoingFriendships
-            .Union(IncomingFriendships)
+            .Concat(IncomingFriendships)
             .ToList();
     }
 
@@ -80,7 +80,7 @@ public class Player
         }
         
         return OutgoingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
+            .FirstOrDefault(x => x.TargetPlayerId == targetId);
     }
 
     public void DeleteFriendshipFor(int targetId)

@@ -4,7 +4,6 @@ using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Bots;
@@ -21,7 +20,7 @@ public class RoomPlayerBotPlacedEventHandler(
     public required int X { get; init; }
     public required int Y { get; init; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
@@ -42,7 +41,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         var placePoint = new Point(X, Y);
         
-        if (room.TileMap.UserMap.ContainsKey(placePoint) && room.TileMap.UserMap[placePoint].Count > 0 && !room.Settings.CanUsersOverlap)
+        if (!room.TileMap.IsTileFree(placePoint) && !room.Settings.CanUsersOverlap)
         {
             await client.WriteToStreamAsync(new RoomBotErrorWriter
             {

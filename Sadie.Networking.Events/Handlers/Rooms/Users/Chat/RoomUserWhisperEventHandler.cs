@@ -4,7 +4,6 @@ using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game;
@@ -22,7 +21,7 @@ public class RoomUserWhisperEventHandler(
     public required string Data { get; set; }
     public int Bubble { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
@@ -66,11 +65,6 @@ public class RoomUserWhisperEventHandler(
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);
         
-        roomUser.UpdateLastAction();
-        
         room.ChatMessages.Add(chatMessage);
-
-        dbContext.Add(chatMessage);
-        await dbContext.SaveChangesAsync();
     }
 }

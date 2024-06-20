@@ -64,38 +64,8 @@ public class RoomTileMapHelpers
 
         return points;
     }
-    
-    public static short[,] BuildTileMapForRoom(
-        int mapSizeX,
-        int mapSizeY,
-        string heightMap, 
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
-    {
-        var heightmapLines = heightMap.Split("\n").ToList();
-        var map = new short[mapSizeY, mapSizeX];
-        
-        for (var y = 0; y < heightmapLines.Count; y++)
-        {
-            var currentLine = heightmapLines[y];
 
-            for (var x = 0; x < currentLine.Length; x++)
-            {
-                var open = int.TryParse(currentLine[x].ToString(), out var z);
-
-                if (!open)
-                {
-                    map[y, x] = 0;
-                    continue;
-                }
-                
-                map[y, x] = GetStateNumberForTile(x, y, furnitureItems);
-            }
-        }
-        
-        return map; 
-    }
-
-    private static short GetStateNumberForTile(
+    public static short GetStateNumberForTile(
         int x, 
         int y, 
         IEnumerable<PlayerFurnitureItemPlacementData> furnitureItems)
@@ -115,6 +85,11 @@ public class RoomTileMapHelpers
         if (item.FurnitureItem.CanSit)
         {
             return 2;
+        }
+
+        if (item.FurnitureItem.InteractionType == "gate" && item.PlayerFurnitureItem.MetaData == "1")
+        {
+            return 1;
         }
 
         return item.FurnitureItem.CanLay ? (short) 3 : (short) 0;
@@ -158,35 +133,6 @@ public class RoomTileMapHelpers
         return tileItems;
     }
     
-    public static short[,] BuildSquareStateMapForRoom(
-        int mapSizeX,
-        int mapSizeY,
-        string heightMap)
-    {
-        var heightmapLines = heightMap.Split("\n").ToList();
-        var map = new short[mapSizeY, mapSizeX];
-        
-        for (var y = 0; y < heightmapLines.Count; y++)
-        {
-            var currentLine = heightmapLines[y];
-
-            for (var x = 0; x < currentLine.Length; x++)
-            {
-                var open = short.TryParse(currentLine[x].ToString(), out var z);
-
-                if (!open)
-                {
-                    map[y, x] = 0;
-                    continue;
-                }
-
-                map[y, x] = 1;
-            }
-        }
-        
-        return map; 
-    }
-
     public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint, List<Point> overridePoints)
     {
         var tmp = new short[map.SizeY, map.SizeX];
@@ -201,9 +147,9 @@ public class RoomTileMapHelpers
                     continue;
                 }
                 
-                // If it's a seat tile, don't include it unless it's our goal
+                // If it's a sit or lay tile, don't include it unless it's our goal
                 
-                if (map.Map[y, x] == 2 && (goalPoint.X != x || goalPoint.Y != y))
+                if ((map.Map[y, x] == 2 || map.Map[y, x] == 3) && (goalPoint.X != x || goalPoint.Y != y))
                 {
                     tmp[y, x] = 0;
                     continue;
@@ -239,7 +185,7 @@ public class RoomTileMapHelpers
         IEnumerable<Point> points,  
         IRoomTileMap tileMap)
     {
-        return points.All(point => tileMap.SquareStateMap[point.Y, point.X] != 0);
+        return points.All(point => tileMap.Map[point.Y, point.X] != 0);
     }
     
     public static List<IRoomUser> GetUsersForPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
@@ -293,9 +239,15 @@ public class RoomTileMapHelpers
     }
 
     public static double GetItemPlacementHeight(
+        IRoomTileMap roomTileMap,
         IEnumerable<Point> pointsForPlacement, 
         ICollection<PlayerFurnitureItemPlacementData> roomFurnitureItems)
     {
+        if (!pointsForPlacement.Any())
+        {
+            return default;
+        }
+        
         var i = new List<PlayerFurnitureItemPlacementData>();
         
         foreach (var p in pointsForPlacement)
@@ -305,10 +257,26 @@ public class RoomTileMapHelpers
         
         if (!i.Any())
         {
-            return 0;
+            return pointsForPlacement.Select(x => roomTileMap.ZMap[x.Y, x.X]).Max();
         }
 
         var highestItem = i.MaxBy(x => x.PositionZ)!;
         return highestItem.PositionZ + highestItem.FurnitureItem.StackHeight;
+    }
+
+    public static void UpdatePointListForRoomMap(
+        List<Point> points, 
+        IRoomTileMap tileMap,
+        List<PlayerFurnitureItemPlacementData> roomItems)
+    {
+        foreach (var point in points)
+        {
+            tileMap.Map[point.Y, point.X] = GetStateNumberForTile(point.X, point.Y, roomItems);
+        }
+    }
+
+    public static int GetTilesBetween(Point a, Point b)
+    {
+        return Math.Abs(a.X + a.Y - (b.X + b.Y));
     }
 }

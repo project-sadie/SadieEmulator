@@ -1,7 +1,6 @@
 using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms;
@@ -16,7 +15,7 @@ public class RoomPaintItemPlacedEventHandler(
 {
     public int ItemId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null || client.RoomUser == null)
         {
@@ -30,7 +29,7 @@ public class RoomPaintItemPlacedEventHandler(
             return;
         }
         
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
         
         if (room == null)
         {

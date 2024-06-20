@@ -4,7 +4,6 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 
@@ -19,7 +18,7 @@ public class PlayerAcceptFriendRequestEventHandler(
 {
     public List<int> Ids { get; set; } = [];
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         foreach (var originId in Ids)
         {
@@ -48,14 +47,14 @@ public class PlayerAcceptFriendRequestEventHandler(
         
         var targetPlayer = playerRepository.GetPlayerLogicById(originId);
         var targetOnline = targetPlayer != null;
-        var targetInRoom = targetPlayer != null && targetPlayer.CurrentRoomId != 0;
+        var targetInRoom = targetPlayer != null && targetPlayer.State.CurrentRoomId != 0;
 
         var targetRelationship = targetOnline
             ? targetPlayer!
                 .Relationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
 
-        await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(client.Player, [
+        await PlayerHelpersToClean.SendFriendUpdatesToPlayerAsync(client.Player, [
             new PlayerFriendshipUpdate
             {
                 Type = 0,
@@ -82,13 +81,13 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .FirstOrDefault(x =>
                     x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 
-            await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [
+            await PlayerHelpersToClean.SendFriendUpdatesToPlayerAsync(targetPlayer, [
                 new PlayerFriendshipUpdate
                 {
                     Type = 0,
                     Friend = player,
                     FriendOnline = true,
-                    FriendInRoom = player.CurrentRoomId != 0,
+                    FriendInRoom = player.State.CurrentRoomId != 0,
                     Relation = relationship?.TypeId ?? PlayerRelationshipType.None
                 }
             ]);

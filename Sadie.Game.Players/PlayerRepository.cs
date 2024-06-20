@@ -1,19 +1,15 @@
 using System.Collections.Concurrent;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Serialization;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Players;
 
 public class PlayerRepository(
     ILogger<PlayerRepository> logger,
-    SadieContext dbContext,
-    IMapper mapper)
+    SadieContext dbContext)
 {
     private readonly ConcurrentDictionary<int, PlayerLogic> _players = new();
 
@@ -31,6 +27,10 @@ public class PlayerRepository(
             .Set<Player>()
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
+            .Include(x => x.IncomingFriendships)
+            .Include(x => x.OutgoingFriendships)
+            .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
     
@@ -61,55 +61,10 @@ public class PlayerRepository(
         {
             return result;
         }
-
-        await UpdateOnlineStatusAsync(player.Id, false);
-        await UpdateStatusForFriendsAsync(player, player.GetMergedFriendships(), false, false);
+        
         await player.DisposeAsync();
 
         return result;
-    }
-
-    public async Task UpdateStatusForFriendsAsync(
-        PlayerLogic player, 
-        IEnumerable<PlayerFriendship> friendships, 
-        bool isOnline, 
-        bool inRoom)
-    {
-        var update = new PlayerFriendshipUpdate
-        {
-            Type = 0,
-            Friend = player,
-            FriendOnline = isOnline,
-            FriendInRoom = inRoom,
-            Relation = PlayerRelationshipType.None
-        };
-        
-        foreach (var friend in friendships)
-        {
-            var targetId = friend.OriginPlayerId == player.Id ? 
-                friend.TargetPlayerId : 
-                friend.OriginPlayerId;
-
-            var targetPlayer = GetPlayerLogicById(targetId);
-
-            if (targetPlayer != null)
-            {
-                await PlayerFriendshipHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [update]);
-            }
-        }
-    }
-    
-    public async Task UpdateOnlineStatusAsync(int playerId, bool isOnline)
-    {
-        var playerData = await dbContext
-            .Set<PlayerData>()
-            .FirstOrDefaultAsync(x => x.PlayerId == playerId);
-
-        if (playerData != null)
-        {
-            playerData.IsOnline = isOnline;
-            await dbContext.SaveChangesAsync();
-        }
     }
 
     public int Count()
@@ -121,21 +76,11 @@ public class PlayerRepository(
     {
         return await dbContext
             .Set<Player>()
+            .Include(x => x.AvatarData)
             .Where(x => 
-                x.Username.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) && 
+                x.Username.Contains(searchQuery) && 
                 !excludeIds.Contains(x.Id))
             .ToListAsync();
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        foreach (var player in _players.Values)
-        {
-            if (!await TryRemovePlayerAsync(player.Id))
-            {
-                logger.LogError("Failed to dispose of player");
-            }
-        }
     }
 
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)

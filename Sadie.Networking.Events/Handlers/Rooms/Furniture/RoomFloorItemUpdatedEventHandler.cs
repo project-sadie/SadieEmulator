@@ -7,7 +7,6 @@ using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -25,7 +24,7 @@ public class RoomFloorItemUpdatedEventHandler(
     public int Y { get; set; }
     public int Direction { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null || client.RoomUser == null)
         {
@@ -34,7 +33,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
         var itemId = ItemId;
         
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
         
         if (room == null)
         {
@@ -47,31 +46,13 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
 
         if (roomFurnitureItem == null)
-        {
-            return;
-        }
-
-        var newPoints = RoomTileMapHelpers.GetPointsForPlacement(
-            X, Y, 
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY, 
-            Direction);
-        
-        if (!RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
             return;
         }
-
-        var position = new HPoint(
-            X,
-            Y, 
-            roomFurnitureItem.PositionZ);
-
-        var direction = Direction;
         
         var oldPoints = RoomTileMapHelpers.GetPointsForPlacement(
             roomFurnitureItem.PositionX, 
@@ -80,10 +61,55 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.FurnitureItem.TileSpanY, 
             (int) roomFurnitureItem.Direction);
 
+        var newPoints = RoomTileMapHelpers.GetPointsForPlacement(
+            X, Y, 
+            roomFurnitureItem.FurnitureItem.TileSpanX,
+            roomFurnitureItem.FurnitureItem.TileSpanY, 
+            Direction);
+
+        RoomTileMapHelpers.UpdatePointListForRoomMap(oldPoints, 
+            room.TileMap,
+            room
+                .FurnitureItems
+                .Except([roomFurnitureItem])
+                .ToList());
+        
+        var rotatingSingleTileItem = newPoints.Count == 1 && 
+             newPoints[0].X == roomFurnitureItem.PositionX &&
+             newPoints[0].Y == roomFurnitureItem.PositionY;
+        
+        if (!rotatingSingleTileItem && 
+            !RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
+        {
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            return;
+        }
+
+        var z = RoomTileMapHelpers.GetItemPlacementHeight(
+            room.TileMap, 
+            newPoints, 
+            room
+                .FurnitureItems
+                .Except([roomFurnitureItem])
+                .ToList());
+
+        var position = new HPoint(
+            X,
+            Y,
+            z);
+
+        var direction = Direction;
+
         roomFurnitureItem.PositionX = position.X;
         roomFurnitureItem.PositionY = position.Y;
         roomFurnitureItem.PositionZ = position.Z;
         roomFurnitureItem.Direction = (HDirection) direction;
+        
+        room.TileMap.Map[roomFurnitureItem.PositionY, roomFurnitureItem.PositionX] =
+            RoomTileMapHelpers.GetStateNumberForTile(
+                roomFurnitureItem.PositionX, 
+                roomFurnitureItem.PositionY,
+                room.FurnitureItems);
         
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
@@ -115,7 +141,7 @@ public class RoomFloorItemUpdatedEventHandler(
     {
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter
         {
-            Id = roomFurnitureItem.Id,
+            Id = roomFurnitureItem.PlayerFurnitureItemId,
             AssetId = roomFurnitureItem.FurnitureItem.AssetId,
             PositionX = roomFurnitureItem.PositionX,
             PositionY = roomFurnitureItem.PositionY,
@@ -123,8 +149,9 @@ public class RoomFloorItemUpdatedEventHandler(
             PositionZ = roomFurnitureItem.PositionZ,
             StackHeight = 0.ToString(),
             Extra = 0,
-            ObjectDataKey = 0,
-            ExtraData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
+            ObjectDataKey = (int) RoomFurnitureItemHelpers.GetObjectDataKeyForItem(roomFurnitureItem),
+            ObjectData = RoomFurnitureItemHelpers.GetObjectDataForItem(roomFurnitureItem),
+            MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
             Expires = -1,
             InteractionModes = 0,
             OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId

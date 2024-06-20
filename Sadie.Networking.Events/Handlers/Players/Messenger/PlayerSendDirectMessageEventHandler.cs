@@ -2,7 +2,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Shared;
@@ -20,7 +19,7 @@ public class PlayerSendDirectMessageEventHandler(
     public int PlayerId { get; set; }
     public required string Message { get; set; }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalMilliseconds < CooldownIntervals.PlayerDirectMessage)
         {

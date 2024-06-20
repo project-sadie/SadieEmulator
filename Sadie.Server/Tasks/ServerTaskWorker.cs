@@ -14,7 +14,7 @@ public class ServerTaskWorker(
             foreach (var task in tasks.Where(task => task.WaitingToExecute()))
             {
                 task.LastExecuted = DateTime.Now;
-                await ProcessTaskAsync(task);
+                ProcessTaskAsync(task);
             }
 
             await Task.Delay(50, token);
@@ -42,6 +42,5 @@ public class ServerTaskWorker(
 
     public void Dispose()
     {
-        // TODO release managed resources here
     }
 }

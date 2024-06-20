@@ -1,7 +1,6 @@
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
 
@@ -12,7 +11,7 @@ public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetwo
 {
     public int PlayerId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var playerId = PlayerId;
 
@@ -38,7 +37,7 @@ public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetwo
             return;
         }
 
-        if (targetPlayer.CurrentRoomId == 0)
+        if (targetPlayer.State.CurrentRoomId == 0)
         {
             await client.WriteToStreamAsync(new PlayerStalkErrorWriter
             {
@@ -48,14 +47,14 @@ public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetwo
             return;
         }
 
-        if (client.Player.CurrentRoomId == targetPlayer.CurrentRoomId)
+        if (client.Player.State.CurrentRoomId == targetPlayer.State.CurrentRoomId)
         {
             return;
         }
 
         await client.WriteToStreamAsync(new RoomForwardEntryWriter
         {
-            RoomId = targetPlayer.CurrentRoomId
+            RoomId = targetPlayer.State.CurrentRoomId
         });
     }
 }

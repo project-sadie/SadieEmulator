@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.API;
+using Sadie.API.Game.Players;
 
 namespace Sadie.Game.Players;
 

@@ -1,9 +1,10 @@
+using Sadie.Database;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class ProcessRoomsTask(RoomRepository roomRepository) : IServerTask
+public class ProcessRoomsTask(RoomRepository roomRepository, SadieContext dbContext) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
     public DateTime LastExecuted { get; set; }
@@ -17,20 +18,23 @@ public class ProcessRoomsTask(RoomRepository roomRepository) : IServerTask
                 continue;
             }
             
-            await room.BotRepository.RunPeriodicCheckAsync();
-            await room.UserRepository.RunPeriodicCheckAsync();
+            room.BotRepository.RunPeriodicCheckAsync();
+            room.UserRepository.RunPeriodicCheckAsync();
 
             var bots = room.BotRepository.GetAll();
 
-            await room.UserRepository.BroadcastDataAsync(new RoomBotStatusWriter
+            if (bots.Any())
             {
-                Bots = bots
-            });
+                await room.UserRepository.BroadcastDataAsync(new RoomBotStatusWriter
+                {
+                    Bots = bots
+                });
 
-            await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
-            {
-                Bots = bots
-            });
+                await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
+                {
+                    Bots = bots
+                });
+            }
         }
     }
 }

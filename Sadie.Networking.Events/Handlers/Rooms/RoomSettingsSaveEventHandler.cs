@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Enums;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Shared.Extensions;
@@ -43,7 +44,7 @@ public class RoomSettingsSaveEventHandler(
     public int ChatDistance { get; set; }
     public int ChatProtection { get; set; }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var room = roomRepository.TryGetRoomById(RoomId);
 
@@ -107,6 +108,9 @@ public class RoomSettingsSaveEventHandler(
         UpdateChatSettings(room.ChatSettings);
         
         dbContext.Entry(room).State = EntityState.Modified;
+        dbContext.Entry(room.Settings).State = EntityState.Modified;
+        dbContext.Entry(room.ChatSettings).State = EntityState.Modified;
+        
         await dbContext.SaveChangesAsync();
         await BroadcastUpdatesAsync(room);
         
@@ -114,13 +118,20 @@ public class RoomSettingsSaveEventHandler(
         {
             RoomId = RoomId
         });
+
+        client.Player.Rooms = await dbContext
+            .Rooms
+            .Include(x => x.Owner)
+            .Include(x => x.Settings)
+            .Where(x => x.OwnerId == client.Player.Id)
+            .ToListAsync();
     }
 
     private void UpdateSettings(RoomSettings settings)
     {
         settings.AccessType = (RoomAccessType) AccessType;
         settings.Password = Password;
-        settings.TradeOption = TradeOption;
+        settings.TradeOption = (RoomTradeOption) TradeOption;
         settings.AllowPets = AllowPets;
         settings.CanPetsEat = CanPetsEat;
         settings.CanUsersOverlap = CanUsersOverlap;

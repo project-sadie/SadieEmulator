@@ -4,6 +4,7 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
+using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -114,7 +115,7 @@ public static class NetworkPacketEventHelpers
             AchievementScore = playerData.AchievementScore
         });
 
-        if (player.HasPermission("moderation_tools"))
+        if (player.HasPermission("moderator"))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter
             {
@@ -145,7 +146,7 @@ public static class NetworkPacketEventHelpers
             return false;
         }
         
-        var roomId = player.CurrentRoomId;
+        var roomId = player.State.CurrentRoomId;
         var roomObject = roomRepository.TryGetRoomById(roomId);
 
         if (roomObject == null || client.RoomUser == null)
@@ -242,10 +243,6 @@ public static class NetworkPacketEventHelpers
             await room.UserRepository.BroadcastDataAsync(writer);
         }
         
-        roomUser.UpdateLastAction();
         room.ChatMessages.Add(chatMessage);
-
-        dbContext.Add(chatMessage);
-        await dbContext.SaveChangesAsync();
     }
 }

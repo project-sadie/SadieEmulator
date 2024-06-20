@@ -31,6 +31,10 @@ public class RoomProfile : Profile
                 x.PlayerRights,
                 x.PaintSettings,
                 x.Tags,
-                x.PlayerLikes));
+                x.PlayerLikes)
+            {
+                Name = x.Name,
+                Description = x.Description
+            });
     }
 }

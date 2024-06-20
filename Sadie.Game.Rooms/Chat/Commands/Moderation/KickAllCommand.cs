@@ -1,10 +1,9 @@
-using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Moderation;
 
-public class KickAllCommand : AbstractRoomChatCommand, IRoomChatCommand
+public class KickAllCommand : AbstractRoomChatCommand
 {
     public override string Trigger => "kickall";
     public override string Description => "Kicks all users out of the current room";
@@ -13,6 +12,11 @@ public class KickAllCommand : AbstractRoomChatCommand, IRoomChatCommand
     {
         var userRepo = user.Room.UserRepository;
         
+        var alertWriter = new PlayerAlertWriter
+        {
+            Message = "You have been kicked from the room."
+        };
+        
         foreach (var roomUser in user.Room.UserRepository.GetAll())
         {
             if (roomUser.Id == user.Id)
@@ -20,11 +24,7 @@ public class KickAllCommand : AbstractRoomChatCommand, IRoomChatCommand
                 continue;
             }
             
-            await roomUser.Player.NetworkObject!.WriteToStreamAsync(new PlayerAlertWriter
-            {
-                Message = "You have been kicked from the room."
-            });
-            
+            await roomUser.Player.NetworkObject!.WriteToStreamAsync(alertWriter);
             await userRepo.TryRemoveAsync(roomUser.Id, true);
         }
     }

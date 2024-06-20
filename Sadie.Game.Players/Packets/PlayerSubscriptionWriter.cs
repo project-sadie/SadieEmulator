@@ -2,7 +2,7 @@
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
 
-namespace Sadie.Networking.Writers.Players.Other;
+namespace Sadie.Game.Players.Packets;
 
 [PacketId(ServerPacketId.PlayerSubscription)]
 public class PlayerSubscriptionWriter : AbstractPacketWriter

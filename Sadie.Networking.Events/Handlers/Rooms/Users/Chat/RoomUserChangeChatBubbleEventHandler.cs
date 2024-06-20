@@ -1,5 +1,4 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Game;
 
@@ -10,7 +9,7 @@ public class RoomUserChangeChatBubbleEventHandler : INetworkPacketEventHandler
 {
     public int Bubble { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         client.Player.AvatarData.ChatBubbleId = (ChatBubble) Bubble;
     }

@@ -1,10 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted;
 
@@ -19,7 +19,7 @@ public class PlayerChangeRelationshipEventHandler(
     public int PlayerId { get; set; }
     public int RelationId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var playerId = PlayerId;
         var relationId = RelationId;
@@ -38,6 +38,7 @@ public class PlayerChangeRelationshipEventHandler(
             if (relationship != null)
             {
                 client.Player.Relationships.Remove(relationship);
+                dbContext.Entry(relationship).State = EntityState.Deleted;
                 await dbContext.SaveChangesAsync();
             }
         }
@@ -51,23 +52,29 @@ public class PlayerChangeRelationshipEventHandler(
                 {
                     OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
+                    TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
                     TypeId = (PlayerRelationshipType)relationId
                 };
                 
                 client.Player.Relationships.Add(relationship);
+                
+                dbContext.Entry(relationship).State = EntityState.Added;
+                dbContext.Attach(relationship.TargetPlayer!).State = EntityState.Unchanged;
+                
                 await dbContext.SaveChangesAsync();
             }
             else
             {
                 relationship.TypeId = (PlayerRelationshipType)relationId;
+                dbContext.Entry(relationship).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
             }
         }
 
         var onlineFriend = playerRepository.GetPlayerLogicById(playerId);
         var isOnline = onlineFriend != null;
-        var inRoom = isOnline && onlineFriend!.CurrentRoomId != 0;
-        
+        var inRoom = isOnline && onlineFriend!.State.CurrentRoomId != 0;
+
         var updateFriendWriter = new PlayerUpdateFriendWriter
         {
             Updates =

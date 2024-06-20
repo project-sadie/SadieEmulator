@@ -4,7 +4,6 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Enums.Game.Rooms.Unit;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Unit;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
@@ -18,6 +17,8 @@ public class RoomUserData : RoomUnit, IRoomUserData
     public bool IsIdle { get; protected set; }
     public bool MoonWalking { get; set; }
     public int HandItemId { get; set; }
+    public IRoomUserTrade Trade { get; set; }
+    public int TradeStatus { get; set; }
     
     protected RoomUserData(
         int id, 
@@ -27,9 +28,8 @@ public class RoomUserData : RoomUnit, IRoomUserData
         HDirection directionHead, 
         HDirection direction, 
         PlayerLogic player, 
-        TimeSpan idleTime,
-        RoomFurnitureItemInteractorRepository interactorRepository) : 
-        base(id, RoomUnitType.User, room, point, interactorRepository)
+        TimeSpan idleTime) : 
+        base(id, RoomUnitType.User, room, point)
     {
         PointZ = pointZ;
         DirectionHead = directionHead;

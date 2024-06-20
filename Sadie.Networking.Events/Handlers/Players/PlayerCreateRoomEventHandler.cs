@@ -1,8 +1,9 @@
+using AutoMapper;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
@@ -11,7 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerIds.PlayerCreateRoom)]
 public class PlayerCreateRoomEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    RoomRepository roomRepository,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public required string Name { get; set; }
     public required string Description { get; set; }
@@ -20,7 +22,7 @@ public class PlayerCreateRoomEventHandler(
     public int MaxUsersAllowed { get; set; }
     public int TradingPermission { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var layout = dbContext
             .RoomLayouts
@@ -44,7 +46,8 @@ public class PlayerCreateRoomEventHandler(
         newRoom.Settings = new RoomSettings
         {
             RoomId = newRoom.Id,
-            WalkDiagonal = true
+            WalkDiagonal = true,
+            TradeOption = RoomTradeOption.Allowed
         };
 
         newRoom.ChatSettings = new RoomChatSettings
@@ -62,8 +65,10 @@ public class PlayerCreateRoomEventHandler(
 
         newRoom.Owner = client.Player;
         newRoom.Layout = layout;
-        
-        roomRepository.AddRoom(newRoom);
+
+        var roomLogic = mapper.Map<RoomLogic>(newRoom);
+            
+        roomRepository.AddRoom(roomLogic);
         client.Player.Rooms.Add(newRoom);
 
         await client.WriteToStreamAsync(new RoomCreatedWriter

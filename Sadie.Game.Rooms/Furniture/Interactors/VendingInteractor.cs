@@ -8,11 +8,11 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class VendingMachineInteractor : IRoomFurnitureItemInteractor
+public class VendingInteractor : AbstractRoomFurnitureItemInteractor
 {
-    public string InteractionType => "vending_machine";
+    public override string InteractionType => "vending_machine";
     
-    public async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
         var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 
@@ -37,7 +37,9 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             }
         }
         
-        await RoomFurnitureItemHelpers.CycleInteractionStateForItemAsync(room, item);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
+        await Task.Delay(500);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
@@ -45,10 +47,4 @@ public class VendingMachineInteractor : IRoomFurnitureItemInteractor
             ItemId = handItems.PickRandom().Id
         });
     }
-
-    public Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnMoveAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit) => Task.CompletedTask;
-    public Task OnStepOnAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
-    public Task OnStepOffAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit? roomUnit) => Task.CompletedTask;
 }

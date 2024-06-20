@@ -12,4 +12,8 @@
       <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DotNetty.Transport" Version="0.7.6" />
+    </ItemGroup>
+
 </Project>

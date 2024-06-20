@@ -16,7 +16,6 @@ public class EventHandlerIds
     public const short NavigatorData = 2110;
     public const short PlayerFriendsList = 1523;
     public const short PlayerMessengerInit = 2781;
-    public const short PlayerPing = 295;
     public const short PlayerPong = 2596;
     public const short HotelViewData = 2912;
     public const short PlayerIgnoredUsers = 3878;
@@ -89,10 +88,10 @@ public class EventHandlerIds
     public const short HotelViewPromotions = 1827;
     public const short RoomLike = 3582;
     public const short PlayerInventoryFurnitureItems = 3150;
-    public const short RoomFurnitureItemPlaced = 1258;
-    public const short RoomFurnitureItemEjected = 3456;
+    public const short RoomItemPlaced = 1258;
+    public const short RoomItemEjected = 3456;
     public const short RoomFloorFurnitureItemUpdated = 248;
-    public const short RoomFurnitureItemUse = 99;
+    public const short RoomItemUse = 99;
     public const short RoomGiveUserRights = 808;
     public const short RoomRemoveUserRights = 2064;
     public const short PlayerWardrobe = 2742;
@@ -112,8 +111,19 @@ public class EventHandlerIds
     public const short RoomDimmerToggle = 2296;
     public const short RoomDimmerSave = 1648;
     public const short RoomTriggerOneWayGate = 2765;
+    public const short RoomTriggerDice = 1990;
     public const short RoomDelete = 532;
     public const short RoomBannedUsers = 2267;
     public const short RoomUserGiveHandItem = 2941;
     public const short RoomUserDropHandItem = 2814;
+    public const short RoomCloseDice = 1533;
+    public const short RoomUserTrade = 1481;
+    public const short RoomUserTradeOfferItem = 3107;
+    public const short RoomUserTradeClosed = 2551;
+    public const short RoomUserTradeOfferItems = 1263;
+    public const short RoomUserTradeAccepted = 3863;
+    public const short RoomUserTradeConfirm = 2760;
+    public const short RoomItemUpdateObjectData = 3608;
+    public const short RoomBackgroundTonerApply = 2880;
+    public const short ClientLatency = 295;
 }

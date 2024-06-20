@@ -1,12 +1,12 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -21,6 +21,7 @@ using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
+using Serilog;
 
 namespace Sadie.Networking.Events;
 
@@ -91,6 +92,11 @@ public static class RoomHelpersDirty
             controllerLevel = RoomControllerLevel.Owner;
         }
 
+        if (player.HasPermission("moderator"))
+        {
+            controllerLevel = RoomControllerLevel.Moderator;
+        }
+
         if (player.HasPermission("any_room_rights"))
         {
             controllerLevel = RoomControllerLevel.Rights;
@@ -131,7 +137,7 @@ public static class RoomHelpersDirty
         Point spawnPoint,
         HDirection direction)
     {
-        var z = 0; // TODO: Calculate this
+        var z = room.TileMap.ZMap[spawnPoint.Y, spawnPoint.X];
         
         return roomUserFactory.Create(
             room,
@@ -145,12 +151,12 @@ public static class RoomHelpersDirty
             GetControllerLevelForUser(room, player));
     }
     
-    public static async Task EnterRoomAsync<T>(
+    public static async Task AfterEnterRoomAsync(
         INetworkClient client, 
         RoomLogic room, 
-        ILogger<T> logger, 
         RoomUserFactory roomUserFactory,
-        SadieContext dbContext)
+        SadieContext dbContext,
+        PlayerRepository playerRepository)
     {
         var player = client.Player;
         var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
@@ -168,8 +174,8 @@ public static class RoomHelpersDirty
         var roomUser = CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
         
         if (!room.UserRepository.TryAdd(roomUser))
-        {
-            logger.LogError($"Failed to add user {player.Id} to room {room.Id}");
+        { 
+            Log.Error($"Failed to add user {player.Id} to room {room.Id}");
             return;
         }
         
@@ -178,18 +184,19 @@ public static class RoomHelpersDirty
             var squareInFront = RoomTileMapHelpers
                 .GetPointInFront(teleport.PositionX, teleport.PositionY, teleport.Direction);
 
-            roomUser.WalkToPoint(squareInFront);
+            if (room.TileMap.IsTileFree(squareInFront))
+            {
+                roomUser.WalkToPoint(squareInFront);
+            }
             
-            Task.Factory.StartNew(async () =>
+            await Task.Factory.StartNew(async () =>
             {
                 await Task.Delay(800);
-                
-                teleport.PlayerFurnitureItem.MetaData = "0";
-                await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, teleport);
+                await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, teleport, "0");
             });
         }
         
-        player.CurrentRoomId = room.Id;
+        player.State.CurrentRoomId = room.Id;
 
         room.TileMap.AddUserToMap(entryPoint, roomUser);
         roomUser.ApplyFlatCtrlStatus();
@@ -198,6 +205,20 @@ public static class RoomHelpersDirty
         
         await SendRoomEntryPacketsToUserAsync(client, room);
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
+        
+        // TODO; Actually check if this stuff needs to be sent (consecutive room load)
+        
+        var friends = player
+            .GetMergedFriendships()
+            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
+            .ToList();
+        
+        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+            player,
+            friends, 
+            true, 
+            true,
+            playerRepository);
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, Room room)
@@ -246,13 +267,6 @@ public static class RoomHelpersDirty
 
         var owner = room.OwnerId == player.Id;
         
-        await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter
-        {
-            HideWalls = room.Settings.HideWalls,
-            WallThickness = room.Settings.WallThickness,
-            FloorThickness = room.Settings.FloorThickness
-        });
-        
         await client.WriteToStreamAsync(new RoomPaneWriter
         {
             RoomId = room.Id,
@@ -268,7 +282,7 @@ public static class RoomHelpersDirty
         {
             await client.WriteToStreamAsync(new RoomOwnerWriter());
         }
-
+        
         await client.WriteToStreamAsync(new RoomLoadedWriter());
     }
 
@@ -346,6 +360,7 @@ public static class RoomHelpersDirty
         }
 
         var z = RoomTileMapHelpers.GetItemPlacementHeight(
+            room.TileMap,
             pointsForPlacement,
             room.FurnitureItems);
         
@@ -361,36 +376,19 @@ public static class RoomHelpersDirty
             CreatedAt = DateTime.Now
         };
 
-        playerItem.PlacementData.Add(roomFurnitureItem);
+        playerItem.PlacementData = roomFurnitureItem;
         room.FurnitureItems.Add(roomFurnitureItem);
 
         RoomTileMapHelpers.UpdateTileStatesForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
+        
+        foreach (var user in RoomTileMapHelpers.GetUsersForPoints(pointsForPlacement, room.UserRepository.GetAll()))
+        {
+            user.CheckStatusForCurrentTile();
+        }
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {
             ItemId = itemId
-        });
-        
-        dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
-        
-        await dbContext.SaveChangesAsync();
-
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
-        {
-            Id = roomFurnitureItem.Id,
-            AssetId = roomFurnitureItem.FurnitureItem.AssetId,
-            PositionX = roomFurnitureItem.PositionX,
-            PositionY = roomFurnitureItem.PositionY,
-            Direction = (int)roomFurnitureItem.Direction,
-            PositionZ = roomFurnitureItem.PositionZ,
-            StackHeight = 0,
-            Extra = 1,
-            ObjectDataKey = (int)ObjectDataKey.LegacyKey,
-            MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
-            Expires = -1,
-            InteractionModes = roomFurnitureItem.FurnitureItem.InteractionModes,
-            OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
-            OwnerUsername = roomFurnitureItem.PlayerFurnitureItem.Player.Username
         });
         
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
@@ -399,6 +397,28 @@ public static class RoomHelpersDirty
         {
             await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
         }
+
+        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
+        {
+            Id = roomFurnitureItem.PlayerFurnitureItem.Id,
+            AssetId = roomFurnitureItem.FurnitureItem.AssetId,
+            PositionX = roomFurnitureItem.PositionX,
+            PositionY = roomFurnitureItem.PositionY,
+            Direction = (int)roomFurnitureItem.Direction,
+            PositionZ = roomFurnitureItem.PositionZ,
+            StackHeight = 0.ToString(),
+            Extra = 1,
+            ObjectDataKey = (int) RoomFurnitureItemHelpers.GetObjectDataKeyForItem(roomFurnitureItem),
+            ObjectData = RoomFurnitureItemHelpers.GetObjectDataForItem(roomFurnitureItem),
+            MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
+            Expires = -1,
+            InteractionModes = roomFurnitureItem.FurnitureItem.InteractionModes,
+            OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
+            OwnerUsername = roomFurnitureItem.PlayerFurnitureItem.Player.Username
+        });
+        
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
+        await dbContext.SaveChangesAsync();
     }
 
     public static async Task OnPlaceWallItemAsync(
@@ -411,8 +431,8 @@ public static class RoomHelpersDirty
         SadieContext dbContext,
         RoomFurnitureItemInteractorRepository interactorRepository)
     {
-        if (playerItem.FurnitureItem.InteractionType == "dimmer" && 
-            room.FurnitureItems.Any(x => x.FurnitureItem.InteractionType == "dimmer"))
+        if (playerItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer && 
+            room.FurnitureItems.Any(x => x.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MaxDimmers);
             return;
@@ -439,21 +459,19 @@ public static class RoomHelpersDirty
             ItemId = itemId
         });
         
-        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
-        {
-            RoomFurnitureItem = roomFurnitureItem
-        });
-        
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
         if (interactor != null)
         {
             await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
         }
+        
+        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
+        {
+            RoomFurnitureItem = roomFurnitureItem
+        });
 
         dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
-        dbContext.Attach(playerItem).State = EntityState.Unchanged;
-        
         await dbContext.SaveChangesAsync();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
@@ -12,9 +11,9 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 [PacketId(EventHandlerIds.RoomHeightmap)]
 public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
+        var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
         
         if (room == null)
         {
@@ -27,8 +26,7 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
         
         await client.WriteToStreamAsync(new RoomRelativeMapWriter
         {
-            TileMap = roomTileMap,
-            Items = room.FurnitureItems
+            TileMap = roomTileMap
         });
         
         await client.WriteToStreamAsync(new RoomHeightMapWriter
@@ -38,12 +36,19 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
             RelativeHeightmap = room.Layout.HeightMap.Replace("\r\n", "\r")
         });
         
-        await userRepository.BroadcastDataAsync(new RoomUserDataWriter
+        await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter
+        {
+            HideWalls = room.Settings.HideWalls,
+            WallThickness = room.Settings.WallThickness,
+            FloorThickness = room.Settings.FloorThickness
+        });
+        
+        await client.WriteToStreamAsync(new RoomUserDataWriter
         {
             Users = room.UserRepository.GetAll()
         });
         
-        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter
+        await client.WriteToStreamAsync(new RoomUserStatusWriter
         {
             Users = room.UserRepository.GetAll()
         });

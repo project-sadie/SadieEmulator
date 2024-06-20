@@ -3,7 +3,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
 
@@ -18,7 +17,7 @@ public class PlayerRemoveFriendsEventHandler(
     public int Amount { get; set; }
     public List<int> Ids { get; init; } = [];
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var playerId = client.Player.Id;
         

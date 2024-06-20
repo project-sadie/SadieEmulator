@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Enums;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
@@ -20,9 +20,9 @@ public class RoomDimmerSaveEventHandler(
     public required int Intensity { get; init; }
     public required bool Apply { get; init; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }
@@ -34,7 +34,7 @@ public class RoomDimmerSaveEventHandler(
 
         var dimmer = room
             .FurnitureItems
-            .FirstOrDefault(x => x.FurnitureItem.InteractionType == "dimmer");
+            .FirstOrDefault(x => x.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
 
         if (dimmer == null)
         {
@@ -55,8 +55,10 @@ public class RoomDimmerSaveEventHandler(
 
         room.DimmerSettings.Enabled = Apply;
         
-        dimmer.PlayerFurnitureItem.MetaData = $"{(room.DimmerSettings.Enabled ? 2 : 0)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}";
-        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, dimmer);
+        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
+            room, 
+            dimmer,
+            $"{(room.DimmerSettings.Enabled ? 2 : 0)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}");
 
         dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         dbContext.Entry(preset).State = EntityState.Modified;

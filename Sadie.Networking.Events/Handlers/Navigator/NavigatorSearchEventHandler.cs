@@ -5,7 +5,6 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Game.Navigator;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
@@ -18,10 +17,10 @@ public class NavigatorSearchEventHandler(
     RoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    [PacketData] public string? TabName { get; set; }
-    [PacketData] public string? SearchQuery { get; set; }
+    public string? TabName { get; set; }
+    public string? SearchQuery { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {
@@ -37,19 +36,30 @@ public class NavigatorSearchEventHandler(
             return;
         }
 
-        var categories = tab!.
+        var categories = tab.
             Categories.
             OrderBy(x => x.OrderId).
             ToList();
 
         var categoryRoomMap = new Dictionary<NavigatorCategory, List<Room>>();
 
-        foreach (var category in categories)
+        if (!string.IsNullOrEmpty(SearchQuery))
         {
-            categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
+            categoryRoomMap[new NavigatorCategory
+            {
+                Name = "Search Results",
+                CodeName = "",
+                OrderId = 0,
+                TabId = 1
+            }] = await navigatorRoomProvider.GetRoomsForSearchQueryAsync(SearchQuery);
         }
-
-        categoryRoomMap = ApplyFilter(SearchQuery, categoryRoomMap);
+        else
+        {
+            foreach (var category in categories)
+            {
+                categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
+            }
+        }
         
         var searchResultPagesWriter = new NavigatorSearchResultPagesWriter
         {
@@ -60,44 +70,5 @@ public class NavigatorSearchEventHandler(
         };
         
         await client.WriteToStreamAsync(searchResultPagesWriter);
-    }
-
-    private static Dictionary<NavigatorCategory, List<Room>> ApplyFilter(
-        string searchQuery, 
-        Dictionary<NavigatorCategory, List<Room>> categoryRoomMap)
-    {
-        if (searchQuery.Contains(':'))
-        {
-            var searchQueryParts = searchQuery.Split(":");
-            var filterName = searchQueryParts[0];
-            var filterValue = searchQuery[(filterName.Length + 1)..];
-
-            if (string.IsNullOrEmpty(filterValue))
-            {
-                return categoryRoomMap;
-            }
-            
-            switch (filterName)
-            {
-                case "roomname":
-                    return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.Name.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
-                        .ToDictionary();
-                case "owner":
-                    return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.Owner.Username.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
-                        .ToDictionary();
-                case "tag":
-                    return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.Tags.Any(t => t.Name.Contains(filterValue, StringComparison.OrdinalIgnoreCase))))
-                        .ToDictionary();
-            }
-        }
-        else if (!string.IsNullOrEmpty(searchQuery))
-        {
-            // TODO: Filter on anything
-        }
-
-        return categoryRoomMap;
     }
 }

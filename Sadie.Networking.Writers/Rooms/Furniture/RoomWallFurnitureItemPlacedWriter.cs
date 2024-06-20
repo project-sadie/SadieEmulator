@@ -12,13 +12,13 @@ public class RoomWallFurnitureItemPlacedWriter : AbstractPacketWriter
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
-        writer.WriteString(RoomFurnitureItem.Id + "");
+        writer.WriteString(RoomFurnitureItem.PlayerFurnitureItemId + "");
         writer.WriteInteger(RoomFurnitureItem.FurnitureItem.AssetId);
         writer.WriteString(RoomFurnitureItem.WallPosition);
         writer.WriteString(RoomFurnitureItem.PlayerFurnitureItem.MetaData);
         writer.WriteInteger(-1);
         writer.WriteInteger(RoomFurnitureItem.FurnitureItem.InteractionModes > 1 ? 1 : 0);
-        writer.WriteLong(RoomFurnitureItem.PlayerFurnitureItem.Id);
+        writer.WriteLong(RoomFurnitureItem.Id);
         writer.WriteString(RoomFurnitureItem.PlayerFurnitureItem.Player.Username);
     }
 }
