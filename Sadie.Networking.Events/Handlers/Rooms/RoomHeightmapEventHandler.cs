@@ -43,12 +43,12 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
             FloorThickness = room.Settings.FloorThickness
         });
         
-        await userRepository.BroadcastDataAsync(new RoomUserDataWriter
+        await client.WriteToStreamAsync(new RoomUserDataWriter
         {
             Users = room.UserRepository.GetAll()
         });
         
-        await userRepository.BroadcastDataAsync(new RoomUserStatusWriter
+        await client.WriteToStreamAsync(new RoomUserStatusWriter
         {
             Users = room.UserRepository.GetAll()
         });
