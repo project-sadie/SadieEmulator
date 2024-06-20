@@ -35,7 +35,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                 UserId = id.ToString()
             };
 
-            await BroadcastDataAsync(writer);
+            await BroadcastDataAsync(writer, [id]);
         }
 
         var result = _users.TryRemove(id, out var roomUser);
@@ -67,11 +67,13 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     
     public int Count => _users.Count;
     
-    public async Task BroadcastDataAsync(AbstractPacketWriter writer)
+    public async Task BroadcastDataAsync(AbstractPacketWriter writer, List<long>? excludedIds = null)
     {
         var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
         
-        foreach (var roomUser in _users.Values)
+        foreach (var roomUser in _users
+                     .Values
+                     .Where(x => excludedIds == null || !excludedIds.Contains(x.Id)))
         {
             await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
         }
@@ -84,25 +86,32 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
     public async Task RunPeriodicCheckAsync()
     {
-        var users = _users.Values;
-        
-        foreach (var roomUser in users)
+        try
         {
-            await roomUser.RunPeriodicCheckAsync();
+            var users = _users.Values;
+
+            foreach (var roomUser in users)
+            {
+                await roomUser.RunPeriodicCheckAsync();
+            }
+
+            var statusWriter = new RoomUserStatusWriter
+            {
+                Users = users.Where(x => x.NeedsStatusUpdate).ToList()
+            };
+
+            var dataWriter = new RoomUserDataWriter
+            {
+                Users = users
+            };
+
+            await BroadcastDataAsync(statusWriter);
+            await BroadcastDataAsync(dataWriter);
         }
-
-        var statusWriter = new RoomUserStatusWriter
+        catch (Exception e)
         {
-            Users = users
-        };
-        
-        var dataWriter = new RoomUserDataWriter
-        {
-            Users = users
-        };
-
-        await BroadcastDataAsync(statusWriter);
-        await BroadcastDataAsync(dataWriter);
+            logger.LogError(e.ToString());
+        }
     }
 
     public async ValueTask DisposeAsync()

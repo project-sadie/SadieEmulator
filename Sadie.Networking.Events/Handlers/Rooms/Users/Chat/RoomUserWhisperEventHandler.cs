@@ -66,8 +66,5 @@ public class RoomUserWhisperEventHandler(
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);
         
         room.ChatMessages.Add(chatMessage);
-
-        dbContext.Add(chatMessage);
-        await dbContext.SaveChangesAsync();
     }
 }

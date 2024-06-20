@@ -244,8 +244,5 @@ public static class NetworkPacketEventHelpers
         }
         
         room.ChatMessages.Add(chatMessage);
-
-        dbContext.Add(chatMessage);
-        await dbContext.SaveChangesAsync();
     }
 }

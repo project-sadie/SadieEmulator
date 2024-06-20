@@ -20,7 +20,7 @@ public class Room
     public RoomPaintSettings? PaintSettings { get; set; }
     public RoomChatSettings? ChatSettings { get; set; }
     public ICollection<RoomPlayerRight> PlayerRights { get; init; } = [];
-    public ICollection<RoomChatMessage> ChatMessages { get; init; } = [];
+    public ICollection<RoomChatMessage> ChatMessages { get; set; } = [];
     public ICollection<RoomTag> Tags { get; init; } = [];
     public ICollection<PlayerRoomLike> PlayerLikes { get; init; } = [];
     public ICollection<PlayerFurnitureItemPlacementData> FurnitureItems { get; init; } = [];
