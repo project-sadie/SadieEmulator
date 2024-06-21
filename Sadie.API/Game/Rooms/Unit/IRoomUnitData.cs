@@ -3,7 +3,7 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.API.Game.Rooms.Unit;
 
-public interface IRoomUnitMovementData
+public interface IRoomUnitData
 {
     Point Point { get; set; }
     double PointZ { get; }
@@ -17,4 +17,6 @@ public interface IRoomUnitMovementData
     List<Point> OverridePoints { get; }
     void WalkToPoint(Point point, Action? onReachedGoal = null);
     public double NextZ { get; set; }
+    public int HandItemId { get; set; }
+    public DateTime HandItemSet { get; set; }
 }

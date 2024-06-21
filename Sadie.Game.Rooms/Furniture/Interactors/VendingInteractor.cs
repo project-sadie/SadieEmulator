@@ -40,11 +40,16 @@ public class VendingInteractor : AbstractRoomFurnitureItemInteractor
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
         await Task.Delay(500);
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
+
+        var handItem = handItems.PickRandom();
+
+        roomUnit.HandItemId = handItem.Id;
+        roomUnit.HandItemSet = DateTime.Now;
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
             UserId = roomUnit.Id,
-            ItemId = handItems.PickRandom().Id
+            ItemId = handItem.Id
         });
     }
 }
