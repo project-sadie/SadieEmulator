@@ -76,23 +76,22 @@ public class SecureLoginEventHandler(
             .Where(x => x.Id == tokenRecord.PlayerId)
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
-            
-            .Include(x => x.NavigatorSettings)
-            .Include(x => x.GameSettings)
-            .Include(x => x.Roles).ThenInclude(x => x.Permissions)
             .Include(x => x.RoomLikes)
             .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
+            .Include(x => x.NavigatorSettings)
+            .Include(x => x.GameSettings)
             .Include(x => x.Badges)
             .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
             .Include(x => x.FurnitureItems).ThenInclude(x => x.PlacementData)
             .Include(x => x.WardrobeItems)
+            .Include(x => x.Roles).ThenInclude(x => x.Permissions)
             .Include(x => x.Subscriptions).ThenInclude(x => x.Subscription)
             .Include(x => x.Respects)
             .Include(x => x.SavedSearches)
             .Include(x => x.OutgoingFriendships).ThenInclude(x => x.TargetPlayer).ThenInclude(x => x.AvatarData)
             .Include(x => x.IncomingFriendships).ThenInclude(x => x.OriginPlayer).ThenInclude(x => x.AvatarData)
             .Include(x => x.Rooms).ThenInclude(x => x.Settings)
-            
+            .Include(x => x.Bots)
             .AsSplitQuery()
             .FirstOrDefaultAsync();
 

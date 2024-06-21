@@ -21,10 +21,13 @@ public class RoomUserTagsEventHandler(RoomRepository roomRepository, SadieContex
 
         if (room.UserRepository.TryGetById(UserId, out var user))
         {
-            user!.Player.Tags ??= await dbContext
-                .PlayerTags
-                .Where(x => x.PlayerId == user.Id)
-                .ToListAsync();
+            if (user!.Player.Tags == null)
+            {
+                user.Player.Tags = await dbContext
+                    .PlayerTags
+                    .Where(x => x.PlayerId == user.Id)
+                    .ToListAsync();
+            }
             
             await user.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter
             {
