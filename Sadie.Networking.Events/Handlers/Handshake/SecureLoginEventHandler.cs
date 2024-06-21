@@ -76,7 +76,6 @@ public class SecureLoginEventHandler(
             .Where(x => x.Id == tokenRecord.PlayerId)
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
-            .Include(x => x.Tags)
             .Include(x => x.RoomLikes)
             .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
             .Include(x => x.NavigatorSettings)

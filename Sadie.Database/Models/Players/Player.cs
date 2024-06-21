@@ -15,7 +15,7 @@ public class Player
     public DateTime CreatedAt { get; init; }
     public PlayerData? Data { get; init; }
     public PlayerAvatarData? AvatarData { get; init; }
-    public List<PlayerTag> Tags { get; init; } = [];
+    public List<PlayerTag>? Tags { get; set; } = null;
     public ICollection<PlayerRoomLike> RoomLikes { get; init; } = [];
     [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = [];
     public PlayerNavigatorSettings? NavigatorSettings { get; init; }

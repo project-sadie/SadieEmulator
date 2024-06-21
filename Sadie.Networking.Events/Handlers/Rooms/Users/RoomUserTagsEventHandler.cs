@@ -1,4 +1,6 @@
-﻿using Sadie.Game.Rooms;
+﻿using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -6,7 +8,7 @@ using Sadie.Networking.Writers.Rooms.Users;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerId.RoomUserTags)]
-public class RoomUserTagsEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTagsEventHandler(RoomRepository roomRepository, SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int UserId { get; set; }
 
@@ -17,12 +19,20 @@ public class RoomUserTagsEventHandler(RoomRepository roomRepository) : INetworkP
             return;
         }
 
-        if (room.UserRepository.TryGetById(UserId, out var specialUser))
-        {        
-            await specialUser!.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter
+        if (room.UserRepository.TryGetById(UserId, out var user))
+        {
+            if (user!.Player.Tags == null)
             {
-                UserId = specialUser.Id,
-                Tags = specialUser.Player.Tags.Select(x => x.Name).ToList()
+                user.Player.Tags = await dbContext
+                    .PlayerTags
+                    .Where(x => x.PlayerId == user.Id)
+                    .ToListAsync();
+            }
+            
+            await user.NetworkObject.WriteToStreamAsync(new RoomUserTagsWriter
+            {
+                UserId = user.Id,
+                Tags = user.Player.Tags.Select(x => x.Name ?? "")
             });
         }
     }

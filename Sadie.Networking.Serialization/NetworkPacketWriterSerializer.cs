@@ -81,7 +81,7 @@ public class NetworkPacketWriterSerializer
         {
             if (conversionRules != null && conversionRules.TryGetValue(property, out var rule))
             {
-                WriteType(rule.Key, rule.Value.Invoke(property.GetValue(packet)!), writer);
+                WritePrimitiveType(rule.Key, rule.Value.Invoke(property.GetValue(packet)!), writer);
                 continue;
             }
             
@@ -128,7 +128,17 @@ public class NetworkPacketWriterSerializer
             
         foreach (var item in list)
         {
-            writer.WriteString(item);
+            writer.WriteString(item ?? "");
+        }
+    }
+
+    private static void WriteStringEumerablePropertyToWriter(IEnumerable<string?> list, NetworkPacketWriter writer)
+    {
+        writer.WriteInteger(list.Count());
+            
+        foreach (var item in list)
+        {
+            writer.WriteString(item ?? "");
         }
     }
     
@@ -154,24 +164,29 @@ public class NetworkPacketWriterSerializer
         
         if (type == typeof(string))
         {
-            WriteType(typeof(string), property.GetValue(packet)!, writer);
+            WritePrimitiveType(typeof(string), property.GetValue(packet)!, writer);
         }
         else if (type == typeof(int))
         {
-            WriteType(typeof(int), property.GetValue(packet)!, writer);
+            WritePrimitiveType(typeof(int), property.GetValue(packet)!, writer);
         }
         else if (type == typeof(long))
         {
-            WriteType(typeof(long), property.GetValue(packet)!, writer);
+            WritePrimitiveType(typeof(long), property.GetValue(packet)!, writer);
         }
         else if (type == typeof(bool))
         {
-            WriteType(typeof(bool), property.GetValue(packet)!, writer);
+            WritePrimitiveType(typeof(bool), property.GetValue(packet)!, writer);
         }
         else if (type == typeof(List<string>))
         {
             var collection = (List<string?>)property.GetValue(packet)!;
             WriteStringListPropertyToWriter(collection, writer);
+        }
+        else if (type == typeof(IEnumerable<string>))
+        {
+            var collection = (IEnumerable<string?>)property.GetValue(packet)!;
+            WriteStringEumerablePropertyToWriter(collection, writer);
         }
         else if (type == typeof(Dictionary<int, string>))
         {
@@ -236,7 +251,7 @@ public class NetworkPacketWriterSerializer
         }
     }
 
-    private static void WriteType(Type type, object value, NetworkPacketWriter writer)
+    private static void WritePrimitiveType(Type type, object value, NetworkPacketWriter writer)
     {
         if (type == typeof(string))
         {
