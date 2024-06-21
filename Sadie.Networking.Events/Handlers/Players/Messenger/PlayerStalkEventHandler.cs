@@ -6,7 +6,7 @@ using Sadie.Networking.Writers.Players.Messenger;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-[PacketId(EventHandlerIds.PlayerStalk)]
+[PacketId(EventHandlerId.PlayerStalk)]
 public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }

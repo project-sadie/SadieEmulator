@@ -8,7 +8,7 @@ using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
-[PacketId(EventHandlerIds.HabboClubGifts)]
+[PacketId(EventHandlerId.HabboClubGifts)]
 public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms.Users.Chat;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-[PacketId(EventHandlerIds.RoomUserStopTyping)]
+[PacketId(EventHandlerId.RoomUserStopTyping)]
 public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

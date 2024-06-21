@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomBannedUsers)]
+[PacketId(EventHandlerId.RoomBannedUsers)]
 public class RoomBannedUsersEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required int RoomId { get; set; }

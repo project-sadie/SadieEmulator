@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Handlers.Generic;
 
-[PacketId(EventHandlerIds.PlayerRelationships)]
+[PacketId(EventHandlerId.PlayerRelationships)]
 public class PlayerRelationshipsEventHandler(
     PlayerRepository playerRepository) : INetworkPacketEventHandler
 {

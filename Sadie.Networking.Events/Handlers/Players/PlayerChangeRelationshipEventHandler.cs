@@ -10,7 +10,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerChangeRelationship)]
+[PacketId(EventHandlerId.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
     PlayerRepository playerRepository,
     SadieContext dbContext)

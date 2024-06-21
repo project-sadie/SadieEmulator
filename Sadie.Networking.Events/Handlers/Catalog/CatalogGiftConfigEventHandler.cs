@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-[PacketId(EventHandlerIds.CatalogGiftConfig)]
+[PacketId(EventHandlerId.CatalogGiftConfig)]
 public class CatalogGiftConfigEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

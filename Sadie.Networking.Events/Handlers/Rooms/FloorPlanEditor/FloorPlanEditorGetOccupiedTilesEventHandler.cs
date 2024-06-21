@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms.FloorPlanEditor;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
-[PacketId(EventHandlerIds.FloorPlanEditorGetOccupiedTiles)]
+[PacketId(EventHandlerId.FloorPlanEditorGetOccupiedTiles)]
 public class FloorPlanEditorGetOccupiedTilesEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

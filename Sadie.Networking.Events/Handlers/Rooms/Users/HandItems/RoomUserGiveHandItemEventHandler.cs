@@ -4,7 +4,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
 
-[PacketId(EventHandlerIds.RoomUserGiveHandItem)]
+[PacketId(EventHandlerId.RoomUserGiveHandItem)]
 public class RoomUserGiveHandItemEventHandler : INetworkPacketEventHandler
 {
     public required int UserId { get; init; }

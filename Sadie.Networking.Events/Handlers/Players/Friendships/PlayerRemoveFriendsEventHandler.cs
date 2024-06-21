@@ -8,7 +8,7 @@ using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
-[PacketId(EventHandlerIds.PlayerRemoveFriends)]
+[PacketId(EventHandlerId.PlayerRemoveFriends)]
 public class PlayerRemoveFriendsEventHandler(
     PlayerRepository playerRepository,
     SadieContext dbContext)

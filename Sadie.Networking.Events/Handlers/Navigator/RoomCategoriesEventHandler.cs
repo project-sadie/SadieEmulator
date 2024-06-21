@@ -7,7 +7,7 @@ using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-[PacketId(EventHandlerIds.RoomCategories)]
+[PacketId(EventHandlerId.RoomCategories)]
 public class RoomCategoriesEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

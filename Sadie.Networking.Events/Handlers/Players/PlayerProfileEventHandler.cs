@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerProfile)]
+[PacketId(EventHandlerId.PlayerProfile)]
 public class PlayerProfileEventHandler(PlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {

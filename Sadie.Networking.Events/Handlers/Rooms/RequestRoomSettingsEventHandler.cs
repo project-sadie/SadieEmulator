@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-[PacketId(EventHandlerIds.RoomSettings)]
+[PacketId(EventHandlerId.RoomSettings)]
 public class RequestRoomSettingsEventHandler(
     RoomRepository roomRepository) : INetworkPacketEventHandler
 {

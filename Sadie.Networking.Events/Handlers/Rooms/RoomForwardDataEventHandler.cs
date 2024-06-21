@@ -7,7 +7,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-[PacketId(EventHandlerIds.RoomForwardData)]
+[PacketId(EventHandlerId.RoomForwardData)]
 public class RoomForwardDataEventHandler(RoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper) : INetworkPacketEventHandler

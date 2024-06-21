@@ -5,7 +5,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
 
-[PacketId(EventHandlerIds.RoomUserDropHandItem)]
+[PacketId(EventHandlerId.RoomUserDropHandItem)]
 public class RoomUserDropHandItemEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

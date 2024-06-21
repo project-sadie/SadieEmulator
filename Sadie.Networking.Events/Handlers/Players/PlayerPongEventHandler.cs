@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerPong)]
+[PacketId(EventHandlerId.PlayerPong)]
 public class PlayerPongEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

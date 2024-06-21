@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-[PacketId(EventHandlerIds.PromotedRooms)]
+[PacketId(EventHandlerId.PromotedRooms)]
 public class PromotedRoomsEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

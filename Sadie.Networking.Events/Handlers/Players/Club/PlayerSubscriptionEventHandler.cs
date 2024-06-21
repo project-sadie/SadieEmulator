@@ -4,7 +4,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
-[PacketId(EventHandlerIds.PlayerSubscription)]
+[PacketId(EventHandlerId.PlayerSubscription)]
 public class PlayerSubscriptionEventHandler : INetworkPacketEventHandler
 {
     public string? Name { get; set; }

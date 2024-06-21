@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms.FloorPlanEditor;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
-[PacketId(EventHandlerIds.FloorPlanEditorDoorCoords)]
+[PacketId(EventHandlerId.FloorPlanEditorDoorCoords)]
 public class FloorPlanEditorDoorCoordsEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

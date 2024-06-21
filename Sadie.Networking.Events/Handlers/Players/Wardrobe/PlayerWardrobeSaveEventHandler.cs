@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Players.Wardrobe;
 
-[PacketId(EventHandlerIds.PlayerWardrobeSave)]
+[PacketId(EventHandlerId.PlayerWardrobeSave)]
 public class PlayerWardrobeSaveEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {

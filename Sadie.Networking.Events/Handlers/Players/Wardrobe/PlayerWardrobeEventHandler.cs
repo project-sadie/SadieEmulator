@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Players.Wardrobe;
 
 namespace Sadie.Networking.Events.Handlers.Players.Wardrobe;
 
-[PacketId(EventHandlerIds.PlayerWardrobe)]
+[PacketId(EventHandlerId.PlayerWardrobe)]
 public class PlayerWardrobeEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerMessengerInit)]
+[PacketId(EventHandlerId.PlayerMessengerInit)]
 public class PlayerMessengerInitEventHandler(
     ServerPlayerConstants playerConstants)
     : INetworkPacketEventHandler

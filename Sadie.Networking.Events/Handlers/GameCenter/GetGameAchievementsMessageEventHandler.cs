@@ -3,7 +3,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.GameCenter;
 
-[PacketId(EventHandlerIds.GetGameAchievementsMessage)]
+[PacketId(EventHandlerId.GetGameAchievementsMessage)]
 public class GetGameAchievementsMessageEventHandler : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient client)

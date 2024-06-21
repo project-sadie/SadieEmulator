@@ -4,7 +4,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
-[PacketId(EventHandlerIds.PlayerFriendListUpdate)]
+[PacketId(EventHandlerId.PlayerFriendListUpdate)]
 public class PlayerFriendListUpdateEventHandler(
     PlayerRepository playerRepository)
     : INetworkPacketEventHandler

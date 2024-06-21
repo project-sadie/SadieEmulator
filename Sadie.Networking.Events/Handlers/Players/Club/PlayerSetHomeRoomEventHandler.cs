@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Players.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
-[PacketId(EventHandlerIds.PlayerSetHomeRoom)]
+[PacketId(EventHandlerId.PlayerSetHomeRoom)]
 public class PlayerSetHomeRoomEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {

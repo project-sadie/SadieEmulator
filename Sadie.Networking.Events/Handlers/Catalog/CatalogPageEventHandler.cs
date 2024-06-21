@@ -6,7 +6,7 @@ using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-[PacketId(EventHandlerIds.CatalogPage)]
+[PacketId(EventHandlerId.CatalogPage)]
 public class CatalogPageEventHandler(
     List<CatalogFrontPageItem> catalogFrontPageItems,
     List<CatalogPage> catalogPages) : INetworkPacketEventHandler

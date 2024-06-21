@@ -7,7 +7,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-[PacketId(EventHandlerIds.RoomUserAction)]
+[PacketId(EventHandlerId.RoomUserAction)]
 public class RoomUserActionEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Action { get; set; }

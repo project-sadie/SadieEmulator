@@ -11,12 +11,13 @@ using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Players.Other;
 using Sadie.Options.Options;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
-[PacketId(EventHandlerIds.SecureLogin)]
+[PacketId(EventHandlerId.SecureLogin)]
 public class SecureLoginEventHandler(
     ILogger<SecureLoginEventHandler> logger,
     IOptions<EncryptionOptions> encryptionOptions,
@@ -90,8 +91,6 @@ public class SecureLoginEventHandler(
             .Include(x => x.SavedSearches)
             .Include(x => x.OutgoingFriendships).ThenInclude(x => x.TargetPlayer).ThenInclude(x => x.AvatarData)
             .Include(x => x.IncomingFriendships).ThenInclude(x => x.OriginPlayer).ThenInclude(x => x.AvatarData)
-            .Include(x => x.MessagesSent)
-            .Include(x => x.MessagesReceived)
             .Include(x => x.Rooms).ThenInclude(x => x.Settings)
             .Include(x => x.Bots)
             .AsSplitQuery()
@@ -130,15 +129,19 @@ public class SecureLoginEventHandler(
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in");
 
         await client.WriteToStreamAsync(new PlayerPingWriter());
-
+        
         if (!alreadyOnline)
         {
-            player.Data.IsOnline = true;
             dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
             await dbContext.SaveChangesAsync();
         }
-
+        
+        playerLogic.Data.IsOnline = true;
         playerLogic.Data.LastOnline = DateTime.Now;
+        
+        dbContext.Entry(playerLogic.Data).Property(x => x.IsOnline).IsModified = true;
+        dbContext.Entry(playerLogic.Data).Property(x => x.LastOnline).IsModified = true;
+        
         playerLogic.Authenticated = true;
 
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
@@ -154,6 +157,7 @@ public class SecureLoginEventHandler(
             playerRepository);
         
         await SendWelcomeMessageAsync(playerLogic);
+        await dbContext.SaveChangesAsync();
     }
 
     private async Task SendWelcomeMessageAsync(PlayerLogic player)

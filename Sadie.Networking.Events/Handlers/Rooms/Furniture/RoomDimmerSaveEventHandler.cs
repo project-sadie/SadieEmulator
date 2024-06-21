@@ -9,7 +9,7 @@ using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomDimmerSave)]
+[PacketId(EventHandlerId.RoomDimmerSave)]
 public class RoomDimmerSaveEventHandler(
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler

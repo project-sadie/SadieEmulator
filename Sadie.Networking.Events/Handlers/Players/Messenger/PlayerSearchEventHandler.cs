@@ -7,7 +7,7 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-[PacketId(EventHandlerIds.PlayerSearch)]
+[PacketId(EventHandlerId.PlayerSearch)]
 public class PlayerSearchEventHandler(PlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public string? SearchQuery { get; set; }

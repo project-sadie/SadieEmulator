@@ -20,7 +20,7 @@ using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-[PacketId(EventHandlerIds.CatalogPurchase)]
+[PacketId(EventHandlerId.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {

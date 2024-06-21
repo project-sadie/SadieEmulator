@@ -10,7 +10,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomDelete)]
+[PacketId(EventHandlerId.RoomDelete)]
 public class RoomDeleteEventHandler(
     RoomRepository roomRepository,
     SadieContext dbContext,

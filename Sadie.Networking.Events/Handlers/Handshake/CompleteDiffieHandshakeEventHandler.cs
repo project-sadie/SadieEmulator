@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Handshake;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
-[PacketId(EventHandlerIds.CompleteDiffieHandshake)]
+[PacketId(EventHandlerId.CompleteDiffieHandshake)]
 public class CompleteDiffieHandshakeEventHandler(
     HabboEncryption habboEncryption) : INetworkPacketEventHandler
 {

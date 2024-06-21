@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Players.Inventory;
 
 namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 
-[PacketId(EventHandlerIds.PlayerInventoryBadges)]
+[PacketId(EventHandlerId.PlayerInventoryBadges)]
 public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

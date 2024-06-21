@@ -5,7 +5,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Groups;
 
-[PacketId(EventHandlerIds.PlayerGroupBadges)]
+[PacketId(EventHandlerId.PlayerGroupBadges)]
 public class GetRoomUserGroupBadgesEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

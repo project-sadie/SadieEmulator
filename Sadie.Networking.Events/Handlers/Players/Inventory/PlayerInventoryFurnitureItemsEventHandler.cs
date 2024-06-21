@@ -5,7 +5,7 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 
-[PacketId(EventHandlerIds.PlayerInventoryFurnitureItems)]
+[PacketId(EventHandlerId.PlayerInventoryFurnitureItems)]
 public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

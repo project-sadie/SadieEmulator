@@ -5,7 +5,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-[PacketId(EventHandlerIds.RoomUserSit)]
+[PacketId(EventHandlerId.RoomUserSit)]
 public class RoomUserSitEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient client)

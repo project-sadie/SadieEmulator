@@ -7,7 +7,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomCloseDice)]
+[PacketId(EventHandlerId.RoomCloseDice)]
 public class RoomCloseDiceEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }

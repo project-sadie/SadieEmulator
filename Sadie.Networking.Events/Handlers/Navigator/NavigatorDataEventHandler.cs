@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Players.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-[PacketId(EventHandlerIds.NavigatorData)]
+[PacketId(EventHandlerId.NavigatorData)]
 public class NavigatorDataEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

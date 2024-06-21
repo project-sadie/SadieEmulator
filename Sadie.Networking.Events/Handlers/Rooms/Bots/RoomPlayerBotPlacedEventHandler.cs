@@ -10,7 +10,7 @@ using Sadie.Networking.Writers.Rooms.Bots;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 
-[PacketId(EventHandlerIds.RoomPlayerBotPlaced)]
+[PacketId(EventHandlerId.RoomPlayerBotPlaced)]
 public class RoomPlayerBotPlacedEventHandler(
     SadieContext dbContext, 
     RoomRepository roomRepository,

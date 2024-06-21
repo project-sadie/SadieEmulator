@@ -8,7 +8,7 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerChangedMotto)]
+[PacketId(EventHandlerId.PlayerChangedMotto)]
 public class PlayerChangedMottoEventHandler(
     RoomRepository roomRepository, 
     ServerPlayerConstants constants,

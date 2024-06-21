@@ -4,7 +4,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
-[PacketId(EventHandlerIds.RoomUserTradeOfferItem)]
+[PacketId(EventHandlerId.RoomUserTradeOfferItem)]
 public class RoomUserTradeOfferItemEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }

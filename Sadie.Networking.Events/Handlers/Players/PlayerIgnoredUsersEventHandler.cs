@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerIgnoredUsers)]
+[PacketId(EventHandlerId.PlayerIgnoredUsers)]
 public class PlayerIgnoredUsersEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

@@ -3,7 +3,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Unsorted;
 
-[PacketId(EventHandlerIds.GetTargetedOffer)]
+[PacketId(EventHandlerId.GetTargetedOffer)]
 public class GetTargetedOfferEventHandler : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient client)
