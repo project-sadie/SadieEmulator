@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Unsorted;
 
-[PacketId(EventHandlerIds.GetCommunityGoalHallOfFame)]
+[PacketId(EventHandlerId.GetCommunityGoalHallOfFame)]
 public class GetCommunityGoalHallOfFameEventHandler : INetworkPacketEventHandler
 {
     public string K { get; init; }

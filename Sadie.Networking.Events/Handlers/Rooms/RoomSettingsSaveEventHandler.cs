@@ -14,7 +14,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-[PacketId(EventHandlerIds.RoomSettingsSave)]
+[PacketId(EventHandlerId.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository, 

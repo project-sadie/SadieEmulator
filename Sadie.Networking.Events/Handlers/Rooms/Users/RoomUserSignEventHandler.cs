@@ -5,7 +5,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-[PacketId(EventHandlerIds.RoomUserSign)]
+[PacketId(EventHandlerId.RoomUserSign)]
 public class RoomUserSignEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int SignId { get; set; }

@@ -6,7 +6,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
-[PacketId(EventHandlerIds.PlayerFriendRequestsList)]
+[PacketId(EventHandlerId.PlayerFriendRequestsList)]
 public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

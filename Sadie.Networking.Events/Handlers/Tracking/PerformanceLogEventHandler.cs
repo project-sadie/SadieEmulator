@@ -3,7 +3,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Tracking;
 
-[PacketId(EventHandlerIds.PerformanceLog)]
+[PacketId(EventHandlerId.PerformanceLog)]
 public class PerformanceLogEventHandler : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient client)

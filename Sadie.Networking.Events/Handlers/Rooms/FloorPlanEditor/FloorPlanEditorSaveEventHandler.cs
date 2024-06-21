@@ -14,7 +14,7 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
-[PacketId(EventHandlerIds.FloorPlanEditorSave)]
+[PacketId(EventHandlerId.FloorPlanEditorSave)]
 public class FloorPlanEditorSaveEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler
@@ -146,6 +146,11 @@ public class FloorPlanEditorSaveEventHandler(
             return;
         }
 
+        var writer = new RoomForwardEntryWriter
+        {
+            RoomId = roomLogic!.Id
+        };
+
         foreach (var player in playersToForward)
         {
             if (player.NetworkObject == null)
@@ -153,10 +158,7 @@ public class FloorPlanEditorSaveEventHandler(
                 continue;
             }
             
-            await player.NetworkObject.WriteToStreamAsync(new RoomForwardEntryWriter
-            {
-                RoomId = roomLogic!.Id
-            });
+            await player.NetworkObject.WriteToStreamAsync(writer);
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace Sadie.Networking.Events;
 
-public class EventHandlerIds
+public class EventHandlerId
 {
     public const short ClientVersion = 4000;
     public const short ClientVariables = 1053;

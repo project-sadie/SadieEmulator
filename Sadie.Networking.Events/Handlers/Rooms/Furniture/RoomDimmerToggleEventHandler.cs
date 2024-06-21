@@ -7,7 +7,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomDimmerToggle)]
+[PacketId(EventHandlerId.RoomDimmerToggle)]
 public class RoomDimmerToggleEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler

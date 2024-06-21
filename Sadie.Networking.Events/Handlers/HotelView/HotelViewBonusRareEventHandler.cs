@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.HotelView;
 
 namespace Sadie.Networking.Events.Handlers.HotelView;
 
-[PacketId(EventHandlerIds.HotelViewBonusRare)]
+[PacketId(EventHandlerId.HotelViewBonusRare)]
 public class HotelViewBonusRareEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

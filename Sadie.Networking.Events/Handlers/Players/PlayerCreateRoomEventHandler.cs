@@ -9,7 +9,7 @@ using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerCreateRoom)]
+[PacketId(EventHandlerId.PlayerCreateRoom)]
 public class PlayerCreateRoomEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository,

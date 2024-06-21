@@ -8,7 +8,7 @@ using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
-[PacketId(EventHandlerIds.RoomUserTrade)]
+[PacketId(EventHandlerId.RoomUserTrade)]
 public class RoomUserTradeEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required int TargetUserId { get; set; }

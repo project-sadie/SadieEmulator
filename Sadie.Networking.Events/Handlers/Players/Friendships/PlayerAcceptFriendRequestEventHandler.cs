@@ -9,7 +9,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
-[PacketId(EventHandlerIds.PlayerAcceptFriendRequest)]
+[PacketId(EventHandlerId.PlayerAcceptFriendRequest)]
 public class PlayerAcceptFriendRequestEventHandler(
     PlayerRepository playerRepository,
     RoomRepository roomRepository,

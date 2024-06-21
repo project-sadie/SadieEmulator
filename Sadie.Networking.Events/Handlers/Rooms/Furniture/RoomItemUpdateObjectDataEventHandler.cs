@@ -5,7 +5,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomItemUpdateObjectData)]
+[PacketId(EventHandlerId.RoomItemUpdateObjectData)]
 public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }

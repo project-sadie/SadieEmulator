@@ -16,7 +16,6 @@ public class RoomUserData : RoomUnit, IRoomUserData
     public TimeSpan IdleTime { get; }
     public bool IsIdle { get; protected set; }
     public bool MoonWalking { get; set; }
-    public int HandItemId { get; set; }
     public IRoomUserTrade Trade { get; set; }
     public int TradeStatus { get; set; }
     

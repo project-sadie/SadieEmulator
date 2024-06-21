@@ -10,7 +10,7 @@ using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-[PacketId(EventHandlerIds.NavigatorSearch)]
+[PacketId(EventHandlerId.NavigatorSearch)]
 public class NavigatorSearchEventHandler(
     SadieContext dbContext,
     NavigatorRoomProvider navigatorRoomProvider,

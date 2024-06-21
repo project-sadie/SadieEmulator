@@ -11,7 +11,7 @@ using RoomHelpers = Sadie.Shared.Helpers.RoomHelpers;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-[PacketId(EventHandlerIds.RoomUserWhisper)]
+[PacketId(EventHandlerId.RoomUserWhisper)]
 public class RoomUserWhisperEventHandler(
     RoomRepository roomRepository, 
     ServerRoomConstants roomConstants,

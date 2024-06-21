@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Camera;
 
 namespace Sadie.Networking.Events.Handlers.Camera;
 
-[PacketId(EventHandlerIds.CameraPrice)]
+[PacketId(EventHandlerId.CameraPrice)]
 public class CameraPriceEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

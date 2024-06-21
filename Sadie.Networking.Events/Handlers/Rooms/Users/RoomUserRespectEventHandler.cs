@@ -10,7 +10,7 @@ using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-[PacketId(EventHandlerIds.RoomUserRespect)]
+[PacketId(EventHandlerId.RoomUserRespect)]
 public class RoomUserRespectEventHandler(
     PlayerRepository playerRepository,
     RoomRepository roomRepository,

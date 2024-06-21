@@ -6,7 +6,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomTriggerDice)]
+[PacketId(EventHandlerId.RoomTriggerDice)]
 public class RoomTriggerDiceEventHandler(RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }

@@ -6,7 +6,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-[PacketId(EventHandlerIds.RoomLike)]
+[PacketId(EventHandlerId.RoomLike)]
 public class RoomLikeEventHandler(RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {

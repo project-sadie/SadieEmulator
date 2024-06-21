@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovementData
+public class RoomUnitData(IRoomLogic room, Point point) : IRoomUnitData
 {
     protected RoomUnit? Unit { get; set; }
     public HDirection DirectionHead { get; set; }
@@ -177,6 +177,8 @@ public class RoomUnitMovementData(IRoomLogic room, Point point) : IRoomUnitMovem
     }
 
     public double NextZ { get; set; }
+    public int HandItemId { get; set; }
+    public DateTime HandItemSet { get; set; }
 
     private void ClearStatuses()
     {

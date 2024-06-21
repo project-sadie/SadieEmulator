@@ -3,7 +3,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerActivity)]
+[PacketId(EventHandlerId.PlayerActivity)]
 public class PlayerActivityEventHandler : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient networkClient)

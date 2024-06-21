@@ -4,7 +4,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomTriggerOneWayGate)]
+[PacketId(EventHandlerId.RoomTriggerOneWayGate)]
 public class RoomTriggerOneWayGateEventHandler(RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }

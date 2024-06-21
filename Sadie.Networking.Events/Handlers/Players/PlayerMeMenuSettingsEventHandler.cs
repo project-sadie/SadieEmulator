@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerMeMenuSettings)]
+[PacketId(EventHandlerId.PlayerMeMenuSettings)]
 public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.GameCentre;
 
 namespace Sadie.Networking.Events.Handlers.GameCenter;
 
-[PacketId(EventHandlerIds.GameCenterRequestGames)]
+[PacketId(EventHandlerId.GameCenterRequestGames)]
 public class RequestGameCenterConfigEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

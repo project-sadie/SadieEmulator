@@ -9,7 +9,7 @@ using Sadie.Networking.Writers.Rooms.Rights;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
-[PacketId(EventHandlerIds.RoomRemoveUserRights)]
+[PacketId(EventHandlerId.RoomRemoveUserRights)]
 public class RoomRemoveUserRightsEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository) : INetworkPacketEventHandler

@@ -5,7 +5,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-[PacketId(EventHandlerIds.RoomBackgroundTonerApply)]
+[PacketId(EventHandlerId.RoomBackgroundTonerApply)]
 public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }

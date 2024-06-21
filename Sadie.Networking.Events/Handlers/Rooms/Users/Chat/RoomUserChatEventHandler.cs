@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-[PacketId(EventHandlerIds.RoomUserChat)]
+[PacketId(EventHandlerId.RoomUserChat)]
 public class RoomUserChatEventHandler(
     RoomRepository roomRepository, 
     ServerRoomConstants roomConstants, 

@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-[PacketId(EventHandlerIds.PlayerChangedAppearance)]
+[PacketId(EventHandlerId.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
     RoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler

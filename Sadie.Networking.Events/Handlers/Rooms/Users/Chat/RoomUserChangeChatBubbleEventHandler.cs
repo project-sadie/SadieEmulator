@@ -4,7 +4,7 @@ using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-[PacketId(EventHandlerIds.RoomUserChangeChatBubble)]
+[PacketId(EventHandlerId.RoomUserChangeChatBubble)]
 public class RoomUserChangeChatBubbleEventHandler : INetworkPacketEventHandler
 {
     public int Bubble { get; set; }

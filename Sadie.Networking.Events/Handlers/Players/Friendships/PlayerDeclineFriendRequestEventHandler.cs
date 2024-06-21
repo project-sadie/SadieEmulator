@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
-[PacketId(EventHandlerIds.PlayerDeclineFriendRequest)]
+[PacketId(EventHandlerId.PlayerDeclineFriendRequest)]
 public class PlayerDeclineFriendRequestEventHandler(
     PlayerRepository playerRepository,
     SadieContext dbContext)

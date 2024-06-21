@@ -7,7 +7,7 @@ using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
-[PacketId(EventHandlerIds.HabboClubData)]
+[PacketId(EventHandlerId.HabboClubData)]
 public class PlayerClubOffersEventHandler(
     SadieContext dbContext) : INetworkPacketEventHandler
 {

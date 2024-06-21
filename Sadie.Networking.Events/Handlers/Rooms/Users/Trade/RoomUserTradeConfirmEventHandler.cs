@@ -6,7 +6,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
-[PacketId(EventHandlerIds.RoomUserTradeConfirm)]
+[PacketId(EventHandlerId.RoomUserTradeConfirm)]
 public class RoomUserTradeConfirmEventHandler(RoomRepository roomRepository, SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

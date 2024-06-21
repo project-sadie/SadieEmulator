@@ -4,7 +4,7 @@ using Sadie.Networking.Writers.Players.Groups;
 
 namespace Sadie.Networking.Events.Handlers.Players.Groups;
 
-[PacketId(EventHandlerIds.GetPlayerGroupBadgeParts)]
+[PacketId(EventHandlerId.GetPlayerGroupBadgeParts)]
 public class GetPlayerGroupBadgePartsEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

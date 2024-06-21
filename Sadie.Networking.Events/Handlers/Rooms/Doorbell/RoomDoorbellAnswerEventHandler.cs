@@ -8,7 +8,7 @@ using Sadie.Networking.Writers.Rooms.Doorbell;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
-[PacketId(EventHandlerIds.RoomDoorbellAnswer)]
+[PacketId(EventHandlerId.RoomDoorbellAnswer)]
 public class RoomDoorbellAnswerEventHandler(
     PlayerRepository playerRepository,
     RoomRepository roomRepository,

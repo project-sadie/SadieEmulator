@@ -13,7 +13,7 @@ using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomFloorFurnitureItemUpdated)]
+[PacketId(EventHandlerId.RoomFloorFurnitureItemUpdated)]
 public class RoomFloorItemUpdatedEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository,

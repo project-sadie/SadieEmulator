@@ -4,7 +4,7 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-[PacketId(EventHandlerIds.SaveNavigatorSettings)]
+[PacketId(EventHandlerId.SaveNavigatorSettings)]
 public class SaveNavigatorSettingsEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public int WindowX { get; set; }

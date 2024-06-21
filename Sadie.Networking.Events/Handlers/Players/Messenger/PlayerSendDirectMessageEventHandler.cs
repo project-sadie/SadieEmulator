@@ -10,7 +10,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-[PacketId(EventHandlerIds.PlayerSendDirectMessage)]
+[PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
     PlayerRepository playerRepository,
     SadieContext dbContext)
@@ -60,17 +60,16 @@ public class PlayerSendDirectMessageEventHandler(
         {
             OriginPlayerId = client.Player.Id,
             TargetPlayerId = targetPlayer.Id,
-            Message = message
+            Message = message,
+            CreatedAt = DateTime.Now
         };
-
-        client.Player.MessagesSent.Add(playerMessage);
-        targetPlayer.MessagesReceived.Add(playerMessage);
-
-        await dbContext.SaveChangesAsync();
 
         await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter
         {
             Message = playerMessage
         });
+        
+        dbContext.PlayerMessages.Add(playerMessage);
+        await dbContext.SaveChangesAsync();
     }
 }

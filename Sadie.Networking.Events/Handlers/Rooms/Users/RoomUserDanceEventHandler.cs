@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-[PacketId(EventHandlerIds.RoomUserDance)]
+[PacketId(EventHandlerId.RoomUserDance)]
 public class RoomUserDanceEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int DanceId { get; set; }

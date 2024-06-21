@@ -7,7 +7,7 @@ using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-[PacketId(EventHandlerIds.CatalogIndex)]
+[PacketId(EventHandlerId.CatalogIndex)]
 public class CatalogIndexEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)

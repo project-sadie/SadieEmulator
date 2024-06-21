@@ -13,6 +13,7 @@ public interface IRoomUserData : IRoomUnit
     bool NeedsStatusUpdate { get; set; }
     bool MoonWalking { get; set; }
     int HandItemId { get; set; }
+    DateTime HandItemSet { get; set; }
     IRoomUserTrade? Trade { get; set; }
     int TradeStatus { get; set; }
 }

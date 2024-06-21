@@ -12,7 +12,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
-[PacketId(EventHandlerIds.RoomItemEjected)]
+[PacketId(EventHandlerId.RoomItemEjected)]
 public class RoomItemEjectedEventHandler(
     SadieContext dbContext,
     RoomRepository roomRepository,

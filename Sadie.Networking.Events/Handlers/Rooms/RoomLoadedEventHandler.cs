@@ -15,7 +15,7 @@ using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-[PacketId(EventHandlerIds.RoomLoaded)]
+[PacketId(EventHandlerId.RoomLoaded)]
 public class RoomLoadedEventHandler(
     ILogger<RoomLoadedEventHandler> logger,
     RoomRepository roomRepository,

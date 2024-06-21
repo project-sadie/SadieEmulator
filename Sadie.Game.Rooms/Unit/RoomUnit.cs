@@ -6,7 +6,7 @@ using Sadie.Enums.Game.Rooms.Unit;
 namespace Sadie.Game.Rooms.Unit;
 
 public class RoomUnit : 
-    RoomUnitMovementData, IRoomUnit
+    RoomUnitData, IRoomUnit
 {
     protected RoomUnit(int id, RoomUnitType type, 
         IRoomLogic room, 

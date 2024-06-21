@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Game.Players;
@@ -50,7 +51,7 @@ public class NetworkClientRepository(
                     playerRepository);
                 
                 player.Data.IsOnline = false;
-                // await dbContext.Database.ExecuteSqlRawAsync($"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId", 0, player.Id);
+                await dbContext.Database.ExecuteSqlRawAsync($"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId", 0, player.Id);
                 
                 if (!await playerRepository.TryRemovePlayerAsync(client.Player.Id))
                 {
