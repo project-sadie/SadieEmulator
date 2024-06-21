@@ -28,8 +28,6 @@ public class Player
     public ICollection<PlayerSavedSearch> SavedSearches { get; init; } = [];
     [InverseProperty("OriginPlayer")] public ICollection<PlayerFriendship> OutgoingFriendships { get; init; } = [];
     [InverseProperty("TargetPlayer")] public ICollection<PlayerFriendship> IncomingFriendships { get; init; } = [];
-    [InverseProperty("OriginPlayer")] public ICollection<PlayerMessage> MessagesSent { get; init; } = [];
-    [InverseProperty("TargetPlayer")] public ICollection<PlayerMessage> MessagesReceived { get; init; } = [];
     public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; set; }
     public ICollection<Room> Rooms { get; set; } = [];
     public ICollection<Group> Groups { get; init; } = [];
