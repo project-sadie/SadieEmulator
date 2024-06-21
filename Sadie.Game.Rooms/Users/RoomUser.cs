@@ -4,6 +4,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Players;
+using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -55,6 +56,17 @@ public class RoomUser(
 
     public async Task RunPeriodicCheckAsync()
     {
+        if (HandItemId != 0 && (DateTime.Now - HandItemSet).TotalSeconds >= 30)
+        {
+            HandItemId = 0;
+        
+            await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
+            {
+                UserId = Id,
+                ItemId = 0
+            });
+        }
+        
         if (NextPoint != null)
         {
             room.TileMap.UserMap[Point].Remove(this);
