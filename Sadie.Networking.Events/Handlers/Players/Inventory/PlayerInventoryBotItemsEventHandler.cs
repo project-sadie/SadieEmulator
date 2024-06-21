@@ -19,12 +19,15 @@ public class PlayerInventoryBotItemsEventHandler(SadieContext dbContext) : INetw
         client.Player.Bots ??= await dbContext
             .PlayerBots
             .Where(x => x.PlayerId == client.Player.Id)
-            .Where(x => x.RoomId == null)
             .ToListAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryBotItemsWriter
         {
-            Bots = client.Player.Bots
+            Bots = client
+                .Player
+                .Bots
+                .Where(x => x.RoomId == null)
+                .ToList()
         });
     }
 }
