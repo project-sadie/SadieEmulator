@@ -19,7 +19,7 @@ public interface IPlayerLogic
     string Username { get; init; }
     string Email { get; init; }
     ICollection<Role> Roles { get; init; }
-    List<PlayerTag>? Tags { get; set; }
+    List<PlayerTag> Tags { get; init; }
     DateTime CreatedAt { get; init; }
     ValueTask DisposeAsync();
     bool DeservesReward(string? rewardType, int intervalInSeconds);

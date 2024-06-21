@@ -64,7 +64,6 @@ public class SadieContext(
     public DbSet<PlayerRoomVisit> PlayerRoomVisits { get; init; }
     public DbSet<PlayerRoomLike> PlayerRoomLikes { get; init; }
     public DbSet<PlayerMessage> PlayerMessages { get; init; }
-    public DbSet<PlayerTag> PlayerTags { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
