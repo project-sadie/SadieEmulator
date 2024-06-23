@@ -20,13 +20,10 @@ public class RoomUserLookAtEventHandler(RoomRepository roomRepository) : INetwor
         }
         
         var currentPoint = roomUser.Point;
-
-        if (currentPoint.X == X && currentPoint.Y == Y)
-        {
-            return Task.CompletedTask;
-        }
         
-        if (roomUser.StatusMap.ContainsKey(RoomUserStatus.Lay) || roomUser.IsWalking)
+        if (roomUser.StatusMap.ContainsKey(RoomUserStatus.Lay) || 
+            roomUser.IsWalking ||
+            currentPoint.X == X && currentPoint.Y == Y)
         {
             return Task.CompletedTask;
         }

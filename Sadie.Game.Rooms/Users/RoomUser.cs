@@ -34,14 +34,13 @@ public class RoomUser(
     public void LookAtPoint(Point point)
     {
         var direction = RoomPathFinderHelpers.GetDirectionForNextStep(Point, point);
-        var difference = DirectionHead - direction;
 
         if (!StatusMap.ContainsKey(RoomUserStatus.Sit))
         {
             Direction = direction;
         }
 
-        if (Math.Abs(difference) < 2)
+        if (Math.Abs(direction - Direction) < 2)
         {
             DirectionHead = direction;
         }
