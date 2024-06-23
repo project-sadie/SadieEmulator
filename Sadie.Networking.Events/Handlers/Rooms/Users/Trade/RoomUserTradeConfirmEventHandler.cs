@@ -11,7 +11,7 @@ public class RoomUserTradeConfirmEventHandler(RoomRepository roomRepository, Sad
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return;
         }
