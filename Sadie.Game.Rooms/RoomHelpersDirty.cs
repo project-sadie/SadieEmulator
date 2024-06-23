@@ -27,7 +27,6 @@ public static class RoomHelpersDirty
             .Include(x => x.PaintSettings)
             .Include(x => x.ChatSettings)
             .Include(x => x.PlayerRights)
-            .Include(x => x.ChatMessages)
             .Include(x => x.FurnitureItems)
                 .ThenInclude(x => x.PlayerFurnitureItem)
                 .ThenInclude(x => x.FurnitureItem)
