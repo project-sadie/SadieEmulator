@@ -106,7 +106,9 @@ public static class RoomHelpersDirty
     }
 
     private static async Task CreateRoomVisitForPlayerAsync(
-        PlayerLogic player, int roomId, SadieContext dbContext)
+        Player player, 
+        int roomId, 
+        SadieContext dbContext)
     {
         var roomVisit = new PlayerRoomVisit
         {
@@ -195,6 +197,21 @@ public static class RoomHelpersDirty
                 await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, teleport, "0");
             });
         }
+
+        if (player.State.CurrentRoomId == 0)
+        {
+            var friends = player
+                .GetMergedFriendships()
+                .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
+                .ToList();
+        
+            await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+                player,
+                friends, 
+                true, 
+                true,
+                playerRepository);
+        }
         
         player.State.CurrentRoomId = room.Id;
 
@@ -205,20 +222,6 @@ public static class RoomHelpersDirty
         
         await SendRoomEntryPacketsToUserAsync(client, room);
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
-        
-        // TODO; Actually check if this stuff needs to be sent (consecutive room load)
-        
-        var friends = player
-            .GetMergedFriendships()
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-        
-        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
-            player,
-            friends, 
-            true, 
-            true,
-            playerRepository);
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, Room room)
@@ -233,28 +236,28 @@ public static class RoomHelpersDirty
             RoomId = room.Id
         });
 
-        if (room.PaintSettings.FloorPaint != "0.0")
+        if (room.PaintSettings?.FloorPaint != "0.0")
         {
             await client.WriteToStreamAsync(new RoomPaintWriter
             {
                 Type = "floor",
-                Value = room.PaintSettings.FloorPaint
+                Value = room.PaintSettings?.FloorPaint ?? "0.0"
             });
         }
 
-        if (room.PaintSettings.WallPaint != "0.0")
+        if (room.PaintSettings?.WallPaint != "0.0")
         {
             await client.WriteToStreamAsync(new RoomPaintWriter
             {
                 Type = "wallpaper",
-                Value = room.PaintSettings.WallPaint
+                Value = room.PaintSettings?.WallPaint ?? "0.0"
             });
         }
         
         await client.WriteToStreamAsync(new RoomPaintWriter
         {
             Type = "landscape",
-            Value = room.PaintSettings.LandscapePaint
+            Value = room.PaintSettings?.LandscapePaint ?? "0.0"
         });
         
         await client.WriteToStreamAsync(new RoomScoreWriter

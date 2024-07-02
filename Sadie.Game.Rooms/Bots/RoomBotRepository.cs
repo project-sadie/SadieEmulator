@@ -1,10 +1,13 @@
 using System.Collections.Concurrent;
+using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
+using Sadie.Database.Models.Rooms;
+using Sadie.Game.Rooms.Packets.Writers;
 using Serilog;
 
 namespace Sadie.Game.Rooms.Bots;
 
-public class RoomBotRepository : IRoomBotRepository
+public class RoomBotRepository(IRoomLogic room) : IRoomBotRepository
 {
     private readonly ConcurrentDictionary<int, IRoomBot> _bots = new();
 
@@ -22,6 +25,19 @@ public class RoomBotRepository : IRoomBotRepository
             foreach (var bot in bots)
             {
                 await bot.RunPeriodicCheckAsync();
+            }
+
+            if (bots.Count != 0)
+            {
+                await room.UserRepository.BroadcastDataAsync(new RoomBotStatusWriter
+                {
+                    Bots = bots
+                });
+
+                await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
+                {
+                    Bots = bots
+                });
             }
         }
         catch (Exception e)

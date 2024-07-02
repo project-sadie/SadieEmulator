@@ -18,21 +18,19 @@ public class PlayerChangedAppearanceEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null)
+        var player = client.Player;
+        
+        if (player?.AvatarData == null)
         {
             return;
         }
 
-        var player = client.Player;
-        
         var gender = Gender == "M" ? 
             AvatarGender.Male : 
             AvatarGender.Female;
 
         var figureCode = FigureCode;
         
-        // TODO: Validate inputs above
-
         player.AvatarData.Gender = gender;
         player.AvatarData.FigureCode = figureCode;
         
