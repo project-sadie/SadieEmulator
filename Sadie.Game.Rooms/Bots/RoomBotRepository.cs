@@ -7,7 +7,7 @@ using Serilog;
 
 namespace Sadie.Game.Rooms.Bots;
 
-public class RoomBotRepository(IRoomLogic room) : IRoomBotRepository
+public class RoomBotRepository() : IRoomBotRepository
 {
     private readonly ConcurrentDictionary<int, IRoomBot> _bots = new();
 
@@ -25,19 +25,6 @@ public class RoomBotRepository(IRoomLogic room) : IRoomBotRepository
             foreach (var bot in bots)
             {
                 await bot.RunPeriodicCheckAsync();
-            }
-
-            if (bots.Count != 0)
-            {
-                await room.UserRepository.BroadcastDataAsync(new RoomBotStatusWriter
-                {
-                    Bots = bots
-                });
-
-                await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
-                {
-                    Bots = bots
-                });
             }
         }
         catch (Exception e)

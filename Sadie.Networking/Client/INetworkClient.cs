@@ -12,7 +12,5 @@ public interface INetworkClient : IAsyncDisposable, INetworkObject
     IRoomUser? RoomUser { get; set; }
     bool EncryptionEnabled { get; }
     void EnableEncryption(byte[] sharedKey);
-    Task ListenAsync();
     DateTime LastPing { get; set; }
-    Task OnReceivedAsync(byte[] data);
 }
