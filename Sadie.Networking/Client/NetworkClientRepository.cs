@@ -10,7 +10,7 @@ namespace Sadie.Networking.Client;
 public class NetworkClientRepository(
     ILogger<NetworkClientRepository> logger,
     PlayerRepository playerRepository,
-    SadieContext dbContext) : INetworkClientRepository
+    DatabaseProvider dbProvider) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
 
@@ -51,6 +51,8 @@ public class NetworkClientRepository(
                     playerRepository);
                 
                 player.Data.IsOnline = false;
+
+                var dbContext = dbProvider.GetContextInstance();
                 await dbContext.Database.ExecuteSqlRawAsync($"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId", 0, player.Id);
                 
                 if (!await playerRepository.TryRemovePlayerAsync(client.Player.Id))

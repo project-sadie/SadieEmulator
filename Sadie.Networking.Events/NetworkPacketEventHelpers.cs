@@ -63,8 +63,6 @@ public static class NetworkPacketEventHelpers
         var playerData = player.Data;
         var playerSubscriptions = player.Subscriptions;
 
-        await networkObject.WriteToStreamAsync(new SecureLoginWriter());
-
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
         {
             Level = 1
