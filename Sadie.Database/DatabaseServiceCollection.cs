@@ -41,5 +41,7 @@ public static class DatabaseServiceCollection
                 .Set<CatalogFrontPageItem>()
                 .Include(x => x.CatalogPage)
                 .ToList());
+
+        serviceCollection.AddSingleton<DatabaseProvider>();
     }
 }
