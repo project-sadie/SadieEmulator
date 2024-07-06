@@ -205,7 +205,7 @@ public static class RoomHelpersDirty
                 .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
                 .ToList();
         
-            await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+            await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
                 player,
                 friends, 
                 true, 

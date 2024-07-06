@@ -26,6 +26,8 @@ public class RoomHelpers
             return RoomUserEmotion.Shocked;
         }
 
-        return sadEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)) ? RoomUserEmotion.Sad : RoomUserEmotion.None;
+        return sadEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)) ? 
+            RoomUserEmotion.Sad : 
+            RoomUserEmotion.None;
     }
 }

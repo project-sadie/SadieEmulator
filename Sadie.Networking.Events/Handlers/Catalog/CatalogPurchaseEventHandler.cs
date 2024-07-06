@@ -135,7 +135,7 @@ public class CatalogPurchaseEventHandler(
                 Ambassador = true
             });
             
-            var subWriter = PlayerHelpersToClean.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+            var subWriter = PlayerHelpers.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
 
             if (subWriter != null)
             {

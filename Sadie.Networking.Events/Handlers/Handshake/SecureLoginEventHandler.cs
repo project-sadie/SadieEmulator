@@ -92,9 +92,9 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
-        await PlayerHelpersToClean.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+        await PlayerHelpers.SendPlayerFriendListUpdate(playerLogic, playerRepository);
         
-        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+        await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
             player, 
             player.GetMergedFriendships(), 
             true, 

@@ -43,7 +43,7 @@ public class NetworkClientRepository(
 
             if (player != null)
             {
-                await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+                await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
                     player, 
                     player.GetMergedFriendships(), 
                     false, 

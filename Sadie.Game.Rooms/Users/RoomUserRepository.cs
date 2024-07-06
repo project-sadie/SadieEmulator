@@ -50,7 +50,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         
         player.State.CurrentRoomId = 0;
         
-        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+        await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
             (Player) player, 
             player.GetMergedFriendships(),
             player.Data.IsOnline, 
