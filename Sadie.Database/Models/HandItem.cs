@@ -5,7 +5,7 @@ namespace Sadie.Database.Models;
 
 public class HandItem
 {
-    [Key] public int Id { get; set; }
-    public string Name { get; set; }
+    [Key] public int Id { get; init; }
+    public string Name { get; init; }
     public ICollection<FurnitureItem> FurnitureItems { get; init; } = [];
 }

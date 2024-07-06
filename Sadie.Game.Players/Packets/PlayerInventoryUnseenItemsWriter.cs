@@ -8,8 +8,8 @@ namespace Sadie.Game.Players.Packets;
 [PacketId(ServerPacketId.PlayerInventoryUnseenItems)]
 public class PlayerInventoryUnseenItemsWriter : AbstractPacketWriter
 {
-    public required int Count { get; set; }
-    public required int Category { get; set; }
+    public required int Count { get; init; }
+    public required int Category { get; init; }
     public required List<PlayerFurnitureItem> FurnitureItems { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)

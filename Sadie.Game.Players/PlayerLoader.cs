@@ -1,4 +1,6 @@
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Shared.Unsorted.Game;
@@ -8,29 +10,78 @@ namespace Sadie.Game.Players;
 
 public static class PlayerLoader
 {
-    public static async Task<Player?> GetPlayerAsync(SadieContext dbContext, int authDelayMs)
+    private static async Task<int> GetPlayerIdFromTokenAsync(DbConnection dbConnection, string token, DateTime tokenExpires)
+    {
+        var tokenCommand = dbConnection.CreateCommand();
+        
+        tokenCommand.Parameters.Add(new MySqlParameter("token", token));
+        tokenCommand.Parameters.Add(new MySqlParameter("expires", tokenExpires.ToString("s")));
+        tokenCommand.CommandText = "SELECT id, player_id FROM player_sso_tokens WHERE token = @token";
+
+        var tokenReader = await tokenCommand.ExecuteReaderAsync();
+
+        if (!await tokenReader.ReadAsync())
+        {
+            return 0;
+        }
+        
+        var tokenUpdateCommand = dbConnection.CreateCommand();
+        tokenUpdateCommand.Parameters.Add(new MySqlParameter("tokenId",  tokenReader.GetInt32(0)));
+        tokenUpdateCommand.CommandText = "UPDATE player_sso_tokens SET used_at = NOW() WHERE id = @tokenId LIMIT 1;";
+
+        var playerId = tokenReader.GetInt32(1);
+        
+        await tokenReader.DisposeAsync();
+        await tokenUpdateCommand.ExecuteNonQueryAsync();
+
+        return playerId;
+    }
+    
+    public static async Task<Player?> LoadPlayerAsync(
+        SadieContext dbContext, 
+        string token, 
+        int authDelayMs)
     {
         var tokenExpires = DateTime
             .Now
             .Subtract(TimeSpan.FromMilliseconds(authDelayMs));
-        
+
         await using var connection = dbContext.Database.GetDbConnection();
         await connection.OpenAsync();
-
-        connection.CreateCommand();
         
-        // TODO; Load player
+        var playerId = await GetPlayerIdFromTokenAsync(connection, token, tokenExpires);
+
+        if (playerId == 0)
+        {
+            return null;
+        }
+        
+        var playerCommand = connection.CreateCommand();
+        playerCommand.Parameters.Add(new MySqlParameter("id", playerId));
+        playerCommand.CommandText = @"
+            SELECT username, email, figure_code FROM players 
+                INNER JOIN player_data ON player_data.player_id = players.id
+                INNER JOIN player_avatar_data ON player_avatar_data.player_id = players.id 
+                INNER JOIN player_game_settings ON player_game_settings.player_id = players.id 
+                INNER JOIN player_navigator_settings ON player_navigator_settings.player_id = players.id 
+            WHERE players.id = @id";
+        
+        var playerReader = await playerCommand.ExecuteReaderAsync();
+
+        if (!await playerReader.ReadAsync())
+        {
+            return null;
+        }
         
         return new Player
         {
-            Id = 1,
-            Username = "habtard",
-            Email = "",
+            Id = playerId,
+            Username = playerReader.GetString(0),
+            Email = playerReader.GetString(1),
     
             Data = new PlayerData
             {
                 Id = 0,
-                Player = null,
                 PlayerId = 0,
                 HomeRoomId = 0,
                 CreditBalance = 0,
@@ -50,7 +101,7 @@ public static class PlayerLoader
                 Id = 0,
                 PlayerId = 0,
                 Player = null,
-                FigureCode = "",
+                FigureCode = playerReader.GetString(2),
                 Motto = "",
                 Gender = AvatarGender.Male,
                 ChatBubbleId = ChatBubble.Default

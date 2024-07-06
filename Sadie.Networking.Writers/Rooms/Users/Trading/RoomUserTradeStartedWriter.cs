@@ -7,8 +7,8 @@ namespace Sadie.Networking.Writers.Rooms.Users.Trading;
 [PacketId(ServerPacketId.RoomUserTradeStarted)]
 public class RoomUserTradeStartedWriter : AbstractPacketWriter
 {
-    public required List<int> UserIds { get; set; }
-    public required int State { get; set; }
+    public required List<int> UserIds { get; init; }
+    public required int State { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {

@@ -20,12 +20,12 @@ public class Room
     public RoomPaintSettings? PaintSettings { get; set; }
     public RoomChatSettings? ChatSettings { get; set; }
     public ICollection<RoomPlayerRight> PlayerRights { get; init; } = [];
-    public ICollection<RoomChatMessage> ChatMessages { get; set; } = [];
+    public ICollection<RoomChatMessage> ChatMessages { get; init; } = [];
     public ICollection<RoomTag> Tags { get; init; } = [];
     public ICollection<PlayerRoomLike> PlayerLikes { get; init; } = [];
     public ICollection<PlayerFurnitureItemPlacementData> FurnitureItems { get; init; } = [];
     public DateTime CreatedAt { get; init; }
     public Group? Group { get; init; }
     public RoomDimmerSettings? DimmerSettings { get; set; }
-    public ICollection<PlayerRoomBan> PlayerBans { get; set; } = [];
+    public ICollection<PlayerRoomBan> PlayerBans { get; init; } = [];
 }

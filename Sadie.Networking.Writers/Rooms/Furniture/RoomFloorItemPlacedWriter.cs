@@ -16,7 +16,7 @@ public class RoomFloorItemPlacedWriter : AbstractPacketWriter
     public required string StackHeight { get; init; }
     public required int Extra { get; init; }
     public required int ObjectDataKey { get; init; }
-    public required Dictionary<string, string> ObjectData { get; set; }
+    public required Dictionary<string, string> ObjectData { get; init; }
     public required string MetaData { get; init; }
     public required int Expires { get; init; }
     public required int InteractionModes { get; init; }

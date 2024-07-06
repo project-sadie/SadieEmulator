@@ -52,7 +52,7 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var player = await PlayerLoader.GetPlayerAsync(dbContext, DelayMs);
+        var player = await PlayerLoader.LoadPlayerAsync(dbContext, Token, DelayMs);
 
         if (player == null)
         {
@@ -83,14 +83,6 @@ public class SecureLoginEventHandler(
             await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
-
-        await client.WriteToStreamAsync(new PlayerPingWriter());
-        
-        if (!alreadyOnline)
-        {
-            dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
-            await dbContext.SaveChangesAsync();
-        }
         
         playerLogic.Data.IsOnline = true;
         playerLogic.Data.LastOnline = DateTime.Now;
@@ -110,7 +102,9 @@ public class SecureLoginEventHandler(
             playerRepository);
         
         await SendWelcomeMessageAsync(playerLogic);
+        
         await client.WriteToStreamAsync(new SecureLoginWriter());
+        await client.WriteToStreamAsync(new PlayerPingWriter());
         
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
