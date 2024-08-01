@@ -49,7 +49,8 @@ namespace Sadie.Networking
                 {
                     var pipeline = channel.Pipeline;
 
-                    if (!string.IsNullOrWhiteSpace(_networkOptions.CertificateFile))
+                    if (_networkOptions.UseWss &&
+                        !string.IsNullOrWhiteSpace(_networkOptions.CertificateFile))
                     {
                         var certificate = new X509Certificate(_networkOptions.CertificateFile);
                         pipeline.AddLast(TlsHandler.Server(certificate));
