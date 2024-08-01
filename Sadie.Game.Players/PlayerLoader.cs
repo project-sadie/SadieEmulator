@@ -59,7 +59,7 @@ public static class PlayerLoader
         var playerCommand = connection.CreateCommand();
         playerCommand.Parameters.Add(new MySqlParameter("id", playerId));
         playerCommand.CommandText = @"
-            SELECT username, email, figure_code FROM players 
+            SELECT username, email, figure_code, home_room_id, credit_balance, pixel_balance, seasonal_balance, gotw_points, player_data.id FROM players 
                 INNER JOIN player_data ON player_data.player_id = players.id
                 INNER JOIN player_avatar_data ON player_avatar_data.player_id = players.id 
                 INNER JOIN player_game_settings ON player_game_settings.player_id = players.id 
@@ -81,13 +81,13 @@ public static class PlayerLoader
     
             Data = new PlayerData
             {
-                Id = 0,
-                PlayerId = 0,
-                HomeRoomId = 0,
-                CreditBalance = 0,
-                PixelBalance = 0,
-                SeasonalBalance = 0,
-                GotwPoints = 0,
+                Id = playerReader.GetInt32(8),
+                PlayerId = playerId,
+                HomeRoomId = playerReader.IsDBNull(3) ? 0 : playerReader.GetInt32(3),
+                CreditBalance = playerReader.GetInt32(4),
+                PixelBalance = playerReader.GetInt32(5),
+                SeasonalBalance = playerReader.GetInt32(6),
+                GotwPoints = playerReader.GetInt32(7),
                 RespectPoints = 0,
                 RespectPointsPet = 0,
                 AchievementScore = 0,
@@ -133,7 +133,11 @@ public static class PlayerLoader
                 WindowHeight = 0,
                 OpenSearches = false,
                 Unknown = 0
-            }
+            },
+            
+            Rooms = [],
+            Badges = [],
+            Bots = [],
         };
     }
 }

@@ -10,6 +10,5 @@ public class PlayerPongEventHandler : INetworkPacketEventHandler
     public async Task HandleAsync(INetworkClient client)
     {
         client.LastPing = DateTime.Now;
-        await client.WriteToStreamAsync(new PlayerPingWriter());
     }
 }
