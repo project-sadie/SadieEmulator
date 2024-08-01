@@ -1,12 +1,10 @@
 using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
-using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
@@ -15,7 +13,6 @@ using Sadie.Networking.Writers.Handshake;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Options.Options;
 using Sadie.Shared;
-using Serilog;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 

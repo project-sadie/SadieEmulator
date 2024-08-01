@@ -1,6 +1,5 @@
 using Sadie.Database;
 using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Packets.Writers;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
