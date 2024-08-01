@@ -16,7 +16,6 @@ public static class DatabaseServiceCollection
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
             provider.GetRequiredService<SadieContext>()
                 .ServerPlayerConstants
-                .OrderByDescending(x => x.CreatedAt)
                 .First()
             );
 
