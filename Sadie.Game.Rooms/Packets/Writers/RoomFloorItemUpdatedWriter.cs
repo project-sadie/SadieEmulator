@@ -29,7 +29,7 @@ public class RoomFloorItemUpdatedWriter : AbstractPacketWriter
         
         Override(GetType().GetProperty(nameof(ObjectData))!, writer =>
         {
-            if (ObjectDataKey == (int)Shared.Unsorted.ObjectDataKey.LegacyKey)
+            if (ObjectDataKey == (int)Sadie.Enums.Unsorted.ObjectDataKey.LegacyKey)
             {
                 writer.WriteString(MetaData);
                 return;

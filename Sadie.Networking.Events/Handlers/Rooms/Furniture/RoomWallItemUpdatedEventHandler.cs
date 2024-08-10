@@ -1,4 +1,5 @@
 using Sadie.Database;
+using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
@@ -32,7 +33,7 @@ public class RoomWallItemUpdatedEventHandler(
 
         if (!client.RoomUser.HasRights())
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MissingRights);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MissingRights);
             return;
         }
 

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Enums;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;

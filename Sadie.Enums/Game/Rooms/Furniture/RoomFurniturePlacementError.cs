@@ -1,8 +1,8 @@
 using System.ComponentModel;
 
-namespace Sadie.Shared.Unsorted;
+namespace Sadie.Enums.Game.Rooms.Furniture;
 
-public enum FurniturePlacementError
+public enum RoomFurniturePlacementError
 {
     [Description("")]
     None,
