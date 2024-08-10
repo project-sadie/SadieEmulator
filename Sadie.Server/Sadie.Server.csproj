@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>SadieEmulator</RootNamespace>
+        <AssemblyVersion>0.9</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
