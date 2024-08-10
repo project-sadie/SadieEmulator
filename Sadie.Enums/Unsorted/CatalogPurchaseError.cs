@@ -1,4 +1,4 @@
-namespace Sadie.Game.Catalog;
+namespace Sadie.Enums.Unsorted;
 
 public enum CatalogPurchaseError
 {

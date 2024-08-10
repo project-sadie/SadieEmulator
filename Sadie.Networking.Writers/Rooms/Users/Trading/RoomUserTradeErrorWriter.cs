@@ -9,7 +9,7 @@ namespace Sadie.Networking.Writers.Rooms.Users.Trading;
 public class RoomUserTradeErrorWriter : AbstractPacketWriter
 {
     public string Username { get; set; } = "";
-    public required RoomUserTradeError Code { get; set; }
+    public required RoomUserTradeError Code { get; init; }
 
     public override void OnConfigureRules()
     {

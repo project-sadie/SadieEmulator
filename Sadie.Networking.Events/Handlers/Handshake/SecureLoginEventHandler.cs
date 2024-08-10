@@ -1,16 +1,15 @@
 using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
-using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Server;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Handshake;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Options.Options;
 using Sadie.Shared;
@@ -34,12 +33,7 @@ public class SecureLoginEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
-        {
-            logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
-            await DisconnectNetworkClientAsync(client.Channel.Id);
-            return;
-        }
+        var sw = Stopwatch.StartNew();
 
         if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
@@ -47,54 +41,15 @@ public class SecureLoginEventHandler(
             await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
-
-        var expires = DateTime
-            .Now
-            .Subtract(TimeSpan.FromMilliseconds(DelayMs));
-
-        var tokenRecord = await dbContext
-            .PlayerSsoToken
-            .FirstOrDefaultAsync(x =>
-                x.Token == Token &&
-                x.ExpiresAt > expires &&
-                x.UsedAt == null);
-
-        if (tokenRecord == null)
+        
+        if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
         {
-            logger.LogWarning("Failed to find token record for provided sso.");
+            logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
             await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
-        
-        tokenRecord.UsedAt = DateTime.Now;
 
-        dbContext.Entry(tokenRecord).State = EntityState.Modified;
-        await dbContext.SaveChangesAsync();
-
-        var player = await dbContext
-            .Set<Player>()
-            .Where(x => x.Id == tokenRecord.PlayerId)
-            .Include(x => x.Data)
-            .Include(x => x.AvatarData)
-            .Include(x => x.Tags)
-            .Include(x => x.RoomLikes)
-            .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
-            .Include(x => x.NavigatorSettings)
-            .Include(x => x.GameSettings)
-            .Include(x => x.Badges)
-            .Include(x => x.FurnitureItems).ThenInclude(x => x.FurnitureItem)
-            .Include(x => x.FurnitureItems).ThenInclude(x => x.PlacementData)
-            .Include(x => x.WardrobeItems)
-            .Include(x => x.Roles).ThenInclude(x => x.Permissions)
-            .Include(x => x.Subscriptions).ThenInclude(x => x.Subscription)
-            .Include(x => x.Respects)
-            .Include(x => x.SavedSearches)
-            .Include(x => x.OutgoingFriendships).ThenInclude(x => x.TargetPlayer).ThenInclude(x => x.AvatarData)
-            .Include(x => x.IncomingFriendships).ThenInclude(x => x.OriginPlayer).ThenInclude(x => x.AvatarData)
-            .Include(x => x.Rooms).ThenInclude(x => x.Settings)
-            .Include(x => x.Bots)
-            .AsSplitQuery()
-            .FirstOrDefaultAsync();
+        var player = await PlayerLoader.LoadPlayerAsync(dbContext, Token, DelayMs);
 
         if (player == null)
         {
@@ -125,31 +80,18 @@ public class SecureLoginEventHandler(
             await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
-
-        logger.LogInformation($"Player '{playerLogic.Username}' has logged in");
-
-        await client.WriteToStreamAsync(new PlayerPingWriter());
-        
-        if (!alreadyOnline)
-        {
-            dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
-            await dbContext.SaveChangesAsync();
-        }
         
         playerLogic.Data.IsOnline = true;
         playerLogic.Data.LastOnline = DateTime.Now;
-        
-        dbContext.Entry(playerLogic.Data).Property(x => x.IsOnline).IsModified = true;
-        dbContext.Entry(playerLogic.Data).Property(x => x.LastOnline).IsModified = true;
         
         playerLogic.Authenticated = true;
 
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
-        await PlayerHelpersToClean.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+        await PlayerHelpers.SendPlayerFriendListUpdate(playerLogic, playerRepository);
         
-        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+        await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
             player, 
             player.GetMergedFriendships(), 
             true, 
@@ -157,7 +99,11 @@ public class SecureLoginEventHandler(
             playerRepository);
         
         await SendWelcomeMessageAsync(playerLogic);
-        await dbContext.SaveChangesAsync();
+        
+        await client.WriteToStreamAsync(new SecureLoginWriter());
+        await client.WriteToStreamAsync(new PlayerPingWriter());
+        
+        logger.LogInformation($"Player '{playerLogic.Username}' has logged in ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 
     private async Task SendWelcomeMessageAsync(PlayerLogic player)

@@ -1,10 +1,10 @@
 ﻿using Sadie.Database;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -18,21 +18,19 @@ public class PlayerChangedAppearanceEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null)
+        var player = client.Player;
+        
+        if (player?.AvatarData == null)
         {
             return;
         }
 
-        var player = client.Player;
-        
         var gender = Gender == "M" ? 
             AvatarGender.Male : 
             AvatarGender.Female;
 
         var figureCode = FigureCode;
         
-        // TODO: Validate inputs above
-
         player.AvatarData.Gender = gender;
         player.AvatarData.FigureCode = figureCode;
         

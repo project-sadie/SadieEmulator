@@ -1,4 +1,4 @@
-namespace Sadie.Shared;
+namespace Sadie.Enums.Unsorted;
 
 public enum EffectIds
 {

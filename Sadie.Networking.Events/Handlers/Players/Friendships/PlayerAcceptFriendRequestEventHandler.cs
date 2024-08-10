@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Enums;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Rooms;
@@ -54,7 +56,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .Relationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
 
-        await PlayerHelpersToClean.SendFriendUpdatesToPlayerAsync(client.Player, [
+        await PlayerHelpers.SendFriendUpdatesToPlayerAsync(client.Player, [
             new PlayerFriendshipUpdate
             {
                 Type = 0,
@@ -81,7 +83,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .FirstOrDefault(x =>
                     x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 
-            await PlayerHelpersToClean.SendFriendUpdatesToPlayerAsync(targetPlayer, [
+            await PlayerHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [
                 new PlayerFriendshipUpdate
                 {
                     Type = 0,

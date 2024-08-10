@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Sadie.Shared.Unsorted;
+namespace Sadie.Enums.Unsorted;
 
 public enum NotificationType
 {

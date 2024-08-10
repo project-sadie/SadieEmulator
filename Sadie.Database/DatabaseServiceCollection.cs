@@ -16,7 +16,6 @@ public static class DatabaseServiceCollection
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
             provider.GetRequiredService<SadieContext>()
                 .ServerPlayerConstants
-                .OrderByDescending(x => x.CreatedAt)
                 .First()
             );
 
@@ -41,5 +40,7 @@ public static class DatabaseServiceCollection
                 .Set<CatalogFrontPageItem>()
                 .Include(x => x.CatalogPage)
                 .ToList());
+
+        serviceCollection.AddSingleton<DatabaseProvider>();
     }
 }

@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms.Enums;
+namespace Sadie.Enums.Unsorted;
 
 public enum RoomSettingsError
 {

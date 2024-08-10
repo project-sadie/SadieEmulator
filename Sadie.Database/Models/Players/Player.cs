@@ -2,6 +2,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Server;
+using Sadie.Enums;
+using Sadie.Enums.Unsorted;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database.Models.Players;
@@ -28,7 +30,7 @@ public class Player
     public ICollection<PlayerSavedSearch> SavedSearches { get; init; } = [];
     [InverseProperty("OriginPlayer")] public ICollection<PlayerFriendship> OutgoingFriendships { get; init; } = [];
     [InverseProperty("TargetPlayer")] public ICollection<PlayerFriendship> IncomingFriendships { get; init; } = [];
-    public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; set; }
+    public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; init; }
     public ICollection<Room> Rooms { get; set; } = [];
     public ICollection<Group> Groups { get; init; } = [];
     public ICollection<PlayerBot> Bots { get; init; } = [];

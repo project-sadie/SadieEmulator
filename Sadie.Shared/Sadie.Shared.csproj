@@ -13,10 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Unsorted\Networking\Packets\" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\Sadie.Enums\Sadie.Enums.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Serialization\Sadie.Networking.Serialization.csproj" />
     </ItemGroup>
 

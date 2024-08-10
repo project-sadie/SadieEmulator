@@ -1,3 +1,4 @@
+using Sadie.Enums.Unsorted;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Shared.Helpers;
@@ -26,6 +27,8 @@ public class RoomHelpers
             return RoomUserEmotion.Shocked;
         }
 
-        return sadEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)) ? RoomUserEmotion.Sad : RoomUserEmotion.None;
+        return sadEmojis.Any(x => message.Contains(x, StringComparison.OrdinalIgnoreCase)) ? 
+            RoomUserEmotion.Sad : 
+            RoomUserEmotion.None;
     }
 }

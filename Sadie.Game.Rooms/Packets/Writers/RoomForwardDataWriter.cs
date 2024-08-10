@@ -39,13 +39,13 @@ public class RoomForwardDataWriter : AbstractPacketWriter
         
         writer.WriteInteger(0 | 8);
         writer.WriteBool(RoomForward);
-        writer.WriteBool(false); // TODO: staff picked?
-        writer.WriteBool(false); // TODO: is group member?
+        writer.WriteBool(false);
+        writer.WriteBool(false);
         writer.WriteBool(Room.IsMuted);
         writer.WriteInteger(settings.WhoCanMute);
         writer.WriteInteger(settings.WhoCanKick);
         writer.WriteInteger(settings.WhoCanBan);
-        writer.WriteBool(IsOwner); // mute all button
+        writer.WriteBool(IsOwner);
         writer.WriteInteger(chatSettings.ChatType); 
         writer.WriteInteger(chatSettings.ChatWeight); 
         writer.WriteInteger(chatSettings.ChatSpeed); 

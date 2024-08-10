@@ -46,7 +46,6 @@ public static class ServerServiceCollection
         serviceCollection.AddSingleton<ServerSettings>(p => 
             p.GetRequiredService<SadieContext>()
                 .ServerSettings
-                .OrderByDescending(x => x.CreatedAt)
                 .First());
         
         serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => 

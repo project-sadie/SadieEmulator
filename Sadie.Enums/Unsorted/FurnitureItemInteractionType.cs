@@ -1,4 +1,4 @@
-namespace Sadie.Enums;
+namespace Sadie.Enums.Unsorted;
 
 public static class FurnitureItemInteractionType
 {

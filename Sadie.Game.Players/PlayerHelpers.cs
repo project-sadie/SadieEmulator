@@ -1,12 +1,14 @@
 using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
+using Sadie.Enums;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;
 using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Players;
 
-public class PlayerHelpersToClean
+public class PlayerHelpers
 {
     public static async Task SendFriendUpdatesToPlayerAsync(
         IPlayerLogic player, 
@@ -35,7 +37,7 @@ public class PlayerHelpersToClean
                 Take(500).
                 ToList();
             
-            await player.NetworkObject.WriteToStreamAsync(new PlayerFriendsListWriter
+            await player.NetworkObject!.WriteToStreamAsync(new PlayerFriendsListWriter
             {
                 Pages = pages,
                 Index = i,

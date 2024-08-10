@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
@@ -11,6 +12,7 @@ public interface IRoomLogic
     ICollection<PlayerFurnitureItemPlacementData> FurnitureItems { get; }
     IRoomTileMap TileMap { get; }
     IRoomUserRepository UserRepository { get; }
-    RoomSettings Settings { get; set; }
+    IRoomBotRepository BotRepository { get; }
+    RoomSettings? Settings { get; }
     RoomDimmerSettings? DimmerSettings { get; set; }
 }

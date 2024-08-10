@@ -2,7 +2,10 @@
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Enums;
 using Sadie.Enums.Game.Rooms;
+using Sadie.Enums.Game.Rooms.Furniture;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;
 using Sadie.Game.Rooms;
@@ -62,8 +65,6 @@ public static class NetworkPacketEventHelpers
     {
         var playerData = player.Data;
         var playerSubscriptions = player.Subscriptions;
-
-        await networkObject.WriteToStreamAsync(new SecureLoginWriter());
 
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
         {
@@ -161,7 +162,7 @@ public static class NetworkPacketEventHelpers
         return true;
     }
 
-    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, FurniturePlacementError error)
+    public static async Task SendFurniturePlacementErrorAsync(INetworkObject client, RoomFurniturePlacementError error)
     {
         await client.WriteToStreamAsync(new BubbleAlertWriter
         {

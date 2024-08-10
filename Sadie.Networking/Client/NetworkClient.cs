@@ -35,11 +35,6 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
     public IRoomUser? RoomUser { get; set; }
     public bool EncryptionEnabled { get; private set; }
 
-    public Task ListenAsync()
-    {
-        return Task.CompletedTask;
-    }
-
     public void EnableEncryption(byte[] sharedKey)
     {
         Channel.Pipeline.AddFirst(new EncryptionDecoder(sharedKey));
@@ -58,7 +53,19 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         }
 
         var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
-        await _channel.WriteAndFlushAsync(serializedObject);
+
+        try
+        {
+            await _channel.WriteAndFlushAsync(serializedObject);
+        }
+        catch (ClosedChannelException)
+        {
+            
+        }
+        catch (ObjectDisposedException)
+        {
+            
+        }
     }
 
     public async Task WriteToStreamAsync(NetworkPacketWriter writer)
@@ -79,14 +86,6 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         catch (ObjectDisposedException)
         {
             
-        }
-    }
-
-    public async Task OnReceivedAsync(byte[] data)
-    {
-        foreach (var packet in DecodePacketsFromBytes(data))
-        {
-            await _packetHandler.HandleAsync(this, packet);
         }
     }
 

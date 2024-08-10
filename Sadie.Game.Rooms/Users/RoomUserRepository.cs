@@ -50,7 +50,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         
         player.State.CurrentRoomId = 0;
         
-        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
+        await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
             (Player) player, 
             player.GetMergedFriendships(),
             player.Data.IsOnline, 
@@ -95,9 +95,30 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                 await roomUser.RunPeriodicCheckAsync();
             }
 
+            if (users.Count != 0)
+            {
+                var bots = users
+                    .First()
+                    .Room
+                    .BotRepository
+                    .GetAll();
+                
+                await BroadcastDataAsync(new RoomBotStatusWriter
+                {
+                    Bots = bots
+                });
+
+                await BroadcastDataAsync(new RoomBotDataWriter
+                {
+                    Bots = bots
+                });
+            }
+            
             var statusWriter = new RoomUserStatusWriter
             {
-                Users = users.Where(x => x.NeedsStatusUpdate).ToList()
+                Users = users
+                    .Where(x => x.NeedsStatusUpdate)
+                    .ToList()
             };
 
             var dataWriter = new RoomUserDataWriter

@@ -6,6 +6,7 @@ using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Catalog;
 using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players;
@@ -16,7 +17,6 @@ using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Shared;
-using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
@@ -135,7 +135,7 @@ public class CatalogPurchaseEventHandler(
                 Ambassador = true
             });
             
-            var subWriter = PlayerHelpersToClean.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+            var subWriter = PlayerHelpers.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
 
             if (subWriter != null)
             {

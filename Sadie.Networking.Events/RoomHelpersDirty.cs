@@ -8,6 +8,8 @@ using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums;
 using Sadie.Enums.Game.Rooms;
+using Sadie.Enums.Game.Rooms.Furniture;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Bots;
@@ -106,7 +108,9 @@ public static class RoomHelpersDirty
     }
 
     private static async Task CreateRoomVisitForPlayerAsync(
-        PlayerLogic player, int roomId, SadieContext dbContext)
+        Player player, 
+        int roomId, 
+        SadieContext dbContext)
     {
         var roomVisit = new PlayerRoomVisit
         {
@@ -195,6 +199,21 @@ public static class RoomHelpersDirty
                 await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, teleport, "0");
             });
         }
+
+        if (player.State.CurrentRoomId == 0)
+        {
+            var friends = player
+                .GetMergedFriendships()
+                .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
+                .ToList();
+        
+            await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
+                player,
+                friends, 
+                true, 
+                true,
+                playerRepository);
+        }
         
         player.State.CurrentRoomId = room.Id;
 
@@ -205,20 +224,6 @@ public static class RoomHelpersDirty
         
         await SendRoomEntryPacketsToUserAsync(client, room);
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
-        
-        // TODO; Actually check if this stuff needs to be sent (consecutive room load)
-        
-        var friends = player
-            .GetMergedFriendships()
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-        
-        await PlayerHelpersToClean.UpdatePlayerStatusForFriendsAsync(
-            player,
-            friends, 
-            true, 
-            true,
-            playerRepository);
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, Room room)
@@ -233,28 +238,28 @@ public static class RoomHelpersDirty
             RoomId = room.Id
         });
 
-        if (room.PaintSettings.FloorPaint != "0.0")
+        if (room.PaintSettings?.FloorPaint != "0.0")
         {
             await client.WriteToStreamAsync(new RoomPaintWriter
             {
                 Type = "floor",
-                Value = room.PaintSettings.FloorPaint
+                Value = room.PaintSettings?.FloorPaint ?? "0.0"
             });
         }
 
-        if (room.PaintSettings.WallPaint != "0.0")
+        if (room.PaintSettings?.WallPaint != "0.0")
         {
             await client.WriteToStreamAsync(new RoomPaintWriter
             {
                 Type = "wallpaper",
-                Value = room.PaintSettings.WallPaint
+                Value = room.PaintSettings?.WallPaint ?? "0.0"
             });
         }
         
         await client.WriteToStreamAsync(new RoomPaintWriter
         {
             Type = "landscape",
-            Value = room.PaintSettings.LandscapePaint
+            Value = room.PaintSettings?.LandscapePaint ?? "0.0"
         });
         
         await client.WriteToStreamAsync(new RoomScoreWriter
@@ -345,7 +350,7 @@ public static class RoomHelpersDirty
             !int.TryParse(placementData[2], out var y) || 
             !int.TryParse(placementData[3], out var direction))
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -355,7 +360,7 @@ public static class RoomHelpersDirty
         if (!pointsForPlacement
             .All(x => RoomTileMapHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.CantSetItem);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -434,7 +439,7 @@ public static class RoomHelpersDirty
         if (playerItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer && 
             room.FurnitureItems.Any(x => x.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer))
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, FurniturePlacementError.MaxDimmers);
+            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MaxDimmers);
             return;
         }
         

@@ -1,5 +1,5 @@
+using Sadie.Enums.Unsorted;
 using Sadie.Shared.Unsorted.Game;
-using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Database.Models.Players;
 
