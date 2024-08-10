@@ -1,4 +1,4 @@
-namespace Sadie.Game.Players;
+namespace Sadie.Enums.Unsorted;
 
 public enum PlayerStalkError
 {

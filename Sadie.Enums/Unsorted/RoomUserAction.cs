@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms.Users;
+namespace Sadie.Enums.Unsorted;
 
 public enum RoomUserAction
 {

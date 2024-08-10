@@ -1,4 +1,5 @@
-﻿using Sadie.Shared.Unsorted;
+﻿using Sadie.Enums.Unsorted;
+using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Database.Models.Rooms.Chat;
