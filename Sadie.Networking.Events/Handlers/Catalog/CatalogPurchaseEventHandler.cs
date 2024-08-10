@@ -17,7 +17,6 @@ using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Shared;
-using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 

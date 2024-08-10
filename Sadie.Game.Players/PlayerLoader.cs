@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
+using Sadie.Enums.Unsorted;
 using Sadie.Shared.Unsorted.Game;
-using Sadie.Shared.Unsorted.Game.Avatar;
 
 namespace Sadie.Game.Players;
 

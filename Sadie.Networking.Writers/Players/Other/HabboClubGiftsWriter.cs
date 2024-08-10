@@ -1,4 +1,5 @@
 ﻿using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;

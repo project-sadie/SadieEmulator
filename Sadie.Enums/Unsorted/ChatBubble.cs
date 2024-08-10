@@ -1,4 +1,4 @@
-﻿namespace Sadie.Shared.Unsorted.Game;
+﻿namespace Sadie.Enums.Unsorted;
 
 public enum ChatBubble
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Sadie.Shared.Unsorted.Game.Avatar;
+namespace Sadie.Enums.Unsorted;
 
 public enum AvatarGender
 {

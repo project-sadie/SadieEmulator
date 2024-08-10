@@ -3,6 +3,7 @@ using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;

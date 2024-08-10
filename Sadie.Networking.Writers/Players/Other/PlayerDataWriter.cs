@@ -1,7 +1,7 @@
 ﻿using Sadie.Database.Models.Players;
+using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Game.Avatar;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Other;
