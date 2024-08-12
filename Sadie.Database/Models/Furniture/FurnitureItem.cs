@@ -1,4 +1,5 @@
 using Sadie.Database.Models.Catalog.Items;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Shared.Unsorted;
 

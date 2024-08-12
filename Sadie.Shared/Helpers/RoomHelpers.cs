@@ -1,3 +1,4 @@
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Shared.Unsorted;
 

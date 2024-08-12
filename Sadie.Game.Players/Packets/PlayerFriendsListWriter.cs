@@ -1,5 +1,6 @@
 ﻿using Sadie.Database.Models.Players;
 using Sadie.Enums;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;

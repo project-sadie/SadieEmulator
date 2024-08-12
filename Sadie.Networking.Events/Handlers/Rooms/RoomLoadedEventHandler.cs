@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;

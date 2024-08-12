@@ -1,4 +1,4 @@
-namespace Sadie.Enums.Unsorted;
+namespace Sadie.Enums.Game.Rooms.Users;
 
 public enum RoomUserEmotion
 {

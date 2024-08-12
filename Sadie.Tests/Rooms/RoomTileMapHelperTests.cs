@@ -1,5 +1,6 @@
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Shared.Unsorted;

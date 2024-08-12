@@ -1,4 +1,5 @@
-﻿using Sadie.Enums.Unsorted;
+﻿using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;

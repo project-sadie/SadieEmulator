@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets;

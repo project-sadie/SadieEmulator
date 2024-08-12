@@ -1,5 +1,6 @@
 using Sadie.Database;
 using Sadie.Database.Models.Players;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;

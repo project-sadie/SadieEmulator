@@ -1,4 +1,5 @@
-﻿using Sadie.Enums.Unsorted;
+﻿using Sadie.Enums.Game.Rooms.Users;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Users;

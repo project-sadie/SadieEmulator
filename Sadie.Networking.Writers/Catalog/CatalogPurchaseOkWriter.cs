@@ -1,4 +1,5 @@
 using Sadie.Database.Models.Furniture;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;

@@ -7,6 +7,8 @@ using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums;
+using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;

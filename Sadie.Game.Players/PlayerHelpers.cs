@@ -1,6 +1,7 @@
 using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
 using Sadie.Enums;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players.Friendships;
 using Sadie.Game.Players.Packets;

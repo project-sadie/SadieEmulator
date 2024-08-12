@@ -1,4 +1,5 @@
 using Sadie.Enums;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;

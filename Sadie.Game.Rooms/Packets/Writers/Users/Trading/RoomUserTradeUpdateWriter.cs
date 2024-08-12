@@ -1,4 +1,5 @@
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;

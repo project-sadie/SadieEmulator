@@ -15,6 +15,7 @@ using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Database.Models.Server;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Options.Options;
 using Sadie.Shared.Helpers;
