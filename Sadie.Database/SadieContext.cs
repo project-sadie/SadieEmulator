@@ -89,6 +89,7 @@ public class SadieContext(
                maxRetryDelay: TimeSpan.FromSeconds(30),
                errorNumbersToAdd: null);
         });
+        
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.UseLoggerFactory(loggerFactory);
 
