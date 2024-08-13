@@ -1,5 +1,6 @@
 using Sadie.API.Game.Rooms;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Users;
@@ -36,7 +37,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
         
         var roomRollers = room
             .FurnitureItems
-            .Where(x => x.FurnitureItem!.InteractionType == "roller");
+            .Where(x => x.FurnitureItem!.InteractionType == FurnitureItemInteractionType.Roller);
 
         writers.AddRange(GetRollerUpdates(room, roomRollers));
 
@@ -60,7 +61,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
             
             var nextRoller = RoomTileMapHelpers
                 .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
-                .FirstOrDefault(fi => fi.FurnitureItem!.InteractionType == "roller");
+                .FirstOrDefault(fi => fi.FurnitureItem!.InteractionType == FurnitureItemInteractionType.Roller);
 
             var users = room.UserRepository
                 .GetAll()
@@ -101,7 +102,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
             var nonRollerItemsOnRoller = RoomTileMapHelpers.GetItemsForPosition(
                 roller.PositionX, 
                 roller.PositionY,
-                room.FurnitureItems.Where(i => i.FurnitureItem!.InteractionType != "roller"));
+                room.FurnitureItems.Where(i => i.FurnitureItem!.InteractionType != FurnitureItemInteractionType.Roller));
 
             var rollingData = nonRollerItemsOnRoller
                 .Select(item => new RoomRollingObjectData
