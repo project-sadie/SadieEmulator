@@ -13,15 +13,11 @@ public class GateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemI
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
-        if (!room.TileMap.IsTileFree(new Point(item.PositionX, item.PositionY)))
-        {
-            return;
-        }
-
-        if (room
-            .UserRepository
-            .GetAll()
-            .Any(x => x.IsWalking && x.NextPoint == new Point(item.PositionX, item.PositionY)))
+        if (!room.TileMap.IsTileFree(new Point(item.PositionX, item.PositionY)) || 
+            room
+                .UserRepository
+                .GetAll()
+                .Any(x => x.IsWalking && x.NextPoint == new Point(item.PositionX, item.PositionY)))
         {
             return;
         }
