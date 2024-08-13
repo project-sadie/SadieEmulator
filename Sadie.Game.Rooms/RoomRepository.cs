@@ -8,7 +8,7 @@ namespace Sadie.Game.Rooms;
 
 public class RoomRepository(SadieContext dbContext, IMapper mapper)
 {
-    private readonly ConcurrentDictionary<long, RoomLogic?> _rooms = new();
+    private readonly ConcurrentDictionary<long, RoomLogic> _rooms = new();
 
     public RoomLogic? TryGetRoomById(long id)
     {
@@ -24,7 +24,7 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
     }
 
     public int Count => _rooms.Count;
-    public IEnumerable<RoomLogic?> GetAllRooms() => _rooms.Values;
+    public IEnumerable<RoomLogic> GetAllRooms() => _rooms.Values;
 
     public bool TryRemove(long id, out RoomLogic? roomLogic)
     {
