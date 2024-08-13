@@ -4,8 +4,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Mapping;
 
@@ -257,7 +255,7 @@ public class RoomTileMapHelpers
             i.AddRange(GetItemsForPosition(p.X, p.Y, roomFurnitureItems));
         }
         
-        if (!i.Any())
+        if (i.Count == 0)
         {
             return pointsForPlacement.Select(x => roomTileMap.ZMap[x.Y, x.X]).Max();
         }

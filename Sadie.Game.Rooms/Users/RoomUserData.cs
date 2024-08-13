@@ -6,7 +6,6 @@ using Sadie.Enums.Game.Rooms.Unit;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Unit;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Users;
 

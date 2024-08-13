@@ -4,7 +4,6 @@ using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding.ToGo;
 using Sadie.Game.Rooms.PathFinding.ToGo.Options;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.PathFinding;
 

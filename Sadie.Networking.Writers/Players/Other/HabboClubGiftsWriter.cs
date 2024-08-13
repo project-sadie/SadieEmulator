@@ -1,10 +1,8 @@
 ﻿using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Other;

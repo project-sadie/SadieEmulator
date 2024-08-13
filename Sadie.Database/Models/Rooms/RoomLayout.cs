@@ -1,5 +1,4 @@
 ﻿using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Database.Models.Rooms;
 

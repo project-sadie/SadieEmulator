@@ -4,7 +4,6 @@ using MySqlConnector;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Game.Players;
 

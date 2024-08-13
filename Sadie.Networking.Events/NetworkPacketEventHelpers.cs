@@ -2,7 +2,6 @@
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
-using Sadie.Enums;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
@@ -24,8 +23,6 @@ using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game;
 using Sadie.Shared.Unsorted.Networking;
 using RoomHelpers = Sadie.Shared.Helpers.RoomHelpers;
 

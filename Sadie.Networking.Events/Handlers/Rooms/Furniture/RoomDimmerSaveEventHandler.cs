@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
-using Sadie.Enums;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;

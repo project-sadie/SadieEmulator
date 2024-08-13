@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Users;

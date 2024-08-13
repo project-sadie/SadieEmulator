@@ -5,7 +5,6 @@ using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Game.Rooms.Unit;
 
