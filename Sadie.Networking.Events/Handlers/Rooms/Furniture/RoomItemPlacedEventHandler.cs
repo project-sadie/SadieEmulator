@@ -1,12 +1,10 @@
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 

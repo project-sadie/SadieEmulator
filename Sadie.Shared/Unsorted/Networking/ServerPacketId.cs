@@ -149,4 +149,5 @@ public class ServerPacketId
     public const short RoomUserTradeCloseWindow = 1001;
     public const short ClientLatency = 10;
     public const short PlayerPing = 3928;
+    public const short RoomObjectsRolling = 3207;
 }

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
-using Sadie.Enums;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -11,8 +10,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
@@ -85,7 +82,7 @@ public class FloorPlanEditorSaveEventHandler(
             errors.Add("${notification.floorplan_editor.error.message.invalid_walls_fixed_height}");
         }
         
-        if (errors.Any())
+        if (errors.Count != 0)
         {
             await client.WriteToStreamAsync(new BubbleAlertWriter
             {

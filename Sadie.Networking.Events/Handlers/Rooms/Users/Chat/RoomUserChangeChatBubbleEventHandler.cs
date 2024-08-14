@@ -1,7 +1,6 @@
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 

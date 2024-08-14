@@ -2,7 +2,6 @@ using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Game.Rooms.Chat;
 

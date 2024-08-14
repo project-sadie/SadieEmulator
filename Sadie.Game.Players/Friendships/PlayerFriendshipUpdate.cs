@@ -1,8 +1,5 @@
 using Sadie.Database.Models.Players;
-using Sadie.Enums;
 using Sadie.Enums.Game.Players;
-using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Game.Players.Friendships;
 

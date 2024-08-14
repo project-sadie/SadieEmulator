@@ -8,7 +8,6 @@ using Sadie.Game.Players;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Users;

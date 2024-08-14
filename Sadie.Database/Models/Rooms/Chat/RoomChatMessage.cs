@@ -1,8 +1,6 @@
 ﻿using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game;
 
 namespace Sadie.Database.Models.Rooms.Chat;
 

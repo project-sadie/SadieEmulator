@@ -5,9 +5,7 @@ using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
-using Sadie.Enums;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Unsorted;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 

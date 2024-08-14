@@ -1,7 +1,4 @@
-using Sadie.Enums;
 using Sadie.Enums.Game.Players;
-using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database.Models.Players;
 

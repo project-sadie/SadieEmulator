@@ -3,14 +3,12 @@ using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Shared.Extensions;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 

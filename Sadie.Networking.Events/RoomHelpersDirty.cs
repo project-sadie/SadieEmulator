@@ -6,7 +6,6 @@ using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
-using Sadie.Enums;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
@@ -23,8 +22,6 @@ using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 using Serilog;
 
 namespace Sadie.Networking.Events;

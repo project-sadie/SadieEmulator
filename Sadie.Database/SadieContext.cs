@@ -19,7 +19,6 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Options.Options;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Database;
 

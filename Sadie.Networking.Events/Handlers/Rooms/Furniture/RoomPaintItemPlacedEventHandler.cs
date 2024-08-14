@@ -5,7 +5,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 

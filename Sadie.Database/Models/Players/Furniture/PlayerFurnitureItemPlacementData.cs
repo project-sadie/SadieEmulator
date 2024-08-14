@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Database.Models.Players.Furniture;
 

@@ -10,7 +10,6 @@ using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted;
 using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;

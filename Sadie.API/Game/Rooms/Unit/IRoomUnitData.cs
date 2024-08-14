@@ -1,13 +1,12 @@
 using System.Drawing;
 using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted.Game.Rooms;
 
 namespace Sadie.API.Game.Rooms.Unit;
 
 public interface IRoomUnitData
 {
     Point Point { get; set; }
-    double PointZ { get; }
+    double PointZ { get; set; }
     bool IsWalking { get; set; }
     Point? NextPoint { get; set; }
     HDirection DirectionHead { get; set; }
