@@ -62,7 +62,9 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
             var nextRoller = RoomTileMapHelpers
                 .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
                 .FirstOrDefault(fi => fi.FurnitureItem!.InteractionType == FurnitureItemInteractionType.Roller);
-
+            
+            var nextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0";
+            
             var users = room.UserRepository
                 .GetAll()
                 .Where(u => !userIdsProcessed.Contains(u.Id));
@@ -72,6 +74,12 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
             foreach (var rollingUser in rollingUsers)
             {
                 userIdsProcessed.Add(rollingUser.Id);
+
+                if (rollingUser.StatusMap.ContainsKey(RoomUserStatus.Move) || 
+                    !room.TileMap.TileExists(nextStep))
+                {
+                    continue;
+                }
                 
                 writers.Add(new RoomObjectsRollingWriter
                 {
@@ -86,12 +94,6 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                     Height = rollingUser.PointZ.ToString(),
                     NextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0"
                 });
-
-                if (rollingUser.StatusMap.ContainsKey(RoomUserStatus.Move) ||
-                    rollingUser.Point != rollerPosition)
-                {
-                    continue;
-                }
                     
                 room.TileMap.UserMap[rollingUser.Point].Remove(rollingUser);
                 room.TileMap.AddUserToMap(nextStep, rollingUser);
@@ -104,32 +106,41 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 roller.PositionX, 
                 roller.PositionY,
                 room.FurnitureItems.Where(i => i.FurnitureItem!.InteractionType != FurnitureItemInteractionType.Roller));
-
+            
             var rollingData = nonRollerItemsOnRoller
                 .Select(item => new RoomRollingObjectData
                 {
                     Id = item.Id, 
                     Height = item.PositionZ.ToString(), 
-                    NextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0"
+                    NextHeight = nextHeight
                 })
                 .ToList();
 
-            if (rollingData.Count != 0)
+            if (rollingData.Count == 0)
             {
-                writers.Add(new RoomObjectsRollingWriter
-                {
-                    X = x,
-                    Y = y,
-                    NextX = nextStep.X,
-                    NextY = nextStep.Y,
-                    Objects = rollingData,
-                    RollerId = roller.Id,
-                    MovementType = 2,
-                    RoomUserId = 0,
-                    Height = roller.PositionZ.ToString(),
-                    NextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0"
-                });
+                continue;
             }
+            
+            nonRollerItemsOnRoller.ForEach(item =>
+            {
+                item.PositionX = nextStep.X;
+                item.PositionY = nextStep.Y;
+                item.PositionZ = nextStep.Y;
+            });
+            
+            writers.Add(new RoomObjectsRollingWriter
+            {
+                X = x,
+                Y = y,
+                NextX = nextStep.X,
+                NextY = nextStep.Y,
+                Objects = rollingData,
+                RollerId = roller.Id,
+                MovementType = 2,
+                RoomUserId = 0,
+                Height = roller.PositionZ.ToString(),
+                NextHeight = nextHeight
+            });
         }
 
         return writers;

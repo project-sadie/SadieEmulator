@@ -26,7 +26,7 @@ public class RoomTriggerDiceEventHandler(RoomFurnitureItemInteractorRepository i
 
         var itemPosition = new Point(roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
         
-        if (RoomTileMapHelpers.GetTilesBetween(itemPosition, client.RoomUser.Point) > 1)
+        if (RoomTileMapHelpers.GetSquaresBetweenPoints(itemPosition, client.RoomUser.Point) > 1)
         {
             return;
         }

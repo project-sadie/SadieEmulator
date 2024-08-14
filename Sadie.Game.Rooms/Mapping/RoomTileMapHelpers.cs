@@ -275,7 +275,7 @@ public class RoomTileMapHelpers
         }
     }
 
-    public static int GetTilesBetween(Point a, Point b)
+    public static int GetSquaresBetweenPoints(Point a, Point b)
     {
         return Math.Abs(a.X + a.Y - (b.X + b.Y));
     }
