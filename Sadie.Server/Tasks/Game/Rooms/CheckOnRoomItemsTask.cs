@@ -63,7 +63,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
                 .FirstOrDefault(fi => fi.FurnitureItem!.InteractionType == FurnitureItemInteractionType.Roller);
             
-            var nextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0";
+            var nextHeight = nextRoller?.FurnitureItem?.StackHeight ?? 0;
             
             var users = room.UserRepository
                 .GetAll()
@@ -92,7 +92,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                     MovementType = 2,
                     RoomUserId = rollingUser.Id,
                     Height = rollingUser.PointZ.ToString(),
-                    NextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0"
+                    NextHeight = nextHeight.ToString()
                 });
                     
                 room.TileMap.UserMap[rollingUser.Point].Remove(rollingUser);
@@ -112,7 +112,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 {
                     Id = item.Id, 
                     Height = item.PositionZ.ToString(), 
-                    NextHeight = nextHeight
+                    NextHeight = nextHeight.ToString()
                 })
                 .ToList();
 
@@ -125,7 +125,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
             {
                 item.PositionX = nextStep.X;
                 item.PositionY = nextStep.Y;
-                item.PositionZ = nextStep.Y;
+                item.PositionZ = nextHeight;
             });
             
             writers.Add(new RoomObjectsRollingWriter
@@ -139,7 +139,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 MovementType = 2,
                 RoomUserId = 0,
                 Height = roller.PositionZ.ToString(),
-                NextHeight = nextHeight
+                NextHeight = nextHeight.ToString()
             });
         }
 
