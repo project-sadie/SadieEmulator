@@ -135,27 +135,6 @@ public class RoomFloorItemUpdatedEventHandler(
         dbContext.Entry(roomFurnitureItem).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();
         
-        await BroadcastUpdateAsync(room, roomFurnitureItem);
-    }
-
-    private static async Task BroadcastUpdateAsync(IRoomLogic room, PlayerFurnitureItemPlacementData roomFurnitureItem)
-    {
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorItemUpdatedWriter
-        {
-            Id = roomFurnitureItem.PlayerFurnitureItemId,
-            AssetId = roomFurnitureItem.FurnitureItem.AssetId,
-            PositionX = roomFurnitureItem.PositionX,
-            PositionY = roomFurnitureItem.PositionY,
-            Direction = (int)roomFurnitureItem.Direction,
-            PositionZ = roomFurnitureItem.PositionZ,
-            StackHeight = 0.ToString(),
-            Extra = 0,
-            ObjectDataKey = (int) RoomFurnitureItemHelpers.GetObjectDataKeyForItem(roomFurnitureItem),
-            ObjectData = RoomFurnitureItemHelpers.GetObjectDataForItem(roomFurnitureItem),
-            MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
-            Expires = -1,
-            InteractionModes = 0,
-            OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId
-        });
+        await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, roomFurnitureItem);
     }
 }
