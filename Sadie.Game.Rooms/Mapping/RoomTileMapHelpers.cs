@@ -3,6 +3,7 @@ using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 
 namespace Sadie.Game.Rooms.Mapping;
@@ -170,7 +171,7 @@ public class RoomTileMapHelpers
         return tmp;
     }
 
-    public static void UpdateTileStatesForPoints(
+    public static void UpdateTileMapsForPoints(
         List<Point> points, 
         IRoomTileMap tileMap, 
         ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
@@ -178,9 +179,10 @@ public class RoomTileMapHelpers
         foreach (var point in points)
         {
             tileMap.Map[point.Y, point.X] = GetStateNumberForTile(point.X, point.Y, furnitureItems);
+            tileMap.UpdateEffectMapForTile(point.X, point.Y, furnitureItems);
         }
     }
-    
+
     public static bool CanPlaceAt(
         IEnumerable<Point> points,  
         IRoomTileMap tileMap)
@@ -264,19 +266,17 @@ public class RoomTileMapHelpers
         return highestItem.PositionZ + highestItem.FurnitureItem.StackHeight;
     }
 
-    public static void UpdatePointListForRoomMap(
-        List<Point> points, 
-        IRoomTileMap tileMap,
-        List<PlayerFurnitureItemPlacementData> roomItems)
-    {
-        foreach (var point in points)
-        {
-            tileMap.Map[point.Y, point.X] = GetStateNumberForTile(point.X, point.Y, roomItems);
-        }
-    }
-
     public static int GetSquaresBetweenPoints(Point a, Point b)
     {
         return Math.Abs(a.X + a.Y - (b.X + b.Y));
+    }
+
+    public static RoomUserEffect GetEffectFromInteractionType(string interactionType)
+    {
+        return interactionType switch
+        {
+            "water" => RoomUserEffect.Swimming,
+            _ => 0
+        };
     }
 }

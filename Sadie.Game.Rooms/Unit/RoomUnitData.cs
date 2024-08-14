@@ -135,6 +135,19 @@ public class RoomUnitData(IRoomLogic room, Point point) : IRoomUnitData
         OnReachedGoal = onReachedGoal;
     }
 
+    public async Task ProcessGenericChecksAsync()
+    {
+        if (NeedsPathCalculated)
+        {
+            CalculatePath();
+        }
+
+        if (IsWalking)
+        {
+            await ProcessMovementAsync();
+        }
+    }
+
     protected async Task ProcessMovementAsync()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)

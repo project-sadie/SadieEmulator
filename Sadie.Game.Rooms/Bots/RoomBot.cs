@@ -15,14 +15,6 @@ public class RoomBot(int id, IRoomLogic room, Point spawnPoint, RoomFurnitureIte
 
     public async Task RunPeriodicCheckAsync()
     {
-        if (NeedsPathCalculated)
-        {
-            CalculatePath();
-        }
-
-        if (IsWalking)
-        {
-            await ProcessMovementAsync();
-        }
+        await ProcessGenericChecksAsync();
     }
 }

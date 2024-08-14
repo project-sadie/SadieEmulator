@@ -18,6 +18,7 @@ public class RoomTileMap : IRoomTileMap
     public ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; } = [];
     public short[,] ZMap { get; set; }
     public short[,] TileExistenceMap { get; set; }
+    public short[,] EffectMap { get; }
 
     public RoomTileMap(string heightmap, ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
@@ -29,6 +30,7 @@ public class RoomTileMap : IRoomTileMap
         Map = new short[SizeY, SizeX];
         ZMap = new short[SizeY, SizeX];
         TileExistenceMap = new short[SizeY, SizeX];
+        EffectMap = new short[SizeY, SizeX];
         
         for (var y = 0; y < SizeY; y++)
         {
@@ -55,8 +57,26 @@ public class RoomTileMap : IRoomTileMap
                 Map[y, x] = RoomTileMapHelpers.GetStateNumberForTile(x, y, furnitureItems);
                 ZMap[y, x] = height;
                 TileExistenceMap[y, x] = 1;
+
+                UpdateEffectMapForTile(x, y, furnitureItems);
             }
         }
+    }
+
+    public void UpdateEffectMapForTile(int x, int y, ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+    {
+        var itemsOnSquare = RoomTileMapHelpers.GetItemsForPosition(x, y, furnitureItems);
+
+        if (itemsOnSquare.Count == 0)
+        {
+            EffectMap[y, x] = 0;
+            return;
+        }
+        
+        var topItemOnSquare = itemsOnSquare.MaxBy(x => x.PositionZ);
+        var effect = RoomTileMapHelpers.GetEffectFromInteractionType(topItemOnSquare.FurnitureItem.InteractionType);
+                    
+        EffectMap[y, x] = (short) effect;
     }
 
     public void AddUserToMap(Point point, IRoomUser user) => 

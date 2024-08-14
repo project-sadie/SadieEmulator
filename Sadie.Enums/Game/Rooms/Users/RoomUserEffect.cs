@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms.Users;
+namespace Sadie.Enums.Game.Rooms.Users;
 
 public enum RoomUserEffect
 {

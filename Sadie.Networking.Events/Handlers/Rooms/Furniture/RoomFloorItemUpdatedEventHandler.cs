@@ -1,13 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
 using Sadie.Database;
-using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Game.Rooms;
@@ -68,7 +65,7 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.FurnitureItem.TileSpanY, 
             Direction);
 
-        RoomTileMapHelpers.UpdatePointListForRoomMap(oldPoints, 
+        RoomTileMapHelpers.UpdateTileMapsForPoints(oldPoints, 
             room.TileMap,
             room
                 .FurnitureItems
@@ -129,8 +126,8 @@ public class RoomFloorItemUpdatedEventHandler(
             user.CheckStatusForCurrentTile();
         }
         
-        RoomTileMapHelpers.UpdateTileStatesForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
-        RoomTileMapHelpers.UpdateTileStatesForPoints(newPoints, room.TileMap, room.FurnitureItems);
+        RoomTileMapHelpers.UpdateTileMapsForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
+        RoomTileMapHelpers.UpdateTileMapsForPoints(newPoints, room.TileMap, room.FurnitureItems);
 
         dbContext.Entry(roomFurnitureItem).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();
