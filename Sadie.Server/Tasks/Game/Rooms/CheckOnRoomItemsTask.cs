@@ -84,7 +84,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                     MovementType = 2,
                     RoomUserId = rollingUser.Id,
                     Height = rollingUser.PointZ.ToString(),
-                    NextHeight = nextRoller?.PositionZ.ToString() ?? "0"
+                    NextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0"
                 });
 
                 if (rollingUser.StatusMap.ContainsKey(RoomUserStatus.Move) ||
@@ -97,6 +97,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 room.TileMap.AddUserToMap(nextStep, rollingUser);
                 
                 rollingUser.Point = nextStep;
+                rollingUser.PointZ = nextRoller?.FurnitureItem?.StackHeight ?? 0;
             }
 
             var nonRollerItemsOnRoller = RoomTileMapHelpers.GetItemsForPosition(
@@ -109,7 +110,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 {
                     Id = item.Id, 
                     Height = item.PositionZ.ToString(), 
-                    NextHeight = nextRoller?.PositionZ.ToString() ?? "0"
+                    NextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0"
                 })
                 .ToList();
 
@@ -126,7 +127,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                     MovementType = 2,
                     RoomUserId = 0,
                     Height = roller.PositionZ.ToString(),
-                    NextHeight = nextRoller?.PositionZ.ToString() ?? "0"
+                    NextHeight = nextRoller?.FurnitureItem?.StackHeight.ToString() ?? "0"
                 });
             }
         }

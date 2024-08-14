@@ -161,18 +161,19 @@ public class RoomUnitData(IRoomLogic room, Point point) : IRoomUnitData
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
         
-        var zHeightNextStep = 0.0D + room.TileMap.ZMap[nextStep.Y, nextStep.X];
-        var nextZ = topItemNextStep?.PositionZ ?? zHeightNextStep;
+        var zHeightNextStep = topItemNextStep != null ?
+                topItemNextStep.PositionZ + (topItemNextStep.FurnitureItem?.StackHeight ?? 0) : 
+                0.0D + room.TileMap.ZMap[nextStep.Y, nextStep.X];
 
         ClearStatuses();
 
-        AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{nextZ}");
+        AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{zHeightNextStep}");
 
         var newDirection = RoomPathFinderHelpers.GetDirectionForNextStep(Point, nextStep);
                 
         Direction = newDirection;
         DirectionHead = newDirection;
-        NextZ = nextZ;
+        NextZ = zHeightNextStep;
         NextPoint = nextStep;
     }
 
