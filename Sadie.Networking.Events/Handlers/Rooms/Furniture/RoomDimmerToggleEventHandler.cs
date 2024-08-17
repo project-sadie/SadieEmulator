@@ -14,12 +14,10 @@ public class RoomDimmerToggleEventHandler(
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
-        {
-            return;
-        }
-
-        if (!client.RoomUser.HasRights())
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
+            room.DimmerSettings == null ||
+            client.RoomUser == null ||
+            !client.RoomUser.HasRights())
         {
             return;
         }
@@ -42,11 +40,14 @@ public class RoomDimmerToggleEventHandler(
         }
         
         room.DimmerSettings.Enabled = !room.DimmerSettings.Enabled;
+
+        var enabled = room.DimmerSettings.Enabled ? 2 : 1;
+        var bgOnly = preset.BackgroundOnly ? 2 : 0;
         
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
             room, 
             dimmer, 
-            $"{(room.DimmerSettings.Enabled ? 2 : 1)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}");
+            $"{enabled},{preset.PresetId},{bgOnly},{preset.Color},{preset.Intensity}");
         
         dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         await dbContext.SaveChangesAsync();

@@ -20,9 +20,14 @@ public class RoomTileMap : IRoomTileMap
     public short[,] TileExistenceMap { get; set; }
     public short[,] EffectMap { get; }
 
-    public RoomTileMap(string heightmap, ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+    public RoomTileMap(
+        string heightmap, 
+        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
-        var heightmapLines = heightmap.Replace("\n", "").Split("\r").ToList();
+        var heightmapLines = heightmap
+            .Replace("\n", "")
+            .Split("\r")
+            .ToList();
         
         SizeX = heightmapLines[0].Length;
         SizeY = heightmapLines.Count;
@@ -54,7 +59,7 @@ public class RoomTileMap : IRoomTileMap
                     height = (short) (10 + "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(square));
                 }
 
-                Map[y, x] = RoomTileMapHelpers.GetStateNumberForTile(x, y, furnitureItems);
+                Map[y, x] = (short) RoomTileMapHelpers.GetTileState(x, y, furnitureItems);
                 ZMap[y, x] = height;
                 TileExistenceMap[y, x] = 1;
 
@@ -85,9 +90,9 @@ public class RoomTileMap : IRoomTileMap
     public void AddBotToMap(Point point, IRoomBot bot) => 
         BotMap.GetOrInsert(point, () => []).Add(bot);
 
-    public bool IsTileFree(Point point) => 
-        (!UserMap.ContainsKey(point) || UserMap[point].Count < 1) && 
-        (!BotMap.ContainsKey(point) || BotMap[point].Count < 1);
+    public bool UsersAtPoint(Point point) => 
+        (UserMap.ContainsKey(point) && UserMap[point].Count > 0) || 
+        (BotMap.ContainsKey(point) && BotMap[point].Count > 0);
 
     public bool TileExists(Point point) =>
         point.X <= SizeX && 

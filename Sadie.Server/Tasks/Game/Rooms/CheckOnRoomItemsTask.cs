@@ -77,7 +77,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 .GetAll()
                 .Where(u => !userIdsProcessed.Contains(u.Id));
             
-            var rollingUsers = RoomTileMapHelpers.GetUsersForPoints([rollerPosition], users);
+            var rollingUsers = RoomTileMapHelpers.GetUsersAtPoints([rollerPosition], users);
             
             foreach (var rollingUser in rollingUsers)
             {

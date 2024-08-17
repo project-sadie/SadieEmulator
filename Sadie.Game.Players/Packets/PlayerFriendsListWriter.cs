@@ -32,7 +32,11 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
             var onlineFriend = PlayerRepository.GetPlayerLogicById(friendData.Id);
             var isOnline = onlineFriend != null;
             var inRoom = isOnline && onlineFriend != null && onlineFriend.State.CurrentRoomId != 0;
-            var relationshipType = Relationships.FirstOrDefault(x => x.TargetPlayerId == friendData.Id)?.TypeId ?? PlayerRelationshipType.None;
+            
+            var relationshipType = Relationships
+               .FirstOrDefault(x => x.TargetPlayerId == friendData.Id)
+               ?.TypeId ??
+           PlayerRelationshipType.None;
 
             writer.WriteInteger(friendData.Id);
             writer.WriteString(friendData.Username);

@@ -4,13 +4,14 @@ using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => "onewaygate";
+    public override string InteractionType => FurnitureItemInteractionType.OneWayGate;
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {

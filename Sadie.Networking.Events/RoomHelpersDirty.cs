@@ -187,7 +187,7 @@ public static class RoomHelpersDirty
             var squareInFront = RoomTileMapHelpers
                 .GetPointInFront(teleport.PositionX, teleport.PositionY, teleport.Direction);
 
-            if (room.TileMap.IsTileFree(squareInFront))
+            if (!room.TileMap.UsersAtPoint(squareInFront))
             {
                 roomUser.WalkToPoint(squareInFront);
             }
@@ -357,7 +357,7 @@ public static class RoomHelpersDirty
             playerItem.FurnitureItem.TileSpanY, direction);
 
         if (!pointsForPlacement
-            .All(x => RoomTileMapHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
+            .All(x => RoomTileMapHelpers.CanPlace([new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
@@ -385,7 +385,7 @@ public static class RoomHelpersDirty
 
         RoomTileMapHelpers.UpdateTileMapsForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
         
-        foreach (var user in RoomTileMapHelpers.GetUsersForPoints(pointsForPlacement, room.UserRepository.GetAll()))
+        foreach (var user in RoomTileMapHelpers.GetUsersAtPoints(pointsForPlacement, room.UserRepository.GetAll()))
         {
             user.CheckStatusForCurrentTile();
         }

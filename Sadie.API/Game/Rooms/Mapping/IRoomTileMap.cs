@@ -20,6 +20,6 @@ public interface IRoomTileMap
     void UpdateEffectMapForTile(int x, int y, ICollection<PlayerFurnitureItemPlacementData> furnitureItems);
     void AddUserToMap(Point point, IRoomUser user);
     void AddBotToMap(Point point, IRoomBot bot);
-    bool IsTileFree(Point point);
+    bool UsersAtPoint(Point point);
     bool TileExists(Point point);
 }
