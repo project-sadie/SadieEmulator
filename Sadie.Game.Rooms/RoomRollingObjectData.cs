@@ -1,3 +1,5 @@
+using Sadie.API.Game.Rooms;
+
 namespace Sadie.Game.Rooms;
 
 public class RoomRollingObjectData : IRoomRollingObjectData

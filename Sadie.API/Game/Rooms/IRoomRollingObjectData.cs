@@ -1,4 +1,4 @@
-namespace Sadie.Game.Rooms;
+namespace Sadie.API.Game.Rooms;
 
 public interface IRoomRollingObjectData
 {
