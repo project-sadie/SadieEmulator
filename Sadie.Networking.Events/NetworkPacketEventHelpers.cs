@@ -1,4 +1,5 @@
-﻿using Sadie.API.Game.Rooms.Users;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
@@ -6,10 +7,11 @@ using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Packets.Writers;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
@@ -134,7 +136,7 @@ public static class NetworkPacketEventHelpers
     
     internal static bool TryResolveRoomObjectsForClient(
         RoomRepository roomRepository, 
-        INetworkClient client, out RoomLogic room, out IRoomUser user)
+        INetworkClient client, out IRoomLogic room, out IRoomUser user)
     {
         var player = client.Player;
         

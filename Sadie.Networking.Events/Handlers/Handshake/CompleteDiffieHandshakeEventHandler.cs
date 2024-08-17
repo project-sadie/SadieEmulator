@@ -17,7 +17,7 @@ public class CompleteDiffieHandshakeEventHandler(
 
         await client.WriteToStreamAsync(new CompleteDiffieHandshakeWriter
         {
-            PublicKey = habboEncryption.GetRSADiffieHellmanPublicKey(),
+            PublicKey = habboEncryption.GetRsaDiffieHellmanPublicKey(),
             ClientEncryption = true
         });
 

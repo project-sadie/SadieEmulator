@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Enums.Game.Rooms;
@@ -43,7 +44,7 @@ public class RoomRemoveUserRightsEventHandler(
         }
     }
 
-    private async Task RemoveRoomPlayerRightAsync(long playerId, RoomLogic room, RoomPlayerRight right)
+    private async Task RemoveRoomPlayerRightAsync(long playerId, IRoomLogic room, RoomPlayerRight right)
     {
         if (room.UserRepository.TryGetById((int) playerId, out var roomUser))
         {

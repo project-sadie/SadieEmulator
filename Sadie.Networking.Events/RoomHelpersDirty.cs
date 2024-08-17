@@ -1,5 +1,6 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
@@ -74,7 +75,7 @@ public static class RoomHelpersDirty
         return true;
     }
 
-    private static RoomControllerLevel GetControllerLevelForUser(Room room, Player player)
+    private static RoomControllerLevel GetControllerLevelForUser(IRoomLogic room, Player player)
     {
         var controllerLevel = RoomControllerLevel.None;
         
@@ -126,7 +127,7 @@ public static class RoomHelpersDirty
 
     public static RoomBot CreateBot(
         int id, 
-        Room room, 
+        IRoomLogic room, 
         Point point,
         RoomBotFactory roomBotFactory)
     {
@@ -135,7 +136,7 @@ public static class RoomHelpersDirty
 
     private static RoomUser CreateUserForEntry(
         RoomUserFactory roomUserFactory, 
-        RoomLogic room, 
+        IRoomLogic room, 
         PlayerLogic player,
         Point spawnPoint,
         HDirection direction)
@@ -156,7 +157,7 @@ public static class RoomHelpersDirty
     
     public static async Task AfterEnterRoomAsync(
         INetworkClient client, 
-        RoomLogic room, 
+        IRoomLogic room, 
         RoomUserFactory roomUserFactory,
         SadieContext dbContext,
         PlayerRepository playerRepository)
@@ -225,7 +226,7 @@ public static class RoomHelpersDirty
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
     }
 
-    private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, Room room)
+    private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, IRoomLogic room)
     {
         var player = client.Player;
         var roomUser = client.RoomUser;
@@ -338,7 +339,7 @@ public static class RoomHelpersDirty
     
     public static async Task OnPlaceFloorItemAsync(
         IReadOnlyList<string> placementData, 
-        RoomLogic room, 
+        IRoomLogic room, 
         INetworkClient client, 
         PlayerFurnitureItem playerItem, 
         int itemId,
@@ -427,7 +428,7 @@ public static class RoomHelpersDirty
 
     public static async Task OnPlaceWallItemAsync(
         IReadOnlyList<string> placementData,
-        RoomLogic room,
+        IRoomLogic room,
         Player player,
         PlayerFurnitureItem playerItem,
         int itemId,

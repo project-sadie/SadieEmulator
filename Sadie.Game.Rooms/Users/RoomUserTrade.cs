@@ -3,7 +3,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Serialization;
 
@@ -14,7 +14,7 @@ public class RoomUserTrade : IRoomUserTrade
     public required List<IRoomUser> Users { get; init; }
     public required List<PlayerFurnitureItem> Items { get; init; }
     
-    public async void OfferItems(IRoomUser roomUser, List<PlayerFurnitureItem> playerItems)
+    public async void OfferItems(List<PlayerFurnitureItem> playerItems)
     {
         foreach (var item in playerItems.Where(item => !Items.Contains(item)))
         {

@@ -5,13 +5,13 @@ namespace Sadie.Networking.Encryption;
 
 public class DiffieHellman
 {
-    private static readonly int DH_PRIMES_BIT_SIZE = 128;
-    private static readonly int DH_KEY_BIT_SIZE = 128;
+    private static readonly int DhPrimesBitSize = 128;
+    private static readonly int DhKeyBitSize = 128;
 
     public BigInteger Prime { get; private set; }
     public BigInteger Generator { get; private set; }
 
-    private BigInteger PrivateKey;
+    private BigInteger _privateKey;
     public BigInteger PublicKey { get; private set; }
 
     public DiffieHellman()
@@ -29,20 +29,20 @@ public class DiffieHellman
 
     public void GeneratePrimes()
     {
-        Prime = BigIntegerExtensions.GeneratePseudoPrime(DH_PRIMES_BIT_SIZE, 10);
-        Generator = BigIntegerExtensions.GeneratePseudoPrime(DH_PRIMES_BIT_SIZE, 10);
+        Prime = BigIntegerExtensions.GeneratePseudoPrime(DhPrimesBitSize, 10);
+        Generator = BigIntegerExtensions.GeneratePseudoPrime(DhPrimesBitSize, 10);
 
         if (Generator > Prime) (Generator, Prime) = (Prime, Generator);
     }
 
     public void GenerateKeys()
     {
-        PrivateKey = BigIntegerExtensions.GeneratePseudoPrime(DH_KEY_BIT_SIZE, 10);
-        PublicKey = BigInteger.ModPow(Generator, PrivateKey, Prime);
+        _privateKey = BigIntegerExtensions.GeneratePseudoPrime(DhKeyBitSize, 10);
+        PublicKey = BigInteger.ModPow(Generator, _privateKey, Prime);
     }
 
     public BigInteger CalculateSharedKey(BigInteger publicKey)
     {
-        return BigInteger.ModPow(publicKey, PrivateKey, Prime);
+        return BigInteger.ModPow(publicKey, _privateKey, Prime);
     }
 }

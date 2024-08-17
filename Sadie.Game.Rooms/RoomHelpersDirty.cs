@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 
@@ -7,7 +8,7 @@ namespace Sadie.Game.Rooms;
 
 public static class RoomHelpersDirty
 {
-    public static async Task<RoomLogic?> TryLoadRoomByIdAsync(
+    public static async Task<IRoomLogic?> TryLoadRoomByIdAsync(
         long id, 
         RoomRepository roomRepository, 
         SadieContext dbContext,
@@ -21,12 +22,6 @@ public static class RoomHelpersDirty
         }
 
         var room = await dbContext.Set<Room>()
-            .Include(x => x.Owner)
-            .Include(x => x.Layout)
-            .Include(x => x.Settings)
-            .Include(x => x.PaintSettings)
-            .Include(x => x.ChatSettings)
-            .Include(x => x.PlayerRights)
             .Include(x => x.FurnitureItems)
                 .ThenInclude(x => x.PlayerFurnitureItem)
                 .ThenInclude(x => x.FurnitureItem)

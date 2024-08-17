@@ -4,7 +4,7 @@ using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 

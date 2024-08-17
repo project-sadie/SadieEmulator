@@ -3,8 +3,8 @@ namespace Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
 public enum HeuristicFormula
 {
     Manhattan = 1,
-    MaxDXDY = 2,
+    MaxDxdy = 2,
     DiagonalShortCut = 3,
     Euclidean = 4,
-    EuclideanNoSQR = 5
+    EuclideanNoSqr = 5
 }

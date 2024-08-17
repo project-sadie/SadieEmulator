@@ -2,6 +2,7 @@ using DotNetty.Transport.Channels;
 using Sadie.Database.Models;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Database.Models.Rooms;
 using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.API.Game.Players;
@@ -12,6 +13,7 @@ public interface IPlayerLogic
     PlayerData? Data { get; }
     PlayerAvatarData? AvatarData { get; }
     ICollection<PlayerFurnitureItem> FurnitureItems { get; }
+    ICollection<Room> Rooms { get; set; }
     IChannel? Channel { get; set; }
     INetworkObject? NetworkObject { get; set; }
     bool Authenticated { get; set; }

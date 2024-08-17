@@ -62,10 +62,10 @@ public class RoomDeleteEventHandler(
             return;
         }
 
-        dbContext.Entry<Room>(room).State = EntityState.Deleted;
+        dbContext.Entry<Room>((RoomLogic) room).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Rooms.Remove(room);
+        client.Player.Rooms.Remove((Room) room);
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {

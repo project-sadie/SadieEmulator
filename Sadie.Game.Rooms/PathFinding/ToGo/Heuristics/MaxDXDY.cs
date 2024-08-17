@@ -1,6 +1,6 @@
 namespace Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
 
-public class MaxDXDY : ICalculateHeuristic
+public class MaxDxdy : ICalculateHeuristic
 {
     public int Calculate(Position source, Position destination)
     {

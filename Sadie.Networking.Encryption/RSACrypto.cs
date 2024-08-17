@@ -36,12 +36,12 @@ public class RsaCrypto(string exponent, string modules, string privateExponent)
         return BigInteger.ModPow(src, _privateExponent, _modules);
     }
 
-    private byte[] DoEncrypt(byte[] src, RSACalculateDelegate method)
+    private byte[] DoEncrypt(byte[] src, RsaCalculateDelegate method)
     {
-        return Pkcs1pad(src).PerformCalculation(method);
+        return Pkcs1Pad(src).PerformCalculation(method);
     }
 
-    private byte[] DoDecrypt(byte[] src, RSACalculateDelegate method)
+    private byte[] DoDecrypt(byte[] src, RsaCalculateDelegate method)
     {
         if (src.Length > GetBlockSize())
         {
@@ -51,7 +51,7 @@ public class RsaCrypto(string exponent, string modules, string privateExponent)
         return Pkcs1Unpad(src.PerformCalculation(method));
     }
 
-    private byte[] Pkcs1pad(byte[] src)
+    private byte[] Pkcs1Pad(byte[] src)
     {
         var n = GetBlockSize();
         var bytes = new byte[n];

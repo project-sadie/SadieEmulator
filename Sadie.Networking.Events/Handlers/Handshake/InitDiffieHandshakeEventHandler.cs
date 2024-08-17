@@ -12,8 +12,8 @@ public class InitDiffieHandshakeEventHandler(HabboEncryption habboEncryption) : 
     {
         await client.WriteToStreamAsync(new InitDiffieHandshakeWriter
         {
-            SingedPrime = habboEncryption.GetRSADiffieHellmanPrimeKey(),
-            SignedGenerator = habboEncryption.GetRSADiffieHellmanGeneratorKey()
+            SingedPrime = habboEncryption.GetRsaDiffieHellmanPrimeKey(),
+            SignedGenerator = habboEncryption.GetRsaDiffieHellmanGeneratorKey()
         });
     }
 }

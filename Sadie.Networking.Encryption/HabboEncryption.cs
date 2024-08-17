@@ -11,7 +11,7 @@ public class HabboEncryption(IOptions<EncryptionOptions> options)
     private readonly RsaCrypto _crypto = new(options.Value.E, options.Value.N, options.Value.D);
     private readonly DiffieHellman _diffieHellman = new();
 
-    private string GetRSAEncryptedString(string message)
+    private string GetRsaEncryptedString(string message)
     {
         var bytes = Encoding.Default.GetBytes(message);
         var encryptedBytes = _crypto.Encrypt(bytes, true);
@@ -19,7 +19,7 @@ public class HabboEncryption(IOptions<EncryptionOptions> options)
         return encryptedBytes.ToHexString();
     }
 
-    private string GetRSADecryptedString(string data)
+    private string GetRsaDecryptedString(string data)
     {
         var bytes = data.ToBytes();
         var decryptedBytes = _crypto.Decrypt(bytes, true);
@@ -27,27 +27,27 @@ public class HabboEncryption(IOptions<EncryptionOptions> options)
         return Encoding.Default.GetString(decryptedBytes);
     }
 
-    public string GetRSADiffieHellmanPrimeKey()
+    public string GetRsaDiffieHellmanPrimeKey()
     {
         var key = _diffieHellman.Prime.ToString();
-        return GetRSAEncryptedString(key);
+        return GetRsaEncryptedString(key);
     }
 
-    public string GetRSADiffieHellmanGeneratorKey()
+    public string GetRsaDiffieHellmanGeneratorKey()
     {
         var key = _diffieHellman.Generator.ToString();
-        return GetRSAEncryptedString(key);
+        return GetRsaEncryptedString(key);
     }
 
-    public string GetRSADiffieHellmanPublicKey()
+    public string GetRsaDiffieHellmanPublicKey()
     {
         var key = _diffieHellman.PublicKey.ToString();
-        return GetRSAEncryptedString(key);
+        return GetRsaEncryptedString(key);
     }
 
     public byte[] CalculateDiffieHellmanSharedKey(string publicKey)
     {
-        publicKey = GetRSADecryptedString(publicKey);
+        publicKey = GetRsaDecryptedString(publicKey);
         var sharedKey = _diffieHellman.CalculateSharedKey(BigInteger.Parse(publicKey));
         var result = sharedKey.ToByteArray();
         Array.Reverse(result);

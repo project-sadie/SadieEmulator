@@ -20,7 +20,7 @@ internal class SimplePriorityQueue<T>(IComparer<T>? comparer = null) : IModelAPr
     public int Push(T item)
     {
         var p = _innerList.Count;
-        _innerList.Add(item); // E[p] = O
+        _innerList.Add(item);
 
         do
         {

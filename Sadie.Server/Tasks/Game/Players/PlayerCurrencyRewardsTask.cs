@@ -18,7 +18,7 @@ public class PlayerCurrencyRewardsTask(
     public DateTime LastExecuted { get; set; }
 
     private readonly Dictionary<int, DateTime> _lastProcessed = rewards
-        .ToDictionary(k => k.Id, v => DateTime.Now);
+        .ToDictionary(k => k.Id, _ => DateTime.Now);
     
     public async Task ExecuteAsync()
     {

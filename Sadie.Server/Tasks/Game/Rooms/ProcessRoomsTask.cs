@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
@@ -12,7 +13,7 @@ public class ProcessRoomsTask(RoomRepository roomRepository) : IServerTask
         await Parallel.ForEachAsync(roomRepository.GetAllRooms(), RunPeriodicChecksForRoomAsync);
     }
 
-    private static async ValueTask RunPeriodicChecksForRoomAsync(RoomLogic? room, CancellationToken ctx)
+    private static async ValueTask RunPeriodicChecksForRoomAsync(IRoomLogic? room, CancellationToken ctx)
     {
         if (room == null)
         {

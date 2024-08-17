@@ -4,6 +4,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Rooms.Users;

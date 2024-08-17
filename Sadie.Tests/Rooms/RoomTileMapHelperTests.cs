@@ -109,21 +109,80 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetStateNumberForTile_Open_ReturnsOpen()
     {
+        var tileState = RoomTileMapHelpers.GetTileState(10, 10, new List<PlayerFurnitureItemPlacementData>());
+        Assert.That(tileState, Is.EqualTo(RoomTileState.Open));
     }
 
     [Test]
     public void GetStateNumberForTile_Sit_ReturnsSit()
     {
+        var tileState = RoomTileMapHelpers.GetTileState(10, 10, [
+            new PlayerFurnitureItemPlacementData
+            {
+                PlayerFurnitureItem = new PlayerFurnitureItem
+                {
+                    FurnitureItem = new FurnitureItem
+                    {
+                        CanSit = true,
+                        InteractionType = ""
+                    },
+                    LimitedData = "",
+                    MetaData = ""
+                },
+                PositionX = 10,
+                PositionY = 10
+            }
+        ]);
+        
+        Assert.That(tileState, Is.EqualTo(RoomTileState.Sit));
     }
 
     [Test]
     public void GetStateNumberForTile_Lay_ReturnsLay()
     {
+        var tileState = RoomTileMapHelpers.GetTileState(10, 10, [
+            new PlayerFurnitureItemPlacementData
+            {
+                PlayerFurnitureItem = new PlayerFurnitureItem
+                {
+                    FurnitureItem = new FurnitureItem
+                    {
+                        CanLay = true,
+                        InteractionType = ""
+                    },
+                    LimitedData = "",
+                    MetaData = ""
+                },
+                PositionX = 10,
+                PositionY = 10
+            }
+        ]);
+        
+        Assert.That(tileState, Is.EqualTo(RoomTileState.Lay));
     }
 
     [Test]
     public void GetStateNumberForTile_GateInteractionType_ReturnsOpen()
     {
+        var tileState = RoomTileMapHelpers.GetTileState(10, 10, [
+            new PlayerFurnitureItemPlacementData
+            {
+                PlayerFurnitureItem = new PlayerFurnitureItem
+                {
+                    FurnitureItem = new FurnitureItem
+                    {
+                        CanWalk = false,
+                        InteractionType = "gate"
+                    },
+                    LimitedData = "",
+                    MetaData = "1"
+                },
+                PositionX = 10,
+                PositionY = 10
+            }
+        ]);
+        
+        Assert.That(tileState, Is.EqualTo(RoomTileState.Open));
     }
     
     [Test]

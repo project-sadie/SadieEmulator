@@ -22,7 +22,7 @@ public class PlayerEffectListWriter : AbstractPacketWriter
                 writer.WriteInteger(0);
                 writer.WriteInteger(effect.Duration);
                 writer.WriteInteger(-1);
-                writer.WriteInteger(0); // ??
+                writer.WriteInteger(0);
                 writer.WriteBool(effect.Duration == -1);
             }
         });

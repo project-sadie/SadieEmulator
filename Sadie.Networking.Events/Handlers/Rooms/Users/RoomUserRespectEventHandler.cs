@@ -4,6 +4,7 @@ using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
+using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;

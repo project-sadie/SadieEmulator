@@ -2,4 +2,4 @@
 
 namespace Sadie.Networking.Encryption;
 
-public delegate BigInteger RSACalculateDelegate(BigInteger m);
+public delegate BigInteger RsaCalculateDelegate(BigInteger m);
