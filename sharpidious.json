@@ -2,7 +2,7 @@
     "rules": {
         "class.maxNameLength": 45,
         "class.maxLineCount": 300,
-        "class.maxLineLength": 150,
+        "class.maxLineLength": 140,
         "method.maxLineCount": 95,
         "check.multipleEmptyLines": true
     },

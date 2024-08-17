@@ -96,7 +96,9 @@ public class RoomTileMapHelpers
         return item.FurnitureItem.CanLay ? (short) 3 : (short) 0;
     }
 
-    public static List<PlayerFurnitureItemPlacementData> GetItemsForPosition(int x, int y, IEnumerable<PlayerFurnitureItemPlacementData> items)
+    public static List<PlayerFurnitureItemPlacementData> GetItemsForPosition(int x,
+        int y,
+        IEnumerable<PlayerFurnitureItemPlacementData> items)
     {
         var tileItems = new List<PlayerFurnitureItemPlacementData>();
         
@@ -134,7 +136,9 @@ public class RoomTileMapHelpers
         return tileItems;
     }
     
-    public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map, Point goalPoint, List<Point> overridePoints)
+    public static short[,] GetWorldArrayFromTileMap(IRoomTileMap map,
+        Point goalPoint,
+        List<Point> overridePoints)
     {
         var tmp = new short[map.SizeY, map.SizeX];
         

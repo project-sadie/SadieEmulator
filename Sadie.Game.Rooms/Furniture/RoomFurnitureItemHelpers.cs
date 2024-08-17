@@ -20,7 +20,8 @@ public class RoomFurnitureItemHelpers
             roomFurnitureItem.PlayerFurnitureItem.MetaData = 0.ToString();
         }
 
-        if (roomFurnitureItem.FurnitureItem.InteractionModes < 1 || !int.TryParse(roomFurnitureItem.PlayerFurnitureItem.MetaData, out var state))
+        if (roomFurnitureItem.FurnitureItem.InteractionModes < 1 ||
+            !int.TryParse(roomFurnitureItem.PlayerFurnitureItem.MetaData, out var state))
         {
             return;
         }
@@ -49,7 +50,8 @@ public class RoomFurnitureItemHelpers
         IRoomLogic room, 
         PlayerFurnitureItemPlacementData roomFurnitureItem)
     {
-        AbstractPacketWriter itemWriter = roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor ? new RoomFloorItemUpdatedWriter
+        AbstractPacketWriter itemWriter = roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor ? 
+            new RoomFloorItemUpdatedWriter
             {
                 Id = roomFurnitureItem.PlayerFurnitureItemId,
                 AssetId = roomFurnitureItem.FurnitureItem.AssetId,
