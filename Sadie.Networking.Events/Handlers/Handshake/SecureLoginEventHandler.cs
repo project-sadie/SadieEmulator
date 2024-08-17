@@ -91,6 +91,8 @@ public class SecureLoginEventHandler(
             return;
         }
         
+        await client.WriteToStreamAsync(new SecureLoginWriter());
+        
         playerLogic.Data.IsOnline = true;
         playerLogic.Data.LastOnline = DateTime.Now;
         
@@ -110,7 +112,6 @@ public class SecureLoginEventHandler(
         
         await SendWelcomeMessageAsync(playerLogic);
         
-        await client.WriteToStreamAsync(new SecureLoginWriter());
         await client.WriteToStreamAsync(new PlayerPingWriter());
         
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
