@@ -18,11 +18,11 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
     
     public Task ExecuteAsync()
     {
-        Parallel.ForEach(roomRepository.GetAllRooms(), BroadcastItemUpdates);
+        Parallel.ForEachAsync(roomRepository.GetAllRooms(), BroadcastItemUpdates);
         return Task.CompletedTask;
     }
 
-    private static async void BroadcastItemUpdates(RoomLogic room)
+    private static async ValueTask BroadcastItemUpdates(RoomLogic room, CancellationToken ctx)
     {
         var writersToBroadcast = GetItemUpdates(room);
         
