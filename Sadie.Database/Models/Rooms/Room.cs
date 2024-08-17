@@ -6,8 +6,9 @@ using Sadie.Database.Models.Rooms.Rights;
 
 namespace Sadie.Database.Models.Rooms;
 
-public class Room(ILazyLoader lazyLoader)
+public class Room
 {
+    private readonly ILazyLoader _lazyLoader;
     private Player? _owner;
     private RoomLayout? _layout;
     private RoomSettings? _settings;
@@ -15,22 +16,31 @@ public class Room(ILazyLoader lazyLoader)
     private RoomChatSettings? _chatSettings;
     private ICollection<RoomPlayerRight> _playerRights = [];
     
+    public Room()
+    {
+    }
+
+    public Room(ILazyLoader lazyLoader)
+    {
+        _lazyLoader = lazyLoader;
+    }
+    
     public int Id { get; init; }
     public required string Name { get; set; }
     public int LayoutId { get; set; }
     
     public RoomLayout? Layout
     {
-        get => lazyLoader.Load(this, ref _layout);
-        init => _layout = value;
+        get => _lazyLoader.Load(this, ref _layout);
+        set => _layout = value;
     }
     
     public int OwnerId { get; init; }
     
     public Player? Owner
     {
-        get => lazyLoader.Load(this, ref _owner);
-        init => _owner = value;
+        get => _lazyLoader.Load(this, ref _owner);
+        set => _owner = value;
     }
     
     public int MaxUsersAllowed { get; set; }
@@ -39,25 +49,25 @@ public class Room(ILazyLoader lazyLoader)
     
     public RoomSettings? Settings
     {
-        get => lazyLoader.Load(this, ref _settings);
-        init => _settings = value;
+        get => _lazyLoader.Load(this, ref _settings);
+        set => _settings = value;
     }
     
     public RoomPaintSettings? PaintSettings
     {
-        get => lazyLoader.Load(this, ref _paintSettings);
-        init => _paintSettings = value;
+        get => _lazyLoader.Load(this, ref _paintSettings);
+        set => _paintSettings = value;
     }
     
     public RoomChatSettings? ChatSettings
     {
-        get => lazyLoader.Load(this, ref _chatSettings);
-        init => _chatSettings = value;
+        get => _lazyLoader.Load(this, ref _chatSettings);
+        set => _chatSettings = value;
     }
     
     public ICollection<RoomPlayerRight> PlayerRights
     {
-        get => lazyLoader.Load(this, ref _playerRights);
+        get => _lazyLoader.Load(this, ref _playerRights);
         init => _playerRights = value;
     }
     

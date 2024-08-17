@@ -44,6 +44,6 @@ public class RoomFloorItemUpdatedWriter : AbstractPacketWriter
             }
         });
         
-        Override(GetType().GetProperty(nameof(MetaData))!, writer => {});
+        Override(GetType().GetProperty(nameof(MetaData))!, _ => {});
     }
 }

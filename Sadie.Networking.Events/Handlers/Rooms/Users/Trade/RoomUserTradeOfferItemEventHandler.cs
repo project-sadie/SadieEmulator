@@ -29,6 +29,6 @@ public class RoomUserTradeOfferItemEventHandler(RoomRepository roomRepository) :
             return;
         }
 
-        roomUser.Trade.OfferItems(roomUser, [playerItem]);
+        roomUser.Trade.OfferItems([playerItem]);
     }
 }

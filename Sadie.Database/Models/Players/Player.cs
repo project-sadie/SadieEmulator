@@ -7,13 +7,23 @@ using Sadie.Enums.Game.Players;
 
 namespace Sadie.Database.Models.Players;
 
-public class Player(ILazyLoader lazyLoader)
+public class Player
 {
+    private readonly ILazyLoader _lazyLoader;
     private PlayerNavigatorSettings? _navigatorSettings;
     private PlayerGameSettings? _gameSettings;
     private ICollection<PlayerFriendship> _outgoingFriendships = [];
     private ICollection<PlayerFriendship> _incomingFriendships = [];
-    
+
+    public Player()
+    {
+    }
+
+    public Player(ILazyLoader lazyLoader)
+    {
+        _lazyLoader = lazyLoader;
+    }
+
     public int Id { get; init; }
     public required string Username { get; init; }
     public required string Email { get; init; }
@@ -27,13 +37,13 @@ public class Player(ILazyLoader lazyLoader)
     
     public PlayerNavigatorSettings? NavigatorSettings
     {
-        get => lazyLoader.Load(this, ref _navigatorSettings);
+        get => _lazyLoader.Load(this, ref _navigatorSettings);
         init => _navigatorSettings = value;
     }
     
     public PlayerGameSettings? GameSettings
     {
-        get => lazyLoader.Load(this, ref _gameSettings);
+        get => _lazyLoader.Load(this, ref _gameSettings);
         init => _gameSettings = value;
     }
     
@@ -46,13 +56,13 @@ public class Player(ILazyLoader lazyLoader)
     
     [InverseProperty("OriginPlayer")]  public ICollection<PlayerFriendship> OutgoingFriendships
     {
-        get => lazyLoader.Load(this, ref _outgoingFriendships);
+        get => _lazyLoader.Load(this, ref _outgoingFriendships);
         init => _outgoingFriendships = value;
     }
     
     [InverseProperty("TargetPlayer")]  public ICollection<PlayerFriendship> IncomingFriendships
     {
-        get => lazyLoader.Load(this, ref _incomingFriendships);
+        get => _lazyLoader.Load(this, ref _incomingFriendships);
         init => _incomingFriendships = value;
     }
     
