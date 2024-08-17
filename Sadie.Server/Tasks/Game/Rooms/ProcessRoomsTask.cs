@@ -7,13 +7,12 @@ public class ProcessRoomsTask(RoomRepository roomRepository) : IServerTask
     public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
     public DateTime LastExecuted { get; set; }
 
-    public Task ExecuteAsync()
+    public async Task ExecuteAsync()
     {
-        Parallel.ForEach(roomRepository.GetAllRooms(), RunPeriodicChecksForRoom);
-        return Task.CompletedTask;
+        await Parallel.ForEachAsync(roomRepository.GetAllRooms(), RunPeriodicChecksForRoomAsync);
     }
 
-    private static async void RunPeriodicChecksForRoom(RoomLogic? room)
+    private static async ValueTask RunPeriodicChecksForRoomAsync(RoomLogic? room, CancellationToken ctx)
     {
         if (room == null)
         {
