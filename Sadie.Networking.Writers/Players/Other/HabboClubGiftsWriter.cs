@@ -53,7 +53,9 @@ public class HabboClubGiftsWriter : AbstractPacketWriter
                 {
                     writer.WriteInteger(furnitureItem.AssetId);
 
-                    if (item.Name.Contains("wallpaper_single") || item.Name.Contains("floor_single") || item.Name.Contains("landscape_single"))
+                    if (item.Name.Contains("wallpaper_single") || 
+                        item.Name.Contains("floor_single") || 
+                        item.Name.Contains("landscape_single"))
                     {
                         writer.WriteString(item.Name.Split("_")[2]);
                     }

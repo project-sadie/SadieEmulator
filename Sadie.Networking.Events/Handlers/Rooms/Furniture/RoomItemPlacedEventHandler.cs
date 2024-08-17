@@ -68,7 +68,14 @@ public class RoomItemPlacedEventHandler(
         }
         else if (playerItem.FurnitureItem.Type == FurnitureItemType.Wall)
         {
-            await RoomHelpersDirty.OnPlaceWallItemAsync(placementData, room, player, playerItem, itemId, client, dbContext, interactorRepository);
+            await RoomHelpersDirty.OnPlaceWallItemAsync(placementData,
+                room,
+                player,
+                playerItem,
+                itemId,
+                client,
+                dbContext,
+                interactorRepository);
         }
     }
 }

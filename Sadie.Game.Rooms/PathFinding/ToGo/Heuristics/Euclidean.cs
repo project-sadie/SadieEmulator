@@ -6,9 +6,9 @@ public class Euclidean : ICalculateHeuristic
     {
         var heuristicEstimate = 2;
         
-        var calc = (heuristicEstimate * Math.Sqrt(Math.Pow(source.Row - destination.Row,
-            2) + Math.Pow((source.Column - destination.Column),
-            2)));
+        var calc = heuristicEstimate * Math.Sqrt(Math.Pow(source.Row - destination.Row,
+            2) + Math.Pow(source.Column - destination.Column,
+            2));
         
         var h = (int) calc;
             

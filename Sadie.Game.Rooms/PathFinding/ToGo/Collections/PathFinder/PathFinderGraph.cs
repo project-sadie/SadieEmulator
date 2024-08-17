@@ -7,7 +7,7 @@ internal class PathFinderGraph : IModelAGraph<PathFinderNode>
 {
     private readonly bool _allowDiagonalTraversal;
     private readonly Grid<PathFinderNode> _internalGrid;
-    private readonly SimplePriorityQueue<PathFinderNode> _open = new SimplePriorityQueue<PathFinderNode>(new ComparePathFinderNodeByFValue());
+    private readonly SimplePriorityQueue<PathFinderNode> _open = new(new ComparePathFinderNodeByFValue());
 
     public bool HasOpenNodes
     {
