@@ -25,7 +25,13 @@ public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
         var requests = (from request in friendRequests 
             let data = request.TargetPlayerId == client.Player.Id ? 
                 request.OriginPlayer : 
-                request.TargetPlayer select new PlayerFriendshipRequestData { Id = request.Id, Username = data.Username, FigureCode = data.AvatarData.FigureCode })
+                request.TargetPlayer
+            select new PlayerFriendshipRequestData
+            {
+                Id = request.Id,
+                Username = data.Username,
+                FigureCode = data.AvatarData.FigureCode
+            })
             .ToList();
 
         var requestsWriter = new PlayerFriendRequestsWriter

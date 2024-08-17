@@ -53,7 +53,11 @@ public class NetworkClientRepository(
                 player.Data.IsOnline = false;
 
                 var dbContext = dbProvider.GetContextInstance();
-                await dbContext.Database.ExecuteSqlRawAsync($"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId", 0, player.Id);
+                
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    $"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId",
+                    0,
+                    player.Id);
                 
                 if (!await playerRepository.TryRemovePlayerAsync(client.Player.Id))
                 {

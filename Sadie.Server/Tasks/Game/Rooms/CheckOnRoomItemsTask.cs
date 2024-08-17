@@ -109,10 +109,14 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
                 rollingUser.PointZ = nextRoller?.FurnitureItem?.StackHeight ?? 0;
             }
 
+            var unprocessedNonRollers = room.FurnitureItems.Where(i =>
+                !itemIdsProcessed.Contains(i.Id) && i.FurnitureItem!.InteractionType !=
+                FurnitureItemInteractionType.Roller);
+
             var nonRollerItemsOnRoller = RoomTileMapHelpers.GetItemsForPosition(
                 roller.PositionX, 
                 roller.PositionY,
-                room.FurnitureItems.Where(i => !itemIdsProcessed.Contains(i.Id) && i.FurnitureItem!.InteractionType != FurnitureItemInteractionType.Roller));
+                unprocessedNonRollers);
             
             if (nonRollerItemsOnRoller.Count == 0)
             {

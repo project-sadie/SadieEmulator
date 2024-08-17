@@ -25,7 +25,8 @@ public class SecureLoginEventHandler(
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
     SadieContext dbContext,
-    IMapper mapper)
+    IMapper mapper,
+    PlayerLoader playerLoader)
     : INetworkPacketEventHandler
 {
     public string? Token { get; set; }
@@ -49,7 +50,16 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var player = await PlayerLoader.LoadPlayerAsync(dbContext, Token, DelayMs);
+        var tokenRecord = await playerLoader.GetTokenAsync(Token, DelayMs);
+        
+        if (tokenRecord == null)
+        {
+            logger.LogWarning("Failed to find token record for provided sso.");
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+        
+        var player = await playerRepository.GetPlayerByIdAsync(tokenRecord.PlayerId);
 
         if (player == null)
         {

@@ -1,10 +1,12 @@
-﻿using Sadie.Enums.Game.Furniture;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
@@ -65,7 +67,22 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
                 Bots = room.BotRepository.GetAll()
             });
         }
+
+        await SendFurnitureItemsAsync(room, client);
         
+        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter
+        {
+            Room = room,
+            RoomForward = false,
+            EnterRoom = true,
+            IsOwner = isOwner
+        });
+    }
+
+    private async Task SendFurnitureItemsAsync(
+        IRoomLogic room,
+        INetworkObject client)
+    {
         var floorItems = room.FurnitureItems
             .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
             .ToList();
@@ -74,17 +91,15 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
             .Where(x => x.FurnitureItem.Type == FurnitureItemType.Wall)
             .ToList();
 
-        var floorFurnitureOwners = 
-            floorItems
-                .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
-                .Distinct()
-                .ToDictionary(x => x.Key, x => x.Value);
+        var floorFurnitureOwners = floorItems
+            .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
+            .Distinct()
+            .ToDictionary(x => x.Key, x => x.Value);
 
-        var wallFurnitureOwners = 
-            wallItems
-                .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
-                .Distinct()
-                .ToDictionary(x => x.Key, x => x.Value);
+        var wallFurnitureOwners = wallItems
+            .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
+            .Distinct()
+            .ToDictionary(x => x.Key, x => x.Value);
 
         await client.WriteToStreamAsync(new RoomFloorItemsWriter
         {
@@ -96,14 +111,6 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
         {
             FurnitureOwners = wallFurnitureOwners,
             WallItems = wallItems
-        });
-        
-        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter
-        {
-            Room = room,
-            RoomForward = false,
-            EnterRoom = true,
-            IsOwner = isOwner
         });
     }
 }
