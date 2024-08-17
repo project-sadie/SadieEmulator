@@ -53,7 +53,7 @@ public class RoomTileMapHelperTests
     }
     
     [Test]
-    public void GetItemsForPosition_ReturnsCorrectForBulk()
+    public void GetItemsForPosition_Bulk_ReturnsCorrect()
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
@@ -107,27 +107,58 @@ public class RoomTileMapHelperTests
     }
     
     [Test]
-    public void GetOppositeDirection_ReturnsCorrect()
+    public void GetOppositeDirection_North_ReturnsCorrect()
     {
         var northResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.North);
+        Assert.That(northResult, Is.EqualTo(HDirection.South));
+    }
+    
+    [Test]
+    public void GetOppositeDirection_NorthEast_ReturnsCorrect()
+    {
         var northEastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.NorthEast);
+        Assert.That(northEastResult, Is.EqualTo(HDirection.SouthWest));
+    }
+    
+    [Test]
+    public void GetOppositeDirection_East_ReturnsCorrect()
+    {
         var eastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.East);
+        Assert.That(eastResult, Is.EqualTo(HDirection.West));
+    }
+    
+    [Test]
+    public void GetOppositeDirection_SouthEast_ReturnsCorrect()
+    {
         var southEastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.SouthEast);
+        Assert.That(southEastResult, Is.EqualTo(HDirection.NorthWest));
+    }
+    
+    [Test]
+    public void GetOppositeDirection_South_ReturnsCorrect()
+    {
         var southResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.South);
+        Assert.That(southResult, Is.EqualTo(HDirection.North));
+    }
+    
+    [Test]
+    public void GetOppositeDirection_SouthWest_ReturnsCorrect()
+    {
         var southWestResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.SouthWest);
+        Assert.That(southWestResult, Is.EqualTo(HDirection.NorthEast));
+    }
+    
+    [Test]
+    public void GetOppositeDirection_West_ReturnsCorrect()
+    {
         var westResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.West);
+        Assert.That(westResult, Is.EqualTo(HDirection.East));
+    }
+    
+    [Test]
+    public void GetOppositeDirection_NorthWest_ReturnsCorrect()
+    {
         var northWestResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.NorthWest);
-        
-        Assert.Multiple(() =>
-        {
-            Assert.That(northResult, Is.EqualTo(HDirection.South));
-            Assert.That(northEastResult, Is.EqualTo(HDirection.SouthWest));
-            Assert.That(eastResult, Is.EqualTo(HDirection.West));
-            Assert.That(southEastResult, Is.EqualTo(HDirection.NorthWest));
-            Assert.That(southResult, Is.EqualTo(HDirection.North));
-            Assert.That(southWestResult, Is.EqualTo(HDirection.NorthEast));
-            Assert.That(westResult, Is.EqualTo(HDirection.East));
-            Assert.That(northWestResult, Is.EqualTo(HDirection.SouthEast));
-        });
+        Assert.That(northWestResult, Is.EqualTo(HDirection.SouthEast));
     }
 }

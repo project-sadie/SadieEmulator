@@ -34,9 +34,9 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
             var inRoom = isOnline && onlineFriend != null && onlineFriend.State.CurrentRoomId != 0;
             
             var relationshipType = Relationships
-                                       .FirstOrDefault(x => x.TargetPlayerId == friendData.Id)
-                                       ?.TypeId ??
-                                   PlayerRelationshipType.None;
+               .FirstOrDefault(x => x.TargetPlayerId == friendData.Id)
+               ?.TypeId ??
+           PlayerRelationshipType.None;
 
             writer.WriteInteger(friendData.Id);
             writer.WriteString(friendData.Username);
