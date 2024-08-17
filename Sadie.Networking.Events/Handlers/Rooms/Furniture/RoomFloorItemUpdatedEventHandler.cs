@@ -77,7 +77,7 @@ public class RoomFloorItemUpdatedEventHandler(
              newPoints[0].Y == roomFurnitureItem.PositionY;
         
         if (!rotatingSingleTileItem && 
-            !RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
+            !RoomTileMapHelpers.CanPlace(newPoints, room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
@@ -104,7 +104,7 @@ public class RoomFloorItemUpdatedEventHandler(
         roomFurnitureItem.Direction = (HDirection) direction;
         
         room.TileMap.Map[roomFurnitureItem.PositionY, roomFurnitureItem.PositionX] =
-            RoomTileMapHelpers.GetStateNumberForTile(
+            (short) RoomTileMapHelpers.GetTileState(
                 roomFurnitureItem.PositionX, 
                 roomFurnitureItem.PositionY,
                 room.FurnitureItems);
@@ -116,12 +116,12 @@ public class RoomFloorItemUpdatedEventHandler(
             await interactor.OnMoveAsync(room, roomFurnitureItem, client.RoomUser);
         }
         
-        foreach (var user in RoomTileMapHelpers.GetUsersForPoints(oldPoints, room.UserRepository.GetAll()))
+        foreach (var user in RoomTileMapHelpers.GetUsersAtPoints(oldPoints, room.UserRepository.GetAll()))
         {
             user.CheckStatusForCurrentTile();
         }
         
-        foreach (var user in RoomTileMapHelpers.GetUsersForPoints(newPoints, room.UserRepository.GetAll()))
+        foreach (var user in RoomTileMapHelpers.GetUsersAtPoints(newPoints, room.UserRepository.GetAll()))
         {
             user.CheckStatusForCurrentTile();
         }

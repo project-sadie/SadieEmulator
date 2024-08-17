@@ -6,5 +6,8 @@ public static class FurnitureItemInteractionType
         RoomAdsBg = "ads_bg",
         Dimmer = "dimmer",
         Teleport = "teleport",
-        Roller = "roller";
+        Roller = "roller",
+        OneWayGate = "onewaygate",
+        Gate = "gate",
+        VendingMachine = "vending_machine";
 }

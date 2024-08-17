@@ -2,6 +2,7 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Shared.Extensions;
@@ -10,7 +11,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class VendingInteractor : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => "vending_machine";
+    public override string InteractionType => FurnitureItemInteractionType.VendingMachine;
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {

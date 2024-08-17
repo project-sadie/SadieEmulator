@@ -4,16 +4,17 @@ using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class GateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => "gate";
+    public override string InteractionType => FurnitureItemInteractionType.Gate;
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
     {
-        if (!room.TileMap.IsTileFree(new Point(item.PositionX, item.PositionY)) || 
+        if (room.TileMap.UsersAtPoint(new Point(item.PositionX, item.PositionY)) || 
             room
                 .UserRepository
                 .GetAll()

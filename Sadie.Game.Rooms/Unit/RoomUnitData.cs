@@ -124,7 +124,7 @@ public class RoomUnitData(IRoomLogic room, Point point) : IRoomUnitData
     
     public void WalkToPoint(Point point, Action? onReachedGoal = null)
     {
-        if (!room.TileMap.IsTileFree(point) &&
+        if (room.TileMap.UsersAtPoint(point) &&
             !room.Settings.CanUsersOverlap)
         {
             return;

@@ -66,7 +66,7 @@ public class RoomTileMapHelpers
         return points;
     }
 
-    public static short GetStateNumberForTile(
+    public static RoomTileState GetTileState(
         int x, 
         int y, 
         IEnumerable<PlayerFurnitureItemPlacementData> furnitureItems)
@@ -75,25 +75,25 @@ public class RoomTileMapHelpers
 
         if (item == null)
         {
-            return 1;
+            return RoomTileState.Open;
         }
         
         if (item.FurnitureItem.CanWalk)
         {
-            return 1;
+            return RoomTileState.Open;
         }
 
         if (item.FurnitureItem.CanSit)
         {
-            return 2;
+            return RoomTileState.Sit;
         }
 
-        if (item.FurnitureItem.InteractionType == "gate" && item.PlayerFurnitureItem.MetaData == "1")
+        if (item.FurnitureItem.InteractionType == FurnitureItemInteractionType.Gate && item.PlayerFurnitureItem.MetaData == "1")
         {
-            return 1;
+            return RoomTileState.Open;
         }
 
-        return item.FurnitureItem.CanLay ? (short) 3 : (short) 0;
+        return item.FurnitureItem.CanLay ? RoomTileState.Lay : RoomTileState.Blocked;
     }
 
     public static List<PlayerFurnitureItemPlacementData> GetItemsForPosition(int x,
@@ -182,19 +182,19 @@ public class RoomTileMapHelpers
     {
         foreach (var point in points)
         {
-            tileMap.Map[point.Y, point.X] = GetStateNumberForTile(point.X, point.Y, furnitureItems);
+            tileMap.Map[point.Y, point.X] = (short) GetTileState(point.X, point.Y, furnitureItems);
             tileMap.UpdateEffectMapForTile(point.X, point.Y, furnitureItems);
         }
     }
 
-    public static bool CanPlaceAt(
+    public static bool CanPlace(
         IEnumerable<Point> points,  
         IRoomTileMap tileMap)
     {
         return points.All(point => tileMap.Map[point.Y, point.X] != 0);
     }
     
-    public static List<IRoomUser> GetUsersForPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
+    public static List<IRoomUser> GetUsersAtPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
     {
         return users.Where(user => points.Contains(user.Point)).ToList();
     }
