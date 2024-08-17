@@ -22,12 +22,6 @@ public static class RoomHelpersDirty
         }
 
         var room = await dbContext.Set<Room>()
-            .Include(x => x.Owner)
-            .Include(x => x.Layout)
-            .Include(x => x.Settings)
-            .Include(x => x.PaintSettings)
-            .Include(x => x.ChatSettings)
-            .Include(x => x.PlayerRights)
             .Include(x => x.FurnitureItems)
                 .ThenInclude(x => x.PlayerFurnitureItem)
                 .ThenInclude(x => x.FurnitureItem)

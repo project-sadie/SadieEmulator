@@ -27,8 +27,6 @@ public class PlayerRepository(
             .Set<Player>()
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
-            .Include(x => x.IncomingFriendships)
-            .Include(x => x.OutgoingFriendships)
             .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
