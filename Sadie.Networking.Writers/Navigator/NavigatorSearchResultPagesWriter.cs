@@ -45,10 +45,10 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
                 writer.WriteInteger(userCount);
                 writer.WriteInteger(room.MaxUsersAllowed);
                 writer.WriteString(room.Description);
-                writer.WriteInteger(0); // unknown
+                writer.WriteInteger(0);
                 writer.WriteInteger(room.PlayerLikes.Count);
-                writer.WriteInteger(0); // unknown
-                writer.WriteInteger(1); // TODO: category
+                writer.WriteInteger(0);
+                writer.WriteInteger(1);
                 writer.WriteInteger(room.Tags.Count);
 
                 foreach (var tag in room.Tags)

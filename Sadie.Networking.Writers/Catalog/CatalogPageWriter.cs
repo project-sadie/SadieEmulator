@@ -98,13 +98,13 @@ public class CatalogPageWriter : AbstractPacketWriter
                     }
                     
                     writer.WriteInteger(item.Amount);
-                    writer.WriteBool(false); // is limited
+                    writer.WriteBool(false);
                 }
             }
 
             writer.WriteInteger(item.RequiresClubMembership ? 1 : 0);
             writer.WriteBool(item.Amount == 1);
-            writer.WriteBool(false); // unknown
+            writer.WriteBool(false);
             writer.WriteString($"{item.Name}.png");
         }
         

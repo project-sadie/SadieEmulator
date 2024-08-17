@@ -28,14 +28,14 @@ public class RoomUserDataWriter : AbstractPacketWriter
                 writer.WriteInteger(user.Point.Y);
                 writer.WriteString(user.PointZ + "");
                 writer.WriteInteger((int) user.Direction);
-                writer.WriteInteger(1); // type, 1 = user, 2 = pet, 3 = bot, 4 = rent bot
+                writer.WriteInteger(1);
                 writer.WriteString(user.Player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
-                writer.WriteInteger(-1); // group id
-                writer.WriteInteger(-1); // group status
-                writer.WriteString(""); // group name
-                writer.WriteString(""); // swim figure
+                writer.WriteInteger(-1);
+                writer.WriteInteger(-1);
+                writer.WriteString("");
+                writer.WriteString("");
                 writer.WriteInteger(user.Player.Data.AchievementScore);
-                writer.WriteBool(true); // is moderator
+                writer.WriteBool(true);
             }
         });
     }

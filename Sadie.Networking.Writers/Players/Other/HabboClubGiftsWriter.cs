@@ -78,7 +78,7 @@ public class HabboClubGiftsWriter : AbstractPacketWriter
                     }
 
                     writer.WriteInteger(item.Amount);
-                    writer.WriteBool(false); // is limited
+                    writer.WriteBool(false);
                 }
             }
         }
