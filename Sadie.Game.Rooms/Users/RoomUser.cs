@@ -3,8 +3,10 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
+using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Shared.Unsorted;
@@ -76,19 +78,28 @@ public class RoomUser(
             NextPoint = null;
         }
 
-        if (NeedsPathCalculated)
-        {
-            CalculatePath();
-        }
-
-        if (IsWalking)
-        {
-            await ProcessMovementAsync();
-        }
-
+        await ProcessGenericChecksAsync();
         await UpdateIdleStatusAsync();
+        await UpdateEffectAsync();
     }
-    
+
+    private async Task UpdateEffectAsync()
+    {
+        var effectPointToCheck = IsWalking && NextPoint != null ? 
+            NextPoint.Value : 
+            Point;
+        
+        if (room.TileMap.EffectMap[effectPointToCheck.Y, effectPointToCheck.X] != 0)
+        {
+            var effectId = room.TileMap.EffectMap[Point.Y, Point.X];
+            await SetEffectAsync((RoomUserEffect) effectId);
+        }
+        else if (ActiveEffectId != 0)
+        {
+            await SetEffectAsync(0);
+        }
+    }
+
     private async Task UpdateIdleStatusAsync()
     {
         var shouldBeIdle = DateTime.Now - LastAction > IdleTime;
@@ -114,6 +125,19 @@ public class RoomUser(
             RoomControllerLevel.Rights;
     }
 
+    public async Task SetEffectAsync(RoomUserEffect effect)
+    {
+        ActiveEffectId = (int) effect;
+        
+        var writer = new RoomUserEffectWriter
+        {
+            UserId = Id,
+            EffectId = (int) effect,
+            DelayMs = 0
+        };
+
+        await Room.UserRepository.BroadcastDataAsync(writer);
+    }
     public async ValueTask DisposeAsync()
     {
         room.TileMap.UserMap[Point].Remove(this);

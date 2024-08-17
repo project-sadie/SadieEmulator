@@ -383,7 +383,7 @@ public static class RoomHelpersDirty
         playerItem.PlacementData = roomFurnitureItem;
         room.FurnitureItems.Add(roomFurnitureItem);
 
-        RoomTileMapHelpers.UpdateTileStatesForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
+        RoomTileMapHelpers.UpdateTileMapsForPoints(pointsForPlacement, room.TileMap, room.FurnitureItems);
         
         foreach (var user in RoomTileMapHelpers.GetUsersForPoints(pointsForPlacement, room.UserRepository.GetAll()))
         {

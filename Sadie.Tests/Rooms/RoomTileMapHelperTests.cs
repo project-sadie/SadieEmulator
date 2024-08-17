@@ -14,10 +14,16 @@ public class RoomTileMapHelperTests
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
                 {
-                    Type = FurnitureItemType.Floor,
-                    InteractionType = "default"
+                    FurnitureItem = new FurnitureItem
+                    {
+                        Type = FurnitureItemType.Floor,
+                        InteractionType = "default"
+                    },
+                    
+                    LimitedData = "",
+                    MetaData = ""
                 }
             }
         };
@@ -30,10 +36,15 @@ public class RoomTileMapHelperTests
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
                 {
-                    Type = FurnitureItemType.Floor,
-                    InteractionType = "default"
+                    FurnitureItem = new FurnitureItem
+                    {
+                        Type = FurnitureItemType.Floor,
+                        InteractionType = "default"
+                    },
+                    LimitedData = "",
+                    MetaData = ""
                 }
             }
         };
@@ -46,28 +57,48 @@ public class RoomTileMapHelperTests
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
                 {
-                    Type = FurnitureItemType.Floor,
-                    InteractionType = "default"
+                    FurnitureItem = new FurnitureItem
+                    {
+                        Type = FurnitureItemType.Floor,
+                        InteractionType = "default"
+                    },
+                    LimitedData = "",
+                    MetaData = ""
                 }
             },
-            new() { PositionX = 4, PositionY = 5, FurnitureItem = new FurnitureItem
+            new() { PositionX = 4, PositionY = 5, PlayerFurnitureItem = new PlayerFurnitureItem
                 {
-                    Type = FurnitureItemType.Floor,
-                    InteractionType = "default"
+                    FurnitureItem = new FurnitureItem
+                    {
+                        Type = FurnitureItemType.Floor,
+                        InteractionType = "default"
+                    },
+                    LimitedData = "",
+                    MetaData = ""
                 }
             },
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
                 {
-                    Type = FurnitureItemType.Floor,
-                    InteractionType = "default"
+                    FurnitureItem = new FurnitureItem
+                    {
+                        Type = FurnitureItemType.Floor,
+                        InteractionType = "default"
+                    },
+                    LimitedData = "",
+                    MetaData = ""
                 }
             },
-            new() { PositionX = 10, PositionY = 14, FurnitureItem = new FurnitureItem
+            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
                 {
-                    Type = FurnitureItemType.Floor,
-                    InteractionType = "default"
+                    FurnitureItem = new FurnitureItem
+                    {
+                        Type = FurnitureItemType.Floor,
+                        InteractionType = "default"
+                    },
+                    LimitedData = "",
+                    MetaData = ""
                 }
             },
         };

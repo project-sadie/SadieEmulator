@@ -10,5 +10,6 @@ public static class PlayerServiceCollection
         serviceCollection.AddTransient<IPlayerState, PlayerState>();
         serviceCollection.AddTransient<PlayerLogic, PlayerLogic>();
         serviceCollection.AddSingleton<PlayerRepository>();
+        serviceCollection.AddSingleton<PlayerLoader>();
     }
 }

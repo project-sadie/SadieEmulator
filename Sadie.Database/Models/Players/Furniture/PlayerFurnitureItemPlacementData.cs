@@ -20,15 +20,5 @@ public class PlayerFurnitureItemPlacementData
     public HDirection Direction { get; set; }
     public DateTime CreatedAt { get; init; }
 
-    [NotMapped] public FurnitureItem? FurnitureItem
-    {
-        get => PlayerFurnitureItem?.FurnitureItem;
-        init
-        {
-            if (PlayerFurnitureItem != null)
-            {
-                PlayerFurnitureItem.FurnitureItem = value;
-            }
-        }
-    }
+    [NotMapped] public FurnitureItem? FurnitureItem => PlayerFurnitureItem?.FurnitureItem;
 }
