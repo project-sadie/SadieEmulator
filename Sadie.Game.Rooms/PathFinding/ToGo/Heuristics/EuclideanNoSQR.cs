@@ -1,6 +1,6 @@
 namespace Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
 
-public class EuclideanNoSQR : ICalculateHeuristic
+public class EuclideanNoSqr : ICalculateHeuristic
 {
     public int Calculate(Position source, Position destination)
     {

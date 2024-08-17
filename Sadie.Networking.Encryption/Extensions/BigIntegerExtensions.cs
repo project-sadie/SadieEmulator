@@ -6,7 +6,7 @@ public static class BigIntegerExtensions
 {
     private static readonly Random Random = new();
 
-    public static byte[] PerformCalculation(this byte[] src, RSACalculateDelegate method)
+    public static byte[] PerformCalculation(this byte[] src, RsaCalculateDelegate method)
     {
         Array.Reverse(src);
         BigInteger data = new(src);

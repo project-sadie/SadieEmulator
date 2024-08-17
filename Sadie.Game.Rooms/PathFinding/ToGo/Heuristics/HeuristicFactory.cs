@@ -7,10 +7,10 @@ public static class HeuristicFactory
         return heuristicFormula switch
         {
             HeuristicFormula.Manhattan => new Manhattan(),
-            HeuristicFormula.MaxDXDY => new MaxDXDY(),
+            HeuristicFormula.MaxDxdy => new MaxDxdy(),
             HeuristicFormula.DiagonalShortCut => new DiagonalShortcut(),
             HeuristicFormula.Euclidean => new Euclidean(),
-            HeuristicFormula.EuclideanNoSQR => new EuclideanNoSQR(),
+            HeuristicFormula.EuclideanNoSqr => new EuclideanNoSqr(),
             _ => throw new ArgumentOutOfRangeException(nameof(heuristicFormula), heuristicFormula, null)
         };
     }
