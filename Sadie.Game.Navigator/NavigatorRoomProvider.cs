@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Navigator;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
-using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 
 namespace Sadie.Game.Navigator;
 
-public class NavigatorRoomProvider(RoomRepository roomRepository, SadieContext dbContext)
+public class NavigatorRoomProvider(RoomRepository roomRepository, SadieContext dbContext) : INavigatorRoomProvider
 {
-    public Task<List<Room>> GetRoomsForCategoryNameAsync(PlayerLogic player, string category)
+    public Task<List<Room>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
     {
         return Task.FromResult(category switch
         {

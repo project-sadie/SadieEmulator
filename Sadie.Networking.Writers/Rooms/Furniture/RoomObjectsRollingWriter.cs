@@ -12,7 +12,7 @@ public class RoomObjectsRollingWriter : AbstractPacketWriter
     public required int Y { init; get; }
     public required int NextX { init; get; }
     public required int NextY { init; get; }
-    public required ICollection<RoomRollingObjectData> Objects { init; get; }
+    public required ICollection<IRoomRollingObjectData> Objects { init; get; }
     public required int RollerId { init; get; }
     public required int MovementType { init; get; }
     public required int RoomUserId { init; get; }

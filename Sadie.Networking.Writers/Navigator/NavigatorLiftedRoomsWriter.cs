@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
@@ -8,7 +9,7 @@ namespace Sadie.Networking.Writers.Navigator;
 [PacketId(ServerPacketId.NavigatorLiftedRooms)]
 public class NavigatorLiftedRoomsWriter : AbstractPacketWriter
 {
-    public required List<RoomLogic> Rooms { get; init; }
+    public required List<IRoomLogic> Rooms { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {

@@ -22,7 +22,7 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
         return Task.CompletedTask;
     }
 
-    private static async ValueTask BroadcastItemUpdates(RoomLogic room, CancellationToken ctx)
+    private static async ValueTask BroadcastItemUpdates(IRoomLogic room, CancellationToken ctx)
     {
         var writersToBroadcast = GetItemUpdates(room);
         

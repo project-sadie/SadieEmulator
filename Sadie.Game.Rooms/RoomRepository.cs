@@ -1,21 +1,22 @@
 ﻿using System.Collections.Concurrent;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomRepository(SadieContext dbContext, IMapper mapper)
+public class RoomRepository(SadieContext dbContext, IMapper mapper) : IRoomRepository
 {
-    private readonly ConcurrentDictionary<long, RoomLogic> _rooms = new();
+    private readonly ConcurrentDictionary<long, IRoomLogic> _rooms = new();
 
-    public RoomLogic? TryGetRoomById(long id)
+    public IRoomLogic? TryGetRoomById(long id)
     {
         return _rooms.GetValueOrDefault(id);
     }
 
-    public void AddRoom(RoomLogic roomLogic) => _rooms[roomLogic.Id] = roomLogic;
+    public void AddRoom(IRoomLogic roomLogic) => _rooms[roomLogic.Id] = roomLogic;
 
     public List<Room> GetPopularRooms(int amount)
     {
@@ -24,9 +25,9 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper)
     }
 
     public int Count => _rooms.Count;
-    public IEnumerable<RoomLogic> GetAllRooms() => _rooms.Values;
+    public IEnumerable<IRoomLogic> GetAllRooms() => _rooms.Values;
 
-    public bool TryRemove(long id, out RoomLogic? roomLogic)
+    public bool TryRemove(long id, out IRoomLogic? roomLogic)
     {
         return _rooms.TryRemove(id, out roomLogic);
     }

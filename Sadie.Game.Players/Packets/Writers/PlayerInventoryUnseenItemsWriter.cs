@@ -3,7 +3,7 @@ using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
 
-namespace Sadie.Game.Players.Packets;
+namespace Sadie.Game.Players.Packets.Writers;
 
 [PacketId(ServerPacketId.PlayerInventoryUnseenItems)]
 public class PlayerInventoryUnseenItemsWriter : AbstractPacketWriter

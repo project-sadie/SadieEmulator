@@ -3,7 +3,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Game.Players;
-using Sadie.Game.Players.Packets;
+using Sadie.Game.Players.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Room;

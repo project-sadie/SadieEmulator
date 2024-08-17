@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Unsorted.Networking;
@@ -7,7 +8,7 @@ namespace Sadie.Game.Rooms.Packets.Writers;
 [PacketId(ServerPacketId.RoomForwardData)]
 public class RoomForwardDataWriter : AbstractPacketWriter
 {
-    public required RoomLogic Room { get; init; }
+    public required IRoomLogic Room { get; init; }
     public required bool RoomForward { get; init; }
     public required bool EnterRoom { get; init; }
     public required bool IsOwner { get; init; }

@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.API.Game.Rooms;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
@@ -10,7 +11,7 @@ namespace Sadie.Game.Rooms.Users;
 public class RoomUserFactory(IServiceProvider serviceProvider)
 {
     public RoomUser Create(
-        RoomLogic room,
+        IRoomLogic room,
         INetworkObject networkObject, 
         int id, 
         Point point, 

@@ -19,7 +19,7 @@ public class RequestRoomSettingsEventHandler(
         {
             await client.WriteToStreamAsync(new RoomSettingsWriter
             {
-                Room = room
+                Room = (RoomLogic) room
             });
         }
     }

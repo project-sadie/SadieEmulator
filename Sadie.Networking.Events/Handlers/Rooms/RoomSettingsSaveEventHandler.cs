@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
@@ -149,7 +150,7 @@ public class RoomSettingsSaveEventHandler(
         chatSettings.ChatDistance = ChatDistance;
         chatSettings.ChatProtection = ChatProtection;
     }
-    private async Task BroadcastUpdatesAsync(RoomLogic room)
+    private async Task BroadcastUpdatesAsync(IRoomLogic room)
     {
         var settings = room.Settings;
         var chatSettings = room.ChatSettings;
