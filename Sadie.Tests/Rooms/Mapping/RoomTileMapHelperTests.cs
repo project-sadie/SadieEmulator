@@ -232,81 +232,24 @@ public class RoomTileMapHelperTests
     }
     
     [Test]
-    public void GetItemsForPosition_Bulk_ReturnsCorrect()
+    public void GetItemsForPosition_OverlappingItem_ReturnsAllItems()
     {
         var someItems = new List<PlayerFurnitureItemPlacementData>
         {
-            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        Type = FurnitureItemType.Floor,
-                        InteractionType = "default"
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                }
-            },
-            new() { PositionX = 4, PositionY = 5, PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        Type = FurnitureItemType.Floor,
-                        InteractionType = "default"
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                }
-            },
-            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        Type = FurnitureItemType.Floor,
-                        InteractionType = "default"
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                }
-            },
-            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        Type = FurnitureItemType.Floor,
-                        InteractionType = "default"
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                }
-            },
+            MockFurnitureItem(10, 14),
+            MockLongFurnitureItem(10, 13),
+            MockFurnitureItem(10, 14),
+            MockFurnitureItem(10, 14)
         };
         
-        Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(3));
+        Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(4));
     }
     
     [Test]
     public void GetWorldArrayFromTileMap_ChairNotGoal_ReturnsBlocked()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanSit = true,
-                        InteractionType = "",
-                        TileSpanX = 1,
-                        TileSpanY = 1,
-                        Type = FurnitureItemType.Floor
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                },
-                PositionX = 0,
-                PositionY = 0
-            }
+            MockFurnitureItem(0, 0, 0, 0, "", FurnitureItemType.Floor, false, false, true)
         ]);
         
         var goalPoint = new Point(4, 4);
@@ -319,24 +262,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_ChairGoal_ReturnsOpen()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanSit = true,
-                        InteractionType = "",
-                        TileSpanX = 1,
-                        TileSpanY = 1,
-                        Type = FurnitureItemType.Floor
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                },
-                PositionX = 0,
-                PositionY = 0
-            }
+            MockFurnitureItem(0, 0, 0, 0, "", FurnitureItemType.Floor, false, false, true)
         ]);
         
         var goalPoint = new Point(0, 0);
@@ -349,24 +275,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_BedNotGoal_ReturnsBlocked()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanLay = true,
-                        InteractionType = "",
-                        TileSpanX = 1,
-                        TileSpanY = 1,
-                        Type = FurnitureItemType.Floor
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                },
-                PositionX = 0,
-                PositionY = 0
-            }
+            MockFurnitureItem(0, 0, 0, 0, "", FurnitureItemType.Floor, false, true)
         ]);
         
         var goalPoint = new Point(4, 4);
@@ -379,24 +288,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_BedGoal_ReturnsOpen()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanLay = true,
-                        InteractionType = "",
-                        TileSpanX = 1,
-                        TileSpanY = 1,
-                        Type = FurnitureItemType.Floor
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                },
-                PositionX = 0,
-                PositionY = 0
-            }
+            MockFurnitureItem(0, 0, 0, 0, "", FurnitureItemType.Floor, false, true)
         ]);
         
         var goalPoint = new Point(0, 0);
@@ -409,24 +301,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_TilesWithBlockingFurniture_ReturnsUnwalkable()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanWalk = false,
-                        InteractionType = "",
-                        TileSpanX = 1,
-                        TileSpanY = 1,
-                        Type = FurnitureItemType.Floor
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                },
-                PositionX = 0,
-                PositionY = 0
-            }
+            MockFurnitureItem()
         ]);
         
         var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, new Point(), []);
@@ -438,24 +313,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_TilesWithNonBlockingFurniture_ReturnsWalkable()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanWalk = true,
-                        InteractionType = "",
-                        TileSpanX = 1,
-                        TileSpanY = 1,
-                        Type = FurnitureItemType.Floor
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                },
-                PositionX = 0,
-                PositionY = 0
-            }
+            MockFurnitureItem(0, 0, 0, 0, "", FurnitureItemType.Floor, true)
         ]);
         
         var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, new Point(), []);
@@ -489,24 +347,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_BlockingFurnitureOnTileButCanOverride_ReturnsOpen()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanWalk = false,
-                        InteractionType = "",
-                        TileSpanX = 1,
-                        TileSpanY = 1,
-                        Type = FurnitureItemType.Floor
-                    },
-                    LimitedData = "",
-                    MetaData = ""
-                },
-                PositionX = 0,
-                PositionY = 0
-            }
+            MockFurnitureItem(0, 0, 0),
         ]);
         
         var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map,
@@ -538,24 +379,7 @@ public class RoomTileMapHelperTests
     public void CanPlaceAt_HasNonStackableFurniture_ReturnsFalse()
     {
         var map = new RoomTileMap("0", [
-            new PlayerFurnitureItemPlacementData
-            {
-                PlayerFurnitureItem = new PlayerFurnitureItem
-                {
-                    LimitedData = "",
-                    MetaData = "",
-                    FurnitureItem = new FurnitureItem
-                    {
-                        CanStack = false,
-                        StackHeight = 4,
-                        InteractionType = "",
-                        Type = FurnitureItemType.Floor
-                    }
-                },
-                PositionX = 0,
-                PositionY = 0,
-                PositionZ = 10
-            },
+            MockFurnitureItem(0, 0, 10, 4)
         ]);
         
         var points = new Point[] { new () };
@@ -711,12 +535,23 @@ public class RoomTileMapHelperTests
         Assert.That(RoomTileMapHelpers.GetEffectFromInteractionType(FurnitureItemInteractionType.Water), Is.EqualTo(RoomUserEffect.Swimming));
     }
 
-    public PlayerFurnitureItemPlacementData MockFurnitureItem(int x,
-        int y,
-        int z,
+    private static PlayerFurnitureItemPlacementData MockLongFurnitureItem(int x = 0,
+        int y = 0)
+    {
+        var item = MockFurnitureItem(x, y);
+        item.FurnitureItem!.TileSpanY = 2;
+
+        return item;
+    }
+    private static PlayerFurnitureItemPlacementData MockFurnitureItem(int x = 0,
+        int y = 0,
+        int z = 0,
         int stackHeight = 0,
         string interactionType = "",
-        FurnitureItemType type = FurnitureItemType.Floor)
+        FurnitureItemType type = FurnitureItemType.Floor,
+        bool canWalk = false,
+        bool canLay = false,
+        bool canSit = false)
     {
         return new PlayerFurnitureItemPlacementData
         {
@@ -728,7 +563,12 @@ public class RoomTileMapHelperTests
                 {
                     StackHeight = stackHeight,
                     InteractionType = interactionType,
-                    Type = type
+                    Type = type,
+                    TileSpanX = 1,
+                    TileSpanY = 1,
+                    CanWalk = canWalk,
+                    CanLay = canLay,
+                    CanSit = canSit
                 }
             },
             PositionX = x,
