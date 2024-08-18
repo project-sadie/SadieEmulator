@@ -358,7 +358,7 @@ public static class RoomHelpersDirty
             playerItem.FurnitureItem.TileSpanY, direction);
 
         if (!pointsForPlacement
-            .All(x => RoomTileMapHelpers.CanPlace([new Point(x.X, x.Y)], room.TileMap)))
+            .All(x => RoomTileMapHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;

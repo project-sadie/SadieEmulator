@@ -187,7 +187,7 @@ public class RoomTileMapHelpers
         }
     }
 
-    public static bool CanPlace(
+    public static bool CanPlaceAt(
         IEnumerable<Point> points,  
         IRoomTileMap tileMap)
     {
@@ -196,7 +196,9 @@ public class RoomTileMapHelpers
     
     public static List<IRoomUser> GetUsersAtPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
     {
-        return users.Where(user => points.Contains(user.Point)).ToList();
+        return users
+            .Where(user => points.Contains(user.Point))
+            .ToList();
     }
 
     public static Point GetPointInFront(int x, int y, HDirection direction, int offset = 0)
@@ -279,7 +281,7 @@ public class RoomTileMapHelpers
     {
         return interactionType switch
         {
-            "water" => RoomUserEffect.Swimming,
+            FurnitureItemInteractionType.Water => RoomUserEffect.Swimming,
             _ => 0
         };
     }

@@ -77,7 +77,7 @@ public class RoomFloorItemUpdatedEventHandler(
              newPoints[0].Y == roomFurnitureItem.PositionY;
         
         if (!rotatingSingleTileItem && 
-            !RoomTileMapHelpers.CanPlace(newPoints, room.TileMap))
+            !RoomTileMapHelpers.CanPlaceAt(newPoints, room.TileMap))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;

@@ -9,5 +9,6 @@ public static class FurnitureItemInteractionType
         Roller = "roller",
         OneWayGate = "onewaygate",
         Gate = "gate",
-        VendingMachine = "vending_machine";
+        VendingMachine = "vending_machine",
+        Water = "water";
 }
