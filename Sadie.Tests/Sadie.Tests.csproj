@@ -23,4 +23,8 @@
       <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Game\" />
+    </ItemGroup>
+
 </Project>
