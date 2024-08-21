@@ -28,59 +28,14 @@ public class FloorPlanEditorSaveEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
+            room.OwnerId != client.Player.Id || 
+            room.Layout == null)
         {
             return;
         }
 
-        if (room.OwnerId != client.Player.Id || room.Layout == null)
-        {
-            return;
-        }
-
-        var errors = new List<string>();
-
-        if (!Regex.IsMatch(HeightMap, "[a-zA-Z0-9\r]+"))
-        {
-            errors.Add("${notification.floorplan_editor.error.title}");
-        }
-
-        if (HeightMap.Length > 64 * 64)
-        {
-            errors.Add("${notification.floorplan_editor.error.message.too_large_area}");
-        }
-
-        var rows = HeightMap.Split("\r");
-
-        if (DoorX < 0 || DoorX > rows[0].Length || DoorY < 0 || DoorY >= rows.Length)
-        {
-            errors.Add("${notification.floorplan_editor.error.message.entry_tile_outside_map}");
-        }
-
-        if (DoorY < rows.Length && DoorX < rows[DoorY].Length && rows[DoorY][DoorX] == 'x')
-        {
-            errors.Add("${notification.floorplan_editor.error.message.entry_not_on_tile}");
-        }
-
-        if (DoorDirection is < 0 or > 7)
-        {
-            errors.Add("${notification.floorplan_editor.error.message.invalid_entry_tile_direction}");
-        }
-
-        if (WallSize is < -2 or > 1)
-        {
-            errors.Add("${notification.floorplan_editor.error.message.invalid_wall_thickness}");
-        }
-
-        if (FloorSize is < -2 or > 1)
-        {
-            errors.Add("${notification.floorplan_editor.error.message.invalid_floor_thickness}");
-        }
-
-        if (WallHeight is < -1 or > 15)
-        {
-            errors.Add("${notification.floorplan_editor.error.message.invalid_walls_fixed_height}");
-        }
+        var errors = GetErrors();
         
         if (errors.Count != 0)
         {
@@ -96,7 +51,7 @@ public class FloorPlanEditorSaveEventHandler(
             return;
         }
 
-        bool newLayout = false;
+        var newLayout = false;
 
         if (!room.Layout.Name!.Contains("custom_"))
         {
@@ -159,5 +114,54 @@ public class FloorPlanEditorSaveEventHandler(
             
             await player.NetworkObject.WriteToStreamAsync(writer);
         }
+    }
+
+    public List<string> GetErrors()
+    {
+        var errors = new List<string>();
+
+        if (!Regex.IsMatch(HeightMap, "[a-zA-Z0-9\r]+"))
+        {
+            errors.Add("${notification.floorplan_editor.error.title}");
+        }
+
+        if (HeightMap.Length > 64 * 64)
+        {
+            errors.Add("${notification.floorplan_editor.error.message.too_large_area}");
+        }
+
+        var rows = HeightMap.Split("\r");
+
+        if (DoorX < 0 || DoorX > rows[0].Length || DoorY < 0 || DoorY >= rows.Length)
+        {
+            errors.Add("${notification.floorplan_editor.error.message.entry_tile_outside_map}");
+        }
+
+        if (DoorY < rows.Length && DoorX < rows[DoorY].Length && rows[DoorY][DoorX] == 'x')
+        {
+            errors.Add("${notification.floorplan_editor.error.message.entry_not_on_tile}");
+        }
+
+        if (DoorDirection is < 0 or > 7)
+        {
+            errors.Add("${notification.floorplan_editor.error.message.invalid_entry_tile_direction}");
+        }
+
+        if (WallSize is < -2 or > 1)
+        {
+            errors.Add("${notification.floorplan_editor.error.message.invalid_wall_thickness}");
+        }
+
+        if (FloorSize is < -2 or > 1)
+        {
+            errors.Add("${notification.floorplan_editor.error.message.invalid_floor_thickness}");
+        }
+
+        if (WallHeight is < -1 or > 15)
+        {
+            errors.Add("${notification.floorplan_editor.error.message.invalid_walls_fixed_height}");
+        }
+
+        return errors;
     }
 }

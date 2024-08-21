@@ -29,6 +29,7 @@ public class PlayerSendFriendRequestEventHandler(
                 Unknown1 = 0,
                 Error = (int) PlayerFriendshipError.TooManyFriends
             });
+            
             return;
         }
         
@@ -96,31 +97,11 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
 
-        var playerFriendship = new PlayerFriendship
-        {
-            OriginPlayerId = player.Id,
-            TargetPlayerId = targetPlayer.Id,
-            Status = PlayerFriendshipStatus.Pending
-        };
-            
-        player.OutgoingFriendships.Add(playerFriendship);
-            
-        if (targetOnline && onlineTarget != null)
-        {
-            var friendRequestWriter = new PlayerFriendRequestWriter
-            {
-                Id = player.Id,
-                Username = player.Username,
-                FigureCode = player.AvatarData.FigureCode
-            };
-            
-            onlineTarget.IncomingFriendships.Add(playerFriendship);
-                
-            await onlineTarget.NetworkObject.WriteToStreamAsync(friendRequestWriter);
-        }
-
-        dbContext.Set<PlayerFriendship>().Add(playerFriendship);
-        await dbContext.SaveChangesAsync();
+        await SendRequestAsync(
+            player,
+            targetPlayer,
+            targetOnline,
+            onlineTarget);
     }
 
     private async Task AcceptPendingAsync(
@@ -148,6 +129,39 @@ public class PlayerSendFriendRequestEventHandler(
             }
         }
 
+        await dbContext.SaveChangesAsync();
+    }
+
+    private async Task SendRequestAsync(
+        Player player,
+        Player targetPlayer,
+        bool targetOnline,
+        PlayerLogic? onlineTarget)
+    {
+        var playerFriendship = new PlayerFriendship
+        {
+            OriginPlayerId = player.Id,
+            TargetPlayerId = targetPlayer.Id,
+            Status = PlayerFriendshipStatus.Pending
+        };
+            
+        player.OutgoingFriendships.Add(playerFriendship);
+            
+        if (targetOnline && onlineTarget != null)
+        {
+            var friendRequestWriter = new PlayerFriendRequestWriter
+            {
+                Id = player.Id,
+                Username = player.Username,
+                FigureCode = player.AvatarData.FigureCode
+            };
+            
+            onlineTarget.IncomingFriendships.Add(playerFriendship);
+                
+            await onlineTarget.NetworkObject.WriteToStreamAsync(friendRequestWriter);
+        }
+
+        dbContext.Set<PlayerFriendship>().Add(playerFriendship);
         await dbContext.SaveChangesAsync();
     }
 }
