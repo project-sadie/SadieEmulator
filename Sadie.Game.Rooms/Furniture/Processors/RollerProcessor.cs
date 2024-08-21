@@ -1,38 +1,19 @@
+using System.Drawing;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture.Processors;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
+using Sadie.Game.Rooms.Packets.Writers.Furniture;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Serialization;
-using Sadie.Networking.Writers.Rooms.Furniture;
-using Point = System.Drawing.Point;
 
-namespace SadieEmulator.Tasks.Game.Rooms;
+namespace Sadie.Game.Rooms.Furniture.Processors;
 
-public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
+public class RollerProcessor : IRoomFurnitureItemProcessor
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(1000);
-    public DateTime LastExecuted { get; set; }
-    
-    public async Task ExecuteAsync()
-    {
-        await Parallel.ForEachAsync(roomRepository.GetAllRooms(), BroadcastItemUpdates);
-    }
-
-    private static async ValueTask BroadcastItemUpdates(IRoomLogic room, CancellationToken ctx)
-    {
-        var writersToBroadcast = await GetItemUpdatesAsync(room);
-        
-        foreach (var writer in writersToBroadcast)
-        {
-            await room.UserRepository.BroadcastDataAsync(writer);
-        }
-    }
-
-    private static async Task<IEnumerable<AbstractPacketWriter>> GetItemUpdatesAsync(IRoomLogic room)
+    public async Task<IEnumerable<AbstractPacketWriter>> GetUpdatesForRoomAsync(IRoomLogic room)
     {
         var writers = new List<AbstractPacketWriter>();
         
@@ -43,7 +24,6 @@ public class CheckOnRoomItemsTask(RoomRepository roomRepository) : IServerTask
         var rollerUpdates = await GetRollerUpdatesAsync(room, roomRollers);
         
         writers.AddRange(rollerUpdates);
-
         return writers;
     }
 

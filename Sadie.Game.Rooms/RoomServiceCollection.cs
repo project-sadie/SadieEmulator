@@ -2,6 +2,7 @@
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Furniture.Processors;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Chat;
@@ -34,6 +35,14 @@ public static class RoomServiceCollection
             .As<IRoomFurnitureItemInteractor>()
             .WithTransientLifetime());
 
+        serviceCollection.Scan(scan => scan
+            .FromAssemblies(assemblies)
+            .AddClasses(classes => classes.Where(x => 
+                x is { IsClass: true, IsInterface: false } && 
+                x.IsSubclassOf(typeof(IRoomFurnitureItemProcessor))))
+            .As<IRoomFurnitureItemProcessor>()
+            .WithSingletonLifetime());
+        
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddTransient<IRoomBotRepository, RoomBotRepository>();
         serviceCollection.AddSingleton<RoomUserFactory>();
