@@ -94,8 +94,13 @@ public class Player
 
     public bool IsFriendsWith(int targetId)
     {
-        return IncomingFriendships.FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) != null 
-               || OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) != null;
+        return IncomingFriendships.FirstOrDefault(x =>
+                   x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) !=
+               null 
+               ||
+               OutgoingFriendships.FirstOrDefault(x =>
+                   x.TargetPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) !=
+               null;
     }
 
     public PlayerFriendship? TryGetAcceptedFriendshipFor(int targetId)
