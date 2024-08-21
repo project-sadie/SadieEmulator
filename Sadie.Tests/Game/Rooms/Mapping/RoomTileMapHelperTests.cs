@@ -532,7 +532,9 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetEffectFromInteractionType_Water_ReturnsSwimming()
     {
-        Assert.That(RoomTileMapHelpers.GetEffectFromInteractionType(FurnitureItemInteractionType.Water), Is.EqualTo(RoomUserEffect.Swimming));
+        var effect =
+            RoomTileMapHelpers.GetEffectFromInteractionType(FurnitureItemInteractionType.Water);
+        Assert.That(effect, Is.EqualTo(RoomUserEffect.Swimming));
     }
 
     private static PlayerFurnitureItemPlacementData MockLongFurnitureItem(int x = 0,
