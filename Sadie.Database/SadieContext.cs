@@ -199,5 +199,9 @@ public class SadieContext(
             .HasMany(c => c.FurnitureItems)
             .WithOne(x => x.Room)
             .HasForeignKey(e => e.RoomId);
+
+        modelBuilder.Entity<PlayerFurnitureItem>()
+            .Navigation(x => x.FurnitureItem)
+            .AutoInclude();
     }
 }

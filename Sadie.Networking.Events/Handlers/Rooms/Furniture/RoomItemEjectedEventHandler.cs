@@ -44,6 +44,14 @@ public class RoomItemEjectedEventHandler(
             return;
         }
 
+        var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Id;
+        var playerItem = client.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
+
+        if (playerItem == null)
+        {
+            return;
+        }
+
         var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
         if (interactor != null)
@@ -67,14 +75,6 @@ public class RoomItemEjectedEventHandler(
             {
                 Item = roomFurnitureItem
             });
-        }
-
-        var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Id;
-        var playerItem = client.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
-
-        if (playerItem == null)
-        {
-            return;
         }
 
         room.FurnitureItems.Remove(roomFurnitureItem);

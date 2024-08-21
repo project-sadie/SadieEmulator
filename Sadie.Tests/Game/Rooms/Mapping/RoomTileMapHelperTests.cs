@@ -8,7 +8,7 @@ using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Mapping;
 
-namespace Sadie.Tests.Rooms.Mapping;
+namespace Sadie.Tests.Game.Rooms.Mapping;
 
 [TestFixture]
 public class RoomTileMapHelperTests

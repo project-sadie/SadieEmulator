@@ -14,6 +14,7 @@ public class Player
     private PlayerGameSettings? _gameSettings;
     private ICollection<PlayerFriendship> _outgoingFriendships = [];
     private ICollection<PlayerFriendship> _incomingFriendships = [];
+    private ICollection<PlayerFurnitureItem> _furnitureItems = [];
 
     public Player()
     {
@@ -48,7 +49,13 @@ public class Player
     }
     
     public ICollection<PlayerBadge> Badges { get; init; } = [];
-    public ICollection<PlayerFurnitureItem> FurnitureItems { get; init; } = [];
+
+    public ICollection<PlayerFurnitureItem> FurnitureItems
+    {
+        get => _lazyLoader.Load(this, ref _furnitureItems);
+        init => _furnitureItems = value;
+    }
+    
     public ICollection<PlayerWardrobeItem> WardrobeItems { get; init; } = [];
     public ICollection<PlayerSubscription> Subscriptions { get; init; } = [];
     [InverseProperty("TargetPlayer")] public ICollection<PlayerRespect> Respects { get; init; } = [];
