@@ -128,7 +128,7 @@ public class NetworkPacketWriterSerializer
             
         foreach (var item in list)
         {
-            writer.WriteString(item);
+            writer.WriteString(item ?? "");
         }
     }
     
@@ -203,7 +203,7 @@ public class NetworkPacketWriterSerializer
         }
         else if (type == typeof(Dictionary<string, int>))
         {
-            var collection = (Dictionary<string?, int>)property.GetValue(packet)!;
+            var collection = (Dictionary<string, int>)property.GetValue(packet)!;
             
             writer.WriteInteger(collection.Count);
             

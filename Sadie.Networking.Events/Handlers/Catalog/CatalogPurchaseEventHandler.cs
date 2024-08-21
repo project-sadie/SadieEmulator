@@ -66,81 +66,7 @@ public class CatalogPurchaseEventHandler(
 
         if (page.Layout == CatalogPageLayout.VipBuy)
         {
-            var offer = await dbContext
-                .Set<CatalogClubOffer>()
-                .FirstOrDefaultAsync(x => x.Id == ItemId);
-
-            if (offer == null)
-            {
-                await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
-                {
-                    Error = (int) CatalogPurchaseError.Server
-                });
-                
-                return;
-            }
-
-            var clubSubscription = await dbContext
-                .Subscriptions
-                .Where(x => x.Name == "HABBO_CLUB")
-                .FirstOrDefaultAsync();
-
-            if (clubSubscription == null)
-            {
-                return;
-            }
-
-            if (!await RoomHelpersDirty.TryChargeForClubOfferPurchaseAsync(client, offer))
-            {
-                return;
-            }
-
-            var subscription = new PlayerSubscription
-            {
-                PlayerId = player.Id,
-                SubscriptionId = clubSubscription.Id,
-                CreatedAt = DateTime.Now,
-                ExpiresAt = DateTime.Now.AddDays(offer.DurationDays)
-            };
-
-            player.Subscriptions.Add(subscription);
-            
-            dbContext.PlayerSubscriptions.Add(subscription);
-            await dbContext.SaveChangesAsync();
-            
-            await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
-            {
-                Id = 0,
-                Name = "",
-                Rented = false,
-                CostCredits = 0,
-                CostPoints = 0,
-                CostPointsType = 0,
-                CanGift = false,
-                FurnitureItems = [],
-                Amount = 0,
-                ClubLevel = 0,
-                CanPurchaseBundles = false,
-                Metadata = null,
-                IsLimited = false,
-                LimitedItemSeriesSize = 0,
-                AmountLeft = 0
-            });
-
-            await client.WriteToStreamAsync(new PlayerPermissionsWriter
-            {
-                Club = 2,
-                Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
-                Ambassador = true
-            });
-            
-            var subWriter = PlayerHelpers.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
-
-            if (subWriter != null)
-            {
-                await client.WriteToStreamAsync(subWriter);
-            }
-
+            await ProcessVipPurchaseAsync(client);
             return;
         }
 
@@ -176,42 +102,7 @@ public class CatalogPurchaseEventHandler(
             item.Name.Contains("bot_") &&
             !string.IsNullOrEmpty(item.MetaData))
         {
-            var metaData = item.MetaData;
-
-            if (string.IsNullOrEmpty(metaData))
-            {
-                return;
-            }
-            
-            var information = metaData
-                .Split(";")
-                .ToDictionary(k => k.Split(":")[0], v => v.Split(":")[1]);
-
-            var bot = new PlayerBot
-            {
-                PlayerId = client.Player.Id,
-                RoomId = null,
-                Username = information["name"],
-                FigureCode = information["figure"],
-                Motto = information["motto"],
-                Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female
-            };
-
-            dbContext.Entry(bot).State = EntityState.Added;
-            await dbContext.SaveChangesAsync();
-
-            client.Player.Bots.Add(bot);
-
-            await client.WriteToStreamAsync(new PlayerInventoryAddBotWriter
-            {
-                Id = bot.Id,
-                Username = bot.Username,
-                Motto = bot.Motto,
-                Gender = bot.Gender == AvatarGender.Male ? "m" : "f",
-                FigureCode = bot.FigureCode
-            });
-            
-            await ConfirmPurchaseAsync(client, item);
+            await ProcessBotPurchaseAsync(client, item);
             return;
         }
         
@@ -299,6 +190,126 @@ public class CatalogPurchaseEventHandler(
         
         await client.WriteToStreamAsync(writer);
         await ConfirmPurchaseAsync(client, item);
+    }
+
+    private async Task ProcessBotPurchaseAsync(INetworkClient client, CatalogItem catalogItem)
+    {
+        var metaData = catalogItem.MetaData;
+
+        if (string.IsNullOrEmpty(metaData))
+        {
+            return;
+        }
+            
+        var information = metaData
+            .Split(";")
+            .ToDictionary(k => k.Split(":")[0], v => v.Split(":")[1]);
+
+        var bot = new PlayerBot
+        {
+            PlayerId = client.Player.Id,
+            RoomId = null,
+            Username = information["name"],
+            FigureCode = information["figure"],
+            Motto = information["motto"],
+            Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female
+        };
+
+        dbContext.Entry(bot).State = EntityState.Added;
+        await dbContext.SaveChangesAsync();
+
+        client.Player.Bots.Add(bot);
+
+        await client.WriteToStreamAsync(new PlayerInventoryAddBotWriter
+        {
+            Id = bot.Id,
+            Username = bot.Username,
+            Motto = bot.Motto,
+            Gender = bot.Gender == AvatarGender.Male ? "m" : "f",
+            FigureCode = bot.FigureCode
+        });
+            
+        await ConfirmPurchaseAsync(client, catalogItem);
+    }
+
+    private async Task ProcessVipPurchaseAsync(INetworkClient client)
+    {
+        var player = client.Player;
+        
+        var offer = await dbContext
+                .Set<CatalogClubOffer>()
+                .FirstOrDefaultAsync(x => x.Id == ItemId);
+
+            if (offer == null)
+            {
+                await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
+                {
+                    Error = (int) CatalogPurchaseError.Server
+                });
+                
+                return;
+            }
+
+            var clubSubscription = await dbContext
+                .Subscriptions
+                .Where(x => x.Name == "HABBO_CLUB")
+                .FirstOrDefaultAsync();
+
+            if (clubSubscription == null)
+            {
+                return;
+            }
+
+            if (!await RoomHelpersDirty.TryChargeForClubOfferPurchaseAsync(client, offer))
+            {
+                return;
+            }
+
+            var subscription = new PlayerSubscription
+            {
+                PlayerId = player.Id,
+                SubscriptionId = clubSubscription.Id,
+                CreatedAt = DateTime.Now,
+                ExpiresAt = DateTime.Now.AddDays(offer.DurationDays)
+            };
+
+            player.Subscriptions.Add(subscription);
+            
+            dbContext.PlayerSubscriptions.Add(subscription);
+            await dbContext.SaveChangesAsync();
+            
+            await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
+            {
+                Id = 0,
+                Name = "",
+                Rented = false,
+                CostCredits = 0,
+                CostPoints = 0,
+                CostPointsType = 0,
+                CanGift = false,
+                FurnitureItems = [],
+                Amount = 0,
+                ClubLevel = 0,
+                CanPurchaseBundles = false,
+                Metadata = null,
+                IsLimited = false,
+                LimitedItemSeriesSize = 0,
+                AmountLeft = 0
+            });
+
+            await client.WriteToStreamAsync(new PlayerPermissionsWriter
+            {
+                Club = 2,
+                Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
+                Ambassador = true
+            });
+            
+            var subWriter = PlayerHelpers.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+
+            if (subWriter != null)
+            {
+                await client.WriteToStreamAsync(subWriter);
+            }
     }
 
     private async Task ConfirmPurchaseAsync(INetworkClient client, CatalogItem item)

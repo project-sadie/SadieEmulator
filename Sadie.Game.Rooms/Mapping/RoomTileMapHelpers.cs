@@ -73,16 +73,12 @@ public class RoomTileMapHelpers
     {
         var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
 
-        if (item == null)
+        if (item == null ||
+            item.FurnitureItem.CanWalk)
         {
             return RoomTileState.Open;
         }
         
-        if (item.FurnitureItem.CanWalk)
-        {
-            return RoomTileState.Open;
-        }
-
         if (item.FurnitureItem.CanSit)
         {
             return RoomTileState.Sit;
