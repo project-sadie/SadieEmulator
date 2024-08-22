@@ -21,7 +21,7 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     ILogger<SecureLoginEventHandler> logger,
     IOptions<EncryptionOptions> encryptionOptions,
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,

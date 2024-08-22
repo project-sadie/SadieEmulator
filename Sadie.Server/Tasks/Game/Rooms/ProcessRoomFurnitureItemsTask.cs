@@ -1,12 +1,11 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture.Processors;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Serialization;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
 public class ProcessRoomFurnitureItemsTask(
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     IEnumerable<IRoomFurnitureItemProcessor> processors) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(1000);

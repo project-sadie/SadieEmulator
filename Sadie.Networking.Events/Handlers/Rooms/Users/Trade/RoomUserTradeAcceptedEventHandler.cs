@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -6,7 +6,7 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
 [PacketId(EventHandlerId.RoomUserTradeAccepted)]
-public class RoomUserTradeAcceptedEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTradeAcceptedEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

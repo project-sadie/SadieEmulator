@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -19,9 +18,9 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 [PacketId(EventHandlerId.RoomLoaded)]
 public class RoomLoadedEventHandler(
     ILogger<RoomLoadedEventHandler> logger,
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     RoomUserFactory roomUserFactory,
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     SadieContext dbContext,
     IMapper mapper)
     : INetworkPacketEventHandler

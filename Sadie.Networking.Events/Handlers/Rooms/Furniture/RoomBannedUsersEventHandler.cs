@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -6,7 +6,7 @@ using Sadie.Networking.Writers.Rooms.Users;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomBannedUsers)]
-public class RoomBannedUsersEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomBannedUsersEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required int RoomId { get; set; }
     public async Task HandleAsync(INetworkClient client)

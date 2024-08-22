@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Friendships;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 [PacketId(EventHandlerId.PlayerAcceptFriendRequest)]
 public class PlayerAcceptFriendRequestEventHandler(
     PlayerRepository playerRepository,
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {

@@ -16,7 +16,7 @@ using Sadie.Game.Rooms.Packets.Writers;
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class TeleportInteractor(
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper) : AbstractRoomFurnitureItemInteractor
 {

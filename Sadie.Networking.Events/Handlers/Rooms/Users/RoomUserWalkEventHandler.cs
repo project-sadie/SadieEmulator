@@ -1,12 +1,12 @@
 ﻿using System.Drawing;
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerId.RoomUserWalk)]
-public class RoomUserWalkEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserWalkEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int X { get; set; }
     public int Y { get; set; }

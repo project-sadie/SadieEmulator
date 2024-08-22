@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -6,7 +6,7 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
 
 [PacketId(EventHandlerId.RoomUserDropHandItem)]
-public class RoomUserDropHandItemEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserDropHandItemEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

@@ -1,6 +1,6 @@
-﻿using Sadie.Database;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.Database;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
     public required string Gender { get; set; }

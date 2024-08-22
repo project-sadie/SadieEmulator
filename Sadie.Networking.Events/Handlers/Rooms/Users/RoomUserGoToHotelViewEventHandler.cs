@@ -1,13 +1,13 @@
 using AutoMapper;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerId.RoomUserGoToHotelView)]
-public class RoomUserGoToHotelViewEventHandler(RoomRepository roomRepository,
+public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper) : INetworkPacketEventHandler
 {

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
@@ -12,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerCreateRoom)]
 public class PlayerCreateRoomEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     IMapper mapper) : INetworkPacketEventHandler
 {
     public required string Name { get; set; }

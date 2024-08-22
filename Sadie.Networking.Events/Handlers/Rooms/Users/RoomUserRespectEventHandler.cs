@@ -1,8 +1,8 @@
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -12,8 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerId.RoomUserRespect)]
 public class RoomUserRespectEventHandler(
-    PlayerRepository playerRepository,
-    RoomRepository roomRepository,
+    IPlayerRepository playerRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {

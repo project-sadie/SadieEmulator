@@ -1,5 +1,6 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
@@ -112,7 +113,7 @@ public static class RoomHelpersDirty
         IRoomLogic room, 
         RoomUserFactory roomUserFactory,
         SadieContext dbContext,
-        PlayerRepository playerRepository)
+        IPlayerRepository playerRepository)
     {
         var player = client.Player;
         var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);

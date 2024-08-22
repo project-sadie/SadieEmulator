@@ -1,11 +1,11 @@
 using EFCore.BulkExtensions;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Chat;
-using Sadie.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class SaveRoomChatMessagesTask(RoomRepository roomRepository, SadieContext dbContext) : IServerTask
+public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, SadieContext dbContext) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
     public DateTime LastExecuted { get; set; }

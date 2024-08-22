@@ -1,4 +1,5 @@
-﻿using Sadie.Database.Models.Players;
+﻿using Sadie.API.Game.Players;
+using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
@@ -14,7 +15,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
     public required int Index { get; init; }
     public required int PlayerId { get; init; }
     public required ICollection<PlayerFriendship> Friends { get; init; }
-    public required PlayerRepository PlayerRepository { get; init; }
+    public required IPlayerRepository PlayerRepository { get; init; }
     public required ICollection<PlayerRelationship> Relationships { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)

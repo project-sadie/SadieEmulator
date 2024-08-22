@@ -1,14 +1,15 @@
 using System.Diagnostics;
 using System.Text;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Game.Players;
 using Sadie.Shared;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Server;
 
 public class AboutCommand(
-    RoomRepository roomRepository, 
-    PlayerRepository playerRepository) : AbstractRoomChatCommand
+    IRoomRepository roomRepository, 
+    IPlayerRepository playerRepository) : AbstractRoomChatCommand
 {
     public override string Trigger => "about";
     public override string Description => "Provides information about the server";

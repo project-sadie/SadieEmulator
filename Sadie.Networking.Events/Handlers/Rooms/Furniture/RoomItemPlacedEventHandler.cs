@@ -1,7 +1,7 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomItemPlaced)]
 public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
     public required string PlacementData { get; set; }

@@ -1,5 +1,5 @@
-﻿using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Game.Rooms;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerId.RoomUserAction)]
-public class RoomUserActionEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int Action { get; set; }
     

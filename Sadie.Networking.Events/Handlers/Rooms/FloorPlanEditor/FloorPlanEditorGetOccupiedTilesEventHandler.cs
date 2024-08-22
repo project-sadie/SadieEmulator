@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.FloorPlanEditor;
@@ -6,7 +6,7 @@ using Sadie.Networking.Writers.Rooms.FloorPlanEditor;
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
 [PacketId(EventHandlerId.FloorPlanEditorGetOccupiedTiles)]
-public class FloorPlanEditorGetOccupiedTilesEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class FloorPlanEditorGetOccupiedTilesEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

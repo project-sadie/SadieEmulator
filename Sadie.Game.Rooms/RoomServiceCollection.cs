@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Furniture;
@@ -45,7 +46,7 @@ public static class RoomServiceCollection
         serviceCollection.AddTransient<IRoomBotRepository, RoomBotRepository>();
         serviceCollection.AddSingleton<RoomUserFactory>();
         serviceCollection.AddSingleton<RoomBotFactory>();
-        serviceCollection.AddSingleton<RoomRepository, RoomRepository>();
+        serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
 
         serviceCollection.AddSingleton<AboutCommand>();
 
