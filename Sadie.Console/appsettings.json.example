@@ -9,14 +9,10 @@
       { "Name": "Console" }
     ]
   },
-  "PluginDirectory": ""
-  "DatabaseOptions": {
-    "Host": "127.0.0.1",
-    "Port": 3306,
-    "Username": "root",
-    "Password": "password",
-    "Database": "sadie"
+  "ConnectionStrings": {
+    "Default": "Server=127.0.0.1;Database=sadie;Uid=root;Pwd=;"
   },
+  "PluginDirectory": "",
   "Encryption": {
     "Enabled": false,
     "E": "3",

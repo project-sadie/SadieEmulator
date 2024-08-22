@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using MySqlConnector;
 using Sadie.Database.Models;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.FrontPage;
@@ -17,14 +15,11 @@ using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Database.Models.Server;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Options.Options;
 using Sadie.Shared.Helpers;
 
 namespace Sadie.Database;
 
-public class SadieContext(
-    Microsoft.Extensions.Logging.ILoggerFactory loggerFactory, 
-    IOptions<DatabaseOptions> options) : DbContext
+public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(options)
 {
     public DbSet<NavigatorCategory> NavigatorCategories { get; init; }
     public DbSet<NavigatorTab> NavigatorTabs { get; init; }
@@ -64,37 +59,6 @@ public class SadieContext(
     public DbSet<PlayerRoomVisit> PlayerRoomVisits { get; init; }
     public DbSet<PlayerRoomLike> PlayerRoomLikes { get; init; }
     public DbSet<PlayerMessage> PlayerMessages { get; init; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var databaseSettings = options.Value;
-        var stringBuilder = new MySqlConnectionStringBuilder
-        {
-            UserID = databaseSettings.Username,
-            Server = databaseSettings.Host,
-            Database = databaseSettings.Database,
-            Port = databaseSettings.Port,
-            Password = databaseSettings.Password,
-            AllowZeroDateTime = true,
-            ConvertZeroDateTime = true,
-            AllowLoadLocalInfile = true
-        };
-
-        var connectionString = stringBuilder.ToString();
-
-        optionsBuilder.UseMySql(connectionString, MySqlServerVersion.LatestSupportedServerVersion, mySqlOptions =>
-        {
-            mySqlOptions.EnableRetryOnFailure(
-               maxRetryCount: 10,
-               maxRetryDelay: TimeSpan.FromSeconds(30),
-               errorNumbersToAdd: null);
-        });
-        
-        optionsBuilder.UseSnakeCaseNamingConvention();
-        optionsBuilder.UseLoggerFactory(loggerFactory);
-
-        base.OnConfiguring(optionsBuilder);
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
