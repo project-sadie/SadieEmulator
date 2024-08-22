@@ -31,7 +31,7 @@ public class NavigatorRoomProvider(
         
         if (searchQuery.Contains(':'))
         {
-            ApplyFilter(query, searchQuery.Split([':'], 2));
+            query = ApplyFilter(query, searchQuery.Split([':'], 2));
         }
 
         return await query
