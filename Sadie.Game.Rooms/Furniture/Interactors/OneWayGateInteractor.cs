@@ -1,7 +1,7 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Unit;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
@@ -13,11 +13,11 @@ public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitur
 {
     public override string InteractionType => FurnitureItemInteractionType.OneWayGate;
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
         var squareInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
-        if (roomUnit.Point != squareInFront)
+        if (roomUser.Point != squareInFront)
         {
             return;
         }
@@ -34,11 +34,11 @@ public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitur
         
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
 
-        roomUnit.DirectionHead = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
-        roomUnit.Direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
-        roomUnit.OverridePoints.Add(itemPoint);
-        roomUnit.CanWalk = false;
-        roomUnit.WalkToPoint(squareBehind, OnReachedGoal);
+        roomUser.DirectionHead = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
+        roomUser.Direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
+        roomUser.OverridePoints.Add(itemPoint);
+        roomUser.CanWalk = false;
+        roomUser.WalkToPoint(squareBehind, OnReachedGoal);
         
         return;
 
@@ -46,12 +46,12 @@ public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitur
         {
             await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
 
-            roomUnit.OverridePoints.Remove(itemPoint);
-            roomUnit.CanWalk = true;
+            roomUser.OverridePoints.Remove(itemPoint);
+            roomUser.CanWalk = true;
         }
     }
 
-    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
         dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;

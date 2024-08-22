@@ -1,5 +1,5 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemUse)]
 public class RoomItemUseEventHandler(
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     RoomFurnitureItemInteractorRepository interactorRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {

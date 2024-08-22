@@ -150,4 +150,5 @@ public class ServerPacketId
     public const short ClientLatency = 10;
     public const short PlayerPing = 3928;
     public const short RoomObjectsRolling = 3207;
+    public const short WiredFurnitureItemAction = 1434;
 }

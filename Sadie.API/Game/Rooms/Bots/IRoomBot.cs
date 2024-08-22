@@ -3,7 +3,7 @@ using Sadie.Database.Models.Players;
 
 namespace Sadie.API.Game.Rooms.Bots;
 
-public interface IRoomBot : IRoomUnit
+public interface IRoomBot : IRoomUnitData
 { 
     int Id { get; }
     PlayerBot Bot { get; }

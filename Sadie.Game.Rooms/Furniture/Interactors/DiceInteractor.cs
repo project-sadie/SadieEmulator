@@ -1,6 +1,6 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Unit;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Shared;
 
@@ -10,7 +10,7 @@ public class DiceInteractor : AbstractRoomFurnitureItemInteractor
 {
     public override string InteractionType => "dice";
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "-1");
         await Task.Delay(1500);

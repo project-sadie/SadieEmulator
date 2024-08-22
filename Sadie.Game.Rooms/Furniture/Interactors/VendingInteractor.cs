@@ -1,6 +1,6 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Unit;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Mapping;
@@ -13,12 +13,12 @@ public class VendingInteractor : AbstractRoomFurnitureItemInteractor
 {
     public override string InteractionType => FurnitureItemInteractionType.VendingMachine;
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
         var direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
 
-        roomUnit.Direction = direction;
-        roomUnit.DirectionHead = direction;
+        roomUser.Direction = direction;
+        roomUser.DirectionHead = direction;
 
         var handItems = item
             .FurnitureItem
@@ -27,14 +27,14 @@ public class VendingInteractor : AbstractRoomFurnitureItemInteractor
 
         var squareInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
-        if (handItems.Count < 1 || roomUnit.Point != squareInFront)
+        if (handItems.Count < 1 || roomUser.Point != squareInFront)
         {
-            roomUnit.WalkToPoint(squareInFront, OnReachedGoal);
+            roomUser.WalkToPoint(squareInFront, OnReachedGoal);
             return;
 
             async void OnReachedGoal()
             {
-                await OnTriggerAsync(room, item, roomUnit);
+                await OnTriggerAsync(room, item, roomUser);
             }
         }
         
@@ -44,12 +44,12 @@ public class VendingInteractor : AbstractRoomFurnitureItemInteractor
 
         var handItem = handItems.PickRandom();
 
-        roomUnit.HandItemId = handItem.Id;
-        roomUnit.HandItemSet = DateTime.Now;
+        roomUser.HandItemId = handItem.Id;
+        roomUser.HandItemSet = DateTime.Now;
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = roomUnit.Id,
+            UserId = roomUser.Id,
             ItemId = handItem.Id
         });
     }
