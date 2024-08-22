@@ -6,7 +6,7 @@ using Sadie.Database.Models.Rooms.Rights;
 
 namespace Sadie.Database.Models.Rooms;
 
-public class Room
+public class Room : IRoom
 {
     private readonly ILazyLoader _lazyLoader;
     private Player? _owner;
