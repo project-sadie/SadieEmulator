@@ -8,9 +8,9 @@ namespace Sadie.Game.Rooms.Packets.Writers.Furniture;
 [PacketId(ServerPacketId.WiredTrigger)]
 public class WiredTriggerWriter : AbstractPacketWriter
 {
-    public required bool StuffTypeSelectionEnabled { get; set; }
-    public required int MaxItemsSelected { get; set; }
-    public required ICollection<PlayerFurnitureItemPlacementData> SelectedItems { get; set; }
+    public required bool StuffTypeSelectionEnabled { get; init; }
+    public required int MaxItemsSelected { get; init; }
+    public required ICollection<PlayerFurnitureItemPlacementData> SelectedItems { get; init; }
     
     
     public required PlayerFurnitureItem Item { get; init; }
