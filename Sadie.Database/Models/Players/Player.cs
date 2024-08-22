@@ -7,7 +7,7 @@ using Sadie.Enums.Game.Players;
 
 namespace Sadie.Database.Models.Players;
 
-public class Player
+public class Player : IPlayer
 {
     private readonly ILazyLoader _lazyLoader;
     private PlayerNavigatorSettings? _navigatorSettings;

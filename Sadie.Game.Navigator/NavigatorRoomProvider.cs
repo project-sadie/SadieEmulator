@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Navigator;
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Game.Navigator.Filterers;
-using Sadie.Game.Rooms;
 
 namespace Sadie.Game.Navigator;
 
 public class NavigatorRoomProvider(
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     SadieContext dbContext,
     IEnumerable<INavigatorSearchFilterer> filterers) : INavigatorRoomProvider
 {

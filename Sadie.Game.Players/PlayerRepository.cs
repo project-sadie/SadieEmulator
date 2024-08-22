@@ -1,6 +1,8 @@
 using System.Collections.Concurrent;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Networking.Serialization;
@@ -9,18 +11,19 @@ namespace Sadie.Game.Players;
 
 public class PlayerRepository(
     ILogger<PlayerRepository> logger,
-    SadieContext dbContext)
+    SadieContext dbContext,
+    IMapper mapper) : IPlayerRepository
 {
-    private readonly ConcurrentDictionary<int, PlayerLogic> _players = new();
+    private readonly ConcurrentDictionary<int, IPlayerLogic> _players = new();
 
-    public PlayerLogic? GetPlayerLogicById(int id) => _players.GetValueOrDefault(id);
-    public PlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Username == username);
+    public IPlayerLogic? GetPlayerLogicById(int id) => _players.GetValueOrDefault(id);
+    public IPlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Username == username);
     
     public async Task<Player?> GetPlayerByIdAsync(int id)
     {
         if (_players.TryGetValue(id, out var byId))
         {
-            return byId;
+            return mapper.Map<Player>(byId);
         }
         
         return await dbContext
@@ -38,7 +41,7 @@ public class PlayerRepository(
         
         if (online != null)
         {
-            return online;
+            return mapper.Map<Player>(online);
         }
         
         return await dbContext
@@ -47,9 +50,9 @@ public class PlayerRepository(
             .FirstOrDefaultAsync(x => x.Username == username);
     }
 
-    public ICollection<PlayerLogic> GetAll() => _players.Values;
+    public ICollection<IPlayerLogic> GetAll() => _players.Values;
     
-    public bool TryAddPlayer(PlayerLogic player) => _players.TryAdd(player.Id, player);
+    public bool TryAddPlayer(IPlayerLogic player) => _players.TryAdd(player.Id, player);
 
     public async Task<bool> TryRemovePlayerAsync(int playerId)
     {

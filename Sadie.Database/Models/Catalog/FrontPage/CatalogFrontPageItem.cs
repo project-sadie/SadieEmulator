@@ -1,5 +1,5 @@
 using Sadie.Database.Models.Catalog.Pages;
-using Sadie.Shared.Unsorted;
+using Sadie.Enums.Unsorted;
 
 namespace Sadie.Database.Models.Catalog.FrontPage;
 

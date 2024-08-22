@@ -7,7 +7,6 @@ using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Catalog.Pages;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Client;

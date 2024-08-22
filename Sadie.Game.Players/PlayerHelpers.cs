@@ -82,7 +82,7 @@ public class PlayerHelpers
         IEnumerable<PlayerFriendship> friendships, 
         bool isOnline, 
         bool inRoom,
-        PlayerRepository playerRepository)
+        IPlayerRepository playerRepository)
     {
         var update = new PlayerFriendshipUpdate
         {

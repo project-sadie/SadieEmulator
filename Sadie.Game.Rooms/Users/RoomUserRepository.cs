@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
@@ -10,7 +11,7 @@ using Sadie.Networking.Serialization;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUserRepository(ILogger<RoomUserRepository> logger,
-    PlayerRepository playerRepository) : IRoomUserRepository
+    IPlayerRepository playerRepository) : IRoomUserRepository
 {
     private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 

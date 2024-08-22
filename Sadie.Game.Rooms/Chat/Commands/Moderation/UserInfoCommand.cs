@@ -1,10 +1,10 @@
 using System.Text;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Game.Players;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Moderation;
 
-public class UserInfoCommand(PlayerRepository playerRepository) : AbstractRoomChatCommand
+public class UserInfoCommand(IPlayerRepository playerRepository) : AbstractRoomChatCommand
 {
     public override string Trigger => "userinfo";
     public override string Description => "Displays basic info about a user";

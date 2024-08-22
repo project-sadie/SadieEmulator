@@ -1,3 +1,4 @@
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players;
@@ -38,7 +39,7 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        Player? targetPlayer;
+        IPlayer? targetPlayer;
         var targetOnline = false;
         var onlineTarget = playerRepository.GetPlayerLogicByUsername(TargetUsername);
         
@@ -107,7 +108,7 @@ public class PlayerSendFriendRequestEventHandler(
     private async Task AcceptPendingAsync(
         PlayerFriendship incomingRequest, 
         bool targetOnline, 
-        PlayerLogic? onlineTarget,
+        IPlayerLogic? onlineTarget,
         int playerId)
     {
         if (incomingRequest.Status != PlayerFriendshipStatus.Pending)
@@ -133,10 +134,10 @@ public class PlayerSendFriendRequestEventHandler(
     }
 
     private async Task SendRequestAsync(
-        Player player,
-        Player targetPlayer,
+        IPlayer player,
+        IPlayer targetPlayer,
         bool targetOnline,
-        PlayerLogic? onlineTarget)
+        IPlayerLogic? onlineTarget)
     {
         var playerFriendship = new PlayerFriendship
         {
