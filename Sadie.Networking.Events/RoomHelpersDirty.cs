@@ -266,8 +266,20 @@ public static class RoomHelpersDirty
             CanUpvote = canLikeRoom
         });
         
-        await client.WriteToStreamAsync(new RoomPromotionWriter());
-
+        await client.WriteToStreamAsync(new RoomPromotionWriter
+        {
+            Unknown1 = -1,
+            Unknown2 = -1,
+            Unknown3 = "",
+            Unknown4 = 0,
+            Unknown5 = 0,
+            Unknown6 = "",
+            Unknown7 = "",
+            Unknown8 = 0,
+            Unknown9 = 0,
+            Unknown10 = 0
+        });
+        
         var owner = room.OwnerId == player.Id;
         
         await client.WriteToStreamAsync(new RoomPaneWriter
