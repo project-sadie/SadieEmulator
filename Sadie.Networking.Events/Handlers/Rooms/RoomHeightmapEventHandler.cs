@@ -1,4 +1,4 @@
-﻿using Sadie.API.Game.Rooms;
+﻿using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -81,7 +81,7 @@ public class RoomHeightmapEventHandler(RoomRepository roomRepository) : INetwork
     }
 
     private async Task SendFurnitureItemsAsync(
-        IRoomLogic room,
+        IRoom room,
         INetworkObject client)
     {
         var floorItems = room.FurnitureItems

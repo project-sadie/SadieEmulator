@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
-using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
@@ -27,53 +27,7 @@ namespace Sadie.Networking.Events;
 
 public static class RoomHelpersDirty
 {
-    public static async Task<bool> TryChargeForCatalogItemPurchaseAsync(INetworkClient client, CatalogItem item, int amount)
-    {
-        var costInCredits = item.CostCredits * amount;
-        var costInPoints = item.CostPoints * amount;
-
-        var playerData = client.Player.Data;
-        
-        if (playerData.CreditBalance < costInCredits || 
-            (item.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||
-            (item.CostPointsType != 0 && playerData.SeasonalBalance < costInPoints))
-        {
-            return false;
-        }
-
-        if (costInCredits > 0)
-        {
-            playerData.CreditBalance -= costInCredits;
-        
-            await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
-            {
-                Credits = playerData.CreditBalance
-            });
-        }
-
-        if (costInPoints > 0)
-        {
-            if (item.CostPointsType == 0)
-            {
-                playerData.PixelBalance -= costInPoints;
-            }
-            else
-            {
-                playerData.SeasonalBalance -= costInPoints;
-            }
-        
-            await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
-            {
-                PixelBalance = playerData.PixelBalance,
-                SeasonalBalance = playerData.SeasonalBalance,
-                GotwPoints = playerData.GotwPoints
-            });
-        }
-
-        return true;
-    }
-
-    private static RoomControllerLevel GetControllerLevelForUser(IRoomLogic room, Player player)
+    private static RoomControllerLevel GetControllerLevelForUser(IRoom room, IPlayer player)
     {
         var controllerLevel = RoomControllerLevel.None;
         
@@ -106,7 +60,7 @@ public static class RoomHelpersDirty
     }
 
     private static async Task CreateRoomVisitForPlayerAsync(
-        Player player, 
+        IPlayer player, 
         int roomId, 
         SadieContext dbContext)
     {

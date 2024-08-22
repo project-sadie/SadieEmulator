@@ -45,7 +45,7 @@ public class EventSerializer
         }
     }
 
-    private static Dictionary<string, string> ReadAllStringDictionary(INetworkPacket packet)
+    private static Dictionary<string, string> ReadAllStringDictionary(INetworkPacketReader packet)
     {
         var temp = new Dictionary<string, string>();
         var amount = packet.ReadInt();
