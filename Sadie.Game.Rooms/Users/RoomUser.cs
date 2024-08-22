@@ -1,12 +1,11 @@
 ﻿using System.Drawing;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Game.Rooms.PathFinding;
@@ -23,7 +22,7 @@ public class RoomUser(
     double pointZ,
     HDirection directionHead,
     HDirection direction,
-    PlayerLogic player,
+    IPlayerLogic player,
     ServerRoomConstants constants,
     RoomControllerLevel controllerLevel)
     : RoomUserData(id, room, point, pointZ, directionHead, direction, player, TimeSpan.FromSeconds(constants.SecondsTillUserIdle)),

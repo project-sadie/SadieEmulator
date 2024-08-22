@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Game.Rooms;
-using Sadie.Database.Models.Rooms;
 
 namespace Sadie.Game.Rooms.Bots;
 

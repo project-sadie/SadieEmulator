@@ -6,14 +6,12 @@ using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Mapping;
@@ -268,8 +266,20 @@ public static class RoomHelpersDirty
             CanUpvote = canLikeRoom
         });
         
-        await client.WriteToStreamAsync(new RoomPromotionWriter());
-
+        await client.WriteToStreamAsync(new RoomPromotionWriter
+        {
+            Unknown1 = -1,
+            Unknown2 = -1,
+            Unknown3 = "",
+            Unknown4 = 0,
+            Unknown5 = 0,
+            Unknown6 = "",
+            Unknown7 = "",
+            Unknown8 = 0,
+            Unknown9 = 0,
+            Unknown10 = 0
+        });
+        
         var owner = room.OwnerId == player.Id;
         
         await client.WriteToStreamAsync(new RoomPaneWriter
@@ -358,7 +368,7 @@ public static class RoomHelpersDirty
             playerItem.FurnitureItem.TileSpanY, direction);
 
         if (!pointsForPlacement
-            .All(x => RoomTileMapHelpers.CanPlace([new Point(x.X, x.Y)], room.TileMap)))
+            .All(x => RoomTileMapHelpers.CanPlaceAt([new Point(x.X, x.Y)], room.TileMap)))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;

@@ -11,7 +11,18 @@ public static class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        serviceCollection.AddDbContext<SadieContext>(ServiceLifetime.Transient);
+        serviceCollection.AddDbContext<SadieContext>(options =>
+        {
+            options.UseMySql(config.GetConnectionString("Default"), MySqlServerVersion.LatestSupportedServerVersion, mySqlOptions =>
+            {
+                mySqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 10,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null);
+            });
+        
+            options.UseSnakeCaseNamingConvention();
+        });
 
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
             provider.GetRequiredService<SadieContext>()

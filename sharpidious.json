@@ -1,13 +1,19 @@
 {
     "rules": {
         "class.maxNameLength": 45,
-        "class.maxLineCount": 300,
+        "class.maxLineCount": 250,
         "class.maxLineLength": 140,
         "method.maxLineCount": 95,
         "check.multipleEmptyLines": true
     },
 
     "ignoredClassNames": [
+        "RoomItemEjectedEventHandler",
+        "RoomTileMapHelperTests",
+        "SadieContext",
+        "RoomHelpersDirty",
+        "RoomTileMapHelpers",
+        "NetworkPacketWriterSerializer"
     ],
 
     "rules.override": {

@@ -20,6 +20,7 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         var pluginFolder = config.GetValue<string>("PluginDirectory");
 
         if (!string.IsNullOrEmpty(pluginFolder) && Directory.Exists(pluginFolder))
@@ -31,7 +32,7 @@ public static class ServerServiceCollection
         }
         
         serviceCollection.Scan(scan => scan
-            .FromAssemblyOf<IServerTask>()
+            .FromAssemblies(assemblies)
             .AddClasses(classes => classes.AssignableTo<IServerTask>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());

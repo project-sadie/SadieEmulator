@@ -1,4 +1,4 @@
-namespace Sadie.Game.Catalog.Pages;
+namespace Sadie.Shared;
 
 public class CatalogPageLayout
 {

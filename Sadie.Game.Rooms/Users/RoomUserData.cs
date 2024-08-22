@@ -4,7 +4,6 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Enums.Game.Rooms.Unit;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Players;
 using Sadie.Game.Rooms.Unit;
 
 namespace Sadie.Game.Rooms.Users;
@@ -27,7 +26,7 @@ public class RoomUserData : RoomUnit, IRoomUserData
         double pointZ, 
         HDirection directionHead, 
         HDirection direction, 
-        PlayerLogic player, 
+        IPlayerLogic player, 
         TimeSpan idleTime) : 
         base(id, RoomUnitType.User, room, point)
     {

@@ -1,13 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Navigator;
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
-using Sadie.Game.Rooms;
+using Sadie.Game.Navigator.Filterers;
 
 namespace Sadie.Game.Navigator;
 
-public class NavigatorRoomProvider(RoomRepository roomRepository, SadieContext dbContext) : INavigatorRoomProvider
+public class NavigatorRoomProvider(
+    IRoomRepository roomRepository, 
+    SadieContext dbContext,
+    IEnumerable<INavigatorSearchFilterer> filterers) : INavigatorRoomProvider
 {
     public Task<List<Room>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
     {
@@ -23,32 +27,11 @@ public class NavigatorRoomProvider(RoomRepository roomRepository, SadieContext d
     {
         var query = dbContext
             .Rooms
-            .Include(x => x.Owner)
-            .Include(x => x.Settings)
-            .Include(x => x.Tags);
+            .AsQueryable();
         
-        if (searchQuery.Contains(":"))
+        if (searchQuery.Contains(':'))
         {
-            var searchQueryParts = searchQuery.Split(":");
-            var filterName = searchQueryParts[0];
-            var filterValue = searchQuery[(filterName.Length + 1)..];
-        
-            return filterName switch
-            {
-                "roomname" => await query
-                    .Where(x => x.Name.Contains(filterValue))
-                    .ToListAsync(),
-            
-                "owner" => await query
-                    .Where(x => x.Owner!.Username.Contains(filterValue))
-                    .ToListAsync(),
-            
-                "tag" => await query
-                    .Where(x => x.Tags.Any(x => x.Name.Contains(filterValue)))
-                    .ToListAsync(),
-            
-                _ => []
-            };
+            query = ApplyFilter(query, searchQuery.Split([':'], 2));
         }
 
         return await query
@@ -58,5 +41,14 @@ public class NavigatorRoomProvider(RoomRepository roomRepository, SadieContext d
                 x.Tags.Any(t => t.Name.Contains(searchQuery)) ||
                 x.Owner!.Username.Contains(searchQuery))
             .ToListAsync();
+    }
+
+    private IQueryable<Room> ApplyFilter(IQueryable<Room> query, IReadOnlyList<string> filterData)
+    {
+        var filterer = filterers.FirstOrDefault(x => x.Name == filterData[0]);
+
+        return filterer != null ? 
+            filterer.ApplyFilter(query, filterData[1]) : 
+            query;
     }
 }

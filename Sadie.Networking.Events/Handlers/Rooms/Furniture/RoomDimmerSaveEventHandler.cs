@@ -54,11 +54,15 @@ public class RoomDimmerSaveEventHandler(
         preset.Intensity = Intensity;
 
         room.DimmerSettings.Enabled = Apply;
+
+        var enabled = room.DimmerSettings.Enabled ? 2 : 0;
+        var bgOnly = preset.BackgroundOnly ? 2 : 0;
+        var meta = $"{(enabled)},{preset.PresetId},{(bgOnly)},{preset.Color},{preset.Intensity}";
         
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
             room, 
             dimmer,
-            $"{(room.DimmerSettings.Enabled ? 2 : 0)},{preset.PresetId},{(preset.BackgroundOnly ? 2 : 0)},{preset.Color},{preset.Intensity}");
+            meta);
 
         dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         dbContext.Entry(preset).State = EntityState.Modified;

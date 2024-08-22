@@ -37,7 +37,12 @@ public class NetworkPacketDecoder
         if (reader.BaseStream.Length - 4 > packetLength)
         {
             var extra = new byte[reader.BaseStream.Length - reader.BaseStream.Position];
-            Buffer.BlockCopy(packet, (int)reader.BaseStream.Position, extra, 0, (int)(reader.BaseStream.Length - reader.BaseStream.Position));
+            
+            Buffer.BlockCopy(packet,
+                (int)reader.BaseStream.Position,
+                extra,
+                0,
+                (int)(reader.BaseStream.Length - reader.BaseStream.Position));
 
             packets.AddRange(DecodePacketsFromBytes(extra));
         }

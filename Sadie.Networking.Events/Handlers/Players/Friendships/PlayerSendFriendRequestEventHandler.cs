@@ -1,3 +1,4 @@
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players;
@@ -29,6 +30,7 @@ public class PlayerSendFriendRequestEventHandler(
                 Unknown1 = 0,
                 Error = (int) PlayerFriendshipError.TooManyFriends
             });
+            
             return;
         }
         
@@ -37,7 +39,7 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        Player? targetPlayer;
+        IPlayer? targetPlayer;
         var targetOnline = false;
         var onlineTarget = playerRepository.GetPlayerLogicByUsername(TargetUsername);
         
@@ -96,6 +98,47 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
 
+        await SendRequestAsync(
+            player,
+            targetPlayer,
+            targetOnline,
+            onlineTarget);
+    }
+
+    private async Task AcceptPendingAsync(
+        PlayerFriendship incomingRequest, 
+        bool targetOnline, 
+        IPlayerLogic? onlineTarget,
+        int playerId)
+    {
+        if (incomingRequest.Status != PlayerFriendshipStatus.Pending)
+        {
+            return;
+        }
+            
+        incomingRequest.Status = PlayerFriendshipStatus.Accepted;
+
+        if (targetOnline && onlineTarget != null)
+        {
+            var targetRequest = onlineTarget
+                .OutgoingFriendships
+                .FirstOrDefault(x => x.TargetPlayerId == playerId);
+
+            if (targetRequest != null)
+            {
+                targetRequest.Status = PlayerFriendshipStatus.Accepted;
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private async Task SendRequestAsync(
+        IPlayer player,
+        IPlayer targetPlayer,
+        bool targetOnline,
+        IPlayerLogic? onlineTarget)
+    {
         var playerFriendship = new PlayerFriendship
         {
             OriginPlayerId = player.Id,
@@ -120,34 +163,6 @@ public class PlayerSendFriendRequestEventHandler(
         }
 
         dbContext.Set<PlayerFriendship>().Add(playerFriendship);
-        await dbContext.SaveChangesAsync();
-    }
-
-    private async Task AcceptPendingAsync(
-        PlayerFriendship incomingRequest, 
-        bool targetOnline, 
-        PlayerLogic? onlineTarget,
-        int playerId)
-    {
-        if (incomingRequest.Status != PlayerFriendshipStatus.Pending)
-        {
-            return;
-        }
-            
-        incomingRequest.Status = PlayerFriendshipStatus.Accepted;
-
-        if (targetOnline && onlineTarget != null)
-        {
-            var targetRequest = onlineTarget
-                .OutgoingFriendships
-                .FirstOrDefault(x => x.TargetPlayerId == playerId);
-
-            if (targetRequest != null)
-            {
-                targetRequest.Status = PlayerFriendshipStatus.Accepted;
-            }
-        }
-
         await dbContext.SaveChangesAsync();
     }
 }

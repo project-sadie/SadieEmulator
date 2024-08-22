@@ -1,21 +1,21 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Chat.Commands.Room;
 
-public class PickAllCommand(PlayerRepository playerRepository, SadieContext dbContext) : AbstractRoomChatCommand
+public class PickAllCommand(IPlayerRepository playerRepository, SadieContext dbContext) : AbstractRoomChatCommand
 {
     public override string Trigger => "pickall";
     public override string Description => "Picks up all pieces of furniture in the room placing it into your inventory.";
     
     public override async Task ExecuteAsync(IRoomUser user, IEnumerable<string> parameters)
     {
-        var updateMap = new Dictionary<PlayerLogic, List<PlayerFurnitureItem>>();
+        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();
 
         foreach (var item in user.Room.FurnitureItems)
         {

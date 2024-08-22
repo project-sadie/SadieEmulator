@@ -11,7 +11,7 @@ public class FurnitureItem
     public FurnitureItemType Type { get; init; }
     public int AssetId { get; init; }
     public int TileSpanX { get; init; }
-    public int TileSpanY { get; init; }
+    public int TileSpanY { get; set; }
     public double StackHeight { get; init; }
     public bool CanStack { get; init; }
     public bool CanWalk { get; init; }

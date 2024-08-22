@@ -18,8 +18,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Sadie.Enums\Sadie.Enums.csproj" />
-        <ProjectReference Include="..\Sadie.Networking.Serialization\Sadie.Networking.Serialization.csproj" />
-        <ProjectReference Include="..\Sadie.Options\Sadie.Options.csproj" />
         <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
     </ItemGroup>
 

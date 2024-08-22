@@ -34,7 +34,8 @@ public class CatalogPageEventHandler(
             Items = page.Items.ToList(),
             CatalogMode = CatalogMode,
             AcceptSeasonCurrencyAsCredits = false,
-            FrontPageItems = catalogFrontPageItems
+            FrontPageItems = catalogFrontPageItems,
+            Unknown = -1
         });
     }
 }

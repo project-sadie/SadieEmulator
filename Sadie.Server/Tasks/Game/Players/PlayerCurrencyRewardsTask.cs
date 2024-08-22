@@ -1,3 +1,4 @@
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Server;
@@ -74,7 +75,7 @@ public class PlayerCurrencyRewardsTask(
         await dbContext.SaveChangesAsync();
     }
 
-    private static async Task RewardPlayerAsync(PlayerLogic player, ServerPeriodicCurrencyReward reward)
+    private static async Task RewardPlayerAsync(IPlayerLogic player, ServerPeriodicCurrencyReward reward)
     {
         AbstractPacketWriter writer = null;
         

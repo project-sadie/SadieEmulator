@@ -7,13 +7,14 @@ using Sadie.Enums.Game.Players;
 
 namespace Sadie.Database.Models.Players;
 
-public class Player
+public class Player : IPlayer
 {
     private readonly ILazyLoader _lazyLoader;
     private PlayerNavigatorSettings? _navigatorSettings;
     private PlayerGameSettings? _gameSettings;
     private ICollection<PlayerFriendship> _outgoingFriendships = [];
     private ICollection<PlayerFriendship> _incomingFriendships = [];
+    private ICollection<PlayerFurnitureItem> _furnitureItems = [];
 
     public Player()
     {
@@ -48,7 +49,13 @@ public class Player
     }
     
     public ICollection<PlayerBadge> Badges { get; init; } = [];
-    public ICollection<PlayerFurnitureItem> FurnitureItems { get; init; } = [];
+
+    public ICollection<PlayerFurnitureItem> FurnitureItems
+    {
+        get => _lazyLoader.Load(this, ref _furnitureItems);
+        init => _furnitureItems = value;
+    }
+    
     public ICollection<PlayerWardrobeItem> WardrobeItems { get; init; } = [];
     public ICollection<PlayerSubscription> Subscriptions { get; init; } = [];
     [InverseProperty("TargetPlayer")] public ICollection<PlayerRespect> Respects { get; init; } = [];
@@ -87,8 +94,13 @@ public class Player
 
     public bool IsFriendsWith(int targetId)
     {
-        return IncomingFriendships.FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) != null 
-               || OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) != null;
+        return IncomingFriendships.FirstOrDefault(x =>
+                   x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) !=
+               null 
+               ||
+               OutgoingFriendships.FirstOrDefault(x =>
+                   x.TargetPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) !=
+               null;
     }
 
     public PlayerFriendship? TryGetAcceptedFriendshipFor(int targetId)
