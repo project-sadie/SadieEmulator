@@ -11,7 +11,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => FurnitureItemInteractionType.OneWayGate;
+    public override List<string> InteractionTypes => [FurnitureItemInteractionType.OneWayGate];
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {

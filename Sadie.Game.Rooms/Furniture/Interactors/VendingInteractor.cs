@@ -11,7 +11,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class VendingInteractor : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => FurnitureItemInteractionType.VendingMachine;
+    public override List<string> InteractionTypes => [FurnitureItemInteractionType.VendingMachine];
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {

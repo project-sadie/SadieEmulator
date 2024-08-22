@@ -8,7 +8,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class RoomAdsInteractor : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => FurnitureItemInteractionType.RoomAdsBg;
+    public override List<string> InteractionTypes => [FurnitureItemInteractionType.RoomAdsBg];
 
     public override Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {

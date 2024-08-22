@@ -51,10 +51,11 @@ public class RoomItemEjectedEventHandler(
         {
             return;
         }
+        
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
-
-        if (interactor != null)
+        foreach (var interactor in interactors)
         {
             await interactor.OnPickUpAsync(room, roomFurnitureItem, client.RoomUser);
         }

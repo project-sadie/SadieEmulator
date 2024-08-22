@@ -37,14 +37,19 @@ public class RoomItemUseEventHandler(
             return;
         }
         
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
-        if (interactor == null)
+        if (!interactors.Any())
         {
             await RoomFurnitureItemHelpers.CycleInteractionStateForItemAsync(room, roomFurnitureItem, dbContext);
-            return;
         }
-
-        await interactor.OnTriggerAsync(room, roomFurnitureItem, client.RoomUser);
+        else
+        {
+            foreach (var interactor in interactors)
+            {
+                await interactor.OnTriggerAsync(room, roomFurnitureItem, client.RoomUser);
+            }
+        }
     }
 }

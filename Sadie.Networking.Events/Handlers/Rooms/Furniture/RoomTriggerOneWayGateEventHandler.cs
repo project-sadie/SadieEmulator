@@ -22,9 +22,10 @@ public class RoomTriggerOneWayGateEventHandler(RoomFurnitureItemInteractorReposi
             return;
         }
         
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
-
-        if (interactor != null)
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+        
+        foreach (var interactor in interactors)
         {
             await interactor.OnTriggerAsync(client.RoomUser.Room, roomFurnitureItem, client.RoomUser);
         }

@@ -11,7 +11,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class DimmerInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => FurnitureItemInteractionType.Dimmer;
+    public override List<string> InteractionTypes => [FurnitureItemInteractionType.Dimmer];
     
     public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {

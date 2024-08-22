@@ -17,7 +17,7 @@ public class TeleportInteractor(
     SadieContext dbContext,
     IMapper mapper) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => FurnitureItemInteractionType.Teleport;
+    public override List<string> InteractionTypes => [FurnitureItemInteractionType.Teleport];
 
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     

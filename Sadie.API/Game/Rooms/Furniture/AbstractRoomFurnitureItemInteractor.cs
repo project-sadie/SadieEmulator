@@ -5,7 +5,7 @@ namespace Sadie.API.Game.Rooms.Furniture;
 
 public abstract class AbstractRoomFurnitureItemInteractor : IRoomFurnitureItemInteractor
 {
-    public abstract string InteractionType { get; }
+    public abstract List<string> InteractionTypes { get; }
     
     public virtual Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {

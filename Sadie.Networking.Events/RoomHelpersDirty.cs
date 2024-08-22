@@ -361,12 +361,15 @@ public static class RoomHelpersDirty
             ItemId = itemId
         });
         
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+        
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
-        if (interactor != null)
+        foreach (var interactor in interactors)
         {
-            await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
+            await interactor.OnPlaceAsync(client.RoomUser.Room, roomFurnitureItem, client.RoomUser);
         }
+        
 
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
         {
@@ -429,11 +432,12 @@ public static class RoomHelpersDirty
             ItemId = itemId
         });
         
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
-
-        if (interactor != null)
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+        
+        foreach (var interactor in interactors)
         {
-            await interactor.OnPlaceAsync(room, roomFurnitureItem, client.RoomUser);
+            await interactor.OnPlaceAsync(client.RoomUser.Room, roomFurnitureItem, client.RoomUser);
         }
         
         await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter

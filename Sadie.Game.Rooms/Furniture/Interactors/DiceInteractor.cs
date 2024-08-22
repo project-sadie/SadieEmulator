@@ -8,7 +8,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class DiceInteractor : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => "dice";
+    public override List<string> InteractionTypes => ["dice"];
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {

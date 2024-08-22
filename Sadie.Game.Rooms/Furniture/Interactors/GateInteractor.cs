@@ -10,7 +10,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class GateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => FurnitureItemInteractionType.Gate;
+    public override List<string> InteractionTypes => [FurnitureItemInteractionType.Gate];
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
