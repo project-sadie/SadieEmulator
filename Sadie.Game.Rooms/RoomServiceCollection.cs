@@ -10,6 +10,7 @@ using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Chat.Commands.Server;
 using Sadie.Game.Rooms.Furniture;
+using Sadie.Game.Rooms.Services;
 using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms;
@@ -52,5 +53,6 @@ public static class RoomServiceCollection
 
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
         serviceCollection.AddSingleton<RoomFurnitureItemInteractorRepository>();
+        serviceCollection.AddSingleton<IRoomWiredService, RoomWiredService>();
     }
 }
