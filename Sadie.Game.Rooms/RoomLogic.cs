@@ -56,7 +56,6 @@ public class RoomLogic : Room, IRoomLogic
     public IRoomTileMap TileMap { get; }
     public IRoomUserRepository UserRepository { get; }
     public IRoomBotRepository BotRepository { get; }
-    public IRoomWiredService WiredService { get; set; }
 
     public async ValueTask DisposeAsync()
     {
