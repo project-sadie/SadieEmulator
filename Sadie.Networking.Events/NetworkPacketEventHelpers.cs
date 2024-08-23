@@ -1,8 +1,8 @@
 ﻿using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
@@ -10,6 +10,7 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Packets.Writers.Users;
+using Sadie.Game.Rooms.Services;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
@@ -177,31 +178,29 @@ public static class NetworkPacketEventHelpers
         ServerRoomConstants roomConstants,
         IRoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository,
-        SadieContext dbContext,
-        ChatBubble bubble)
+        ChatBubble bubble,
+        IRoomWiredService wiredService)
     {
         if (string.IsNullOrEmpty(message) || 
             message.Length > roomConstants.MaxChatMessageLength ||
-            !TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+            !TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser) ||
+            (!shouting && message.StartsWith(':') && await ProcessCommandAsync(
+                commandRepository,
+                message,
+                roomUser)))
         {
             return;
         }
-        
-        if (!shouting && message.StartsWith(":"))
-        {
-            var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
-            var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
-            
-            if (command != null && 
-                ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 
-                 command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x))))
-            {
-                var parameters = message.Split(" ").Skip(1);
-                await command.ExecuteAsync(roomUser, parameters);
-                return;
-            }
-        }
 
+        var matchingWiredTriggers = room.FurnitureItems.Where(x =>
+            x.PlayerFurnitureItem!.MetaData == message && 
+            x.FurnitureItem!.InteractionType == FurnitureItemInteractionType.WiredTriggerSaysSomething);
+        
+        foreach (var trigger in matchingWiredTriggers)
+        {
+            await wiredService.RunTriggerAsync(trigger, room.FurnitureItems);
+        }
+        
         var chatMessage = new RoomChatMessage
         {
             RoomId = room.Id,
@@ -241,5 +240,25 @@ public static class NetworkPacketEventHelpers
         }
         
         room.ChatMessages.Add(chatMessage);
+    }
+
+    private static async Task<bool> ProcessCommandAsync(
+        IRoomChatCommandRepository commandRepository,
+        string message,
+        IRoomUser roomUser)
+    {
+        var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
+        var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
+            
+        if (command != null && 
+            ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 
+             command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x))))
+        {
+            var parameters = message.Split(" ").Skip(1);
+            await command.ExecuteAsync(roomUser, parameters);
+            return true;
+        }
+
+        return false;
     }
 }

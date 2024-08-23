@@ -5,8 +5,8 @@ using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Furniture;
 
-[PacketId(ServerPacketId.WiredTrigger)]
-public class WiredTriggerWriter : AbstractPacketWriter
+[PacketId(ServerPacketId.WiredEffect)]
+public class WiredEffectWriter : AbstractPacketWriter
 {
     public required bool StuffTypeSelectionEnabled { get; init; }
     public required int MaxItemsSelected { get; init; }
@@ -30,10 +30,9 @@ public class WiredTriggerWriter : AbstractPacketWriter
         writer.WriteString(Item.MetaData);
         
         writer.WriteInteger(0);
-        
-        writer.WriteInteger(1);
-        
-        writer.WriteInteger(0); // _triggerConf: number
-        writer.WriteInteger(0); // some count
+        writer.WriteInteger(0);
+        writer.WriteInteger(7);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
     }
 }
