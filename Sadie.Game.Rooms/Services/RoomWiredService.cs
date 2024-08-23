@@ -39,15 +39,19 @@ public class RoomWiredService : IRoomWiredService
         switch (effect.FurnitureItem!.InteractionType)
         {
             case FurnitureItemInteractionType.WiredEffectShowMessage:
-                await room.UserRepository.BroadcastDataAsync(new RoomUserWhisperWriter
+                foreach (var roomUser in room.UserRepository.GetAll())
                 {
-                    SenderId = 1,
-                    Message = effect.PlayerFurnitureItem!.MetaData,
-                    EmotionId = 0,
-                    Bubble = 0,
-                    Unknown = 0
-                });
-                
+                    await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
+                    {
+                        SenderId = roomUser.Id,
+                        Message = effect.PlayerFurnitureItem!.MetaData,
+                        EmotionId = 0,
+                        Bubble = 0,
+                        Unknown = 0
+                    });
+                }
+                break;
+            case FurnitureItemInteractionType.WiredEffectKickUser:
                 break;
         }
     }

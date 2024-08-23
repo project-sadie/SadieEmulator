@@ -12,6 +12,7 @@ public class WiredEffectWriter : AbstractPacketWriter
     public required int MaxItemsSelected { get; init; }
     public required ICollection<PlayerFurnitureItemPlacementData> SelectedItems { get; init; }
     public required PlayerFurnitureItem Item { get; init; }
+    public required int WiredEffectType { get; init; }
     
     public override void OnSerialize(NetworkPacketWriter writer)
     {
@@ -31,7 +32,7 @@ public class WiredEffectWriter : AbstractPacketWriter
         
         writer.WriteInteger(0);
         writer.WriteInteger(0);
-        writer.WriteInteger(7);
+        writer.WriteInteger(WiredEffectType);
         writer.WriteInteger(0);
         writer.WriteInteger(0);
     }
