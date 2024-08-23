@@ -52,6 +52,13 @@ public class RoomWiredService : IRoomWiredService
                 }
                 break;
             case FurnitureItemInteractionType.WiredEffectKickUser:
+                foreach (var user in room.UserRepository.GetAll())
+                {
+                    var wiredMessage = effect.PlayerFurnitureItem!.MetaData;
+                    
+                    await user.Room.UserRepository.TryRemoveAsync(user.Id, true);
+                    await user.Player.SendAlertAsync(wiredMessage);
+                }
                 break;
         }
     }

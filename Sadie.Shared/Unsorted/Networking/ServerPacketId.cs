@@ -152,4 +152,5 @@ public class ServerPacketId
     public const short RoomObjectsRolling = 3207;
     public const short WiredTrigger = 383;
     public const short WiredEffect = 1434;
+    public const short WiredSaved = 1155;
 }

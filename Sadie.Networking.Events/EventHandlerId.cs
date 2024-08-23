@@ -126,4 +126,5 @@ public class EventHandlerId
     public const short RoomItemUpdateObjectData = 3608;
     public const short RoomBackgroundTonerApply = 2880;
     public const short ClientLatency = 295;
+    public const short RoomWiredEffectSaved = 2281;
 }
