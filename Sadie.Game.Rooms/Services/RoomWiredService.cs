@@ -1,29 +1,52 @@
+using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Furniture;
+using Sadie.Game.Rooms.Packets.Writers.Users;
 
 namespace Sadie.Game.Rooms.Services;
 
 public class RoomWiredService : IRoomWiredService
 {
-    public async Task RunTriggerAsync(PlayerFurnitureItemPlacementData trigger,
+    public IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
+        PlayerFurnitureItemPlacementData trigger,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems)
     {
-        var effectsOnTrigger = roomItems
+        return roomItems
             .Where(x =>
                 x.PositionX == trigger.PositionX &&
                 x.PositionY == trigger.PositionY &&
                 x.PositionZ >= trigger.PositionZ);
+    }
+    
+    
+    
+    public async Task RunTriggerForRoomAsync(IRoomLogic room,
+        PlayerFurnitureItemPlacementData trigger)
+    {
+        var effectsOnTrigger = GetEffectsForTrigger(trigger, room.FurnitureItems);
 
         foreach (var effect in effectsOnTrigger)
         {
-            await RunEffectAsync(effect);
+            await RunEffectForRoomAsync(room, effect);
         }
     }
 
-    private async Task RunEffectAsync(PlayerFurnitureItemPlacementData effect)
+    private static async Task RunEffectForRoomAsync(
+        IRoomLogic room,
+        PlayerFurnitureItemPlacementData effect)
     {
-        switch (effect.FurnitureItem.InteractionType)
+        switch (effect.FurnitureItem!.InteractionType)
         {
-            case "wf_act_show_message":
+            case FurnitureItemInteractionType.WiredEffectShowMessage:
+                await room.UserRepository.BroadcastDataAsync(new RoomUserWhisperWriter
+                {
+                    SenderId = 1,
+                    Message = effect.PlayerFurnitureItem!.MetaData,
+                    EmotionId = 0,
+                    Bubble = 0,
+                    Unknown = 0
+                });
                 
                 break;
         }

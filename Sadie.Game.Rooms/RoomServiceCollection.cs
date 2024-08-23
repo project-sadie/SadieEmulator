@@ -4,6 +4,7 @@ using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Furniture.Processors;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Chat;

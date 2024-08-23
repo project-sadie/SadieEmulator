@@ -1,4 +1,5 @@
 ﻿using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
@@ -10,7 +11,6 @@ using Sadie.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Packets.Writers.Users;
-using Sadie.Game.Rooms.Services;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
@@ -191,15 +191,6 @@ public static class NetworkPacketEventHelpers
         {
             return;
         }
-
-        var matchingWiredTriggers = room.FurnitureItems.Where(x =>
-            x.PlayerFurnitureItem!.MetaData == message && 
-            x.FurnitureItem!.InteractionType == FurnitureItemInteractionType.WiredTriggerSaysSomething);
-        
-        foreach (var trigger in matchingWiredTriggers)
-        {
-            await wiredService.RunTriggerAsync(trigger, room.FurnitureItems);
-        }
         
         var chatMessage = new RoomChatMessage
         {
@@ -240,6 +231,15 @@ public static class NetworkPacketEventHelpers
         }
         
         room.ChatMessages.Add(chatMessage);
+
+        var matchingWiredTriggers = room.FurnitureItems.Where(x =>
+            x.PlayerFurnitureItem!.MetaData == message && 
+            x.FurnitureItem!.InteractionType == FurnitureItemInteractionType.WiredTriggerSaysSomething);
+        
+        foreach (var trigger in matchingWiredTriggers)
+        {
+            await wiredService.RunTriggerForRoomAsync(room, trigger);
+        }
     }
 
     private static async Task<bool> ProcessCommandAsync(

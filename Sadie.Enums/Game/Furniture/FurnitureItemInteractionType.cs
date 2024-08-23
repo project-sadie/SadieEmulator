@@ -11,5 +11,6 @@ public static class FurnitureItemInteractionType
         Gate = "gate",
         VendingMachine = "vending_machine",
         Water = "water",
-        WiredTriggerSaysSomething = "wf_trg_says_something";
+        WiredTriggerSaysSomething = "wf_trg_says_something",
+        WiredEffectShowMessage = "wf_act_show_message";
 }

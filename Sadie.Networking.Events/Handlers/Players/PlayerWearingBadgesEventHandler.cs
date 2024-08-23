@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
@@ -12,8 +14,8 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerWearingBadges)]
 public class PlayerWearingBadgesEventHandler(
     SadieContext dbContext,
-    PlayerRepository playerRepository,
-    RoomRepository roomRepository)
+    IPlayerRepository playerRepository,
+    IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
