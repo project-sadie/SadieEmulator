@@ -5,9 +5,12 @@ namespace Sadie.Game.Rooms.Furniture;
 public class RoomFurnitureItemInteractorRepository(
     IEnumerable<IRoomFurnitureItemInteractor> interactors)
 {
-    private readonly Dictionary<string, IRoomFurnitureItemInteractor> _interactors = 
-        interactors.ToDictionary(x => x.InteractionType, x => x);
+    private readonly Dictionary<List<string>, IRoomFurnitureItemInteractor> _interactors = 
+        interactors.ToDictionary(x => x.InteractionTypes, x => x);
 
-    public IRoomFurnitureItemInteractor? GetInteractorForType(string interactionType) =>
-        _interactors.GetValueOrDefault(interactionType);
+    public ICollection<IRoomFurnitureItemInteractor> GetInteractorsForType(string interactionType) =>
+        _interactors
+            .Values
+            .Where(x => x.InteractionTypes.Contains(interactionType))
+            .ToList();
 }

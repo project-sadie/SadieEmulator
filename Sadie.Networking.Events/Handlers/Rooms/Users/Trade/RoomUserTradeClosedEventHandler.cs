@@ -1,5 +1,5 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users.Trading;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -7,7 +7,7 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
 [PacketId(EventHandlerId.RoomUserTradeClosed)]
-public class RoomUserTradeClosedEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTradeClosedEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

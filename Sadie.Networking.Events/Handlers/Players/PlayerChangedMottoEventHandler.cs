@@ -1,6 +1,6 @@
-﻿using Sadie.Database;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.Database;
 using Sadie.Database.Models.Constants;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerChangedMotto)]
 public class PlayerChangedMottoEventHandler(
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     ServerPlayerConstants constants,
     SadieContext dbContext) : INetworkPacketEventHandler
 {

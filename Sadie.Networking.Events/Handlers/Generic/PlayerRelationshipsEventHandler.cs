@@ -1,4 +1,4 @@
-using Sadie.Game.Players;
+using Sadie.API.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
@@ -7,7 +7,7 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 
 [PacketId(EventHandlerId.PlayerRelationships)]
 public class PlayerRelationshipsEventHandler(
-    PlayerRepository playerRepository) : INetworkPacketEventHandler
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
     

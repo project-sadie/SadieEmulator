@@ -8,14 +8,14 @@ using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitData(IRoomLogic room, Point point) : IRoomUnitData
+public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, HDirection directionHead, HDirection direction) : IRoomUnitData
 {
-    protected RoomUnit? Unit { get; set; }
-    public HDirection DirectionHead { get; set; }
-    public HDirection Direction { get; set; }
+    public int Id { get; } = id;
+    public HDirection DirectionHead { get; set; } = directionHead;
+    public HDirection Direction { get; set; } = direction;
     public bool CanWalk { get; set; } = true;
     public Point Point { get; set; } = point;
-    public double PointZ { get; set;  }
+    public double PointZ { get; set; } = pointZ;
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
     public Point? NextPoint { get; set; }

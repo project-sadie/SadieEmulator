@@ -1,4 +1,4 @@
-﻿using Sadie.Game.Rooms;
+﻿using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -6,7 +6,7 @@ using Sadie.Networking.Writers.Rooms.Users;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerId.RoomUserDance)]
-public class RoomUserDanceEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserDanceEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int DanceId { get; set; }
     

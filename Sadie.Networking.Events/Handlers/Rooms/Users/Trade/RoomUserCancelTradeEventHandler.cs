@@ -1,5 +1,5 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users.Trading;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -8,7 +8,7 @@ using Sadie.Shared.Unsorted.Networking;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
 [PacketId(ServerPacketId.RoomUserTradeCancel)]
-public class RoomUserCancelTradeEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserCancelTradeEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

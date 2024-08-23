@@ -22,7 +22,7 @@ public static class DatabaseServiceCollection
             });
         
             options.UseSnakeCaseNamingConvention();
-        });
+        }, ServiceLifetime.Transient);
 
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
             provider.GetRequiredService<SadieContext>()

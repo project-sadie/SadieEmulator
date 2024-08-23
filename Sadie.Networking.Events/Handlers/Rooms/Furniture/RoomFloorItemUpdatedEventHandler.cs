@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
@@ -14,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomFloorFurnitureItemUpdated)]
 public class RoomFloorItemUpdatedEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
     public int ItemId { get; set; }
@@ -109,9 +110,10 @@ public class RoomFloorItemUpdatedEventHandler(
                 roomFurnitureItem.PositionY,
                 room.FurnitureItems);
         
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
-        if (interactor != null)
+        foreach (var interactor in interactors)
         {
             await interactor.OnMoveAsync(room, roomFurnitureItem, client.RoomUser);
         }

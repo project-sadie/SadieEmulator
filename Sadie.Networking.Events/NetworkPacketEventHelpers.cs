@@ -8,7 +8,6 @@ using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
@@ -133,7 +132,7 @@ public static class NetworkPacketEventHelpers
     }
     
     internal static bool TryResolveRoomObjectsForClient(
-        RoomRepository roomRepository, 
+        IRoomRepository roomRepository, 
         INetworkClient client, out IRoomLogic room, out IRoomUser user)
     {
         var player = client.Player;
@@ -176,7 +175,7 @@ public static class NetworkPacketEventHelpers
         string message,
         bool shouting,
         ServerRoomConstants roomConstants,
-        RoomRepository roomRepository,
+        IRoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository,
         SadieContext dbContext,
         ChatBubble bubble)

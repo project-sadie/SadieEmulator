@@ -1,10 +1,10 @@
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
-public class RoomUserTradeCancelOfferItemEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTradeCancelOfferItemEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }
     

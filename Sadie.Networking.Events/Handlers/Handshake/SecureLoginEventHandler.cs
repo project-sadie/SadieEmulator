@@ -3,6 +3,7 @@ using AutoMapper;
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Server;
@@ -20,7 +21,7 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     ILogger<SecureLoginEventHandler> logger,
     IOptions<EncryptionOptions> encryptionOptions,
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
@@ -117,7 +118,7 @@ public class SecureLoginEventHandler(
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 
-    private async Task SendWelcomeMessageAsync(PlayerLogic player)
+    private async Task SendWelcomeMessageAsync(IPlayerLogic player)
     {
         if (string.IsNullOrEmpty(serverSettings.PlayerWelcomeMessage))
         {

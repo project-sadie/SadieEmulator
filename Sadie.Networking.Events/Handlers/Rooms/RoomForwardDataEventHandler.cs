@@ -1,6 +1,6 @@
 using AutoMapper;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -8,7 +8,7 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomForwardData)]
-public class RoomForwardDataEventHandler(RoomRepository roomRepository,
+public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper) : INetworkPacketEventHandler
 {

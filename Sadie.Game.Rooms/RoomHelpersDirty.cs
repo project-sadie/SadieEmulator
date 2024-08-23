@@ -10,7 +10,7 @@ public static class RoomHelpersDirty
 {
     public static async Task<IRoomLogic?> TryLoadRoomByIdAsync(
         long id, 
-        RoomRepository roomRepository, 
+        IRoomRepository roomRepository, 
         SadieContext dbContext,
         IMapper mapper)
     {

@@ -14,7 +14,9 @@ using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
+using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Shared;
+using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
@@ -92,7 +94,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (!await RoomHelpersDirty.TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
+        if (!await TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
         {
             return;
         }
@@ -311,7 +313,7 @@ public class CatalogPurchaseEventHandler(
             }
     }
 
-    private async Task ConfirmPurchaseAsync(INetworkClient client, CatalogItem item)
+    private async Task ConfirmPurchaseAsync(INetworkObject client, CatalogItem item)
     {
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
         {
@@ -333,5 +335,51 @@ public class CatalogPurchaseEventHandler(
         });
         
         await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
+    }
+    
+    public static async Task<bool> TryChargeForCatalogItemPurchaseAsync(INetworkClient client, CatalogItem item, int amount)
+    {
+        var costInCredits = item.CostCredits * amount;
+        var costInPoints = item.CostPoints * amount;
+
+        var playerData = client.Player.Data;
+        
+        if (playerData.CreditBalance < costInCredits || 
+            (item.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||
+            (item.CostPointsType != 0 && playerData.SeasonalBalance < costInPoints))
+        {
+            return false;
+        }
+
+        if (costInCredits > 0)
+        {
+            playerData.CreditBalance -= costInCredits;
+        
+            await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
+            {
+                Credits = playerData.CreditBalance
+            });
+        }
+
+        if (costInPoints > 0)
+        {
+            if (item.CostPointsType == 0)
+            {
+                playerData.PixelBalance -= costInPoints;
+            }
+            else
+            {
+                playerData.SeasonalBalance -= costInPoints;
+            }
+        
+            await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
+            {
+                PixelBalance = playerData.PixelBalance,
+                SeasonalBalance = playerData.SeasonalBalance,
+                GotwPoints = playerData.GotwPoints
+            });
+        }
+
+        return true;
     }
 }

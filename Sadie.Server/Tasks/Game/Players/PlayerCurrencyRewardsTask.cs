@@ -2,7 +2,6 @@ using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Server;
-using Sadie.Game.Players;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Players.Purse;
 
@@ -11,7 +10,7 @@ namespace SadieEmulator.Tasks.Game.Players;
 public class PlayerCurrencyRewardsTask(
     SadieContext dbContext,
     List<ServerPeriodicCurrencyReward> rewards, 
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     ServerSettings serverSettings,
     IRoomUserRepository roomUserRepository) : IServerTask
 {

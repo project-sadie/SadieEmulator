@@ -1,6 +1,6 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users.Trading;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -9,7 +9,7 @@ using Sadie.Networking.Writers.Rooms.Users.Trading;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
 [PacketId(EventHandlerId.RoomUserTrade)]
-public class RoomUserTradeEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTradeEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required int TargetUserId { get; set; }
     

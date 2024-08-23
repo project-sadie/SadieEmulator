@@ -2,56 +2,53 @@ using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Unit;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Rooms.Unit;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class TeleportInteractor(
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper) : AbstractRoomFurnitureItemInteractor
 {
-    public override string InteractionType => FurnitureItemInteractionType.Teleport;
+    public override List<string> InteractionTypes => [FurnitureItemInteractionType.Teleport];
 
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUnit roomUnit)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
         var itemPosition = new Point(item.PositionX, item.PositionY);
         var itemInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
-        if (roomUnit.Point == itemPosition)
+        if (roomUser.Point == itemPosition)
         {
-            roomUnit.CanWalk = false;
+            roomUser.CanWalk = false;
             
             var facingDirection = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
         
-            roomUnit.Direction = facingDirection;
-            roomUnit.DirectionHead = facingDirection;
+            roomUser.Direction = facingDirection;
+            roomUser.DirectionHead = facingDirection;
 
             await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
-            await UseTeleportAsync(room, item, roomUnit);
+            await UseTeleportAsync(room, item, roomUser);
         }
-        else if (roomUnit.Point == itemInFront)
+        else if (roomUser.Point == itemInFront)
         {
-            roomUnit.CanWalk = false;
+            roomUser.CanWalk = false;
             
             await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
 
-            roomUnit.OverridePoints.Add(itemPosition);
+            roomUser.OverridePoints.Add(itemPosition);
 
-            roomUnit.WalkToPoint(itemPosition, async () =>
+            roomUser.WalkToPoint(itemPosition, async () =>
             {
-                roomUnit.OverridePoints.Remove(itemPosition);
+                roomUser.OverridePoints.Remove(itemPosition);
 
                 if (item.FurnitureItem.InteractionModes == 1)
                 {
@@ -60,17 +57,17 @@ public class TeleportInteractor(
                     await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
                 }
                 
-                await UseTeleportAsync(room, item, roomUnit);
+                await UseTeleportAsync(room, item, roomUser);
             });
         }
         else
         {
-            roomUnit.WalkToPoint(itemInFront, OnReachedGoal);
+            roomUser.WalkToPoint(itemInFront, OnReachedGoal);
             return;
 
             async void OnReachedGoal()
             {
-                await OnTriggerAsync(room, item, roomUnit);
+                await OnTriggerAsync(room, item, roomUser);
             }
         }
     }
@@ -78,7 +75,7 @@ public class TeleportInteractor(
     private async Task UseTeleportAsync(
         IRoomLogic room,
         PlayerFurnitureItemPlacementData item,
-        IRoomUnit roomUnit)
+        IRoomUser roomUser)
     {
         var link = await dbContext
             .PlayerFurnitureItemLinks
@@ -99,19 +96,17 @@ public class TeleportInteractor(
         if (targetRoomItem != null)
         {
             await UseTeleportInSameRoomAsync(
-                roomUnit,
+                roomUser,
                 item,
                 targetRoomItem,
                 room);
         }
-        else if (roomUnit.Type == RoomUnitType.User)
-        {
-            await UseTeleportInDifferentRoomAsync(
-                (roomUnit as IRoomUser)!, 
-                item,
-                targetItemId,
-                room);
-        }
+        
+        await UseTeleportInDifferentRoomAsync(
+            roomUser, 
+            item,
+            targetItemId,
+            room);
     }
 
     private async Task UseTeleportInDifferentRoomAsync(
@@ -155,7 +150,7 @@ public class TeleportInteractor(
     }
 
     private async Task UseTeleportInSameRoomAsync(
-        IRoomUnit roomUnit,
+        IRoomUser roomUser,
         PlayerFurnitureItemPlacementData item,
         PlayerFurnitureItemPlacementData targetItem,
         IRoomLogic room)
@@ -168,26 +163,18 @@ public class TeleportInteractor(
         
         var newPoint = new Point(targetItem.PositionX, targetItem.PositionY);
 
-        if (roomUnit.Type == RoomUnitType.User)
-        {
-            room.TileMap.UserMap[roomUnit.Point].Remove((IRoomUser) roomUnit);
-            room.TileMap.AddUserToMap(newPoint, (IRoomUser) roomUnit);
-        }
-        else
-        {
-            room.TileMap.BotMap[roomUnit.Point].Remove((IRoomBot) roomUnit);
-            room.TileMap.AddBotToMap(newPoint, (IRoomBot) roomUnit);
-        }
-
-        roomUnit.Point = newPoint;
-        roomUnit.Direction = targetItem.Direction;
-        roomUnit.DirectionHead = targetItem.Direction;
+        room.TileMap.UserMap[roomUser.Point].Remove(roomUser);
+        room.TileMap.AddUserToMap(newPoint, roomUser);
+        
+        roomUser.Point = newPoint;
+        roomUser.Direction = targetItem.Direction;
+        roomUser.DirectionHead = targetItem.Direction;
             
         await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, targetItem, "1");
         
         var squareInFront = RoomTileMapHelpers.GetPointInFront(targetItem.PositionX, targetItem.PositionY, targetItem.Direction);
 
-        roomUnit.WalkToPoint(squareInFront, OnReachedGoal);
+        roomUser.WalkToPoint(squareInFront, OnReachedGoal);
         return;
 
         async void OnReachedGoal()
@@ -196,7 +183,7 @@ public class TeleportInteractor(
             await Task.Delay(_delay);
             await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, targetItem, "0");
             
-            roomUnit.CanWalk = true;
+            roomUser.CanWalk = true;
         }
     }
 }

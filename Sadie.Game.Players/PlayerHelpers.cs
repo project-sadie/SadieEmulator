@@ -20,7 +20,7 @@ public class PlayerHelpers
 
     public static async Task SendPlayerFriendListUpdate(
         PlayerLogic player, 
-        PlayerRepository playerRepository)
+        IPlayerRepository playerRepository)
     {
         var friends = player
             .GetMergedFriendships()

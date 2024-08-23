@@ -1,6 +1,6 @@
 using System.Drawing;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 [PacketId(EventHandlerId.RoomPlayerBotPlaced)]
 public class RoomPlayerBotPlacedEventHandler(
     SadieContext dbContext, 
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     RoomBotFactory roomBotFactory) : INetworkPacketEventHandler
 {
     public required int Id { get; init; }

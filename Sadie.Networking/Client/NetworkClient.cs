@@ -1,5 +1,4 @@
 using DotNetty.Transport.Channels;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Players;
@@ -10,26 +9,12 @@ using Sadie.Options.Options;
 
 namespace Sadie.Networking.Client;
 
-public class NetworkClient : NetworkPacketDecoder, INetworkClient
+public class NetworkClient(
+    IChannel channel,
+    IOptions<NetworkPacketOptions> options)
+    : NetworkPacketDecoder(options), INetworkClient
 {
-    public IChannel Channel { get; set; }
-
-    private readonly ILogger<NetworkClient> _logger;
-    private readonly IChannel _channel;
-    private readonly INetworkPacketHandler _packetHandler;
-
-    public NetworkClient(
-        ILogger<NetworkClient> logger,
-        IChannel channel,
-        INetworkPacketHandler packetHandler,
-        IOptions<NetworkPacketOptions> options) : base(options)
-    {
-        Channel = channel;
-        
-        _logger = logger;
-        _channel = channel;
-        _packetHandler = packetHandler;
-    }
+    public IChannel Channel { get; set; } = channel;
 
     public PlayerLogic? Player { get; set; }
     public IRoomUser? RoomUser { get; set; }
@@ -47,7 +32,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
-        if (!_channel.IsWritable)
+        if (!channel.IsWritable)
         {
             return;
         }
@@ -56,7 +41,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         try
         {
-            await _channel.WriteAndFlushAsync(serializedObject);
+            await channel.WriteAndFlushAsync(serializedObject);
         }
         catch (ClosedChannelException)
         {
@@ -70,14 +55,14 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
     public async Task WriteToStreamAsync(NetworkPacketWriter writer)
     {
-        if (!_channel.IsWritable)
+        if (!channel.IsWritable)
         {
             return;
         }
 
         try
         {
-            await _channel.WriteAndFlushAsync(writer);
+            await channel.WriteAndFlushAsync(writer);
         }
         catch (ClosedChannelException)
         {
@@ -100,6 +85,6 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
 
         _disposed = true;
         
-        await _channel.CloseAsync();
+        await channel.CloseAsync();
     }
 }
