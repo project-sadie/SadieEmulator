@@ -1,15 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Furniture.Processors;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Furniture;
+using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Services;
 using Sadie.Game.Rooms.Users;
 
@@ -51,5 +54,8 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
         serviceCollection.AddSingleton<IRoomFurnitureItemInteractorRepository, RoomFurnitureItemInteractorRepository>();
         serviceCollection.AddSingleton<IRoomWiredService, RoomWiredService>();
+        serviceCollection.AddSingleton<IRoomTileMapHelperService, RoomTileMapHelperService>();
+        serviceCollection.AddSingleton<IRoomHelperService, RoomHelperService>();
+        serviceCollection.AddSingleton<IRoomFurnitureItemHelperService, RoomFurnitureItemHelperService>();
     }
 }
