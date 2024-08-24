@@ -4,10 +4,8 @@ using Sadie.API.Game.Rooms.Furniture.Processors;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
 using Sadie.Networking.Serialization;
 

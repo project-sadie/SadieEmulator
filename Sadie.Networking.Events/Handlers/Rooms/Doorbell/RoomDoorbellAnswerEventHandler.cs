@@ -1,6 +1,5 @@
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
 using Sadie.Game.Rooms.Furniture;
