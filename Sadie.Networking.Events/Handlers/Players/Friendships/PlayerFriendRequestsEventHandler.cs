@@ -1,8 +1,8 @@
 ﻿using Sadie.Enums.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
+using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 

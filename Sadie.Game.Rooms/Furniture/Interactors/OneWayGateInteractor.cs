@@ -1,6 +1,7 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
@@ -9,21 +10,23 @@ using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
+public class OneWayGateInteractor(SadieContext dbContext, 
+    IRoomTileMapHelperService tileMapHelperService,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.OneWayGate];
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
-        var squareInFront = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
+        var squareInFront = tileMapHelperService.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
         if (roomUser.Point != squareInFront)
         {
             return;
         }
 
-        var squareBehind = RoomTileMapHelpers.GetPointInFront(item.PositionX, item.PositionY,
-            RoomTileMapHelpers.GetOppositeDirection((int) item.Direction));
+        var squareBehind = tileMapHelperService.GetPointInFront(item.PositionX, item.PositionY,
+            tileMapHelperService.GetOppositeDirection((int) item.Direction));
 
         if (!room.TileMap.TileExists(squareBehind))
         {
@@ -32,10 +35,10 @@ public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitur
 
         var itemPoint = new Point(item.PositionX, item.PositionY);
         
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "1");
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "1");
 
-        roomUser.DirectionHead = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
-        roomUser.Direction = RoomTileMapHelpers.GetOppositeDirection((int) item.Direction);
+        roomUser.DirectionHead = tileMapHelperService.GetOppositeDirection((int) item.Direction);
+        roomUser.Direction = tileMapHelperService.GetOppositeDirection((int) item.Direction);
         roomUser.OverridePoints.Add(itemPoint);
         roomUser.CanWalk = false;
         roomUser.WalkToPoint(squareBehind, OnReachedGoal);
@@ -44,7 +47,7 @@ public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitur
 
         async void OnReachedGoal()
         {
-            await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
+            await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "0");
 
             roomUser.OverridePoints.Remove(itemPoint);
             roomUser.CanWalk = true;
@@ -53,7 +56,7 @@ public class OneWayGateInteractor(SadieContext dbContext) : AbstractRoomFurnitur
 
     public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "0");
         dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }

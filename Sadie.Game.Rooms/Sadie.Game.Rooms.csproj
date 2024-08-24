@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.API\Sadie.API.csproj" />
-      <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
-      <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
+        <ProjectReference Include="..\Sadie.API\Sadie.API.csproj" />
+        <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
+        <ProjectReference Include="..\Sadie.Networking.Writers\Sadie.Networking.Writers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,7 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Chat\Commands\Room\StateCommand.cs" />
+      <Reference Include="AutoMapper">
+        <HintPath>..\..\..\..\..\..\..\home\ash\.nuget\packages\automapper\13.0.1\lib\net6.0\AutoMapper.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

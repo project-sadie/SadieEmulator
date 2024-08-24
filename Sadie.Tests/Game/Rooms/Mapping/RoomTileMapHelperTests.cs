@@ -1,9 +1,11 @@
 using System.Drawing;
 using Moq;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Rooms.Mapping;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Mapping;
@@ -13,66 +15,74 @@ namespace Sadie.Tests.Game.Rooms.Mapping;
 [TestFixture]
 public class RoomTileMapHelperTests
 {
+    private IRoomTileMapHelperService _tileMapHelperService;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _tileMapHelperService = new RoomTileMapHelperService();
+    }
+
     [Test]
     public void GetOppositeDirection_North_ReturnsCorrect()
     {
-        var northResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.North);
+        var northResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.North);
         Assert.That(northResult, Is.EqualTo(HDirection.South));
     }
     
     [Test]
     public void GetOppositeDirection_NorthEast_ReturnsCorrect()
     {
-        var northEastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.NorthEast);
+        var northEastResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.NorthEast);
         Assert.That(northEastResult, Is.EqualTo(HDirection.SouthWest));
     }
     
     [Test]
     public void GetOppositeDirection_East_ReturnsCorrect()
     {
-        var eastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.East);
+        var eastResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.East);
         Assert.That(eastResult, Is.EqualTo(HDirection.West));
     }
     
     [Test]
     public void GetOppositeDirection_SouthEast_ReturnsCorrect()
     {
-        var southEastResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.SouthEast);
+        var southEastResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.SouthEast);
         Assert.That(southEastResult, Is.EqualTo(HDirection.NorthWest));
     }
     
     [Test]
     public void GetOppositeDirection_South_ReturnsCorrect()
     {
-        var southResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.South);
+        var southResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.South);
         Assert.That(southResult, Is.EqualTo(HDirection.North));
     }
     
     [Test]
     public void GetOppositeDirection_SouthWest_ReturnsCorrect()
     {
-        var southWestResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.SouthWest);
+        var southWestResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.SouthWest);
         Assert.That(southWestResult, Is.EqualTo(HDirection.NorthEast));
     }
     
     [Test]
     public void GetOppositeDirection_West_ReturnsCorrect()
     {
-        var westResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.West);
+        var westResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.West);
         Assert.That(westResult, Is.EqualTo(HDirection.East));
     }
     
     [Test]
     public void GetOppositeDirection_NorthWest_ReturnsCorrect()
     {
-        var northWestResult = RoomTileMapHelpers.GetOppositeDirection((int) HDirection.NorthWest);
+        var northWestResult = _tileMapHelperService.GetOppositeDirection((int) HDirection.NorthWest);
         Assert.That(northWestResult, Is.EqualTo(HDirection.SouthEast));
     }
 
     [Test]
     public void GetPointsForPlacement_SingleSquare_ReturnsCorrect()
     {
-        var points = RoomTileMapHelpers.GetPointsForPlacement(10, 10, 1, 1, (int) HDirection.North);
+        var points = _tileMapHelperService.GetPointsForPlacement(10, 10, 1, 1, (int) HDirection.North);
         
         Assert.That(points, Has.Count.EqualTo(1));
         Assert.That(points.First(), Is.EqualTo(new Point(10, 10)));
@@ -81,7 +91,7 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetPointsForPlacement_WideItem_ReturnsCorrect()
     {
-        var points = RoomTileMapHelpers.GetPointsForPlacement(10, 10, 1, 5, (int) HDirection.North);
+        var points = _tileMapHelperService.GetPointsForPlacement(10, 10, 1, 5, (int) HDirection.North);
         
         Assert.Multiple(() =>
         {
@@ -97,7 +107,7 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetPointsForPlacement_LongItem_ReturnsCorrect()
     {
-        var points = RoomTileMapHelpers.GetPointsForPlacement(10, 10, 3, 1, (int) HDirection.North);
+        var points = _tileMapHelperService.GetPointsForPlacement(10, 10, 3, 1, (int) HDirection.North);
         
         Assert.That(points, Has.Count.EqualTo(3));
         
@@ -112,14 +122,14 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetStateNumberForTile_Open_ReturnsOpen()
     {
-        var tileState = RoomTileMapHelpers.GetTileState(10, 10, new List<PlayerFurnitureItemPlacementData>());
+        var tileState = _tileMapHelperService.GetTileState(10, 10, new List<PlayerFurnitureItemPlacementData>());
         Assert.That(tileState, Is.EqualTo(RoomTileState.Open));
     }
 
     [Test]
     public void GetStateNumberForTile_Sit_ReturnsSit()
     {
-        var tileState = RoomTileMapHelpers.GetTileState(10, 10, [
+        var tileState = _tileMapHelperService.GetTileState(10, 10, [
             new PlayerFurnitureItemPlacementData
             {
                 PlayerFurnitureItem = new PlayerFurnitureItem
@@ -143,7 +153,7 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetStateNumberForTile_Lay_ReturnsLay()
     {
-        var tileState = RoomTileMapHelpers.GetTileState(10, 10, [
+        var tileState = _tileMapHelperService.GetTileState(10, 10, [
             new PlayerFurnitureItemPlacementData
             {
                 PlayerFurnitureItem = new PlayerFurnitureItem
@@ -167,7 +177,7 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetStateNumberForTile_GateInteractionType_ReturnsOpen()
     {
-        var tileState = RoomTileMapHelpers.GetTileState(10, 10, [
+        var tileState = _tileMapHelperService.GetTileState(10, 10, [
             new PlayerFurnitureItemPlacementData
             {
                 PlayerFurnitureItem = new PlayerFurnitureItem
@@ -207,7 +217,7 @@ public class RoomTileMapHelperTests
             }
         };
         
-        Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(1));
+        Assert.That(_tileMapHelperService.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(1));
     }
     
     [Test]
@@ -228,7 +238,7 @@ public class RoomTileMapHelperTests
             }
         };
         
-        Assert.That(RoomTileMapHelpers.GetItemsForPosition(14, 10, someItems), Is.Empty);
+        Assert.That(_tileMapHelperService.GetItemsForPosition(14, 10, someItems), Is.Empty);
     }
     
     [Test]
@@ -242,7 +252,7 @@ public class RoomTileMapHelperTests
             MockFurnitureItem(10, 14)
         };
         
-        Assert.That(RoomTileMapHelpers.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(4));
+        Assert.That(_tileMapHelperService.GetItemsForPosition(10, 14, someItems), Has.Count.EqualTo(4));
     }
     
     [Test]
@@ -253,7 +263,7 @@ public class RoomTileMapHelperTests
         ]);
         
         var goalPoint = new Point(4, 4);
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, goalPoint, []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, goalPoint, []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(0));
     }
@@ -266,7 +276,7 @@ public class RoomTileMapHelperTests
         ]);
         
         var goalPoint = new Point(0, 0);
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, goalPoint, []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, goalPoint, []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(2));
     }
@@ -279,7 +289,7 @@ public class RoomTileMapHelperTests
         ]);
         
         var goalPoint = new Point(4, 4);
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, goalPoint, []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, goalPoint, []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(0));
     }
@@ -292,7 +302,7 @@ public class RoomTileMapHelperTests
         ]);
         
         var goalPoint = new Point(0, 0);
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, goalPoint, []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, goalPoint, []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(3));
     }
@@ -304,7 +314,7 @@ public class RoomTileMapHelperTests
             MockFurnitureItem()
         ]);
         
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, new Point(), []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, new Point(), []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(0));
     }
@@ -316,7 +326,7 @@ public class RoomTileMapHelperTests
             MockFurnitureItem(0, 0, 0, 0, "", FurnitureItemType.Floor, true)
         ]);
         
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, new Point(), []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, new Point(), []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(1));
     }
@@ -329,7 +339,7 @@ public class RoomTileMapHelperTests
         
         map.AddUserToMap(new Point(), user.Object);
         
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, new Point(), []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, new Point(), []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(0));
     }
@@ -338,7 +348,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_EmptyTiles_ReturnsWalkable()
     {
         var map = new RoomTileMap("0", []);
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map, new Point(), []);
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, new Point(), []);
         
         Assert.That(worldArray[0, 0], Is.EqualTo(1));
     }
@@ -350,7 +360,7 @@ public class RoomTileMapHelperTests
             MockFurnitureItem(0, 0, 0),
         ]);
         
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(map,
+        var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map,
             new Point(),
             [new Point()]);
         
@@ -363,7 +373,7 @@ public class RoomTileMapHelperTests
         var map = new RoomTileMap("0", []);
         var points = new Point[] { new (), };
         
-        Assert.That(RoomTileMapHelpers.CanPlaceAt(points, map), Is.EqualTo(true));
+        Assert.That(_tileMapHelperService.CanPlaceAt(points, map), Is.EqualTo(true));
     }
     
     [Test]
@@ -372,7 +382,7 @@ public class RoomTileMapHelperTests
         var map = new RoomTileMap("00", []);
         var points = new Point[] { new (), new(1, 0) };
         
-        Assert.That(RoomTileMapHelpers.CanPlaceAt(points, map), Is.EqualTo(true));
+        Assert.That(_tileMapHelperService.CanPlaceAt(points, map), Is.EqualTo(true));
     }
     
     [Test]
@@ -384,7 +394,7 @@ public class RoomTileMapHelperTests
         
         var points = new Point[] { new () };
         
-        Assert.That(RoomTileMapHelpers.CanPlaceAt(points, map), Is.EqualTo(false));
+        Assert.That(_tileMapHelperService.CanPlaceAt(points, map), Is.EqualTo(false));
     }
     
     [Test]
@@ -394,7 +404,7 @@ public class RoomTileMapHelperTests
 
         var userMock = new Mock<IRoomUser>();
         var usersInRoom = new List<IRoomUser> { userMock.Object };
-        var usersAtPoints = RoomTileMapHelpers.GetUsersAtPoints(points, usersInRoom);
+        var usersAtPoints = _tileMapHelperService.GetUsersAtPoints(points, usersInRoom);
         
         Assert.That(usersAtPoints, Has.Count.EqualTo(1));
     }
@@ -411,7 +421,7 @@ public class RoomTileMapHelperTests
             .Returns(new Point(4,4));
         
         var usersInRoom = new List<IRoomUser> { userMock.Object };
-        var usersAtPoints = RoomTileMapHelpers.GetUsersAtPoints(points, usersInRoom);
+        var usersAtPoints = _tileMapHelperService.GetUsersAtPoints(points, usersInRoom);
         
         Assert.That(usersAtPoints, Has.Count.EqualTo(0));
     }
@@ -456,7 +466,7 @@ public class RoomTileMapHelperTests
             userMock4.Object,
         };
         
-        var usersAtPoints = RoomTileMapHelpers.GetUsersAtPoints(points, usersInRoom);
+        var usersAtPoints = _tileMapHelperService.GetUsersAtPoints(points, usersInRoom);
         
         Assert.That(usersAtPoints, Has.Count.EqualTo(4));
     }
@@ -464,31 +474,31 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetPointInFront_North_ReturnsCorrect()
     {
-        Assert.That(RoomTileMapHelpers.GetPointInFront(1, 2, HDirection.North), Is.EqualTo(new Point(1, 1)));
+        Assert.That(_tileMapHelperService.GetPointInFront(1, 2, HDirection.North), Is.EqualTo(new Point(1, 1)));
     }
     
     [Test]
     public void GetPointInFront_East_ReturnsCorrect()
     {
-        Assert.That(RoomTileMapHelpers.GetPointInFront(1, 2, HDirection.East), Is.EqualTo(new Point(2, 2)));
+        Assert.That(_tileMapHelperService.GetPointInFront(1, 2, HDirection.East), Is.EqualTo(new Point(2, 2)));
     }
     
     [Test]
     public void GetPointInFront_South_ReturnsCorrect()
     {
-        Assert.That(RoomTileMapHelpers.GetPointInFront(1, 2, HDirection.South), Is.EqualTo(new Point(1, 3)));
+        Assert.That(_tileMapHelperService.GetPointInFront(1, 2, HDirection.South), Is.EqualTo(new Point(1, 3)));
     }
     
     [Test]
     public void GetPointInFront_West_ReturnsCorrect()
     {
-        Assert.That(RoomTileMapHelpers.GetPointInFront(1, 2, HDirection.West), Is.EqualTo(new Point(0, 2)));
+        Assert.That(_tileMapHelperService.GetPointInFront(1, 2, HDirection.West), Is.EqualTo(new Point(0, 2)));
     }
     
     [Test]
     public void GetPointInFront_NorthWithOffset_ReturnsCorrect()
     {
-        Assert.That(RoomTileMapHelpers.GetPointInFront(1, 2, HDirection.North, 5), Is.EqualTo(new Point(1, -4)));
+        Assert.That(_tileMapHelperService.GetPointInFront(1, 2, HDirection.North, 5), Is.EqualTo(new Point(1, -4)));
     }
     
     [Test]
@@ -498,7 +508,7 @@ public class RoomTileMapHelperTests
         var map = new RoomTileMap("0", furnitureItems);
         var pointsForPlacement = new Point[] { new (), };
         
-        Assert.That(RoomTileMapHelpers.GetItemPlacementHeight(map, pointsForPlacement, furnitureItems), Is.EqualTo(map.ZMap[0, 0]));
+        Assert.That(_tileMapHelperService.GetItemPlacementHeight(map, pointsForPlacement, furnitureItems), Is.EqualTo(map.ZMap[0, 0]));
     }
     
     [Test]
@@ -512,7 +522,7 @@ public class RoomTileMapHelperTests
         
         var map = new RoomTileMap("0", furnitureItems);
         var pointsForPlacement = new Point[] { new (), };
-        var z = RoomTileMapHelpers.GetItemPlacementHeight(map, pointsForPlacement, furnitureItems);
+        var z = _tileMapHelperService.GetItemPlacementHeight(map, pointsForPlacement, furnitureItems);
         
         Assert.That(z, Is.EqualTo(24));
     }
@@ -520,20 +530,20 @@ public class RoomTileMapHelperTests
     [Test]
     public void GetSquaresBetweenPoints_NextTile_ReturnsCorrect()
     {
-        Assert.That(RoomTileMapHelpers.GetSquaresBetweenPoints(new Point(), new Point(0, 1)), Is.EqualTo(1));
+        Assert.That(_tileMapHelperService.GetSquaresBetweenPoints(new Point(), new Point(0, 1)), Is.EqualTo(1));
     }
     
     [Test]
     public void GetSquaresBetweenPoints_FarAwayTile_ReturnsCorrect()
     {
-        Assert.That(RoomTileMapHelpers.GetSquaresBetweenPoints(new Point(), new Point(8, 2)), Is.EqualTo(10));
+        Assert.That(_tileMapHelperService.GetSquaresBetweenPoints(new Point(), new Point(8, 2)), Is.EqualTo(10));
     }
     
     [Test]
     public void GetEffectFromInteractionType_Water_ReturnsSwimming()
     {
         var effect =
-            RoomTileMapHelpers.GetEffectFromInteractionType(FurnitureItemInteractionType.Water);
+            _tileMapHelperService.GetEffectFromInteractionType(FurnitureItemInteractionType.Water);
         Assert.That(effect, Is.EqualTo(RoomUserEffect.Swimming));
     }
 

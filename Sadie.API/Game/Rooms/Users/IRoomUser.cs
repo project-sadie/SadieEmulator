@@ -2,7 +2,6 @@
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.API.Game.Rooms.Users;
 
@@ -13,7 +12,7 @@ public interface IRoomUser : IRoomUnitData, IAsyncDisposable
     TimeSpan IdleTime { get; }
     bool IsIdle { get; set; }
     bool MoonWalking { get; set; }
-    IRoomUserTrade Trade { get; set; }
+    IRoomUserTrade? Trade { get; set; }
     int TradeStatus { get; set; }
     int ActiveEffectId { get; set; }
     int Id { get; }
@@ -25,4 +24,5 @@ public interface IRoomUser : IRoomUnitData, IAsyncDisposable
     Task RunPeriodicCheckAsync();
     void CheckStatusForCurrentTile();
     bool HasRights();
+    Task SendWhisperAsync(string message);
 }

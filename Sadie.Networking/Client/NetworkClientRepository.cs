@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.Database;
-using Sadie.Game.Players;
 
 namespace Sadie.Networking.Client;
 
 public class NetworkClientRepository(
     ILogger<NetworkClientRepository> logger,
     IPlayerRepository playerRepository,
-    DatabaseProvider dbProvider) : INetworkClientRepository
+    DatabaseProvider dbProvider,
+    IPlayerHelperService playerHelperService) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
 
@@ -44,7 +44,7 @@ public class NetworkClientRepository(
 
             if (player != null)
             {
-                await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
+                await playerHelperService.UpdatePlayerStatusForFriendsAsync(
                     player, 
                     player.GetMergedFriendships(), 
                     false, 

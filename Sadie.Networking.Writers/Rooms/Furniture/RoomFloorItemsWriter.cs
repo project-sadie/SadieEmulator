@@ -3,7 +3,6 @@ using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
@@ -12,6 +11,7 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
 {
     public required Dictionary<int, string?> FurnitureOwners { get; init; }
     public required ICollection<PlayerFurnitureItemPlacementData> FloorItems { get; init; }
+    public required IRoomFurnitureItemHelperService RoomFurnitureItemHelperService { get; init; }
 
     public override void OnSerialize(NetworkPacketWriter writer)
     {
@@ -45,13 +45,14 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         writer.WriteString(height.ToString());
         writer.WriteInteger(extra);
         
-        var objectDataKey = RoomFurnitureItemHelpers.GetObjectDataKeyForItem(item);
+        var objectDataKey = RoomFurnitureItemHelperService.GetObjectDataKeyForItem(item);
+        
         
         writer.WriteInteger((int) objectDataKey);
 
         if (objectDataKey == ObjectDataKey.MapKey)
         {
-            var objectData = RoomFurnitureItemHelpers.GetObjectDataForItem(item);
+            var objectData = RoomFurnitureItemHelperService.GetObjectDataForItem(item);
             
             writer.WriteInteger(objectData.Count);
 

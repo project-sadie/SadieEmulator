@@ -1,28 +1,33 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Catalog;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
+using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Purse;
-using Sadie.Shared;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers.Players.Subscriptions;
+using Sadie.Shared.Constants;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
-    SadieContext dbContext) : INetworkPacketEventHandler
+    SadieContext dbContext,
+    IPlayerHelperService playerHelperService,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public int PageId { get; set; }
     public int ItemId { get; set; }
@@ -111,12 +116,13 @@ public class CatalogPurchaseEventHandler(
         var newItems = new List<PlayerFurnitureItem>();
         
         var furnitureItem = item.FurnitureItems.First();
+        var mappedPlayer = mapper.Map<Player>(client.Player);
 
         if (item.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
         {
             var parent = new PlayerFurnitureItem
             {
-                Player = client.Player,
+                Player = mappedPlayer,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData,
@@ -125,7 +131,7 @@ public class CatalogPurchaseEventHandler(
             
             var child = new PlayerFurnitureItem
             {
-                Player = client.Player,
+                Player = mappedPlayer,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData,
@@ -168,7 +174,7 @@ public class CatalogPurchaseEventHandler(
         {
             var newItem = new PlayerFurnitureItem
             {
-                Player = client.Player,
+                Player = mappedPlayer,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData,
@@ -305,11 +311,11 @@ public class CatalogPurchaseEventHandler(
                 Ambassador = true
             });
             
-            var subWriter = PlayerHelpers.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+            var subWriter = playerHelperService.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
 
             if (subWriter != null)
             {
-                await client.WriteToStreamAsync(subWriter);
+                await client.WriteToStreamAsync((PlayerSubscriptionWriter) subWriter);
             }
     }
 

@@ -1,7 +1,6 @@
-﻿using Sadie.Game.Players.Friendships;
-using Sadie.Networking.Serialization;
+﻿using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 

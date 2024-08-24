@@ -6,6 +6,7 @@ using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
+using Sadie.API;
 using Sadie.Networking.Client;
 
 namespace SadieEmulator;

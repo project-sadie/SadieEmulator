@@ -1,6 +1,6 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomDimmerSettings)]
 public class RoomDimmerSettingsEventHandler(
     SadieContext dbContext, 
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

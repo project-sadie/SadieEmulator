@@ -1,7 +1,8 @@
-﻿using Sadie.Game.Players;
+﻿using Sadie.Database.Models.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
+using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -12,10 +13,10 @@ public class PlayerDataEventHandler : INetworkPacketEventHandler
     {
         await client.WriteToStreamAsync(new PlayerDataWriter
         {
-            Player = client.Player
+            Player = (Player) client.Player
         });
 
-        var perks = new List<PlayerPerk>
+        var perks = new List<PerkData>
         {
             new("USE_GUIDE_TOOL", "requirement.unfulfilled.helper_level_4", true),
             new("GIVE_GUIDE_TOURS", "", true),

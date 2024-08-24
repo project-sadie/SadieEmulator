@@ -1,17 +1,20 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture.Processors;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Rooms.Furniture.Processors;
 
-public class RollerProcessor : IRoomFurnitureItemProcessor
+public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : IRoomFurnitureItemProcessor
 {
     public async Task<IEnumerable<AbstractPacketWriter>> GetUpdatesForRoomAsync(IRoomLogic room)
     {
@@ -27,7 +30,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
         return writers;
     }
 
-    private static async Task<IEnumerable<RoomObjectsRollingWriter>> GetRollerUpdatesAsync(
+    private async Task<IEnumerable<RoomObjectsRollingWriter>> GetRollerUpdatesAsync(
         IRoomLogic room, 
         IEnumerable<PlayerFurnitureItemPlacementData> rollers)
     {
@@ -39,7 +42,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
         {
             var x = roller.PositionX;
             var y = roller.PositionY;
-            var nextStep = RoomTileMapHelpers.GetPointInFront(x, y, roller.Direction);
+            var nextStep = tileMapHelperService.GetPointInFront(x, y, roller.Direction);
             
             if (!room.TileMap.TileExists(nextStep))
             {
@@ -48,7 +51,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
             
             var rollerPosition = new Point(x, y);
             
-            var nextRoller = RoomTileMapHelpers
+            var nextRoller = tileMapHelperService
                 .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
                 .FirstOrDefault(fi => fi.FurnitureItem!.InteractionType == FurnitureItemInteractionType.Roller);
             
@@ -58,7 +61,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
                 .GetAll()
                 .Where(u => !userIdsProcessed.Contains(u.Id));
             
-            var rollingUsers = RoomTileMapHelpers.GetUsersAtPoints([rollerPosition], users);
+            var rollingUsers = tileMapHelperService.GetUsersAtPoints([rollerPosition], users);
             
             foreach (var rollingUser in rollingUsers)
             {
@@ -79,7 +82,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
                 !itemIdsProcessed.Contains(i.Id) && i.FurnitureItem!.InteractionType !=
                 FurnitureItemInteractionType.Roller);
 
-            var nonRollerItemsOnRoller = RoomTileMapHelpers.GetItemsForPosition(
+            var nonRollerItemsOnRoller = tileMapHelperService.GetItemsForPosition(
                 roller.PositionX, 
                 roller.PositionY,
                 unprocessedNonRollers);
@@ -99,7 +102,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
                     roller,
                     nextHeight);
                 
-                await RoomFurnitureItemHelpers.BroadcastItemUpdateToRoomAsync(room, item);
+                await roomFurnitureItemHelperService.BroadcastItemUpdateToRoomAsync(room, item);
             }
         }
 

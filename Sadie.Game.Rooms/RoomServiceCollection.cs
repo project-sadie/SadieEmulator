@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Sadie.API;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Chat.Commands;
@@ -7,9 +8,7 @@ using Sadie.API.Game.Rooms.Furniture.Processors;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Game.Rooms.Bots;
-using Sadie.Game.Rooms.Chat;
 using Sadie.Game.Rooms.Chat.Commands;
-using Sadie.Game.Rooms.Chat.Commands.Server;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Services;
 using Sadie.Game.Rooms.Users;
@@ -36,12 +35,11 @@ public static class RoomServiceCollection
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 
+        
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.Where(x => 
-                x is { IsClass: true, IsInterface: false } && 
-                x.IsSubclassOf(typeof(IRoomFurnitureItemProcessor))))
-            .As<IRoomFurnitureItemProcessor>()
+            .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemProcessor>())
+            .AsImplementedInterfaces()
             .WithSingletonLifetime());
         
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
@@ -50,10 +48,8 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton<RoomBotFactory>();
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
 
-        serviceCollection.AddSingleton<AboutCommand>();
-
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
-        serviceCollection.AddSingleton<RoomFurnitureItemInteractorRepository>();
+        serviceCollection.AddSingleton<IRoomFurnitureItemInteractorRepository, RoomFurnitureItemInteractorRepository>();
         serviceCollection.AddSingleton<IRoomWiredService, RoomWiredService>();
     }
 }

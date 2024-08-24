@@ -1,10 +1,10 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.API;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
-using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -18,7 +18,7 @@ public class RoomUserFactory(IServiceProvider serviceProvider)
         double pointZ,
         HDirection directionHead,
         HDirection direction, 
-        Player player,
+        IPlayerLogic player,
         RoomControllerLevel controllerLevel)
     {
         return ActivatorUtilities.CreateInstance<RoomUser>(

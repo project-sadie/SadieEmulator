@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using Sadie.API.Game.Rooms;
-using Sadie.Game.Rooms.Users;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 

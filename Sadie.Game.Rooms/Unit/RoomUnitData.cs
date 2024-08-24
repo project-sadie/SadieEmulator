@@ -1,14 +1,21 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Unit;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding;
-using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, HDirection directionHead, HDirection direction) : IRoomUnitData
+public class RoomUnitData(
+    int id,
+    IRoomLogic room,
+    Point point,
+    double pointZ,
+    HDirection directionHead,
+    HDirection direction,
+    IRoomTileMapHelperService tileMapHelperService) : IRoomUnitData
 {
     public int Id { get; } = id;
     public HDirection DirectionHead { get; set; } = directionHead;
@@ -58,7 +65,7 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
             return;
         }
         
-        var tileItems = RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
+        var tileItems = tileMapHelperService.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
 
         if (tileItems.Count == 0)
         {
@@ -170,7 +177,7 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
             return;
         }
 
-        var topItemNextStep = RoomTileMapHelpers
+        var topItemNextStep = tileMapHelperService
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
         

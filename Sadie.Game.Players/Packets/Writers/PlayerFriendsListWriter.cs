@@ -4,7 +4,7 @@ using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Players.Packets.Writers;
 

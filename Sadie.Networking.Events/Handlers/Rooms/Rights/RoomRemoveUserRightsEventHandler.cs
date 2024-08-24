@@ -2,7 +2,6 @@ using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Rights;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
@@ -13,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 [PacketId(EventHandlerId.RoomRemoveUserRights)]
 public class RoomRemoveUserRightsEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required List<int> Ids { get; set; }
     

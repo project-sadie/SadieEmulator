@@ -6,7 +6,8 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemUpdateObjectData)]
-public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }
     public required Dictionary<string, string> ObjectData { get; set; }
@@ -32,7 +33,7 @@ public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext) : INet
         }
 
         var metaData = string.Join(";", ObjectData.Select(x => $"{x.Key}={x.Value}"));
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
         
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();

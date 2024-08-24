@@ -4,7 +4,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -16,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 [PacketId(EventHandlerId.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {
     public long RoomId { get; set; }

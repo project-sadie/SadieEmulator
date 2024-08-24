@@ -3,7 +3,7 @@ using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 

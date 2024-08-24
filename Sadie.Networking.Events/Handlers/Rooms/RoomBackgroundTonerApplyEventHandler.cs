@@ -6,7 +6,8 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomBackgroundTonerApply)]
-public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }
     public required int Hue { get; set; }
@@ -36,7 +37,7 @@ public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext) : INet
         var metaData =
             $"{roomFurnitureItem.PlayerFurnitureItem.MetaData.Split(":")[0]}{Hue % 256}:{Saturation % 256}:{Brightness % 256}:";
         
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
         
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();

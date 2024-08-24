@@ -8,7 +8,7 @@ using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Mapping;
 
-public class RoomTileMap : IRoomTileMap
+public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
 {
     public int SizeX { get; }
     public int SizeY { get; }
@@ -59,7 +59,7 @@ public class RoomTileMap : IRoomTileMap
                     height = (short) (10 + "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(square));
                 }
 
-                Map[y, x] = (short) RoomTileMapHelpers.GetTileState(x, y, furnitureItems);
+                Map[y, x] = (short) GetTileState(x, y, furnitureItems);
                 ZMap[y, x] = height;
                 TileExistenceMap[y, x] = 1;
 
@@ -68,9 +68,11 @@ public class RoomTileMap : IRoomTileMap
         }
     }
 
-    public void UpdateEffectMapForTile(int x, int y, ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+    public void UpdateEffectMapForTile(int x,
+        int y,
+        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
-        var itemsOnSquare = RoomTileMapHelpers.GetItemsForPosition(x, y, furnitureItems);
+        var itemsOnSquare = GetItemsForPosition(x, y, furnitureItems);
 
         if (itemsOnSquare.Count == 0)
         {
@@ -79,7 +81,7 @@ public class RoomTileMap : IRoomTileMap
         }
         
         var topItemOnSquare = itemsOnSquare.MaxBy(x => x.PositionZ);
-        var effect = RoomTileMapHelpers.GetEffectFromInteractionType(topItemOnSquare.FurnitureItem.InteractionType);
+        var effect = GetEffectFromInteractionType(topItemOnSquare.FurnitureItem.InteractionType);
                     
         EffectMap[y, x] = (short) effect;
     }

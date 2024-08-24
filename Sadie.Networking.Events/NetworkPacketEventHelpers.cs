@@ -1,4 +1,7 @@
-﻿using Sadie.API.Game.Rooms;
+﻿using Sadie.API;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
@@ -7,9 +10,6 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Packets.Writers;
-using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
@@ -22,15 +22,14 @@ using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
+using Sadie.Networking.Writers.Players.Subscriptions;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted.Networking;
-using RoomHelpers = Sadie.Shared.Helpers.RoomHelpers;
 
 namespace Sadie.Networking.Events;
 
 public static class NetworkPacketEventHelpers
 {
-    public static async Task SendPlayerSubscriptionPacketsAsync(PlayerLogic player)
+    public static async Task SendPlayerSubscriptionPacketsAsync(IPlayerLogic player)
     {
         foreach (var playerSub in player.Subscriptions)
         {
@@ -58,7 +57,7 @@ public static class NetworkPacketEventHelpers
         }
     }
     
-    public static async Task SendLoginPacketsToPlayerAsync(INetworkObject networkObject, PlayerLogic player)
+    public static async Task SendLoginPacketsToPlayerAsync(INetworkObject networkObject, IPlayerLogic player)
     {
         var playerData = player.Data;
         var playerSubscriptions = player.Subscriptions;
@@ -179,7 +178,8 @@ public static class NetworkPacketEventHelpers
         IRoomRepository roomRepository,
         IRoomChatCommandRepository commandRepository,
         ChatBubble bubble,
-        IRoomWiredService wiredService)
+        IRoomWiredService wiredService,
+        IRoomHelperService roomHelperService)
     {
         if (string.IsNullOrEmpty(message) || 
             message.Length > roomConstants.MaxChatMessageLength ||
@@ -198,7 +198,7 @@ public static class NetworkPacketEventHelpers
             PlayerId = roomUser.Id,
             Message = message,
             ChatBubbleId = bubble,
-            EmotionId = RoomHelpers.GetEmotionFromMessage(message),
+            EmotionId = roomHelperService.GetEmotionFromMessage(message),
             TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };
@@ -209,7 +209,7 @@ public static class NetworkPacketEventHelpers
             {
                 UserId = roomUser.Id,
                 Message = message,
-                EmotionId = (int) RoomHelpers.GetEmotionFromMessage(message),
+                EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
                 Unknown1 = 0
             };
@@ -222,7 +222,7 @@ public static class NetworkPacketEventHelpers
             {
                 UserId = roomUser.Id,
                 Message = message,
-                EmotionId = (int) RoomHelpers.GetEmotionFromMessage(message),
+                EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
                 Unknown1 = 0
             };

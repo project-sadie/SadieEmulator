@@ -1,7 +1,11 @@
 using System.Drawing;
+using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
@@ -9,8 +13,7 @@ using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Unit;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -23,16 +26,19 @@ public class RoomUser(
     HDirection directionHead,
     HDirection direction,
     IPlayerLogic player,
-    RoomControllerLevel controllerLevel)
-    : RoomUnitData(id, room, point, pointZ, directionHead, direction),
+    ServerRoomConstants roomConstants,
+    RoomControllerLevel controllerLevel,
+    IRoomTileMapHelperService tileMapHelperService,
+    IRoomHelperService roomHelperService)
+    : RoomUnitData(id, room, point, pointZ, directionHead, direction, tileMapHelperService),
         IRoomUser
 {
     public IPlayerLogic Player { get; } = player;
     public DateTime LastAction { get; set; } = DateTime.Now;
-    public TimeSpan IdleTime { get; }
+    public TimeSpan IdleTime { get; } = TimeSpan.FromSeconds(roomConstants.SecondsTillUserIdle);
     public bool IsIdle { get; set; }
     public bool MoonWalking { get; set; }
-    public IRoomUserTrade Trade { get; set; }
+    public IRoomUserTrade? Trade { get; set; }
     public int TradeStatus { get; set; }
     public int ActiveEffectId { get; set; }
     public IRoomLogic Room { get; } = room;
@@ -129,6 +135,18 @@ public class RoomUser(
         return ControllerLevel is 
             RoomControllerLevel.Owner or 
             RoomControllerLevel.Rights;
+    }
+
+    public async Task SendWhisperAsync(string message)
+    {
+        await NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
+        {
+            SenderId = Id,
+            Message = message,
+            EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
+            Bubble = 0,
+            Unknown = 0
+        });
     }
 
     public async Task SetEffectAsync(RoomUserEffect effect)

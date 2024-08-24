@@ -1,19 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Players;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerId.PlayerAcceptFriendRequest)]
 public class PlayerAcceptFriendRequestEventHandler(
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    SadieContext dbContext)
+    SadieContext dbContext,
+    IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
     public List<int> Ids { get; set; } = [];
@@ -54,11 +55,17 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .Relationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
 
-        await PlayerHelpers.SendFriendUpdatesToPlayerAsync(client.Player, [
+        await playerHelperService.SendFriendUpdatesToPlayerAsync(client.Player, [
             new PlayerFriendshipUpdate
             {
                 Type = 0,
-                Friend = targetPlayer,
+                Friend = new FriendData
+                {
+                    Username = targetPlayer.Username,
+                    FigureCode = targetPlayer.AvatarData.FigureCode,
+                    Motto = targetPlayer.AvatarData.Motto,
+                    Gender = targetPlayer.AvatarData.Gender
+                },
                 FriendOnline = targetOnline,
                 FriendInRoom = targetInRoom,
                 Relation = targetRelationship?.TypeId ?? PlayerRelationshipType.None
@@ -81,11 +88,17 @@ public class PlayerAcceptFriendRequestEventHandler(
                 .FirstOrDefault(x =>
                     x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 
-            await PlayerHelpers.SendFriendUpdatesToPlayerAsync(targetPlayer, [
+            await playerHelperService.SendFriendUpdatesToPlayerAsync(targetPlayer, [
                 new PlayerFriendshipUpdate
                 {
                     Type = 0,
-                    Friend = player,
+                    Friend = new FriendData
+                    {
+                        Username = player.Username,
+                        FigureCode = player.AvatarData.FigureCode,
+                        Motto = player.AvatarData.Motto,
+                        Gender = player.AvatarData.Gender
+                    },
                     FriendOnline = true,
                     FriendInRoom = player.State.CurrentRoomId != 0,
                     Relation = relationship?.TypeId ?? PlayerRelationshipType.None

@@ -1,3 +1,4 @@
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users.Trading;
@@ -9,7 +10,9 @@ using Sadie.Networking.Writers.Rooms.Users.Trading;
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
 [PacketId(EventHandlerId.RoomUserTrade)]
-public class RoomUserTradeEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomUserTradeEventHandler(
+    IRoomRepository roomRepository,
+    IPlayerHelperService playerHelperService) : INetworkPacketEventHandler
 {
     public required int TargetUserId { get; set; }
     
@@ -56,7 +59,7 @@ public class RoomUserTradeEventHandler(IRoomRepository roomRepository) : INetwor
             State = 1
         });
 
-        var trade = new RoomUserTrade
+        var trade = new RoomUserTrade(playerHelperService)
         {
             Users = [roomUser, targetUser],
             Items = []

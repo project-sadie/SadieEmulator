@@ -11,4 +11,10 @@
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Sadie.Game.Rooms">
+        <HintPath>..\Sadie.Console\bin\Debug\net8.0\Sadie.Game.Rooms.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

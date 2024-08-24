@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
@@ -22,7 +24,10 @@ public class RoomLoadedEventHandler(
     RoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository,
     SadieContext dbContext,
-    IMapper mapper)
+    IMapper mapper,
+    IRoomTileMapHelperService tileMapHelperService,
+    IPlayerHelperService playerHelperService,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService)
     : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
@@ -90,7 +95,10 @@ public class RoomLoadedEventHandler(
             room, 
             roomUserFactory, 
             dbContext, 
-            playerRepository);
+            playerRepository,
+            tileMapHelperService,
+            playerHelperService,
+            roomFurnitureItemHelperService);
     }
     
     public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, IRoomLogic room, string password)

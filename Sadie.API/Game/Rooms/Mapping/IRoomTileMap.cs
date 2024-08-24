@@ -6,7 +6,7 @@ using Sadie.Database.Models.Players.Furniture;
 
 namespace Sadie.API.Game.Rooms.Mapping;
 
-public interface IRoomTileMap
+public interface IRoomTileMap : IRoomTileMapHelperService
 {
     int SizeX { get; }
     int SizeY { get; }

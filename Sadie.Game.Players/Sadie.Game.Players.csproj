@@ -9,12 +9,13 @@
     <ItemGroup>
       <ProjectReference Include="..\Sadie.API\Sadie.API.csproj" />
       <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
+      <ProjectReference Include="..\Sadie.Networking.Writers\Sadie.Networking.Writers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0-preview.7.24405.7" />
     </ItemGroup>
 
 </Project>

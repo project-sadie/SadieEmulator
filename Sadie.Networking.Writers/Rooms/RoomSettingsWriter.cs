@@ -1,14 +1,13 @@
-using Sadie.Database.Models.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Rooms;
 
 [PacketId(ServerPacketId.RoomSettings)]
 public class RoomSettingsWriter : AbstractPacketWriter
 {
-    public required Room Room { get; init; }
+    public required IRoomLogic Room { get; init; }
     
     public override void OnSerialize(NetworkPacketWriter writer)
     {

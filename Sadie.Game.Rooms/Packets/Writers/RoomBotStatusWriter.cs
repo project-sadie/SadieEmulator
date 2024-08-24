@@ -1,7 +1,7 @@
 ﻿using Sadie.API.Game.Rooms.Bots;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 

@@ -24,7 +24,7 @@ public class PlayerWearingBadgesEventHandler(
 
         var playerBadges = player != null
             ? player.Badges
-            : await dbContext.Set<PlayerBadge>().Where(x => x.PlayerId == PlayerId).ToListAsync();
+            : await dbContext.Set<PlayerBadge>().Where(x =>  x.PlayerId == PlayerId).ToListAsync();
 
         playerBadges = playerBadges.
             Where(x => x.Slot != 0 && x.Slot <= 5).

@@ -1,4 +1,5 @@
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
@@ -9,8 +10,9 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomItemUse)]
 public class RoomItemUseEventHandler(
     IRoomRepository roomRepository,
-    RoomFurnitureItemInteractorRepository interactorRepository,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IRoomFurnitureItemInteractorRepository interactorRepository,
+    SadieContext dbContext,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public int ItemId { get; set; }
     
@@ -42,7 +44,7 @@ public class RoomItemUseEventHandler(
 
         if (!interactors.Any())
         {
-            await RoomFurnitureItemHelpers.CycleInteractionStateForItemAsync(room, roomFurnitureItem, dbContext);
+            await roomFurnitureItemHelperService.CycleInteractionStateForItemAsync(room, roomFurnitureItem, dbContext);
         }
         else
         {

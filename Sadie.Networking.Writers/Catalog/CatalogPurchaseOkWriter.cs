@@ -3,7 +3,6 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Catalog;
 

@@ -3,7 +3,7 @@ using Sadie.API.Game.Rooms.Furniture;
 namespace Sadie.Game.Rooms.Furniture;
 
 public class RoomFurnitureItemInteractorRepository(
-    IEnumerable<IRoomFurnitureItemInteractor> interactors)
+    IEnumerable<IRoomFurnitureItemInteractor> interactors) : IRoomFurnitureItemInteractorRepository
 {
     private readonly Dictionary<List<string>, IRoomFurnitureItemInteractor> _interactors = 
         interactors.ToDictionary(x => x.InteractionTypes, x => x);

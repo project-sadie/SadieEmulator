@@ -1,7 +1,7 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Options;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Game.Players;
 using Sadie.Networking.Codecs.Encryption;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization;
@@ -16,7 +16,7 @@ public class NetworkClient(
 {
     public IChannel Channel { get; set; } = channel;
 
-    public PlayerLogic? Player { get; set; }
+    public IPlayerLogic? Player { get; set; }
     public IRoomUser? RoomUser { get; set; }
     public bool EncryptionEnabled { get; private set; }
 

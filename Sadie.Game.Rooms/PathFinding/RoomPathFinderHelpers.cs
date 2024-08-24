@@ -1,7 +1,6 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Mapping;
 using Sadie.Game.Rooms.PathFinding.ToGo;
 using Sadie.Game.Rooms.PathFinding.ToGo.Options;
 
@@ -56,7 +55,7 @@ public class RoomPathFinderHelpers
             UseDiagonals = useDiagonal
         };
 
-        var worldArray = RoomTileMapHelpers.GetWorldArrayFromTileMap(tileMap, end, overridePoints);
+        var worldArray = tileMap.GetWorldArrayFromTileMap(tileMap, end, overridePoints);
         var worldGrid = new WorldGrid(worldArray);
         var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
 

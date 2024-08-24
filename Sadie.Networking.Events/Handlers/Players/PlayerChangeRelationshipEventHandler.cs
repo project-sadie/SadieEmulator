@@ -1,19 +1,22 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Players;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Friendships;
-using Sadie.Game.Players.Packets.Writers;
+using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Players.Friendships;
+using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
-    PlayerRepository playerRepository,
-    SadieContext dbContext)
+    IPlayerRepository playerRepository,
+    SadieContext dbContext,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
@@ -75,6 +78,18 @@ public class PlayerChangeRelationshipEventHandler(
         var isOnline = onlineFriend != null;
         var inRoom = isOnline && onlineFriend!.State.CurrentRoomId != 0;
 
+        var friend = isOnline ? 
+            mapper.Map<Player>(onlineFriend) : 
+            await playerRepository.GetPlayerByIdAsync(playerId);
+        
+        var newFriendData = new FriendData
+        {
+            Motto = friend.AvatarData.Motto,
+            Gender = AvatarGender.Male,
+            Username = friend.Username,
+            FigureCode = friend.AvatarData.FigureCode
+        };
+        
         var updateFriendWriter = new PlayerUpdateFriendWriter
         {
             Updates =
@@ -82,7 +97,7 @@ public class PlayerChangeRelationshipEventHandler(
                 new PlayerFriendshipUpdate
                 {
                     Type = 0,
-                    Friend = isOnline ? onlineFriend : await playerRepository.GetPlayerByIdAsync(playerId),
+                    Friend = newFriendData,
                     FriendOnline = isOnline,
                     FriendInRoom = inRoom,
                     Relation = (PlayerRelationshipType)relationId

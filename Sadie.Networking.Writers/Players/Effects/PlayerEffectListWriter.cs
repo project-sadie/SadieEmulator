@@ -1,14 +1,13 @@
-﻿using Sadie.Game.Players.Effects;
+﻿using Sadie.API.Game.Players.Effects;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Effects;
 
 [PacketId(ServerPacketId.PlayerEffectList)]
 public class PlayerEffectListWriter : AbstractPacketWriter
 {
-    public required List<PlayerEffect> Effects { get; init; }
+    public required List<IPlayerEffect> Effects { get; init; }
 
     public override void OnConfigureRules()
     {

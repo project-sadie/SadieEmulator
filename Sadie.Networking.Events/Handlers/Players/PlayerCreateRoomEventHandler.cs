@@ -1,6 +1,7 @@
 using AutoMapper;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Game.Rooms;
@@ -64,7 +65,7 @@ public class PlayerCreateRoomEventHandler(
         dbContext.Rooms.Add(newRoom);
         await dbContext.SaveChangesAsync();
 
-        newRoom.Owner = client.Player;
+        newRoom.Owner = (Player) client.Player;
         newRoom.Layout = layout;
 
         var roomLogic = mapper.Map<RoomLogic>(newRoom);

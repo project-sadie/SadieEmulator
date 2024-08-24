@@ -1,4 +1,4 @@
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
@@ -7,7 +7,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomSettings)]
 public class RequestRoomSettingsEventHandler(
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
     
@@ -19,7 +19,7 @@ public class RequestRoomSettingsEventHandler(
         {
             await client.WriteToStreamAsync(new RoomSettingsWriter
             {
-                Room = (RoomLogic) room
+                Room = room
             });
         }
     }

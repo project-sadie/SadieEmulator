@@ -1,6 +1,9 @@
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
-using Sadie.Game.Players;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -10,11 +13,14 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
 [PacketId(EventHandlerId.RoomDoorbellAnswer)]
 public class RoomDoorbellAnswerEventHandler(
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
     SadieContext dbContext,
     RoomUserFactory roomUserFactory,
-    INetworkClientRepository clientRepository) : INetworkPacketEventHandler
+    INetworkClientRepository clientRepository,
+    IRoomTileMapHelperService tileMapHelperService,
+    IPlayerHelperService playerHelperService,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public required string Username { get; set; }
     public bool Accept { get; set; }
@@ -49,7 +55,10 @@ public class RoomDoorbellAnswerEventHandler(
                     room, 
                     roomUserFactory, 
                     dbContext, 
-                    playerRepository);
+                    playerRepository,
+                    tileMapHelperService,
+                    playerHelperService,
+                    roomFurnitureItemHelperService);
             }
             
             return;

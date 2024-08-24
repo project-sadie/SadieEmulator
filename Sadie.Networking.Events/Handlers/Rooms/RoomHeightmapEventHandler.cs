@@ -1,4 +1,5 @@
-﻿using Sadie.API.Game.Rooms;
+﻿using Sadie.API;
+using Sadie.API.Game.Rooms;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
@@ -7,7 +8,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 

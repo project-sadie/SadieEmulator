@@ -1,7 +1,7 @@
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Groups;
-using Sadie.Shared.Unsorted;
+using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Groups;
 
