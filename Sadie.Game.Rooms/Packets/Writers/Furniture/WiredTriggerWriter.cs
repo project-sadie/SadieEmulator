@@ -12,6 +12,7 @@ public class WiredTriggerWriter : AbstractPacketWriter
     public required int MaxItemsSelected { get; init; }
     public required ICollection<PlayerFurnitureItemPlacementData> SelectedItems { get; init; }
     public required PlayerFurnitureItem Item { get; init; }
+    public required int TriggerCode { get; init; }
     
     public override void OnSerialize(NetworkPacketWriter writer)
     {
@@ -28,12 +29,10 @@ public class WiredTriggerWriter : AbstractPacketWriter
         writer.WriteInteger(Item.FurnitureItem.AssetId);
         writer.WriteInteger(Item.Id);
         writer.WriteString(Item.MetaData);
-        
         writer.WriteInteger(0);
-        
-        writer.WriteInteger(1);
-        
-        writer.WriteInteger(0); // _triggerConf: number
-        writer.WriteInteger(0); // some count
+        writer.WriteInteger(0);
+        writer.WriteInteger(TriggerCode);
+        writer.WriteInteger(0);
+        writer.WriteInteger(0);
     }
 }

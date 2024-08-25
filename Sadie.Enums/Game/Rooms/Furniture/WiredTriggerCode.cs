@@ -1,6 +1,6 @@
 namespace Sadie.Enums.Game.Rooms.Furniture;
 
-public enum RoomWiredTriggerLayout
+public enum WiredTriggerCode
 {
     AvatarSaysSomething = 0,
     AvatarWalksOnFurniture = 1,

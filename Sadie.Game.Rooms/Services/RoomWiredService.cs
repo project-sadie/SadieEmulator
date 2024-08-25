@@ -9,6 +9,17 @@ namespace Sadie.Game.Rooms.Services;
 
 public class RoomWiredService : IRoomWiredService
 {
+    public async Task RunTriggerForRoomAsync(IRoomLogic room,
+        PlayerFurnitureItemPlacementData trigger)
+    {
+        var effectsOnTrigger = GetEffectsForTrigger(trigger, room.FurnitureItems);
+
+        foreach (var effect in effectsOnTrigger)
+        {
+            await RunEffectForRoomAsync(room, effect);
+        }
+    }
+    
     public IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
         PlayerFurnitureItemPlacementData trigger,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems)
@@ -20,19 +31,6 @@ public class RoomWiredService : IRoomWiredService
                 x.PositionZ >= trigger.PositionZ);
     }
     
-    
-    
-    public async Task RunTriggerForRoomAsync(IRoomLogic room,
-        PlayerFurnitureItemPlacementData trigger)
-    {
-        var effectsOnTrigger = GetEffectsForTrigger(trigger, room.FurnitureItems);
-
-        foreach (var effect in effectsOnTrigger)
-        {
-            await RunEffectForRoomAsync(room, effect);
-        }
-    }
-
     private static async Task RunEffectForRoomAsync(
         IRoomLogic room,
         PlayerFurnitureItemPlacementData effect)
@@ -63,13 +61,18 @@ public class RoomWiredService : IRoomWiredService
                 break;
         }
     }
-
-    public RoomWiredTriggerLayout GetTriggerLayout(string interactionType)
+    
+    public int GetWiredCode(string interactionType)
     {
         return interactionType switch
         {
-            FurnitureItemInteractionType.WiredTriggerSaysSomething => RoomWiredTriggerLayout.AvatarSaysSomething,
-            FurnitureItemInteractionType.WiredTriggerEnterRoom => RoomWiredTriggerLayout.AvatarEntersRoom,
+            FurnitureItemInteractionType.WiredTriggerSaysSomething => (int) WiredTriggerCode.AvatarSaysSomething,
+            FurnitureItemInteractionType.WiredTriggerEnterRoom => (int) WiredTriggerCode.AvatarEntersRoom,
+            FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture => (int) WiredTriggerCode.AvatarWalksOnFurniture,
+            FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture => (int) WiredTriggerCode.AvatarWalksOffFurniture,
+            FurnitureItemInteractionType.WiredTriggerFurnitureStateChanged => (int) WiredTriggerCode.ToggleFurniture,
+            FurnitureItemInteractionType.WiredEffectShowMessage => (int) WiredEffectCode.ShowMessage,
+            FurnitureItemInteractionType.WiredEffectKickUser => (int) WiredEffectCode.KickUser,
             _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
         };
     }

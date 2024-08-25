@@ -12,5 +12,5 @@ public interface IRoomWiredService
     Task RunTriggerForRoomAsync(IRoomLogic room,
         PlayerFurnitureItemPlacementData trigger);
 
-    RoomWiredTriggerLayout GetTriggerLayout(string interactionType);
+    int GetWiredCode(string interactionType);
 }

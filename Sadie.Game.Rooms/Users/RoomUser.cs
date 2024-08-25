@@ -6,6 +6,7 @@ using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
@@ -29,7 +30,8 @@ public class RoomUser(
     ServerRoomConstants roomConstants,
     RoomControllerLevel controllerLevel,
     IRoomTileMapHelperService tileMapHelperService,
-    IRoomHelperService roomHelperService)
+    IRoomHelperService roomHelperService,
+    IRoomWiredService roomWiredService)
     : RoomUnitData(id, room, point, pointZ, directionHead, direction, tileMapHelperService),
         IRoomUser
 {
