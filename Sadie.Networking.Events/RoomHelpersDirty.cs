@@ -4,6 +4,7 @@ using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Players;
@@ -116,7 +117,8 @@ public static class RoomHelpersDirty
         IPlayerRepository playerRepository,
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,
-        IRoomFurnitureItemHelperService roomFurnitureItemHelperService)
+        IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
+        IRoomWiredService wiredService)
     {
         var player = client.Player;
         var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
@@ -180,6 +182,14 @@ public static class RoomHelpersDirty
         
         await SendRoomEntryPacketsToUserAsync(client, room);
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
+        
+        var matchingWiredTriggers = room.FurnitureItems.Where(x =>
+            x.FurnitureItem!.InteractionType == FurnitureItemInteractionType.WiredTriggerEnterRoom);
+        
+        foreach (var trigger in matchingWiredTriggers)
+        {
+            await wiredService.RunTriggerForRoomAsync(room, trigger);
+        }
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, IRoomLogic room)

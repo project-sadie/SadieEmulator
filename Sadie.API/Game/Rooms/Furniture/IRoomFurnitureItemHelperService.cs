@@ -1,9 +1,8 @@
-using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Unsorted;
 
-namespace Sadie.Game.Rooms.Furniture;
+namespace Sadie.API.Game.Rooms.Furniture;
 
 public interface IRoomFurnitureItemHelperService
 {

@@ -2,6 +2,7 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 
 namespace Sadie.Game.Rooms.Services;
@@ -61,5 +62,15 @@ public class RoomWiredService : IRoomWiredService
                 }
                 break;
         }
+    }
+
+    public RoomWiredTriggerLayout GetTriggerLayout(string interactionType)
+    {
+        return interactionType switch
+        {
+            FurnitureItemInteractionType.WiredTriggerSaysSomething => RoomWiredTriggerLayout.AvatarSaysSomething,
+            FurnitureItemInteractionType.WiredTriggerEnterRoom => RoomWiredTriggerLayout.AvatarEntersRoom,
+            _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
+        };
     }
 }

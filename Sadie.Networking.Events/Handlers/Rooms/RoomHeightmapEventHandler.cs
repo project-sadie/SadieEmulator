@@ -1,7 +1,9 @@
 ﻿using Sadie.API;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
@@ -12,7 +14,8 @@ using Sadie.Networking.Writers.Rooms.Furniture;
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomHeightmap)]
-public class RoomHeightmapEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
+public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -105,7 +108,8 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository) : INetwor
         await client.WriteToStreamAsync(new RoomFloorItemsWriter
         {
             FloorItems = floorItems,
-            FurnitureOwners = floorFurnitureOwners
+            FurnitureOwners = floorFurnitureOwners,
+            RoomFurnitureItemHelperService = roomFurnitureItemHelperService
         });
         
         await client.WriteToStreamAsync(new RoomWallItemsWriter
