@@ -175,7 +175,7 @@ public static class RoomHelpersDirty
         
         player.State.CurrentRoomId = room.Id;
 
-        room.TileMap.AddUserToMap(entryPoint, roomUser);
+        room.TileMap.AddUnitToMap(entryPoint, roomUser);
         roomUser.ApplyFlatCtrlStatus();
         
         client.RoomUser = roomUser;

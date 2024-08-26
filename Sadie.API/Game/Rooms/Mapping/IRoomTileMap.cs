@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Drawing;
 using Sadie.API.Game.Rooms.Bots;
+using Sadie.API.Game.Rooms.Unit;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 
@@ -12,14 +13,12 @@ public interface IRoomTileMap : IRoomTileMapHelperService
     int SizeY { get; }
     int Size { get; }
     short[,] Map { get; }
-    ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; }
-    ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; }
+    ConcurrentDictionary<Point, List<IRoomUnitData>> UnitMap { get; }
     short[,] EffectMap { get; }
     short[,] ZMap { get; set; }
     short[,] TileExistenceMap { get; set; }
     void UpdateEffectMapForTile(int x, int y, ICollection<PlayerFurnitureItemPlacementData> furnitureItems);
-    void AddUserToMap(Point point, IRoomUser user);
-    void AddBotToMap(Point point, IRoomBot bot);
+    void AddUnitToMap(Point point, IRoomUnitData unit);
     bool UsersAtPoint(Point point);
     bool TileExists(Point point);
 }

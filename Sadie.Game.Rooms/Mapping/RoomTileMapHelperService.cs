@@ -159,7 +159,7 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
                 
                 // If the tile has other users on it skip it
 
-                if (map.UserMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0)
+                if (map.UnitMap.TryGetValue(new Point(x, y), out var users) && users.Count > 0)
                 {
                     tmp[y, x] = 0;
                     continue;

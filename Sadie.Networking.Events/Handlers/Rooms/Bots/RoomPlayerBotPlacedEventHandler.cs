@@ -22,7 +22,10 @@ public class RoomPlayerBotPlacedEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository,
+                client,
+                out var room,
+                out var roomUser))
         {
             return;
         }
@@ -51,7 +54,11 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        var roomBot = RoomHelpersDirty.CreateBot(room.MaxUsersAllowed + bot.Id, room, new Point(X, Y), roomBotFactory);
+        var roomBot = RoomHelpersDirty.CreateBot(room.MaxUsersAllowed + bot.Id,
+            room,
+            new Point(X,
+                Y),
+            roomBotFactory);
 
         if (!room.BotRepository.TryAdd(roomBot))
         {
@@ -63,7 +70,7 @@ public class RoomPlayerBotPlacedEventHandler(
         dbContext.Entry(bot).Property(x => x.RoomId).IsModified = true;
         await dbContext.SaveChangesAsync();
 
-        room.TileMap.AddBotToMap(new Point(X, Y), roomBot);
+        room.TileMap.AddUnitToMap(new Point(X, Y), roomBot);
         
         await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
         {

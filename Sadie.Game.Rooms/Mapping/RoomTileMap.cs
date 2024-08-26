@@ -2,6 +2,7 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Unit;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Shared.Extensions;
@@ -14,8 +15,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
     public int SizeY { get; }
     public int Size { get; }
     public short[,] Map { get; }
-    public ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; } = [];
-    public ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; } = [];
+    public ConcurrentDictionary<Point, List<IRoomUnitData>> UnitMap { get; } = [];
     public short[,] ZMap { get; set; }
     public short[,] TileExistenceMap { get; set; }
     public short[,] EffectMap { get; }
@@ -86,15 +86,11 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
         EffectMap[y, x] = (short) effect;
     }
 
-    public void AddUserToMap(Point point, IRoomUser user) => 
-        UserMap.GetOrInsert(point, () => []).Add(user);
+    public void AddUnitToMap(Point point, IRoomUnitData unit) => 
+        UnitMap.GetOrInsert(point, () => []).Add(unit);
 
-    public void AddBotToMap(Point point, IRoomBot bot) => 
-        BotMap.GetOrInsert(point, () => []).Add(bot);
-
-    public bool UsersAtPoint(Point point) => 
-        (UserMap.ContainsKey(point) && UserMap[point].Count > 0) || 
-        (BotMap.ContainsKey(point) && BotMap[point].Count > 0);
+    public bool UsersAtPoint(Point point) =>
+        UnitMap.ContainsKey(point) && UnitMap[point].Count > 0;
 
     public bool TileExists(Point point) =>
         point.X <= SizeX && 

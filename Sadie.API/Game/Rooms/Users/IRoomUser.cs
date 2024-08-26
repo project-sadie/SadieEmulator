@@ -5,7 +5,7 @@ using Sadie.Enums.Game.Rooms;
 
 namespace Sadie.API.Game.Rooms.Users;
 
-public interface IRoomUser : IRoomUnitData, IAsyncDisposable
+public interface IRoomUser : IRoomUnit, IAsyncDisposable
 {
     IPlayerLogic Player { get; }
     DateTime LastAction { get; set; }
@@ -15,13 +15,11 @@ public interface IRoomUser : IRoomUnitData, IAsyncDisposable
     IRoomUserTrade? Trade { get; set; }
     int TradeStatus { get; set; }
     int ActiveEffectId { get; set; }
-    int Id { get; }
     IRoomLogic Room { get; }
     RoomControllerLevel ControllerLevel { get; set; }
     INetworkObject NetworkObject { get; }
     void LookAtPoint(Point point);
     void ApplyFlatCtrlStatus();
-    Task RunPeriodicCheckAsync();
     void CheckStatusForCurrentTile();
     bool HasRights();
     Task SendWhisperAsync(string message);

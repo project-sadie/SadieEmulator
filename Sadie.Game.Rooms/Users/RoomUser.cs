@@ -31,8 +31,8 @@ public class RoomUser(
     RoomControllerLevel controllerLevel,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomHelperService roomHelperService,
-    IRoomWiredService roomWiredService)
-    : RoomUnitData(id, room, point, pointZ, directionHead, direction, tileMapHelperService),
+    IRoomWiredService wiredService)
+    : RoomUnitData(id, room, point, pointZ, directionHead, direction, tileMapHelperService, wiredService),
         IRoomUser
 {
     public IPlayerLogic Player { get; } = player;
@@ -80,16 +80,6 @@ public class RoomUser(
                 UserId = Id,
                 ItemId = 0
             });
-        }
-        
-        if (NextPoint != null)
-        {
-            room.TileMap.UserMap[Point].Remove(this);
-            room.TileMap.AddUserToMap(NextPoint.Value, this);
-            
-            Point = NextPoint.Value;
-            PointZ = NextZ;
-            NextPoint = null;
         }
 
         await ProcessGenericChecksAsync();
@@ -166,6 +156,6 @@ public class RoomUser(
     }
     public async ValueTask DisposeAsync()
     {
-        room.TileMap.UserMap[Point].Remove(this);
+        room.TileMap.UnitMap[Point].Remove(this);
     }
 }

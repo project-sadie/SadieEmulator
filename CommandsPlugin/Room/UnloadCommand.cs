@@ -35,7 +35,7 @@ public class UnloadCommand(SadieContext dbContext, IRoomRepository roomRepositor
         await room!.DisposeAsync();
         
         dbContext.Entry(room).State = EntityState.Modified;
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(); 
     }
 
     public override List<string> PermissionsRequired { get; set; } = ["command_unload"];

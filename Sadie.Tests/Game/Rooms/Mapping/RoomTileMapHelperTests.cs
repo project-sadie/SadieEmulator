@@ -295,7 +295,7 @@ public class RoomTileMapHelperTests
         var map = new RoomTileMap("0", []);
         var user = new Mock<IRoomUser>();
         
-        map.AddUserToMap(new Point(), user.Object);
+        map.AddUnitToMap(new Point(), user.Object);
         
         var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map, new Point(), []);
         

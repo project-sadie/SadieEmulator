@@ -5,6 +5,7 @@ namespace Sadie.API.Game.Rooms.Unit;
 
 public interface IRoomUnitData
 {
+    int Id { get; }
     Point Point { get; set; }
     double PointZ { get; set; }
     bool IsWalking { get; set; }

@@ -1,7 +1,9 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Unit;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.PathFinding;
@@ -15,7 +17,8 @@ public class RoomUnitData(
     double pointZ,
     HDirection directionHead,
     HDirection direction,
-    IRoomTileMapHelperService tileMapHelperService) : IRoomUnitData
+    IRoomTileMapHelperService tileMapHelperService,
+    IRoomWiredService wiredService) : IRoomUnitData
 {
     public int Id { get; } = id;
     public HDirection DirectionHead { get; set; } = directionHead;
@@ -142,8 +145,29 @@ public class RoomUnitData(
         OnReachedGoal = onReachedGoal;
     }
 
-    public async Task ProcessGenericChecksAsync()
+    protected async Task ProcessGenericChecksAsync()
     {
+        if (NextPoint != null)
+        {
+            room.TileMap.UnitMap[Point].Remove(this);
+            room.TileMap.AddUnitToMap(NextPoint.Value, this);
+
+            var triggers = room.FurnitureItems.Where(x =>
+                x.FurnitureItem!.InteractionType ==
+                FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture ||
+                x.FurnitureItem!.InteractionType ==
+                FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
+            
+            foreach (var trigger in triggers)
+            {
+                await wiredService.RunTriggerForRoomAsync(room, trigger);
+            }
+            
+            Point = NextPoint.Value;
+            PointZ = NextZ;
+            NextPoint = null;
+        }
+        
         if (NeedsPathCalculated)
         {
             CalculatePath();
@@ -170,8 +194,7 @@ public class RoomUnitData(
         
         if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 && !OverridePoints.Contains(nextStep) || 
             (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
-            room.TileMap.UserMap.GetValueOrDefault(nextStep, []).Count > 0 ||
-            room.TileMap.BotMap.GetValueOrDefault(nextStep, []).Count > 0)
+            room.TileMap.UnitMap.GetValueOrDefault(nextStep, []).Count > 0)
         {
             NeedsPathCalculated = true;
             return;

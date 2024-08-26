@@ -177,8 +177,8 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             NextHeight = nextHeight.ToString()
         });
 
-        room.TileMap.UserMap[rollingUser.Point].Remove(rollingUser);
-        room.TileMap.AddUserToMap(nextStep, rollingUser);
+        room.TileMap.UnitMap[rollingUser.Point].Remove(rollingUser);
+        room.TileMap.AddUnitToMap(nextStep, rollingUser);
 
         rollingUser.Point = nextStep;
         rollingUser.PointZ = nextRoller?.FurnitureItem?.StackHeight ?? 0;
