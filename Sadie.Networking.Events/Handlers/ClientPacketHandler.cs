@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
@@ -31,6 +32,12 @@ public class ClientPacketHandler(
         }
 
         var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
+
+        if (!ValidateAttributes(eventHandler, client))
+        {
+            return;
+        }
+        
         EventSerializer.SetPropertiesForEventHandler(eventHandler, packet);
 
         if (client.RoomUser != null && 
@@ -47,6 +54,23 @@ public class ClientPacketHandler(
         }
         
         await ExecuteAsync(client, eventHandler);
+    }
+
+    private static bool ValidateAttributes(INetworkPacketEventHandler eventHandler, 
+        INetworkClient client)
+    {
+        var method = eventHandler.GetType().GetMethods()
+            .SingleOrDefault(x => x.Name == "HandleAsync");
+
+        var requiresRoomRights = method?.GetCustomAttributes(typeof(RequiresRoomRightsAttribute), true)
+            .Single() != null;
+
+        if (requiresRoomRights)
+        {
+            return client.RoomUser != null && client.RoomUser.HasRights();
+        }
+
+        return true;
     }
 
     private async Task ExecuteAsync(INetworkClient client, INetworkPacketEventHandler eventHandler)

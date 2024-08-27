@@ -1,5 +1,3 @@
 namespace Sadie.Networking.Serialization.Attributes;
 
-public class PacketDataAttribute : Attribute
-{
-}
+public class PacketDataAttribute : Attribute;

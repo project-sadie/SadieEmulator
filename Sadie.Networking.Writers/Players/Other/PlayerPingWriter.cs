@@ -4,6 +4,4 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Writers.Players.Other;
 
 [PacketId(ServerPacketId.PlayerPing)]
-public class PlayerPingWriter : AbstractPacketWriter
-{
-}
+public class PlayerPingWriter : AbstractPacketWriter;

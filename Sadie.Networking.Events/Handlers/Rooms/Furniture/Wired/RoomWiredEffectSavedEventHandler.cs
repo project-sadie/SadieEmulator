@@ -1,14 +1,17 @@
-using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture.Wired;
 
 [PacketId(EventHandlerId.RoomWiredEffectSaved)]
-public class RoomWiredEffectSavedEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomWiredEffectSavedEventHandler(
+    SadieContext dbContext,
+    IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }
     public required List<int> Parameters { get; set; }
@@ -17,14 +20,9 @@ public class RoomWiredEffectSavedEventHandler(SadieContext dbContext) : INetwork
     public required int Delay { get; set; }
     public required int SelectionCode { get; set; }
     
+    [RequiresRoomRights] 
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.RoomUser == null || 
-            !client.RoomUser.HasRights())
-        {
-            return;
-        }
-
         var room = client.RoomUser?.Room;
         
         var playerItem = client
@@ -43,17 +41,17 @@ public class RoomWiredEffectSavedEventHandler(SadieContext dbContext) : INetwork
             .Select(x => x.PlayerFurnitureItem)
             .ToList();
 
-        playerItem.WiredData = new PlayerFurnitureItemWiredData
-        {
-            PlayerFurnitureItem = playerItem,
-            SelectedItems = selectedItems,
-            Message = Input,
-            Delay = Delay
-        };
-
-        dbContext.Entry(playerItem).State = EntityState.Unchanged;
+        await wiredService.SaveSettingsAsync(
+            playerItem,
+            dbContext,
+            new PlayerFurnitureItemWiredData
+            {
+                PlayerFurnitureItem = playerItem,
+                SelectedItems = selectedItems,
+                Message = Input,
+                Delay = Delay
+            });
         
         await client.WriteToStreamAsync(new WiredSavedWriter());
-        await dbContext.SaveChangesAsync();
     }
 }

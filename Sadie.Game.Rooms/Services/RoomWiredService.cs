@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Services;
+using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
@@ -75,5 +77,28 @@ public class RoomWiredService : IRoomWiredService
             FurnitureItemInteractionType.WiredEffectKickUser => (int) WiredEffectCode.KickUser,
             _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
         };
+    }
+
+    public async Task SaveSettingsAsync(
+        PlayerFurnitureItem playerItem,
+        SadieContext dbContext,
+        PlayerFurnitureItemWiredData wiredData)
+    {
+        if (playerItem.WiredData != null)
+        {
+            dbContext.Entry(playerItem.WiredData).State = EntityState.Deleted;
+            
+            foreach (var item in playerItem.WiredData.SelectedItems)
+            {
+                dbContext.Entry(item).State = EntityState.Deleted;
+            }
+            
+            await dbContext.SaveChangesAsync();
+        }
+
+        playerItem.WiredData = wiredData;
+
+        dbContext.Entry(playerItem).State = EntityState.Unchanged;
+        await dbContext.SaveChangesAsync();
     }
 }

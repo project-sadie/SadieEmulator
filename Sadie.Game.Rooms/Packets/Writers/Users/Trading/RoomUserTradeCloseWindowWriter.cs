@@ -5,7 +5,4 @@ using Sadie.Networking.Writers;
 namespace Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 
 [PacketId(ServerPacketId.RoomUserTradeCloseWindow)]
-public class RoomUserTradeCloseWindowWriter : AbstractPacketWriter
-{
-    
-}
+public class RoomUserTradeCloseWindowWriter : AbstractPacketWriter;
