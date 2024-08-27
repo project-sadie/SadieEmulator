@@ -77,9 +77,9 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        var item = page.Items.FirstOrDefault(x => x.Id == ItemId);
+        var catalogItem = page.Items.FirstOrDefault(x => x.Id == ItemId);
 
-        if (item == null)
+        if (catalogItem == null)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
             {
@@ -89,7 +89,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (item.RequiresClubMembership &&
+        if (catalogItem.RequiresClubMembership &&
             client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB") == null)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseUnavailableWriter
@@ -100,28 +100,33 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (!await TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
+        if (!await TryChargeForCatalogItemPurchaseAsync(client, catalogItem, Amount))
         {
             return;
         }
 
         if (page.Layout == CatalogPageLayout.Bots && 
-            item.Name.Contains("bot_") &&
-            !string.IsNullOrEmpty(item.MetaData))
+            catalogItem.Name.Contains("bot_") &&
+            !string.IsNullOrEmpty(catalogItem.MetaData))
         {
-            await ProcessBotPurchaseAsync(client, item);
+            await ProcessBotPurchaseAsync(client, catalogItem);
             return;
         }
         
         var created = DateTime.Now;
         var newItems = new List<PlayerFurnitureItem>();
         
-        var furnitureItem = item.FurnitureItems.First();
+        var furnitureItem = catalogItem.FurnitureItems.First();
         var mappedPlayer = mapper.Map<Player>(client.Player);
 
-        if (item.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
+        if (catalogItem.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
         {
-            await ProcessTeleportPurchaseAsync();
+            await ProcessTeleportPurchaseAsync(client,
+                mappedPlayer,
+                furnitureItem,
+                created,
+                newItems,
+                catalogItem);
             return;
         }
         
@@ -153,7 +158,7 @@ public class CatalogPurchaseEventHandler(
         };
         
         await client.WriteToStreamAsync(writer);
-        await ConfirmPurchaseAsync(client, item);
+        await ConfirmPurchaseAsync(client, catalogItem);
     }
 
     private async Task ProcessTeleportPurchaseAsync(INetworkClient client,
