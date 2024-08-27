@@ -23,16 +23,18 @@ public class RoomWiredTriggerSavedEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         var room = client.RoomUser?.Room;
-        var playerItem = client.Player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+        var playerItem = client.Player!.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (playerItem == null)
         {
             return;
         }
 
-        var selectedItems = room!
+        var roomItems = room!
             .FurnitureItems
-            .Where(x => ItemIds.Contains(x.PlayerFurnitureItem.Id))
+            .Where(x => ItemIds.Contains(x.PlayerFurnitureItem.Id));
+
+        var selectedItems = roomItems
             .Select(x => x.PlayerFurnitureItem)
             .ToList();
 

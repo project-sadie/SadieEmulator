@@ -63,7 +63,7 @@ public class ClientPacketHandler(
             .SingleOrDefault(x => x.Name == "HandleAsync");
 
         var requiresRoomRights = method?.GetCustomAttributes(typeof(RequiresRoomRightsAttribute), true)
-            .Single() != null;
+            .FirstOrDefault() != null;
 
         if (requiresRoomRights)
         {

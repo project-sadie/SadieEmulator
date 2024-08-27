@@ -1,6 +1,7 @@
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
@@ -14,17 +15,16 @@ public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext,
     public required int Saturation { get; set; }
     public required int Brightness { get; set; }
     
+    [RequiresRoomRights]
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null ||
-            client.RoomUser == null ||
-            !client.RoomUser.HasRights())
+        if (client.Player == null)
         {
             return;
         }
 
         var roomFurnitureItem = client
-            .RoomUser
+            .RoomUser!
             .Room
             .FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);

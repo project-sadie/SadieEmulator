@@ -13,6 +13,7 @@ public class WiredEffectWriter : AbstractPacketWriter
     public required ICollection<PlayerFurnitureItemPlacementData> SelectedItems { get; init; }
     public required PlayerFurnitureItem Item { get; init; }
     public required int WiredEffectType { get; init; }
+    public required string Input { get; init; }
     
     public override void OnSerialize(NetworkPacketWriter writer)
     {
@@ -28,7 +29,7 @@ public class WiredEffectWriter : AbstractPacketWriter
         
         writer.WriteInteger(Item.FurnitureItem.AssetId);
         writer.WriteInteger(Item.Id);
-        writer.WriteString(Item.MetaData);
+        writer.WriteString(Input);
         
         writer.WriteInteger(0);
         writer.WriteInteger(0);

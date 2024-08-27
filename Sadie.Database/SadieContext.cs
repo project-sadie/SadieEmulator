@@ -182,5 +182,21 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
                 l => l.HasOne(typeof(PlayerFurnitureItem)).WithMany().HasForeignKey("player_furniture_item_id").HasPrincipalKey(nameof(PlayerFurnitureItem.Id)),
                 r => r.HasOne(typeof(PlayerFurnitureItemWiredData)).WithMany().HasForeignKey("player_furniture_item_wired_data_id").HasPrincipalKey(nameof(PlayerFurnitureItemWiredData.Id)),
                 j => j.HasKey("player_furniture_item_id", "player_furniture_item_wired_data_id"));
+
+        modelBuilder.Entity<PlayerFurnitureItem>()
+            .Navigation(x => x.WiredData)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFurnitureItem>()
+            .Navigation(x => x.Player)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFurnitureItem>()
+            .Navigation(x => x.PlacementData)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFurnitureItemPlacementData>()
+            .Navigation(x => x.PlayerFurnitureItem)
+            .AutoInclude();
     }
 }

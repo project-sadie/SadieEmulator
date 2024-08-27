@@ -51,7 +51,7 @@ public class RoomWiredEffectSavedEventHandler(
                 Message = Input,
                 Delay = Delay
             });
-        
+
         await client.WriteToStreamAsync(new WiredSavedWriter());
     }
 }

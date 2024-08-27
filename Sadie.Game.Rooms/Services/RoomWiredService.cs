@@ -84,21 +84,19 @@ public class RoomWiredService : IRoomWiredService
         SadieContext dbContext,
         PlayerFurnitureItemWiredData wiredData)
     {
-        if (playerItem.WiredData != null)
+        var existingData = playerItem.WiredData;
+        
+        if (existingData != null)
         {
-            dbContext.Entry(playerItem.WiredData).State = EntityState.Deleted;
-            
-            foreach (var item in playerItem.WiredData.SelectedItems)
-            {
-                dbContext.Entry(item).State = EntityState.Deleted;
-            }
-            
+            dbContext.Entry(existingData).State = EntityState.Deleted;
             await dbContext.SaveChangesAsync();
         }
 
         playerItem.WiredData = wiredData;
 
         dbContext.Entry(playerItem).State = EntityState.Unchanged;
+        dbContext.Entry(wiredData).State = EntityState.Added;
+        
         await dbContext.SaveChangesAsync();
     }
 }
