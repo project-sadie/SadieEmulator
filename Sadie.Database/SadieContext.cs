@@ -169,11 +169,18 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .AutoInclude();
 
         modelBuilder.Entity<PlayerFurnitureItemWiredData>()
-            .HasOne(r => r.PlacementData)
-            .WithOne(x => x.WiredData)
-            .HasForeignKey<PlayerFurnitureItemWiredData>(x => x.PlacementDataId);
+            .HasMany(x => x.SelectedItems);
 
+        modelBuilder.Entity<PlayerFurnitureItem>()
+            .HasOne(x => x.WiredData)
+            .WithOne(x => x.PlayerFurnitureItem);
+        
         modelBuilder.Entity<PlayerFurnitureItemWiredData>()
-            .HasMany(r => r.FurnitureItems);
+            .HasMany(r => r.SelectedItems)
+            .WithMany(p => p.SelectedBy)
+            .UsingEntity("player_furniture_item_wired_data_items",
+                l => l.HasOne(typeof(PlayerFurnitureItem)).WithMany().HasForeignKey("player_furniture_item_id").HasPrincipalKey(nameof(PlayerFurnitureItem.Id)),
+                r => r.HasOne(typeof(PlayerFurnitureItemWiredData)).WithMany().HasForeignKey("player_furniture_item_wired_data_id").HasPrincipalKey(nameof(PlayerFurnitureItemWiredData.Id)),
+                j => j.HasKey("player_furniture_item_id", "player_furniture_item_wired_data_id"));
     }
 }

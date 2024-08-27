@@ -10,7 +10,7 @@ public class PlayerFurnitureItemPlacementData
 {
     [Key] public int Id { get; init; }
     public int PlayerFurnitureItemId { get; init; }
-    public PlayerFurnitureItem? PlayerFurnitureItem { get; init; }
+    public required PlayerFurnitureItem PlayerFurnitureItem { get; init; }
     public int RoomId { get; init; }
     public Room? Room { get; init; }
     public int PositionX { get; set; }
@@ -18,7 +18,6 @@ public class PlayerFurnitureItemPlacementData
     public double PositionZ { get; set; }
     public string? WallPosition { get; set; }
     public HDirection Direction { get; set; }
-    public PlayerFurnitureItemWiredData? WiredData { get; init; }
     public DateTime CreatedAt { get; init; }
 
     [NotMapped] public FurnitureItem? FurnitureItem => PlayerFurnitureItem?.FurnitureItem;

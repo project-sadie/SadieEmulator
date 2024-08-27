@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
@@ -5,7 +8,7 @@ using Sadie.Networking.Writers.Rooms.Furniture;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture.Wired;
 
 [PacketId(EventHandlerId.RoomWiredEffectSaved)]
-public class RoomWiredEffectSavedEventHandler : INetworkPacketEventHandler
+public class RoomWiredEffectSavedEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }
     public required List<int> Parameters { get; set; }
@@ -23,13 +26,34 @@ public class RoomWiredEffectSavedEventHandler : INetworkPacketEventHandler
         }
 
         var room = client.RoomUser?.Room;
-        var playerItem = room?.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+        
+        var playerItem = client
+            .Player
+            .FurnitureItems
+            .FirstOrDefault(x => x.Id == ItemId);
 
         if (playerItem == null)
         {
             return;
         }
 
+        var selectedItems = room!
+            .FurnitureItems
+            .Where(x => ItemIds.Contains(x.PlayerFurnitureItem.Id))
+            .Select(x => x.PlayerFurnitureItem)
+            .ToList();
+
+        playerItem.WiredData = new PlayerFurnitureItemWiredData
+        {
+            PlayerFurnitureItem = playerItem,
+            SelectedItems = selectedItems,
+            Message = Input,
+            Delay = Delay
+        };
+
+        dbContext.Entry(playerItem).State = EntityState.Unchanged;
+        
         await client.WriteToStreamAsync(new WiredSavedWriter());
+        await dbContext.SaveChangesAsync();
     }
 }
