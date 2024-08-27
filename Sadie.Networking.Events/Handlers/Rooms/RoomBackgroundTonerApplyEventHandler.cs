@@ -1,6 +1,5 @@
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 

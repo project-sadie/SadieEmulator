@@ -2,7 +2,6 @@ using System.Drawing;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 

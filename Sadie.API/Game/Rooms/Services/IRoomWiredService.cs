@@ -1,5 +1,4 @@
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Enums.Game.Rooms.Furniture;
 
 namespace Sadie.API.Game.Rooms.Services;
 

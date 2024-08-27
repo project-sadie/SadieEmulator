@@ -1,9 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
-using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Unit;
-using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Shared.Extensions;
 

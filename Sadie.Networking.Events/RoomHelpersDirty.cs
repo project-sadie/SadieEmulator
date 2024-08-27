@@ -16,7 +16,6 @@ using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Bots;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players.Inventory;

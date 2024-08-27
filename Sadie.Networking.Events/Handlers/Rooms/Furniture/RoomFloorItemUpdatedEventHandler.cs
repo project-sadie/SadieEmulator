@@ -5,7 +5,6 @@ using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
