@@ -6,6 +6,7 @@ using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Catalog;
@@ -120,51 +121,7 @@ public class CatalogPurchaseEventHandler(
 
         if (item.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
         {
-            var parent = new PlayerFurnitureItem
-            {
-                Player = mappedPlayer,
-                FurnitureItem = furnitureItem,
-                LimitedData = "1:1",
-                MetaData = MetaData,
-                CreatedAt = created
-            };
-            
-            var child = new PlayerFurnitureItem
-            {
-                Player = mappedPlayer,
-                FurnitureItem = furnitureItem,
-                LimitedData = "1:1",
-                MetaData = MetaData,
-                CreatedAt = created
-            };
-            
-            client.Player.FurnitureItems.Add(parent);
-            client.Player.FurnitureItems.Add(child);
-            
-            dbContext.Entry(parent).State = EntityState.Added;
-            dbContext.Entry(child).State = EntityState.Added;
-            
-            newItems.AddRange([parent, child]);
-
-            await dbContext.SaveChangesAsync();
-
-            dbContext.PlayerFurnitureItemLinks.Add(new PlayerFurnitureItemLink
-            {
-                ParentId = parent.Id,
-                ChildId = child.Id
-            });
-
-            await dbContext.SaveChangesAsync();
-
-            await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
-            {
-                Count = newItems.Count,
-                Category = 1,
-                FurnitureItems = newItems
-            });
-            
-            await ConfirmPurchaseAsync(client, item);
-            
+            await ProcessTeleportPurchaseAsync();
             return;
         }
         
@@ -197,6 +154,59 @@ public class CatalogPurchaseEventHandler(
         
         await client.WriteToStreamAsync(writer);
         await ConfirmPurchaseAsync(client, item);
+    }
+
+    private async Task ProcessTeleportPurchaseAsync(INetworkClient client,
+        Player? mappedPlayer,
+        FurnitureItem furnitureItem,
+        DateTime created,
+        List<PlayerFurnitureItem> newItems,
+        CatalogItem catalogItem)
+    {
+        var parent = new PlayerFurnitureItem
+        {
+            Player = mappedPlayer,
+            FurnitureItem = furnitureItem,
+            LimitedData = "1:1",
+            MetaData = MetaData,
+            CreatedAt = created
+        };
+            
+        var child = new PlayerFurnitureItem
+        {
+            Player = mappedPlayer,
+            FurnitureItem = furnitureItem,
+            LimitedData = "1:1",
+            MetaData = MetaData,
+            CreatedAt = created
+        };
+            
+        client.Player.FurnitureItems.Add(parent);
+        client.Player.FurnitureItems.Add(child);
+            
+        dbContext.Entry(parent).State = EntityState.Added;
+        dbContext.Entry(child).State = EntityState.Added;
+            
+        newItems.AddRange([parent, child]);
+
+        await dbContext.SaveChangesAsync();
+
+        dbContext.PlayerFurnitureItemLinks.Add(new PlayerFurnitureItemLink
+        {
+            ParentId = parent.Id,
+            ChildId = child.Id
+        });
+
+        await dbContext.SaveChangesAsync();
+
+        await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
+        {
+            Count = newItems.Count,
+            Category = 1,
+            FurnitureItems = newItems
+        });
+            
+        await ConfirmPurchaseAsync(client, catalogItem);
     }
 
     private async Task ProcessBotPurchaseAsync(INetworkClient client, CatalogItem catalogItem)

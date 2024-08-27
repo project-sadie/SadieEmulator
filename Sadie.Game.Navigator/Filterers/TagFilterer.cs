@@ -14,5 +14,3 @@ public class TagFilterer : INavigatorSearchFilterer
             .Where(r => r.Tags.Any(t => t.Name.Contains(value)));
     }
 }
-
-
