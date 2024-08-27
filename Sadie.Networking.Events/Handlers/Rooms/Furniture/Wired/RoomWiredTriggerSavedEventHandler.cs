@@ -20,8 +20,15 @@ public class RoomWiredTriggerSavedEventHandler : INetworkPacketEventHandler
         {
             return;
         }
-        
 
+        var room = client.RoomUser?.Room;
+        var playerItem = room?.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+
+        if (playerItem == null)
+        {
+            return;
+        }
+        
         await client.WriteToStreamAsync(new WiredSavedWriter());
     }
 }
