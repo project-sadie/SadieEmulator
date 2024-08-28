@@ -19,6 +19,7 @@ public class PlayerFurnitureItemPlacementData
     public string? WallPosition { get; set; }
     public HDirection Direction { get; set; }
     public DateTime CreatedAt { get; init; }
+    public PlayerFurnitureItemWiredData? WiredData { get; set; }
 
     [NotMapped] public FurnitureItem FurnitureItem => PlayerFurnitureItem.FurnitureItem;
 }

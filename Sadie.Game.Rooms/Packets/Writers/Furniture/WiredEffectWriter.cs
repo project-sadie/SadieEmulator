@@ -1,4 +1,3 @@
-using Sadie.Database.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
@@ -10,31 +9,13 @@ public class WiredEffectWriter : AbstractPacketWriter
 {
     public required bool StuffTypeSelectionEnabled { get; init; }
     public required int MaxItemsSelected { get; init; }
-    public required ICollection<PlayerFurnitureItemPlacementData> SelectedItems { get; init; }
-    public required PlayerFurnitureItem Item { get; init; }
+    public required List<int> SelectedItemIds { get; init; }
     public required int WiredEffectType { get; init; }
+    public required int Id { get; init; }
     public required string Input { get; init; }
-    
-    public override void OnSerialize(NetworkPacketWriter writer)
-    {
-        writer.WriteBool(StuffTypeSelectionEnabled);
-        writer.WriteInteger(MaxItemsSelected);
-        
-        writer.WriteInteger(SelectedItems.Count);
-        
-        foreach (var item in SelectedItems)
-        {
-            writer.WriteInteger(item.Id);
-        }
-        
-        writer.WriteInteger(Item.FurnitureItem.AssetId);
-        writer.WriteInteger(Item.Id);
-        writer.WriteString(Input);
-        
-        writer.WriteInteger(0);
-        writer.WriteInteger(0);
-        writer.WriteInteger(WiredEffectType);
-        writer.WriteInteger(0);
-        writer.WriteInteger(0);
-    }
+    public required List<int> IntParams { get; init; }
+    public required int StuffTypeSelectionCode { get; init; }
+    public required int Type { get; init; }
+    public required int DelayInPulses { get; init; }
+    public required List<int> ConflictingTriggerIds { get; init; }
 }

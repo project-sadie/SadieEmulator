@@ -5,6 +5,7 @@ using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 
 namespace Sadie.Game.Rooms.Services;
@@ -37,7 +38,12 @@ public class RoomWiredService : IRoomWiredService
         IRoomLogic room,
         PlayerFurnitureItemPlacementData effect)
     {
-        switch (effect.FurnitureItem!.InteractionType)
+        if (effect.WiredData == null)
+        {
+            return;
+        }
+        
+        switch (effect.FurnitureItem.InteractionType)
         {
             case FurnitureItemInteractionType.WiredEffectShowMessage:
                 foreach (var roomUser in room.UserRepository.GetAll())
@@ -45,9 +51,9 @@ public class RoomWiredService : IRoomWiredService
                     await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
                     {
                         SenderId = roomUser.Id,
-                        Message = effect.PlayerFurnitureItem!.MetaData,
+                        Message = effect.WiredData.Message,
                         EmotionId = 0,
-                        Bubble = 0,
+                        Bubble = (int) ChatBubble.Alert,
                         Unknown = 0
                     });
                 }
@@ -55,10 +61,8 @@ public class RoomWiredService : IRoomWiredService
             case FurnitureItemInteractionType.WiredEffectKickUser:
                 foreach (var user in room.UserRepository.GetAll())
                 {
-                    var wiredMessage = effect.PlayerFurnitureItem!.MetaData;
-                    
                     await user.Room.UserRepository.TryRemoveAsync(user.Id, true);
-                    await user.Player.SendAlertAsync(wiredMessage);
+                    await user.Player.SendAlertAsync(effect.WiredData.Message);
                 }
                 break;
         }
@@ -80,11 +84,11 @@ public class RoomWiredService : IRoomWiredService
     }
 
     public async Task SaveSettingsAsync(
-        PlayerFurnitureItem playerItem,
+        PlayerFurnitureItemPlacementData placementData,
         SadieContext dbContext,
         PlayerFurnitureItemWiredData wiredData)
     {
-        var existingData = playerItem.WiredData;
+        var existingData = placementData.WiredData;
         
         if (existingData != null)
         {
@@ -92,9 +96,9 @@ public class RoomWiredService : IRoomWiredService
             await dbContext.SaveChangesAsync();
         }
 
-        playerItem.WiredData = wiredData;
+        placementData.WiredData = wiredData;
 
-        dbContext.Entry(playerItem).State = EntityState.Unchanged;
+        dbContext.Entry(wiredData.PlacementData).State = EntityState.Unchanged;
         dbContext.Entry(wiredData).State = EntityState.Added;
         
         await dbContext.SaveChangesAsync();

@@ -11,7 +11,7 @@ public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; set; }
-    public required int Hue { get; set; }
+    public required int Hue { get; set; } 
     public required int Saturation { get; set; }
     public required int Brightness { get; set; }
     

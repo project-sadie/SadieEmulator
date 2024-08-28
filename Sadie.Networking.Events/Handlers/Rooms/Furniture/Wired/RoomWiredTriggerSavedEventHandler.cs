@@ -25,7 +25,7 @@ public class RoomWiredTriggerSavedEventHandler(
         var room = client.RoomUser?.Room;
         var playerItem = client.Player!.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
-        if (playerItem == null)
+        if (playerItem?.PlacementData == null)
         {
             return;
         }
@@ -39,11 +39,12 @@ public class RoomWiredTriggerSavedEventHandler(
             .ToList();
 
         await wiredService.SaveSettingsAsync(
-            playerItem,
+            playerItem.PlacementData,
             dbContext,
             new PlayerFurnitureItemWiredData
             {
-                PlayerFurnitureItem = playerItem,
+                PlayerFurnitureItemPlacementDataId = playerItem.PlacementData.Id,
+                PlacementData = playerItem.PlacementData,
                 SelectedItems = selectedItems,
                 Message = Input,
             });

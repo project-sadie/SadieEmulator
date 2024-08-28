@@ -23,13 +23,28 @@ public class GenericWiredTriggerInteractor(IRoomWiredService wiredService,
 
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
+        var wiredData = item.WiredData;
+        
+        var selectedItemIds = wiredData?
+            .SelectedItems
+            .Select(x => x.Id)
+            .ToList() ?? [];
+
+        var input = wiredData?.Message ?? "";
+        
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredTriggerWriter
         {
-            Item = item.PlayerFurnitureItem!,
+            AssetId = item.FurnitureItem.AssetId,
+            Id = item.Id,
+            Input = input,
+            Unknown1 = 0,
+            Unknown2 = 0,
+            TriggerCode = wiredService.GetWiredCode(item.FurnitureItem.InteractionType),
+            Unknown3 = 0,
+            Unknown4 = 0,
             StuffTypeSelectionEnabled = false,
             MaxItemsSelected = roomConstants.WiredMaxFurnitureSelection,
-            SelectedItems = [],
-            TriggerCode = wiredService.GetWiredCode(item.FurnitureItem!.InteractionType),
+            SelectedItemIds = selectedItemIds
         });
     }
 }

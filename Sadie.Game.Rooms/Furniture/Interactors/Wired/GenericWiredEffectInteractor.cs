@@ -19,14 +19,28 @@ public class GenericWiredEffectInteractor(IRoomWiredService wiredService,
 
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
+        var wiredData = item.WiredData;
+        
+        var selectedItemIds = wiredData?
+            .SelectedItems
+            .Select(x => x.Id!)
+            .ToList() ?? [];
+
+        var input = wiredData?.Message ?? "";
+        
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredEffectWriter
         {
-            Item = item.PlayerFurnitureItem,
             StuffTypeSelectionEnabled = false,
             MaxItemsSelected = roomConstants.WiredMaxFurnitureSelection,
-            SelectedItems = [],
+            SelectedItemIds = selectedItemIds,
             WiredEffectType = wiredService.GetWiredCode(item.FurnitureItem.InteractionType),
-            Input = item.PlayerFurnitureItem.WiredData?.Message ?? "",
+            Id = item.Id,
+            Input = input,
+            IntParams = [],
+            StuffTypeSelectionCode = 0,
+            Type = 0,
+            DelayInPulses = 0,
+            ConflictingTriggerIds = []
         });
     }
 }

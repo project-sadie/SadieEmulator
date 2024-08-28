@@ -30,7 +30,7 @@ public class RoomWiredEffectSavedEventHandler(
             .FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
 
-        if (playerItem == null)
+        if (playerItem?.PlacementData == null)
         {
             return;
         }
@@ -42,11 +42,12 @@ public class RoomWiredEffectSavedEventHandler(
             .ToList();
 
         await wiredService.SaveSettingsAsync(
-            playerItem,
+            playerItem.PlacementData,
             dbContext,
             new PlayerFurnitureItemWiredData
             {
-                PlayerFurnitureItem = playerItem,
+                PlayerFurnitureItemPlacementDataId = playerItem.PlacementData.Id,
+                PlacementData = playerItem.PlacementData,
                 SelectedItems = selectedItems,
                 Message = Input,
                 Delay = Delay

@@ -233,8 +233,8 @@ public static class NetworkPacketEventHelpers
         room.ChatMessages.Add(chatMessage);
 
         var matchingWiredTriggers = room.FurnitureItems.Where(x =>
-            x.PlayerFurnitureItem!.MetaData == message && 
-            x.FurnitureItem!.InteractionType == FurnitureItemInteractionType.WiredTriggerSaysSomething);
+            x is { WiredData: not null, PlayerFurnitureItem.FurnitureItem.InteractionType: FurnitureItemInteractionType.WiredTriggerSaysSomething } &&
+            x.WiredData.Message == message);
         
         foreach (var trigger in matchingWiredTriggers)
         {

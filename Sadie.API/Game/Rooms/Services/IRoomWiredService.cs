@@ -15,7 +15,7 @@ public interface IRoomWiredService
     int GetWiredCode(string interactionType);
 
     Task SaveSettingsAsync(
-        PlayerFurnitureItem playerItem,
+        PlayerFurnitureItemPlacementData placementData,
         SadieContext dbContext,
         PlayerFurnitureItemWiredData wiredData);
 }
