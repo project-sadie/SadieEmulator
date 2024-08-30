@@ -1,5 +1,6 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Players;
@@ -11,7 +12,7 @@ public class PlayerInventoryUnseenItemsWriter : AbstractPacketWriter
     public required int Category { get; init; }
     public required List<PlayerFurnitureItem> FurnitureItems { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Count);
 

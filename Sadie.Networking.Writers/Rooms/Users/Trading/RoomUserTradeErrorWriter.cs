@@ -1,5 +1,5 @@
+using Sadie.API.Networking;
 using Sadie.Enums.Game.Rooms.Users.Trading;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms.Users.Trading;

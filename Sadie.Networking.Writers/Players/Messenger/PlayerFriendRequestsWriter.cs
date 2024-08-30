@@ -1,13 +1,13 @@
-﻿using Sadie.Networking.Serialization;
+﻿using Sadie.API.Game.Players.Friendships;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
 [PacketId(ServerPacketId.PlayerFriendRequests)]
 public class PlayerFriendRequestsWriter : AbstractPacketWriter
 {
-    public required List<PlayerFriendshipRequestData> Requests { get; init; }
+    public required List<IPlayerFriendshipRequestData> Requests { get; init; }
     
     public override void OnConfigureRules()
     {

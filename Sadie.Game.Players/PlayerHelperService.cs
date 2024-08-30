@@ -1,14 +1,15 @@
+using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Players.Packets.Writers;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
+using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Subscriptions;
-using Sadie.Shared.Dtos;
 
 namespace Sadie.Game.Players;
 
@@ -16,7 +17,7 @@ public class PlayerHelperService : IPlayerHelperService
 {
     public async Task SendFriendUpdatesToPlayerAsync(
         IPlayerLogic player, 
-        List<PlayerFriendshipUpdate> updates)
+        List<IPlayerFriendshipUpdate> updates)
     {
         await player.NetworkObject!.WriteToStreamAsync(new PlayerUpdateFriendWriter
         {

@@ -5,11 +5,11 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
@@ -22,7 +22,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RoomLoadedEventHandler(
     ILogger<RoomLoadedEventHandler> logger,
     IRoomRepository roomRepository,
-    RoomUserFactory roomUserFactory,
+    IRoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository,
     SadieContext dbContext,
     IMapper mapper,

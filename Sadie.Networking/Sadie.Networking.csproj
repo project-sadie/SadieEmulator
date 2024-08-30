@@ -23,6 +23,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Sadie.API\Sadie.API.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj" />
+      <ProjectReference Include="..\Sadie.Networking.Serialization\Sadie.Networking.Serialization.csproj" />
       <ProjectReference Include="..\Sadie.Options\Sadie.Options.csproj" />
       <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
     </ItemGroup>

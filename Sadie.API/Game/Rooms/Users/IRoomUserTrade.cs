@@ -1,6 +1,6 @@
+using Sadie.API.Networking;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Networking.Serialization;
 
 namespace Sadie.API.Game.Rooms.Users;
 

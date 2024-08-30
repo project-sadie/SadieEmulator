@@ -98,7 +98,8 @@ public class RoomTileMapHelperTests
                         InteractionType = ""
                     },
                     LimitedData = "",
-                    MetaData = ""
+                    MetaData = "",
+                    Player = null
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -122,7 +123,8 @@ public class RoomTileMapHelperTests
                         InteractionType = ""
                     },
                     LimitedData = "",
-                    MetaData = ""
+                    MetaData = "",
+                    Player = null
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -146,7 +148,8 @@ public class RoomTileMapHelperTests
                         InteractionType = "gate"
                     },
                     LimitedData = "",
-                    MetaData = "1"
+                    MetaData = "1",
+                    Player = null
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -170,7 +173,8 @@ public class RoomTileMapHelperTests
                     },
                     
                     LimitedData = "",
-                    MetaData = ""
+                    MetaData = "",
+                    Player = null
                 }
             }
         };
@@ -191,7 +195,8 @@ public class RoomTileMapHelperTests
                         InteractionType = "default"
                     },
                     LimitedData = "",
-                    MetaData = ""
+                    MetaData = "",
+                    Player = null
                 }
             }
         };
@@ -539,7 +544,8 @@ public class RoomTileMapHelperTests
                     CanWalk = canWalk,
                     CanLay = canLay,
                     CanSit = canSit
-                }
+                },
+                Player = null
             },
             PositionX = x,
             PositionY = y,

@@ -1,6 +1,6 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture.Processors;
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 

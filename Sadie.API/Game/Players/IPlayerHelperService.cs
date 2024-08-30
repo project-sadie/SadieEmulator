@@ -1,7 +1,6 @@
 using Sadie.API.Game.Players.Packets.Writers;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Shared.Dtos;
 
 namespace Sadie.API.Game.Players;
 
@@ -9,7 +8,7 @@ public interface IPlayerHelperService
 {
     Task SendFriendUpdatesToPlayerAsync(
         IPlayerLogic player, 
-        List<PlayerFriendshipUpdate> updates);
+        List<IPlayerFriendshipUpdate> updates);
 
     Task SendPlayerFriendListUpdate(
         IPlayerLogic player, 

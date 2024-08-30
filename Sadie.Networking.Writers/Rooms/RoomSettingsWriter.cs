@@ -1,5 +1,6 @@
+using Sadie.API;
 using Sadie.API.Game.Rooms;
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms;
@@ -9,7 +10,7 @@ public class RoomSettingsWriter : AbstractPacketWriter
 {
     public required IRoomLogic Room { get; init; }
     
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Room.Id);
         writer.WriteString(Room.Name);

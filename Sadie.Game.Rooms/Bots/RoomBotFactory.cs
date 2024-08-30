@@ -1,12 +1,13 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Bots;
 
 namespace Sadie.Game.Rooms.Bots;
 
-public class RoomBotFactory(IServiceProvider serviceProvider)
+public class RoomBotFactory(IServiceProvider serviceProvider) : IRoomBotFactory
 {
-    public RoomBot Create(
+    public IRoomBot Create(
         IRoomLogic room,
         int id, 
         Point point)

@@ -1,6 +1,6 @@
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Unsorted;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Wardrobe;

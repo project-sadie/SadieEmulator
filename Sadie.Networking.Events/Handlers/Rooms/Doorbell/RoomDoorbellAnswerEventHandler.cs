@@ -3,8 +3,8 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Doorbell;
@@ -16,7 +16,7 @@ public class RoomDoorbellAnswerEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
     SadieContext dbContext,
-    RoomUserFactory roomUserFactory,
+    IRoomUserFactory roomUserFactory,
     INetworkClientRepository clientRepository,
     IRoomTileMapHelperService tileMapHelperService,
     IPlayerHelperService playerHelperService,

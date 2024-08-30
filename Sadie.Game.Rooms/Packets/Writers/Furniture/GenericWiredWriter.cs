@@ -1,4 +1,4 @@
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Furniture;
 

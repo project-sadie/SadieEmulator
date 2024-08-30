@@ -1,5 +1,6 @@
-﻿using Sadie.API.Game.Rooms.Mapping;
-using Sadie.Networking.Serialization;
+﻿using Sadie.API;
+using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Rooms;
@@ -9,7 +10,7 @@ public class RoomRelativeMapWriter : AbstractPacketWriter
 {
     public required IRoomTileMap TileMap { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(TileMap.Size / TileMap.SizeY);
         writer.WriteInteger(TileMap.Size);

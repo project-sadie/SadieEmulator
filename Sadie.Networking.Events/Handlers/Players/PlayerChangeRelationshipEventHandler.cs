@@ -6,9 +6,9 @@ using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
-using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 

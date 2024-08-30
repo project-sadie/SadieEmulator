@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using Sadie.API;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Serialization;
@@ -42,20 +43,20 @@ public class NetworkPacketWriterSerializer
         return identifierAttribute.Id;
     }
     
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetRuleMap(object classObject, string propertyName)
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetRuleMap(object classObject, string propertyName)
     {
-        return (Dictionary<PropertyInfo, Action<NetworkPacketWriter>>) classObject
+        return (Dictionary<PropertyInfo, Action<INetworkPacketWriter>>) classObject
             .GetType()
             .BaseType?.GetProperty(propertyName)
             ?.GetValue(classObject)!;
     }
 
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetBeforeRuleMap(object classObject) => 
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetBeforeRuleMap(object classObject) => 
         GetRuleMap(classObject, "BeforeRulesSerialize");
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetInsteadRuleMap(object classObject) => 
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetInsteadRuleMap(object classObject) => 
         GetRuleMap(classObject, "InsteadRulesSerialize");
 
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetAfterRuleMap(object classObject) =>
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetAfterRuleMap(object classObject) =>
         GetRuleMap(classObject, "AfterRulesSerialize");
     
     private static Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> GetConversionRules(object classObject) => 

@@ -1,5 +1,6 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Navigator;
@@ -9,7 +10,7 @@ public class PlayerNavigatorSettingsWriter : AbstractPacketWriter
 {
     public required PlayerNavigatorSettings NavigatorSettings { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(NavigatorSettings.Id);
         writer.WriteInteger(NavigatorSettings.PlayerId);

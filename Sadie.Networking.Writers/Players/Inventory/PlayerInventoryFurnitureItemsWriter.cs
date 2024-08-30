@@ -1,6 +1,7 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
 
@@ -26,7 +27,7 @@ public class PlayerInventoryFurnitureItemsWriter : AbstractPacketWriter
         });
     }
 
-    private static void WriteItem(PlayerFurnitureItem item, NetworkPacketWriter writer)
+    private static void WriteItem(PlayerFurnitureItem item, INetworkPacketWriter writer)
     {
         var furnitureItem = item.FurnitureItem;
         var hasRentPeriodStarted = false;

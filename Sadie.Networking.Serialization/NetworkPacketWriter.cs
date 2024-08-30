@@ -1,9 +1,10 @@
 using System.Buffers;
 using System.Text;
+using Sadie.API;
 
 namespace Sadie.Networking.Serialization;
 
-public class NetworkPacketWriter
+public class NetworkPacketWriter : INetworkPacketWriter
 {
     private readonly ArrayBufferWriter<byte> _packet = new();
 

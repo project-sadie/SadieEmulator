@@ -1,16 +1,16 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Enums.Unsorted;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Dtos;
 
 namespace Sadie.Networking.Writers.Players.Friendships;
 
 [PacketId(ServerPacketId.PlayerUpdateFriend)]
 public class PlayerUpdateFriendWriter : AbstractPacketWriter
 {
-    public required List<PlayerFriendshipUpdate> Updates { get; init; }
+    public required List<IPlayerFriendshipUpdate> Updates { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(0);
         writer.WriteInteger(Updates.Count);

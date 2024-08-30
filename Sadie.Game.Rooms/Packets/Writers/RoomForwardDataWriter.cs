@@ -1,5 +1,6 @@
+using Sadie.API;
 using Sadie.API.Game.Rooms;
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
 
@@ -13,7 +14,7 @@ public class RoomForwardDataWriter : AbstractPacketWriter
     public required bool EnterRoom { get; init; }
     public required bool IsOwner { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         var settings = Room.Settings;
         var chatSettings = Room.ChatSettings;

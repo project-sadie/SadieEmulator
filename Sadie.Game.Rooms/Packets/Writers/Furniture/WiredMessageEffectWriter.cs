@@ -1,11 +1,11 @@
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Furniture;
 
 [PacketId(ServerPacketId.WiredEffect)]
-public class WiredEffectWriter : AbstractPacketWriter
+public class WiredMessageEffectWriter : AbstractPacketWriter
 {
     public required bool StuffTypeSelectionEnabled { get; init; }
     public required int MaxItemsSelected { get; init; }

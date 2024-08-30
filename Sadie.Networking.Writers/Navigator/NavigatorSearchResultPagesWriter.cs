@@ -1,7 +1,8 @@
+using Sadie.API;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Rooms;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Navigator;
@@ -14,7 +15,7 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
     public required Dictionary<NavigatorCategory, List<Room>> CategoryRoomMap { get; init; }
     public required IRoomRepository RoomRepository { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteString(TabName);
         writer.WriteString(SearchQuery);

@@ -1,4 +1,5 @@
-﻿using Sadie.Networking.Serialization;
+﻿using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
 
@@ -13,7 +14,7 @@ public class RoomUserChatWriter : AbstractPacketWriter
     public required int ChatBubbleId { get; init; }
     public required int Unknown1 { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(UserId);
         writer.WriteString(Message);

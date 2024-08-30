@@ -1,4 +1,5 @@
-﻿using Sadie.Networking.Serialization;
+﻿using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Purse;
@@ -10,7 +11,7 @@ public class PlayerActivityPointsBalanceWriter : AbstractPacketWriter
     public required int SeasonalBalance { get; init; }
     public required int GotwPoints { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         var currencies = new Dictionary<int, long>
         {

@@ -2,9 +2,11 @@ using System.Drawing;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Players;
@@ -15,8 +17,6 @@ using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Bots;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Purse;
@@ -78,17 +78,17 @@ public static class RoomHelpersDirty
         await dbContext.SaveChangesAsync();
     }
 
-    public static RoomBot CreateBot(
+    public static IRoomBot CreateBot(
         int id, 
         IRoomLogic room, 
         Point point,
-        RoomBotFactory roomBotFactory)
+        IRoomBotFactory roomBotFactory)
     {
         return roomBotFactory.Create(room, id, point);
     }
 
-    private static RoomUser CreateUserForEntry(
-        RoomUserFactory roomUserFactory, 
+    private static IRoomUser CreateUserForEntry(
+        IRoomUserFactory roomUserFactory, 
         IRoomLogic room, 
         IPlayerLogic player,
         Point spawnPoint,
@@ -111,7 +111,7 @@ public static class RoomHelpersDirty
     public static async Task AfterEnterRoomAsync(
         INetworkClient client, 
         IRoomLogic room, 
-        RoomUserFactory roomUserFactory,
+        IRoomUserFactory roomUserFactory,
         SadieContext dbContext,
         IPlayerRepository playerRepository,
         IRoomTileMapHelperService tileMapHelperService,

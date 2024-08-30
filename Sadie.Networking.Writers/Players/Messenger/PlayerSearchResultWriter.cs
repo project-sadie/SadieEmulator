@@ -1,5 +1,6 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
@@ -10,7 +11,7 @@ public class PlayerSearchResultWriter : AbstractPacketWriter
     public required ICollection<Player> Friends { get; init; }
     public required ICollection<Player> Strangers { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Friends.Count);
 

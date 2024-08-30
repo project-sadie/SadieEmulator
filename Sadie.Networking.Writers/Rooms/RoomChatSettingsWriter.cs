@@ -1,8 +1,7 @@
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Networking.Writers;
 
-namespace Sadie.Game.Rooms.Packets.Writers;
+namespace Sadie.Networking.Writers.Rooms;
 
 [PacketId(ServerPacketId.RoomChatSettings)]
 public class RoomChatSettingsWriter : AbstractPacketWriter

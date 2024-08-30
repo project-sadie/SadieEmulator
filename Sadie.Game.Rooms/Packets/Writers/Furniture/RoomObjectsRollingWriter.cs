@@ -1,5 +1,5 @@
 using Sadie.API.Game.Rooms;
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
 

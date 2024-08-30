@@ -1,6 +1,7 @@
-﻿using Sadie.Database.Models.Catalog.Pages;
+﻿using Sadie.API;
+using Sadie.API.Networking;
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
 
@@ -14,7 +15,7 @@ public class HabboClubGiftsWriter : AbstractPacketWriter
     public required int DaysAsClub { get; init; }
     public required CatalogPage? ClubGiftPage { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(DaysTillNext);
         writer.WriteInteger(UnclaimedGifts * 4932);

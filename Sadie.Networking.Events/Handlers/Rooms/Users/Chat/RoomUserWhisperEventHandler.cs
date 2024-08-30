@@ -1,10 +1,10 @@
+using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 [PacketId(EventHandlerId.RoomUserWhisper)]
 public class RoomUserWhisperEventHandler(
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants,
     SadieContext dbContext,
     IRoomHelperService roomHelperService)

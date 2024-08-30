@@ -24,13 +24,11 @@ public class RoomWiredEffectSavedEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         var room = client.RoomUser?.Room;
-        
-        var playerItem = client
-            .Player
-            .FurnitureItems
-            .FirstOrDefault(x => x.Id == ItemId);
 
-        if (playerItem?.PlacementData == null)
+        var roomItem = room?.FurnitureItems
+            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+
+        if (roomItem == null)
         {
             return;
         }
@@ -38,16 +36,15 @@ public class RoomWiredEffectSavedEventHandler(
         var selectedItems = room!
             .FurnitureItems
             .Where(x => ItemIds.Contains(x.PlayerFurnitureItem.Id))
-            .Select(x => x.PlayerFurnitureItem)
             .ToList();
 
         await wiredService.SaveSettingsAsync(
-            playerItem.PlacementData,
+            roomItem,
             dbContext,
             new PlayerFurnitureItemWiredData
             {
-                PlayerFurnitureItemPlacementDataId = playerItem.PlacementData.Id,
-                PlacementData = playerItem.PlacementData,
+                PlayerFurnitureItemPlacementDataId = roomItem.Id,
+                PlacementData = roomItem,
                 SelectedItems = selectedItems,
                 Message = Input,
                 Delay = Delay
