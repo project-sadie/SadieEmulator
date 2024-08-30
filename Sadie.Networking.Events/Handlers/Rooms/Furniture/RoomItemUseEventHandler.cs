@@ -1,4 +1,3 @@
-using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
 using Sadie.Networking.Client;

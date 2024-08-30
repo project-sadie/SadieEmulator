@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Sadie.API;
-using Sadie.Database.Models.Players;
+﻿using Sadie.API;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Serialization.Attributes;
@@ -9,7 +7,7 @@ using Sadie.Networking.Writers.Players.Other;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerData)]
-public class PlayerDataEventHandler(IMapper mapper) : INetworkPacketEventHandler
+public class PlayerDataEventHandler() : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

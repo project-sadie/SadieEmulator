@@ -1,5 +1,4 @@
-﻿using Sadie.Database.Models.Players;
-using Sadie.Enums.Game.Players;
+﻿using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Serialization.Attributes;
