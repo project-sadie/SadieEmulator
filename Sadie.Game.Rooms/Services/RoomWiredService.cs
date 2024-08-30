@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
@@ -10,11 +11,13 @@ using Sadie.Game.Rooms.Packets.Writers.Users;
 
 namespace Sadie.Game.Rooms.Services;
 
-public class RoomWiredService : IRoomWiredService
+public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelperService) : IRoomWiredService
 {
     public async Task RunTriggerForRoomAsync(IRoomLogic room,
         PlayerFurnitureItemPlacementData trigger)
     {
+        CycleInteractionStateAsync(room, trigger);
+        
         var effectsOnTrigger = GetEffectsForTrigger(trigger, room.FurnitureItems);
 
         foreach (var effect in effectsOnTrigger)
@@ -34,7 +37,7 @@ public class RoomWiredService : IRoomWiredService
                 x.PositionZ >= trigger.PositionZ);
     }
     
-    private static async Task RunEffectForRoomAsync(
+    private async Task RunEffectForRoomAsync(
         IRoomLogic room,
         PlayerFurnitureItemPlacementData effect)
     {
@@ -66,6 +69,8 @@ public class RoomWiredService : IRoomWiredService
                 }
                 break;
         }
+        
+        CycleInteractionStateAsync(room, effect);
     }
     
     public int GetWiredCode(string interactionType)
@@ -102,5 +107,12 @@ public class RoomWiredService : IRoomWiredService
         dbContext.Entry(wiredData).State = EntityState.Added;
         
         await dbContext.SaveChangesAsync();
+    }
+
+    private async Task CycleInteractionStateAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item)
+    {
+        await furnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "1");
+        await Task.Delay(500);
+        await furnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "0");
     }
 }
