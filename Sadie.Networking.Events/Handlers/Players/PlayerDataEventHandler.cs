@@ -13,9 +13,14 @@ public class PlayerDataEventHandler(IMapper mapper) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
+        if (client.Player == null)
+        {
+            return;
+        }
+        
         await client.WriteToStreamAsync(new PlayerDataWriter
         {
-            Player = mapper.Map<Player>(client.Player)
+            Player = client.Player
         });
 
         var perks = new List<IPerkData>

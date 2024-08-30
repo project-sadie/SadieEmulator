@@ -1,4 +1,5 @@
 ﻿using Sadie.API;
+using Sadie.API.Game.Players;
 using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Unsorted;
@@ -9,7 +10,7 @@ namespace Sadie.Networking.Writers.Players.Other;
 [PacketId(ServerPacketId.PlayerData)]
 public class PlayerDataWriter : AbstractPacketWriter
 {
-    public required Player Player { get; init; }
+    public required IPlayerLogic Player { get; init; }
     
     public override void OnSerialize(INetworkPacketWriter writer)
     {

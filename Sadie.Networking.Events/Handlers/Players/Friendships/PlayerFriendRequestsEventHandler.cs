@@ -24,23 +24,21 @@ public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
             .ToList();
 
-        var requests = new List<IPlayerFriendshipRequestData>()
+        var requests = new List<IPlayerFriendshipRequestData>();
+        
+        foreach (var data in friendRequests.Select(request => request.TargetPlayerId == client.Player.Id ? 
+                     request.OriginPlayer : 
+                     request.TargetPlayer))
         {
+            if (data?.AvatarData == null)
             {
-                new PlayerFriendshipRequestData
-                {
-                    Username = null,
-                    FigureCode = null
-                }
+                continue;
             }
-        };
-        foreach (var request in friendRequests)
-        {
-            Player data = request.TargetPlayerId == client.Player.Id ? request.OriginPlayer : request.TargetPlayer;
+            
             requests.Add(new PlayerFriendshipRequestData
             {
-                Username = null,
-                FigureCode = null
+                Username = data.Username,
+                FigureCode = data.AvatarData.FigureCode
             });
         }
 
