@@ -83,7 +83,7 @@ public class FloorPlanEditorSaveEventHandler(
         {
             room.LayoutId = room.Layout.Id;
             
-            dbContext.Entry(room).Property(x => x.LayoutId).IsModified = true;
+            dbContext.Entry((Room) room).Property(x => x.LayoutId).IsModified = true;
             await dbContext.SaveChangesAsync();
         }
 
