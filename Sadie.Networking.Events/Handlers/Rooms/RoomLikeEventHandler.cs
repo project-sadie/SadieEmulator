@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Rooms;
@@ -7,7 +8,7 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomLike)]
-public class RoomLikeEventHandler(RoomRepository roomRepository,
+public class RoomLikeEventHandler(IRoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
