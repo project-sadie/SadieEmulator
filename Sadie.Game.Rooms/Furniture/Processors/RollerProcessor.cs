@@ -43,11 +43,6 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             var y = roller.PositionY;
             var nextStep = tileMapHelperService.GetPointInFront(x, y, roller.Direction);
             
-            if (!room.TileMap.TileExists(nextStep))
-            {
-                continue;
-            }
-            
             var rollerPosition = new Point(x, y);
             
             var nextRoller = tileMapHelperService

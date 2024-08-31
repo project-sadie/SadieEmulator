@@ -1,3 +1,6 @@
+using System.Drawing;
+using Sadie.Game.Rooms.Mapping;
+
 namespace Sadie.Tests.Game.Rooms.Mapping;
 
 [TestFixture]
@@ -28,13 +31,11 @@ public class RoomTileMapTests
     {
     }
     
-    [Test]
-    public void TileExists_NonExistentTile_ReturnsFalse()
+    [TestCase("0", 1, 3, false)]
+    [TestCase("0", 0, 0, true)]
+    public void TileExists_ReturnsCorrect(string heightMap, int x, int y, bool idk)
     {
-    }
-    
-    [Test]
-    public void TileExists_ExistingTile_ReturnsTrue()
-    {
+        var tileMap = new RoomTileMap(heightMap, []);
+        Assert.That(tileMap.TileExists(new Point(x, y)), Is.EqualTo(idk));
     }
 }
