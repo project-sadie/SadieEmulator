@@ -90,8 +90,19 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
     public bool UsersAtPoint(Point point) =>
         UnitMap.ContainsKey(point) && UnitMap[point].Count > 0;
 
-    public bool TileExists(Point point) =>
-        point.X <= SizeX && 
-        point.Y <= SizeY && 
-        TileExistenceMap[point.Y, point.X] == 1;
+    public bool TileExists(Point point)
+    {
+        try
+        {
+            return point.X <= SizeX &&
+                   point.X >= 0 &&
+                   point.Y <= SizeY &&
+                   point.Y >= 0 &&
+                   TileExistenceMap[point.Y, point.X] == 1;
+        }
+        catch (IndexOutOfRangeException)
+        {
+            return false;
+        }
+    }
 }
