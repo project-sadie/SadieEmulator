@@ -18,7 +18,6 @@ public class GenericWiredTriggerInteractor(IRoomWiredService wiredService,
         FurnitureItemInteractionType.WiredTriggerEnterRoom,
         FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture,
         FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture,
-        FurnitureItemInteractionType.WiredTriggerFurnitureStateChanged,
     ];
 
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
