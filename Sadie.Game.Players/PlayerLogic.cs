@@ -24,7 +24,6 @@ public class PlayerLogic : Player, IPlayerLogic
 
     public IChannel? Channel { get; set; }
     public INetworkObject? NetworkObject { get; set; }
-    public new PlayerData Data { get; init; }
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }
 
