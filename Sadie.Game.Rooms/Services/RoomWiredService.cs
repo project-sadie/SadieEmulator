@@ -13,6 +13,17 @@ namespace Sadie.Game.Rooms.Services;
 
 public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelperService) : IRoomWiredService
 {
+    public IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
+        string interactionType,
+        IEnumerable<PlayerFurnitureItemPlacementData> roomItems,
+        string requiredMessage)
+    {
+        return roomItems.Where(x =>
+            x.WiredData != null &&
+            x.PlayerFurnitureItem.FurnitureItem.InteractionType == interactionType &&
+            string.IsNullOrWhiteSpace(requiredMessage) || x.WiredData!.Message == requiredMessage);
+    }
+    
     public async Task RunTriggerForRoomAsync(IRoomLogic room,
         PlayerFurnitureItemPlacementData trigger)
     {

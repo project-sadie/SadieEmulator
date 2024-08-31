@@ -5,6 +5,11 @@ namespace Sadie.API.Game.Rooms.Services;
 
 public interface IRoomWiredService
 {
+    IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
+        string interactionType,
+        IEnumerable<PlayerFurnitureItemPlacementData> roomItems,
+        string requiredMessage);
+    
     IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
         PlayerFurnitureItemPlacementData trigger,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems);
