@@ -153,4 +153,5 @@ public class ServerPacketId
     public const short WiredTrigger = 383;
     public const short WiredEffect = 1434;
     public const short WiredSaved = 1155;
+    public const short RoomUserNameChanged = 2182;
 }
