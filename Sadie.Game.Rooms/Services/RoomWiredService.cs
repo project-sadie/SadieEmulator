@@ -76,7 +76,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             case FurnitureItemInteractionType.WiredEffectKickUser:
                 foreach (var user in room.UserRepository.GetAll())
                 {
-                    await user.Room.UserRepository.TryRemoveAsync(user.Id, true);
+                    await user.Room.UserRepository.TryRemoveAsync(user.Id, true, true);
                     await user.Player.SendAlertAsync(effect.WiredData.Message);
                 }
                 break;
