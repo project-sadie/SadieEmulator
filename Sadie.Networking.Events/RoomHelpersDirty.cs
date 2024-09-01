@@ -181,7 +181,9 @@ public static class RoomHelpersDirty
         
         await SendRoomEntryPacketsToUserAsync(client, room);
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
-        
+
+        await Task.Delay(100);
+            
         var matchingWiredTriggers = room.FurnitureItems
             .Where(x =>
                 x.FurnitureItem.InteractionType ==
