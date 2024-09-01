@@ -167,8 +167,9 @@ public class TeleportInteractor(
 
         room.TileMap.UnitMap[roomUser.Point].Remove(roomUser);
         room.TileMap.AddUnitToMap(newPoint, roomUser);
+
+        await roomUser.SetPositionAsync(newPoint);
         
-        roomUser.Point = newPoint;
         roomUser.Direction = targetItem.Direction;
         roomUser.DirectionHead = targetItem.Direction;
             

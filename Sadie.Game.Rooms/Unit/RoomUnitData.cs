@@ -24,7 +24,7 @@ public class RoomUnitData(
     public HDirection DirectionHead { get; set; } = directionHead;
     public HDirection Direction { get; set; } = direction;
     public bool CanWalk { get; set; } = true;
-    public Point Point { get; set; } = point;
+    public Point Point { get; private set; } = point;
     public double PointZ { get; set; } = pointZ;
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
@@ -152,10 +152,8 @@ public class RoomUnitData(
             room.TileMap.UnitMap[Point].Remove(this);
             room.TileMap.AddUnitToMap(NextPoint.Value, this);
 
-            await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
-            await CheckForStepTriggersAsync(NextPoint.Value, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
+            await SetPositionAsync(NextPoint.Value);
             
-            Point = NextPoint.Value;
             PointZ = NextZ;
             NextPoint = null;
         }
@@ -239,6 +237,14 @@ public class RoomUnitData(
     public double NextZ { get; set; }
     public int HandItemId { get; set; }
     public DateTime HandItemSet { get; set; }
+    
+    public async Task SetPositionAsync(Point point)
+    {
+        await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
+        await CheckForStepTriggersAsync(point, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
+        
+        Point = point;
+    }
 
     private void ClearStatuses()
     {

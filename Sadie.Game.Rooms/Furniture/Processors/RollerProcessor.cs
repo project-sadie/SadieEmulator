@@ -66,7 +66,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             
                 foreach (var rollingUser in rollingUsers)
                 {
-                    MoveUserOnRoller(
+                    await MoveUserOnRollerAsync(
                         x, 
                         y, 
                         nextStep, 
@@ -147,7 +147,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         itemIdsProcessed.Add(item.Id);
     }
 
-    private static void MoveUserOnRoller(
+    private static async Task MoveUserOnRollerAsync(
         int x,
         int y,
         Point nextStep,
@@ -183,7 +183,8 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         room.TileMap.UnitMap[rollingUser.Point].Remove(rollingUser);
         room.TileMap.AddUnitToMap(nextStep, rollingUser);
 
-        rollingUser.Point = nextStep;
+        await rollingUser.SetPositionAsync(nextStep);
+        
         rollingUser.PointZ = nextRoller?.FurnitureItem?.StackHeight ?? 0;
     }
 }
