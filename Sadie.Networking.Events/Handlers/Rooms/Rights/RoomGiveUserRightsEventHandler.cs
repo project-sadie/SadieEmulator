@@ -54,7 +54,8 @@ public class RoomGiveUserRightsEventHandler(
         var roomPlayerRight = new RoomPlayerRight
         {
             RoomId = room.Id,
-            PlayerId = playerId
+            PlayerId = playerId,
+            CreatedAt = DateTime.Now
         };
         
         room.PlayerRights.Add(roomPlayerRight);
