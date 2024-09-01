@@ -232,11 +232,10 @@ public static class NetworkPacketEventHelpers
         
         room.ChatMessages.Add(chatMessage);
 
-        var matchingWiredTriggers = room.FurnitureItems.Where(x =>
-            x is { WiredData: not null, PlayerFurnitureItem.FurnitureItem.InteractionType: FurnitureItemInteractionType.WiredTriggerSaysSomething } &&
-            x.WiredData.Message == message);
+        var triggers = wiredService.GetTriggers(
+            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.FurnitureItems, message);
         
-        foreach (var trigger in matchingWiredTriggers)
+        foreach (var trigger in triggers)
         {
             await wiredService.RunTriggerForRoomAsync(room, trigger);
         }
@@ -249,16 +248,25 @@ public static class NetworkPacketEventHelpers
     {
         var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
         var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
-            
-        if (command != null && 
-            ((command.BypassPermissionCheckIfRoomOwner && roomOwner) || 
-             command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x))))
+
+        if (command == null)
         {
-            var parameters = message.Split(" ").Skip(1);
-            await command.ExecuteAsync(roomUser, parameters);
-            return true;
+            return false;
         }
 
-        return false;
+        if (command.BypassPermissionCheckIfRoomOwner && !roomOwner)
+        {
+            return false;
+        }
+
+        if (!command.PermissionsRequired.All(x => roomUser.Player.HasPermission(x)))
+        {
+            return false;
+        }
+        
+        var parameters = message.Split(" ").Skip(1);
+        await command.ExecuteAsync(roomUser, parameters);
+        
+        return true;
     }
 }

@@ -18,7 +18,7 @@ public class PlayerChangedMottoEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null)
+        if (client.Player?.AvatarData == null)
         {
             return;
         }
