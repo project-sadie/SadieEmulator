@@ -10,7 +10,7 @@ public interface IRoomWiredService
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems,
         string requiredMessage);
     
-    IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
+    List<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
         PlayerFurnitureItemPlacementData trigger,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems);
 

@@ -21,7 +21,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         return roomItems.Where(x =>
             x.WiredData != null &&
             x.PlayerFurnitureItem.FurnitureItem.InteractionType == interactionType &&
-            string.IsNullOrWhiteSpace(requiredMessage) || x.WiredData!.Message == requiredMessage);
+            (string.IsNullOrWhiteSpace(requiredMessage) || x.WiredData!.Message == requiredMessage));
     }
     
     public async Task RunTriggerForRoomAsync(IRoomLogic room,
@@ -37,7 +37,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         }
     }
     
-    public IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
+    public List<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
         PlayerFurnitureItemPlacementData trigger,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems)
     {
@@ -45,7 +45,8 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             .Where(x =>
                 x.PositionX == trigger.PositionX &&
                 x.PositionY == trigger.PositionY &&
-                x.PositionZ >= trigger.PositionZ);
+                x.PositionZ >= trigger.PositionZ)
+            .ToList();
     }
     
     private async Task RunEffectForRoomAsync(
