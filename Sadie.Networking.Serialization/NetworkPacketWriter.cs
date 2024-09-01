@@ -10,7 +10,7 @@ public class NetworkPacketWriter : INetworkPacketWriter
 
     public void WriteString(string data)
     {
-        WriteShort((short) data.Length);
+        WriteShort((short) Encoding.Default.GetBytes(data).Length);
         WriteBytes(Encoding.Default.GetBytes(data));
     }
 
