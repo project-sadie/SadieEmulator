@@ -7,6 +7,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Rooms.Mapping;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
 
@@ -54,22 +55,29 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             var users = room.UserRepository
                 .GetAll()
                 .Where(u => !userIdsProcessed.Contains(u.Id));
+
+            var nextStepWalkable = room.TileMap.TileExists(nextStep) &&
+                                   room.TileMap.Map[nextStep.Y, nextStep.X] >=
+                                   (int)RoomTileState.Open;
             
-            var rollingUsers = tileMapHelperService.GetUsersAtPoints([rollerPosition], users);
-            
-            foreach (var rollingUser in rollingUsers)
+            if (nextStepWalkable)
             {
-                MoveUserOnRoller(
-                    x, 
-                    y, 
-                    nextStep, 
-                    userIdsProcessed, 
-                    rollingUser, 
-                    writers, 
-                    room, 
-                    roller,
-                    nextRoller, 
-                    nextHeight);
+                var rollingUsers = tileMapHelperService.GetUsersAtPoints([rollerPosition], users);
+            
+                foreach (var rollingUser in rollingUsers)
+                {
+                    MoveUserOnRoller(
+                        x, 
+                        y, 
+                        nextStep, 
+                        userIdsProcessed, 
+                        rollingUser, 
+                        writers, 
+                        room, 
+                        roller,
+                        nextRoller, 
+                        nextHeight);
+                }
             }
 
             var unprocessedNonRollers = room.FurnitureItems.Where(i =>
