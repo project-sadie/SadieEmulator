@@ -34,7 +34,7 @@ public class RoomWiredTriggerSavedEventHandler(
 
         var roomItems = room!
             .FurnitureItems
-            .Where(x => ItemIds.Contains(x.PlayerFurnitureItem.Id))
+            .Where(x => ItemIds.Contains(x.Id))
             .ToList();
 
         await wiredService.SaveSettingsAsync(

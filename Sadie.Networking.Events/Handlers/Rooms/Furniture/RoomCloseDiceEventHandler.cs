@@ -23,7 +23,7 @@ public class RoomCloseDiceEventHandler(
         
         var roomFurnitureItem = room
             .FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+            .FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem!.MetaData == "-1")
         {

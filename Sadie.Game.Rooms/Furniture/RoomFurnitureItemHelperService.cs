@@ -54,7 +54,7 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
         AbstractPacketWriter itemWriter = roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor ? 
             new RoomFloorItemUpdatedWriter
             {
-                Id = roomFurnitureItem.PlayerFurnitureItemId,
+                Id = roomFurnitureItem.Id,
                 AssetId = roomFurnitureItem.FurnitureItem.AssetId,
                 PositionX = roomFurnitureItem.PositionX,
                 PositionY = roomFurnitureItem.PositionY,

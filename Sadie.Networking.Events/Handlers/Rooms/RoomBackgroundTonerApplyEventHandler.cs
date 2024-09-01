@@ -27,7 +27,7 @@ public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext,
             .RoomUser!
             .Room
             .FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+            .FirstOrDefault(x => x.Id == ItemId);
         
         if (roomFurnitureItem == null)
         {

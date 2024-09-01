@@ -121,7 +121,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
     {
         var rollingData = new RoomRollingObjectData
         {
-            Id = item.PlayerFurnitureItem.Id,
+            Id = item.Id,
             Height = item.PositionZ.ToString(),
             NextHeight = nextHeight.ToString()
         };
@@ -133,7 +133,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             NextX = nextStep.X,
             NextY = nextStep.Y,
             Objects = [rollingData],
-            RollerId = roller.PlayerFurnitureItem.Id,
+            RollerId = roller.Id,
             MovementType = 2,
             RoomUserId = 0,
             Height = roller.PositionZ.ToString(),
@@ -173,7 +173,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             NextX = nextStep.X,
             NextY = nextStep.Y,
             Objects = [],
-            RollerId = roller.PlayerFurnitureItem.Id,
+            RollerId = roller.Id,
             MovementType = 2,
             RoomUserId = rollingUser.Id,
             Height = rollingUser.PointZ.ToString(),
