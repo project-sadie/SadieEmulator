@@ -92,7 +92,7 @@ public class RoomLoadedEventHandler(
             return;
         }
         
-        await RoomHelpersDirty.AfterEnterRoomAsync(
+        await RoomHelpersDirty.GenericEnterRoomAsync(
             client, 
             room, 
             roomUserFactory, 

@@ -26,7 +26,7 @@ public class RoomWiredEffectSavedEventHandler(
         var room = client.RoomUser?.Room;
 
         var roomItem = room?.FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+            .FirstOrDefault(x => x.Id == ItemId);
 
         if (roomItem == null)
         {

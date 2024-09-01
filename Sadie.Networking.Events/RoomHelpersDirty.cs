@@ -108,7 +108,7 @@ public static class RoomHelpersDirty
             GetControllerLevelForUser(room, player));
     }
     
-    public static async Task AfterEnterRoomAsync(
+    public static async Task GenericEnterRoomAsync(
         INetworkClient client, 
         IRoomLogic room, 
         IRoomUserFactory roomUserFactory,
@@ -182,9 +182,12 @@ public static class RoomHelpersDirty
         await SendRoomEntryPacketsToUserAsync(client, room);
         await CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
         
-        var matchingWiredTriggers = room.FurnitureItems.Where(x =>
-            x.FurnitureItem!.InteractionType == FurnitureItemInteractionType.WiredTriggerEnterRoom);
-        
+        var matchingWiredTriggers = room.FurnitureItems
+            .Where(x =>
+                x.FurnitureItem.InteractionType ==
+                FurnitureItemInteractionType.WiredTriggerEnterRoom)
+            .ToList();
+
         foreach (var trigger in matchingWiredTriggers)
         {
             await wiredService.RunTriggerForRoomAsync(room, trigger);
