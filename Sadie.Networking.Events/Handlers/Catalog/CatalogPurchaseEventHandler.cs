@@ -234,7 +234,8 @@ public class CatalogPurchaseEventHandler(
             Username = information["name"],
             FigureCode = information["figure"],
             Motto = information["motto"],
-            Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female
+            Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female,
+            CreatedAt = DateTime.Now
         };
 
         dbContext.Entry(bot).State = EntityState.Added;
