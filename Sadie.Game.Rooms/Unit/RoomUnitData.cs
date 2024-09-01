@@ -152,16 +152,8 @@ public class RoomUnitData(
             room.TileMap.UnitMap[Point].Remove(this);
             room.TileMap.AddUnitToMap(NextPoint.Value, this);
 
-            var triggers = room.FurnitureItems.Where(x =>
-                x.FurnitureItem!.InteractionType ==
-                FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture ||
-                x.FurnitureItem!.InteractionType ==
-                FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
-            
-            foreach (var trigger in triggers)
-            {
-                await wiredService.RunTriggerForRoomAsync(room, trigger);
-            }
+            await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
+            await CheckForStepTriggersAsync(NextPoint.Value, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
             
             Point = NextPoint.Value;
             PointZ = NextZ;
@@ -176,6 +168,30 @@ public class RoomUnitData(
         if (IsWalking)
         {
             await ProcessMovementAsync();
+        }
+    }
+
+    private async Task CheckForStepTriggersAsync(Point point, string interactionType)
+    {
+        var itemIdsOnPoint = tileMapHelperService
+            .GetItemsForPosition(point.X, point.Y, room.FurnitureItems)
+            .Select(x => x.Id)
+            .ToList();
+
+        if (itemIdsOnPoint.Count < 1)
+        {
+            return;
+        }
+
+        var triggers = wiredService.GetTriggers(
+            interactionType,
+            room.FurnitureItems,
+            "",
+            itemIdsOnPoint);
+            
+        foreach (var trigger in triggers)
+        {
+            await wiredService.RunTriggerForRoomAsync(room, trigger);
         }
     }
 

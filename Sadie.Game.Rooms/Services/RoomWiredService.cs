@@ -16,12 +16,16 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
     public IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
         string interactionType,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems,
-        string requiredMessage)
+        string requiredMessage = "",
+        List<int>? requiredSelectedIds = null)
     {
         return roomItems.Where(x =>
             x.WiredData != null &&
             x.PlayerFurnitureItem.FurnitureItem.InteractionType == interactionType &&
-            (string.IsNullOrWhiteSpace(requiredMessage) || x.WiredData!.Message == requiredMessage));
+            (string.IsNullOrWhiteSpace(requiredMessage) || x.WiredData!.Message == requiredMessage) &&
+            (requiredSelectedIds == null ||
+             requiredSelectedIds.All(r => x.WiredData.SelectedItems.Select(i => i.Id)
+                 .Contains(r))));
     }
     
     public async Task RunTriggerForRoomAsync(IRoomLogic room,

@@ -9,13 +9,12 @@ using Sadie.Game.Rooms.Packets.Writers.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired;
 
-public class GenericWiredTriggerInteractor(IRoomWiredService wiredService,
+public class WiredTriggerUserWalksOnInteractor(IRoomWiredService wiredService,
     ServerRoomConstants roomConstants) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes =>
     [
-        FurnitureItemInteractionType.WiredTriggerSaysSomething,
-        FurnitureItemInteractionType.WiredTriggerEnterRoom,
+        FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture
     ];
 
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
@@ -26,17 +25,14 @@ public class GenericWiredTriggerInteractor(IRoomWiredService wiredService,
             .SelectedItems
             .Select(x => x.Id)
             .ToList() ?? [];
-
-        var input = wiredData?.Message ?? "";
         
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredTriggerWriter
         {
             StuffTypeSelectionEnabled = false,
             MaxItemsSelected = roomConstants.WiredMaxFurnitureSelection,
             SelectedItemIds = selectedItemIds,
-            AssetId = 0,
-            Id = 0,
-            Input = input,
+            AssetId = item.FurnitureItem.AssetId,
+            Id = item.Id,
             IntParameters = [],
             StuffTypeSelectionCode = 0,
             TriggerConfig = wiredService.GetWiredCode(item.FurnitureItem.InteractionType),

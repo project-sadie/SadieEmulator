@@ -12,10 +12,9 @@ public class WiredTriggerWriter : AbstractPacketWriter
     public required List<int> SelectedItemIds { get; init; }
     public required int AssetId { get; init; }
     public required int Id { get; init; }
-    public required string Input { get; init; }
-    public required int Unknown1 { get; init; }
-    public required int Unknown2 { get; init; }
-    public required int TriggerCode { get; init; }
-    public required int Unknown3 { get; init; }
-    public required int Unknown4 { get; init; }
+    public string Input { get; init; } = "";
+    public required List<int> IntParameters { get; init; }
+    public required int StuffTypeSelectionCode { get; init; }
+    public required int TriggerConfig { get; init; }
+    public required List<int> ConflictingEffectIds { get; init; }
 }

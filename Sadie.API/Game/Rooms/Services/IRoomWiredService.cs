@@ -8,7 +8,8 @@ public interface IRoomWiredService
     IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
         string interactionType,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems,
-        string requiredMessage);
+        string requiredMessage = "",
+        List<int>? requiredSelectedIds = null);
     
     List<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
         PlayerFurnitureItemPlacementData trigger,
