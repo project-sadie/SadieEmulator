@@ -1,5 +1,6 @@
 using System.Drawing;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Furniture.Processors;
 using Sadie.Game.Rooms.Mapping;
@@ -45,6 +46,8 @@ public class RollerProcessorTests : RoomMockHelpers
     public void GetUpdatesForRoomAsync_UserOnRoller_PositionUpdated()
     {
         var roller = MockPlacementData(FurnitureItemInteractionType.Roller);
+        roller.Direction = HDirection.East;
+        
         var userOne = MockRoomUser();
         var room = MockRoomWithUserRepoAndFurniture("00\n\r00", [roller], [userOne]);
         var tMapService = new RoomTileMapHelperService();
@@ -63,11 +66,30 @@ public class RollerProcessorTests : RoomMockHelpers
     public void GetUpdatesForRoomAsync_UserOnRollerWithInvalidNextStep_NoUpdatesReturned()
     {
         var roller = MockPlacementData(FurnitureItemInteractionType.Roller);
-
+        
         roller.PositionX = 1;
         roller.PositionY = 1;
         var userOne = MockRoomUser();
         var room = MockRoomWithUserRepoAndFurniture("0", [roller], [userOne]);
+        var tMapService = new RoomTileMapHelperService();
+        var fHelperService = new RoomFurnitureItemHelperService();
+        var processor = new RollerProcessor(tMapService, fHelperService);
+        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(updates.Count(), Is.EqualTo(0));
+            Assert.That(room.TileMap.UsersAtPoint(new Point(0,0)), Is.True);
+        });
+    }
+
+    [Test]
+    public void GetUpdatesForRoomAsync_UserOnRollerWithUnwalkableNextStep_NoUpdatesReturned()
+    {
+        var roller = MockPlacementData(FurnitureItemInteractionType.Roller);
+        var item = MockUnwalkablePlacementData("", 1, 1);
+        var userOne = MockRoomUser();
+        var room = MockRoomWithUserRepoAndFurniture("00", [roller, item], [userOne]);
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);

@@ -50,6 +50,24 @@ public class RoomMockHelpers
         };
     }
 
+    protected static PlayerFurnitureItemPlacementData MockUnwalkablePlacementData(string interactionType, int x, int y) =>
+        new()
+        {
+            PlayerFurnitureItem = new PlayerFurnitureItem
+            {
+                Player = new Mock<Player>().Object,
+                FurnitureItem = new FurnitureItem
+                {
+                    InteractionType = interactionType,
+                    CanWalk = false
+                },
+                LimitedData = "",
+                MetaData = "",
+            },
+            PositionX = x,
+            PositionY = y,
+        };
+
     protected static PlayerFurnitureItemPlacementData MockPlacementData(string interactionType) =>
         new()
         {
