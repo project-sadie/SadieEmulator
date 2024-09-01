@@ -81,7 +81,7 @@ public class TeleportInteractor(
     {
         var link = await dbContext
             .PlayerFurnitureItemLinks
-            .Where(x => x.ParentId == item.PlayerFurnitureItemId || x.ChildId == item.PlayerFurnitureItemId)
+            .Where(x => x.ParentId == item.Id || x.ChildId == item.Id)
             .FirstOrDefaultAsync();
 
         if (link == null)
@@ -89,11 +89,11 @@ public class TeleportInteractor(
             return;
         }
 
-        var targetItemId = link.ParentId == item.PlayerFurnitureItemId ? link.ChildId : link.ParentId;
+        var targetItemId = link.ParentId == item.Id ? link.ChildId : link.ParentId;
         
         var targetRoomItem = room
             .FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == targetItemId);
+            .FirstOrDefault(x => x.Id == targetItemId);
         
         if (targetRoomItem != null)
         {
@@ -119,7 +119,7 @@ public class TeleportInteractor(
     {
         var targetRoomId = await dbContext
             .RoomFurnitureItems
-            .Where(x => x.PlayerFurnitureItemId == targetItemId)
+            .Where(x => x.Id == targetItemId)
             .Select(x => x.RoomId)
             .FirstOrDefaultAsync();
 
@@ -131,7 +131,7 @@ public class TeleportInteractor(
                 mapper);
 
             var targetItem = targetRoom?.FurnitureItems
-                .FirstOrDefault(x => x.PlayerFurnitureItemId == targetItemId);
+                .FirstOrDefault(x => x.Id == targetItemId);
 
             if (targetItem != null)
             {

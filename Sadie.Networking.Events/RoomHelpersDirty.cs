@@ -376,7 +376,7 @@ public static class RoomHelpersDirty
 
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
         {
-            ItemId = itemId
+            ItemId = playerItem.Id
         });
         
         
@@ -388,9 +388,14 @@ public static class RoomHelpersDirty
             await interactor.OnPlaceAsync(client.RoomUser.Room, roomFurnitureItem, client.RoomUser);
         }
 
+        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Unchanged;
+        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
+        
+        await dbContext.SaveChangesAsync();
+
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
         {
-            Id = roomFurnitureItem.PlayerFurnitureItem.Id,
+            Id = roomFurnitureItem.Id,
             AssetId = roomFurnitureItem.FurnitureItem.AssetId,
             PositionX = roomFurnitureItem.PositionX,
             PositionY = roomFurnitureItem.PositionY,
@@ -406,11 +411,6 @@ public static class RoomHelpersDirty
             OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
             OwnerUsername = roomFurnitureItem.PlayerFurnitureItem.Player.Username
         });
-
-        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Unchanged;
-        dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
-        
-        await dbContext.SaveChangesAsync();
     }
 
     public static async Task OnPlaceWallItemAsync(
