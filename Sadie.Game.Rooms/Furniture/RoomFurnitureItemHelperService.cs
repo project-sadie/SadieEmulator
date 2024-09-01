@@ -79,12 +79,11 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
 
     public ObjectDataKey GetObjectDataKeyForItem(PlayerFurnitureItemPlacementData furnitureItem)
     {
-        if (furnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.RoomAdsBg)
+        return furnitureItem.FurnitureItem.InteractionType switch
         {
-            return ObjectDataKey.MapKey;
-        }
-        
-        return ObjectDataKey.LegacyKey;
+            FurnitureItemInteractionType.RoomAdsBg => ObjectDataKey.MapKey,
+            _ => ObjectDataKey.LegacyKey
+        };
     }
 
     public Dictionary<string, string> GetObjectDataForItem(PlayerFurnitureItemPlacementData furnitureItem)
