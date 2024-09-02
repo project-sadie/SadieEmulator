@@ -50,7 +50,7 @@ public class RoomMockHelpers
         };
     }
 
-    protected static PlayerFurnitureItemPlacementData MockUnwalkablePlacementData(string interactionType, int x, int y) =>
+    protected static PlayerFurnitureItemPlacementData MockPlacementData(string interactionType, int x = 0, int y = 0, int z = 0, bool walkable = false) =>
         new()
         {
             PlayerFurnitureItem = new PlayerFurnitureItem
@@ -59,28 +59,14 @@ public class RoomMockHelpers
                 FurnitureItem = new FurnitureItem
                 {
                     InteractionType = interactionType,
-                    CanWalk = false
+                    CanWalk = walkable
                 },
                 LimitedData = "",
                 MetaData = "",
             },
             PositionX = x,
             PositionY = y,
-        };
-
-    protected static PlayerFurnitureItemPlacementData MockPlacementData(string interactionType) =>
-        new()
-        {
-            PlayerFurnitureItem = new PlayerFurnitureItem
-            {
-                Player = new Mock<Player>().Object,
-                FurnitureItem = new FurnitureItem
-                {
-                    InteractionType = interactionType
-                },
-                LimitedData = "",
-                MetaData = ""
-            }
+            PositionZ = z,
         };
 
     protected static IRoomLogic MockRoomWithUserRepoAndFurniture(

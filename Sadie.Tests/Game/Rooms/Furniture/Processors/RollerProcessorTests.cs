@@ -87,7 +87,7 @@ public class RollerProcessorTests : RoomMockHelpers
     public void GetUpdatesForRoomAsync_UserOnRollerWithUnwalkableNextStep_NoUpdatesReturned()
     {
         var roller = MockPlacementData(FurnitureItemInteractionType.Roller);
-        var item = MockUnwalkablePlacementData("", 1, 1);
+        var item = MockPlacementData("", 1, 1);
         var userOne = MockRoomUser();
         var room = MockRoomWithUserRepoAndFurniture("00", [roller, item], [userOne]);
         var tMapService = new RoomTileMapHelperService();

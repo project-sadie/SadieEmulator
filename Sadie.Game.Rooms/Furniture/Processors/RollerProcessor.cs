@@ -56,11 +56,11 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
                 .GetAll()
                 .Where(u => !userIdsProcessed.Contains(u.Id));
 
-            var nextStepWalkable = room.TileMap.TileExists(nextStep) &&
+            var nextStepOpen = room.TileMap.TileExists(nextStep) &&
                                    room.TileMap.Map[nextStep.Y, nextStep.X] >=
                                    (int)RoomTileState.Open;
             
-            if (nextStepWalkable)
+            if (nextStepOpen)
             {
                 var rollingUsers = tileMapHelperService.GetUsersAtPoints([rollerPosition], users);
             
