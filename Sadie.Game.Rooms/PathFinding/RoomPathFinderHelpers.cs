@@ -48,7 +48,11 @@ public class RoomPathFinderHelpers
         return rotation;
     }
     
-    public static List<Point> BuildPathForWalk(IRoomTileMap tileMap, Point start, Point end, bool useDiagonal, List<Point> overridePoints)
+    public static List<Point> BuildPathForWalk(IRoomTileMap tileMap,
+        Point start,
+        Point end,
+        bool useDiagonal,
+        List<Point> overridePoints)
     {
         var pathfinderOptions = new PathFinderOptions
         {

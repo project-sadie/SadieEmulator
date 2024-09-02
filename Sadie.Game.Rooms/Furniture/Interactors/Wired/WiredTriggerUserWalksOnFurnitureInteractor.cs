@@ -6,6 +6,7 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
+using Serilog;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired;
 
