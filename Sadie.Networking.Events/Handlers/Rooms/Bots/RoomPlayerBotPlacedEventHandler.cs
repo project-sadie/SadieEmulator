@@ -58,6 +58,7 @@ public class RoomPlayerBotPlacedEventHandler(
             room,
             new Point(X,
                 Y),
+            0,
             roomBotFactory);
 
         if (!room.BotRepository.TryAdd(roomBot))

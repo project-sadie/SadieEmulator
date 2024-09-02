@@ -7,5 +7,6 @@ public interface IRoomBotFactory
     IRoomBot Create(
         IRoomLogic room,
         int id, 
-        Point point);
+        Point point,
+        double pointZ);
 }

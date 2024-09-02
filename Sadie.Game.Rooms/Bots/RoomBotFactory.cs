@@ -10,12 +10,14 @@ public class RoomBotFactory(IServiceProvider serviceProvider) : IRoomBotFactory
     public IRoomBot Create(
         IRoomLogic room,
         int id, 
-        Point point)
+        Point point,
+        double pointZ)
     {
         return ActivatorUtilities.CreateInstance<RoomBot>(
             serviceProvider,
             id,
             room,
-            point);
+            point,
+            pointZ);
     }
 }

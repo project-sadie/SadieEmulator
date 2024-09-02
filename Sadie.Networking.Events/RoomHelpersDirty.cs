@@ -82,9 +82,10 @@ public static class RoomHelpersDirty
         int id, 
         IRoomLogic room, 
         Point point,
+        double pointZ,
         IRoomBotFactory roomBotFactory)
     {
-        return roomBotFactory.Create(room, id, point);
+        return roomBotFactory.Create(room, id, point, pointZ);
     }
 
     private static IRoomUser CreateUserForEntry(
