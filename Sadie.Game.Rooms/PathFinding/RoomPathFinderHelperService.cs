@@ -1,14 +1,15 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.PathFinding.ToGo;
 using Sadie.Game.Rooms.PathFinding.ToGo.Options;
 
 namespace Sadie.Game.Rooms.PathFinding;
 
-public class RoomPathFinderHelpers
+public class RoomPathFinderHelperService : IRoomPathFinderHelperService
 {
-    public static HDirection GetDirectionForNextStep(Point current, Point next)
+    public HDirection GetDirectionForNextStep(Point current, Point next)
     {
         var rotation = HDirection.North;
 
@@ -48,7 +49,7 @@ public class RoomPathFinderHelpers
         return rotation;
     }
     
-    public static List<Point> BuildPathForWalk(IRoomTileMap tileMap,
+    public List<Point> BuildPathForWalk(IRoomTileMap tileMap,
         Point start,
         Point end,
         bool useDiagonal,

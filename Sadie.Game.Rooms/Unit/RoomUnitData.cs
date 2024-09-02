@@ -1,6 +1,7 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Unit;
 using Sadie.Enums.Game.Furniture;
@@ -18,7 +19,8 @@ public class RoomUnitData(
     HDirection directionHead,
     HDirection direction,
     IRoomTileMapHelperService tileMapHelperService,
-    IRoomWiredService wiredService) : IRoomUnitData
+    IRoomWiredService wiredService,
+    IRoomPathFinderHelperService pathFinderHelperService) : IRoomUnitData
 {
     public int Id { get; } = id;
     public HDirection DirectionHead { get; set; } = directionHead;
@@ -118,7 +120,7 @@ public class RoomUnitData(
 
     protected void CalculatePath()
     {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
+        PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
@@ -226,7 +228,7 @@ public class RoomUnitData(
 
         AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{zHeightNextStep}");
 
-        var newDirection = RoomPathFinderHelpers.GetDirectionForNextStep(Point, nextStep);
+        var newDirection = pathFinderHelperService.GetDirectionForNextStep(Point, nextStep);
                 
         Direction = newDirection;
         DirectionHead = newDirection;

@@ -3,6 +3,7 @@ using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
@@ -30,8 +31,17 @@ public class RoomUser(
     RoomControllerLevel controllerLevel,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomHelperService roomHelperService,
-    IRoomWiredService wiredService)
-    : RoomUnitData(id, room, point, pointZ, directionHead, direction, tileMapHelperService, wiredService),
+    IRoomWiredService wiredService,
+    IRoomPathFinderHelperService pathFinderHelperService)
+    : RoomUnitData(id,
+            room,
+            point,
+            pointZ,
+            directionHead,
+            direction,
+            tileMapHelperService,
+            wiredService,
+            pathFinderHelperService),
         IRoomUser
 {
     public IPlayerLogic Player { get; } = player;
@@ -48,7 +58,7 @@ public class RoomUser(
 
     public void LookAtPoint(Point point)
     {
-        var direction = RoomPathFinderHelpers.GetDirectionForNextStep(Point, point);
+        var direction = pathFinderHelperService.GetDirectionForNextStep(Point, point);
 
         if (!StatusMap.ContainsKey(RoomUserStatus.Sit))
         {

@@ -2,6 +2,7 @@ using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Unsorted;
@@ -17,7 +18,8 @@ public class RoomBot(
     HDirection directionHead,
     HDirection direction,
     IRoomTileMapHelperService tileMapHelperService,
-    IRoomWiredService wiredService)
+    IRoomWiredService wiredService,
+    IRoomPathFinderHelperService pathFinderHelperService)
     : RoomUnitData(id,
             room,
             point,
@@ -25,7 +27,8 @@ public class RoomBot(
             directionHead,
             direction,
             tileMapHelperService,
-            wiredService),
+            wiredService,
+            pathFinderHelperService),
         IRoomBot
 {
     public required PlayerBot Bot { get; init; }
