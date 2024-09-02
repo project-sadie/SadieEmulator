@@ -11,7 +11,7 @@ public interface IRoomWiredService
         string requiredMessage = "",
         List<int>? requiredSelectedIds = null);
     
-    List<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
+    IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
         PlayerFurnitureItemPlacementData trigger,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems);
 

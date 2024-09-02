@@ -41,16 +41,29 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         }
     }
     
-    public List<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
+    public IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
         PlayerFurnitureItemPlacementData trigger,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems)
     {
-        return roomItems
+        var stack = roomItems
             .Where(x =>
                 x.PositionX == trigger.PositionX &&
                 x.PositionY == trigger.PositionY &&
-                x.PositionZ >= trigger.PositionZ)
-            .ToList();
+                x.PositionZ > trigger.PositionZ)
+            .OrderBy(x => x.PositionZ);
+        
+        foreach (var playerFurnitureItemPlacementData in stack)
+        {
+            if (!playerFurnitureItemPlacementData
+                    .FurnitureItem
+                    .InteractionType
+                    .Contains("_act_"))
+            {
+                break;
+            }
+            
+            yield return playerFurnitureItemPlacementData;
+        }
     }
     
     private async Task RunEffectForRoomAsync(
