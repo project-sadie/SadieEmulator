@@ -193,7 +193,7 @@ public static class RoomHelpersDirty
 
         foreach (var trigger in matchingWiredTriggers)
         {
-            await wiredService.RunTriggerForRoomAsync(room, trigger);
+            await wiredService.RunTriggerForRoomAsync(room, trigger, roomUser);
         }
     }
 
