@@ -7,7 +7,6 @@ using Sadie.API.Game.Rooms.Unit;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.PathFinding;
 
 namespace Sadie.Game.Rooms.Unit;
 
@@ -171,30 +170,6 @@ public class RoomUnitData(
         }
     }
 
-    private async Task CheckForStepTriggersAsync(Point point, string interactionType)
-    {
-        var itemIdsOnPoint = tileMapHelperService
-            .GetItemsForPosition(point.X, point.Y, room.FurnitureItems)
-            .Select(x => x.Id)
-            .ToList();
-
-        if (itemIdsOnPoint.Count < 1)
-        {
-            return;
-        }
-
-        var triggers = wiredService.GetTriggers(
-            interactionType,
-            room.FurnitureItems,
-            "",
-            itemIdsOnPoint);
-            
-        foreach (var trigger in triggers)
-        {
-            await wiredService.RunTriggerForRoomAsync(room, trigger);
-        }
-    }
-
     protected async Task ProcessMovementAsync()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
@@ -242,9 +217,6 @@ public class RoomUnitData(
     
     public async Task SetPositionAsync(Point point)
     {
-        await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
-        await CheckForStepTriggersAsync(point, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
-        
         Point = point;
     }
 

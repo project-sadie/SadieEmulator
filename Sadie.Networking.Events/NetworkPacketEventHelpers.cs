@@ -237,7 +237,7 @@ public static class NetworkPacketEventHelpers
         
         foreach (var trigger in triggers)
         {
-            await wiredService.RunTriggerForRoomAsync(room, trigger);
+            await wiredService.RunTriggerForRoomAsync(room, trigger, roomUser);
         }
     }
 

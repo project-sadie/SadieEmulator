@@ -7,12 +7,12 @@ using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
-using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Unit;
 using Sadie.Networking.Writers.Rooms.Users;
 
@@ -91,9 +91,41 @@ public class RoomUser(
             });
         }
 
+        var position = Point;
+
         await ProcessGenericChecksAsync();
         await UpdateIdleStatusAsync();
         await UpdateEffectAsync();
+
+        if (Point != position)
+        {
+            await CheckForStepTriggersAsync(position, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
+            await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
+        }
+    }
+
+    private async Task CheckForStepTriggersAsync(Point point, string interactionType)
+    {
+        var itemIdsOnPoint = tileMapHelperService
+            .GetItemsForPosition(point.X, point.Y, room.FurnitureItems)
+            .Select(x => x.Id)
+            .ToList();
+
+        if (itemIdsOnPoint.Count < 1)
+        {
+            return;
+        }
+
+        var triggers = wiredService.GetTriggers(
+            interactionType,
+            room.FurnitureItems,
+            "",
+            itemIdsOnPoint);
+            
+        foreach (var trigger in triggers)
+        {
+            await wiredService.RunTriggerForRoomAsync(room, trigger, this);
+        }
     }
 
     private async Task UpdateEffectAsync()

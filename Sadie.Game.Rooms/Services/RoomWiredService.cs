@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Services;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
@@ -29,7 +30,8 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
     }
     
     public async Task RunTriggerForRoomAsync(IRoomLogic room,
-        PlayerFurnitureItemPlacementData trigger)
+        PlayerFurnitureItemPlacementData trigger,
+        IRoomUser userWhoTriggered)
     {
         CycleInteractionStateAsync(room, trigger);
         
@@ -37,7 +39,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
 
         foreach (var effect in effectsOnTrigger)
         {
-            await RunEffectForRoomAsync(room, effect);
+            await RunEffectForRoomAsync(room, effect, userWhoTriggered);
         }
     }
     
@@ -68,7 +70,8 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
     
     private async Task RunEffectForRoomAsync(
         IRoomLogic room,
-        PlayerFurnitureItemPlacementData effect)
+        PlayerFurnitureItemPlacementData effect,
+        IRoomUser userWhoTriggered)
     {
         if (effect.WiredData == null)
         {
@@ -78,17 +81,14 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         switch (effect.FurnitureItem.InteractionType)
         {
             case FurnitureItemInteractionType.WiredEffectShowMessage:
-                foreach (var roomUser in room.UserRepository.GetAll())
+                await userWhoTriggered.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
                 {
-                    await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
-                    {
-                        SenderId = roomUser.Id,
-                        Message = effect.WiredData.Message,
-                        EmotionId = 0,
-                        Bubble = (int) ChatBubble.Alert,
-                        Unknown = 0
-                    });
-                }
+                    SenderId = userWhoTriggered.Id,
+                    Message = effect.WiredData.Message,
+                    EmotionId = 0,
+                    Bubble = (int) ChatBubble.Alert,
+                    Unknown = 0
+                });
                 break;
             case FurnitureItemInteractionType.WiredEffectKickUser:
                 foreach (var user in room.UserRepository.GetAll())

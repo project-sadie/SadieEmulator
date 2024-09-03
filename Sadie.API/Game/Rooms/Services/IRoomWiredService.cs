@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 
@@ -16,7 +17,8 @@ public interface IRoomWiredService
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems);
 
     Task RunTriggerForRoomAsync(IRoomLogic room,
-        PlayerFurnitureItemPlacementData trigger);
+        PlayerFurnitureItemPlacementData trigger,
+        IRoomUser userWhoTriggered);
 
     int GetWiredCode(string interactionType);
 

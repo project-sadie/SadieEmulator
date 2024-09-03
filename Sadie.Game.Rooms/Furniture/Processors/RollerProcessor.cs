@@ -42,6 +42,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         {
             var x = roller.PositionX;
             var y = roller.PositionY;
+            
             var nextStep = tileMapHelperService.GetPointInFront(x, y, roller.Direction);
             
             var rollerPosition = new Point(x, y);
@@ -59,25 +60,27 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             var nextStepOpen = room.TileMap.TileExists(nextStep) &&
                                    room.TileMap.Map[nextStep.Y, nextStep.X] >=
                                    (int)RoomTileState.Open;
-            
-            if (nextStepOpen)
+
+            if (!nextStepOpen)
             {
-                var rollingUsers = tileMapHelperService.GetUsersAtPoints([rollerPosition], users);
+                continue;
+            }
             
-                foreach (var rollingUser in rollingUsers)
-                {
-                    await MoveUserOnRollerAsync(
-                        x, 
-                        y, 
-                        nextStep, 
-                        userIdsProcessed, 
-                        rollingUser, 
-                        writers, 
-                        room, 
-                        roller,
-                        nextRoller, 
-                        nextHeight);
-                }
+            var rollingUsers = tileMapHelperService.GetUsersAtPoints([rollerPosition], users);
+            
+            foreach (var rollingUser in rollingUsers)
+            {
+                await MoveUserOnRollerAsync(
+                    x, 
+                    y, 
+                    nextStep, 
+                    userIdsProcessed, 
+                    rollingUser, 
+                    writers, 
+                    room, 
+                    roller,
+                    nextRoller, 
+                    nextHeight);
             }
 
             var unprocessedNonRollers = room.FurnitureItems.Where(i =>
