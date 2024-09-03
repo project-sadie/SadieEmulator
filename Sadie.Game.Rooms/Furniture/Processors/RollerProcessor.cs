@@ -58,8 +58,8 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
                 .Where(u => !userIdsProcessed.Contains(u.Id));
 
             var nextStepOpen = room.TileMap.TileExists(nextStep) &&
-                                   room.TileMap.Map[nextStep.Y, nextStep.X] >=
-                                   (int)RoomTileState.Open;
+                                   room.TileMap.Map[nextStep.Y, nextStep.X] == (int)RoomTileState.Open &&
+                                   !room.TileMap.UsersAtPoint(nextStep);
 
             if (!nextStepOpen)
             {
@@ -107,6 +107,33 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
                     roller,
                     nextHeight);
                 
+                var oldPoints = tileMapHelperService.GetPointsForPlacement(
+                    item.PositionX, 
+                    item.PositionY, 
+                    item.FurnitureItem.TileSpanX,
+                    item.FurnitureItem.TileSpanY, 
+                    (int) item.Direction);
+
+                tileMapHelperService.UpdateTileMapsForPoints(oldPoints, 
+                    room.TileMap,
+                    room
+                        .FurnitureItems
+                        .Except([item])
+                        .ToList());
+
+                var newPoints = tileMapHelperService.GetPointsForPlacement(
+                    nextStep.X, nextStep.Y, 
+                    item.FurnitureItem.TileSpanX,
+                    item.FurnitureItem.TileSpanY, 
+                    (int) item.Direction);
+
+                tileMapHelperService.UpdateTileMapsForPoints(newPoints, 
+                    room.TileMap,
+                    room
+                        .FurnitureItems
+                        .Except([item])
+                        .ToList());
+                
                 await roomFurnitureItemHelperService.BroadcastItemUpdateToRoomAsync(room, item);
             }
         }
@@ -114,7 +141,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         return writers;
     }
     
-    private static void MoveItemOnRoller(
+    private void MoveItemOnRoller(
         Point nextStep,
         ISet<int> itemIdsProcessed,
         ICollection<RoomObjectsRollingWriter> writers,
