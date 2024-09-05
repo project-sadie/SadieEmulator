@@ -188,7 +188,8 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
         IEnumerable<Point> points,  
         IRoomTileMap tileMap)
     {
-        return points.All(point => tileMap.Map[point.Y, point.X] != 0);
+        return points.All(point => tileMap.Map[point.Y, point.X] != 0 && 
+                                   !tileMap.UsersAtPoint(point));
     }
     
     public List<IRoomUser> GetUsersAtPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
