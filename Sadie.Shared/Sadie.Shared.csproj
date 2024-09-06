@@ -7,8 +7,4 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Sadie.Enums\Sadie.Enums.csproj" />
-    </ItemGroup>
-
 </Project>

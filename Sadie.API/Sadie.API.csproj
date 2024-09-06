@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
-      <ProjectReference Include="..\Sadie.Enums\Sadie.Enums.csproj" />
     </ItemGroup>
 
     <ItemGroup>
