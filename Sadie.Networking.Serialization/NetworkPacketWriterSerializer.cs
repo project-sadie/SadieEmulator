@@ -86,22 +86,25 @@ public class NetworkPacketWriterSerializer
                 continue;
             }
             
-            if (insteadRuleMap != null && insteadRuleMap.ContainsKey(property))
+            if (insteadRuleMap != null && 
+                insteadRuleMap.TryGetValue(property, out var value))
             {
-                insteadRuleMap[property].Invoke(writer);
+                value.Invoke(writer);
                 continue;
             }
 
-            if (beforeRuleMap != null && beforeRuleMap.ContainsKey(property))
+            if (beforeRuleMap != null && 
+                beforeRuleMap.TryGetValue(property, out var beforeValue))
             {
-                beforeRuleMap[property].Invoke(writer);
+                beforeValue.Invoke(writer);
             }
             
             WriteProperty(property, writer, packet);
 
-            if (afterRuleMap != null && afterRuleMap.ContainsKey(property))
+            if (afterRuleMap != null && 
+                afterRuleMap.TryGetValue(property, out var afterValue))
             {
-                afterRuleMap[property].Invoke(writer);
+                afterValue.Invoke(writer);
             }
         }
     }
