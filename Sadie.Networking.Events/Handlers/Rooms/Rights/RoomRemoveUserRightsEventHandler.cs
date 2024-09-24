@@ -14,7 +14,7 @@ public class RoomRemoveUserRightsEventHandler(
     SadieContext dbContext,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public required List<int> Ids { get; set; }
+    public required List<int> Ids { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

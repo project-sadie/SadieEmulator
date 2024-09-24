@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 public class RequestRoomSettingsEventHandler(
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int RoomId { get; set; }
+    public int RoomId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

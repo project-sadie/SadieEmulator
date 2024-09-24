@@ -9,8 +9,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public required int ItemId { get; set; }
-    public required Dictionary<string, string> ObjectData { get; set; }
+    public required int ItemId { get; init; }
+    public required Dictionary<string, string> ObjectData { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

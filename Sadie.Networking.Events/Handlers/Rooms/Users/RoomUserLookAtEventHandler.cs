@@ -9,8 +9,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 [PacketId(EventHandlerId.RoomUserLookAt)]
 public class RoomUserLookAtEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int X { get; set; }
-    public int Y { get; set; }
+    public int X { get; init; }
+    public int Y { get; init; }
     
     public Task HandleAsync(INetworkClient client)
     {

@@ -13,7 +13,7 @@ public class RoomCloseDiceEventHandler(
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public required int ItemId { get; set; }
+    public required int ItemId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

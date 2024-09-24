@@ -14,7 +14,7 @@ public class RoomUserTradeEventHandler(
     IRoomRepository roomRepository,
     IPlayerHelperService playerHelperService) : INetworkPacketEventHandler
 {
-    public required int TargetUserId { get; set; }
+    public required int TargetUserId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

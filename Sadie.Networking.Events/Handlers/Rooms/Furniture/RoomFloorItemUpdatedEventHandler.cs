@@ -18,10 +18,10 @@ public class RoomFloorItemUpdatedEventHandler(
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public int ItemId { get; set; }
-    public int X { get; set; }
-    public int Y { get; set; }
-    public int Direction { get; set; }
+    public int ItemId { get; init; }
+    public int X { get; init; }
+    public int Y { get; init; }
+    public int Direction { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

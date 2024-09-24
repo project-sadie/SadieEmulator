@@ -23,8 +23,8 @@ public class RoomDoorbellAnswerEventHandler(
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
     IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
-    public required string Username { get; set; }
-    public bool Accept { get; set; }
+    public required string Username { get; init; }
+    public bool Accept { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

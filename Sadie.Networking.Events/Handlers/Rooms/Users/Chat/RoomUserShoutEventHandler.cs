@@ -17,8 +17,8 @@ public class RoomUserShoutEventHandler(
     IRoomHelperService roomHelperService)
     : INetworkPacketEventHandler
 {
-    public required string Message { get; set; }
-    public int Bubble { get; set; }
+    public required string Message { get; init; }
+    public int Bubble { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

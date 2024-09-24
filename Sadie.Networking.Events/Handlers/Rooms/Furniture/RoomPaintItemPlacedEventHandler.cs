@@ -13,7 +13,7 @@ public class RoomPaintItemPlacedEventHandler(
     IRoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
-    public int ItemId { get; set; }
+    public int ItemId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

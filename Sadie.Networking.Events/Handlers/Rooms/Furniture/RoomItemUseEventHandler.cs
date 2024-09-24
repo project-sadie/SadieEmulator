@@ -12,7 +12,7 @@ public class RoomItemUseEventHandler(
     SadieContext dbContext,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public int ItemId { get; set; }
+    public int ItemId { get; init; }
     
     [RequiresRoomRights]
     public async Task HandleAsync(INetworkClient client)

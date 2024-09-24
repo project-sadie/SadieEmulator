@@ -32,8 +32,8 @@ public class RoomLoadedEventHandler(
     IRoomWiredService wiredService)
     : INetworkPacketEventHandler
 {
-    public int RoomId { get; set; }
-    public required string Password { get; set; }
+    public int RoomId { get; init; }
+    public required string Password { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

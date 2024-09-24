@@ -17,7 +17,7 @@ public class RoomItemPlacedEventHandler(
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public required string PlacementData { get; set; }
+    public required string PlacementData { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

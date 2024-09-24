@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 [PacketId(EventHandlerId.RoomUserSign)]
 public class RoomUserSignEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int SignId { get; set; }
+    public int SignId { get; init; }
     
     public Task HandleAsync(INetworkClient client)
     {

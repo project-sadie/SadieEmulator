@@ -7,7 +7,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 [PacketId(EventHandlerId.RoomUserChangeChatBubble)]
 public class RoomUserChangeChatBubbleEventHandler : INetworkPacketEventHandler
 {
-    public int Bubble { get; set; }
+    public int Bubble { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

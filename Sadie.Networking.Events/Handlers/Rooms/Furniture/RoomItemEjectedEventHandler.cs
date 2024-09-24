@@ -21,8 +21,8 @@ public class RoomItemEjectedEventHandler(
     IPlayerRepository playerRepository,
     IRoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
-    public int Category { get; set; }
-    public int ItemId { get; set; }
+    public int Category { get; init; }
+    public int ItemId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
