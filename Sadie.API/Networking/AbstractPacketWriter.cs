@@ -1,31 +1,22 @@
 using System.Reflection;
 
+// ReSharper disable CollectionNeverQueried.Local
 // ReSharper disable CollectionNeverQueried.Global
-// ReSharper disable UnusedType.Global
-// ReSharper disable UnusedMember.Global
 
 namespace Sadie.API.Networking;
 
 public abstract class AbstractPacketWriter
 {
-    public Dictionary<PropertyInfo, Action<INetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
-    public Dictionary<PropertyInfo, Action<INetworkPacketWriter>> AfterRulesSerialize { get; } = new();
-    public Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules { get; } = new();
-    
-    /// <summary>
-    /// Register any rules needed for custom mapping
-    /// </summary>
+    private Dictionary<PropertyInfo, Action<INetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
+    private Dictionary<PropertyInfo, Action<INetworkPacketWriter>> AfterRulesSerialize { get; } = new();
+    private Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules { get; } = new();
+
     public virtual void OnConfigureRules()
     {
-        
     }
 
-    /// <summary>
-    /// Overrides the entire serialization process
-    /// </summary>
     public virtual void OnSerialize(INetworkPacketWriter writer)
     {
-        
     }
 
     protected void Override(PropertyInfo propertyInfo, Action<INetworkPacketWriter> function)
