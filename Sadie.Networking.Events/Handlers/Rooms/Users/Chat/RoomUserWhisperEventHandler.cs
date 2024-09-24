@@ -19,8 +19,8 @@ public class RoomUserWhisperEventHandler(
     IRoomHelperService roomHelperService)
     : INetworkPacketEventHandler
 {
-    public required string Data { get; set; }
-    public int Bubble { get; set; }
+    public required string Data { get; init; }
+    public int Bubble { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

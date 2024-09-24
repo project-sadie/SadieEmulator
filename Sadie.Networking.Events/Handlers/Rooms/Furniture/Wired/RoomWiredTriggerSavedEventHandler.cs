@@ -13,11 +13,11 @@ public class RoomWiredTriggerSavedEventHandler(
     SadieContext dbContext,
     IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
-    public required int ItemId { get; set; }
-    public required List<int> Parameters { get; set; }
-    public required string Input { get; set; }
-    public required List<int> ItemIds { get; set; }
-    public required int SelectionCode { get; set; }
+    public required int ItemId { get; init; }
+    public required List<int> Parameters { get; init; }
+    public required string Input { get; init; }
+    public required List<int> ItemIds { get; init; }
+    public required int SelectionCode { get; init; }
     
     [RequiresRoomRights] 
     public async Task HandleAsync(INetworkClient client)
