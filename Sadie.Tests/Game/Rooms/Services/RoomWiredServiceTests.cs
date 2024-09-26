@@ -21,7 +21,7 @@ public class RoomWiredServiceTests : RoomMockHelpers
             MockPlacementData(FurnitureItemInteractionType.WiredEffectKickUser, 0, 0, 2),
             MockPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 4),
             MockPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom, 0, 0, 3),
-            MockPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 4),
+            MockPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 4)
         };
 
         var effects = wiredService.GetEffectsForTrigger(trigger, items);

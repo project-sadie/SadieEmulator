@@ -320,7 +320,7 @@ public class RoomTileMapHelperTests
     public void GetWorldArrayFromTileMap_BlockingFurnitureOnTileButCanOverride_ReturnsOpen()
     {
         var map = new RoomTileMap("0", [
-            MockFurnitureItem(0, 0, 0),
+            MockFurnitureItem()
         ]);
         
         var worldArray = _tileMapHelperService.GetWorldArrayFromTileMap(map,
@@ -334,7 +334,7 @@ public class RoomTileMapHelperTests
     public void CanPlaceAt_OpenPoint_ReturnsTrue()
     {
         var map = new RoomTileMap("0", []);
-        var points = new Point[] { new (), };
+        var points = new Point[] { new () };
         
         Assert.That(_tileMapHelperService.CanPlaceAt(points, map), Is.EqualTo(true));
     }
@@ -397,7 +397,7 @@ public class RoomTileMapHelperTests
             new (6, 10),
             new (8, 9),
             new (5, 0),
-            new (4, 1),
+            new (4, 1)
         };
 
         var userMock1 = new Mock<IRoomUser>();
@@ -426,7 +426,7 @@ public class RoomTileMapHelperTests
             userMock1.Object,
             userMock2.Object,
             userMock3.Object,
-            userMock4.Object,
+            userMock4.Object
         };
         
         var usersAtPoints = _tileMapHelperService.GetUsersAtPoints(points, usersInRoom);
@@ -469,7 +469,7 @@ public class RoomTileMapHelperTests
     {
         var furnitureItems = new List<PlayerFurnitureItemPlacementData>();
         var map = new RoomTileMap("0", furnitureItems);
-        var pointsForPlacement = new Point[] { new (), };
+        var pointsForPlacement = new Point[] { new () };
         
         Assert.That(_tileMapHelperService.GetItemPlacementHeight(map, pointsForPlacement, furnitureItems), Is.EqualTo(map.ZMap[0, 0]));
     }
@@ -480,11 +480,11 @@ public class RoomTileMapHelperTests
         var furnitureItems = new List<PlayerFurnitureItemPlacementData>
         {
             MockFurnitureItem(0, 0, 10, 4),
-            MockFurnitureItem(0, 0, 20, 4),
+            MockFurnitureItem(0, 0, 20, 4)
         };
         
         var map = new RoomTileMap("0", furnitureItems);
-        var pointsForPlacement = new Point[] { new (), };
+        var pointsForPlacement = new Point[] { new () };
         var z = _tileMapHelperService.GetItemPlacementHeight(map, pointsForPlacement, furnitureItems);
         
         Assert.That(z, Is.EqualTo(24));
@@ -514,7 +514,7 @@ public class RoomTileMapHelperTests
         int y = 0)
     {
         var item = MockFurnitureItem(x, y);
-        item.FurnitureItem!.TileSpanY = 2;
+        item.FurnitureItem.TileSpanY = 2;
 
         return item;
     }
