@@ -2,8 +2,8 @@
 
 public class NetworkOptions
 {
-    public string? Host { get; set; }
-    public int Port { get; set; }
-    public bool UseWss { get; set; }
-    public string? CertificateFile { get; set; }
+    public string? Host { get; init; }
+    public int Port { get; init; }
+    public bool UseWss { get; init; }
+    public string? CertificateFile { get; init; }
 }
