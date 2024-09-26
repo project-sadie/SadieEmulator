@@ -58,7 +58,7 @@ public class PlayerCreateRoomEventHandler(
 
         newRoom.PaintSettings = new RoomPaintSettings
         {
-            RoomId = newRoom.Id,
+            RoomId = newRoom.Id
         };
         
         dbContext.Rooms.Add(newRoom);

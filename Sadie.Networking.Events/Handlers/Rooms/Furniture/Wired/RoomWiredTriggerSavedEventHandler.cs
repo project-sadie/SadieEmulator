@@ -45,7 +45,7 @@ public class RoomWiredTriggerSavedEventHandler(
                 PlayerFurnitureItemPlacementDataId = roomItem.Id,
                 PlacementData = roomItem,
                 SelectedItems = roomItems,
-                Message = Input,
+                Message = Input
             });
         
         await client.WriteToStreamAsync(new WiredSavedWriter());

@@ -37,7 +37,7 @@ public class PlayerDataEventHandler() : INetworkPacketEventHandler
             new PerkData("NAVIGATOR_PHASE_TWO_2014", "", true),
             new PerkData("MOUSE_ZOOM", "", true),
             new PerkData("NAVIGATOR_ROOM_THUMBNAIL_CAMERA", "", true),
-            new PerkData("HABBO_CLUB_OFFER_BETA", "", true),
+            new PerkData("HABBO_CLUB_OFFER_BETA", "", true)
         };
         
         await client.WriteToStreamAsync(new PlayerPerksWriter

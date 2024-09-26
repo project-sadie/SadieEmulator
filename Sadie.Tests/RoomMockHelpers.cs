@@ -62,11 +62,11 @@ public class RoomMockHelpers
                     CanWalk = walkable
                 },
                 LimitedData = "",
-                MetaData = "",
+                MetaData = ""
             },
             PositionX = x,
             PositionY = y,
-            PositionZ = z,
+            PositionZ = z
         };
 
     protected static IRoomLogic MockRoomWithUserRepoAndFurniture(

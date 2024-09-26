@@ -67,7 +67,7 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
                 MetaData = roomFurnitureItem.PlayerFurnitureItem.MetaData,
                 Expires = -1,
                 InteractionModes = 1,
-                OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
+                OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId
             }
             : new RoomWallFurnitureItemUpdatedWriter
         {
