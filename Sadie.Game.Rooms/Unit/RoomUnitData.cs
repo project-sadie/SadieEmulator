@@ -4,7 +4,6 @@ using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Unit;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 

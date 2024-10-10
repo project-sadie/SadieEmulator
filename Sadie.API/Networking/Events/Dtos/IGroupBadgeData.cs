@@ -1,4 +1,4 @@
-namespace Sadie.API;
+namespace Sadie.API.Networking.Events.Dtos;
 
 public interface IGroupBadgeData
 {

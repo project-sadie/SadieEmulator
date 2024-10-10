@@ -1,4 +1,4 @@
-using Sadie.API;
+using Sadie.API.Networking.Events.Dtos;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Groups;

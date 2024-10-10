@@ -1,4 +1,4 @@
-using Sadie.API;
+using Sadie.API.Networking.Events.Dtos;
 
 namespace Sadie.Networking.Events.Dtos;
 
