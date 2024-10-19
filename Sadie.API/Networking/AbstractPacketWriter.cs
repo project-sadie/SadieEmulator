@@ -1,5 +1,5 @@
 using System.Reflection;
-
+// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable CollectionNeverQueried.Local
 // ReSharper disable CollectionNeverQueried.Global
 
@@ -7,9 +7,9 @@ namespace Sadie.API.Networking;
 
 public abstract class AbstractPacketWriter
 {
-    private Dictionary<PropertyInfo, Action<INetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
-    private Dictionary<PropertyInfo, Action<INetworkPacketWriter>> AfterRulesSerialize { get; } = new();
-    private Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules { get; } = new();
+    public Dictionary<PropertyInfo, Action<INetworkPacketWriter>> InsteadRulesSerialize { get; } = new();
+    public Dictionary<PropertyInfo, Action<INetworkPacketWriter>> AfterRulesSerialize { get; } = new();
+    public Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> ConversionRules { get; } = new();
 
     public virtual void OnConfigureRules()
     {
