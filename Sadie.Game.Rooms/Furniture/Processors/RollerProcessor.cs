@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Globalization;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture.Processors;
 using Sadie.API.Game.Rooms.Users;
@@ -117,8 +118,8 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
         var rollingData = new RoomRollingObjectData
         {
             Id = item.PlayerFurnitureItem.Id,
-            Height = item.PositionZ.ToString(),
-            NextHeight = nextHeight.ToString()
+            Height = item.PositionZ.ToString(CultureInfo.CurrentCulture),
+            NextHeight = nextHeight.ToString(CultureInfo.CurrentCulture)
         };
         
         writers.Add(new RoomObjectsRollingWriter
@@ -131,8 +132,8 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
             RollerId = roller.PlayerFurnitureItem.Id,
             MovementType = 2,
             RoomUserId = 0,
-            Height = roller.PositionZ.ToString(),
-            NextHeight = nextHeight.ToString()
+            Height = roller.PositionZ.ToString(CultureInfo.CurrentCulture),
+            NextHeight = nextHeight.ToString(CultureInfo.CurrentCulture)
         });
                 
         item.PositionX = nextStep.X;
