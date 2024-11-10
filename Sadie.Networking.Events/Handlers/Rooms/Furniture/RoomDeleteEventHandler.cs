@@ -1,11 +1,10 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -13,10 +12,10 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomDelete)]
 public class RoomDeleteEventHandler(
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper,
-    PlayerRepository playerRepository) : INetworkPacketEventHandler
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public required int RoomId { get; init; }
     
@@ -63,7 +62,7 @@ public class RoomDeleteEventHandler(
             return;
         }
 
-        dbContext.Entry<Room>((RoomLogic) room).State = EntityState.Deleted;
+        dbContext.Entry((Room) room).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
         client.Player.Rooms.Remove((Room) room);

@@ -1,16 +1,19 @@
 using System.Drawing;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
-using Sadie.Game.Rooms.Furniture;
-using Sadie.Game.Rooms.Mapping;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomCloseDice)]
-public class RoomCloseDiceEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomCloseDiceEventHandler(
+    SadieContext dbContext,
+    IRoomTileMapHelperService tileMapHelperService,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public required int ItemId { get; set; }
+    public required int ItemId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -20,7 +23,7 @@ public class RoomCloseDiceEventHandler(SadieContext dbContext) : INetworkPacketE
         
         var roomFurnitureItem = room
             .FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+            .FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem!.MetaData == "-1")
         {
@@ -29,12 +32,12 @@ public class RoomCloseDiceEventHandler(SadieContext dbContext) : INetworkPacketE
 
         var itemPosition = new Point(roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
         
-        if (RoomTileMapHelpers.GetSquaresBetweenPoints(itemPosition, client.RoomUser.Point) > 1)
+        if (tileMapHelperService.GetSquaresBetweenPoints(itemPosition, client.RoomUser.Point) > 1)
         {
             return;
         }
 
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, roomFurnitureItem, "0");
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, roomFurnitureItem, "0");
         
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();

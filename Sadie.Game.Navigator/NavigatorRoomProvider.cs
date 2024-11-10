@@ -33,13 +33,16 @@ public class NavigatorRoomProvider(
         {
             query = ApplyFilter(query, searchQuery.Split([':'], 2));
         }
-
-        return await query
-            .Where(x => 
+        else
+        {
+            query = query.Where(x =>
                 x.Name.Contains(searchQuery) ||
                 x.Description.Contains(searchQuery) ||
                 x.Tags.Any(t => t.Name.Contains(searchQuery)) ||
-                x.Owner!.Username.Contains(searchQuery))
+                x.Owner!.Username.Contains(searchQuery));
+        }
+
+        return await query
             .ToListAsync();
     }
 

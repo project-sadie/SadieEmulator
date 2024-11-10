@@ -1,21 +1,19 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
-using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Game.Rooms.Unit;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Mapping;
 
-public class RoomTileMap : IRoomTileMap
+public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
 {
     public int SizeX { get; }
     public int SizeY { get; }
     public int Size { get; }
     public short[,] Map { get; }
-    public ConcurrentDictionary<Point, List<IRoomUser>> UserMap { get; } = [];
-    public ConcurrentDictionary<Point, List<IRoomBot>> BotMap { get; } = [];
+    public ConcurrentDictionary<Point, List<IRoomUnitData>> UnitMap { get; } = [];
     public short[,] ZMap { get; set; }
     public short[,] TileExistenceMap { get; set; }
     public short[,] EffectMap { get; }
@@ -59,7 +57,7 @@ public class RoomTileMap : IRoomTileMap
                     height = (short) (10 + "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(square));
                 }
 
-                Map[y, x] = (short) RoomTileMapHelpers.GetTileState(x, y, furnitureItems);
+                Map[y, x] = (short) GetTileState(x, y, furnitureItems);
                 ZMap[y, x] = height;
                 TileExistenceMap[y, x] = 1;
 
@@ -68,9 +66,11 @@ public class RoomTileMap : IRoomTileMap
         }
     }
 
-    public void UpdateEffectMapForTile(int x, int y, ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+    public void UpdateEffectMapForTile(int x,
+        int y,
+        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
-        var itemsOnSquare = RoomTileMapHelpers.GetItemsForPosition(x, y, furnitureItems);
+        var itemsOnSquare = GetItemsForPosition(x, y, furnitureItems);
 
         if (itemsOnSquare.Count == 0)
         {
@@ -79,23 +79,30 @@ public class RoomTileMap : IRoomTileMap
         }
         
         var topItemOnSquare = itemsOnSquare.MaxBy(x => x.PositionZ);
-        var effect = RoomTileMapHelpers.GetEffectFromInteractionType(topItemOnSquare.FurnitureItem.InteractionType);
+        var effect = GetEffectFromInteractionType(topItemOnSquare.FurnitureItem.InteractionType);
                     
         EffectMap[y, x] = (short) effect;
     }
 
-    public void AddUserToMap(Point point, IRoomUser user) => 
-        UserMap.GetOrInsert(point, () => []).Add(user);
+    public void AddUnitToMap(Point point, IRoomUnitData unit) => 
+        UnitMap.GetOrInsert(point, () => []).Add(unit);
 
-    public void AddBotToMap(Point point, IRoomBot bot) => 
-        BotMap.GetOrInsert(point, () => []).Add(bot);
+    public bool UsersAtPoint(Point point) =>
+        UnitMap.ContainsKey(point) && UnitMap[point].Count > 0;
 
-    public bool UsersAtPoint(Point point) => 
-        (UserMap.ContainsKey(point) && UserMap[point].Count > 0) || 
-        (BotMap.ContainsKey(point) && BotMap[point].Count > 0);
-
-    public bool TileExists(Point point) =>
-        point.X <= SizeX && 
-        point.Y <= SizeY && 
-        TileExistenceMap[point.Y, point.X] == 1;
+    public bool TileExists(Point point)
+    {
+        try
+        {
+            return point.X <= SizeX &&
+                   point.X >= 0 &&
+                   point.Y <= SizeY &&
+                   point.Y >= 0 &&
+                   TileExistenceMap[point.Y, point.X] == 1;
+        }
+        catch (IndexOutOfRangeException)
+        {
+            return false;
+        }
+    }
 }

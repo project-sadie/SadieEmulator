@@ -1,20 +1,30 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Pathfinding;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Unit;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Mapping;
-using Sadie.Game.Rooms.PathFinding;
-using Sadie.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Unit;
 
-public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, HDirection directionHead, HDirection direction) : IRoomUnitData
+public class RoomUnitData(
+    int id,
+    IRoomLogic room,
+    Point point,
+    double pointZ,
+    HDirection directionHead,
+    HDirection direction,
+    IRoomTileMapHelperService tileMapHelperService,
+    IRoomWiredService wiredService,
+    IRoomPathFinderHelperService pathFinderHelperService) : IRoomUnitData
 {
     public int Id { get; } = id;
     public HDirection DirectionHead { get; set; } = directionHead;
     public HDirection Direction { get; set; } = direction;
     public bool CanWalk { get; set; } = true;
-    public Point Point { get; set; } = point;
+    public Point Point { get; private set; } = point;
     public double PointZ { get; set; } = pointZ;
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
@@ -58,7 +68,7 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
             return;
         }
         
-        var tileItems = RoomTileMapHelpers.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
+        var tileItems = tileMapHelperService.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
 
         if (tileItems.Count == 0)
         {
@@ -108,7 +118,7 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
 
     protected void CalculatePath()
     {
-        PathPoints = RoomPathFinderHelpers.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
+        PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
@@ -135,8 +145,19 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
         OnReachedGoal = onReachedGoal;
     }
 
-    public async Task ProcessGenericChecksAsync()
+    protected async Task ProcessGenericChecksAsync()
     {
+        if (NextPoint != null)
+        {
+            room.TileMap.UnitMap[Point].Remove(this);
+            room.TileMap.AddUnitToMap(NextPoint.Value, this);
+
+            await SetPositionAsync(NextPoint.Value);
+            
+            PointZ = NextZ;
+            NextPoint = null;
+        }
+        
         if (NeedsPathCalculated)
         {
             CalculatePath();
@@ -163,14 +184,13 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
         
         if (room.TileMap.Map[nextStep.Y, nextStep.X] == 0 && !OverridePoints.Contains(nextStep) || 
             (room.TileMap.Map[nextStep.Y, nextStep.X] == 2 && !lastStep) || 
-            room.TileMap.UserMap.GetValueOrDefault(nextStep, []).Count > 0 ||
-            room.TileMap.BotMap.GetValueOrDefault(nextStep, []).Count > 0)
+            room.TileMap.UnitMap.GetValueOrDefault(nextStep, []).Count > 0)
         {
             NeedsPathCalculated = true;
             return;
         }
 
-        var topItemNextStep = RoomTileMapHelpers
+        var topItemNextStep = tileMapHelperService
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
         
@@ -182,7 +202,7 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
 
         AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{zHeightNextStep}");
 
-        var newDirection = RoomPathFinderHelpers.GetDirectionForNextStep(Point, nextStep);
+        var newDirection = pathFinderHelperService.GetDirectionForNextStep(Point, nextStep);
                 
         Direction = newDirection;
         DirectionHead = newDirection;
@@ -193,6 +213,11 @@ public class RoomUnitData(int id, IRoomLogic room, Point point, double pointZ, H
     public double NextZ { get; set; }
     public int HandItemId { get; set; }
     public DateTime HandItemSet { get; set; }
+    
+    public async Task SetPositionAsync(Point point)
+    {
+        Point = point;
+    }
 
     private void ClearStatuses()
     {

@@ -1,7 +1,7 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players;
 
@@ -14,7 +14,7 @@ public class PlayerProfileWriter : AbstractPacketWriter
     public required bool FriendshipExists { get; init; }
     public required bool FriendshipRequestExists { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         var lastOnline = Player.Data.LastOnline == null
             ? 0

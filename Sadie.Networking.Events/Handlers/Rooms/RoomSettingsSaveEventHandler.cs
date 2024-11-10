@@ -4,7 +4,6 @@ using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -16,32 +15,32 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 [PacketId(EventHandlerId.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {
-    public long RoomId { get; set; }
-    public required string Name { get; set; }
-    public required string Description { get; set; }
-    public int AccessType { get; set; }
-    public required string Password { get; set; }
-    public int MaxUsers { get; set; }
-    public int CategoryId { get; set; }
-    public List<string> Tags { get; set; } = [];
-    public int TradeOption { get; set; }
-    public bool AllowPets { get; set; }
-    public bool CanPetsEat { get; set; }
-    public bool CanUsersOverlap { get; set; }
-    public bool HideWall { get; set; }
-    public int WallSize { get; set; }
-    public int FloorSize { get; set; }
-    public int WhoCanMute { get; set; }
-    public int WhoCanKick { get; set; }
-    public int WhoCanBan { get; set; }
-    public int ChatType { get; set; }
-    public int ChatWeight { get; set; }
-    public int ChatSpeed { get; set; }
-    public int ChatDistance { get; set; }
-    public int ChatProtection { get; set; }
+    public long RoomId { get; init; }
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public int AccessType { get; init; }
+    public required string Password { get; init; }
+    public int MaxUsers { get; init; }
+    public int CategoryId { get; init; }
+    public List<string> Tags { get; init; } = [];
+    public int TradeOption { get; init; }
+    public bool AllowPets { get; init; }
+    public bool CanPetsEat { get; init; }
+    public bool CanUsersOverlap { get; init; }
+    public bool HideWall { get; init; }
+    public int WallSize { get; init; }
+    public int FloorSize { get; init; }
+    public int WhoCanMute { get; init; }
+    public int WhoCanKick { get; init; }
+    public int WhoCanBan { get; init; }
+    public int ChatType { get; init; }
+    public int ChatWeight { get; init; }
+    public int ChatSpeed { get; init; }
+    public int ChatDistance { get; init; }
+    public int ChatProtection { get; init; }
 
     public async Task HandleAsync(INetworkClient client)
     {

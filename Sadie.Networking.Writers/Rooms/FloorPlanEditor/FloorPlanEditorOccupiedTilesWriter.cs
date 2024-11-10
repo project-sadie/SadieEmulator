@@ -1,7 +1,7 @@
 using System.Drawing;
-using Sadie.Networking.Serialization;
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Rooms.FloorPlanEditor;
 
@@ -10,7 +10,7 @@ public class FloorPlanEditorOccupiedTilesWriter : AbstractPacketWriter
 {
     public required List<Point> Points { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Points.Count);
 

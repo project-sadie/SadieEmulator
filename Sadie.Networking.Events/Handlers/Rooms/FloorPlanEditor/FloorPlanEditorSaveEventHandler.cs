@@ -1,10 +1,10 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -16,15 +16,15 @@ namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 [PacketId(EventHandlerId.FloorPlanEditorSave)]
 public class FloorPlanEditorSaveEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public required string HeightMap { get; set; }
-    public required int DoorX { get; set; }
-    public required int DoorY { get; set; }
-    public required int DoorDirection { get; set; }
-    public required int WallSize { get; set; }
-    public required int FloorSize { get; set; }
-    public required int WallHeight { get; set; }
+    public required string HeightMap { get; init; }
+    public required int DoorX { get; init; }
+    public required int DoorY { get; init; }
+    public required int DoorDirection { get; init; }
+    public required int WallSize { get; init; }
+    public required int FloorSize { get; init; }
+    public required int WallHeight { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -83,7 +83,7 @@ public class FloorPlanEditorSaveEventHandler(
         {
             room.LayoutId = room.Layout.Id;
             
-            dbContext.Entry(room).Property(x => x.LayoutId).IsModified = true;
+            dbContext.Entry((Room) room).Property(x => x.LayoutId).IsModified = true;
             await dbContext.SaveChangesAsync();
         }
 

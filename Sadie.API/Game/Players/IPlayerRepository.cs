@@ -1,5 +1,5 @@
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
 
 namespace Sadie.API.Game.Players;
 

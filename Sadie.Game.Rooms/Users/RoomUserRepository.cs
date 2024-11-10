@@ -2,8 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Players;
-using Sadie.Game.Players;
+using Sadie.API.Networking;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Serialization;
@@ -11,7 +10,8 @@ using Sadie.Networking.Serialization;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUserRepository(ILogger<RoomUserRepository> logger,
-    IPlayerRepository playerRepository) : IRoomUserRepository
+    IPlayerRepository playerRepository,
+    IPlayerHelperService playerHelperService) : IRoomUserRepository
 {
     private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 
@@ -52,8 +52,8 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         
         player.State.CurrentRoomId = 0;
         
-        await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
-            (Player) player, 
+        await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+            player, 
             player.GetMergedFriendships(),
             player.Data.IsOnline, 
             false,

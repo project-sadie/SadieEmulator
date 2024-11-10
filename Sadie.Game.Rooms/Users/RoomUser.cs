@@ -1,16 +1,20 @@
 using System.Drawing;
+using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Pathfinding;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Database.Models.Constants;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
-using Sadie.Game.Rooms.PathFinding;
 using Sadie.Game.Rooms.Unit;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -23,16 +27,29 @@ public class RoomUser(
     HDirection directionHead,
     HDirection direction,
     IPlayerLogic player,
-    RoomControllerLevel controllerLevel)
-    : RoomUnitData(id, room, point, pointZ, directionHead, direction),
+    ServerRoomConstants roomConstants,
+    RoomControllerLevel controllerLevel,
+    IRoomTileMapHelperService tileMapHelperService,
+    IRoomHelperService roomHelperService,
+    IRoomWiredService wiredService,
+    IRoomPathFinderHelperService pathFinderHelperService)
+    : RoomUnitData(id,
+            room,
+            point,
+            pointZ,
+            directionHead,
+            direction,
+            tileMapHelperService,
+            wiredService,
+            pathFinderHelperService),
         IRoomUser
 {
     public IPlayerLogic Player { get; } = player;
     public DateTime LastAction { get; set; } = DateTime.Now;
-    public TimeSpan IdleTime { get; }
+    public TimeSpan IdleTime { get; } = TimeSpan.FromSeconds(roomConstants.SecondsTillUserIdle);
     public bool IsIdle { get; set; }
     public bool MoonWalking { get; set; }
-    public IRoomUserTrade Trade { get; set; }
+    public IRoomUserTrade? Trade { get; set; }
     public int TradeStatus { get; set; }
     public int ActiveEffectId { get; set; }
     public IRoomLogic Room { get; } = room;
@@ -41,7 +58,7 @@ public class RoomUser(
 
     public void LookAtPoint(Point point)
     {
-        var direction = RoomPathFinderHelpers.GetDirectionForNextStep(Point, point);
+        var direction = pathFinderHelperService.GetDirectionForNextStep(Point, point);
 
         if (!StatusMap.ContainsKey(RoomUserStatus.Sit))
         {
@@ -73,20 +90,42 @@ public class RoomUser(
                 ItemId = 0
             });
         }
-        
-        if (NextPoint != null)
-        {
-            room.TileMap.UserMap[Point].Remove(this);
-            room.TileMap.AddUserToMap(NextPoint.Value, this);
-            
-            Point = NextPoint.Value;
-            PointZ = NextZ;
-            NextPoint = null;
-        }
+
+        var position = Point;
 
         await ProcessGenericChecksAsync();
         await UpdateIdleStatusAsync();
         await UpdateEffectAsync();
+
+        if (Point != position)
+        {
+            await CheckForStepTriggersAsync(position, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
+            await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
+        }
+    }
+
+    private async Task CheckForStepTriggersAsync(Point point, string interactionType)
+    {
+        var itemIdsOnPoint = tileMapHelperService
+            .GetItemsForPosition(point.X, point.Y, room.FurnitureItems)
+            .Select(x => x.Id)
+            .ToList();
+
+        if (itemIdsOnPoint.Count < 1)
+        {
+            return;
+        }
+
+        var triggers = wiredService.GetTriggers(
+            interactionType,
+            room.FurnitureItems,
+            "",
+            itemIdsOnPoint);
+            
+        foreach (var trigger in triggers)
+        {
+            await wiredService.RunTriggerForRoomAsync(room, trigger, this);
+        }
     }
 
     private async Task UpdateEffectAsync()
@@ -131,6 +170,18 @@ public class RoomUser(
             RoomControllerLevel.Rights;
     }
 
+    public async Task SendWhisperAsync(string message)
+    {
+        await NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
+        {
+            SenderId = Id,
+            Message = message,
+            EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
+            Bubble = 0,
+            Unknown = 0
+        });
+    }
+
     public async Task SetEffectAsync(RoomUserEffect effect)
     {
         ActiveEffectId = (int) effect;
@@ -146,6 +197,6 @@ public class RoomUser(
     }
     public async ValueTask DisposeAsync()
     {
-        room.TileMap.UserMap[Point].Remove(this);
+        room.TileMap.UnitMap[Point].Remove(this);
     }
 }

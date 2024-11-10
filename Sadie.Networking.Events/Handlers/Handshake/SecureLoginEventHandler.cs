@@ -7,7 +7,6 @@ using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Server;
-using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
@@ -27,7 +26,8 @@ public class SecureLoginEventHandler(
     ServerSettings serverSettings,
     SadieContext dbContext,
     IMapper mapper,
-    PlayerLoader playerLoader)
+    IPlayerLoaderService playerLoaderService,
+    IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
     public string? Token { get; set; }
@@ -51,7 +51,7 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var tokenRecord = await playerLoader.GetTokenAsync(Token, DelayMs);
+        var tokenRecord = await playerLoaderService.GetTokenAsync(Token, DelayMs);
         
         if (tokenRecord == null)
         {
@@ -69,20 +69,20 @@ public class SecureLoginEventHandler(
             return;
         }
         
-        var playerLogic = mapper.Map<PlayerLogic>(player);
+        var playerLogic = mapper.Map<IPlayerLogic>(player);
 
         playerLogic.NetworkObject = client;
         playerLogic.Channel = client.Channel;
 
         var playerId = player.Id;
-        var alreadyOnline = playerRepository.GetPlayerLogicById(playerId) != null;
+        var existingPlayer = playerRepository.GetPlayerLogicById(playerId);
 
         client.Player = playerLogic;
 
-        if (alreadyOnline)
+        if (existingPlayer != null)
         {
-            await DisconnectNetworkClientAsync(client.Channel.Id);
-            return;
+            await playerRepository.TryRemovePlayerAsync(existingPlayer.Id);
+            await networkClientRepository.TryRemoveAsync(existingPlayer.Channel.Id);
         }
 
         if (!playerRepository.TryAddPlayer(playerLogic))
@@ -102,10 +102,10 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
-        await PlayerHelpers.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+        await playerHelperService.SendPlayerFriendListUpdate(playerLogic, playerRepository);
         
-        await PlayerHelpers.UpdatePlayerStatusForFriendsAsync(
-            player, 
+        await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+            playerLogic, 
             player.GetMergedFriendships(), 
             true, 
             false, 

@@ -1,6 +1,6 @@
 namespace Sadie.Networking.Events;
 
-public class EventHandlerId
+public static class EventHandlerId
 {
     public const short ClientVersion = 4000;
     public const short ClientVariables = 1053;
@@ -126,4 +126,6 @@ public class EventHandlerId
     public const short RoomItemUpdateObjectData = 3608;
     public const short RoomBackgroundTonerApply = 2880;
     public const short ClientLatency = 295;
+    public const short RoomWiredEffectSaved = 2281;
+    public const short RoomWiredTriggerSaved = 1520;
 }

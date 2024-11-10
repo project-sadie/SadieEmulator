@@ -1,7 +1,8 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Rooms.Packets.Writers;
 
@@ -10,7 +11,7 @@ public class RoomWallFurnitureItemUpdatedWriter : AbstractPacketWriter
 {
     public required PlayerFurnitureItemPlacementData Item { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteString(Item.Id + "");
         writer.WriteInteger(Item.FurnitureItem.AssetId);

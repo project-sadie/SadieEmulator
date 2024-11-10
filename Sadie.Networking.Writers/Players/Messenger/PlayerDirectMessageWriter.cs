@@ -1,8 +1,8 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Extensions;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Messenger;
 
@@ -11,7 +11,7 @@ public class PlayerDirectMessageWriter : AbstractPacketWriter
 {
     public required PlayerMessage Message { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Message.OriginPlayerId);
         writer.WriteString(Message.Message);

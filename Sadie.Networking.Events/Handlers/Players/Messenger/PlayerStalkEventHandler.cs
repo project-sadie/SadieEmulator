@@ -1,5 +1,5 @@
+using Sadie.API.Game.Players;
 using Sadie.Enums.Game.Players;
-using Sadie.Game.Players;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -8,7 +8,7 @@ using Sadie.Networking.Writers.Players.Messenger;
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 [PacketId(EventHandlerId.PlayerStalk)]
-public class PlayerStalkEventHandler(PlayerRepository playerRepository) : INetworkPacketEventHandler
+public class PlayerStalkEventHandler(IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
     

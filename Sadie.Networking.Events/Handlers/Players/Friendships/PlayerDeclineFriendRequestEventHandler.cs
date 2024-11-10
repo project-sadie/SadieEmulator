@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Players;
-using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerId.PlayerDeclineFriendRequest)]
 public class PlayerDeclineFriendRequestEventHandler(
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {

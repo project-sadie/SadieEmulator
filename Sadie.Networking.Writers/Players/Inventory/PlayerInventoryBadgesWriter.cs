@@ -1,7 +1,7 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Inventory;
 
@@ -11,7 +11,7 @@ public class PlayerInventoryBadgesWriter : AbstractPacketWriter
     public required List<PlayerBadge> Badges { get; init; }
     public required List<PlayerBadge> EquippedBadges { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Badges.Count);
 

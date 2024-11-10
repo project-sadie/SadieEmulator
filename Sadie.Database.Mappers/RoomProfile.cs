@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Rooms;
@@ -12,7 +13,7 @@ public class RoomProfile : Profile
 {
     public RoomProfile(IServiceProvider provider)
     {
-        CreateMap<Room, RoomLogic>()
+        CreateMap<Room, IRoomLogic>()
             .ConstructUsing(x => new RoomLogic(
                 x.Id,
                 x.Name,

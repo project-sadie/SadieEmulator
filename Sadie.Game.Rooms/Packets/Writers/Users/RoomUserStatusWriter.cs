@@ -1,7 +1,8 @@
-﻿using Sadie.API.Game.Rooms.Users;
-using Sadie.Networking.Serialization;
+﻿using Sadie.API;
+using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Users;
 
@@ -10,7 +11,7 @@ public class RoomUserStatusWriter : AbstractPacketWriter
 {
     public required ICollection<IRoomUser> Users { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Users.Count);
 

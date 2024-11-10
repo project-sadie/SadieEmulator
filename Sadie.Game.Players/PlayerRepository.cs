@@ -1,16 +1,14 @@
 using System.Collections.Concurrent;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
+using Sadie.API.Networking;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Players;
 
 public class PlayerRepository(
-    ILogger<PlayerRepository> logger,
     SadieContext dbContext,
     IMapper mapper) : IPlayerRepository
 {

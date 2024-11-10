@@ -1,28 +1,34 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
 using Sadie.Database.Models.Catalog.Items;
 using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Catalog;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
+using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Purse;
-using Sadie.Shared;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers.Players.Subscriptions;
+using Sadie.Shared.Constants;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
-    SadieContext dbContext) : INetworkPacketEventHandler
+    SadieContext dbContext,
+    IPlayerHelperService playerHelperService,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public int PageId { get; set; }
     public int ItemId { get; set; }
@@ -71,9 +77,9 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        var item = page.Items.FirstOrDefault(x => x.Id == ItemId);
+        var catalogItem = page.Items.FirstOrDefault(x => x.Id == ItemId);
 
-        if (item == null)
+        if (catalogItem == null)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseFailedWriter
             {
@@ -83,7 +89,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (item.RequiresClubMembership &&
+        if (catalogItem.RequiresClubMembership &&
             client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB") == null)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseUnavailableWriter
@@ -94,71 +100,33 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
-        if (!await TryChargeForCatalogItemPurchaseAsync(client, item, Amount))
+        if (!await TryChargeForCatalogItemPurchaseAsync(client, catalogItem, Amount))
         {
             return;
         }
 
         if (page.Layout == CatalogPageLayout.Bots && 
-            item.Name.Contains("bot_") &&
-            !string.IsNullOrEmpty(item.MetaData))
+            catalogItem.Name.Contains("bot_") &&
+            !string.IsNullOrEmpty(catalogItem.MetaData))
         {
-            await ProcessBotPurchaseAsync(client, item);
+            await ProcessBotPurchaseAsync(client, catalogItem);
             return;
         }
         
         var created = DateTime.Now;
         var newItems = new List<PlayerFurnitureItem>();
         
-        var furnitureItem = item.FurnitureItems.First();
+        var furnitureItem = catalogItem.FurnitureItems.First();
+        var mappedPlayer = mapper.Map<Player>(client.Player);
 
-        if (item.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
+        if (catalogItem.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
         {
-            var parent = new PlayerFurnitureItem
-            {
-                Player = client.Player,
-                FurnitureItem = furnitureItem,
-                LimitedData = "1:1",
-                MetaData = MetaData,
-                CreatedAt = created
-            };
-            
-            var child = new PlayerFurnitureItem
-            {
-                Player = client.Player,
-                FurnitureItem = furnitureItem,
-                LimitedData = "1:1",
-                MetaData = MetaData,
-                CreatedAt = created
-            };
-            
-            client.Player.FurnitureItems.Add(parent);
-            client.Player.FurnitureItems.Add(child);
-            
-            dbContext.Entry(parent).State = EntityState.Added;
-            dbContext.Entry(child).State = EntityState.Added;
-            
-            newItems.AddRange([parent, child]);
-
-            await dbContext.SaveChangesAsync();
-
-            dbContext.PlayerFurnitureItemLinks.Add(new PlayerFurnitureItemLink
-            {
-                ParentId = parent.Id,
-                ChildId = child.Id
-            });
-
-            await dbContext.SaveChangesAsync();
-
-            await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
-            {
-                Count = newItems.Count,
-                Category = 1,
-                FurnitureItems = newItems
-            });
-            
-            await ConfirmPurchaseAsync(client, item);
-            
+            await ProcessTeleportPurchaseAsync(client,
+                mappedPlayer,
+                furnitureItem,
+                created,
+                newItems,
+                catalogItem);
             return;
         }
         
@@ -168,7 +136,7 @@ public class CatalogPurchaseEventHandler(
         {
             var newItem = new PlayerFurnitureItem
             {
-                Player = client.Player,
+                Player = mappedPlayer,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData,
@@ -190,7 +158,60 @@ public class CatalogPurchaseEventHandler(
         };
         
         await client.WriteToStreamAsync(writer);
-        await ConfirmPurchaseAsync(client, item);
+        await ConfirmPurchaseAsync(client, catalogItem);
+    }
+
+    private async Task ProcessTeleportPurchaseAsync(INetworkClient client,
+        Player? mappedPlayer,
+        FurnitureItem furnitureItem,
+        DateTime created,
+        List<PlayerFurnitureItem> newItems,
+        CatalogItem catalogItem)
+    {
+        var parent = new PlayerFurnitureItem
+        {
+            Player = mappedPlayer,
+            FurnitureItem = furnitureItem,
+            LimitedData = "1:1",
+            MetaData = MetaData,
+            CreatedAt = created
+        };
+            
+        var child = new PlayerFurnitureItem
+        {
+            Player = mappedPlayer,
+            FurnitureItem = furnitureItem,
+            LimitedData = "1:1",
+            MetaData = MetaData,
+            CreatedAt = created
+        };
+            
+        client.Player.FurnitureItems.Add(parent);
+        client.Player.FurnitureItems.Add(child);
+            
+        dbContext.Entry(parent).State = EntityState.Added;
+        dbContext.Entry(child).State = EntityState.Added;
+            
+        newItems.AddRange([parent, child]);
+
+        await dbContext.SaveChangesAsync();
+
+        dbContext.PlayerFurnitureItemLinks.Add(new PlayerFurnitureItemLink
+        {
+            ParentId = parent.Id,
+            ChildId = child.Id
+        });
+
+        await dbContext.SaveChangesAsync();
+
+        await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
+        {
+            Count = newItems.Count,
+            Category = 1,
+            FurnitureItems = newItems
+        });
+            
+        await ConfirmPurchaseAsync(client, catalogItem);
     }
 
     private async Task ProcessBotPurchaseAsync(INetworkClient client, CatalogItem catalogItem)
@@ -213,7 +234,8 @@ public class CatalogPurchaseEventHandler(
             Username = information["name"],
             FigureCode = information["figure"],
             Motto = information["motto"],
-            Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female
+            Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female,
+            CreatedAt = DateTime.Now
         };
 
         dbContext.Entry(bot).State = EntityState.Added;
@@ -305,11 +327,11 @@ public class CatalogPurchaseEventHandler(
                 Ambassador = true
             });
             
-            var subWriter = PlayerHelpers.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
+            var subWriter = playerHelperService.GetSubscriptionWriterAsync(client.Player, "HABBO_CLUB");
 
             if (subWriter != null)
             {
-                await client.WriteToStreamAsync(subWriter);
+                await client.WriteToStreamAsync((PlayerSubscriptionWriter) subWriter);
             }
     }
 

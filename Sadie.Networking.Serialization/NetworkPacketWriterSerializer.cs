@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using Sadie.API;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Serialization;
@@ -42,20 +43,20 @@ public class NetworkPacketWriterSerializer
         return identifierAttribute.Id;
     }
     
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetRuleMap(object classObject, string propertyName)
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetRuleMap(object classObject, string propertyName)
     {
-        return (Dictionary<PropertyInfo, Action<NetworkPacketWriter>>) classObject
+        return (Dictionary<PropertyInfo, Action<INetworkPacketWriter>>) classObject
             .GetType()
             .BaseType?.GetProperty(propertyName)
             ?.GetValue(classObject)!;
     }
 
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetBeforeRuleMap(object classObject) => 
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetBeforeRuleMap(object classObject) => 
         GetRuleMap(classObject, "BeforeRulesSerialize");
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetInsteadRuleMap(object classObject) => 
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetInsteadRuleMap(object classObject) => 
         GetRuleMap(classObject, "InsteadRulesSerialize");
 
-    private static Dictionary<PropertyInfo, Action<NetworkPacketWriter>> GetAfterRuleMap(object classObject) =>
+    private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetAfterRuleMap(object classObject) =>
         GetRuleMap(classObject, "AfterRulesSerialize");
     
     private static Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> GetConversionRules(object classObject) => 
@@ -85,22 +86,25 @@ public class NetworkPacketWriterSerializer
                 continue;
             }
             
-            if (insteadRuleMap != null && insteadRuleMap.ContainsKey(property))
+            if (insteadRuleMap != null && 
+                insteadRuleMap.TryGetValue(property, out var value))
             {
-                insteadRuleMap[property].Invoke(writer);
+                value.Invoke(writer);
                 continue;
             }
 
-            if (beforeRuleMap != null && beforeRuleMap.ContainsKey(property))
+            if (beforeRuleMap != null && 
+                beforeRuleMap.TryGetValue(property, out var beforeValue))
             {
-                beforeRuleMap[property].Invoke(writer);
+                beforeValue.Invoke(writer);
             }
             
             WriteProperty(property, writer, packet);
 
-            if (afterRuleMap != null && afterRuleMap.ContainsKey(property))
+            if (afterRuleMap != null && 
+                afterRuleMap.TryGetValue(property, out var afterValue))
             {
-                afterRuleMap[property].Invoke(writer);
+                afterValue.Invoke(writer);
             }
         }
     }

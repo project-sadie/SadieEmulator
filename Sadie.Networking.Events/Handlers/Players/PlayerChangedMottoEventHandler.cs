@@ -18,7 +18,7 @@ public class PlayerChangedMottoEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null)
+        if (client.Player?.AvatarData == null)
         {
             return;
         }
@@ -36,8 +36,8 @@ public class PlayerChangedMottoEventHandler(
         await room.UserRepository.BroadcastDataAsync(new RoomUserDataWriter{
             Users = [roomUser]
         });
-        
-        dbContext.PlayerAvatarData.Update(player.AvatarData);
+
+        dbContext.Entry(player.AvatarData).Property(x => x.Motto).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
 }

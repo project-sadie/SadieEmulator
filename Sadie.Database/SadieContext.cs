@@ -167,5 +167,30 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         modelBuilder.Entity<PlayerFurnitureItem>()
             .Navigation(x => x.FurnitureItem)
             .AutoInclude();
+        
+        modelBuilder.Entity<PlayerFurnitureItemWiredData>()
+            .HasMany(r => r.SelectedItems)
+            .WithMany(p => p.SelectedBy)
+            .UsingEntity("player_furniture_item_wired_data_items",
+                l => l.HasOne(typeof(PlayerFurnitureItemPlacementData)).WithMany().HasForeignKey("player_furniture_item_placement_data_id").HasPrincipalKey(nameof(PlayerFurnitureItemPlacementData.Id)),
+                r => r.HasOne(typeof(PlayerFurnitureItemWiredData)).WithMany().HasForeignKey("player_furniture_item_wired_data_id").HasPrincipalKey(nameof(PlayerFurnitureItemWiredData.Id)),
+                j => j.HasKey("player_furniture_item_placement_data_id", "player_furniture_item_wired_data_id"));
+
+        modelBuilder.Entity<PlayerFurnitureItem>()
+            .Navigation(x => x.Player)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFurnitureItem>()
+            .Navigation(x => x.PlacementData)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFurnitureItemPlacementData>()
+            .Navigation(x => x.PlayerFurnitureItem)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFurnitureItemWiredData>()
+            .HasOne(x => x.PlacementData)
+            .WithOne(x => x.WiredData)
+            .HasForeignKey<PlayerFurnitureItemWiredData>(e => e.PlayerFurnitureItemPlacementDataId);
     }
 }

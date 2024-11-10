@@ -1,8 +1,8 @@
-﻿using Sadie.Database.Models.Constants;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Chat.Commands;
+using Sadie.API.Game.Rooms.Services;
+using Sadie.Database.Models.Constants;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Chat.Commands;
-using Sadie.Game.Rooms.Services;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -10,14 +10,15 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 [PacketId(EventHandlerId.RoomUserShout)]
 public class RoomUserShoutEventHandler(
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants, 
     IRoomChatCommandRepository commandRepository,
-    IRoomWiredService wiredService)
+    IRoomWiredService wiredService,
+    IRoomHelperService roomHelperService)
     : INetworkPacketEventHandler
 {
-    public required string Message { get; set; }
-    public int Bubble { get; set; }
+    public required string Message { get; init; }
+    public int Bubble { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -28,6 +29,7 @@ public class RoomUserShoutEventHandler(
             roomRepository,
             commandRepository,
             (ChatBubble) Bubble,
-            wiredService);
+            wiredService,
+            roomHelperService);
     }
 }

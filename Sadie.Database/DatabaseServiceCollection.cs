@@ -43,6 +43,7 @@ public static class DatabaseServiceCollection
                 .Include("Pages")
                 .Include("Pages.Pages")
                 .Include("Pages.Pages.Pages")
+                .Include("Pages.Pages.Pages.Pages")
                 .Include(c => c.Items).ThenInclude(x => x.FurnitureItems)
                 .ToList());
 

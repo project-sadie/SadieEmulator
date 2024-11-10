@@ -1,7 +1,7 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Rooms;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
@@ -11,7 +11,7 @@ public class RoomDimmerSettingsWriter : AbstractPacketWriter
     public required RoomDimmerSettings DimmerSettings { get; init; }
     public required ICollection<RoomDimmerPreset> DimmerPresets { get; init; }
     
-    public override void OnSerialize(NetworkPacketWriter writer) 
+    public override void OnSerialize(INetworkPacketWriter writer) 
     {
         writer.WriteInteger(DimmerPresets.Count);
         writer.WriteInteger(DimmerSettings.PresetId);

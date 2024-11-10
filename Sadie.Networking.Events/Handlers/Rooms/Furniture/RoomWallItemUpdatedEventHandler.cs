@@ -1,6 +1,6 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -10,11 +10,11 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomWallItemUpdated)]
 public class RoomWallItemUpdatedEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository)
+    IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    public int ItemId { get; set; }
-    public string WallPosition { get; set; }
+    public int ItemId { get; init; }
+    public string WallPosition { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

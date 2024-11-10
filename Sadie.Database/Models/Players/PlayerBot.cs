@@ -12,4 +12,5 @@ public class PlayerBot
     public required string Motto { get; init; }
     public required AvatarGender Gender { get; init; }
     public ChatBubble ChatBubbleId { get; init; }
+    public required DateTime CreatedAt { get; init; }
 }

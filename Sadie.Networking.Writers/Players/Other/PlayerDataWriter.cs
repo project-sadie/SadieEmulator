@@ -1,17 +1,17 @@
-﻿using Sadie.Database.Models.Players;
+﻿using Sadie.API;
+using Sadie.API.Game.Players;
+using Sadie.API.Networking;
 using Sadie.Enums.Unsorted;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
 [PacketId(ServerPacketId.PlayerData)]
 public class PlayerDataWriter : AbstractPacketWriter
 {
-    public required Player Player { get; init; }
+    public required IPlayerLogic Player { get; init; }
     
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteLong(Player.Id);
         writer.WriteString(Player.Username);

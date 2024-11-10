@@ -5,7 +5,8 @@ namespace Sadie.API.Game.Rooms.Unit;
 
 public interface IRoomUnitData
 {
-    Point Point { get; set; }
+    int Id { get; }
+    Point Point { get; }
     double PointZ { get; set; }
     bool IsWalking { get; set; }
     Point? NextPoint { get; set; }
@@ -21,4 +22,5 @@ public interface IRoomUnitData
     public double NextZ { get; set; }
     public int HandItemId { get; set; }
     public DateTime HandItemSet { get; set; }
+    Task SetPositionAsync(Point point);
 }

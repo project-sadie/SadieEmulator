@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.API;
 using Sadie.Database;
 using Sadie.Database.Mappers;
 using Sadie.Database.Models.Server;
@@ -11,7 +12,6 @@ using Sadie.Game.Rooms;
 using Sadie.Networking;
 using Sadie.Networking.Events;
 using Sadie.Options;
-using Sadie.Shared;
 using SadieEmulator.Tasks;
 
 namespace SadieEmulator;
@@ -30,12 +30,6 @@ public static class ServerServiceCollection
                 Assembly.LoadFile(plugin);
             }
         }
-        
-        serviceCollection.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo<IServerTask>())
-            .AsImplementedInterfaces()
-            .WithSingletonLifetime());
 
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
@@ -59,5 +53,11 @@ public static class ServerServiceCollection
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         CatalogServiceProvider.AddServices(serviceCollection);
+        
+        serviceCollection.Scan(scan => scan
+            .FromAssemblies(assemblies)
+            .AddClasses(classes => classes.AssignableTo<IServerTask>())
+            .AsImplementedInterfaces()
+            .WithSingletonLifetime());
     }
 }

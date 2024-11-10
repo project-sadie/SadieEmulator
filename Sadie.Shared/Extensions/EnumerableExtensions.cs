@@ -34,12 +34,12 @@ public static class EnumerableExtensions
         return source.PickRandom(1).Single();
     }
 
-    public static IEnumerable<T> PickRandom<T>(this IEnumerable<T> source, int count)
+    private static IEnumerable<T> PickRandom<T>(this IEnumerable<T> source, int count)
     {
         return source.Shuffle().Take(count);
     }
 
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+    private static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
     {
         return source.OrderBy(_ => Guid.NewGuid());
     }

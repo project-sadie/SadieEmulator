@@ -1,9 +1,9 @@
+using Sadie.API;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Furniture;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Rooms.Furniture;
 
@@ -12,8 +12,9 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
 {
     public required Dictionary<int, string?> FurnitureOwners { get; init; }
     public required ICollection<PlayerFurnitureItemPlacementData> FloorItems { get; init; }
+    public required IRoomFurnitureItemHelperService RoomFurnitureItemHelperService { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(FurnitureOwners.Count);
 
@@ -31,12 +32,12 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         }
     }
 
-    private void WriteItem(PlayerFurnitureItemPlacementData item, NetworkPacketWriter writer)
+    private void WriteItem(PlayerFurnitureItemPlacementData item, INetworkPacketWriter writer)
     {
         var height = -1; // TODO: height
         var extra = 1;
             
-        writer.WriteLong(item.PlayerFurnitureItem.Id);
+        writer.WriteLong(item.Id);
         writer.WriteInteger(item.FurnitureItem.AssetId);
         writer.WriteInteger(item.PositionX);
         writer.WriteInteger(item.PositionY);
@@ -45,13 +46,14 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
         writer.WriteString(height.ToString());
         writer.WriteInteger(extra);
         
-        var objectDataKey = RoomFurnitureItemHelpers.GetObjectDataKeyForItem(item);
+        var objectDataKey = RoomFurnitureItemHelperService.GetObjectDataKeyForItem(item);
+        
         
         writer.WriteInteger((int) objectDataKey);
 
         if (objectDataKey == ObjectDataKey.MapKey)
         {
-            var objectData = RoomFurnitureItemHelpers.GetObjectDataForItem(item);
+            var objectData = RoomFurnitureItemHelperService.GetObjectDataForItem(item);
             
             writer.WriteInteger(objectData.Count);
 

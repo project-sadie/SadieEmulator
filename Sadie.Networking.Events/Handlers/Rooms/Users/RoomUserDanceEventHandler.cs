@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 [PacketId(EventHandlerId.RoomUserDance)]
 public class RoomUserDanceEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int DanceId { get; set; }
+    public int DanceId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

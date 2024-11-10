@@ -1,15 +1,16 @@
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemUpdateObjectData)]
-public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public required int ItemId { get; set; }
-    public required Dictionary<string, string> ObjectData { get; set; }
+    public required int ItemId { get; init; }
+    public required Dictionary<string, string> ObjectData { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -24,7 +25,7 @@ public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext) : INet
             .RoomUser
             .Room
             .FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+            .FirstOrDefault(x => x.Id == ItemId);
         
         if (roomFurnitureItem == null)
         {
@@ -32,7 +33,7 @@ public class RoomItemUpdateObjectDataEventHandler(SadieContext dbContext) : INet
         }
 
         var metaData = string.Join(";", ObjectData.Select(x => $"{x.Key}={x.Value}"));
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
         
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();

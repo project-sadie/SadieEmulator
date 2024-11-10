@@ -1,13 +1,14 @@
 using System.Drawing;
-using Sadie.Game.Rooms.Furniture;
-using Sadie.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomTriggerDice)]
-public class RoomTriggerDiceEventHandler(RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
+public class RoomTriggerDiceEventHandler(IRoomFurnitureItemInteractorRepository interactorRepository,
+    IRoomTileMapHelperService tileMapHelperService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }
     
@@ -17,7 +18,7 @@ public class RoomTriggerDiceEventHandler(RoomFurnitureItemInteractorRepository i
             .RoomUser
             .Room
             .FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+            .FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem!.MetaData == "-1")
         {
@@ -26,7 +27,7 @@ public class RoomTriggerDiceEventHandler(RoomFurnitureItemInteractorRepository i
 
         var itemPosition = new Point(roomFurnitureItem.PositionX, roomFurnitureItem.PositionY);
         
-        if (RoomTileMapHelpers.GetSquaresBetweenPoints(itemPosition, client.RoomUser.Point) > 1)
+        if (tileMapHelperService.GetSquaresBetweenPoints(itemPosition, client.RoomUser.Point) > 1)
         {
             return;
         }

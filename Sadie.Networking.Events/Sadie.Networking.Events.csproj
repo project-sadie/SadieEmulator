@@ -7,12 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Writers\Sadie.Networking.Writers.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="Scrutor" Version="4.2.2" />
       <PackageReference Include="Serilog" Version="4.0.0" />
     </ItemGroup>

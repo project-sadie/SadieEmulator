@@ -7,7 +7,7 @@ using Sadie.Enums.Game.Players;
 
 namespace Sadie.Database.Models.Players;
 
-public class Player : IPlayer
+public class Player
 {
     private readonly ILazyLoader _lazyLoader;
     private PlayerNavigatorSettings? _navigatorSettings;
@@ -15,6 +15,7 @@ public class Player : IPlayer
     private ICollection<PlayerFriendship> _outgoingFriendships = [];
     private ICollection<PlayerFriendship> _incomingFriendships = [];
     private ICollection<PlayerFurnitureItem> _furnitureItems = [];
+    private ICollection<Room> _rooms = [];
 
     public Player()
     {
@@ -74,7 +75,13 @@ public class Player : IPlayer
     }
     
     public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; init; } = [];
-    public ICollection<Room> Rooms { get; set; } = [];
+    
+    public ICollection<Room> Rooms
+    {
+        get => _lazyLoader.Load(this, ref _rooms);
+        set => _rooms = value;
+    }
+    
     public ICollection<Group> Groups { get; init; } = [];
     public ICollection<PlayerBot> Bots { get; init; } = [];
     public ICollection<PlayerRoomVisit> RoomVisits { get; init; } = [];

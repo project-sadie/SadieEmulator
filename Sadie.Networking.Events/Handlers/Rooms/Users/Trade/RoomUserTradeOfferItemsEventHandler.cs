@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 [PacketId(EventHandlerId.RoomUserTradeOfferItems)]
 public class RoomUserTradeOfferItemsEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public List<int> Ids { get; set; } = [];
+    public List<int> Ids { get; init; } = [];
     
     public async Task HandleAsync(INetworkClient client)
     {
