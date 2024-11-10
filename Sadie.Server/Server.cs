@@ -20,7 +20,8 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         WriteHeaderToConsole();
         await CleanUpDataAsync();
         
-        serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
+        var taskWorker = serviceProvider.GetRequiredService<IServerTaskWorker>();
+        taskWorker.WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
 
