@@ -9,28 +9,29 @@ namespace Sadie.Database.Models.Players;
 
 public class Player : IPlayer
 {
-    private readonly ILazyLoader _lazyLoader;
-    private PlayerNavigatorSettings? _navigatorSettings;
-    private PlayerGameSettings? _gameSettings;
-    private ICollection<PlayerFriendship> _outgoingFriendships = [];
-    private ICollection<PlayerFriendship> _incomingFriendships = [];
-    private ICollection<PlayerFurnitureItem> _furnitureItems = [];
+    private readonly ILazyLoader? _lazyLoader;
 
     public Player()
     {
     }
-
-    public Player(ILazyLoader lazyLoader)
+    
+    public Player(ILazyLoader? lazyLoader)
     {
         _lazyLoader = lazyLoader;
     }
+
+    private PlayerNavigatorSettings? _navigatorSettings;
+    private PlayerGameSettings? _gameSettings;
+    private ICollection<PlayerFriendship>? _outgoingFriendships = [];
+    private ICollection<PlayerFriendship> _incomingFriendships = [];
+    private ICollection<PlayerFurnitureItem>? _furnitureItems = [];
 
     public int Id { get; init; }
     public required string Username { get; init; }
     public required string Email { get; init; }
     public ICollection<Role> Roles { get; init; } = [];
     public DateTime CreatedAt { get; init; }
-    public PlayerData? Data { get; init; }
+    public required PlayerData Data { get; init; }
     public PlayerAvatarData? AvatarData { get; init; }
     public List<PlayerTag> Tags { get; init; } = [];
     public ICollection<PlayerRoomLike> RoomLikes { get; init; } = [];
@@ -50,7 +51,7 @@ public class Player : IPlayer
     
     public ICollection<PlayerBadge> Badges { get; init; } = [];
 
-    public ICollection<PlayerFurnitureItem> FurnitureItems
+    public ICollection<PlayerFurnitureItem>? FurnitureItems
     {
         get => _lazyLoader.Load(this, ref _furnitureItems);
         init => _furnitureItems = value;

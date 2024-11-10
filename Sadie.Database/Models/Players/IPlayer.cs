@@ -11,7 +11,7 @@ public interface IPlayer
     string Email { get; init; }
     ICollection<Role> Roles { get; init; }
     DateTime CreatedAt { get; init; }
-    PlayerData? Data { get; init; }
+    PlayerData Data { get; init; }
     PlayerAvatarData? AvatarData { get; init; }
     List<PlayerTag> Tags { get; init; }
     ICollection<PlayerRoomLike> RoomLikes { get; init; }
@@ -19,12 +19,12 @@ public interface IPlayer
     PlayerNavigatorSettings? NavigatorSettings { get; init; }
     PlayerGameSettings? GameSettings { get; init; }
     ICollection<PlayerBadge> Badges { get; init; }
-    ICollection<PlayerFurnitureItem> FurnitureItems { get; init; }
+    ICollection<PlayerFurnitureItem>? FurnitureItems { get; init; }
     ICollection<PlayerWardrobeItem> WardrobeItems { get; init; }
     ICollection<PlayerSubscription> Subscriptions { get; init; }
     ICollection<PlayerRespect> Respects { get; init; }
     ICollection<PlayerSavedSearch> SavedSearches { get; init; }
-    ICollection<PlayerFriendship> OutgoingFriendships { get; init; }
+    ICollection<PlayerFriendship>? OutgoingFriendships { get; init; }
     ICollection<PlayerFriendship> IncomingFriendships { get; init; }
     ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; init; }
     ICollection<Room> Rooms { get; set; }
