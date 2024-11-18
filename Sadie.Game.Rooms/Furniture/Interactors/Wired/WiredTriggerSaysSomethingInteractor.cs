@@ -22,7 +22,7 @@ public class WiredTriggerSaysSomethingInteractor(ServerRoomConstants roomConstan
         {
             Item = item.PlayerFurnitureItem!,
             StuffTypeSelectionEnabled = false,
-            MaxItemsSelected = roomConstants.MaxFurnitureSelection,
+            MaxItemsSelected = 12, // TODO; Store this somewhere
             SelectedItems = []
         });
     }
