@@ -17,7 +17,7 @@ public class RoomDeleteEventHandler(
     IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper,
-    PlayerRepository playerRepository) : INetworkPacketEventHandler
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public required int RoomId { get; init; }
     

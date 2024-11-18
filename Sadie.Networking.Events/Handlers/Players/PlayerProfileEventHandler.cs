@@ -1,3 +1,4 @@
+using Sadie.API.Game.Players;
 using Sadie.Enums.Game.Players;
 using Sadie.Game.Players;
 using Sadie.Networking.Client;
@@ -7,7 +8,7 @@ using Sadie.Networking.Writers.Players;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerProfile)]
-public class PlayerProfileEventHandler(PlayerRepository playerRepository)
+public class PlayerProfileEventHandler(IPlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
     public int ProfileId { get; set; }

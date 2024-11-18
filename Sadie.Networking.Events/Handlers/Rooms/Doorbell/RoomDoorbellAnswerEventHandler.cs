@@ -1,3 +1,4 @@
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Game.Players;
@@ -10,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
 [PacketId(EventHandlerId.RoomDoorbellAnswer)]
 public class RoomDoorbellAnswerEventHandler(
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
     SadieContext dbContext,
     RoomUserFactory roomUserFactory,

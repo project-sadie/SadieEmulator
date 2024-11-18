@@ -1,3 +1,4 @@
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Players;
@@ -12,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 [PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {

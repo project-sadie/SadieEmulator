@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerId.PlayerFriendRequests)]
 public class PlayerSendFriendRequestEventHandler(
-    PlayerRepository playerRepository,
+    IPlayerRepository playerRepository,
     ServerPlayerConstants playerConstants,
     SadieContext dbContext)
     : INetworkPacketEventHandler
