@@ -2,6 +2,7 @@ using System.Drawing;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Database.Models.Constants;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
@@ -23,13 +24,14 @@ public class RoomUser(
     HDirection directionHead,
     HDirection direction,
     IPlayerLogic player,
-    RoomControllerLevel controllerLevel)
+    RoomControllerLevel controllerLevel,
+    ServerRoomConstants roomConstants)
     : RoomUnitData(id, room, point, pointZ, directionHead, direction),
         IRoomUser
 {
     public IPlayerLogic Player { get; } = player;
     public DateTime LastAction { get; set; } = DateTime.Now;
-    public TimeSpan IdleTime { get; }
+    public TimeSpan IdleTime { get; } = TimeSpan.FromSeconds(roomConstants.SecondsTillUserIdle);
     public bool IsIdle { get; set; }
     public bool MoonWalking { get; set; }
     public IRoomUserTrade Trade { get; set; }
