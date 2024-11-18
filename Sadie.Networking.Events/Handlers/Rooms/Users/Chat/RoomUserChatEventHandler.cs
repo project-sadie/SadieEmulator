@@ -1,6 +1,6 @@
-﻿using Sadie.Database.Models.Constants;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.Database.Models.Constants;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Services;
 using Sadie.Networking.Client;
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
 [PacketId(EventHandlerId.RoomUserChat)]
 public class RoomUserChatEventHandler(
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants, 
     IRoomChatCommandRepository commandRepository,
     IRoomWiredService wiredService)

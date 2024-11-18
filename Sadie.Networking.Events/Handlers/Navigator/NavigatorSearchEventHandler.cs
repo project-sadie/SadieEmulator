@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Navigator;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Rooms;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
@@ -14,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 public class NavigatorSearchEventHandler(
     SadieContext dbContext,
     INavigatorRoomProvider navigatorRoomProvider,
-    RoomRepository roomRepository)
+    IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
     public string? TabName { get; set; }

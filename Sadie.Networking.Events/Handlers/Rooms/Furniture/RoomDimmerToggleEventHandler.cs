@@ -1,6 +1,6 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomDimmerToggle)]
 public class RoomDimmerToggleEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

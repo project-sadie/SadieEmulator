@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomItemEjected)]
 public class RoomItemEjectedEventHandler(
     SadieContext dbContext,
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     PlayerRepository playerRepository,
     RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {

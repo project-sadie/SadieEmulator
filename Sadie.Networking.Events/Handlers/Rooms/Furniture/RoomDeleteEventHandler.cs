@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
@@ -13,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomDelete)]
 public class RoomDeleteEventHandler(
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper,
     PlayerRepository playerRepository) : INetworkPacketEventHandler

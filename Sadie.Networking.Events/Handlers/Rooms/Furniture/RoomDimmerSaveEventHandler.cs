@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomDimmerSave)]
 public class RoomDimmerSaveEventHandler(
-    RoomRepository roomRepository,
+    IRoomRepository roomRepository,
     SadieContext dbContext) : INetworkPacketEventHandler
 {
     public required int PresetId { get; init; }

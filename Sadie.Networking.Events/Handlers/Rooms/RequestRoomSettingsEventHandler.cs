@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -7,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomSettings)]
 public class RequestRoomSettingsEventHandler(
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
     
