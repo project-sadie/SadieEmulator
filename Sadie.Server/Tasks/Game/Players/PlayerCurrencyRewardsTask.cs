@@ -22,7 +22,7 @@ public class PlayerCurrencyRewardsTask(
     
     public async Task ExecuteAsync()
     {
-        var rewardsToCheck = serverSettings.MakeCurrencyRewardsFair
+        var rewardsToCheck = serverSettings.FairCurrencyRewards
             ? rewards
             : rewards
                 .Where(r => (DateTime.Now - _lastProcessed[r.Id]).TotalSeconds >= r.IntervalSeconds);
@@ -48,7 +48,7 @@ public class PlayerCurrencyRewardsTask(
             var failRoomCheck = reward.SkipHotelView && 
                 player.State.CurrentRoomId == 0;
          
-            if ((serverSettings.MakeCurrencyRewardsFair && 
+            if ((serverSettings.FairCurrencyRewards && 
                  !player.DeservesReward(reward.Type, reward.IntervalSeconds)) ||
                 failIdleCheck ||
                 failRoomCheck)
