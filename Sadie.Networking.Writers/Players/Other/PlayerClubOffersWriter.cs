@@ -1,7 +1,7 @@
-﻿using Sadie.Database.Models.Catalog;
-using Sadie.Networking.Serialization;
+﻿using Sadie.API;
+using Sadie.API.Networking;
+using Sadie.Database.Models.Catalog;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Players.Other;
 
@@ -14,7 +14,7 @@ public class PlayerClubOffersWriter : AbstractPacketWriter
     public required bool CanGift { get; init; }
     public required int RemainingDays { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Offers.Count);
 

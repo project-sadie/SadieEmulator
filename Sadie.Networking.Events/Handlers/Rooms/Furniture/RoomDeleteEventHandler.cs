@@ -5,8 +5,6 @@ using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -64,7 +62,7 @@ public class RoomDeleteEventHandler(
             return;
         }
 
-        dbContext.Entry<Room>((RoomLogic) room).State = EntityState.Deleted;
+        dbContext.Entry((Room) room).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
         client.Player.Rooms.Remove((Room) room);

@@ -6,6 +6,7 @@ using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
+using Sadie.API;
 using Sadie.Networking.Client;
 
 namespace SadieEmulator;
@@ -49,7 +50,7 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private void WriteHeaderToConsole()
     {
-        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.ForegroundColor = ConsoleColor.Magenta;
 
         Console.WriteLine(@"");
         Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");

@@ -1,7 +1,7 @@
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -10,7 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomDimmerToggle)]
 public class RoomDimmerToggleEventHandler(
     SadieContext dbContext,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -44,7 +45,7 @@ public class RoomDimmerToggleEventHandler(
         var enabled = room.DimmerSettings.Enabled ? 2 : 1;
         var bgOnly = preset.BackgroundOnly ? 2 : 0;
         
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(
             room, 
             dimmer, 
             $"{enabled},{preset.PresetId},{bgOnly},{preset.Color},{preset.Intensity}");

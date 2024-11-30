@@ -6,7 +6,7 @@ namespace Sadie.Tests.Game.Navigator.Filterers;
 
 public class TagFiltererTests : RoomMockHelpers
 {
-    private INavigatorSearchFilterer? _filterer;
+    private TagFilterer? _filterer;
     
     [SetUp]
     public void SetUp()

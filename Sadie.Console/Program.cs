@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sadie.Shared;
+using Sadie.API;
 using SadieEmulator;
 using Serilog;
 using Serilog.Events;

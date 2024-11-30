@@ -1,11 +1,8 @@
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 
 [PacketId(ServerPacketId.RoomUserTradeCloseWindow)]
-public class RoomUserTradeCloseWindowWriter : AbstractPacketWriter
-{
-    
-}
+public class RoomUserTradeCloseWindowWriter : AbstractPacketWriter;

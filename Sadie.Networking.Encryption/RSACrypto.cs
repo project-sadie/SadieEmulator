@@ -26,12 +26,12 @@ public class RsaCrypto(string exponent, string modules, string privateExponent)
         return DoDecrypt(src, isPrivate ? DoPrivate : DoPublic);
     }
 
-    protected BigInteger DoPublic(BigInteger src)
+    private BigInteger DoPublic(BigInteger src)
     {
         return BigInteger.ModPow(src, _exponent, _modules);
     }
 
-    protected BigInteger DoPrivate(BigInteger src)
+    private BigInteger DoPrivate(BigInteger src)
     {
         return BigInteger.ModPow(src, _privateExponent, _modules);
     }
@@ -76,7 +76,7 @@ public class RsaCrypto(string exponent, string modules, string privateExponent)
         return bytes;
     }
 
-    private byte[] Pkcs1Unpad(byte[] src)
+    private static byte[] Pkcs1Unpad(byte[] src)
     {
         if (src[0] == 2)
         {

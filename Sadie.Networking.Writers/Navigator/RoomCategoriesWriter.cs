@@ -1,7 +1,7 @@
-﻿using Sadie.Database.Models.Rooms;
-using Sadie.Networking.Serialization;
+﻿using Sadie.API;
+using Sadie.API.Networking;
+using Sadie.Database.Models.Rooms;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Navigator;
 
@@ -10,7 +10,7 @@ public class RoomCategoriesWriter : AbstractPacketWriter
 {
     public required List<RoomCategory> Categories { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Categories.Count);
 

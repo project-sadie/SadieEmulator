@@ -12,9 +12,9 @@ public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
     SadieContext dbContext,
     IMapper mapper) : INetworkPacketEventHandler
 {
-    public int RoomId { get; set; }
-    public int EnterRoom { get; set; }
-    public int ForwardRoom { get; set; }
+    public int RoomId { get; init; }
+    public int EnterRoom { get; init; }
+    public int ForwardRoom { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

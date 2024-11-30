@@ -1,13 +1,13 @@
-﻿using Sadie.Networking.Serialization;
+﻿using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Navigator;
 
 [PacketId(ServerPacketId.NavigatorPromotedRooms)]
 public class NavigatorPromotedRoomsWriter : AbstractPacketWriter
 {
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(2);
         writer.WriteString("");

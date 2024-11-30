@@ -15,7 +15,7 @@ public class GetPlayerGroupBadgePartsEventHandler : INetworkPacketEventHandler
             Symbols = [],
             PartColors = [],
             PrimaryColors = [],
-            SecondaryColors = [],
+            SecondaryColors = []
         }; // TODO: Populate
         
         await client.WriteToStreamAsync(badgeParts);

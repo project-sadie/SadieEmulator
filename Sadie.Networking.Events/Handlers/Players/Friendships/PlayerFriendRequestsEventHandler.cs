@@ -1,8 +1,9 @@
 ﻿using Sadie.Enums.Game.Players;
-using Sadie.Game.Players.Friendships;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
+using IPlayerFriendshipRequestData = Sadie.API.Game.Players.Friendships.IPlayerFriendshipRequestData;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
@@ -22,17 +23,23 @@ public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
             .ToList();
 
-        var requests = (from request in friendRequests 
-            let data = request.TargetPlayerId == client.Player.Id ? 
-                request.OriginPlayer : 
-                request.TargetPlayer
-            select new PlayerFriendshipRequestData
+        var requests = new List<IPlayerFriendshipRequestData>();
+        
+        foreach (var data in friendRequests.Select(request => request.TargetPlayerId == client.Player.Id ? 
+                     request.OriginPlayer : 
+                     request.TargetPlayer))
+        {
+            if (data?.AvatarData == null)
             {
-                Id = request.Id,
+                continue;
+            }
+            
+            requests.Add(new PlayerFriendshipRequestData
+            {
                 Username = data.Username,
                 FigureCode = data.AvatarData.FigureCode
-            })
-            .ToList();
+            });
+        }
 
         var requestsWriter = new PlayerFriendRequestsWriter
         {

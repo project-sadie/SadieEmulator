@@ -1,4 +1,4 @@
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 
 namespace Sadie.API.Game.Rooms.Users;
 

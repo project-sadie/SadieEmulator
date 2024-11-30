@@ -1,9 +1,9 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
+using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players.Packets.Writers;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Game.Players;
 
@@ -39,7 +39,8 @@ public class PlayerLogic : Player, IPlayerLogic
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefault(x => x.Type == rewardType);
 
-        return lastReward == null || lastReward.CreatedAt < DateTime.Now.AddSeconds(-intervalInSeconds);
+        return lastReward == null ||
+               lastReward.CreatedAt < DateTime.Now.AddSeconds(-intervalInSeconds);
     }
 
     public async Task SendAlertAsync(string message)
@@ -48,7 +49,7 @@ public class PlayerLogic : Player, IPlayerLogic
         {
             return;
         }
-        
+
         var writer = new PlayerAlertWriter
         {
             Message = message

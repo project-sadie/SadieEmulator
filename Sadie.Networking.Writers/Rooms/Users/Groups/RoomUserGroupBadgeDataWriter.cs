@@ -1,12 +1,11 @@
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
+using Sadie.API.Networking.Events.Dtos;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Rooms.Users.Groups;
 
 [PacketId(ServerPacketId.RoomUserGroupBadgeData)]
 public class RoomUserGroupBadgeDataWriter : AbstractPacketWriter
 {
-    public required List<GroupBadgeData> BadgeData { get; set; }
+    public required List<IGroupBadgeData> BadgeData { get; set; }
 }

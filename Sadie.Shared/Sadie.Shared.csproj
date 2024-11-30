@@ -7,14 +7,4 @@
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="DotNetty.Common" Version="0.7.6" />
-      <PackageReference Include="DotNetty.Buffers" Version="0.7.6" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Sadie.Enums\Sadie.Enums.csproj" />
-      <ProjectReference Include="..\Sadie.Networking.Serialization\Sadie.Networking.Serialization.csproj" />
-    </ItemGroup>
-
 </Project>

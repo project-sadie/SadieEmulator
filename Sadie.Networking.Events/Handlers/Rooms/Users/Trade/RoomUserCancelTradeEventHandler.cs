@@ -3,7 +3,7 @@ using Sadie.Enums.Game.Rooms.Users.Trading;
 using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 

@@ -1,8 +1,9 @@
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 
@@ -12,9 +13,11 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemPlacedEventHandler(
     SadieContext dbContext,
     IRoomRepository roomRepository,
-    RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
+    IRoomFurnitureItemInteractorRepository interactorRepository,
+    IRoomTileMapHelperService tileMapHelperService,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public required string PlacementData { get; set; }
+    public required string PlacementData { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -64,13 +67,14 @@ public class RoomItemPlacedEventHandler(
                 playerItem,
                 itemId,
                 dbContext, 
-                interactorRepository);
+                interactorRepository,
+                tileMapHelperService,
+                roomFurnitureItemHelperService);
         }
         else if (playerItem.FurnitureItem.Type == FurnitureItemType.Wall)
         {
             await RoomHelpersDirty.OnPlaceWallItemAsync(placementData,
                 room,
-                player,
                 playerItem,
                 itemId,
                 client,

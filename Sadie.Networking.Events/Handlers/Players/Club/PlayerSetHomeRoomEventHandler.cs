@@ -22,7 +22,7 @@ public class PlayerSetHomeRoomEventHandler(
         await client.Player.NetworkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
         {
             HomeRoom = RoomId,
-            RoomIdToEnter = 0,
+            RoomIdToEnter = 0
         });
         
         client.Player.Data.HomeRoomId = RoomId;

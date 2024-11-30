@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Packets.Writers;
-using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
@@ -18,10 +18,10 @@ public class RoomItemEjectedEventHandler(
     SadieContext dbContext,
     IRoomRepository roomRepository,
     IPlayerRepository playerRepository,
-    RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
+    IRoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
 {
-    public int Category { get; set; }
-    public int ItemId { get; set; }
+    public int Category { get; init; }
+    public int ItemId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -33,25 +33,14 @@ public class RoomItemEjectedEventHandler(
         var player = client.Player;
         var itemId = ItemId;
         var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
-        var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItem.Id == itemId);
+        var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
 
         if (roomFurnitureItem == null)
         {
             return;
         }
-
-        if (roomFurnitureItem.PlayerFurnitureItem.PlayerId != player.Id)
-        {
-            return;
-        }
-
+        
         var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Id;
-        var playerItem = client.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
-
-        if (playerItem == null)
-        {
-            return;
-        }
         
         var interactors = interactorRepository
             .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
@@ -65,7 +54,7 @@ public class RoomItemEjectedEventHandler(
         {
             await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
             {
-                Id = roomFurnitureItem.PlayerFurnitureItem.Id.ToString(),
+                Id = roomFurnitureItem.Id.ToString(),
                 Expired = false,
                 OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
                 Delay = 0
@@ -80,18 +69,23 @@ public class RoomItemEjectedEventHandler(
         }
 
         room.FurnitureItems.Remove(roomFurnitureItem);
-        playerItem.PlacementData = null;
-        
-        dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
-        await dbContext.SaveChangesAsync();
+
+        var itemRecord = roomFurnitureItem.PlayerFurnitureItem;
         
         if (ownsItem)
         {
+            itemRecord = client.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
+
+            if (itemRecord == null)
+            {
+                return;
+            }
+            
             await client.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
             {
                 Count = 1,
                 Category = 1,
-                FurnitureItems = [playerItem]
+                FurnitureItems = [itemRecord]
             });
             
             await client.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
@@ -100,25 +94,31 @@ public class RoomItemEjectedEventHandler(
         {
             var ownerOnline = playerRepository.GetPlayerLogicById(roomFurnitureItem.PlayerFurnitureItem.PlayerId);
 
-            if (ownerOnline != null)
+            if (ownerOnline is { NetworkObject: not null })
             {
+                itemRecord = ownerOnline.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
+
+                if (itemRecord == null)
+                {
+                    return;
+                }
+
                 await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
                 {
                     Count = 1,
                     Category = 1,
-                    FurnitureItems = [playerItem]
+                    FurnitureItems = [itemRecord]
                 });
                 
                 await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
                 
-                ownerOnline.FurnitureItems.Add(playerItem);
-            }
-            else
-            {
-                dbContext.PlayerFurnitureItems.Add(playerItem);
+                ownerOnline.FurnitureItems.Add(itemRecord);
             }
         }
         
+        itemRecord.PlacementData = null;
+        
+        dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
     }
 }

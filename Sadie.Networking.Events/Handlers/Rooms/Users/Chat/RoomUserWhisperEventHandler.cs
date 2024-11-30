@@ -1,4 +1,5 @@
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
@@ -7,7 +8,6 @@ using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using RoomHelpers = Sadie.Shared.Helpers.RoomHelpers;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
@@ -15,11 +15,12 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 public class RoomUserWhisperEventHandler(
     IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants,
-    SadieContext dbContext)
+    SadieContext dbContext,
+    IRoomHelperService roomHelperService)
     : INetworkPacketEventHandler
 {
-    public required string Data { get; set; }
-    public int Bubble { get; set; }
+    public required string Data { get; init; }
+    public int Bubble { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -48,7 +49,7 @@ public class RoomUserWhisperEventHandler(
             PlayerId = roomUser.Id,
             Message = whisperMessage,
             ChatBubbleId = (ChatBubble) Bubble,
-            EmotionId = RoomHelpers.GetEmotionFromMessage(whisperMessage),
+            EmotionId = roomHelperService.GetEmotionFromMessage(whisperMessage),
             TypeId = RoomChatMessageType.Whisper,
             CreatedAt = DateTime.Now
         };

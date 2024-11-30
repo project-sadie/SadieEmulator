@@ -1,9 +1,9 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Furniture;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Catalog;
 
@@ -26,7 +26,7 @@ public class CatalogPurchaseOkWriter : AbstractPacketWriter
     public required int LimitedItemSeriesSize { get; init; }
     public required int AmountLeft { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Id);
         writer.WriteString(Name);

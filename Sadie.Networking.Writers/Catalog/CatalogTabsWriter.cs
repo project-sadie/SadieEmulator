@@ -1,7 +1,7 @@
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Database.Models.Catalog.Pages;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Catalog;
 
@@ -11,7 +11,7 @@ public class CatalogTabsWriter : AbstractPacketWriter
     public required string? Mode { get; init; }
     public required List<CatalogPage> TabPages { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteBool(true);
         writer.WriteInteger(0);
@@ -30,7 +30,7 @@ public class CatalogTabsWriter : AbstractPacketWriter
         writer.WriteString(Mode);
     }
 
-    private void AppendPage(CatalogPage page, NetworkPacketWriter writer)
+    private void AppendPage(CatalogPage page, INetworkPacketWriter writer)
     {
         writer.WriteBool(page.Visible);
         writer.WriteInteger(page.IconId);

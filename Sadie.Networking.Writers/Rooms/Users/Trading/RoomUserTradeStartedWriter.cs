@@ -1,6 +1,6 @@
-using Sadie.Networking.Serialization;
+using Sadie.API;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Writers.Rooms.Users.Trading;
 
@@ -10,7 +10,7 @@ public class RoomUserTradeStartedWriter : AbstractPacketWriter
     public required List<int> UserIds { get; init; }
     public required int State { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         foreach (var id in UserIds)
         {

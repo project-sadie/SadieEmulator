@@ -17,7 +17,7 @@ public class RoomUserRespectEventHandler(
     SadieContext dbContext)
     : INetworkPacketEventHandler
 {
-    public int TargetId { get; set; }
+    public int TargetId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

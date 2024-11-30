@@ -14,7 +14,7 @@ public class RoomGiveUserRightsEventHandler(
     SadieContext dbContext,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int PlayerId { get; set; }
+    public int PlayerId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -54,7 +54,8 @@ public class RoomGiveUserRightsEventHandler(
         var roomPlayerRight = new RoomPlayerRight
         {
             RoomId = room.Id,
-            PlayerId = playerId
+            PlayerId = playerId,
+            CreatedAt = DateTime.Now
         };
         
         room.PlayerRights.Add(roomPlayerRight);

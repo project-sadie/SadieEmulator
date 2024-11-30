@@ -1,9 +1,10 @@
+using Sadie.API;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Networking;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers;
 using Sadie.Shared.Helpers;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 
@@ -12,7 +13,7 @@ public class RoomUserTradeUpdateWriter : AbstractPacketWriter
 {
     public required IRoomUserTrade Trade { get; init; }
 
-    public override void OnSerialize(NetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         foreach (var user in Trade.Users)
         {

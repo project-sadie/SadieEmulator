@@ -6,7 +6,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
 public class RoomUserTradeCancelOfferItemEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public required int ItemId { get; set; }
+    public required int ItemId { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

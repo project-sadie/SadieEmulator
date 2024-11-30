@@ -13,8 +13,8 @@ public class RoomWallItemUpdatedEventHandler(
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    public int ItemId { get; set; }
-    public string WallPosition { get; set; }
+    public int ItemId { get; init; }
+    public string WallPosition { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {

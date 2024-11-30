@@ -17,21 +17,14 @@ public class FloorPlanEditorGetOccupiedTilesEventHandler(IRoomRepository roomRep
 
         var blockedUserPoints = room
             .TileMap
-            .UserMap
-            .Where(x => x.Value.Count > 0)
-            .ToList()
-            .Select(x => x.Key);
-
-        var blockedBotPoints = room
-            .TileMap
-            .BotMap
+            .UnitMap
             .Where(x => x.Value.Count > 0)
             .ToList()
             .Select(x => x.Key);
 
         await client.WriteToStreamAsync(new FloorPlanEditorOccupiedTilesWriter
         {
-            Points = blockedUserPoints.Concat(blockedBotPoints).ToList()
+            Points = blockedUserPoints.ToList()
         });
     }
 }

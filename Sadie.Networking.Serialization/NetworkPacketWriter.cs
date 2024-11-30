@@ -1,15 +1,16 @@
 using System.Buffers;
 using System.Text;
+using Sadie.API;
 
 namespace Sadie.Networking.Serialization;
 
-public class NetworkPacketWriter
+public class NetworkPacketWriter : INetworkPacketWriter
 {
     private readonly ArrayBufferWriter<byte> _packet = new();
 
     public void WriteString(string data)
     {
-        WriteShort((short) data.Length);
+        WriteShort((short) Encoding.Default.GetBytes(data).Length);
         WriteBytes(Encoding.Default.GetBytes(data));
     }
 

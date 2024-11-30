@@ -30,9 +30,15 @@ public class PlayerChangedAppearanceEventHandler(
             AvatarGender.Female;
 
         var figureCode = FigureCode;
-        
-        player.AvatarData.Gender = gender;
+
+        if (player.AvatarData.Gender != gender)
+        {
+            player.AvatarData.Gender = gender;
+            dbContext.Entry(player.AvatarData).Property(x => x.Gender).IsModified = true;
+        }
+
         player.AvatarData.FigureCode = figureCode;
+        dbContext.Entry(player.AvatarData).Property(x => x.FigureCode).IsModified = true;
         
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
@@ -49,8 +55,7 @@ public class PlayerChangedAppearanceEventHandler(
         {
             Users = [roomUser]
         });
-        
-        dbContext.PlayerAvatarData.Update(player.AvatarData);
+
         await dbContext.SaveChangesAsync();
     }
 }

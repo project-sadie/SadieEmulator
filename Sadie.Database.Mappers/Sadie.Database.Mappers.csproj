@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
+      <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
       <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
     </ItemGroup>
 

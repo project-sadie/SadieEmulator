@@ -8,7 +8,8 @@ using Sadie.Enums.Game.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class GateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
+public class GateInteractor(SadieContext dbContext,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Gate];
     
@@ -20,12 +21,12 @@ public class GateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemI
                 .GetAll()
                 .Any(x => x.IsWalking && x.NextPoint == new Point(item.PositionX, item.PositionY)))
         {
-            return;
+            return; 
         }
         
         var newState = item.PlayerFurnitureItem.MetaData == "0" ? 1 : 0;
         
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(
             room, 
             item, 
             newState.ToString());
@@ -35,7 +36,7 @@ public class GateInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemI
 
     public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
-        await RoomFurnitureItemHelpers.UpdateMetaDataForItemAsync(room, item, "0");
+        await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "0");
         dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }

@@ -1,14 +1,14 @@
 version: 2.1
 
 jobs:
-  run-unit-tests:
+  build:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
       - checkout
       - run: 
-          command: dotnet test
-  check-code-quality:
+          command: dotnet build
+  lint:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
@@ -17,8 +17,16 @@ jobs:
           export PATH="$PATH:/root/.dotnet/tools"
           dotnet tool install sharpidious --global
           sharpidious
+  test:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
+    steps:
+      - checkout
+      - run: 
+          command: dotnet test
 workflows:
   main:
     jobs:
-      - run-unit-tests
-      - check-code-quality
+      - build
+      - lint
+      - test

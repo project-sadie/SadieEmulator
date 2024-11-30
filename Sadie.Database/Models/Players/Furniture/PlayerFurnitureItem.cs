@@ -6,8 +6,8 @@ public class PlayerFurnitureItem
 {
     public int Id { get; init; }
     public int PlayerId { get; set; }
-    public Player? Player { get; set; }
-    public FurnitureItem? FurnitureItem { get; init; }
+    public required Player Player { get; set; }
+    public required FurnitureItem FurnitureItem { get; init; }
     public PlayerFurnitureItemPlacementData? PlacementData { get; set; }
     public required string LimitedData { get; init; }
     public required string MetaData { get; set; }

@@ -1,10 +1,8 @@
-using Sadie.Networking.Serialization;
+using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 
 [PacketId(ServerPacketId.RoomUserTradeWaitingConfirm)]
-public class RoomUserTradeWaitingConfirmWriter : AbstractPacketWriter
-{
-}
+public class RoomUserTradeWaitingConfirmWriter : AbstractPacketWriter;

@@ -1,8 +1,10 @@
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Game.Rooms.Services;
+using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Doorbell;
@@ -14,11 +16,15 @@ public class RoomDoorbellAnswerEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
     SadieContext dbContext,
-    RoomUserFactory roomUserFactory,
-    INetworkClientRepository clientRepository) : INetworkPacketEventHandler
+    IRoomUserFactory roomUserFactory,
+    INetworkClientRepository clientRepository,
+    IRoomTileMapHelperService tileMapHelperService,
+    IPlayerHelperService playerHelperService,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
+    IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
-    public required string Username { get; set; }
-    public bool Accept { get; set; }
+    public required string Username { get; init; }
+    public bool Accept { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
@@ -45,12 +51,16 @@ public class RoomDoorbellAnswerEventHandler(
 
             if (playerClient != null)
             {
-                await RoomHelpersDirty.AfterEnterRoomAsync(
+                await RoomHelpersDirty.GenericEnterRoomAsync(
                     playerClient, 
                     room, 
                     roomUserFactory, 
                     dbContext, 
-                    playerRepository);
+                    playerRepository,
+                    tileMapHelperService,
+                    playerHelperService,
+                    roomFurnitureItemHelperService,
+                    wiredService);
             }
             
             return;

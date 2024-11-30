@@ -8,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomBannedUsers)]
 public class RoomBannedUsersEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public required int RoomId { get; set; }
+    public required int RoomId { get; init; }
     public async Task HandleAsync(INetworkClient client)
     {
         var room = roomRepository.TryGetRoomById(RoomId);

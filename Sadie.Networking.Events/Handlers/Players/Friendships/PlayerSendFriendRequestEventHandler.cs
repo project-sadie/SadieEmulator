@@ -1,9 +1,9 @@
+using AutoMapper;
 using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Players;
-using Sadie.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
@@ -14,7 +14,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 public class PlayerSendFriendRequestEventHandler(
     IPlayerRepository playerRepository,
     ServerPlayerConstants playerConstants,
-    SadieContext dbContext)
+    SadieContext dbContext,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public string? TargetUsername { get; set; }
@@ -39,13 +40,13 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        IPlayer? targetPlayer;
+        Player? targetPlayer;
         var targetOnline = false;
         var onlineTarget = playerRepository.GetPlayerLogicByUsername(TargetUsername);
         
         if (onlineTarget != null)
         {
-            targetPlayer = onlineTarget;
+            targetPlayer = mapper.Map<Player>(onlineTarget);
             targetOnline = true;
         }
         else
@@ -99,7 +100,7 @@ public class PlayerSendFriendRequestEventHandler(
         }
 
         await SendRequestAsync(
-            player,
+            mapper.Map<Player>(player),
             targetPlayer,
             targetOnline,
             onlineTarget);
@@ -108,7 +109,7 @@ public class PlayerSendFriendRequestEventHandler(
     private async Task AcceptPendingAsync(
         PlayerFriendship incomingRequest, 
         bool targetOnline, 
-        IPlayer? onlineTarget,
+        IPlayerLogic? onlineTarget,
         int playerId)
     {
         if (incomingRequest.Status != PlayerFriendshipStatus.Pending)
@@ -134,8 +135,8 @@ public class PlayerSendFriendRequestEventHandler(
     }
 
     private async Task SendRequestAsync(
-        IPlayer player,
-        IPlayer targetPlayer,
+        Player player,
+        Player targetPlayer,
         bool targetOnline,
         IPlayerLogic? onlineTarget)
     {
