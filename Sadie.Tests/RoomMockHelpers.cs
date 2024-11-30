@@ -45,7 +45,8 @@ public class RoomMockHelpers
             Owner = new Player
             {
                 Username = username,
-                Email = ""
+                Email = "",
+                Data = new PlayerData()
             }
         };
     }

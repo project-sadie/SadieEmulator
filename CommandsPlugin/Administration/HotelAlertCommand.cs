@@ -1,11 +1,10 @@
-using Sadie.API;
-using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Networking.Writers.Players;
+using Sadie.Game.Players;
+using Sadie.Game.Players.Packets.Writers;
 
-namespace CommandsPlugin.Administration;
+namespace Sadie.Game.Rooms.Chat.Commands.Server;
 
-public class HotelAlertCommand(IPlayerRepository playerRepository) : AbstractRoomChatCommand
+public class HotelAlertCommand(PlayerRepository playerRepository) : AbstractRoomChatCommand
 {
     public override string Trigger => "ha";
     public override string Description => "Sends an alert to all online players";
@@ -16,7 +15,7 @@ public class HotelAlertCommand(IPlayerRepository playerRepository) : AbstractRoo
 
         if (string.IsNullOrWhiteSpace(message) || message.Length < 5)
         {
-            await user.SendWhisperAsync("Please provide an appropriate message.");
+            await SendWhisperAsync(user, "Please provide an appropriate message.");
             return;
         }
 
