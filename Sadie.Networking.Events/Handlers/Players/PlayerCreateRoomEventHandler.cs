@@ -70,7 +70,6 @@ public class PlayerCreateRoomEventHandler(
         var roomLogic = mapper.Map<IRoomLogic>(newRoom);
             
         roomRepository.AddRoom(roomLogic);
-        client.Player.Rooms.Add(newRoom);
 
         await client.WriteToStreamAsync(new RoomCreatedWriter
         {
