@@ -64,13 +64,6 @@ public class RoomFloorItemUpdatedEventHandler(
             roomFurnitureItem.FurnitureItem.TileSpanX,
             roomFurnitureItem.FurnitureItem.TileSpanY, 
             Direction);
-
-        RoomTileMapHelpers.UpdateTileMapsForPoints(oldPoints, 
-            room.TileMap,
-            room
-                .FurnitureItems
-                .Except([roomFurnitureItem])
-                .ToList());
         
         var rotatingSingleTileItem = newPoints.Count == 1 && 
              newPoints[0].X == roomFurnitureItem.PositionX &&
@@ -82,6 +75,13 @@ public class RoomFloorItemUpdatedEventHandler(
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
+
+        RoomTileMapHelpers.UpdateTileMapsForPoints(oldPoints, 
+            room.TileMap,
+            room
+                .FurnitureItems
+                .Except([roomFurnitureItem])
+                .ToList());
 
         var z = RoomTileMapHelpers.GetItemPlacementHeight(
             room.TileMap, 

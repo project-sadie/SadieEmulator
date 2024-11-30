@@ -33,8 +33,8 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
         IEnumerable<PlayerFurnitureItemPlacementData> rollers)
     {
         var writers = new List<RoomObjectsRollingWriter>();
-        var userIdsProcessed = new HashSet<int>();
-        var itemIdsProcessed = new HashSet<int>();
+        var usersProcessed = new HashSet<int>();
+        var itemsProcessed = new HashSet<int>();
 
         foreach (var roller in rollers)
         {
@@ -43,6 +43,11 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
             var nextStep = RoomTileMapHelpers.GetPointInFront(x, y, roller.Direction);
             
             if (!room.TileMap.TileExists(nextStep))
+            {
+                continue;
+            }
+            
+            if (RoomTileMapHelpers.GetTileState(nextStep.X, nextStep.Y, room.FurnitureItems) == RoomTileState.Blocked)
             {
                 continue;
             }
@@ -57,7 +62,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
             
             var users = room.UserRepository
                 .GetAll()
-                .Where(u => !userIdsProcessed.Contains(u.Id));
+                .Where(u => !usersProcessed.Contains(u.Id));
             
             var rollingUsers = RoomTileMapHelpers.GetUsersAtPoints([rollerPosition], users);
             
@@ -67,7 +72,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
                     x, 
                     y, 
                     nextStep, 
-                    userIdsProcessed, 
+                    usersProcessed, 
                     rollingUser, 
                     writers, 
                     room, 
@@ -77,7 +82,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
             }
 
             var unprocessedNonRollers = room.FurnitureItems.Where(i =>
-                !itemIdsProcessed.Contains(i.Id) && i.FurnitureItem!.InteractionType !=
+                !itemsProcessed.Contains(i.Id) && i.FurnitureItem!.InteractionType !=
                 FurnitureItemInteractionType.Roller);
 
             var nonRollerItemsOnRoller = RoomTileMapHelpers.GetItemsForPosition(
@@ -85,7 +90,8 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
                 roller.PositionY,
                 unprocessedNonRollers);
             
-            if (nonRollerItemsOnRoller.Count == 0)
+            if (nonRollerItemsOnRoller.Count == 0 ||
+                room.TileMap.UsersAtPoint(nextStep))
             {
                 continue;
             }
@@ -94,7 +100,7 @@ public class RollerProcessor : IRoomFurnitureItemProcessor
             {
                 MoveItemOnRoller(
                     nextStep,
-                    itemIdsProcessed,
+                    itemsProcessed,
                     writers,
                     item,
                     roller,
