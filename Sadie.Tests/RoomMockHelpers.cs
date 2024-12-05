@@ -51,7 +51,7 @@ public class RoomMockHelpers
         };
     }
 
-    protected static PlayerFurnitureItemPlacementData MockPlacementData(string interactionType, int x = 0, int y = 0, int z = 0, bool walkable = false) =>
+    protected static PlayerFurnitureItemPlacementData MockFurnitureItemPlacementData(string interactionType, int x = 0, int y = 0, int z = 0, bool walkable = false) =>
         new()
         {
             PlayerFurnitureItem = new PlayerFurnitureItem

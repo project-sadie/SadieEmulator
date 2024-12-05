@@ -12,16 +12,16 @@ public class RoomWiredServiceTests : RoomMockHelpers
     {
         var furnitureItemHelperService = new RoomFurnitureItemHelperService();
         var wiredService = new RoomWiredService(furnitureItemHelperService);
-        var trigger = MockPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom);
+        var trigger = MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom);
         
         var items = new List<PlayerFurnitureItemPlacementData>
         {
             trigger,
-            MockPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 1),
-            MockPlacementData(FurnitureItemInteractionType.WiredEffectKickUser, 0, 0, 2),
-            MockPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 4),
-            MockPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom, 0, 0, 3),
-            MockPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 4)
+            MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 1),
+            MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredEffectKickUser, 0, 0, 2),
+            MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 4),
+            MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom, 0, 0, 3),
+            MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 4)
         };
 
         var effects = wiredService.GetEffectsForTrigger(trigger, items);
