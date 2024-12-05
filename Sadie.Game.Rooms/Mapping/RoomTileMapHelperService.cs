@@ -85,7 +85,8 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
             return RoomTileState.Sit;
         }
 
-        if (item.FurnitureItem.InteractionType == FurnitureItemInteractionType.Gate && item.PlayerFurnitureItem.MetaData == "1")
+        if (item.FurnitureItem.InteractionType == FurnitureItemInteractionType.Gate && 
+            item.PlayerFurnitureItem.MetaData == "1")
         {
             return RoomTileState.Open;
         }
@@ -186,10 +187,11 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
 
     public bool CanPlaceAt(
         IEnumerable<Point> points,  
-        IRoomTileMap tileMap)
+        IRoomTileMap tileMap,
+        bool checkForUsers = true)
     {
         return points.All(point => tileMap.Map[point.Y, point.X] != 0 && 
-                                   !tileMap.UsersAtPoint(point));
+            (!checkForUsers || !tileMap.UsersAtPoint(point)));
     }
     
     public List<IRoomUser> GetUsersAtPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
