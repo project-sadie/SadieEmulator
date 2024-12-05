@@ -13,7 +13,7 @@ using Sadie.Game.Rooms.Mapping;
 namespace Sadie.Tests.Game.Rooms.Mapping;
 
 [TestFixture]
-public class RoomTileMapHelperTests
+public class RoomTileMapHelperServiceTests
 {
     private IRoomTileMapHelperService _tileMapHelperService;
 
@@ -508,6 +508,25 @@ public class RoomTileMapHelperTests
         var effect =
             _tileMapHelperService.GetEffectFromInteractionType(FurnitureItemInteractionType.Water);
         Assert.That(effect, Is.EqualTo(RoomUserEffect.Swimming));
+    }
+    
+    [Test]
+    public void UpdateTileMapsForPoints_BlockingItemPlaced_MarkedAsBlocked()
+    {
+        var furnitureItems = new List<PlayerFurnitureItemPlacementData>
+        {
+            MockFurnitureItem(x: 1, y: 0, canWalk: false),
+        };
+        
+        var map = new RoomTileMap("00", furnitureItems);
+        
+        Assert.That(map.Map[0, 0], Is.EqualTo((int) RoomTileState.Open));
+
+        furnitureItems[0].PositionX = 0;
+        
+        _tileMapHelperService.UpdateTileMapsForPoints([new Point(0, 0)], map, furnitureItems);
+        
+        Assert.That(map.Map[0, 0], Is.EqualTo((int) RoomTileState.Blocked));
     }
 
     private static PlayerFurnitureItemPlacementData MockLongFurnitureItem(int x = 0,
