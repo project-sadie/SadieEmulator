@@ -21,7 +21,7 @@ public class RoomDeleteEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var room = await Game.Rooms.RoomHelpersDirty.TryLoadRoomByIdAsync(
+        var room = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(
             RoomId, 
             roomRepository, 
             dbContext, 

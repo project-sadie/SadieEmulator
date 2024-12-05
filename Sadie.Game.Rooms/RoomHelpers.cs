@@ -6,7 +6,7 @@ using Sadie.Database.Models.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public static class RoomHelpersDirty
+public static class RoomHelpers
 {
     public static async Task<IRoomLogic?> TryLoadRoomByIdAsync(
         long id, 

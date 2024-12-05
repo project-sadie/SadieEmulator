@@ -125,7 +125,7 @@ public class TeleportInteractor(
 
         if (targetRoomId != 0)
         {
-            var targetRoom = await RoomHelpersDirty.TryLoadRoomByIdAsync(targetRoomId,
+            var targetRoom = await RoomHelpers.TryLoadRoomByIdAsync(targetRoomId,
                 roomRepository,
                 dbContext,
                 mapper);
