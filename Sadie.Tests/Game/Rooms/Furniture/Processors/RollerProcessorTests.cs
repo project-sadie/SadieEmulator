@@ -10,7 +10,7 @@ namespace Sadie.Tests.Game.Rooms.Furniture.Processors;
 public class RollerProcessorTests : RoomMockHelpers
 {
     [Test]
-    public void GetUpdatesForRoomAsync_NothingOnRoller_NoUpdatesReturned()
+    public async Task GetUpdatesForRoomAsync_NothingOnRoller_NoUpdatesReturned()
     {
         var room = MockRoomWithUserRepoAndFurniture("00", [
             MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller)
@@ -19,13 +19,13 @@ public class RollerProcessorTests : RoomMockHelpers
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.That(updates.Count(), Is.EqualTo(0));
     }
     
     [Test]
-    public void GetUpdatesForRoomAsync_FurnitureOnRoller_PositionUpdated()
+    public async Task GetUpdatesForRoomAsync_FurnitureOnRoller_PositionUpdated()
     {
         var roller = MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller);
         roller.Direction = HDirection.East;
@@ -35,7 +35,7 @@ public class RollerProcessorTests : RoomMockHelpers
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.Multiple(() =>
         {
@@ -45,7 +45,7 @@ public class RollerProcessorTests : RoomMockHelpers
     }
     
     [Test]
-    public void GetUpdatesForRoomAsync_UserOnRoller_PositionUpdated()
+    public async Task GetUpdatesForRoomAsync_UserOnRoller_PositionUpdated()
     {
         var roller = MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller);
         roller.Direction = HDirection.East;
@@ -55,7 +55,7 @@ public class RollerProcessorTests : RoomMockHelpers
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.Multiple(() =>
         {
@@ -65,7 +65,7 @@ public class RollerProcessorTests : RoomMockHelpers
     }
     
     [Test]
-    public void GetUpdatesForRoomAsync_UserOnRollerWithInvalidNextStep_NoUpdatesReturned()
+    public async Task GetUpdatesForRoomAsync_UserOnRollerWithInvalidNextStep_NoUpdatesReturned()
     {
         var roller = MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller);
         
@@ -76,7 +76,7 @@ public class RollerProcessorTests : RoomMockHelpers
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.Multiple(() =>
         {
@@ -86,7 +86,7 @@ public class RollerProcessorTests : RoomMockHelpers
     }
 
     [Test]
-    public void GetUpdatesForRoomAsync_UserOnRollerWithUnwalkableNextStep_NoUpdatesReturned()
+    public async Task GetUpdatesForRoomAsync_UserOnRollerWithUnwalkableNextStep_NoUpdatesReturned()
     {
         var roller = MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller);
         var item = MockFurnitureItemPlacementData("", 1, 1);
@@ -95,7 +95,7 @@ public class RollerProcessorTests : RoomMockHelpers
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.Multiple(() =>
         {
@@ -105,7 +105,7 @@ public class RollerProcessorTests : RoomMockHelpers
     }
 
     [Test]
-    public void GetUpdatesForRoomAsync_FurnitureOnRollerWithInvalidNextStep_PositionNotUpdated()
+    public async Task GetUpdatesForRoomAsync_FurnitureOnRollerWithInvalidNextStep_PositionNotUpdated()
     {
         var roller = MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller);
         var item = MockFurnitureItemPlacementData("");
@@ -113,7 +113,7 @@ public class RollerProcessorTests : RoomMockHelpers
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.Multiple(() =>
         {
@@ -123,7 +123,7 @@ public class RollerProcessorTests : RoomMockHelpers
     }
 
     [Test]
-    public void GetUpdatesForRoomAsync_FurnitureInFrontOfUserOnRoller_UserNotMoved()
+    public async Task GetUpdatesForRoomAsync_FurnitureInFrontOfUserOnRoller_NothingMoved()
     {
         var user = MockRoomUser();
 
@@ -140,7 +140,7 @@ public class RollerProcessorTests : RoomMockHelpers
         var tMapService = new RoomTileMapHelperService();
         var fHelperService = new RoomFurnitureItemHelperService();
         var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = processor.GetUpdatesForRoomAsync(room).Result;
+        var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.Multiple(() =>
         {
