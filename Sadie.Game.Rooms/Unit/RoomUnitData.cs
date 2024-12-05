@@ -88,8 +88,9 @@ public class RoomUnitData(
         {
             AddStatus(
                 RoomUserStatus.Sit, 
-                topItem.FurnitureItem.StackHeight.ToString());
+                (topItem.FurnitureItem.StackHeight * 1.0D).ToString());
             
+            PointZ = topItem.PositionZ;
             Direction = topItem.Direction;
             DirectionHead = topItem.Direction;
         }
@@ -193,10 +194,12 @@ public class RoomUnitData(
         var topItemNextStep = tileMapHelperService
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
+
+        var topItemSitOrLay = topItemNextStep?.FurnitureItem is { CanSit: false, CanLay: false };
         
-        var zHeightNextStep = topItemNextStep != null ?
-                topItemNextStep.PositionZ + (topItemNextStep.FurnitureItem?.StackHeight ?? 0) : 
-                0.0D + room.TileMap.ZMap[nextStep.Y, nextStep.X];
+        var zHeightNextStep = topItemNextStep?.FurnitureItem == null ?
+            room.TileMap.ZMap[nextStep.Y, nextStep.X] : 
+            topItemNextStep.PositionZ + (topItemSitOrLay ? topItemNextStep.FurnitureItem.StackHeight : 0);
 
         ClearStatuses();
 
