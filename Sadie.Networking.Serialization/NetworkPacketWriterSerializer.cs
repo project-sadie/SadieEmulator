@@ -1,11 +1,13 @@
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using Sadie.API;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Serialization;
 
-public class NetworkPacketWriterSerializer
+public static class NetworkPacketWriterSerializer
 {
     private static void InvokeOnConfigureRules(object packet)
     {
@@ -138,7 +140,7 @@ public class NetworkPacketWriterSerializer
     
     public static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
     {
-        var elements = (IList)propertyInfo.GetValue(packet)!;
+        var elements = (ICollection)propertyInfo.GetValue(packet)!;
         writer.WriteInteger(elements.Count);
 
         foreach (var element in elements)
@@ -229,7 +231,7 @@ public class NetworkPacketWriterSerializer
                 writer.WriteString(value);
             }
         }
-        else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        else if (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>) || type.GetGenericTypeDefinition() == typeof(Collection<>)))
         {
             WriteArbitraryListPropertyToWriter(property, writer, packet);
         }

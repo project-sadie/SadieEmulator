@@ -9,6 +9,14 @@ public class CatalogGiftConfigEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        await client.WriteToStreamAsync(new CatalogGiftConfigWriter());
+        await client.WriteToStreamAsync(new CatalogGiftConfigWriter
+        {
+            Unknown1 = true,
+            Unknown2 = 3,
+            Unknown3 = 0,
+            Unknown4 = 0,
+            Unknown5 = 0,
+            Unknown6 = 0
+        });
     }
 }

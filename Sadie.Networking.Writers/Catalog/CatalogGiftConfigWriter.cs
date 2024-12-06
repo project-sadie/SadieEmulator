@@ -1,5 +1,4 @@
-﻿using Sadie.API;
-using Sadie.API.Networking;
+﻿using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Catalog;
@@ -7,13 +6,10 @@ namespace Sadie.Networking.Writers.Catalog;
 [PacketId(ServerPacketId.CatalogGiftConfig)]
 public class CatalogGiftConfigWriter : AbstractPacketWriter
 {
-    public override void OnSerialize(INetworkPacketWriter writer)
-    {
-        writer.WriteBool(true);
-        writer.WriteInteger(3); // special price?
-        writer.WriteInteger(0); // giftWrappers count
-        writer.WriteInteger(0); // BOX_TYPES count
-        writer.WriteInteger(0); // RIBBON_TYPES count
-        writer.WriteInteger(0); // giftFurnis count
-    }
+    public required bool Unknown1 { get; init; }
+    public required int Unknown2 { get; init; }
+    public required int Unknown3 { get; init; }
+    public required int Unknown4 { get; init; }
+    public required int Unknown5 { get; init; }
+    public required int Unknown6 { get; init; }
 }
