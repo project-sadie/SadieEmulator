@@ -99,6 +99,13 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             
             foreach (var item in nonRollerItemsOnRoller)
             {
+                var oldPoints = tileMapHelperService.GetPointsForPlacement(
+                    item.PositionX, 
+                    item.PositionY, 
+                    item.FurnitureItem.TileSpanX,
+                    item.FurnitureItem.TileSpanY, 
+                    (int) item.Direction);
+                
                 MoveItemOnRoller(
                     nextStep,
                     itemIdsProcessed,
@@ -106,20 +113,10 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
                     item,
                     roller,
                     nextHeight);
-                
-                var oldPoints = tileMapHelperService.GetPointsForPlacement(
-                    item.PositionX, 
-                    item.PositionY, 
-                    item.FurnitureItem.TileSpanX,
-                    item.FurnitureItem.TileSpanY, 
-                    (int) item.Direction);
 
                 tileMapHelperService.UpdateTileMapsForPoints(oldPoints, 
                     room.TileMap,
-                    room
-                        .FurnitureItems
-                        .Except([item])
-                        .ToList());
+                    room.FurnitureItems);
 
                 var newPoints = tileMapHelperService.GetPointsForPlacement(
                     nextStep.X, nextStep.Y, 
@@ -151,7 +148,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
     {
         var rollingData = new RoomRollingObjectData
         {
-            Id = item.Id,
+            Id = item.PlayerFurnitureItemId,
             Height = item.PositionZ.ToString(),
             NextHeight = nextHeight.ToString()
         };
@@ -163,7 +160,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             NextX = nextStep.X,
             NextY = nextStep.Y,
             Objects = [rollingData],
-            RollerId = roller.Id,
+            RollerId = roller.PlayerFurnitureItemId,
             MovementType = 2,
             RoomUserId = 0,
             Height = roller.PositionZ.ToString(),
@@ -174,7 +171,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         item.PositionY = nextStep.Y;
         item.PositionZ = nextHeight;
                 
-        itemIdsProcessed.Add(item.Id);
+        itemIdsProcessed.Add(item.PlayerFurnitureItemId);
     }
 
     private static async Task MoveUserOnRollerAsync(
@@ -203,7 +200,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             NextX = nextStep.X,
             NextY = nextStep.Y,
             Objects = [],
-            RollerId = roller.Id,
+            RollerId = roller.PlayerFurnitureItemId,
             MovementType = 2,
             RoomUserId = rollingUser.Id,
             Height = rollingUser.PointZ.ToString(),

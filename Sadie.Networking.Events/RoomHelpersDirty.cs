@@ -398,7 +398,7 @@ public static class RoomHelpersDirty
 
         await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
         {
-            Id = roomFurnitureItem.Id,
+            Id = roomFurnitureItem.PlayerFurnitureItemId,
             AssetId = roomFurnitureItem.FurnitureItem.AssetId,
             PositionX = roomFurnitureItem.PositionX,
             PositionY = roomFurnitureItem.PositionY,
