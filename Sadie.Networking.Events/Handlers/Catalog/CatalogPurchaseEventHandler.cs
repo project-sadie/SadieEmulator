@@ -282,11 +282,44 @@ public class CatalogPurchaseEventHandler(
             {
                 return;
             }
-
-            if (!await RoomHelpersDirty.TryChargeForClubOfferPurchaseAsync(client, offer))
+            
+            var playerData = client.Player!.Data;
+            
+            if (playerData!.CreditBalance < offer.CostCredits || 
+                (offer.CostPointsType == 0 && playerData.PixelBalance < offer.CostPoints) ||
+                (offer.CostPointsType != 0 && playerData.SeasonalBalance < offer.CostPoints))
             {
                 return;
             }
+
+            if (offer.CostCredits > 0)
+            {
+                playerData.CreditBalance -= offer.CostCredits;
+                   
+                await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
+                {
+                    Credits = playerData.CreditBalance
+                });
+            }
+
+            if (offer.CostPoints > 0)
+            {
+                if (offer.CostPointsType == 0)
+                {
+                    playerData.PixelBalance -= offer.CostPoints;
+                }
+                else
+                {
+                    playerData.SeasonalBalance -= offer.CostPoints;
+                }
+            }
+                   
+            await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
+            {
+                PixelBalance = playerData.PixelBalance,
+                SeasonalBalance = playerData.SeasonalBalance,
+                GotwPoints = playerData.GotwPoints
+            });
 
             var subscription = new PlayerSubscription
             {
