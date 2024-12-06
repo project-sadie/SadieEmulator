@@ -7,6 +7,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
@@ -112,7 +113,7 @@ public static class NetworkPacketEventHelpers
             AchievementScore = playerData.AchievementScore
         });
 
-        if (player.HasPermission("moderator"))
+        if (player.HasPermission(PlayerPermissionName.Moderator))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter
             {

@@ -7,6 +7,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
 
@@ -62,17 +63,17 @@ public static class RoomHelpers
             controllerLevel = RoomControllerLevel.Owner;
         }
 
-        if (player.HasPermission("any_room_owner"))
+        if (player.HasPermission(PlayerPermissionName.AnyRoomRights))
         {
             controllerLevel = RoomControllerLevel.Owner;
         }
 
-        if (player.HasPermission("moderator"))
+        if (player.HasPermission(PlayerPermissionName.Moderator))
         {
             controllerLevel = RoomControllerLevel.Moderator;
         }
 
-        if (player.HasPermission("any_room_rights"))
+        if (player.HasPermission(PlayerPermissionName.AnyRoomRights))
         {
             controllerLevel = RoomControllerLevel.Rights;
         }
