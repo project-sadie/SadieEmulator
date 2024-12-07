@@ -1,8 +1,10 @@
+using Sadie.Shared.Attributes;
+
 namespace Sadie.API;
 
 public interface IPerkData
 {
-    string? Code { get; set; }
-    string? ErrorMessage { get; set; }
-    bool Allowed { get; set; }
+    [PacketData] string? Code { get; set; }
+    [PacketData] string? ErrorMessage { get; set; }
+    [PacketData] bool Allowed { get; set; }
 }

@@ -14,7 +14,7 @@ public interface IPlayerLogic
     string Email { get; init; }
     ICollection<Role> Roles { get; init; }
     DateTime CreatedAt { get; init; }
-    PlayerData? Data { get; init; }
+    PlayerData Data { get; init; }
     PlayerAvatarData? AvatarData { get; init; }
     List<PlayerTag> Tags { get; init; }
     ICollection<PlayerRoomLike> RoomLikes { get; init; }

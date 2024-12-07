@@ -316,9 +316,7 @@ public class CatalogPurchaseEventHandler(
                    
             await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
             {
-                PixelBalance = playerData.PixelBalance,
-                SeasonalBalance = playerData.SeasonalBalance,
-                GotwPoints = playerData.GotwPoints
+                Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(playerData)
             });
 
             var subscription = new PlayerSubscription
@@ -429,9 +427,7 @@ public class CatalogPurchaseEventHandler(
         
             await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
             {
-                PixelBalance = playerData.PixelBalance,
-                SeasonalBalance = playerData.SeasonalBalance,
-                GotwPoints = playerData.GotwPoints
+                Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(playerData)
             });
         }
 

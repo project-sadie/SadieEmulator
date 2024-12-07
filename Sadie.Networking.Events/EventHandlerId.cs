@@ -24,7 +24,7 @@ public static class EventHandlerId
     public const short GetBadgePointLimits = 1371;
     public const short GameCenterRequestGames = 741;
     public const short GetGameAchievementsMessage = 2399;
-    public const short PromotedRooms = 2908;
+    public const short NavigatorPromotedRooms = 2908;
     public const short RoomCategories = 3027;
     public const short NavigatorEventCategories = 1782;
     public const short PlayerFriendRequestsList = 2448;

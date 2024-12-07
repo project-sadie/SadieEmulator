@@ -191,6 +191,18 @@ public static class NetworkPacketWriterSerializer
                 writer.WriteString(value);
             }
         }
+        else if (type == typeof(Dictionary<int, long>))
+        {
+            var collection = (Dictionary<int, long>)property.GetValue(packet)!;
+            
+            writer.WriteInteger(collection.Count);
+            
+            foreach (var (key, value) in collection)
+            {
+                writer.WriteInteger(key);
+                writer.WriteLong(value);
+            }
+        }
         else if (type == typeof(Dictionary<int, List<string>>))
         {
             var collection = (Dictionary<int, List<string>>)property.GetValue(packet)!;

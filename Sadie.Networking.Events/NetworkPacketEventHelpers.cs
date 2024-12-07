@@ -5,6 +5,7 @@ using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
@@ -79,7 +80,11 @@ public static class NetworkPacketEventHelpers
             Effects = []
         });
 
-        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
+        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter
+        {
+            SetIds = [],
+            FurnitureNames = []
+        });
 
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
         {
@@ -269,5 +274,23 @@ public static class NetworkPacketEventHelpers
         await command.ExecuteAsync(roomUser, parameters);
         
         return true;
+    }
+    
+    public static Dictionary<int, long> GetPlayerCurrencyMapFromData(PlayerData playerData)
+    {
+        return new Dictionary<int, long>
+        {
+            {0, playerData.PixelBalance},
+            {1, 0}, // snowflakes
+            {2, 0}, // hearts
+            {3, 0}, // gift points
+            {4, 0}, // shells
+            {5, playerData.SeasonalBalance},
+            {101, 0}, // snowflakes
+            {102, 0}, // unknown
+            {103, playerData.GotwPoints},
+            {104, 0}, // unknown
+            {105, 0} // unknown
+        };
     }
 }

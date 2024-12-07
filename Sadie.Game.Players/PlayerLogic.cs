@@ -45,16 +45,9 @@ public class PlayerLogic : Player, IPlayerLogic
 
     public async Task SendAlertAsync(string message)
     {
-        if (NetworkObject == null)
-        {
-            return;
-        }
-
-        var writer = new PlayerAlertWriter
+        await NetworkObject!.WriteToStreamAsync(new PlayerAlertWriter
         {
             Message = message
-        };
-
-        await NetworkObject.WriteToStreamAsync(writer);
+        });
     }
 }

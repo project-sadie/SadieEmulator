@@ -3,6 +3,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
 using Sadie.Database;
 using Sadie.Database.Models.Server;
+using Sadie.Networking.Events;
 using Sadie.Networking.Writers.Players.Purse;
 
 namespace SadieEmulator.Tasks.Game.Players;
@@ -76,7 +77,7 @@ public class PlayerCurrencyRewardsTask(
 
     private static async Task RewardPlayerAsync(IPlayerLogic player, ServerPeriodicCurrencyReward reward)
     {
-        AbstractPacketWriter writer = null;
+        AbstractPacketWriter? writer = null;
         
         switch (reward.Type)
         {
@@ -93,9 +94,7 @@ public class PlayerCurrencyRewardsTask(
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    PixelBalance = player.Data.PixelBalance,
-                    SeasonalBalance = player.Data.SeasonalBalance,
-                    GotwPoints = player.Data.GotwPoints
+                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
                 };
                 break;
             case "seasonal":
@@ -103,13 +102,14 @@ public class PlayerCurrencyRewardsTask(
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    PixelBalance = player.Data.PixelBalance,
-                    SeasonalBalance = player.Data.SeasonalBalance,
-                    GotwPoints = player.Data.GotwPoints
+                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
                 };
                 break;
         }
 
-        await player.NetworkObject!.WriteToStreamAsync(writer);
+        if (writer != null)
+        {
+            await player.NetworkObject!.WriteToStreamAsync(writer);
+        }
     }
 }
