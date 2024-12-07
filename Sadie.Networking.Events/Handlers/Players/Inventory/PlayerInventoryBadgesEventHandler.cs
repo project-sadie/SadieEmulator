@@ -9,22 +9,17 @@ public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var badges = client.Player.Badges.ToList();
+        var badges = client.Player.Badges
+            .ToDictionary(x => x.Id, x => x.Badge?.Code ?? "");
         
-        var equippedBadges = badges.
-            Where(x => x.Slot is > 0 and <= 5).
-            ToList();
+        var equippedBadges = client.Player.Badges
+            .Where(x => x.Slot is > 0 and <= 5)
+            .ToDictionary(x => x.Id, x => x.Badge?.Code ?? "");
         
         await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter
         {
-            Badges = badges
-                .ToDictionary(
-                    x => x.Id, 
-                    x => x.Badge?.Code ?? ""),
+            Badges = badges,
             EquippedBadges = equippedBadges
-                .ToDictionary(
-                    x => x.Id, 
-                    x => x.Badge?.Code ?? "")
         });
     }
 }

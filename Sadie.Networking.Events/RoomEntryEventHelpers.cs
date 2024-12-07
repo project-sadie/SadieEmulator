@@ -149,16 +149,16 @@ public static class RoomEntryEventHelpers
         
         await client.WriteToStreamAsync(new RoomPromotionWriter
         {
-            Unknown1 = -1,
-            Unknown2 = -1,
-            Unknown3 = "",
-            Unknown4 = 0,
-            Unknown5 = 0,
-            Unknown6 = "",
-            Unknown7 = "",
+            AdId = -1,
+            OwnerId = -1,
+            OwnerUsername = "",
+            FlatId = 0,
+            Type = 0,
+            Name = "",
+            Description = "",
             Unknown8 = 0,
             Unknown9 = 0,
-            Unknown10 = 0
+            CategoryId = 0
         });
         
         var owner = room.OwnerId == player.Id;
