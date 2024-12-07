@@ -34,9 +34,9 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             TileMap = roomTileMap
         });
         
-        await client.WriteToStreamAsync(new RoomHeightMapWriter
+        await client.WriteToStreamAsync(new RoomFloorHeightMapWriter
         {
-            Unknown1 = true,
+            Scale = true,
             WallHeight = -1,
             RelativeHeightmap = room.Layout.HeightMap.Replace("\r\n", "\r")
         });

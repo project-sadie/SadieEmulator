@@ -9,13 +9,13 @@ public class CatalogDiscountEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        await client.WriteToStreamAsync(new CatalogDiscountWriter
+        await client.WriteToStreamAsync(new CatalogBundleDiscountRuleSetWriter
         {
-            Unknown1 = 0,
-            Unknown2 = 0,
-            Unknown3 = 0,
-            Unknown4 = 0,
-            Unknown5 = 0
+            MaxPurchaseSize = 0,
+            BundleSize = 0,
+            BundleDiscountSize = 0,
+            BonusThreshold = 0,
+            AdditionalBonusDiscountThresholdQuantities = 0
         });
     }
 }
