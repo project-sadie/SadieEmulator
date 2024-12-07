@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Sadie.Shared.Attributes;
 
 namespace Sadie.Database.Models.Players;
@@ -12,5 +13,5 @@ public class PlayerNavigatorSettings
     [PacketData] public int WindowWidth { get; set; }
     [PacketData] public int WindowHeight { get; set; }
     [PacketData] public bool OpenSearches { get; set; }
-    [PacketData] public int ResultsMode { get; set; }
+    [PacketData] [NotMapped] public int ResultsMode { get; set; }
 }

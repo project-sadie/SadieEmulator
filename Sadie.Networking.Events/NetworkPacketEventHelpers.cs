@@ -217,7 +217,8 @@ public static class NetworkPacketEventHelpers
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
-                Unknown1 = 0
+                Unknown1 = 0,
+                MessageLength = message.Length
             };
             
             await room.UserRepository.BroadcastDataAsync(writer);
@@ -230,7 +231,8 @@ public static class NetworkPacketEventHelpers
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
-                Unknown1 = 0
+                Unknown1 = 0,
+                MessageLength = message.Length
             };
             
             await room.UserRepository.BroadcastDataAsync(writer);
@@ -253,12 +255,13 @@ public static class NetworkPacketEventHelpers
         IRoomUser roomUser)
     {
         var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
-        var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
-
+        
         if (command == null)
         {
             return false;
         }
+        
+        var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
 
         if (command.BypassPermissionCheckIfRoomOwner && !roomOwner)
         {

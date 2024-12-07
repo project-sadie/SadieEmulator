@@ -33,13 +33,12 @@ public class NavigatorGuestRoomSearchResultWriter : AbstractPacketWriter
             writer.WriteInteger(OfficialRoomEntryData.UserCount);
             writer.WriteInteger((int) OfficialRoomEntryData.Type);
 
-            if (OfficialRoomEntryData.Type == OfficialRoomEntryDataType.Tag)
+            switch (OfficialRoomEntryData.Type)
             {
-                writer.WriteString(OfficialRoomEntryData.Tag);
-            }
-            else
-            {
-                if (OfficialRoomEntryData.Type == OfficialRoomEntryDataType.GuestRoom)
+                case OfficialRoomEntryDataType.Tag:
+                    writer.WriteString(OfficialRoomEntryData.Tag ?? "");
+                    break;
+                case OfficialRoomEntryDataType.GuestRoom:
                 {
                     var guestRoom = OfficialRoomEntryData.GuestRoom;
                     
@@ -63,11 +62,13 @@ public class NavigatorGuestRoomSearchResultWriter : AbstractPacketWriter
                     }
                 
                     writer.WriteInteger((int) RoomBitmask.ShowOwner);
+                    break;
                 }
-                else
-                {
+                case OfficialRoomEntryDataType.Folder:
+                    break;
+                default:
                     writer.WriteBool(OfficialRoomEntryData.Open);
-                }
+                    break;
             }
         });
     }

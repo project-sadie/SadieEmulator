@@ -13,14 +13,5 @@ public class RoomUserChatWriter : AbstractPacketWriter
     public required int EmotionId { get; init; }
     public required int ChatBubbleId { get; init; }
     public required int Unknown1 { get; init; }
-
-    public override void OnSerialize(INetworkPacketWriter writer)
-    {
-        writer.WriteInteger(UserId);
-        writer.WriteString(Message);
-        writer.WriteInteger(EmotionId);
-        writer.WriteInteger(ChatBubbleId);
-        writer.WriteInteger(Unknown1);
-        writer.WriteInteger(Message.Length);
-    }
+    public required int MessageLength { get; init; }
 }
