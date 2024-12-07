@@ -11,12 +11,12 @@ public class CatalogGiftConfigEventHandler : INetworkPacketEventHandler
     {
         await client.WriteToStreamAsync(new CatalogGiftConfigWriter
         {
-            Unknown1 = true,
-            Unknown2 = 3,
-            Unknown3 = 0,
-            Unknown4 = 0,
-            Unknown5 = 0,
-            Unknown6 = 0
+            Enabled = true,
+            Price = 3,
+            GiftWrappers = [],
+            BoxTypes = [],
+            RibbonTypes = [],
+            GiftFurniture = [],
         });
     }
 }

@@ -30,8 +30,8 @@ public class RoomForwardDataWriter : AbstractPacketWriter
         writer.WriteInteger(Room.MaxUsersAllowed);
         writer.WriteString(Room.Description);
         writer.WriteInteger((int) settings.TradeOption);
-        writer.WriteInteger(2); // unknown
         writer.WriteInteger(Room.PlayerLikes.Count);
+        writer.WriteInteger(1); // ranking
         writer.WriteInteger(0); // category
         writer.WriteInteger(Room.Tags.Count);
 
