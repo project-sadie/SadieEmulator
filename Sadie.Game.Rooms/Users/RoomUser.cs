@@ -177,7 +177,7 @@ public class RoomUser(
             SenderId = Id,
             Message = message,
             EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
-            Bubble = 0,
+            ChatBubbleId = 0,
             MessageLength = message.Length,
             Urls = []
         });

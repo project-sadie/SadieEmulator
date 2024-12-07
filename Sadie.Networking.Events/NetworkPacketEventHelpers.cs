@@ -213,11 +213,11 @@ public static class NetworkPacketEventHelpers
         {
             var writer = new RoomUserShoutWriter
             {
-                UserId = roomUser.Id,
+                SenderId = roomUser.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
-                Unknown1 = 0,
+                Urls = [],
                 MessageLength = message.Length
             };
             
@@ -227,11 +227,11 @@ public static class NetworkPacketEventHelpers
         {
             var writer = new RoomUserChatWriter
             {
-                UserId = roomUser.Id,
+                SenderId = roomUser.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
-                Unknown1 = 0,
+                Urls = [],
                 MessageLength = message.Length
             };
             
