@@ -4,7 +4,7 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Writers.Catalog;
 
 [PacketId(ServerPacketId.CatalogGiftConfig)]
-public class CatalogGiftConfigWriter : AbstractPacketWriter
+public class CatalogGiftWrappingConfigWriter : AbstractPacketWriter
 {
     public required bool Enabled { get; init; }
     public required int Price { get; init; }

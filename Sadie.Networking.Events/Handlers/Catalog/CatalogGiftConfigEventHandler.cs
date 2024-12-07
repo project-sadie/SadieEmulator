@@ -9,7 +9,7 @@ public class CatalogGiftConfigEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        await client.WriteToStreamAsync(new CatalogGiftConfigWriter
+        await client.WriteToStreamAsync(new CatalogGiftWrappingConfigWriter
         {
             Enabled = true,
             Price = 3,

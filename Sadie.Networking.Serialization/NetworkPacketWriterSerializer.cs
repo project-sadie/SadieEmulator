@@ -188,7 +188,7 @@ public static class NetworkPacketWriterSerializer
             foreach (var (key, value) in collection)
             {
                 writer.WriteInteger(key);
-                writer.WriteString(value);
+                writer.WriteString(value ?? "");
             }
         }
         else if (type == typeof(Dictionary<int, long>))
