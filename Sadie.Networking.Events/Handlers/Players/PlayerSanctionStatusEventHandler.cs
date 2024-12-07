@@ -13,8 +13,8 @@ public class PlayerSanctionStatusEventHandler : INetworkPacketEventHandler
         {
             HasPreviousSanction = false,
             OnProbation = false,
-            LastSanctionType = "ALERT",
-            SanctionTime = 0,
+            SanctionName = "ALERT",
+            SanctionLengthHours = 0,
             Unknown1 = 30,
             Reason = "cfh.reason.EMPTY",
             ProbationStart = DateTime.Now,

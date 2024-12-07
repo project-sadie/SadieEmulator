@@ -60,7 +60,8 @@ public class RoomUserWhisperEventHandler(
             Message = chatMessage.Message,
             EmotionId = (int) chatMessage.EmotionId,
             Bubble = Bubble,
-            Unknown = 0
+            MessageLength = chatMessage.Message.Length,
+            Urls = []
         };
         
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);

@@ -178,7 +178,8 @@ public class RoomUser(
             Message = message,
             EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
             Bubble = 0,
-            Unknown = 0
+            MessageLength = message.Length,
+            Urls = []
         });
     }
 

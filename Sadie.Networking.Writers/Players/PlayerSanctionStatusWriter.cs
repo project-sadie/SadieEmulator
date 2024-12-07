@@ -8,8 +8,8 @@ public class PlayerSanctionStatusWriter : AbstractPacketWriter
 {
     public required bool HasPreviousSanction { get; init; }
     public required bool OnProbation { get; init; }
-    public required string LastSanctionType { get; init; }
-    public required int SanctionTime { get; init; }
+    public required string SanctionName { get; init; }
+    public required int SanctionLengthHours { get; init; }
     public required int Unknown1 { get; init; }
     public required string Reason { get; init; }
     public required DateTime ProbationStart { get; init; }

@@ -46,13 +46,13 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
             writer.WriteBool(isOnline);
             writer.WriteBool(inRoom);
             writer.WriteString(friendData.AvatarData.FigureCode);
-            writer.WriteInteger(0); // unknown
-            writer.WriteString(friendData.AvatarData.Motto);
+            writer.WriteInteger(0); // category ID
+            writer.WriteString(friendData.AvatarData.Motto ?? string.Empty);
             writer.WriteString(friendData.Username); // real name
             writer.WriteString(""); // last access?
             writer.WriteBool(false);
-            writer.WriteBool(false); // unknown
-            writer.WriteBool(false); // unknown
+            writer.WriteBool(false); // VIP
+            writer.WriteBool(false); // pocket
             writer.WriteShort((short) relationshipType);
         }
     }

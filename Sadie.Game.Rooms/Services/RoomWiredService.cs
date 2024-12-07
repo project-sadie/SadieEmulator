@@ -86,8 +86,9 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
                     SenderId = userWhoTriggered.Id,
                     Message = effect.WiredData.Message,
                     EmotionId = 0,
-                    Bubble = (int) ChatBubble.Alert,
-                    Unknown = 0
+                    Bubble = (int)ChatBubble.Alert,
+                    MessageLength = effect.WiredData.Message.Length,
+                    Urls = []
                 });
                 break;
             case FurnitureItemInteractionType.WiredEffectKickUser:
