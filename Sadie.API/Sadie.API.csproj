@@ -8,11 +8,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
-      <ProjectReference Include="..\Sadie.Enums\Sadie.Enums.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="DotNetty.Transport" Version="0.7.6" />
+      <PackageReference Include="Sadie.Enums" Version="1.1.0" />
     </ItemGroup>
 
 </Project>
