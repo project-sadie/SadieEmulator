@@ -19,4 +19,5 @@ public class IssueData
     [PacketData] public required string PickerUsername { get; init; }
     [PacketData] public required string Message { get; init; }
     [PacketData] public required int ChatRecordId { get; init; }
+    [PacketData] public required List<PatternMatchData> Patterns { get; init; }
 }
