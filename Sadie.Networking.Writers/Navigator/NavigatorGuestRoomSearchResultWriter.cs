@@ -9,7 +9,7 @@ public class NavigatorGuestRoomSearchResultWriter : AbstractPacketWriter
 {
     public required int SearchType { get; init; }
     public required string SearchParam { get; init; }
-    public required int Unknown3 { get; init; }
+    public required List<RoomData> Rooms { get; init; }
     public required bool HasAdditional { get; init; }
     public required OfficialRoomEntryData OfficialRoomEntryData { get; init; }
 

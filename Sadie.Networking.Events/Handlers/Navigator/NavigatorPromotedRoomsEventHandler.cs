@@ -14,7 +14,7 @@ public class NavigatorPromotedRoomsEventHandler : INetworkPacketEventHandler
         {
             SearchType = 2,
             SearchParam = "",
-            Unknown3 = 0,
+            Rooms = [],
             HasAdditional = true,
             OfficialRoomEntryData = new OfficialRoomEntryData
             {
