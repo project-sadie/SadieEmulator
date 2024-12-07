@@ -249,7 +249,8 @@ public class CatalogPurchaseEventHandler(
             Username = bot.Username,
             Motto = bot.Motto,
             Gender = bot.Gender == AvatarGender.Male ? "m" : "f",
-            FigureCode = bot.FigureCode
+            FigureCode = bot.FigureCode,
+            OpenInventory = true
         });
             
         await ConfirmPurchaseAsync(client, catalogItem);
