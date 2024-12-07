@@ -23,10 +23,8 @@ public static class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        
         serviceCollection.Scan(scan => scan
-            .FromAssemblies(assemblies)
+            .FromAssemblies()
             .AddClasses(classes => classes.Where(x => 
                 x is { IsClass: true, IsAbstract: false } && 
                 x.IsSubclassOf(typeof(AbstractRoomChatCommand))))
@@ -34,14 +32,14 @@ public static class RoomServiceCollection
             .WithSingletonLifetime());
 
         serviceCollection.Scan(scan => scan
-            .FromAssemblies(assemblies)
+            .FromAssemblies()
             .AddClasses(classes => classes.AssignableTo<AbstractRoomFurnitureItemInteractor>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 
         
         serviceCollection.Scan(scan => scan
-            .FromAssemblies(assemblies)
+            .FromAssemblies()
             .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemProcessor>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
