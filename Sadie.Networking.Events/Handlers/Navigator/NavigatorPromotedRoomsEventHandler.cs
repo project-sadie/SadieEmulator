@@ -1,4 +1,5 @@
-﻿using Sadie.Networking.Client;
+﻿using Sadie.Enums.Unsorted;
+using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
@@ -9,22 +10,25 @@ public class NavigatorPromotedRoomsEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        await client.WriteToStreamAsync(new NavigatorPromotedRoomsWriter
+        await client.WriteToStreamAsync(new NavigatorGuestRoomSearchResultWriter
         {
-            Unknown1 = 2,
-            Unknown2 = "",
+            SearchType = 2,
+            SearchParam = "",
             Unknown3 = 0,
-            Unknown4 = true,
-            Unknown5 = 0,
-            Unknown6 = "A",
-            Unknown7 = "B",
-            Unknown8 = 1,
-            Unknown9 = "C",
-            Unknown10 = "D",
-            Unknown11 = 1,
-            Unknown12 = 1,
-            Unknown13 = 1,
-            Unknown14 = "E"
+            HasAdditional = true,
+            OfficialRoomEntryData = new OfficialRoomEntryData
+            {
+                Index = 0,
+                PopupCaption = "A",
+                PopupDescription = "B",
+                ShowDetails = 1,
+                PictureText = "C",
+                PictureRef = "D",
+                FolderId = 1,
+                UserCount = 1,
+                Type = OfficialRoomEntryDataType.Tag,
+                Unknown14 = "E"
+            }
         });
     }
 }
