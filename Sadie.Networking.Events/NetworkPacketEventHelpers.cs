@@ -122,17 +122,17 @@ public static class NetworkPacketEventHelpers
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter
             {
-                Unknown1 = 0,
-                Unknown2 = 0,
+                Issues = [],
+                MessageTemplates = [],
                 Unknown3 = 0,
-                Unknown4 = true,
-                Unknown5 = true,
-                Unknown6 = true,
-                Unknown7 = true,
-                Unknown8 = true,
-                Unknown9 = true,
-                Unknown10 = true,
-                Unknown11 = 0
+                CallForHelpPermission = true,
+                ChatLogsPermission = true,
+                AlertPermission = true,
+                KickPermission = true,
+                BanPermission = true,
+                RoomAlertPermission = true,
+                RoomKickPermission = true,
+                RoomMessageTemplates = []
             });
         }
     }
