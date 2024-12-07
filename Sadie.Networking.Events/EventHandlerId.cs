@@ -17,7 +17,7 @@ public static class EventHandlerId
     public const short PlayerFriendsList = 1523;
     public const short PlayerMessengerInit = 2781;
     public const short PlayerPong = 2596;
-    public const short HotelViewData = 2912;
+    public const short CompetitionTimingCode = 2912;
     public const short PlayerIgnoredUsers = 3878;
     public const short PlayerMeMenuSettings = 2388;
     public const short HotelViewBonusRare = 957;

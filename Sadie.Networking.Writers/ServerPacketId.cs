@@ -23,7 +23,7 @@ public class ServerPacketId
     public const short NavigatorSettings = 518;
     public const short PlayerMessengerInit = 1605;
     public const short PlayerFriendsList = 3130;
-    public const short HotelViewData = 1745;
+    public const short CompetitionTimingCode = 1745;
     public const short PlayerMeMenuSettings = 513;
     public const short HotelViewBonusRare = 1533;
     public const short PlayerIgnoredUsers = 126;
