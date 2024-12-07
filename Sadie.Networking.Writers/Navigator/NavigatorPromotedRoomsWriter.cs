@@ -1,5 +1,4 @@
-﻿using Sadie.API;
-using Sadie.API.Networking;
+﻿using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Navigator;

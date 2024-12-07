@@ -17,8 +17,14 @@ public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
         
         await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter
         {
-            Badges = badges,
+            Badges = badges
+                .ToDictionary(
+                    x => x.Id, 
+                    x => x.Badge?.Code ?? ""),
             EquippedBadges = equippedBadges
+                .ToDictionary(
+                    x => x.Id, 
+                    x => x.Badge?.Code ?? "")
         });
     }
 }
