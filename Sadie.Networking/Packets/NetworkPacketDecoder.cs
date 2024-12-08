@@ -4,16 +4,11 @@ using Sadie.Options.Options;
 
 namespace Sadie.Networking.Packets;
 
-public class NetworkPacketDecoder
+public class NetworkPacketDecoder(IOptions<NetworkPacketOptions> options)
 {
-    private readonly NetworkPacketOptions _packetSettings;
+    private readonly NetworkPacketOptions _packetSettings = options.Value;
 
-    protected NetworkPacketDecoder(IOptions<NetworkPacketOptions> options)
-    {
-        _packetSettings = options.Value;
-    }
-
-    protected List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
+    public List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
     {
         if (packet.Length < _packetSettings.FrameLengthByteCount || 
             packet.Length > _packetSettings.BufferByteSize - _packetSettings.FrameLengthByteCount)

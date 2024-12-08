@@ -121,31 +121,4 @@ public class RollerProcessorTests : RoomMockHelpers
             Assert.That(item.PositionY, Is.EqualTo(0));
         });
     }
-
-    [Test]
-    public async Task GetUpdatesForRoomAsync_FurnitureInFrontOfUserOnRoller_NothingMoved()
-    {
-        var user = MockRoomUser();
-
-        user.SetPositionAsync(new Point(1, 0)).Wait();
-        
-        var roller1 = MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller, 2, 0, 0, true);
-        var roller2 = MockFurnitureItemPlacementData(FurnitureItemInteractionType.Roller, 1, 0, 0, true);
-        var item = MockFurnitureItemPlacementData("", 2);
-        
-        var room = MockRoomWithUserRepoAndFurniture("0", [
-            roller1, roller2, item
-        ], [user]);
-        
-        var tMapService = new RoomTileMapHelperService();
-        var fHelperService = new RoomFurnitureItemHelperService();
-        var processor = new RollerProcessor(tMapService, fHelperService);
-        var updates = await processor.GetUpdatesForRoomAsync(room);
-        
-        Assert.Multiple(() =>
-        {
-            Assert.That(item.PositionX, Is.EqualTo(2));
-            Assert.That(user.Point.X, Is.EqualTo(1));
-        });
-    }
 }

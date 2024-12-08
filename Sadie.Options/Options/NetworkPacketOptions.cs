@@ -2,6 +2,6 @@
 
 public class NetworkPacketOptions
 {
-    public int BufferByteSize { get; init; }
-    public int FrameLengthByteCount { get; init; }
+    public required int BufferByteSize { get; init; }
+    public required int FrameLengthByteCount { get; init; }
 }
