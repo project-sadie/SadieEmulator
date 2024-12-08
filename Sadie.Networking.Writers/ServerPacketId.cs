@@ -154,4 +154,9 @@ public class ServerPacketId
     public const short WiredEffect = 1434;
     public const short WiredSaved = 1155;
     public const short RoomUserNameChanged = 2182;
+    public const short RoomPollContents = 2997;
+    public const short RoomPollError = 662;
+    public const short RoomPollOffer = 3785;
+    public const short RoomPollResults = 5201;
+    public const short RoomPollStarted = 5200;
 }

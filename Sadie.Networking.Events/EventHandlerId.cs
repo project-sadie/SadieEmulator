@@ -128,4 +128,8 @@ public static class EventHandlerId
     public const short ClientLatency = 295;
     public const short RoomWiredEffectSaved = 2281;
     public const short RoomWiredTriggerSaved = 1520;
+    public const short RoomPollAnswer = 3505;
+    public const short RoomPollReject = 1773;
+    public const short RoomPollStart = 109;
+    public const short RoomPollVoteCounter = 6200;
 }
