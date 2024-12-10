@@ -23,23 +23,23 @@ public static class RoomServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection)
     {
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        
         serviceCollection.Scan(scan => scan
-            .FromAssemblies()
-            .AddClasses(classes => classes.Where(x => 
-                x is { IsClass: true, IsAbstract: false } && 
-                x.IsSubclassOf(typeof(AbstractRoomChatCommand))))
+            .FromAssemblies(assemblies)
+            .AddClasses(classes => classes.AssignableTo<AbstractRoomChatCommand>())
             .As<IRoomChatCommand>()
             .WithSingletonLifetime());
 
         serviceCollection.Scan(scan => scan
-            .FromAssemblies()
+            .FromAssemblies(assemblies)
             .AddClasses(classes => classes.AssignableTo<AbstractRoomFurnitureItemInteractor>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 
         
         serviceCollection.Scan(scan => scan
-            .FromAssemblies()
+            .FromAssemblies(assemblies)
             .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemProcessor>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
