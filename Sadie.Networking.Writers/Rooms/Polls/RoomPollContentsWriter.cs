@@ -30,7 +30,7 @@ public class RoomPollContentsWriter : AbstractPacketWriter
         writer.WriteBool(Nps);
     }
 
-    private void WriteQuestion(RoomPollQuestion question, INetworkPacketWriter writer)
+    private static void WriteQuestion(RoomPollQuestion question, INetworkPacketWriter writer)
     {
         writer.WriteInteger(question.Id);
         writer.WriteInteger(question.SortOrder);
