@@ -21,7 +21,7 @@ public class RoomItemUseEventHandler(
 
         var roomFurnitureItem = room
                 .FurnitureItems
-                .FirstOrDefault(x => x.Id == ItemId);
+                .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomFurnitureItem == null)
         {
