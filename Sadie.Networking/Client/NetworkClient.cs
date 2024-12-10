@@ -14,7 +14,7 @@ namespace Sadie.Networking.Client;
 public class NetworkClient(
     IChannel channel,
     IOptions<NetworkPacketOptions> options)
-    : NetworkPacketDecoder(options), INetworkClient
+    : INetworkClient
 {
     public IChannel Channel { get; set; } = channel;
 
