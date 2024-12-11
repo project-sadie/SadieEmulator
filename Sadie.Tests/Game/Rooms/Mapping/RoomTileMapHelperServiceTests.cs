@@ -95,7 +95,8 @@ public class RoomTileMapHelperServiceTests
                     FurnitureItem = new FurnitureItem
                     {
                         CanSit = true,
-                        InteractionType = ""
+                        InteractionType = "",
+                        Name = ""
                     },
                     LimitedData = "",
                     MetaData = "",
@@ -120,7 +121,8 @@ public class RoomTileMapHelperServiceTests
                     FurnitureItem = new FurnitureItem
                     {
                         CanLay = true,
-                        InteractionType = ""
+                        InteractionType = "",
+                        Name = ""
                     },
                     LimitedData = "",
                     MetaData = "",
@@ -145,7 +147,8 @@ public class RoomTileMapHelperServiceTests
                     FurnitureItem = new FurnitureItem
                     {
                         CanWalk = false,
-                        InteractionType = "gate"
+                        InteractionType = "gate",
+                        Name = ""
                     },
                     LimitedData = "",
                     MetaData = "1",
@@ -168,10 +171,9 @@ public class RoomTileMapHelperServiceTests
                 {
                     FurnitureItem = new FurnitureItem
                     {
-                        Type = FurnitureItemType.Floor,
+                        Name = "",
                         InteractionType = "default"
                     },
-                    
                     LimitedData = "",
                     MetaData = "",
                     Player = null
@@ -192,7 +194,8 @@ public class RoomTileMapHelperServiceTests
                     FurnitureItem = new FurnitureItem
                     {
                         Type = FurnitureItemType.Floor,
-                        InteractionType = "default"
+                        InteractionType = "default",
+                        Name = ""
                     },
                     LimitedData = "",
                     MetaData = "",
@@ -562,7 +565,8 @@ public class RoomTileMapHelperServiceTests
                     TileSpanY = 1,
                     CanWalk = canWalk,
                     CanLay = canLay,
-                    CanSit = canSit
+                    CanSit = canSit,
+                    Name = ""
                 },
                 Player = null
             },
