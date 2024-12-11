@@ -132,4 +132,5 @@ public static class EventHandlerId
     public const short RoomPollReject = 1773;
     public const short RoomPollStart = 109;
     public const short RoomPollVoteCounter = 6200;
+    public const short RedeemItem = 3115;
 }
