@@ -60,7 +60,8 @@ public class RoomMockHelpers
                 FurnitureItem = new FurnitureItem
                 {
                     InteractionType = interactionType,
-                    CanWalk = walkable
+                    CanWalk = walkable,
+                    Name = ""
                 },
                 LimitedData = "",
                 MetaData = ""
