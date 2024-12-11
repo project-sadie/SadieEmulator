@@ -149,7 +149,8 @@ public class NetworkPacketWriterSerializerTests
                         {
                             Type = FurnitureItemType.Bot,
                             InteractionType = "interaction9",
-                            AssetId = 39193
+                            AssetId = 39193,
+                            Name = ""
                         }
                     ],
                     RequiresClubMembership = false,
@@ -237,5 +238,11 @@ public class NetworkPacketWriterSerializerTests
             Assert.That(packet.ReadString(), Is.EqualTo("page-name"));
             Assert.That(packet.ReadInt(), Is.EqualTo(-1));
         });
+    }
+
+    [Test]
+    public void Serialize_WithOnConfigureRulesOverride_ReadsCorrectly()
+    {
+        
     }
 }
