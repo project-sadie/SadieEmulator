@@ -33,7 +33,7 @@ public class RoomItemEjectedEventHandler(
         var player = client.Player;
         var itemId = ItemId;
         var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
-        var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
+        var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
 
         if (roomFurnitureItem == null)
         {
@@ -54,7 +54,7 @@ public class RoomItemEjectedEventHandler(
         {
             await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
             {
-                Id = roomFurnitureItem.Id.ToString(),
+                Id = roomFurnitureItem.PlayerFurnitureItemId.ToString(),
                 Expired = false,
                 OwnerId = roomFurnitureItem.PlayerFurnitureItem.PlayerId,
                 Delay = 0

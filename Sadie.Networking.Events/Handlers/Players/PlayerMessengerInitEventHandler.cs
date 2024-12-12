@@ -14,10 +14,10 @@ public class PlayerMessengerInitEventHandler(
     {
         await client.WriteToStreamAsync(new PlayerMessengerInitWriter
         {
-            MaxFriends = playerConstants.MaxFriendships,
-            Unknown1 = 1337,
-            MaxFriendsHc = playerConstants.MaxFriendships,
-            Unknown2 = 0
+            UserFriendLimit = playerConstants.MaxFriendships,
+            NormalFriendLimit = playerConstants.MaxFriendships,
+            ExtendedFriendLimit = playerConstants.MaxFriendships,
+            FriendshipCategories = []
         });
     }
 }

@@ -4,7 +4,7 @@ using Serilog;
 
 namespace Sadie.Game.Rooms.Bots;
 
-public class RoomBotRepository() : IRoomBotRepository
+public class RoomBotRepository : IRoomBotRepository
 {
     private readonly ConcurrentDictionary<int, IRoomBot> _bots = new();
 

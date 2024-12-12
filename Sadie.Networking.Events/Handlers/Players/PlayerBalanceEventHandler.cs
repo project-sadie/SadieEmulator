@@ -18,9 +18,7 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
         
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
         {
-            PixelBalance = playerData.PixelBalance,
-            SeasonalBalance = playerData.SeasonalBalance,
-            GotwPoints = playerData.GotwPoints
+            Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(playerData)
         });
     }
 }

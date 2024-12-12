@@ -17,14 +17,14 @@ public static class EventHandlerId
     public const short PlayerFriendsList = 1523;
     public const short PlayerMessengerInit = 2781;
     public const short PlayerPong = 2596;
-    public const short HotelViewData = 2912;
+    public const short CompetitionTimingCode = 2912;
     public const short PlayerIgnoredUsers = 3878;
     public const short PlayerMeMenuSettings = 2388;
     public const short HotelViewBonusRare = 957;
     public const short GetBadgePointLimits = 1371;
     public const short GameCenterRequestGames = 741;
     public const short GetGameAchievementsMessage = 2399;
-    public const short PromotedRooms = 2908;
+    public const short NavigatorPromotedRooms = 2908;
     public const short RoomCategories = 3027;
     public const short NavigatorEventCategories = 1782;
     public const short PlayerFriendRequestsList = 2448;
@@ -72,7 +72,6 @@ public static class EventHandlerId
     public const short RoomSettingsSave = 1969;
     public const short PlayerInventoryBadges = 2769;
     public const short RoomDoorbellAnswer = 1644;
-    public const short RoomDoorbellAccepted = 685;
     public const short PlayerAchievements = 219;
     public const short CameraPrice = 796;
     public const short CatalogMode = 1195;
@@ -128,4 +127,9 @@ public static class EventHandlerId
     public const short ClientLatency = 295;
     public const short RoomWiredEffectSaved = 2281;
     public const short RoomWiredTriggerSaved = 1520;
+    public const short RoomPollAnswer = 3505;
+    public const short RoomPollReject = 1773;
+    public const short RoomPollStart = 109;
+    public const short RoomPollVoteCounter = 6200;
+    public const short RedeemItem = 3115;
 }

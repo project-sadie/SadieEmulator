@@ -38,7 +38,8 @@ public interface IRoomTileMapHelperService
 
     bool CanPlaceAt(
         IEnumerable<Point> points,  
-        IRoomTileMap tileMap);
+        IRoomTileMap tileMap,
+        bool checkForUsers = true);
 
     List<IRoomUser> GetUsersAtPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users);
     Point GetPointInFront(int x, int y, HDirection direction, int offset = 0);

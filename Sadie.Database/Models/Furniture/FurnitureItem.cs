@@ -6,8 +6,8 @@ namespace Sadie.Database.Models.Furniture;
 public class FurnitureItem
 {
     public int Id { get; init; }
-    public string? Name { get; init; }
-    public string? AssetName { get; init; }
+    public required string Name { get; init; }
+    public required string AssetName { get; init; }
     public FurnitureItemType Type { get; init; }
     public int AssetId { get; init; }
     public int TileSpanX { get; init; }

@@ -28,7 +28,7 @@ public class PlayerSendFriendRequestEventHandler(
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter
             {
-                Unknown1 = 0,
+                ClientMessageId = 0,
                 Error = (int) PlayerFriendshipError.TooManyFriends
             });
             
@@ -58,7 +58,7 @@ public class PlayerSendFriendRequestEventHandler(
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter
             {
-                Unknown1 = 0,
+                ClientMessageId = 0,
                 Error = (int) PlayerFriendshipError.TargetNotFound
             });
             return;
@@ -68,7 +68,7 @@ public class PlayerSendFriendRequestEventHandler(
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter
             {
-                Unknown1 = 0,
+                ClientMessageId = 0,
                 Error = (int) PlayerFriendshipError.TargetTooManyFriends
             });
             return;
@@ -78,7 +78,7 @@ public class PlayerSendFriendRequestEventHandler(
         {
             await client.WriteToStreamAsync(new PlayerFriendshipErrorWriter
             {
-                Unknown1 = 0,
+                ClientMessageId = 0,
                 Error = (int) PlayerFriendshipError.TargetNotAccepting
             });
             return;

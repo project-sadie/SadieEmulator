@@ -5,8 +5,10 @@ using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Constants;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms.Chat;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
@@ -78,7 +80,11 @@ public static class NetworkPacketEventHelpers
             Effects = []
         });
 
-        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
+        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter
+        {
+            SetIds = [],
+            FurnitureNames = []
+        });
 
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
         {
@@ -112,21 +118,21 @@ public static class NetworkPacketEventHelpers
             AchievementScore = playerData.AchievementScore
         });
 
-        if (player.HasPermission("moderator"))
+        if (player.HasPermission(PlayerPermissionName.Moderator))
         {
             await networkObject.WriteToStreamAsync(new ModerationToolsWriter
             {
-                Unknown1 = 0,
-                Unknown2 = 0,
+                Issues = [],
+                MessageTemplates = [],
                 Unknown3 = 0,
-                Unknown4 = true,
-                Unknown5 = true,
-                Unknown6 = true,
-                Unknown7 = true,
-                Unknown8 = true,
-                Unknown9 = true,
-                Unknown10 = true,
-                Unknown11 = 0
+                CallForHelpPermission = true,
+                ChatLogsPermission = true,
+                AlertPermission = true,
+                KickPermission = true,
+                BanPermission = true,
+                RoomAlertPermission = true,
+                RoomKickPermission = true,
+                RoomMessageTemplates = []
             });
         }
     }
@@ -207,11 +213,12 @@ public static class NetworkPacketEventHelpers
         {
             var writer = new RoomUserShoutWriter
             {
-                UserId = roomUser.Id,
+                SenderId = roomUser.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
-                Unknown1 = 0
+                Urls = [],
+                MessageLength = message.Length
             };
             
             await room.UserRepository.BroadcastDataAsync(writer);
@@ -220,11 +227,12 @@ public static class NetworkPacketEventHelpers
         {
             var writer = new RoomUserChatWriter
             {
-                UserId = roomUser.Id,
+                SenderId = roomUser.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
-                Unknown1 = 0
+                Urls = [],
+                MessageLength = message.Length
             };
             
             await room.UserRepository.BroadcastDataAsync(writer);
@@ -247,12 +255,13 @@ public static class NetworkPacketEventHelpers
         IRoomUser roomUser)
     {
         var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
-        var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
-
+        
         if (command == null)
         {
             return false;
         }
+        
+        var roomOwner = roomUser.ControllerLevel == RoomControllerLevel.Owner;
 
         if (command.BypassPermissionCheckIfRoomOwner && !roomOwner)
         {
@@ -268,5 +277,23 @@ public static class NetworkPacketEventHelpers
         await command.ExecuteAsync(roomUser, parameters);
         
         return true;
+    }
+    
+    public static Dictionary<int, long> GetPlayerCurrencyMapFromData(PlayerData playerData)
+    {
+        return new Dictionary<int, long>
+        {
+            {0, playerData.PixelBalance},
+            {1, 0}, // snowflakes
+            {2, 0}, // hearts
+            {3, 0}, // gift points
+            {4, 0}, // shells
+            {5, playerData.SeasonalBalance},
+            {101, 0}, // snowflakes
+            {102, 0}, // unknown
+            {103, playerData.GotwPoints},
+            {104, 0}, // unknown
+            {105, 0} // unknown
+        };
     }
 }

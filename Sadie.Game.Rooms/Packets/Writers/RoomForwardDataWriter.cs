@@ -1,6 +1,7 @@
 using Sadie.API;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Networking;
+using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
 
@@ -29,8 +30,8 @@ public class RoomForwardDataWriter : AbstractPacketWriter
         writer.WriteInteger(Room.MaxUsersAllowed);
         writer.WriteString(Room.Description);
         writer.WriteInteger((int) settings.TradeOption);
-        writer.WriteInteger(2); // unknown
         writer.WriteInteger(Room.PlayerLikes.Count);
+        writer.WriteInteger(1); // ranking
         writer.WriteInteger(0); // category
         writer.WriteInteger(Room.Tags.Count);
 
@@ -39,7 +40,7 @@ public class RoomForwardDataWriter : AbstractPacketWriter
             writer.WriteString(tag.Name);
         }
         
-        writer.WriteInteger(0 | 8);
+        writer.WriteInteger((int) RoomBitmask.ShowOwner);
         writer.WriteBool(RoomForward);
         writer.WriteBool(false);
         writer.WriteBool(false);

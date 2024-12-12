@@ -45,7 +45,7 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
+        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
 
         if (roomFurnitureItem == null)
         {
@@ -76,9 +76,15 @@ public class RoomFloorItemUpdatedEventHandler(
         var rotatingSingleTileItem = newPoints.Count == 1 && 
              newPoints[0].X == roomFurnitureItem.PositionX &&
              newPoints[0].Y == roomFurnitureItem.PositionY;
+
+        var checkPointsForUsers = roomFurnitureItem.FurnitureItem is
+        {
+            CanSit: false, 
+            CanLay: false
+        };
         
         if (!rotatingSingleTileItem && 
-            !tileMapHelperService.CanPlaceAt(newPoints, room.TileMap))
+            !tileMapHelperService.CanPlaceAt(newPoints, room.TileMap, checkPointsForUsers))
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;

@@ -30,6 +30,7 @@ public class SaveNavigatorSettingsEventHandler(SadieContext dbContext) : INetwor
         navigatorSettings.WindowWidth = WindowWidth;
         navigatorSettings.WindowHeight = WindowHeight;
         navigatorSettings.OpenSearches = OpenSearches;
+        navigatorSettings.ResultsMode = 0;
 
         dbContext.PlayerNavigatorSettings.Update(player.NavigatorSettings);
         await dbContext.SaveChangesAsync();

@@ -9,7 +9,7 @@ public class RequestGameCenterConfigEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var writer = new GameAchievementsListWriter();
+        var writer = new PlayerGameAchievementsListWriter();
         await client.WriteToStreamAsync(writer);
     }
 } 

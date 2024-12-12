@@ -5,7 +5,6 @@ using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
 using Sadie.Networking.Codecs.Encryption;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization;
 using Sadie.Options.Options;
 
@@ -14,7 +13,7 @@ namespace Sadie.Networking.Client;
 public class NetworkClient(
     IChannel channel,
     IOptions<NetworkPacketOptions> options)
-    : NetworkPacketDecoder(options), INetworkClient
+    : INetworkClient
 {
     public IChannel Channel { get; set; } = channel;
 

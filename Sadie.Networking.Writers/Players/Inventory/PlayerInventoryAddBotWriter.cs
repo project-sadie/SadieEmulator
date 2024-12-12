@@ -11,5 +11,5 @@ public class PlayerInventoryAddBotWriter : AbstractPacketWriter
     public required string Motto { get; init; }
     public required string Gender { get; init; }
     public required string FigureCode { get; init; }
-    public bool Unknown { get; } = true;
+    public required bool OpenInventory { get; init; }
 }

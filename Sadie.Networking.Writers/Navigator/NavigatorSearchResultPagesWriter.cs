@@ -3,6 +3,7 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Networking;
 using Sadie.Database.Models.Navigator;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Navigator;
@@ -56,7 +57,7 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
                     writer.WriteString(tag.Name);
                 }
                 
-                writer.WriteInteger(0 | 8);
+                writer.WriteInteger((int) RoomBitmask.ShowOwner);
             }
         }
     }

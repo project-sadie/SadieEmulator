@@ -54,12 +54,11 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        var roomBot = RoomHelpersDirty.CreateBot(room.MaxUsersAllowed + bot.Id,
-            room,
-            new Point(X,
-                Y),
-            0,
-            roomBotFactory);
+        var roomBot = roomBotFactory.Create(
+            room, 
+            room.MaxUsersAllowed + bot.Id, 
+            new Point(X, Y), 
+            room.TileMap.ZMap[Y, X]);
 
         if (!room.BotRepository.TryAdd(roomBot))
         {

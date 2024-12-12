@@ -51,7 +51,7 @@ public class RoomDoorbellAnswerEventHandler(
 
             if (playerClient != null)
             {
-                await RoomHelpersDirty.GenericEnterRoomAsync(
+                await RoomEntryEventHelpers.GenericEnterRoomAsync(
                     playerClient, 
                     room, 
                     roomUserFactory, 

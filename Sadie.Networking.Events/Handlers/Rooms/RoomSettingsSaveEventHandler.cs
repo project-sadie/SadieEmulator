@@ -62,7 +62,7 @@ public class RoomSettingsSaveEventHandler(
             {
                 RoomId = room.Id,
                 ErrorCode = (int)RoomSettingsError.TagTooLong,
-                Unknown = ""
+                Message = ""
             });
             return;
         }
@@ -73,7 +73,7 @@ public class RoomSettingsSaveEventHandler(
             {
                 RoomId = room.Id,
                 ErrorCode = (int)RoomSettingsError.NameRequired,
-                Unknown = ""
+                Message = ""
             });
             return;
         }
@@ -84,7 +84,7 @@ public class RoomSettingsSaveEventHandler(
             {
                 RoomId = room.Id,
                 ErrorCode = (int) RoomSettingsError.PasswordRequired,
-                Unknown = ""
+                Message = ""
             });
             
             return;

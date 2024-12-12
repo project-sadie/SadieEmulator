@@ -43,6 +43,7 @@ public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
 
         var requestsWriter = new PlayerFriendRequestsWriter
         {
+            TotalRequests = requests.Count,
             Requests = requests
         };
         

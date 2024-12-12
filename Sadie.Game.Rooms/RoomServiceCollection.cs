@@ -27,9 +27,7 @@ public static class RoomServiceCollection
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.Where(x => 
-                x is { IsClass: true, IsAbstract: false } && 
-                x.IsSubclassOf(typeof(AbstractRoomChatCommand))))
+            .AddClasses(classes => classes.AssignableTo<AbstractRoomChatCommand>())
             .As<IRoomChatCommand>()
             .WithSingletonLifetime());
 

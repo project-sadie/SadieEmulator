@@ -5,7 +5,7 @@ using Sadie.Networking.Writers.Catalog;
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogMode)]
-public class CatalogModeEventHandler() : INetworkPacketEventHandler
+public class CatalogModeEventHandler : INetworkPacketEventHandler
 {
     public string? Mode { get; set; }
     

@@ -1,6 +1,4 @@
-using Sadie.API;
 using Sadie.API.Networking;
-using Sadie.Database.Models.Players;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Players.Inventory;
@@ -8,25 +6,6 @@ namespace Sadie.Networking.Writers.Players.Inventory;
 [PacketId(ServerPacketId.PlayerInventoryBadges)]
 public class PlayerInventoryBadgesWriter : AbstractPacketWriter
 {
-    public required List<PlayerBadge> Badges { get; init; }
-    public required List<PlayerBadge> EquippedBadges { get; init; }
-
-    public override void OnSerialize(INetworkPacketWriter writer)
-    {
-        writer.WriteInteger(Badges.Count);
-
-        foreach (var playerBadge in Badges)
-        {
-            writer.WriteInteger(playerBadge.Id);
-            writer.WriteString(playerBadge.Badge.Code);
-        }
-        
-        writer.WriteInteger(EquippedBadges.Count);
-
-        foreach (var playerBadge in EquippedBadges)
-        {
-            writer.WriteInteger(playerBadge.Slot);
-            writer.WriteString(playerBadge.Badge.Code);
-        }
-    }
+    public required Dictionary<int, string> Badges { get; init; }
+    public required Dictionary<int, string> EquippedBadges { get; init; }
 }

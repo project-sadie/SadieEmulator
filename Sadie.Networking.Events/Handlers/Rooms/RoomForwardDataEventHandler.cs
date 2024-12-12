@@ -18,7 +18,7 @@ public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var room = await Game.Rooms.RoomHelpersDirty.TryLoadRoomByIdAsync(
+        var room = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(
             RoomId, 
             roomRepository, 
             dbContext, 

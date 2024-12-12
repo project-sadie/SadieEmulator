@@ -72,42 +72,41 @@ public class RoomUnitData(
 
         if (tileItems.Count == 0)
         {
+            PointZ = room.TileMap.ZMap[Point.X, Point.Y];
             RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            return;
         }
 
         var topItem = tileItems.MaxBy(item => item.PositionZ);
 
-        if (topItem == null)
+        if (topItem != null)
         {
-            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            return;
+            if (topItem.FurnitureItem.CanSit)
+            {
+                AddStatus(
+                    RoomUserStatus.Sit, 
+                    (topItem.FurnitureItem.StackHeight * 1.0D).ToString());
+            
+                Direction = topItem.Direction;
+                DirectionHead = topItem.Direction;
+            }
+            else if (topItem.FurnitureItem.CanLay)
+            {
+                AddStatus(
+                    RoomUserStatus.Lay, 
+                    (topItem.FurnitureItem.StackHeight + 0.1).ToString());
+            
+                Direction = topItem.Direction;
+                DirectionHead = topItem.Direction;
+            }
         }
         
-        if (topItem.FurnitureItem.CanSit)
-        {
-            AddStatus(
-                RoomUserStatus.Sit, 
-                topItem.FurnitureItem.StackHeight.ToString());
-            
-            Direction = topItem.Direction;
-            DirectionHead = topItem.Direction;
-        }
-        else if (topItem.FurnitureItem.CanLay)
-        {
-            AddStatus(
-                RoomUserStatus.Lay, 
-                (topItem.FurnitureItem.StackHeight + 0.1).ToString());
-            
-            Direction = topItem.Direction;
-            DirectionHead = topItem.Direction;
-        }
-        else
-        {
-            RemoveStatuses(
-                RoomUserStatus.Sit,
-                RoomUserStatus.Lay);
-        }
+        var topItemSitOrLay = topItem?.FurnitureItem is { CanSit: false, CanLay: false };
+        var zHeightNextStep = topItem?.FurnitureItem == null ?
+            PointZ : 
+            topItem.PositionZ + (topItemSitOrLay ? topItem.FurnitureItem.StackHeight : 0);
+        
+        PointZ = zHeightNextStep;
+        NeedsStatusUpdate = true;
     }
 
     public void AddStatus(string key, string value)
@@ -116,7 +115,7 @@ public class RoomUnitData(
         NeedsStatusUpdate = true;
     }
 
-    protected void CalculatePath()
+    private void CalculatePath()
     {
         PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
 
@@ -169,7 +168,7 @@ public class RoomUnitData(
         }
     }
 
-    protected async Task ProcessMovementAsync()
+    private async Task ProcessMovementAsync()
     {
         if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
         {
@@ -193,10 +192,12 @@ public class RoomUnitData(
         var topItemNextStep = tileMapHelperService
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
+
+        var topItemSitOrLay = topItemNextStep?.FurnitureItem is { CanSit: false, CanLay: false };
         
-        var zHeightNextStep = topItemNextStep != null ?
-                topItemNextStep.PositionZ + (topItemNextStep.FurnitureItem?.StackHeight ?? 0) : 
-                0.0D + room.TileMap.ZMap[nextStep.Y, nextStep.X];
+        var zHeightNextStep = topItemNextStep?.FurnitureItem == null ?
+            room.TileMap.ZMap[nextStep.Y, nextStep.X] : 
+            topItemNextStep.PositionZ + (topItemSitOrLay ? topItemNextStep.FurnitureItem.StackHeight : 0);
 
         ClearStatuses();
 
