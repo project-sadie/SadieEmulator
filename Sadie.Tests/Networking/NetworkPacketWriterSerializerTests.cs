@@ -150,7 +150,8 @@ public class NetworkPacketWriterSerializerTests
                             Type = FurnitureItemType.Bot,
                             InteractionType = "interaction9",
                             AssetId = 39193,
-                            Name = ""
+                            Name = "",
+                            AssetName = ""
                         }
                     ],
                     RequiresClubMembership = false,

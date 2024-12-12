@@ -25,7 +25,6 @@ public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacket
 
         var daysAsClub = CalculateDaysAsClub(client.Player.Subscriptions);
         var daysTillNextClubGift = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400;
-        var claimedGifts = 0;
         var unclaimedGifts = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400; 
         
         await client.WriteToStreamAsync(new HabboClubGiftsWriter

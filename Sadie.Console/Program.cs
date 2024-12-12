@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sadie.API;
-using Sadie.API.Game.Rooms.Chat.Commands;
 using SadieEmulator;
 using Serilog;
 using Serilog.Events;
