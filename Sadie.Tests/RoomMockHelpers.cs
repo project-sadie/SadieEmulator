@@ -61,7 +61,8 @@ public class RoomMockHelpers
                 {
                     InteractionType = interactionType,
                     CanWalk = walkable,
-                    Name = ""
+                    Name = "",
+                    AssetName = ""
                 },
                 LimitedData = "",
                 MetaData = ""

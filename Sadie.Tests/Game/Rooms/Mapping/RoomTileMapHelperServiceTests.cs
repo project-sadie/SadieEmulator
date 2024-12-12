@@ -96,7 +96,8 @@ public class RoomTileMapHelperServiceTests
                     {
                         CanSit = true,
                         InteractionType = "",
-                        Name = ""
+                        Name = "",
+                        AssetName = ""
                     },
                     LimitedData = "",
                     MetaData = "",
@@ -122,7 +123,8 @@ public class RoomTileMapHelperServiceTests
                     {
                         CanLay = true,
                         InteractionType = "",
-                        Name = ""
+                        Name = "",
+                        AssetName = ""
                     },
                     LimitedData = "",
                     MetaData = "",
@@ -148,7 +150,8 @@ public class RoomTileMapHelperServiceTests
                     {
                         CanWalk = false,
                         InteractionType = "gate",
-                        Name = ""
+                        Name = "",
+                        AssetName = ""
                     },
                     LimitedData = "",
                     MetaData = "1",
@@ -172,7 +175,8 @@ public class RoomTileMapHelperServiceTests
                     FurnitureItem = new FurnitureItem
                     {
                         Name = "",
-                        InteractionType = "default"
+                        InteractionType = "default",
+                        AssetName = ""
                     },
                     LimitedData = "",
                     MetaData = "",
@@ -195,7 +199,8 @@ public class RoomTileMapHelperServiceTests
                     {
                         Type = FurnitureItemType.Floor,
                         InteractionType = "default",
-                        Name = ""
+                        Name = "",
+                        AssetName = ""
                     },
                     LimitedData = "",
                     MetaData = "",
@@ -566,7 +571,8 @@ public class RoomTileMapHelperServiceTests
                     CanWalk = canWalk,
                     CanLay = canLay,
                     CanSit = canSit,
-                    Name = ""
+                    Name = "",
+                    AssetName = ""
                 },
                 Player = null
             },
