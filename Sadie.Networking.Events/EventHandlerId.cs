@@ -72,7 +72,6 @@ public static class EventHandlerId
     public const short RoomSettingsSave = 1969;
     public const short PlayerInventoryBadges = 2769;
     public const short RoomDoorbellAnswer = 1644;
-    public const short RoomDoorbellAccepted = 685;
     public const short PlayerAchievements = 219;
     public const short CameraPrice = 796;
     public const short CatalogMode = 1195;
