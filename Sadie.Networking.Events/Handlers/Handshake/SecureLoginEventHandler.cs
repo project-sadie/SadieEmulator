@@ -136,7 +136,7 @@ public class SecureLoginEventHandler(
         
         await client.WriteToStreamAsync(new PlayerPingWriter());
         
-        logger.LogInformation($"Player '{playerLogic.Username}' has logged in ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
+        logger.LogInformation($"Player '{playerLogic.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 
     private async Task SendWelcomeMessageAsync(IPlayerLogic player)
