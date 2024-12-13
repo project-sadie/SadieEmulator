@@ -69,6 +69,27 @@ public class SecureLoginEventHandler(
             return;
         }
         
+        if (player.Bans.Any(x => x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now))
+        {
+            logger.LogWarning("Disconnected banned player {@PlayerUsername}", player.Username);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+
+        var ipAddress = client
+            .Channel
+            .RemoteAddress
+            .ToString()?
+            .Split(":")
+            .First() ?? "";
+        
+        if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
+        {
+            logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+        
         var playerLogic = mapper.Map<IPlayerLogic>(player);
 
         playerLogic.NetworkObject = client;

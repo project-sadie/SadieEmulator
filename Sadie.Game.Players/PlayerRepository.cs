@@ -29,6 +29,7 @@ public class PlayerRepository(
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
             .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
+            .Include(x => x.Bans)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
     }

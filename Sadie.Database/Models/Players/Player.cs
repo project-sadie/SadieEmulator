@@ -85,6 +85,7 @@ public class Player
     public ICollection<Group> Groups { get; init; } = [];
     public ICollection<PlayerBot> Bots { get; init; } = [];
     public ICollection<PlayerRoomVisit> RoomVisits { get; init; } = [];
+    public ICollection<PlayerBan> Bans { get; init; } = [];
     
     public int GetAcceptedFriendshipCount()
     {
