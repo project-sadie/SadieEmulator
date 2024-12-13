@@ -15,10 +15,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
         <PackageReference Include="MySqlConnector" Version="2.4.0" />
         <PackageReference Include="Sadie.Enums" Version="1.1.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
+        <PackageReference Include="Sadie.Shared" Version="1.1.0" />
     </ItemGroup>
 
 </Project>

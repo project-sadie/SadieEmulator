@@ -43,6 +43,7 @@ public class NavigatorRoomProvider(
         }
 
         return await query
+            .Include(x => x.Settings)
             .ToListAsync();
     }
 

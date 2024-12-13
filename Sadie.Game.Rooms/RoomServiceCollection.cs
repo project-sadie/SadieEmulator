@@ -52,7 +52,7 @@ public static class RoomServiceCollection
 
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
         serviceCollection.AddSingleton<IRoomFurnitureItemInteractorRepository, RoomFurnitureItemInteractorRepository>();
-        serviceCollection.AddSingleton<IRoomWiredService, RoomWiredService>();
+        serviceCollection.AddTransient<IRoomWiredService, RoomWiredService>();
         serviceCollection.AddSingleton<IRoomTileMapHelperService, RoomTileMapHelperService>();
         serviceCollection.AddSingleton<IRoomHelperService, RoomHelperService>();
         serviceCollection.AddSingleton<IRoomFurnitureItemHelperService, RoomFurnitureItemHelperService>();

@@ -59,6 +59,8 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
     public DbSet<PlayerRoomVisit> PlayerRoomVisits { get; init; }
     public DbSet<PlayerRoomLike> PlayerRoomLikes { get; init; }
     public DbSet<PlayerMessage> PlayerMessages { get; init; }
+    public DbSet<PlayerBan> PlayerBans { get; init; }
+    public DbSet<BannedIpAddress> BannedIpAddresses { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -192,5 +194,9 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .HasOne(x => x.PlacementData)
             .WithOne(x => x.WiredData)
             .HasForeignKey<PlayerFurnitureItemWiredData>(e => e.PlayerFurnitureItemPlacementDataId);
+        
+        modelBuilder.Entity<Player>()
+            .HasMany<PlayerBan>(x => x.Bans)
+            .WithOne(x => x.Player);
     }
 }
