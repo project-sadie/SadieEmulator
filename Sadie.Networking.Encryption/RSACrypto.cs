@@ -51,16 +51,16 @@ public class RsaCrypto(string exponent, string modules, string privateExponent)
         return Pkcs1Unpad(src.PerformCalculation(method));
     }
 
-    private byte[] Pkcs1Pad(IReadOnlyList<byte> src)
+    private byte[] Pkcs1Pad(byte[] source)
     {
         var n = GetBlockSize();
         var bytes = new byte[n];
 
-        var i = src.Count - 1;
+        var i = source.Length - 1;
 
         while (i >= 0 && n > 11)
         {
-            bytes[--n] = src[i--];
+            bytes[--n] = source[i--];
         }
 
         bytes[--n] = 0;

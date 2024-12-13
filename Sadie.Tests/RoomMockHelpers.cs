@@ -46,7 +46,10 @@ public class RoomMockHelpers
             {
                 Username = username,
                 Email = "",
-                Data = new PlayerData()
+                Data = new PlayerData
+                {
+                    Player = null!
+                }
             }
         };
     }
