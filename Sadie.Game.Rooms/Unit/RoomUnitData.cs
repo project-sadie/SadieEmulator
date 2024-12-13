@@ -72,7 +72,7 @@ public class RoomUnitData(
 
         if (tileItems.Count == 0)
         {
-            PointZ = room.TileMap.ZMap[Point.X, Point.Y];
+            PointZ = room.TileMap.ZMap[Point.Y, Point.X];
             RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
         }
 
