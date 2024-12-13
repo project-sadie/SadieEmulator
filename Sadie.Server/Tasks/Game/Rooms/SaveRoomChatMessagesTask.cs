@@ -16,16 +16,12 @@ public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, SadieConte
         
         foreach (var room in roomRepository.GetAllRooms())
         {
-            if (room == null)
-            {
-                continue;
-            }
-
             var chatMessages = room
                 .ChatMessages
-                .Where(x => x.Id == 0);
+                .Where(x => x.Id == 0)
+                .ToList();
 
-            if (!chatMessages.Any())
+            if (chatMessages.Count == 0)
             {
                 continue;
             }
