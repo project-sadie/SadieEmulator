@@ -9,7 +9,7 @@ public class UpdateConsoleTitleTask(
     IPlayerRepository playerRepository, 
     IRoomRepository roomRepository) : IServerTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
+    public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
     public DateTime LastExecuted { get; set; }
 
     public Task ExecuteAsync()
