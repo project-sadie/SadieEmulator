@@ -78,7 +78,7 @@ public class RoomUser(
         AddStatus(RoomUserStatus.FlatCtrl, ((int)controllerLevel).ToString());
     }
 
-    public async Task RunPeriodicCheckAsync()
+    public async ValueTask RunPeriodicCheckAsync()
     {
         if (HandItemId != 0 && (DateTime.Now - HandItemSet).TotalSeconds >= 30)
         {

@@ -13,6 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 [PacketId(EventHandlerId.PlayerFriendRequests)]
 public class PlayerSendFriendRequestEventHandler(
     IPlayerRepository playerRepository,
+    IPlayerService playerService,
     ServerPlayerConstants playerConstants,
     SadieContext dbContext,
     IMapper mapper)
@@ -51,7 +52,7 @@ public class PlayerSendFriendRequestEventHandler(
         }
         else
         {
-            targetPlayer = await playerRepository.GetPlayerByUsernameAsync(TargetUsername);
+            targetPlayer = await playerService.GetPlayerByUsernameAsync(TargetUsername, false);
         }
         
         if (targetPlayer == null)

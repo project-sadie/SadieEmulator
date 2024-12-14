@@ -8,7 +8,6 @@ using Sadie.Database.Models.Rooms;
 namespace Sadie.Game.Rooms;
 
 public class RoomRepository(
-    SadieContext dbContext,
     IMapper mapper,
     ConcurrentDictionary<int, IRoomLogic> rooms)
     : IRoomRepository
@@ -37,15 +36,9 @@ public class RoomRepository(
         return rooms.TryRemove(id, out roomLogic);
     }
     
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
-        foreach (var room in rooms.Values)
-        {
-            dbContext.Entry(room).State = EntityState.Modified;
-            await dbContext.SaveChangesAsync();
-            await room.DisposeAsync();
-        }
-        
         rooms.Clear();
+        return ValueTask.CompletedTask;
     }
 }

@@ -33,7 +33,7 @@ public class RoomBot(
 {
     public required PlayerBot Bot { get; init; }
 
-    public async Task RunPeriodicCheckAsync()
+    public async ValueTask RunPeriodicCheckAsync()
     {
         await ProcessGenericChecksAsync();
     }

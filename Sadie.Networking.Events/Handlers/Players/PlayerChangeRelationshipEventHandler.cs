@@ -15,6 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
     IPlayerRepository playerRepository,
+    IPlayerService playerService,
     SadieContext dbContext,
     IMapper mapper)
     : INetworkPacketEventHandler
@@ -55,7 +56,7 @@ public class PlayerChangeRelationshipEventHandler(
                 {
                     OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
-                    TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
+                    TargetPlayer = await playerService.GetPlayerByIdAsync(playerId),
                     TypeId = (PlayerRelationshipType)relationId
                 };
                 
@@ -80,7 +81,7 @@ public class PlayerChangeRelationshipEventHandler(
 
         var friend = isOnline ? 
             mapper.Map<Player>(onlineFriend) : 
-            await playerRepository.GetPlayerByIdAsync(playerId);
+            await playerService.GetPlayerByIdAsync(playerId);
         
         var newFriendData = new FriendData
         {

@@ -20,13 +20,14 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     ILogger<SecureLoginEventHandler> logger,
     IOptions<EncryptionOptions> encryptionOptions,
+    IPlayerService playerService,
     IPlayerRepository playerRepository,
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
     SadieContext dbContext,
     IMapper mapper,
-    IPlayerLoaderService playerLoaderService,
+    IPlayerService iPlayerService,
     IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
@@ -51,7 +52,7 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var tokenRecord = await playerLoaderService.GetTokenAsync(Token, DelayMs);
+        var tokenRecord = await iPlayerService.GetTokenAsync(Token, DelayMs);
         
         if (tokenRecord == null)
         {
@@ -60,7 +61,7 @@ public class SecureLoginEventHandler(
             return;
         }
         
-        var player = await playerRepository.GetPlayerByIdAsync(tokenRecord.PlayerId);
+        var player = await playerService.GetPlayerByIdAsync(tokenRecord.PlayerId, false);
 
         if (player == null)
         {

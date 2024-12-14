@@ -90,30 +90,34 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     {
         try
         {
-            var users = _users.Values;
-
-            foreach (var roomUser in users)
+            await Parallel.ForEachAsync(_users.Values, async (user, ct) =>
             {
-                await roomUser.RunPeriodicCheckAsync();
-            }
+                await user.RunPeriodicCheckAsync();
+            });
 
-            if (users.Count != 0)
+            var users = _users
+                .Values;
+
+            if (!_users.IsEmpty)
             {
                 var bots = users
                     .First()
                     .Room
                     .BotRepository
                     .GetAll();
-                
-                await BroadcastDataAsync(new RoomBotStatusWriter
-                {
-                    Bots = bots
-                });
 
-                await BroadcastDataAsync(new RoomBotDataWriter
+                if (bots.Count != 0)
                 {
-                    Bots = bots
-                });
+                    await BroadcastDataAsync(new RoomBotStatusWriter
+                    {
+                        Bots = bots
+                    });
+
+                    await BroadcastDataAsync(new RoomBotDataWriter
+                    {
+                        Bots = bots
+                    });
+                }
             }
             
             var statusWriter = new RoomUserStatusWriter

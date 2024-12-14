@@ -63,6 +63,10 @@ public static class RoomServiceCollection
                 return new ConcurrentDictionary<int, IRoomLogic>(roomsDictionary);
             });
         }
+        else
+        {
+            serviceCollection.AddSingleton<ConcurrentDictionary<int, IRoomLogic>>([]);
+        }
         
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddTransient<IRoomBotRepository, RoomBotRepository>();
