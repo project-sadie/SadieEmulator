@@ -75,7 +75,7 @@ public class ClientPacketHandler(
 
     private async Task ExecuteAsync(INetworkClient client, INetworkPacketEventHandler eventHandler)
     {
-        logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
+        // logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
         
         try
         {

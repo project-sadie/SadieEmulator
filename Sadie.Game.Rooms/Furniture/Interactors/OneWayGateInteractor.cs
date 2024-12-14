@@ -1,4 +1,5 @@
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
@@ -9,7 +10,7 @@ using Sadie.Enums.Game.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class OneWayGateInteractor(SadieContext dbContext, 
+public class OneWayGateInteractor(IDbContextFactory<SadieContext> dbContextFactory, 
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : AbstractRoomFurnitureItemInteractor
 {
@@ -55,6 +56,7 @@ public class OneWayGateInteractor(SadieContext dbContext,
 
     public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
+        var dbContext = await dbContextFactory.CreateDbContextAsync();
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "0");
         dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();

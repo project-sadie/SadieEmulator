@@ -14,7 +14,7 @@ namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class TeleportInteractor(
     IRoomRepository roomRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : AbstractRoomFurnitureItemInteractor
@@ -79,6 +79,8 @@ public class TeleportInteractor(
         PlayerFurnitureItemPlacementData item,
         IRoomUser roomUser)
     {
+        var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var link = await dbContext
             .PlayerFurnitureItemLinks
             .Where(x => x.ParentId == item.PlayerFurnitureItemId || x.ChildId == item.PlayerFurnitureItemId)
@@ -117,6 +119,8 @@ public class TeleportInteractor(
         long targetItemId,
         IRoomLogic room)
     {
+        var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var targetRoomId = await dbContext
             .RoomFurnitureItems
             .Where(x => x.PlayerFurnitureItemId == targetItemId)
