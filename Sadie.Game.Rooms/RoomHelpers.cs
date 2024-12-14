@@ -16,7 +16,7 @@ namespace Sadie.Game.Rooms;
 public static class RoomHelpers
 {
     public static async Task<IRoomLogic?> TryLoadRoomByIdAsync(
-        long id, 
+        int id, 
         IRoomRepository roomRepository, 
         SadieContext dbContext,
         IMapper mapper)

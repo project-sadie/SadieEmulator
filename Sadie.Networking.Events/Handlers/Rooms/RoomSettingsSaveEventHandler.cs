@@ -18,7 +18,7 @@ public class RoomSettingsSaveEventHandler(
     IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {
-    public long RoomId { get; init; }
+    public int RoomId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
     public int AccessType { get; init; }
