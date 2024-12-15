@@ -51,7 +51,7 @@ public class DimmerInteractor(IDbContextFactory<SadieContext> dbContextFactory) 
                 PresetId = 1
             };
 
-            var dbContext = await dbContextFactory.CreateDbContextAsync();
+            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
             dbContext.RoomDimmerPresets.Add(presetOne);
             dbContext.RoomDimmerPresets.Add(presetTwo);
@@ -64,7 +64,7 @@ public class DimmerInteractor(IDbContextFactory<SadieContext> dbContextFactory) 
 
     public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
-        var dbContext = await dbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         await dbContext
             .RoomDimmerPresets

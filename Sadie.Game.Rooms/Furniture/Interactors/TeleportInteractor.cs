@@ -48,7 +48,7 @@ public class TeleportInteractor(
 
             roomUser.OverridePoints.Add(itemPosition);
 
-            roomUser.WalkToPoint(itemPosition, async () =>
+            roomUser.WalkToPoint(itemPosition, async void () =>
             {
                 roomUser.OverridePoints.Remove(itemPosition);
 
@@ -79,7 +79,7 @@ public class TeleportInteractor(
         PlayerFurnitureItemPlacementData item,
         IRoomUser roomUser)
     {
-        var dbContext = await dbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var link = await dbContext
             .PlayerFurnitureItemLinks
@@ -119,7 +119,7 @@ public class TeleportInteractor(
         long targetItemId,
         IRoomLogic room)
     {
-        var dbContext = await dbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var targetRoomId = await dbContext
             .RoomFurnitureItems

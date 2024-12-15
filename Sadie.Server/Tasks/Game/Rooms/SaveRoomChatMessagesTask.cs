@@ -30,7 +30,7 @@ public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, IDbContext
             messagesToSave.AddRange(chatMessages);
         }
 
-        var dbContext = await dbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         await dbContext.BulkInsertAsync(messagesToSave);
     }
 }

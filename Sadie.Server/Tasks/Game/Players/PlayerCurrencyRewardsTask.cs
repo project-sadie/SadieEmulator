@@ -72,7 +72,7 @@ public class PlayerCurrencyRewardsTask(
             logs.Add(log);
         }
         
-        var dbContext = await dbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
         await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(logs);
         await dbContext.SaveChangesAsync();
