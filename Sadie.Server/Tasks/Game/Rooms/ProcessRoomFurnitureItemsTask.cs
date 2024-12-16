@@ -6,12 +6,11 @@ namespace SadieEmulator.Tasks.Game.Rooms;
 
 public class ProcessRoomFurnitureItemsTask(
     IRoomRepository roomRepository, 
-    IEnumerable<IRoomFurnitureItemProcessor> processors) : IServerTask
+    IEnumerable<IRoomFurnitureItemProcessor> processors) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(1000);
-    public DateTime LastExecuted { get; set; }
+    public override TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(1000);
     
-    public async Task ExecuteAsync()
+    public override async Task ExecuteAsync()
     {
         await Parallel.ForEachAsync(roomRepository.GetAllRooms(), BroadcastItemUpdates);
     }
