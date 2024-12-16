@@ -12,7 +12,8 @@ namespace Sadie.Networking.Client;
 
 public class NetworkClient(
     IChannel channel,
-    IOptions<NetworkPacketOptions> options)
+    IOptions<NetworkPacketOptions> options,
+    NetworkPacketWriterSerializer packetWriterSerializer)
     : INetworkClient
 {
     public IChannel Channel { get; set; } = channel;
@@ -38,7 +39,7 @@ public class NetworkClient(
             return;
         }
 
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = packetWriterSerializer.Serialize(writer);
 
         try
         {
