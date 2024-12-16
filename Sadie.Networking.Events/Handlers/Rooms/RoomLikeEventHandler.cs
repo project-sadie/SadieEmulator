@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
@@ -8,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomLike)]
 public class RoomLikeEventHandler(IRoomRepository roomRepository,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -21,12 +22,17 @@ public class RoomLikeEventHandler(IRoomRepository roomRepository,
         {
             return;
         }
-        
-        client.Player.RoomLikes.Add(new PlayerRoomLike()
+
+        var roomLike = new PlayerRoomLike
         {
             PlayerId = client.Player.Id,
             RoomId = room.Id
-        });
+        };
+        
+        client.Player.RoomLikes.Add(roomLike);
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.PlayerRoomLikes.Add(roomLike);
         await dbContext.SaveChangesAsync();
     }
 }

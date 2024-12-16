@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
@@ -10,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture.Wired;
 
 [PacketId(EventHandlerId.RoomWiredTriggerSaved)]
 public class RoomWiredTriggerSavedEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }
@@ -39,7 +40,7 @@ public class RoomWiredTriggerSavedEventHandler(
 
         await wiredService.SaveSettingsAsync(
             roomItem,
-            dbContext,
+            dbContextFactory,
             new PlayerFurnitureItemWiredData
             {
                 PlayerFurnitureItemPlacementDataId = roomItem.Id,

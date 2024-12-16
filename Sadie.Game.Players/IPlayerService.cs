@@ -7,7 +7,7 @@ using Sadie.Database.Models.Players;
 namespace Sadie.Game.Players;
 
 public class PlayerService(
-    SadieContext dbContext, 
+    IDbContextFactory<SadieContext> dbContextFactory, 
     IPlayerRepository playerRepository,
     IMapper mapper) : IPlayerService
 {
@@ -16,6 +16,8 @@ public class PlayerService(
         var expires = DateTime
             .Now
             .Subtract(TimeSpan.FromMilliseconds(delayMs));
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var tokenRecord = await dbContext
             .PlayerSsoToken
@@ -49,6 +51,8 @@ public class PlayerService(
             }
         }
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         return await dbContext
             .Set<Player>()
             .Include(x => x.Data)
@@ -61,6 +65,8 @@ public class PlayerService(
 
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         return await dbContext
             .Set<PlayerRelationship>()
             .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)
@@ -69,6 +75,8 @@ public class PlayerService(
 
     public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, int[] excludeIds)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         return await dbContext
             .Set<Player>()
             .Include(x => x.AvatarData)
@@ -90,6 +98,8 @@ public class PlayerService(
             }
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         return await dbContext
             .Set<Player>()
             .Include(x => x.Data)

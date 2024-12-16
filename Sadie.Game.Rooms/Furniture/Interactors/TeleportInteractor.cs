@@ -131,7 +131,7 @@ public class TeleportInteractor(
         {
             var targetRoom = await RoomHelpers.TryLoadRoomByIdAsync(targetRoomId,
                 roomRepository,
-                dbContext,
+                dbContextFactory,
                 mapper);
 
             var targetItem = targetRoom?.FurnitureItems
