@@ -10,8 +10,10 @@ public class NetworkPacketWriter : INetworkPacketWriter
 
     public void WriteString(string data)
     {
-        WriteShort((short) Encoding.Default.GetBytes(data).Length);
-        WriteBytes(Encoding.Default.GetBytes(data));
+        var bytes = Encoding.Default.GetBytes(data);
+        
+        WriteShort((short) bytes.Length);
+        WriteBytes(bytes);
     }
 
     private void WriteBytes(byte[] data, bool reverse = false)
