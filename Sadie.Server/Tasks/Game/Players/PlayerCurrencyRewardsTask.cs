@@ -14,15 +14,14 @@ public class PlayerCurrencyRewardsTask(
     List<ServerPeriodicCurrencyReward> rewards, 
     IPlayerRepository playerRepository,
     ServerSettings serverSettings,
-    IRoomUserRepository roomUserRepository) : IServerTask
+    IRoomUserRepository roomUserRepository) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
-    public DateTime LastExecuted { get; set; }
+    public override TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
 
     private readonly Dictionary<int, DateTime> _lastProcessed = rewards
         .ToDictionary(k => k.Id, _ => DateTime.Now);
     
-    public async Task ExecuteAsync()
+    public override async Task ExecuteAsync()
     {
         var rewardsToCheck = serverSettings.FairCurrencyRewards
             ? rewards

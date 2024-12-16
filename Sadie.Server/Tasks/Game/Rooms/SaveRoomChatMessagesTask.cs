@@ -6,12 +6,11 @@ using Sadie.Database.Models.Rooms.Chat;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, IDbContextFactory<SadieContext> dbContextFactory) : IServerTask
+public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, IDbContextFactory<SadieContext> dbContextFactory) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
-    public DateTime LastExecuted { get; set; }
+    public override TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
 
-    public async Task ExecuteAsync()
+    public override async Task ExecuteAsync()
     {
         var messagesToSave = new List<RoomChatMessage>();
         

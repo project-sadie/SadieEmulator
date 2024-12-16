@@ -3,12 +3,11 @@ using Sadie.Networking.Writers.Players.Other;
 
 namespace SadieEmulator.Tasks.Networking;
 
-public class PingClientsTask(INetworkClientRepository clientRepository) : IServerTask
+public class PingClientsTask(INetworkClientRepository clientRepository) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(20);
-    public DateTime LastExecuted { get; set; }
+    public override TimeSpan PeriodicInterval => TimeSpan.FromSeconds(20);
 
-    public async Task ExecuteAsync()
+    public override async Task ExecuteAsync()
     {
         await clientRepository.BroadcastDataAsync(new PlayerPingWriter());
     }
