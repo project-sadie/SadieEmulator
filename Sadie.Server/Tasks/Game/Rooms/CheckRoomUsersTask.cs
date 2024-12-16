@@ -2,14 +2,13 @@ using Sadie.API.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class ProcessRoomUnitsTask(IRoomRepository roomRepository) : IServerTask
+public class CheckRoomUsersTask(IRoomRepository roomRepository) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
-    public DateTime LastExecuted { get; set; }
-
-    public async Task ExecuteAsync()
+    public override async Task ExecuteAsync()
     {
-        await Parallel.ForEachAsync(roomRepository.GetAllRooms(), RunPeriodicChecksForRoomAsync);
+        await Parallel.ForEachAsync(
+            roomRepository.GetAllRooms(), 
+            RunPeriodicChecksForRoomAsync);
     }
 
     private static async ValueTask RunPeriodicChecksForRoomAsync(IRoomLogic? room, CancellationToken ctx)
