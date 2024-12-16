@@ -9,12 +9,9 @@ public class SendRoomUpdatesTask(IRoomRepository roomRepository) : AbstractTask
 {
     public override async Task ExecuteAsync()
     {
-        var sw = Stopwatch.StartNew();
         await Parallel.ForEachAsync(
             roomRepository.GetAllRooms(), 
             SendUpdatesForRoomAsync);
-        sw.Stop();
-        Console.WriteLine($"Sending room updates to {sw.ElapsedMilliseconds} ms.");
     }
 
     private static async ValueTask SendUpdatesForRoomAsync(IRoomLogic room, CancellationToken arg2)
