@@ -11,7 +11,8 @@ namespace Sadie.Game.Rooms.Users;
 
 public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     IPlayerRepository playerRepository,
-    IPlayerHelperService playerHelperService) : IRoomUserRepository
+    IPlayerHelperService playerHelperService,
+    NetworkPacketWriterSerializer packetWriterSerializer) : IRoomUserRepository
 {
     private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 
@@ -71,12 +72,15 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     
     public async Task BroadcastDataAsync(AbstractPacketWriter writer, List<long>? excludedIds = null)
     {
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = packetWriterSerializer.Serialize(writer);
         
-        foreach (var roomUser in _users
-                     .Values
-                     .Where(x => excludedIds == null || !excludedIds.Contains(x.Id)))
+        foreach (var roomUser in _users.Values)
         {
+            if (excludedIds != null && excludedIds.Contains(roomUser.Id))
+            {
+                continue;
+            }
+            
             await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
         }
     }
@@ -88,57 +92,10 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
     public async Task RunPeriodicCheckAsync()
     {
-        try
+        await Parallel.ForEachAsync(_users.Values, async (user, _) =>
         {
-            await Parallel.ForEachAsync(_users.Values, async (user, ct) =>
-            {
-                await user.RunPeriodicCheckAsync();
-            });
-
-            var users = _users
-                .Values;
-
-            if (!_users.IsEmpty)
-            {
-                var bots = users
-                    .First()
-                    .Room
-                    .BotRepository
-                    .GetAll();
-
-                if (bots.Count != 0)
-                {
-                    await BroadcastDataAsync(new RoomBotStatusWriter
-                    {
-                        Bots = bots
-                    });
-
-                    await BroadcastDataAsync(new RoomBotDataWriter
-                    {
-                        Bots = bots
-                    });
-                }
-            }
-            
-            var statusWriter = new RoomUserStatusWriter
-            {
-                Users = users
-                    .Where(x => x.NeedsStatusUpdate)
-                    .ToList()
-            };
-
-            var dataWriter = new RoomUserDataWriter
-            {
-                Users = users
-            };
-
-            await BroadcastDataAsync(statusWriter);
-            await BroadcastDataAsync(dataWriter);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
-        }
+            await user.RunPeriodicCheckAsync();
+        });
     }
 
     public async ValueTask DisposeAsync()

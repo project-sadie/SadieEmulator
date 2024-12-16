@@ -99,14 +99,11 @@ public static class NetworkPacketEventHelpers
             IsShuttingDown = false,
             IsAuthentic = true
         };
-
-        if (player.NavigatorSettings != null)
+        
+        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter
         {
-            await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter
-            {
-                NavigatorSettings = player.NavigatorSettings!
-            });
-        }
+            NavigatorSettings = player.NavigatorSettings!
+        });
         
         await networkObject.WriteToStreamAsync(statusWriter);
 

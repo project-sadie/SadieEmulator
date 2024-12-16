@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers.Rooms;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization;
 using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events;
@@ -35,5 +36,6 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton(packetHandlerTypeMap);
         serviceCollection.AddSingleton<RoomHeightmapEventHandler>();
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
+        serviceCollection.AddSingleton<NetworkPacketWriterSerializer>();
     }
 }
