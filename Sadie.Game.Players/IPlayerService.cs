@@ -56,6 +56,8 @@ public class PlayerService(
         return await dbContext
             .Set<Player>()
             .Include(x => x.Data)
+            .Include(x => x.GameSettings)
+            .Include(x => x.NavigatorSettings)
             .Include(x => x.AvatarData)
             .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
             .Include(x => x.Bans)
