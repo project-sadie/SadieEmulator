@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
@@ -25,7 +26,7 @@ public class SecureLoginEventHandler(
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
     IPlayerService iPlayerService,
     IPlayerHelperService playerHelperService)
@@ -84,7 +85,9 @@ public class SecureLoginEventHandler(
             .Split(":")
             .First() ?? "";
         
-        if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        if (dbContext.BannedIpAddresses.Count(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)) != 0)
         {
             logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
             await DisconnectNetworkClientAsync(client.Channel.Id);

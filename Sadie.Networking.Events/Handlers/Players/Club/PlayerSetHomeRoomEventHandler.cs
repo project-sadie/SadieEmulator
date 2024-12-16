@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -7,7 +8,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Club;
 
 [PacketId(EventHandlerId.PlayerSetHomeRoom)]
 public class PlayerSetHomeRoomEventHandler(
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
     
@@ -27,6 +28,8 @@ public class PlayerSetHomeRoomEventHandler(
         
         client.Player.Data.HomeRoomId = RoomId;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         dbContext
             .Entry(client.Player.Data)
             .Property(x => x.HomeRoomId)

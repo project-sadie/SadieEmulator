@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Unsorted;
@@ -9,7 +10,7 @@ public interface IRoomFurnitureItemHelperService
     Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
         PlayerFurnitureItemPlacementData roomFurnitureItem,
-        SadieContext dbContext);
+        IDbContextFactory<SadieContext> dbContextFactory);
 
     Task UpdateMetaDataForItemAsync(
         IRoomLogic room, 

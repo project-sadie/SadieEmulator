@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
@@ -13,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 [PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
     IPlayerRepository playerRepository,
-    SadieContext dbContext)
+    IDbContextFactory<SadieContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
@@ -68,6 +69,8 @@ public class PlayerSendDirectMessageEventHandler(
         {
             Message = playerMessage
         });
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         dbContext.PlayerMessages.Add(playerMessage);
         await dbContext.SaveChangesAsync();

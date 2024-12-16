@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomDimmerSave)]
 public class RoomDimmerSaveEventHandler(
     IRoomRepository roomRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public required int PresetId { get; init; }
@@ -42,6 +42,8 @@ public class RoomDimmerSaveEventHandler(
             return;
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var presets = dbContext.RoomDimmerPresets.Where(x => x.RoomId == room.Id).ToList();
         var preset = presets.FirstOrDefault(x => x.PresetId == PresetId);
 

@@ -9,7 +9,7 @@ using Sadie.Networking.Writers.Players.Other;
 namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubGifts)]
-public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class HabboClubGiftsEventHandler(IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -18,6 +18,8 @@ public class HabboClubGiftsEventHandler(SadieContext dbContext) : INetworkPacket
             return;
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var clubGiftPage = await dbContext
             .Set<CatalogPage>()
             .IgnoreAutoIncludes()

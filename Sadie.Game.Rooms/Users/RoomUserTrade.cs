@@ -43,7 +43,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         }
     }
     
-    public async Task SwapItemsAsync(SadieContext dbContext)
+    public async Task SwapItemsAsync(IDbContextFactory<SadieContext> dbContextFactory)
     {
         var map = new Dictionary<int, List<PlayerFurnitureItem>>();
         
@@ -69,6 +69,8 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         
         var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         foreach (var userOneItem in userOneItems)
         {
             userOneItem.PlayerId = userTwo.Id;

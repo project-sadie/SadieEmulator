@@ -18,7 +18,7 @@ public static class RoomHelpers
     public static async Task<IRoomLogic?> TryLoadRoomByIdAsync(
         int id, 
         IRoomRepository roomRepository, 
-        SadieContext dbContext,
+        IDbContextFactory<SadieContext> dbContextFactory,
         IMapper mapper)
     {
         var memoryValue = roomRepository.TryGetRoomById(id);
@@ -28,6 +28,8 @@ public static class RoomHelpers
             return memoryValue;
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var room = await dbContext.Set<Room>()
             .Include(x => x.PlayerLikes)
             .Include(x => x.Tags)
@@ -103,7 +105,7 @@ public static class RoomHelpers
     public static async Task CreateRoomVisitForPlayerAsync(
         IPlayerLogic player, 
         int roomId, 
-        SadieContext dbContext)
+        IDbContextFactory<SadieContext> dbContextFactory)
     {
         var roomVisit = new PlayerRoomVisit
         {
@@ -114,6 +116,7 @@ public static class RoomHelpers
         
         player.RoomVisits.Add(roomVisit);
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.PlayerRoomVisits.Add(roomVisit);
         await dbContext.SaveChangesAsync();
     }

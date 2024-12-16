@@ -1,4 +1,5 @@
-﻿using Sadie.API.Game.Rooms;
+﻿using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Game.Rooms.Packets.Writers.Users;
@@ -12,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerChangedMottoEventHandler(
     IRoomRepository roomRepository, 
     ServerPlayerConstants constants,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Motto { get; set; }
     
@@ -37,6 +38,7 @@ public class PlayerChangedMottoEventHandler(
             Users = [roomUser]
         });
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(player.AvatarData).Property(x => x.Motto).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
