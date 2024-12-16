@@ -7,12 +7,11 @@ namespace SadieEmulator.Tasks.Other;
 
 public class UpdateConsoleTitleTask(
     IPlayerRepository playerRepository, 
-    IRoomRepository roomRepository) : IServerTask
+    IRoomRepository roomRepository) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
-    public DateTime LastExecuted { get; set; }
+    public override TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
 
-    public Task ExecuteAsync()
+    public override Task ExecuteAsync()
     {
         var usersOnline = playerRepository.Count();
         var roomCount = roomRepository.Count;
