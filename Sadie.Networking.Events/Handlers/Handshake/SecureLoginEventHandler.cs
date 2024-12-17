@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
@@ -20,13 +21,14 @@ namespace Sadie.Networking.Events.Handlers.Handshake;
 public class SecureLoginEventHandler(
     ILogger<SecureLoginEventHandler> logger,
     IOptions<EncryptionOptions> encryptionOptions,
+    IPlayerService playerService,
     IPlayerRepository playerRepository,
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
-    IPlayerLoaderService playerLoaderService,
+    IPlayerService iPlayerService,
     IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
@@ -51,7 +53,7 @@ public class SecureLoginEventHandler(
             return;
         }
 
-        var tokenRecord = await playerLoaderService.GetTokenAsync(Token, DelayMs);
+        var tokenRecord = await iPlayerService.GetTokenAsync(Token, DelayMs);
         
         if (tokenRecord == null)
         {
@@ -60,7 +62,7 @@ public class SecureLoginEventHandler(
             return;
         }
         
-        var player = await playerRepository.GetPlayerByIdAsync(tokenRecord.PlayerId);
+        var player = await playerService.GetPlayerByIdAsync(tokenRecord.PlayerId, false);
 
         if (player == null)
         {
@@ -83,7 +85,9 @@ public class SecureLoginEventHandler(
             .Split(":")
             .First() ?? "";
         
-        if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        if (dbContext.BannedIpAddresses.Count(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)) != 0)
         {
             logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
             await DisconnectNetworkClientAsync(client.Channel.Id);

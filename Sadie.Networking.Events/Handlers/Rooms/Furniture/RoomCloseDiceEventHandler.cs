@@ -1,4 +1,5 @@
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
@@ -9,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomCloseDice)]
 public class RoomCloseDiceEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
@@ -39,6 +40,7 @@ public class RoomCloseDiceEventHandler(
 
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, roomFurnitureItem, "0");
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }

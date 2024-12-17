@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
@@ -14,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 public class RoomUserRespectEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    SadieContext dbContext)
+    IDbContextFactory<SadieContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public int TargetId { get; init; }
@@ -48,6 +49,8 @@ public class RoomUserRespectEventHandler(
         playerData.RespectPoints--;
         targetPlayer.Respects.Add(respect);
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.PlayerRespects.Add(respect);
         await dbContext.SaveChangesAsync();
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter

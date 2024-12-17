@@ -1,4 +1,5 @@
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
@@ -21,7 +22,7 @@ public static class RoomEntryEventHelpers
         INetworkClient client, 
         IRoomLogic room, 
         IRoomUserFactory roomUserFactory,
-        SadieContext dbContext,
+        IDbContextFactory<SadieContext> dbContextFactory,
         IPlayerRepository playerRepository,
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,
@@ -89,7 +90,7 @@ public static class RoomEntryEventHelpers
         client.RoomUser = roomUser;
         
         await SendRoomEntryPacketsToUserAsync(client, room);
-        await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
+        await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContextFactory);
 
         await Task.Delay(100);
             

@@ -4,6 +4,7 @@ public interface IServerTask
 {
     TimeSpan PeriodicInterval { get; }
     DateTime LastExecuted { get; set; }
+    int LagTicks { get; set; }
     
     public bool WaitingToExecute()
     {
@@ -11,4 +12,5 @@ public interface IServerTask
     }
 
     Task ExecuteAsync();
+    Task OnLagging(int ticks);
 }

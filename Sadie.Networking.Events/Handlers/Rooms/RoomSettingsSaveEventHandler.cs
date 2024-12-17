@@ -14,11 +14,11 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {
-    public long RoomId { get; init; }
+    public int RoomId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
     public int AccessType { get; init; }
@@ -104,6 +104,8 @@ public class RoomSettingsSaveEventHandler(
         
         UpdateSettings(room.Settings);
         UpdateChatSettings(room.ChatSettings);
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         dbContext.Entry(room).State = EntityState.Modified;
         dbContext.Entry(room.Settings).State = EntityState.Modified;

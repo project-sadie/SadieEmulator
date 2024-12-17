@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Sadie.API;
@@ -7,15 +8,17 @@ using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Serialization;
 
-public static class NetworkPacketWriterSerializer
+public class NetworkPacketWriterSerializer
 {
-    private static void InvokeOnConfigureRules(object packet)
+    private readonly ConcurrentDictionary<Type, short> _writerIdCache = new();
+    
+    private void InvokeOnConfigureRules(object packet)
     {
         var configureRulesMethod = packet.GetType().GetMethod("OnConfigureRules");
         configureRulesMethod?.Invoke(packet, []);
     }
     
-    private static bool InvokeOnSerializeIfExists(object packet, NetworkPacketWriter writer)
+    private bool InvokeOnSerializeIfExists(object packet, NetworkPacketWriter writer)
     {
         var onSerialize = packet.GetType().GetMethod("OnSerialize");
 
@@ -33,8 +36,13 @@ public static class NetworkPacketWriterSerializer
         return true;
     }
 
-    private static short GetPacketIdentifierFromAttribute(object packetObject)
+    private short GetPacketIdentifierFromAttribute(object packetObject)
     {
+        if (_writerIdCache.ContainsKey(packetObject.GetType()))
+        {
+            return _writerIdCache[packetObject.GetType()];
+        }
+        
         var identifierAttribute = packetObject.GetType().GetCustomAttribute<PacketIdAttribute>();
 
         if (identifierAttribute == null)
@@ -42,6 +50,7 @@ public static class NetworkPacketWriterSerializer
             throw new InvalidOperationException($"Missing packet identifier attribute for packet type {packetObject.GetType()}");
         }
 
+        _writerIdCache[packetObject.GetType()] = identifierAttribute.Id;
         return identifierAttribute.Id;
     }
     
@@ -111,10 +120,9 @@ public static class NetworkPacketWriterSerializer
         }
     }
     
-    public static NetworkPacketWriter Serialize(object packet)
+    public NetworkPacketWriter Serialize(object packet)
     {
         var writer = new NetworkPacketWriter();
-        
         writer.WriteShort(GetPacketIdentifierFromAttribute(packet));
 
         if (InvokeOnSerializeIfExists(packet, writer))

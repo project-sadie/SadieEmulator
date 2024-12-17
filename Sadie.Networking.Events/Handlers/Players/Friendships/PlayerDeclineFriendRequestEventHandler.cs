@@ -10,8 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
 [PacketId(EventHandlerId.PlayerDeclineFriendRequest)]
 public class PlayerDeclineFriendRequestEventHandler(
-    IPlayerRepository playerRepository,
-    SadieContext dbContext)
+    IPlayerService playerService,
+    IDbContextFactory<SadieContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public bool DeclineAll { get; set; }
@@ -22,6 +22,8 @@ public class PlayerDeclineFriendRequestEventHandler(
         var player = client.Player;
         var playerId = player.Id;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         if (DeclineAll)
         {
             player.IncomingFriendships.Clear();
@@ -40,7 +42,7 @@ public class PlayerDeclineFriendRequestEventHandler(
                     .Where(x => x.OriginPlayerId == originId && x.TargetPlayerId == targetId)
                     .ExecuteDeleteAsync();
 
-                var origin = await playerRepository.GetPlayerByIdAsync(originId);
+                var origin = await playerService.GetPlayerByIdAsync(originId);
                 var request = origin?.OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
 
                 if (request != null)

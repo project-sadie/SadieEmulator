@@ -16,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemPlaced)]
 public class RoomItemPlacedEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository,
     IRoomFurnitureItemInteractorRepository interactorRepository,
     IRoomTileMapHelperService tileMapHelperService,
@@ -122,6 +122,7 @@ public class RoomItemPlacedEventHandler(
                 await interactor.OnPlaceAsync(client.RoomUser.Room, roomFurnitureItem, client.RoomUser);
             }
 
+            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
             dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Unchanged;
             dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
         
@@ -189,6 +190,7 @@ public class RoomItemPlacedEventHandler(
                 RoomFurnitureItem = roomFurnitureItem
             });
 
+            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
             dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
             await dbContext.SaveChangesAsync();
         }

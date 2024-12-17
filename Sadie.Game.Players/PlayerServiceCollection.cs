@@ -11,6 +11,6 @@ public static class PlayerServiceCollection
         serviceCollection.AddTransient<PlayerLogic, PlayerLogic>();
         serviceCollection.AddSingleton<IPlayerRepository, PlayerRepository>();
         serviceCollection.AddSingleton<IPlayerHelperService, PlayerHelperService>();
-        serviceCollection.AddSingleton<IPlayerLoaderService, PlayerLoaderService>();
+        serviceCollection.AddTransient<IPlayerService, PlayerService>();
     }
 }

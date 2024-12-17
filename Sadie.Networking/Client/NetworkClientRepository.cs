@@ -3,6 +3,7 @@ using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
+using Sadie.API.Networking;
 using Sadie.Database;
 
 namespace Sadie.Networking.Client;
@@ -108,6 +109,16 @@ public class NetworkClientRepository(
     public INetworkClient? TryGetClientByChannelId(IChannelId channelId)
     {
         return _clients.GetValueOrDefault(channelId);
+    }
+
+    public Task BroadcastDataAsync(AbstractPacketWriter writer)
+    {
+        Parallel.ForEach(_clients.Values, async void (client) =>
+        {
+            await client.WriteToStreamAsync(writer);
+        });
+        
+        return Task.CompletedTask;
     }
 
     public async ValueTask DisposeAsync()

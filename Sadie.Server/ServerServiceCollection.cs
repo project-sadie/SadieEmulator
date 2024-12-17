@@ -48,7 +48,7 @@ public static class ServerServiceCollection
 
         MapperServiceCollection.AddServices(serviceCollection);
         PlayerServiceCollection.AddServices(serviceCollection);
-        RoomServiceCollection.AddServices(serviceCollection);
+        RoomServiceCollection.AddServices(serviceCollection, config);
         NetworkServiceCollection.AddServices(serviceCollection);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);

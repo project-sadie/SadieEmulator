@@ -9,7 +9,7 @@ using Sadie.Enums.Game.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
-public class DimmerInteractor(SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
+public class DimmerInteractor(IDbContextFactory<SadieContext> dbContextFactory) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Dimmer];
     
@@ -51,6 +51,8 @@ public class DimmerInteractor(SadieContext dbContext) : AbstractRoomFurnitureIte
                 PresetId = 1
             };
 
+            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
             dbContext.RoomDimmerPresets.Add(presetOne);
             dbContext.RoomDimmerPresets.Add(presetTwo);
             dbContext.RoomDimmerPresets.Add(presetThree);
@@ -62,6 +64,8 @@ public class DimmerInteractor(SadieContext dbContext) : AbstractRoomFurnitureIte
 
     public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         await dbContext
             .RoomDimmerPresets
             .Where(x => x.RoomId == room.Id)

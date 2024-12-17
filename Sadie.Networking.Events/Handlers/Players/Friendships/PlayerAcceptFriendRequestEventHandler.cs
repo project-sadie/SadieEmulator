@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
@@ -12,8 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 [PacketId(EventHandlerId.PlayerAcceptFriendRequest)]
 public class PlayerAcceptFriendRequestEventHandler(
     IPlayerRepository playerRepository,
-    IRoomRepository roomRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
@@ -43,6 +41,8 @@ public class PlayerAcceptFriendRequestEventHandler(
 
         request.Status = PlayerFriendshipStatus.Accepted;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         dbContext.Entry(request).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();
         

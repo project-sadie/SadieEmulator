@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.Database.Models.Catalog.FrontPage;
@@ -11,6 +12,8 @@ public static class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        serviceCollection.AddDbContextFactory<SadieContext>();
+        
         serviceCollection.AddDbContext<SadieContext>(options =>
         {
             options.UseMySql(config.GetConnectionString("Default"), MySqlServerVersion.LatestSupportedServerVersion, mySqlOptions =>
@@ -22,6 +25,8 @@ public static class DatabaseServiceCollection
             });
         
             options.UseSnakeCaseNamingConvention();
+
+            options.ConfigureWarnings(w => w.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning));
         }, ServiceLifetime.Transient);
 
         serviceCollection.AddSingleton<ServerPlayerConstants>(provider =>
@@ -52,7 +57,5 @@ public static class DatabaseServiceCollection
                 .Set<CatalogFrontPageItem>()
                 .Include(x => x.CatalogPage)
                 .ToList());
-
-        serviceCollection.AddSingleton<DatabaseProvider>();
     }
 }

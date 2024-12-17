@@ -1,16 +1,16 @@
 using EFCore.BulkExtensions;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Chat;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 
-public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, SadieContext dbContext) : IServerTask
+public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, IDbContextFactory<SadieContext> dbContextFactory) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
-    public DateTime LastExecuted { get; set; }
+    public override TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
 
-    public async Task ExecuteAsync()
+    public override async Task ExecuteAsync()
     {
         var messagesToSave = new List<RoomChatMessage>();
         
@@ -29,6 +29,7 @@ public class SaveRoomChatMessagesTask(IRoomRepository roomRepository, SadieConte
             messagesToSave.AddRange(chatMessages);
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         await dbContext.BulkInsertAsync(messagesToSave);
     }
 }

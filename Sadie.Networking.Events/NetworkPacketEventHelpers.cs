@@ -93,19 +93,18 @@ public static class NetworkPacketEventHelpers
             Ambassador = true
         });
 
-        var navigatorSettingsWriter = new PlayerNavigatorSettingsWriter
-        {
-            NavigatorSettings = player.NavigatorSettings!
-        };
-
         var statusWriter = new PlayerStatusWriter
         {
             IsOpen = true,
             IsShuttingDown = false,
             IsAuthentic = true
         };
-
-        await networkObject.WriteToStreamAsync(navigatorSettingsWriter);
+        
+        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter
+        {
+            NavigatorSettings = player.NavigatorSettings!
+        });
+        
         await networkObject.WriteToStreamAsync(statusWriter);
 
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter

@@ -21,6 +21,7 @@ namespace Sadie.Tests.Networking;
 public class NetworkPacketWriterSerializerTests
 {
     private IOptions<NetworkPacketOptions> _options;
+    private NetworkPacketWriterSerializer _packetWriterSerializer;
     
     [SetUp]
     public void SetUp()
@@ -30,6 +31,8 @@ public class NetworkPacketWriterSerializerTests
             BufferByteSize = 4024,
             FrameLengthByteCount = 4
         });
+
+        _packetWriterSerializer = new NetworkPacketWriterSerializer();
     }
     
     [Test]
@@ -45,7 +48,7 @@ public class NetworkPacketWriterSerializerTests
             MessageLength = 4234
         };
         
-        var writer = NetworkPacketWriterSerializer.Serialize(testWriter);
+        var writer = _packetWriterSerializer.Serialize(testWriter);
         var decoder = new NetworkPacketDecoder(_options);
         var packets = decoder.DecodePacketsFromBytes(writer.GetAllBytes());
 
@@ -68,7 +71,7 @@ public class NetworkPacketWriterSerializerTests
     [Test]
     public void Serialize_NestedDataWithAttribute_ReadsCorrectly()
     {
-        var writer = NetworkPacketWriterSerializer.Serialize(new PlayerPerksWriter
+        var writer = _packetWriterSerializer.Serialize(new PlayerPerksWriter
         {
             Perks = [new PerkData("codeTest", "Some message test", false)]
         });
@@ -92,7 +95,7 @@ public class NetworkPacketWriterSerializerTests
     [Test]
     public void Serialize_NestedDataWithoutAttribute_ReadsCorrectly()
     {
-        var writer = NetworkPacketWriterSerializer.Serialize(new PlayerNavigatorSettingsWriter
+        var writer = _packetWriterSerializer.Serialize(new PlayerNavigatorSettingsWriter
         {
             NavigatorSettings = new PlayerNavigatorSettings
             {
@@ -130,7 +133,7 @@ public class NetworkPacketWriterSerializerTests
     [Test]
     public void Serialize_WithOnSerializeOverride_ReadsCorrectly()
     {
-        var writer = NetworkPacketWriterSerializer.Serialize(new CatalogPageWriter
+        var writer = _packetWriterSerializer.Serialize(new CatalogPageWriter
         {
             PageId = 392,
             CatalogMode = "edom",

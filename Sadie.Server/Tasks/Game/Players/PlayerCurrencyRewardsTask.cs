@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
@@ -9,19 +10,18 @@ using Sadie.Networking.Writers.Players.Purse;
 namespace SadieEmulator.Tasks.Game.Players;
 
 public class PlayerCurrencyRewardsTask(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     List<ServerPeriodicCurrencyReward> rewards, 
     IPlayerRepository playerRepository,
     ServerSettings serverSettings,
-    IRoomUserRepository roomUserRepository) : IServerTask
+    IRoomUserRepository roomUserRepository) : AbstractTask
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
-    public DateTime LastExecuted { get; set; }
+    public override TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
 
     private readonly Dictionary<int, DateTime> _lastProcessed = rewards
         .ToDictionary(k => k.Id, _ => DateTime.Now);
     
-    public async Task ExecuteAsync()
+    public override async Task ExecuteAsync()
     {
         var rewardsToCheck = serverSettings.FairCurrencyRewards
             ? rewards
@@ -70,6 +70,8 @@ public class PlayerCurrencyRewardsTask(
             player.RewardLogs.Add(log);
             logs.Add(log);
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
         await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(logs);
         await dbContext.SaveChangesAsync();

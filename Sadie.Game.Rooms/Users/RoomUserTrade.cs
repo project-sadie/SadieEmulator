@@ -10,7 +10,8 @@ using Sadie.Networking.Serialization;
 
 namespace Sadie.Game.Rooms.Users;
 
-public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUserTrade
+public class RoomUserTrade(IPlayerHelperService playerHelperService,
+    NetworkPacketWriterSerializer packetWriterSerializer) : IRoomUserTrade
 {
     public required List<IRoomUser> Users { get; init; }
     public required List<PlayerFurnitureItem> Items { get; init; }
@@ -35,7 +36,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
     
     public async Task BroadcastToUsersAsync(AbstractPacketWriter writer)
     {
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = packetWriterSerializer.Serialize(writer);
         
         foreach (var roomUser in Users)
         {
@@ -43,7 +44,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         }
     }
     
-    public async Task SwapItemsAsync(SadieContext dbContext)
+    public async Task SwapItemsAsync(IDbContextFactory<SadieContext> dbContextFactory)
     {
         var map = new Dictionary<int, List<PlayerFurnitureItem>>();
         
@@ -69,6 +70,8 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         
         var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         foreach (var userOneItem in userOneItems)
         {
             userOneItem.PlayerId = userTwo.Id;

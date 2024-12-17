@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubData)]
 public class PlayerClubOffersEventHandler(
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int WindowId { get; set; }
     
@@ -34,6 +34,8 @@ public class PlayerClubOffersEventHandler(
 
             daysRemaining = (int)(daysTotal - daysSinceStarted);
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var catalogClubOffers = await dbContext
             .Set<CatalogClubOffer>()

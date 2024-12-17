@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
@@ -9,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomDimmerSettings)]
 public class RoomDimmerSettingsEventHandler(
-    SadieContext dbContext, 
+    IDbContextFactory<SadieContext> dbContextFactory, 
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
@@ -32,6 +33,8 @@ public class RoomDimmerSettingsEventHandler(
         {
             throw new Exception("DIMMER_SETTINGS_NULL_WHEN_DIMMER_IN_ROOM");
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         await client.WriteToStreamAsync(new RoomDimmerSettingsWriter
         {

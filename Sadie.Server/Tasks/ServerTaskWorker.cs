@@ -11,12 +11,16 @@ public class ServerTaskWorker(
     {
         while (!token.IsCancellationRequested)
         {
-            foreach (var task in tasks.Where(task => task.WaitingToExecute()))
+            var tasksWaiting = tasks
+                .Where(x => x.WaitingToExecute())
+                .ToList();
+            
+            await Parallel.ForEachAsync(tasksWaiting, token, async (t, _) =>
             {
-                task.LastExecuted = DateTime.Now;
-                ProcessTaskAsync(task);
-            }
-
+                t.LastExecuted = DateTime.Now;
+                await ProcessTaskAsync(t);
+            });
+            
             await Task.Delay(50, token);
         }
     }
@@ -29,9 +33,18 @@ public class ServerTaskWorker(
             await task.ExecuteAsync();
             stopwatch.Stop();
 
-            if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 2)
+            if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds)
             {
-                logger.LogWarning($"Task '{task.GetType().Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
+                task.LagTicks++;
+
+                if (task.LagTicks >= 3)
+                {
+                    logger.LogWarning($"Task '{task.GetType().Name}' has {task.LagTicks} lag ticks.");
+                }
+            }
+            else
+            {
+                task.LagTicks = 0;
             }
         }
         catch (Exception e)

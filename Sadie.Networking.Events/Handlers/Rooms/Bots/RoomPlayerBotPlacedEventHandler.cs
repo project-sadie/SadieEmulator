@@ -1,4 +1,5 @@
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.Database;
@@ -12,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 
 [PacketId(EventHandlerId.RoomPlayerBotPlaced)]
 public class RoomPlayerBotPlacedEventHandler(
-    SadieContext dbContext, 
+    IDbContextFactory<SadieContext> dbContextFactory, 
     IRoomRepository roomRepository,
     IRoomBotFactory roomBotFactory) : INetworkPacketEventHandler
 {
@@ -67,6 +68,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         bot.RoomId = room.Id;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(bot).Property(x => x.RoomId).IsModified = true;
         await dbContext.SaveChangesAsync();
 

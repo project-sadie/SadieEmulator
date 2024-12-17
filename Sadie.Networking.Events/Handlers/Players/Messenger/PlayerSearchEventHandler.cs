@@ -8,7 +8,9 @@ using Sadie.Shared.Extensions;
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 [PacketId(EventHandlerId.PlayerSearch)]
-public class PlayerSearchEventHandler(IPlayerRepository playerRepository) : INetworkPacketEventHandler
+public class PlayerSearchEventHandler(
+    IPlayerService playerService,
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public string? SearchQuery { get; set; }
     
@@ -44,7 +46,7 @@ public class PlayerSearchEventHandler(IPlayerRepository playerRepository) : INet
             .Where(x => x.Username.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
-        var strangers = await playerRepository
+        var strangers = await playerService
             .GetPlayersForSearchAsync(SearchQuery, friendsList.Select(x => x.Id).ToArray());
 
         await client.WriteToStreamAsync(new PlayerSearchResultWriter

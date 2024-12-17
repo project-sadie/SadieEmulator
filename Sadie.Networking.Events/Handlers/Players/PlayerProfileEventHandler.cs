@@ -7,14 +7,14 @@ using Sadie.Networking.Writers.Players;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerProfile)]
-public class PlayerProfileEventHandler(IPlayerRepository playerRepository)
+public class PlayerProfileEventHandler(IPlayerService playerService)
     : INetworkPacketEventHandler
 {
     public int ProfileId { get; set; }
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var profilePlayer = await playerRepository.GetPlayerByIdAsync(ProfileId);
+        var profilePlayer = await playerService.GetPlayerByIdAsync(ProfileId);
         
         if (profilePlayer == null)
         {

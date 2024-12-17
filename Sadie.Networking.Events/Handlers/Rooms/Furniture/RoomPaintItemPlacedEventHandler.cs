@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms.Furniture;
@@ -11,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomPaintItemPlaced)]
 public class RoomPaintItemPlacedEventHandler(
     IRoomRepository roomRepository,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int ItemId { get; init; }
     
@@ -45,6 +46,8 @@ public class RoomPaintItemPlacedEventHandler(
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         switch (playerItem.FurnitureItem.AssetName)
         {

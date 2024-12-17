@@ -42,6 +42,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
     public DbSet<PlayerFurnitureItem> PlayerFurnitureItems { get; init; }
     public DbSet<PlayerFurnitureItemLink> PlayerFurnitureItemLinks { get; init; }
     public DbSet<PlayerBadge> PlayerBadges { get; init; }
+    public DbSet<PlayerRespect> PlayerRespects { get; init; }
     public DbSet<Badge> Badges { get; init; }
     public DbSet<CatalogClubOffer> CatalogClubOffers { get; init; }
     public DbSet<ServerPlayerConstants> ServerPlayerConstants { get; init; }

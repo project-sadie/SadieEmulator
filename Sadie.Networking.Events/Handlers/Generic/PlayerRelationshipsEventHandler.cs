@@ -7,17 +7,17 @@ namespace Sadie.Networking.Events.Handlers.Generic;
 
 [PacketId(EventHandlerId.PlayerRelationships)]
 public class PlayerRelationshipsEventHandler(
-    IPlayerRepository playerRepository) : INetworkPacketEventHandler
+    IPlayerService playerService) : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var player = await playerRepository.GetPlayerByIdAsync(PlayerId);
+        var player = await playerService.GetPlayerByIdAsync(PlayerId);
 
         var relationships = player != null ? 
                 player.Relationships : 
-                await playerRepository.GetRelationshipsForPlayerAsync(PlayerId);
+                await playerService.GetRelationshipsForPlayerAsync(PlayerId);
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter
         {
