@@ -114,13 +114,13 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .Property(e => e.Gender)
             .HasConversion(
                 v => EnumHelpers.GetEnumDescription(v),
-                v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v));
+                v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v.ToUpper()));
         
         modelBuilder.Entity<PlayerBot>()
             .Property(e => e.Gender)
             .HasConversion(
                 v => EnumHelpers.GetEnumDescription(v),
-                v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v));
+                v => EnumHelpers.GetEnumValueFromDescription<AvatarGender>(v.ToUpper()));
 
         modelBuilder.Entity<Subscription>().ToTable("subscriptions");
 
