@@ -1,3 +1,4 @@
+using Sadie.API;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Networking;
 using Sadie.Networking.Serialization.Attributes;
@@ -18,4 +19,18 @@ public class RoomObjectsRollingWriter : AbstractPacketWriter
     public required int RoomUserId { init; get; }
     public required string Height { init; get; }
     public required string NextHeight { init; get; }
+
+    public override void OnSerialize(INetworkPacketWriter writer)
+    {
+        writer.WriteInteger(X);
+        writer.WriteInteger(Y);
+        writer.WriteInteger(NextX);
+        writer.WriteInteger(NextY);
+        writer.WriteInteger(0);
+        writer.WriteInteger(RollerId);
+        writer.WriteInteger(MovementType);
+        writer.WriteInteger(RoomUserId);
+        writer.WriteString(Height);
+        writer.WriteString(NextHeight);
+    }
 }
