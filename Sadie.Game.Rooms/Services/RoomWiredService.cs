@@ -92,11 +92,13 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
                 });
                 break;
             case FurnitureItemInteractionType.WiredEffectKickUser:
-                foreach (var user in room.UserRepository.GetAll())
+                if (room.OwnerId == userWhoTriggered.Id)
                 {
-                    await user.Room.UserRepository.TryRemoveAsync(user.Id, true, true);
-                    await user.Player.SendAlertAsync(effect.WiredData.Message);
+                    break;
                 }
+                
+                await userWhoTriggered.Room.UserRepository.TryRemoveAsync(userWhoTriggered.Id, true, true);
+                await userWhoTriggered.Player.SendAlertAsync(effect.WiredData.Message);
                 break;
         }
         
