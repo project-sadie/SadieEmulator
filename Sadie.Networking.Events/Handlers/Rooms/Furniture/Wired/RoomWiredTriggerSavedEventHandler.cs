@@ -25,7 +25,7 @@ public class RoomWiredTriggerSavedEventHandler(
         var room = client.RoomUser?.Room;
 
         var roomItem = room?.FurnitureItems
-            .FirstOrDefault(x => x.Id == ItemId);
+            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomItem == null)
         {
