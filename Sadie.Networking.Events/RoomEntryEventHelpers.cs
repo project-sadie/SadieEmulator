@@ -95,8 +95,9 @@ public static class RoomEntryEventHelpers
             
         var matchingWiredTriggers = room.FurnitureItems
             .Where(x =>
-                x.FurnitureItem.InteractionType ==
-                FurnitureItemInteractionType.WiredTriggerEnterRoom)
+                x.FurnitureItem.InteractionType == FurnitureItemInteractionType.WiredTriggerEnterRoom &&
+                x.WiredData != null &&
+                (string.IsNullOrEmpty(x.WiredData.Message) || x.WiredData.Message == player.Username))
             .ToList();
 
         foreach (var trigger in matchingWiredTriggers)
