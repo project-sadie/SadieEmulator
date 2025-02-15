@@ -142,6 +142,14 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
 
         dbContext.Entry(wiredData.PlacementData).State = EntityState.Unchanged;
         dbContext.Entry(wiredData).State = EntityState.Added;
+
+        if (wiredData.PlayerFurnitureItemWiredParameters.Count != 0)
+        {
+            foreach (var parameter in wiredData.PlayerFurnitureItemWiredParameters)
+            {
+                dbContext.Entry(parameter).State = EntityState.Added;
+            }
+        }
         
         await dbContext.SaveChangesAsync();
     }

@@ -105,6 +105,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         modelBuilder.Entity<PlayerBot>().ToTable("player_bots");
         modelBuilder.Entity<RoomDimmerPreset>().ToTable("room_dimmer_presets");
         modelBuilder.Entity<PlayerFurnitureItemPlacementData>().ToTable("player_furniture_item_placement_data");
+        modelBuilder.Entity<PlayerFurnitureItemWiredParameter>().ToTable("player_furniture_item_wired_parameters");
 
         modelBuilder.Entity<RoomLayout>()
             .Property(x => x.HeightMap)
@@ -197,6 +198,10 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
 
         modelBuilder.Entity<PlayerFurnitureItemPlacementData>()
             .Navigation(x => x.WiredData)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFurnitureItemWiredData>()
+            .Navigation(x => x.PlayerFurnitureItemWiredParameters)
             .AutoInclude();
         
         modelBuilder.Entity<Player>()

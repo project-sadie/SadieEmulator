@@ -10,4 +10,5 @@ public class PlayerFurnitureItemWiredData
     public ICollection<PlayerFurnitureItemPlacementData> SelectedItems { get; init; } = [];
     public required string Message { get; init; }
     public int Delay { get; init; }
+    public List<PlayerFurnitureItemWiredParameter> PlayerFurnitureItemWiredParameters { get; init; }
 }

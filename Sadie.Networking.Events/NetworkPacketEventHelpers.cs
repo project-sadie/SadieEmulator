@@ -241,8 +241,11 @@ public static class NetworkPacketEventHelpers
         room.ChatMessages.Add(chatMessage);
 
         var triggers = wiredService.GetTriggers(
-            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.FurnitureItems, message);
-        
+                FurnitureItemInteractionType.WiredTriggerSaysSomething, room.FurnitureItems, message)
+            .Where(x => x.WiredData.PlayerFurnitureItemWiredParameters.First().Value == 0 ||
+                        x.WiredData.PlayerFurnitureItemWiredParameters.First().Value == client.Player.Id)
+            .ToList();
+
         foreach (var trigger in triggers)
         {
             await wiredService.RunTriggerForRoomAsync(room, trigger, roomUser);
