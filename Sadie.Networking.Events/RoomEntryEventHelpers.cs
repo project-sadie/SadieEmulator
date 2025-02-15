@@ -92,13 +92,11 @@ public static class RoomEntryEventHelpers
         await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
 
         await Task.Delay(100);
-            
-        var matchingWiredTriggers = room.FurnitureItems
-            .Where(x =>
-                x.FurnitureItem.InteractionType == FurnitureItemInteractionType.WiredTriggerEnterRoom &&
-                x.WiredData != null &&
-                (string.IsNullOrEmpty(x.WiredData.Message) || x.WiredData.Message == player.Username))
-            .ToList();
+
+        var matchingWiredTriggers = wiredService.GetTriggers(
+            FurnitureItemInteractionType.WiredTriggerEnterRoom,
+            room.FurnitureItems,
+            player.Username);
 
         foreach (var trigger in matchingWiredTriggers)
         {

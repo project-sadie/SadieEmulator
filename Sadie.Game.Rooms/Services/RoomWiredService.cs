@@ -23,7 +23,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         return roomItems.Where(x =>
             x.WiredData != null &&
             x.PlayerFurnitureItem.FurnitureItem.InteractionType == interactionType &&
-            (string.IsNullOrWhiteSpace(requiredMessage) || x.WiredData!.Message == requiredMessage) &&
+            (string.IsNullOrWhiteSpace(x.WiredData.Message) || x.WiredData.Message == requiredMessage) &&
             (requiredSelectedIds == null ||
              requiredSelectedIds.All(r => x.WiredData.SelectedItems.Select(i => i.Id)
                  .Contains(r))));
