@@ -39,7 +39,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
 
         foreach (var effect in effectsOnTrigger)
         {
-            await RunEffectForRoomAsync(room, effect, userWhoTriggered);
+            RunEffectForRoomAsync(room, effect, userWhoTriggered);
         }
     }
     
@@ -76,6 +76,11 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         if (effect.WiredData == null)
         {
             return;
+        }
+        
+        if (effect.WiredData.Delay > 0)
+        {
+            await Task.Delay(effect.WiredData.Delay * 500);
         }
         
         switch (effect.FurnitureItem.InteractionType)
