@@ -194,6 +194,10 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .HasOne(x => x.PlacementData)
             .WithOne(x => x.WiredData)
             .HasForeignKey<PlayerFurnitureItemWiredData>(e => e.PlayerFurnitureItemPlacementDataId);
+
+        modelBuilder.Entity<PlayerFurnitureItemPlacementData>()
+            .Navigation(x => x.WiredData)
+            .AutoInclude();
         
         modelBuilder.Entity<Player>()
             .HasMany<PlayerBan>(x => x.Bans)
