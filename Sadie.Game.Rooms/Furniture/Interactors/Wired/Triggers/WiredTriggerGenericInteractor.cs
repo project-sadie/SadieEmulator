@@ -8,6 +8,7 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
+using Serilog;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired.Triggers;
 
@@ -28,8 +29,10 @@ public class WiredTriggerGenericInteractor(IRoomWiredService wiredService,
         var interactionType = item.FurnitureItem.InteractionType;
 
         var selectedItemIds = wiredData?
-            .SelectedItems
-            .Select(x => x.Id)
+            .PlayerFurnitureItemWiredDataItems
+            .Select(x => x
+                .PlayerFurnitureItemPlacementData
+                .PlayerFurnitureItemId)
             .ToList() ?? [];
         
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredTriggerWriter
@@ -61,7 +64,9 @@ public class WiredTriggerGenericInteractor(IRoomWiredService wiredService,
         {
             PlayerFurnitureItemPlacementDataId = item.Id,
             PlacementData = item,
-            Message = null
+            Message = null,
+            PlayerFurnitureItemWiredParameters = [],
+            PlayerFurnitureItemWiredDataItems = []
         };
         
         dbContext.Entry(wiredData).State = EntityState.Added;

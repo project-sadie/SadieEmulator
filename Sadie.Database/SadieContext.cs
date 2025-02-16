@@ -61,6 +61,7 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
     public DbSet<PlayerMessage> PlayerMessages { get; init; }
     public DbSet<PlayerBan> PlayerBans { get; init; }
     public DbSet<BannedIpAddress> BannedIpAddresses { get; init; }
+    public DbSet<PlayerFurnitureItemWiredDataItem> PlayerFurnitureItemWiredDataItems { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -170,15 +171,6 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         modelBuilder.Entity<PlayerFurnitureItem>()
             .Navigation(x => x.FurnitureItem)
             .AutoInclude();
-        
-        modelBuilder.Entity<PlayerFurnitureItemWiredData>()
-            .HasMany(r => r.SelectedItems)
-            .WithMany(p => p.SelectedBy)
-            .UsingEntity("player_furniture_item_wired_data_items",
-                l => l.HasOne(typeof(PlayerFurnitureItemPlacementData)).WithMany().HasForeignKey("player_furniture_item_placement_data_id").HasPrincipalKey(nameof(PlayerFurnitureItemPlacementData.Id)),
-                r => r.HasOne(typeof(PlayerFurnitureItemWiredData)).WithMany().HasForeignKey("player_furniture_item_wired_data_id").HasPrincipalKey(nameof(PlayerFurnitureItemWiredData.Id)),
-                j => j.HasKey("player_furniture_item_placement_data_id", "player_furniture_item_wired_data_id"));
-
         modelBuilder.Entity<PlayerFurnitureItem>()
             .Navigation(x => x.Player)
             .AutoInclude();
@@ -192,16 +184,15 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .AutoInclude();
 
         modelBuilder.Entity<PlayerFurnitureItemWiredData>()
-            .HasOne(x => x.PlacementData)
-            .WithOne(x => x.WiredData)
-            .HasForeignKey<PlayerFurnitureItemWiredData>(e => e.PlayerFurnitureItemPlacementDataId);
-
-        modelBuilder.Entity<PlayerFurnitureItemPlacementData>()
-            .Navigation(x => x.WiredData)
+            .Navigation(x => x.PlayerFurnitureItemWiredParameters)
             .AutoInclude();
 
         modelBuilder.Entity<PlayerFurnitureItemWiredData>()
-            .Navigation(x => x.PlayerFurnitureItemWiredParameters)
+            .Navigation(x => x.PlayerFurnitureItemWiredDataItems)
+            .AutoInclude();
+        
+        modelBuilder.Entity<PlayerFurnitureItemWiredDataItem>()
+            .Navigation(x => x.PlayerFurnitureItemPlacementData)
             .AutoInclude();
         
         modelBuilder.Entity<Player>()

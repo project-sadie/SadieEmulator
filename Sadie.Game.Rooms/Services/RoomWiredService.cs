@@ -25,7 +25,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             x.PlayerFurnitureItem.FurnitureItem.InteractionType == interactionType &&
             (string.IsNullOrWhiteSpace(x.WiredData.Message) || x.WiredData.Message == requiredMessageIfExists) &&
             (requiredSelectedIds == null ||
-             requiredSelectedIds.All(r => x.WiredData.SelectedItems.Select(i => i.Id)
+             requiredSelectedIds.All(r => x.WiredData.PlayerFurnitureItemWiredDataItems.Select(i => i.PlayerFurnitureItemPlacementDataId)
                  .Contains(r))));
     }
     
@@ -151,15 +151,15 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
 
         dbContext.Entry(wiredData.PlacementData).State = EntityState.Unchanged;
         dbContext.Entry(wiredData).State = EntityState.Added;
+        
+        await dbContext.SaveChangesAsync();
 
-        if (wiredData.PlayerFurnitureItemWiredParameters.Count != 0)
+        foreach (var parameter in wiredData.PlayerFurnitureItemWiredParameters)
         {
-            foreach (var parameter in wiredData.PlayerFurnitureItemWiredParameters)
-            {
-                dbContext.Entry(parameter).State = EntityState.Added;
-            }
+            dbContext.Entry(parameter).State = EntityState.Added;
         }
         
+        dbContext.PlayerFurnitureItemWiredDataItems.AddRange(wiredData.PlayerFurnitureItemWiredDataItems);
         await dbContext.SaveChangesAsync();
     }
 

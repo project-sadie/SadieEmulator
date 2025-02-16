@@ -34,7 +34,7 @@ public class RoomWiredTriggerSavedEventHandler(
 
         var selectedItems = room!
             .FurnitureItems
-            .Where(x => ItemIds.Contains(x.Id))
+            .Where(x => ItemIds.Contains(x.PlayerFurnitureItemId))
             .ToList();
 
         var parameters = Parameters
@@ -47,9 +47,12 @@ public class RoomWiredTriggerSavedEventHandler(
         {
             PlayerFurnitureItemPlacementDataId = roomItem.Id,
             PlacementData = roomItem,
-            SelectedItems = selectedItems,
             Message = Input,
-            PlayerFurnitureItemWiredParameters = parameters
+            PlayerFurnitureItemWiredParameters = parameters,
+            PlayerFurnitureItemWiredDataItems = selectedItems.Select(x => new PlayerFurnitureItemWiredDataItem
+            {
+                PlayerFurnitureItemPlacementDataId = x.Id
+            }).ToList()
         };
 
         await wiredService.SaveSettingsAsync(

@@ -48,10 +48,14 @@ public class RoomWiredEffectSavedEventHandler(
         {
             PlayerFurnitureItemPlacementDataId = roomItem.Id,
             PlacementData = roomItem,
-            SelectedItems = selectedItems,
             Message = Input,
             Delay = Delay,
-            PlayerFurnitureItemWiredParameters = parameters
+            PlayerFurnitureItemWiredParameters = parameters,
+            PlayerFurnitureItemWiredDataItems = selectedItems.Select(x => new PlayerFurnitureItemWiredDataItem
+            {
+                PlayerFurnitureItemPlacementDataId = x.Id,
+                PlayerFurnitureItemWiredDataId = x.WiredData!.Id
+            }).ToList()
         };
 
         await wiredService.SaveSettingsAsync(
