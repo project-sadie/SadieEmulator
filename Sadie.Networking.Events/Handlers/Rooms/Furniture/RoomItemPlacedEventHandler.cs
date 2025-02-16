@@ -113,7 +113,12 @@ public class RoomItemPlacedEventHandler(
             {
                 ItemId = playerItem.Id
             });
-        
+
+            dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Unchanged;
+            dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
+            
+            await dbContext.SaveChangesAsync();
+            
             var interactors = interactorRepository
                 .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
@@ -121,11 +126,6 @@ public class RoomItemPlacedEventHandler(
             {
                 await interactor.OnPlaceAsync(client.RoomUser.Room, roomFurnitureItem, client.RoomUser);
             }
-
-            dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Unchanged;
-            dbContext.RoomFurnitureItems.Add(roomFurnitureItem);
-        
-            await dbContext.SaveChangesAsync();
 
             await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
             {
@@ -175,6 +175,9 @@ public class RoomItemPlacedEventHandler(
             {
                 ItemId = itemId
             });
+
+            dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
+            await dbContext.SaveChangesAsync();
         
             var interactors = interactorRepository
                 .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
@@ -188,9 +191,6 @@ public class RoomItemPlacedEventHandler(
             {
                 RoomFurnitureItem = roomFurnitureItem
             });
-
-            dbContext.Entry(roomFurnitureItem).State = EntityState.Added;
-            await dbContext.SaveChangesAsync();
         }
     }
 }

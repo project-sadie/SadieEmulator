@@ -110,7 +110,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         CycleInteractionStateAsync(room, effect);
     }
     
-    public int GetWiredCode(string interactionType)
+    public int GetTriggerCodeFromInteractionType(string interactionType)
     {
         return interactionType switch
         {
@@ -122,6 +122,15 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             FurnitureItemInteractionType.WiredEffectShowMessage => (int) WiredEffectCode.ShowMessage,
             FurnitureItemInteractionType.WiredEffectKickUser => (int) WiredEffectCode.KickUser,
             _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
+        };
+    }
+
+    public int GetSelectionCodeFromInteractionType(string interactionType)
+    {
+        return interactionType switch
+        {
+            FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture => 0,
+            _ => 1
         };
     }
 

@@ -6,7 +6,7 @@ using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
 
-namespace Sadie.Game.Rooms.Furniture.Interactors.Wired;
+namespace Sadie.Game.Rooms.Furniture.Interactors.Wired.Effects;
 
 public class WiredEffectKickUserInteractor(IRoomWiredService wiredService) : AbstractRoomFurnitureItemInteractor
 {
@@ -29,7 +29,7 @@ public class WiredEffectKickUserInteractor(IRoomWiredService wiredService) : Abs
             Input = input,
             IntParams = [],
             StuffTypeSelectionCode = 0,
-            Type = wiredService.GetWiredCode(item.FurnitureItem.InteractionType),
+            Type = wiredService.GetTriggerCodeFromInteractionType(item.FurnitureItem.InteractionType),
             DelayInPulses = 0,
             ConflictingTriggerIds = []
         });

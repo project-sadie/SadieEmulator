@@ -20,7 +20,8 @@ public interface IRoomWiredService
         PlayerFurnitureItemPlacementData trigger,
         IRoomUser userWhoTriggered);
 
-    int GetWiredCode(string interactionType);
+    int GetTriggerCodeFromInteractionType(string interactionType);
+    int GetSelectionCodeFromInteractionType(string interactionType);
 
     Task SaveSettingsAsync(
         PlayerFurnitureItemPlacementData placementData,
