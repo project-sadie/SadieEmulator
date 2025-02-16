@@ -137,14 +137,20 @@ public static class NetworkPacketWriterSerializer
             writer.WriteString(item ?? "");
         }
     }
-    
-    public static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
+
+    private static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
     {
         var elements = (ICollection)propertyInfo.GetValue(packet)!;
         writer.WriteInteger(elements.Count);
 
         foreach (var element in elements)
         {
+            if (element is int i)
+            {
+                writer.WriteInteger(i);
+                continue;
+            }
+            
             var properties = element.GetType().GetProperties();
             
             foreach (var elementProperty in properties)
