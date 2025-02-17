@@ -28,12 +28,15 @@ public class WiredTriggerGenericInteractor(IRoomWiredService wiredService,
         var wiredData = item.WiredData;
         var interactionType = item.FurnitureItem.InteractionType;
 
-        var selectedItemIds = wiredData?
-            .PlayerFurnitureItemWiredDataItems
-            .Select(x => x
-                .PlayerFurnitureItemPlacementData
-                .PlayerFurnitureItemId)
-            .ToList() ?? [];
+        var placementDataIds = wiredData?
+            .PlayerFurnitureItemWiredItems
+            .Select(x => x.PlayerFurnitureItemPlacementDataId) ?? [];
+
+        var selectedItemIds = room
+            .FurnitureItems
+            .Where(x => placementDataIds.Contains(x.Id))
+            .Select(x => x.PlayerFurnitureItemId)
+            .ToList();
         
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredTriggerWriter
         {
@@ -66,7 +69,7 @@ public class WiredTriggerGenericInteractor(IRoomWiredService wiredService,
             PlacementData = item,
             Message = null,
             PlayerFurnitureItemWiredParameters = [],
-            PlayerFurnitureItemWiredDataItems = []
+            PlayerFurnitureItemWiredItems = []
         };
         
         dbContext.Entry(wiredData).State = EntityState.Added;

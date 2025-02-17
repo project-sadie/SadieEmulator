@@ -25,7 +25,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             x.PlayerFurnitureItem.FurnitureItem.InteractionType == interactionType &&
             (string.IsNullOrWhiteSpace(x.WiredData.Message) || x.WiredData.Message == requiredMessageIfExists) &&
             (requiredSelectedIds == null ||
-             requiredSelectedIds.All(r => x.WiredData.PlayerFurnitureItemWiredDataItems.Select(i => i.PlayerFurnitureItemPlacementDataId)
+             requiredSelectedIds.All(r => x.WiredData.PlayerFurnitureItemWiredItems.Select(i => i.PlayerFurnitureItemPlacementDataId)
                  .Contains(r))));
     }
     
@@ -147,20 +147,12 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             await dbContext.SaveChangesAsync();
         }
 
-        placementData.WiredData = wiredData;
-
-        dbContext.Entry(wiredData.PlacementData).State = EntityState.Unchanged;
         dbContext.Entry(wiredData).State = EntityState.Added;
+        dbContext.Entry(wiredData.PlacementData).State = EntityState.Unchanged;
         
         await dbContext.SaveChangesAsync();
-
-        foreach (var parameter in wiredData.PlayerFurnitureItemWiredParameters)
-        {
-            dbContext.Entry(parameter).State = EntityState.Added;
-        }
         
-        dbContext.PlayerFurnitureItemWiredDataItems.AddRange(wiredData.PlayerFurnitureItemWiredDataItems);
-        await dbContext.SaveChangesAsync();
+        placementData.WiredData = wiredData;
     }
 
     private async Task CycleInteractionStateAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item)
