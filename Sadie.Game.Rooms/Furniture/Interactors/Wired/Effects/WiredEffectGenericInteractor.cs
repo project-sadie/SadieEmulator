@@ -2,15 +2,17 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired.Effects;
 
-public class WiredEffectShowMessageInteractor(IRoomWiredService wiredService) : AbstractRoomFurnitureItemInteractor
+public class WiredEffectGenericInteractor(IRoomWiredService wiredService, ServerRoomConstants roomConstants) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [
+        FurnitureItemInteractionType.WiredEffectKickUser,
         FurnitureItemInteractionType.WiredEffectShowMessage
     ];
 
@@ -22,7 +24,7 @@ public class WiredEffectShowMessageInteractor(IRoomWiredService wiredService) : 
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredMessageEffectWriter
         {
             StuffTypeSelectionEnabled = false,
-            MaxItemsSelected = 0,
+            MaxItemsSelected = roomConstants.WiredMaxFurnitureSelection,
             SelectedItemIds = [],
             WiredEffectType = item.FurnitureItem.AssetId,
             Id = item.PlayerFurnitureItemId,
