@@ -9,6 +9,7 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
+using Sadie.Game.Rooms.Wired.Effects;
 
 namespace Sadie.Game.Rooms.Services;
 
@@ -86,24 +87,16 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         switch (effect.FurnitureItem.InteractionType)
         {
             case FurnitureItemInteractionType.WiredEffectShowMessage:
-                await userWhoTriggered.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
-                {
-                    SenderId = userWhoTriggered.Id,
-                    Message = effect.WiredData.Message,
-                    EmotionId = 0,
-                    ChatBubbleId = (int)ChatBubble.Alert,
-                    MessageLength = effect.WiredData.Message.Length,
-                    Urls = []
-                });
+                await new ShowMessageEffectRunner().ExecuteAsync(
+                    room,
+                    userWhoTriggered,
+                    effect);
                 break;
             case FurnitureItemInteractionType.WiredEffectKickUser:
-                if (room.OwnerId == userWhoTriggered.Id)
-                {
-                    break;
-                }
-                
-                await userWhoTriggered.Room.UserRepository.TryRemoveAsync(userWhoTriggered.Id, true, true);
-                await userWhoTriggered.Player.SendAlertAsync(effect.WiredData.Message);
+                await new KickUserEffectRunner().ExecuteAsync(
+                    room,
+                    userWhoTriggered,
+                    effect);
                 break;
         }
         
