@@ -25,7 +25,7 @@ public class WiredEffectShowMessageInteractor(IRoomWiredService wiredService) : 
             MaxItemsSelected = 0,
             SelectedItemIds = [],
             WiredEffectType = item.FurnitureItem.AssetId,
-            Id = item.Id,
+            Id = item.PlayerFurnitureItemId,
             Input = input,
             IntParams = [],
             StuffTypeSelectionCode = 0,

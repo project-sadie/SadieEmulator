@@ -8,7 +8,6 @@ using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
-using Serilog;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired.Triggers;
 
@@ -20,7 +19,8 @@ public class WiredTriggerGenericInteractor(IRoomWiredService wiredService,
     [
         FurnitureItemInteractionType.WiredTriggerEnterRoom,
         FurnitureItemInteractionType.WiredTriggerSaysSomething,
-        FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture
+        FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture,
+        FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture,
     ];
 
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
