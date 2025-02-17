@@ -61,7 +61,8 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
     public DbSet<PlayerMessage> PlayerMessages { get; init; }
     public DbSet<PlayerBan> PlayerBans { get; init; }
     public DbSet<BannedIpAddress> BannedIpAddresses { get; init; }
-    public DbSet<PlayerFurnitureItemWiredDataItem> PlayerFurnitureItemWiredDataItems { get; init; }
+    public DbSet<PlayerFurnitureItemWiredData> PlayerFurnitureItemWiredData { get; init; }
+    public DbSet<PlayerFurnitureItemWiredItem> PlayerFurnitureItemWiredItems { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -183,16 +184,16 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .Navigation(x => x.PlayerFurnitureItem)
             .AutoInclude();
 
+        modelBuilder.Entity<PlayerFurnitureItemPlacementData>()
+            .Navigation(x => x.WiredData)
+            .AutoInclude();
+
         modelBuilder.Entity<PlayerFurnitureItemWiredData>()
             .Navigation(x => x.PlayerFurnitureItemWiredParameters)
             .AutoInclude();
 
         modelBuilder.Entity<PlayerFurnitureItemWiredData>()
-            .Navigation(x => x.PlayerFurnitureItemWiredDataItems)
-            .AutoInclude();
-        
-        modelBuilder.Entity<PlayerFurnitureItemWiredDataItem>()
-            .Navigation(x => x.PlayerFurnitureItemPlacementData)
+            .Navigation(x => x.PlayerFurnitureItemWiredItems)
             .AutoInclude();
         
         modelBuilder.Entity<Player>()

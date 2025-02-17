@@ -10,5 +10,5 @@ public class PlayerFurnitureItemWiredData
     public required string? Message { get; init; }
     public int Delay { get; init; }
     public required List<PlayerFurnitureItemWiredParameter> PlayerFurnitureItemWiredParameters { get; init; }
-    public required List<PlayerFurnitureItemWiredDataItem> PlayerFurnitureItemWiredDataItems { get; init; }
+    public required List<PlayerFurnitureItemWiredItem> PlayerFurnitureItemWiredItems { get; init; }
 }
