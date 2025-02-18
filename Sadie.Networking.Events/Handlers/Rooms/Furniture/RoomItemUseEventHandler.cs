@@ -1,5 +1,7 @@
 using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Serialization.Attributes;
@@ -10,7 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 public class RoomItemUseEventHandler(
     IRoomFurnitureItemInteractorRepository interactorRepository,
     SadieContext dbContext,
-    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
+    IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
     public int ItemId { get; init; }
     
@@ -41,6 +44,15 @@ public class RoomItemUseEventHandler(
             {
                 await interactor.OnTriggerAsync(room, roomFurnitureItem, client.RoomUser);
             }
+        }
+
+        var matchingWiredTriggers = wiredService.GetTriggers(
+            FurnitureItemInteractionType.WiredTriggerFurnitureStateChanged,
+            room.FurnitureItems,"", [roomFurnitureItem.Id]);
+
+        foreach (var trigger in matchingWiredTriggers)
+        {
+            await wiredService.RunTriggerForRoomAsync(room, trigger, client.RoomUser);
         }
     }
 }

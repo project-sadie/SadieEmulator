@@ -3,12 +3,11 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Game.Rooms.Wired.Effects;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Game.Rooms.Wired.Effects;
 
 namespace Sadie.Game.Rooms.Services;
@@ -69,12 +68,19 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         }
     }
     
+    private readonly Dictionary<string, IWiredEffectRunner> _effectRunnerMap = new()
+    {
+        { FurnitureItemInteractionType.WiredEffectShowMessage, new ShowMessageEffectRunner() },
+        { FurnitureItemInteractionType.WiredEffectKickUser, new KickUserEffectRunner() },
+    };
+
     private async Task RunEffectForRoomAsync(
         IRoomLogic room,
         PlayerFurnitureItemPlacementData effect,
         IRoomUser userWhoTriggered)
     {
-        if (effect.WiredData == null)
+        if (effect.WiredData == null || 
+            !_effectRunnerMap.TryGetValue(effect.FurnitureItem.InteractionType, out var runner))
         {
             return;
         }
@@ -83,24 +89,9 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         {
             await Task.Delay(effect.WiredData.Delay * 500);
         }
-        
-        switch (effect.FurnitureItem.InteractionType)
-        {
-            case FurnitureItemInteractionType.WiredEffectShowMessage:
-                await new ShowMessageEffectRunner().ExecuteAsync(
-                    room,
-                    userWhoTriggered,
-                    effect);
-                break;
-            case FurnitureItemInteractionType.WiredEffectKickUser:
-                await new KickUserEffectRunner().ExecuteAsync(
-                    room,
-                    userWhoTriggered,
-                    effect);
-                break;
-        }
-        
-        CycleInteractionStateAsync(room, effect);
+
+        await runner.ExecuteAsync(room, userWhoTriggered, effect);
+        await CycleInteractionStateAsync(room, effect);
     }
     
     public int GetTriggerCodeFromInteractionType(string interactionType)
