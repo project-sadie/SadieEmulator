@@ -51,7 +51,8 @@ public class RoomWiredTriggerSavedEventHandler(
             PlayerFurnitureItemWiredParameters = parameters,
             PlayerFurnitureItemWiredItems = selectedItems.Select(x => new PlayerFurnitureItemWiredItem
             {
-                PlayerFurnitureItemPlacementDataId = x.Id
+                PlayerFurnitureItemPlacementDataId = x.Id,
+                PlayerFurnitureItemWiredDataId = roomItem.WiredData!.Id
             }).ToList()
         };
 

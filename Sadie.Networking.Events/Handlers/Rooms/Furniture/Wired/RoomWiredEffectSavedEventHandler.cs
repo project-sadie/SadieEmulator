@@ -35,7 +35,7 @@ public class RoomWiredEffectSavedEventHandler(
 
         var selectedItems = room!
             .FurnitureItems
-            .Where(x => ItemIds.Contains(x.Id))
+            .Where(x => ItemIds.Contains(x.PlayerFurnitureItemId))
             .ToList();
 
         var parameters = Parameters
@@ -54,7 +54,7 @@ public class RoomWiredEffectSavedEventHandler(
             PlayerFurnitureItemWiredItems = selectedItems.Select(x => new PlayerFurnitureItemWiredItem
             {
                 PlayerFurnitureItemPlacementDataId = x.Id,
-                PlayerFurnitureItemWiredDataId = x.WiredData!.Id,
+                PlayerFurnitureItemWiredDataId = roomItem.WiredData!.Id
             }).ToList()
         };
 

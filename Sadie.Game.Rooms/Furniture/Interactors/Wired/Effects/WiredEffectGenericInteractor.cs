@@ -13,19 +13,30 @@ public class WiredEffectGenericInteractor(IRoomWiredService wiredService, Server
 {
     public override List<string> InteractionTypes => [
         FurnitureItemInteractionType.WiredEffectKickUser,
-        FurnitureItemInteractionType.WiredEffectShowMessage
+        FurnitureItemInteractionType.WiredEffectShowMessage,
+        FurnitureItemInteractionType.WiredEffectTeleportToFurniture,
     ];
 
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
     {
         var wiredData = item.WiredData;
         var input = wiredData?.Message ?? "";
+
+        var placementDataIds = wiredData?
+            .PlayerFurnitureItemWiredItems
+            .Select(x => x.PlayerFurnitureItemPlacementDataId) ?? [];
+
+        var selectedItemIds = room
+            .FurnitureItems
+            .Where(x => placementDataIds.Contains(x.Id))
+            .Select(x => x.PlayerFurnitureItemId)
+            .ToList();
         
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredMessageEffectWriter
         {
             StuffTypeSelectionEnabled = false,
             MaxItemsSelected = roomConstants.WiredMaxFurnitureSelection,
-            SelectedItemIds = [],
+            SelectedItemIds = selectedItemIds,
             WiredEffectType = item.FurnitureItem.AssetId,
             Id = item.PlayerFurnitureItemId,
             Input = input,

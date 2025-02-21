@@ -72,6 +72,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
     {
         { FurnitureItemInteractionType.WiredEffectShowMessage, new ShowMessageEffectRunner() },
         { FurnitureItemInteractionType.WiredEffectKickUser, new KickUserEffectRunner() },
+        { FurnitureItemInteractionType.WiredEffectTeleportToFurniture, new TeleportToFurnitureEffectRunner() },
     };
 
     private async Task RunEffectForRoomAsync(
@@ -105,6 +106,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             FurnitureItemInteractionType.WiredTriggerFurnitureStateChanged => (int) WiredTriggerCode.ToggleFurniture,
             FurnitureItemInteractionType.WiredEffectShowMessage => (int) WiredEffectCode.ShowMessage,
             FurnitureItemInteractionType.WiredEffectKickUser => (int) WiredEffectCode.KickUser,
+            FurnitureItemInteractionType.WiredEffectTeleportToFurniture => (int) WiredEffectCode.TeleportToFurniture,
             _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
         };
     }
