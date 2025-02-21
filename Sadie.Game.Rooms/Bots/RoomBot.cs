@@ -19,7 +19,8 @@ public class RoomBot(
     HDirection direction,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomWiredService wiredService,
-    IRoomPathFinderHelperService pathFinderHelperService)
+    IRoomPathFinderHelperService pathFinderHelperService,
+    PlayerBot playerBot)
     : RoomUnitData(id,
             room,
             point,
@@ -31,7 +32,7 @@ public class RoomBot(
             pathFinderHelperService),
         IRoomBot
 {
-    public required PlayerBot Bot { get; init; }
+    public required PlayerBot Bot { get; init; } = playerBot;
 
     public async Task RunPeriodicCheckAsync()
     {

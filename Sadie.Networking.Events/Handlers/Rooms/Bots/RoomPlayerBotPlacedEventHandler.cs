@@ -61,7 +61,8 @@ public class RoomPlayerBotPlacedEventHandler(
             new Point(X, Y), 
             room.TileMap.ZMap[Y, X],
             HDirection.North,
-            HDirection.North);
+            HDirection.North,
+            bot);
 
         if (!room.BotRepository.TryAdd(roomBot))
         {
