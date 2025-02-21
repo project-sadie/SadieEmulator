@@ -1,4 +1,5 @@
 using System.Drawing;
+using Sadie.Database.Models.Players;
 using Sadie.Enums.Unsorted;
 
 namespace Sadie.API.Game.Rooms.Bots;
@@ -11,5 +12,6 @@ public interface IRoomBotFactory
         Point point,
         double pointZ,
         HDirection directionHead,
-        HDirection direction);
+        HDirection direction,
+        PlayerBot playerBot);
 }
