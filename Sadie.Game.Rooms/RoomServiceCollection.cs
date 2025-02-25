@@ -9,6 +9,7 @@ using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Game.Rooms.Wired.Effects.Actions;
 using Sadie.Game.Rooms.Bots;
 using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Furniture;
@@ -49,6 +50,12 @@ public static class RoomServiceCollection
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();
         serviceCollection.AddSingleton<IRoomBotFactory, RoomBotFactory>();
         serviceCollection.AddSingleton<IRoomRepository, RoomRepository>();
+        
+        serviceCollection.Scan(scan => scan
+            .FromAssemblies(assemblies)
+            .AddClasses(classes => classes.AssignableTo<IWiredEffectAction>())
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
 
         serviceCollection.AddSingleton<IRoomChatCommandRepository, RoomChatCommandRepository>();
         serviceCollection.AddSingleton<IRoomFurnitureItemInteractorRepository, RoomFurnitureItemInteractorRepository>();

@@ -3,16 +3,18 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Game.Rooms.Wired.Effects;
+using Sadie.API.Game.Rooms.Wired.Effects.Actions;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Game.Rooms.Wired.Effects;
+using Serilog;
 
 namespace Sadie.Game.Rooms.Services;
 
-public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelperService) : IRoomWiredService
+public class RoomWiredService(
+    IRoomFurnitureItemHelperService furnitureItemHelperService,
+    IEnumerable<IWiredEffectAction> effectActions) : IRoomWiredService
 {
     public IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
         string interactionType,
@@ -68,21 +70,22 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         }
     }
     
-    private readonly Dictionary<string, IWiredEffectRunner> _effectRunnerMap = new()
-    {
-        { FurnitureItemInteractionType.WiredEffectShowMessage, new ShowMessageEffectRunner() },
-        { FurnitureItemInteractionType.WiredEffectKickUser, new KickUserEffectRunner() },
-        { FurnitureItemInteractionType.WiredEffectTeleportToFurniture, new TeleportToFurnitureEffectRunner() },
-    };
-
     private async Task RunEffectForRoomAsync(
         IRoomLogic room,
         PlayerFurnitureItemPlacementData effect,
         IRoomUser userWhoTriggered)
     {
-        if (effect.WiredData == null || 
-            !_effectRunnerMap.TryGetValue(effect.FurnitureItem.InteractionType, out var runner))
+        if (effect.WiredData == null)
         {
+            return;
+        }
+
+        var effectRunner = effectActions
+            .FirstOrDefault(x => x.InteractionType == effect.FurnitureItem.InteractionType);
+
+        if (effectRunner == null)
+        {
+            Log.Warning($"Failed to find effect runner for interaction type '{effect.FurnitureItem.InteractionType}'");
             return;
         }
         
@@ -91,7 +94,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             await Task.Delay(effect.WiredData.Delay * 500);
         }
 
-        await runner.ExecuteAsync(room, userWhoTriggered, effect);
+        await effectRunner.ExecuteAsync(room, userWhoTriggered, effect);
         await CycleInteractionStateAsync(room, effect);
     }
     
@@ -107,6 +110,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             FurnitureItemInteractionType.WiredEffectShowMessage => (int) WiredEffectCode.ShowMessage,
             FurnitureItemInteractionType.WiredEffectKickUser => (int) WiredEffectCode.KickUser,
             FurnitureItemInteractionType.WiredEffectTeleportToFurniture => (int) WiredEffectCode.TeleportToFurniture,
+            FurnitureItemInteractionType.WiredEffectToggleFurnitureState => (int) 0,
             _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
         };
     }
@@ -135,6 +139,11 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
 
         dbContext.Entry(wiredData).State = EntityState.Added;
         dbContext.Entry(wiredData.PlacementData).State = EntityState.Unchanged;
+
+        foreach (var item in wiredData.PlayerFurnitureItemWiredItems)
+        {
+            dbContext.Entry(item).State = EntityState.Added;
+        }
         
         await dbContext.SaveChangesAsync();
         

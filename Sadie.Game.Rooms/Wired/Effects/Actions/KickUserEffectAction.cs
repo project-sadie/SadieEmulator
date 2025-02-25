@@ -1,12 +1,15 @@
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Game.Rooms.Wired.Effects;
+using Sadie.API.Game.Rooms.Wired.Effects.Actions;
 using Sadie.Database.Models.Players.Furniture;
+using Sadie.Enums.Game.Furniture;
 
-namespace Sadie.Game.Rooms.Wired.Effects;
+namespace Sadie.Game.Rooms.Wired.Effects.Actions;
 
-public class KickUserEffectRunner : IWiredEffectRunner
+public class KickUserEffectAction : IWiredEffectAction
 {
+    public string InteractionType => FurnitureItemInteractionType.WiredEffectShowMessage;
+
     public async Task ExecuteAsync(
         IRoomLogic room,
         IRoomUser userWhoTriggered,
@@ -17,7 +20,10 @@ public class KickUserEffectRunner : IWiredEffectRunner
             return;
         }
                 
-        await userWhoTriggered.Room.UserRepository.TryRemoveAsync(userWhoTriggered.Id, true, true);
+        await userWhoTriggered
+            .Room
+            .UserRepository
+            .TryRemoveAsync(userWhoTriggered.Id, true, true);
 
         var message = effect.WiredData?.Message ?? string.Empty;
 
