@@ -6,8 +6,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Game.Rooms.Wired.Effects.Actions;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Rooms.Furniture;
 using Serilog;
 
 namespace Sadie.Game.Rooms.Services;
@@ -96,32 +94,6 @@ public class RoomWiredService(
 
         await effectRunner.ExecuteAsync(room, userWhoTriggered, effect);
         await CycleInteractionStateAsync(room, effect);
-    }
-    
-    public int GetTriggerCodeFromInteractionType(string interactionType)
-    {
-        return interactionType switch
-        {
-            FurnitureItemInteractionType.WiredTriggerSaysSomething => (int) WiredTriggerCode.AvatarSaysSomething,
-            FurnitureItemInteractionType.WiredTriggerEnterRoom => (int) WiredTriggerCode.AvatarEntersRoom,
-            FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture => (int) WiredTriggerCode.AvatarWalksOnFurniture,
-            FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture => (int) WiredTriggerCode.AvatarWalksOffFurniture,
-            FurnitureItemInteractionType.WiredTriggerFurnitureStateChanged => (int) WiredTriggerCode.ToggleFurniture,
-            FurnitureItemInteractionType.WiredEffectShowMessage => (int) WiredEffectCode.ShowMessage,
-            FurnitureItemInteractionType.WiredEffectKickUser => (int) WiredEffectCode.KickUser,
-            FurnitureItemInteractionType.WiredEffectTeleportToFurniture => (int) WiredEffectCode.TeleportToFurniture,
-            FurnitureItemInteractionType.WiredEffectToggleFurnitureState => (int) 0,
-            _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
-        };
-    }
-
-    public int GetSelectionCodeFromInteractionType(string interactionType)
-    {
-        return interactionType switch
-        {
-            FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture => 0,
-            _ => 1
-        };
     }
 
     public async Task SaveSettingsAsync(
