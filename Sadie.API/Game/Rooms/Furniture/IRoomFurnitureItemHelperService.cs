@@ -9,7 +9,8 @@ public interface IRoomFurnitureItemHelperService
     Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
         PlayerFurnitureItemPlacementData roomFurnitureItem,
-        SadieContext dbContext);
+        SadieContext dbContext,
+        bool random = false);
 
     Task UpdateMetaDataForItemAsync(
         IRoomLogic room, 
