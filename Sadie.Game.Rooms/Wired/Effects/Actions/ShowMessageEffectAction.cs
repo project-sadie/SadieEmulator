@@ -1,4 +1,5 @@
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Game.Rooms.Wired.Effects.Actions;
 using Sadie.Database.Models.Players.Furniture;
@@ -12,7 +13,11 @@ public class ShowMessageEffectAction : IWiredEffectAction
 {
     public string InteractionType => FurnitureItemInteractionType.WiredEffectShowMessage;
 
-    public async Task ExecuteAsync(IRoomLogic room, IRoomUser userWhoTriggered, PlayerFurnitureItemPlacementData effect)
+    public async Task ExecuteAsync(
+        IRoomLogic room, 
+        IRoomUser userWhoTriggered, 
+        PlayerFurnitureItemPlacementData effect,
+        IRoomWiredService wiredService)
     {
         if (effect.WiredData == null)
         {

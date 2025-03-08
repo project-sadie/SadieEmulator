@@ -1,3 +1,4 @@
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Players.Furniture;
 
@@ -10,5 +11,6 @@ public interface IWiredEffectAction
     public Task ExecuteAsync(
         IRoomLogic room,
         IRoomUser userWhoTriggered,
-        PlayerFurnitureItemPlacementData effect);
+        PlayerFurnitureItemPlacementData effect,
+        IRoomWiredService wiredService);
 }

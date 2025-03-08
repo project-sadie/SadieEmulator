@@ -148,7 +148,7 @@ public static class RoomHelpers
                 await interactor.OnTriggerAsync(room, roomFurnitureItem, user!);
             }
         }
-
+        
         var matchingWiredTriggers = wiredService.GetTriggers(
             FurnitureItemInteractionType.WiredTriggerFurnitureStateChanged,
             room.FurnitureItems,"", [roomFurnitureItem.Id]);

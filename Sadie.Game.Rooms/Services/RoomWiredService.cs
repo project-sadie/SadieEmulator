@@ -92,7 +92,7 @@ public class RoomWiredService(
             await Task.Delay(effect.WiredData.Delay * 500);
         }
 
-        await effectRunner.ExecuteAsync(room, userWhoTriggered, effect);
+        await effectRunner.ExecuteAsync(room, userWhoTriggered, effect, this);
         await CycleInteractionStateAsync(room, effect);
     }
 

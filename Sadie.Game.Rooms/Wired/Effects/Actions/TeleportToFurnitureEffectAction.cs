@@ -1,5 +1,6 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Game.Rooms.Wired.Effects.Actions;
 using Sadie.Database.Models.Players.Furniture;
@@ -15,7 +16,8 @@ public class TeleportToFurnitureEffectAction : IWiredEffectAction
     public async Task ExecuteAsync(
         IRoomLogic room, 
         IRoomUser userWhoTriggered, 
-        PlayerFurnitureItemPlacementData effect)
+        PlayerFurnitureItemPlacementData effect,
+        IRoomWiredService wiredService)
     {
         var placementDataId = effect.WiredData!.PlayerFurnitureItemWiredItems.PickRandom()
             .PlayerFurnitureItemPlacementDataId;

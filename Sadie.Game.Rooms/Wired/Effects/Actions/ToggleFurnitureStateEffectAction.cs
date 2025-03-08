@@ -12,15 +12,15 @@ namespace Sadie.Game.Rooms.Wired.Effects.Actions;
 public class ToggleFurnitureStateEffectAction(
     IRoomFurnitureItemInteractorRepository interactorRepository,
     SadieContext dbContext,
-    IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
-    IRoomWiredService wiredService) : IWiredEffectAction
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : IWiredEffectAction
 {
     public string InteractionType => FurnitureItemInteractionType.WiredEffectToggleFurnitureState;
 
     public async Task ExecuteAsync(
         IRoomLogic room, 
         IRoomUser userWhoTriggered, 
-        PlayerFurnitureItemPlacementData effect)
+        PlayerFurnitureItemPlacementData effect,
+        IRoomWiredService wiredService)
     {
         var placementDataIds = effect
                 .WiredData!
