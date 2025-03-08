@@ -20,9 +20,6 @@ public interface IRoomWiredService
         PlayerFurnitureItemPlacementData trigger,
         IRoomUser userWhoTriggered);
 
-    int GetTriggerCodeFromInteractionType(string interactionType);
-    int GetSelectionCodeFromInteractionType(string interactionType);
-
     Task SaveSettingsAsync(
         PlayerFurnitureItemPlacementData placementData,
         SadieContext dbContext,

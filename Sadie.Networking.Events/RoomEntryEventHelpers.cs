@@ -6,7 +6,6 @@ using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
@@ -93,15 +92,6 @@ public static class RoomEntryEventHelpers
 
         await Task.Delay(100);
 
-        var matchingWiredTriggers = wiredService.GetTriggers(
-            FurnitureItemInteractionType.WiredTriggerEnterRoom,
-            room.FurnitureItems,
-            player.Username);
-
-        foreach (var trigger in matchingWiredTriggers)
-        {
-            await wiredService.RunTriggerForRoomAsync(room, trigger, roomUser);
-        }
     }
 
     private static async Task SendRoomEntryPacketsToUserAsync(INetworkClient client, IRoomLogic room)

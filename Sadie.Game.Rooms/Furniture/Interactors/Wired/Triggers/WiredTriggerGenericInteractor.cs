@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Packets.Writers.Furniture;
+using Sadie.Game.Rooms.Wired;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired.Triggers;
 
-public class WiredTriggerGenericInteractor(IRoomWiredService wiredService,
+public class WiredTriggerGenericInteractor(
     ServerRoomConstants roomConstants,
     SadieContext dbContext) : AbstractRoomFurnitureItemInteractor
 {
@@ -51,8 +51,8 @@ public class WiredTriggerGenericInteractor(IRoomWiredService wiredService,
                 .PlayerFurnitureItemWiredParameters
                 .Select(x => x.Value)
                 .ToList(),
-            StuffTypeSelectionCode = wiredService.GetSelectionCodeFromInteractionType(interactionType),
-            TriggerConfig = wiredService.GetTriggerCodeFromInteractionType(interactionType),
+            StuffTypeSelectionCode = RoomWiredHelpers.GetSelectionCodeFromInteractionType(interactionType),
+            TriggerConfig = RoomWiredHelpers.GetTriggerCodeFromInteractionType(interactionType),
             ConflictingEffectIds = []
         });
     }
