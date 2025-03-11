@@ -20,6 +20,7 @@ public class WiredEffectGenericInteractor(
         FurnitureItemInteractionType.WiredEffectShowMessage,
         FurnitureItemInteractionType.WiredEffectTeleportToFurniture,
         FurnitureItemInteractionType.WiredEffectToggleFurnitureState,
+        FurnitureItemInteractionType.WiredEffectChangeFurnitureDirection,
     ];
 
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)

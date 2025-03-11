@@ -17,6 +17,7 @@ public static class RoomWiredHelpers
             FurnitureItemInteractionType.WiredEffectShowMessage => (int) WiredEffectCode.ShowMessage,
             FurnitureItemInteractionType.WiredEffectKickUser => (int) WiredEffectCode.KickUser,
             FurnitureItemInteractionType.WiredEffectTeleportToFurniture => (int) WiredEffectCode.TeleportToFurniture,
+            FurnitureItemInteractionType.WiredEffectChangeFurnitureDirection => (int) WiredEffectCode.ChangeFurnitureDirection,
             FurnitureItemInteractionType.WiredEffectToggleFurnitureState => 0,
             _ => throw new ArgumentException($"Couldn't match interaction type '{interactionType}' to a trigger layout.")
         };
