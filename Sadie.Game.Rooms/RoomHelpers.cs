@@ -3,10 +3,14 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
+using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
+using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
@@ -116,5 +120,42 @@ public static class RoomHelpers
 
         dbContext.PlayerRoomVisits.Add(roomVisit);
         await dbContext.SaveChangesAsync();
+    }
+    
+    public static async Task UseRoomFurnitureAsync(
+        IRoomLogic room,
+        IRoomUser user,
+        PlayerFurnitureItemPlacementData roomFurnitureItem,
+        IRoomFurnitureItemInteractorRepository interactorRepository,
+        IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
+        SadieContext dbContext,
+        IRoomWiredService wiredService)
+    {
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+
+        if (interactors.Count == 0)
+        {
+            await roomFurnitureItemHelperService.CycleInteractionStateForItemAsync(
+                room, 
+                roomFurnitureItem, 
+                dbContext);
+        }
+        else
+        {
+            foreach (var interactor in interactors)
+            {
+                await interactor.OnTriggerAsync(room, roomFurnitureItem, user!);
+            }
+        }
+        
+        var matchingWiredTriggers = wiredService.GetTriggers(
+            FurnitureItemInteractionType.WiredTriggerFurnitureStateChanged,
+            room.FurnitureItems,"", [roomFurnitureItem.Id]);
+
+        foreach (var trigger in matchingWiredTriggers)
+        {
+            await wiredService.RunTriggerForRoomAsync(room, trigger, user!);
+        }
     }
 }

@@ -37,8 +37,6 @@ public class PlayerFurnitureItemPlacementData
         get => _lazyLoader.Load(this, ref _wiredData);
         set => _wiredData = value;
     }
-    
-    public ICollection<PlayerFurnitureItemWiredData> SelectedBy { get; init; } = [];
 
     [NotMapped] public FurnitureItem FurnitureItem => PlayerFurnitureItem.FurnitureItem;
 }

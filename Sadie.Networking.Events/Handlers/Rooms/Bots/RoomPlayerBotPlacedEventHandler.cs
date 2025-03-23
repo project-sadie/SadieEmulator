@@ -2,6 +2,7 @@ using System.Drawing;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.Database;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -58,7 +59,10 @@ public class RoomPlayerBotPlacedEventHandler(
             room, 
             room.MaxUsersAllowed + bot.Id, 
             new Point(X, Y), 
-            room.TileMap.ZMap[Y, X]);
+            room.TileMap.ZMap[Y, X],
+            HDirection.North,
+            HDirection.North,
+            bot);
 
         if (!room.BotRepository.TryAdd(roomBot))
         {

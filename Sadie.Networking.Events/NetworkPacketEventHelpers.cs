@@ -241,10 +241,20 @@ public static class NetworkPacketEventHelpers
         room.ChatMessages.Add(chatMessage);
 
         var triggers = wiredService.GetTriggers(
-            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.FurnitureItems, message);
-        
+                FurnitureItemInteractionType.WiredTriggerSaysSomething, 
+                room.FurnitureItems, 
+                message)
+            .ToList();
+
         foreach (var trigger in triggers)
         {
+            if (trigger.WiredData == null || 
+                trigger.WiredData.PlayerFurnitureItemWiredParameters.First().Value == 1 && 
+                client.Player!.Id != room.OwnerId)
+            {
+                continue;
+            }
+            
             await wiredService.RunTriggerForRoomAsync(room, trigger, roomUser);
         }
     }

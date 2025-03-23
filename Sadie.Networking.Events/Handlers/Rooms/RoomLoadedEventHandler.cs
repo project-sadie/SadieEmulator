@@ -12,7 +12,7 @@ using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Networking.Writers;
+using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 

@@ -11,23 +11,30 @@ namespace Sadie.Game.Rooms.Furniture;
 
 public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
 {
+    private readonly Random _random = new();
+    
     public async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
         PlayerFurnitureItemPlacementData roomFurnitureItem,
-        SadieContext dbContext)
+        SadieContext dbContext,
+        bool random = false)
     {
         if (string.IsNullOrEmpty(roomFurnitureItem.PlayerFurnitureItem.MetaData))
         {
             roomFurnitureItem.PlayerFurnitureItem.MetaData = 0.ToString();
         }
-
+        
         if (roomFurnitureItem.FurnitureItem.InteractionModes < 1 ||
             !int.TryParse(roomFurnitureItem.PlayerFurnitureItem.MetaData, out var state))
         {
             return;
         }
-
-        if (state >= roomFurnitureItem.FurnitureItem.InteractionModes)
+        
+        if (random)
+        {
+            state = _random.Next(0, roomFurnitureItem.FurnitureItem.InteractionModes - 1);
+        }
+        else if (state >= roomFurnitureItem.FurnitureItem.InteractionModes)
         {
             state = 0;
         }
@@ -88,22 +95,23 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
 
     public Dictionary<string, string> GetObjectDataForItem(PlayerFurnitureItemPlacementData furnitureItem)
     {
-        if (furnitureItem.FurnitureItem!.InteractionType == FurnitureItemInteractionType.RoomAdsBg)
+        if (furnitureItem.FurnitureItem!.InteractionType != FurnitureItemInteractionType.RoomAdsBg)
         {
-            var data = new Dictionary<string, string>();
+            return new Dictionary<string, string>();
+        }
+        
+        var data = new Dictionary<string, string>();
             
-            foreach (var piece in furnitureItem.PlayerFurnitureItem.MetaData.Split(";"))
-            {
-                var parts = piece.Split("=");
-                var key = parts[0];
-                var value = parts.Length < 2 ? "" : parts[1];
+        foreach (var piece in furnitureItem.PlayerFurnitureItem.MetaData.Split(";"))
+        {
+            var parts = piece.Split("=");
+            var key = parts[0];
+            var value = parts.Length < 2 ? "" : parts[1];
 
-                data[key] = value;
-            }
-
-            return data;
+            data[key] = value;
         }
 
-        return new Dictionary<string, string>();
+        return data;
+
     }
 }

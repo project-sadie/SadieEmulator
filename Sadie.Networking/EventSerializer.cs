@@ -3,7 +3,7 @@ using Sadie.Networking.Packets;
 
 namespace Sadie.Networking;
 
-public class EventSerializer
+public static class EventSerializer
 {
     public static void SetPropertiesForEventHandler(object handler, INetworkPacket packet)
     {

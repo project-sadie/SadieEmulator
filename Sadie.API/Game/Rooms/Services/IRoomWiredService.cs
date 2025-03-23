@@ -9,7 +9,7 @@ public interface IRoomWiredService
     IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
         string interactionType,
         IEnumerable<PlayerFurnitureItemPlacementData> roomItems,
-        string requiredMessage = "",
+        string requiredMessageIfExists = "",
         List<int>? requiredSelectedIds = null);
     
     IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
@@ -19,8 +19,6 @@ public interface IRoomWiredService
     Task RunTriggerForRoomAsync(IRoomLogic room,
         PlayerFurnitureItemPlacementData trigger,
         IRoomUser userWhoTriggered);
-
-    int GetWiredCode(string interactionType);
 
     Task SaveSettingsAsync(
         PlayerFurnitureItemPlacementData placementData,

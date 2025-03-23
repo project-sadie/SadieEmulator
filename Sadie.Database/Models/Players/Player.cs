@@ -15,7 +15,6 @@ public class Player
     private ICollection<PlayerFriendship> _outgoingFriendships = [];
     private ICollection<PlayerFriendship> _incomingFriendships = [];
     private ICollection<PlayerFurnitureItem> _furnitureItems = [];
-    private ICollection<Room> _rooms = [];
 
     public Player()
     {
@@ -59,7 +58,7 @@ public class Player
     
     public ICollection<PlayerWardrobeItem> WardrobeItems { get; init; } = [];
     public ICollection<PlayerSubscription> Subscriptions { get; init; } = [];
-    [InverseProperty("TargetPlayer")] public ICollection<PlayerRespect> Respects { get; init; } = [];
+    [InverseProperty("TargetPlayer")] public ICollection<PlayerRespect/**/> Respects { get; init; } = [];
     public ICollection<PlayerSavedSearch> SavedSearches { get; init; } = [];
     
     [InverseProperty("OriginPlayer")]  public ICollection<PlayerFriendship> OutgoingFriendships
@@ -76,11 +75,7 @@ public class Player
     
     public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; init; } = [];
     
-    public ICollection<Room> Rooms
-    {
-        get => _lazyLoader.Load(this, ref _rooms);
-        set => _rooms = value;
-    }
+    public ICollection<Room> Rooms { get; set; }
     
     public ICollection<Group> Groups { get; init; } = [];
     public ICollection<PlayerBot> Bots { get; init; } = [];

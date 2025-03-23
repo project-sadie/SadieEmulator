@@ -26,7 +26,7 @@ public class RoomWiredEffectSavedEventHandler(
         var room = client.RoomUser?.Room;
 
         var roomItem = room?.FurnitureItems
-            .FirstOrDefault(x => x.Id == ItemId);
+            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomItem == null)
         {
@@ -35,20 +35,33 @@ public class RoomWiredEffectSavedEventHandler(
 
         var selectedItems = room!
             .FurnitureItems
-            .Where(x => ItemIds.Contains(x.Id))
+            .Where(x => ItemIds.Contains(x.PlayerFurnitureItemId))
             .ToList();
+
+        var parameters = Parameters
+            .Select(x => new PlayerFurnitureItemWiredParameter
+            {
+                Value = x
+            }).ToList();
+
+        var wiredData = new PlayerFurnitureItemWiredData
+        {
+            PlayerFurnitureItemPlacementDataId = roomItem.Id,
+            PlacementData = roomItem,
+            Message = Input,
+            Delay = Delay,
+            PlayerFurnitureItemWiredParameters = parameters,
+            PlayerFurnitureItemWiredItems = selectedItems.Select(x => new PlayerFurnitureItemWiredItem
+            {
+                PlayerFurnitureItemPlacementDataId = x.Id,
+                PlayerFurnitureItemWiredDataId = roomItem.WiredData!.Id
+            }).ToList()
+        };
 
         await wiredService.SaveSettingsAsync(
             roomItem,
             dbContext,
-            new PlayerFurnitureItemWiredData
-            {
-                PlayerFurnitureItemPlacementDataId = roomItem.Id,
-                PlacementData = roomItem,
-                SelectedItems = selectedItems,
-                Message = Input,
-                Delay = Delay
-            });
+            wiredData);
 
         await client.WriteToStreamAsync(new WiredSavedWriter());
     }

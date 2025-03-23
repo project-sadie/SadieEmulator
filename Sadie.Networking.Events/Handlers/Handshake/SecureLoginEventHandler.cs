@@ -100,10 +100,17 @@ public class SecureLoginEventHandler(
 
         client.Player = playerLogic;
 
-        if (existingPlayer != null)
+        if (existingPlayer is { Channel: not null })
         {
             await playerRepository.TryRemovePlayerAsync(existingPlayer.Id);
             await networkClientRepository.TryRemoveAsync(existingPlayer.Channel.Id);
+
+            var roomUser = client.RoomUser;
+            
+            if (roomUser != null)
+            {
+                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true);
+            }
         }
 
         if (!playerRepository.TryAddPlayer(playerLogic))

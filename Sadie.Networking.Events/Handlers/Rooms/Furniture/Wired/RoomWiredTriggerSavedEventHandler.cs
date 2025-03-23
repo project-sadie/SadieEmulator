@@ -25,28 +25,41 @@ public class RoomWiredTriggerSavedEventHandler(
         var room = client.RoomUser?.Room;
 
         var roomItem = room?.FurnitureItems
-            .FirstOrDefault(x => x.Id == ItemId);
+            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomItem == null)
         {
             return;
         }
 
-        var roomItems = room!
+        var selectedItems = room!
             .FurnitureItems
-            .Where(x => ItemIds.Contains(x.Id))
+            .Where(x => ItemIds.Contains(x.PlayerFurnitureItemId))
             .ToList();
+
+        var parameters = Parameters
+            .Select(x => new PlayerFurnitureItemWiredParameter
+            {
+                Value = x
+            }).ToList();
+
+        var wiredData = new PlayerFurnitureItemWiredData
+        {
+            PlayerFurnitureItemPlacementDataId = roomItem.Id,
+            PlacementData = roomItem,
+            Message = Input,
+            PlayerFurnitureItemWiredParameters = parameters,
+            PlayerFurnitureItemWiredItems = selectedItems.Select(x => new PlayerFurnitureItemWiredItem
+            {
+                PlayerFurnitureItemPlacementDataId = x.Id,
+                PlayerFurnitureItemWiredDataId = roomItem.WiredData!.Id
+            }).ToList()
+        };
 
         await wiredService.SaveSettingsAsync(
             roomItem,
             dbContext,
-            new PlayerFurnitureItemWiredData
-            {
-                PlayerFurnitureItemPlacementDataId = roomItem.Id,
-                PlacementData = roomItem,
-                SelectedItems = roomItems,
-                Message = Input
-            });
+            wiredData);
         
         await client.WriteToStreamAsync(new WiredSavedWriter());
     }

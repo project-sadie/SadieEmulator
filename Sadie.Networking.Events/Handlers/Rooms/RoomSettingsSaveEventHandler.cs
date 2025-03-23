@@ -116,13 +116,6 @@ public class RoomSettingsSaveEventHandler(
         {
             RoomId = RoomId
         });
-
-        client.Player.Rooms = await dbContext
-            .Rooms
-            .Include(x => x.Owner)
-            .Include(x => x.Settings)
-            .Where(x => x.OwnerId == client.Player.Id)
-            .ToListAsync();
     }
 
     private void UpdateSettings(RoomSettings settings)

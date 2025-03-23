@@ -96,14 +96,14 @@ public class RoomUser(
         await ProcessGenericChecksAsync();
         await UpdateIdleStatusAsync();
         await UpdateEffectAsync();
-
+        
         if (Point != position)
         {
             await CheckForStepTriggersAsync(position, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
             await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
         }
     }
-
+    
     private async Task CheckForStepTriggersAsync(Point point, string interactionType)
     {
         var itemIdsOnPoint = tileMapHelperService
@@ -115,19 +115,19 @@ public class RoomUser(
         {
             return;
         }
-
+        
         var triggers = wiredService.GetTriggers(
             interactionType,
             room.FurnitureItems,
             "",
             itemIdsOnPoint);
-            
+        
         foreach (var trigger in triggers)
         {
             await wiredService.RunTriggerForRoomAsync(room, trigger, this);
         }
     }
-
+    
     private async Task UpdateEffectAsync()
     {
         var effectPointToCheck = IsWalking && NextPoint != null ? 

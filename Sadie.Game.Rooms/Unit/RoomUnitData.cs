@@ -98,6 +98,10 @@ public class RoomUnitData(
                 Direction = topItem.Direction;
                 DirectionHead = topItem.Direction;
             }
+            else
+            {
+                RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
+            }
         }
         
         var topItemSitOrLay = topItem?.FurnitureItem is { CanSit: false, CanLay: false };
