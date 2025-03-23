@@ -160,6 +160,10 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .Navigation(x => x.Rooms)
             .AutoInclude();
 
+        modelBuilder.Entity<Player>()
+            .Navigation(x => x.Roles)
+            .AutoInclude();
+
         modelBuilder.Entity<FurnitureItem>()
             .Navigation(x => x.HandItems)
             .AutoInclude();
