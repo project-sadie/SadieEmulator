@@ -156,6 +156,10 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         modelBuilder.Entity<ServerRoomConstants>(builder => builder.HasNoKey());
         modelBuilder.Entity<ServerSettings>(builder => builder.HasNoKey());
 
+        modelBuilder.Entity<Player>()
+            .Navigation(x => x.Rooms)
+            .AutoInclude();
+
         modelBuilder.Entity<FurnitureItem>()
             .Navigation(x => x.HandItems)
             .AutoInclude();
