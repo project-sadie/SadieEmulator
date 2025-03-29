@@ -69,7 +69,7 @@ public class RoomDeleteEventHandler(
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {
-            await room.UserRepository.TryRemoveAsync(roomUser.Id, true);
+            await room.UserRepository.TryRemoveAsync(roomUser.Id);
         }
     }
 }

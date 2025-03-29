@@ -8,7 +8,7 @@ public interface IRoomUserRepository : IAsyncDisposable
     bool TryAdd(IRoomUser user);
     bool TryGetById(long id, out IRoomUser? user);
     bool TryGetByUsername(string username, out IRoomUser? user);
-    Task TryRemoveAsync(long id, bool notifyLeft, bool hotelView = false);
+    Task TryRemoveAsync(long id, bool notifyLeft = true, bool hotelView = false);
     int Count { get; }
     Task BroadcastDataAsync(AbstractPacketWriter writer, List<long>? excludedIds = null);
     ICollection<IRoomUser> GetAllWithRights();
