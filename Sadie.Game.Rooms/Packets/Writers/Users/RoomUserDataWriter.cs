@@ -21,8 +21,9 @@ public class RoomUserDataWriter : AbstractPacketWriter
 
             foreach (var user in Users)
             {
-                if (user.Player.State.CurrentRoomId == 0)
+                if (!user.NetworkObject.Channel.IsWritable)
                 {
+                    Log.Warning("bBlocking room data iteration for unwritable channel");
                     continue;
                 }
                 
