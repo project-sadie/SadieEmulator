@@ -3,6 +3,8 @@ using Sadie.API.Networking;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
+using Serilog;
+using Serilog.Core;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Users;
 
@@ -19,6 +21,11 @@ public class RoomUserDataWriter : AbstractPacketWriter
 
             foreach (var user in Users)
             {
+                if (user.Player.State.CurrentRoomId == 0)
+                {
+                    Log.Error("WOW WOW WOW");
+                }
+                
                 writer.WriteInteger(user.Id);
                 writer.WriteString(user.Player.Username);
                 writer.WriteString(user.Player.AvatarData.Motto);

@@ -9,7 +9,10 @@ public class ProcessRoomUnitsTask(IRoomRepository roomRepository) : IServerTask
 
     public async Task ExecuteAsync()
     {
-        await Parallel.ForEachAsync(roomRepository.GetAllRooms(), RunPeriodicChecksForRoomAsync);
+        await Parallel.ForEachAsync(
+            roomRepository.GetAllRooms(), 
+            RunPeriodicChecksForRoomAsync
+            );
     }
 
     private static async ValueTask RunPeriodicChecksForRoomAsync(IRoomLogic? room, CancellationToken ctx)

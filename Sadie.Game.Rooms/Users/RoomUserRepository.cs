@@ -30,6 +30,14 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         bool notifyLeft, 
         bool hotelView = false)
     {
+        var result = _users.TryRemove(id, out var roomUser);
+
+        if (!result || roomUser == null)
+        {
+            logger.LogError($"Failed to remove a room user");
+            return;
+        }
+
         if (notifyLeft)
         {
             var writer = new RoomUserLeftWriter
@@ -39,25 +47,17 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
             await BroadcastDataAsync(writer, [id]);
         }
-
-        var result = _users.TryRemove(id, out var roomUser);
-
-        if (!result || roomUser == null)
-        {
-            logger.LogError($"Failed to remove a room user");
-            return;
-        }
-
+        
         var player = roomUser.Player;
         
         player.State.CurrentRoomId = 0;
         
-        await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+        /*await playerHelperService.UpdatePlayerStatusForFriendsAsync(
             player, 
             player.GetMergedFriendships(),
             player.Data.IsOnline, 
             false,
-            playerRepository);
+            playerRepository);*/
         
         if (hotelView)
         {

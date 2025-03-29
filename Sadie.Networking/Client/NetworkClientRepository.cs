@@ -30,7 +30,12 @@ public class NetworkClientRepository(
 
         var player = client.Player;
         var roomUser = client.RoomUser;
-            
+
+        if (roomUser != null)
+        {
+            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true, true);
+        }
+        
         if (player != null)
         {
             if (!await playerRepository.TryRemovePlayerAsync(player.Id))
@@ -52,20 +57,7 @@ public class NetworkClientRepository(
             dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
             await dbContext.SaveChangesAsync();
         }
-        else
-        {
-            logger.LogWarning($"Player was null upon disconnecting network client.");
-        }
-
-        if (roomUser != null)
-        {
-            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true, true);
-        }
-        else
-        {
-            logger.LogWarning($"Room user was null upon disconnecting network client.");
-        }
-            
+        
         await client.DisposeAsync();
         return true;
     }
