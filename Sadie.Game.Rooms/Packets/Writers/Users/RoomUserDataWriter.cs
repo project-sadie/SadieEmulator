@@ -9,20 +9,24 @@ namespace Sadie.Game.Rooms.Packets.Writers.Users;
 [PacketId(ServerPacketId.RoomUserData)]
 public class RoomUserDataWriter : AbstractPacketWriter
 {
-    public required ICollection<IRoomUser> Users { get; init; }
+    public required ICollection<IRoomUser> Users { get; set; }
 
     public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Users))!, writer =>
         {
+            Users = Users
+                .Where(x => x.NetworkObject.Channel.IsWritable)
+                .ToList();
+            
             writer.WriteInteger(Users.Count);
 
             foreach (var user in Users)
             {
                 writer.WriteInteger(user.Id);
                 writer.WriteString(user.Player.Username);
-                writer.WriteString(user.Player.AvatarData.Motto);
-                writer.WriteString(user.Player.AvatarData.FigureCode);
+                writer.WriteString(user.Player.AvatarData?.Motto ?? "");
+                writer.WriteString(user.Player.AvatarData?.FigureCode ?? "");
                 writer.WriteInteger(user.Id);
                 writer.WriteInteger(user.Point.X);
                 writer.WriteInteger(user.Point.Y);
