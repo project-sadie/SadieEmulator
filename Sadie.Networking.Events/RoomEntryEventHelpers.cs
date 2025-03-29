@@ -85,6 +85,7 @@ public static class RoomEntryEventHelpers
 
         room.TileMap.AddUnitToMap(entryPoint, roomUser);
         roomUser.ApplyFlatCtrlStatus();
+        roomUser.NeedsDataUpdate = true;
         
         client.RoomUser = roomUser;
         
