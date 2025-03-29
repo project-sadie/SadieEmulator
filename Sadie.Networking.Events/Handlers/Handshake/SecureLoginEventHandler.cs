@@ -134,8 +134,6 @@ public class SecureLoginEventHandler(
         
         await SendWelcomeMessageAsync(playerLogic);
         
-        await client.WriteToStreamAsync(new PlayerPingWriter());
-        
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 

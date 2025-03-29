@@ -92,10 +92,10 @@ public class RoomUser(
             });
         }
         
-        if (StatusMap.ContainsKey(RoomUserStatus.Sign) && (DateTime.Now - SignSet).TotalSeconds >= 5)
+        if (StatusMap.ContainsKey(RoomUserStatus.Sign) && 
+            (DateTime.Now - SignSet).TotalSeconds >= 5)
         {
             RemoveStatuses(RoomUserStatus.Sign);
-            NeedsStatusUpdate = true;
         }
 
         var position = Point;
@@ -106,6 +106,8 @@ public class RoomUser(
 
         if (Point != position)
         {
+            NeedsDataUpdate = true;
+            
             await CheckForStepTriggersAsync(position, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
             await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
         }

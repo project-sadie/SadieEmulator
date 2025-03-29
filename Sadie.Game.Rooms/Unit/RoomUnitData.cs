@@ -34,6 +34,7 @@ public class RoomUnitData(
     protected List<Point> PathPoints { get; set; } = [];
     public Dictionary<string, string> StatusMap { get; } = [];
     public bool NeedsStatusUpdate { get; set; }
+    public bool NeedsDataUpdate { get; set; }
     public List<Point> OverridePoints { get; set; } = [];
 
     public void RemoveStatuses(params string[] statuses)

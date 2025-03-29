@@ -3,8 +3,6 @@ using Sadie.API.Networking;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
-using Serilog;
-using Serilog.Core;
 
 namespace Sadie.Game.Rooms.Packets.Writers.Users;
 
@@ -21,12 +19,6 @@ public class RoomUserDataWriter : AbstractPacketWriter
 
             foreach (var user in Users)
             {
-                if (!user.NetworkObject.Channel.IsWritable)
-                {
-                    Log.Warning("bBlocking room data iteration for unwritable channel");
-                    continue;
-                }
-                
                 writer.WriteInteger(user.Id);
                 writer.WriteString(user.Player.Username);
                 writer.WriteString(user.Player.AvatarData.Motto);
