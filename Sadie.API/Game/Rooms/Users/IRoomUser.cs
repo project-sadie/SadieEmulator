@@ -23,4 +23,5 @@ public interface IRoomUser : IRoomUnit, IAsyncDisposable
     void CheckStatusForCurrentTile();
     bool HasRights();
     Task SendWhisperAsync(string message);
+    DateTime SignSet { get; set; }
 }

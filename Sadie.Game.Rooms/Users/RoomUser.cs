@@ -55,6 +55,7 @@ public class RoomUser(
     public IRoomLogic Room { get; } = room;
     public RoomControllerLevel ControllerLevel { get; set; } = controllerLevel;
     public INetworkObject NetworkObject { get; } = networkObject;
+    public DateTime SignSet { get; set; } = DateTime.MinValue;
 
     public void LookAtPoint(Point point)
     {
@@ -89,6 +90,12 @@ public class RoomUser(
                 UserId = Id,
                 ItemId = 0
             });
+        }
+        
+        if (StatusMap.ContainsKey(RoomUserStatus.Sign) && (DateTime.Now - SignSet).TotalSeconds >= 5)
+        {
+            RemoveStatuses(RoomUserStatus.Sign);
+            NeedsStatusUpdate = true;
         }
 
         var position = Point;
