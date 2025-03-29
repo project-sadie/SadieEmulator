@@ -10,7 +10,7 @@ namespace Sadie.Networking.Client;
 public class NetworkClientRepository(
     ILogger<NetworkClientRepository> logger,
     IPlayerRepository playerRepository,
-    DatabaseProvider dbProvider,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IPlayerHelperService playerHelperService) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
@@ -22,65 +22,52 @@ public class NetworkClientRepository(
 
     public async Task<bool> TryRemoveAsync(IChannelId channelId)
     {
-        if (!_clients.ContainsKey(channelId))
+        if (!_clients.TryRemove(channelId, out var client))
         {
-            logger.LogWarning($"Non existent channel identifier {channelId} is trying to be removed");
-            return true;
-        }
-        
-        try
-        {
-            var result = _clients.TryRemove(channelId, out var client);
-            
-            if (!result)
-            {
-                logger.LogError("Failed to remove a network client.");
-                return false;
-            }
-
-            var player = client.Player;
-            var roomUser = client.RoomUser;
-            
-            await client.DisposeAsync();
-
-            if (player != null)
-            {
-                await playerHelperService.UpdatePlayerStatusForFriendsAsync(
-                    player, 
-                    player.GetMergedFriendships(), 
-                    false, 
-                    false, 
-                    playerRepository);
-                
-                player.Data.IsOnline = false;
-
-                var dbContext = dbProvider.GetContextInstance();
-                
-                await dbContext.Database.ExecuteSqlRawAsync(
-                    $"UPDATE `player_data` SET `is_online` = @online WHERE `player_id` = @playerId",
-                    0,
-                    player.Id);
-                
-                if (!await playerRepository.TryRemovePlayerAsync(client.Player.Id))
-                {
-                    logger.LogError("Failed to remove player whilst disposing network client.");
-                    return false;
-                }
-            }
-
-            if (roomUser != null)
-            {
-                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true, true);
-            }
-
-            return result;
-            
-        }
-        catch (Exception e)
-        {
-            logger.LogError($"Failed to remove network client: {e}");
+            logger.LogError("Failed to remove a network client.");
             return false;
         }
+
+        var player = client.Player;
+        var roomUser = client.RoomUser;
+            
+        if (player != null)
+        {
+            if (!await playerRepository.TryRemovePlayerAsync(player.Id))
+            {
+                logger.LogError("Failed to remove player whilst disposing network client.");
+                return false;
+            }
+                
+            await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+                player, 
+                player.GetMergedFriendships(), 
+                false, 
+                false, 
+                playerRepository);
+                
+            player.Data.IsOnline = false;
+
+            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
+            await dbContext.SaveChangesAsync();
+        }
+        else
+        {
+            logger.LogWarning($"Player was null upon disconnecting network client.");
+        }
+
+        if (roomUser != null)
+        {
+            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true, true);
+        }
+        else
+        {
+            logger.LogWarning($"Room user was null upon disconnecting network client.");
+        }
+            
+        await client.DisposeAsync();
+        return true;
     }
 
     public async Task DisconnectIdleClientsAsync()

@@ -11,6 +11,8 @@ public static class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        serviceCollection.AddDbContextFactory<SadieContext>(); 
+        
         serviceCollection.AddDbContext<SadieContext>(options =>
         {
             options.UseMySql(config.GetConnectionString("Default"), MySqlServerVersion.LatestSupportedServerVersion, mySqlOptions =>
@@ -52,7 +54,5 @@ public static class DatabaseServiceCollection
                 .Set<CatalogFrontPageItem>()
                 .Include(x => x.CatalogPage)
                 .ToList());
-
-        serviceCollection.AddSingleton<DatabaseProvider>();
     }
 }
