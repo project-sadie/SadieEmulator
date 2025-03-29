@@ -24,6 +24,7 @@ public class NetworkClientRepository(
     {
         if (!_clients.ContainsKey(channelId))
         {
+            logger.LogWarning($"Non existent channel identifier {channelId} is trying to be removed");
             return true;
         }
         
