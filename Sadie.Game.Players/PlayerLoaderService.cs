@@ -5,13 +5,15 @@ using Sadie.Database.Models.Players;
 
 namespace Sadie.Game.Players;
 
-public class PlayerLoaderService(SadieContext dbContext) : IPlayerLoaderService
+public class PlayerLoaderService(IDbContextFactory<SadieContext> dbContextFactory) : IPlayerLoaderService
 {
     public async Task<PlayerSsoToken?> GetTokenAsync(string token, int delayMs)
     {
         var expires = DateTime
             .Now
             .Subtract(TimeSpan.FromMilliseconds(delayMs));
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var tokenRecord = await dbContext
             .PlayerSsoToken
