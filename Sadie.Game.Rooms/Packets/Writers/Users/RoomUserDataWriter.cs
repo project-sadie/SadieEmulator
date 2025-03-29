@@ -23,7 +23,7 @@ public class RoomUserDataWriter : AbstractPacketWriter
             {
                 if (user.Player.State.CurrentRoomId == 0)
                 {
-                    Log.Error("WOW WOW WOW");
+                    continue;
                 }
                 
                 writer.WriteInteger(user.Id);
