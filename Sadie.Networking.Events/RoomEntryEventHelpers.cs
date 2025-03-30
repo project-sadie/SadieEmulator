@@ -43,8 +43,11 @@ public static class RoomEntryEventHelpers
         
         var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
         
+        roomUser.ApplyFlatCtrlStatus();
+        roomUser.NeedsDataUpdate = true;
+        
         if (!room.UserRepository.TryAdd(roomUser))
-        { 
+        {
             Log.Error($"Failed to add user {player.Id} to room {room.Id}");
             return;
         }
@@ -65,7 +68,7 @@ public static class RoomEntryEventHelpers
                 await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, teleport, "0");
             });
         }
-
+        
         if (player.State.CurrentRoomId == 0)
         {
             var friends = player
@@ -84,8 +87,6 @@ public static class RoomEntryEventHelpers
         player.State.CurrentRoomId = room.Id;
 
         room.TileMap.AddUnitToMap(entryPoint, roomUser);
-        roomUser.ApplyFlatCtrlStatus();
-        roomUser.NeedsDataUpdate = true;
         
         client.RoomUser = roomUser;
         
