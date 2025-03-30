@@ -26,6 +26,11 @@ public class PlayerLoaderService(IDbContextFactory<SadieContext> dbContextFactor
         {
             return tokenRecord;
         }
+
+        if (tokenRecord.KeepAlive)
+        {
+            return tokenRecord;
+        }
         
         tokenRecord.UsedAt = DateTime.Now;
 
