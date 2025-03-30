@@ -126,7 +126,6 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
             var dataWriter = new RoomUserDataWriter
             {
                 Users = users
-                    .Where(x => x.NeedsDataUpdate)
                     .ToList()
             };
 

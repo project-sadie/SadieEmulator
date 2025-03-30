@@ -40,8 +40,6 @@ public class RoomUserDataWriter : AbstractPacketWriter
                 writer.WriteString("");
                 writer.WriteInteger(user.Player.Data.AchievementScore);
                 writer.WriteBool(true);
-                
-                user.NeedsDataUpdate = false;
             }
         });
     }

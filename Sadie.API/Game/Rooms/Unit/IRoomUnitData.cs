@@ -15,7 +15,6 @@ public interface IRoomUnitData
     bool CanWalk { get; set; }
     public Dictionary<string, string> StatusMap { get; }
     bool NeedsStatusUpdate { get; set; }
-    bool NeedsDataUpdate { get; set; }
     List<Point> OverridePoints { get; set; }
     void AddStatus(string key, string value);
     void RemoveStatuses(params string[] statuses);

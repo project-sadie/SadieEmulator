@@ -44,7 +44,6 @@ public static class RoomEntryEventHelpers
         var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
         
         roomUser.ApplyFlatCtrlStatus();
-        roomUser.NeedsDataUpdate = true;
         
         if (!room.UserRepository.TryAdd(roomUser))
         {

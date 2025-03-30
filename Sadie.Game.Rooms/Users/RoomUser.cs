@@ -106,8 +106,6 @@ public class RoomUser(
 
         if (Point != position)
         {
-            NeedsDataUpdate = true;
-            
             await CheckForStepTriggersAsync(position, FurnitureItemInteractionType.WiredTriggerUserWalksOffFurniture);
             await CheckForStepTriggersAsync(Point, FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture);
         }
