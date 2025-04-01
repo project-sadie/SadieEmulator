@@ -7,7 +7,9 @@ using Sadie.Database.Models.Rooms;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomRepository(SadieContext dbContext, IMapper mapper) : IRoomRepository
+public class RoomRepository(
+    IDbContextFactory<SadieContext> dbContextFactory, 
+    IMapper mapper) : IRoomRepository
 {
     private readonly ConcurrentDictionary<long, IRoomLogic> _rooms = new();
 
@@ -34,6 +36,8 @@ public class RoomRepository(SadieContext dbContext, IMapper mapper) : IRoomRepos
     
     public async ValueTask DisposeAsync()
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         foreach (var room in _rooms.Values)
         {
             dbContext.Entry(room).State = EntityState.Modified;
