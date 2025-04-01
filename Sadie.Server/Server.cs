@@ -1,17 +1,24 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Networking;
 using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
+using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.Networking.Client;
+using Sadie.Options.Options;
+using Serilog;
 
 namespace SadieEmulator;
 
-public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : IServer
+public class Server(ILogger<Server> logger,
+    IServerTaskWorker taskWorker,
+    INetworkListener networkListener,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IOptions<PlayerOptions> playerOptions,
+    INetworkClientRepository networkClientRepository) : IServer
 {
     private readonly CancellationTokenSource _tokenSource = new();
     
@@ -20,8 +27,12 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         var stopwatch = Stopwatch.StartNew();
         WriteHeaderToConsole();
         await CleanUpDataAsync();
+
+        if (playerOptions.Value.CanReuseSsoTokens)
+        {
+            Log.Logger.Warning($"Reusable SSO tokens activated, this results in reduced security.");
+        }
         
-        var taskWorker = serviceProvider.GetRequiredService<IServerTaskWorker>();
         taskWorker.WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
@@ -33,15 +44,13 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
 
     private async Task StartListeningForConnectionsAsync()
     {
-        var networkListener = serviceProvider.GetRequiredService<INetworkListener>();
         networkListener.Bootstrap();
-        
         await networkListener.ListenAsync();
     }
 
     private async Task CleanUpDataAsync()
     {
-        var context = serviceProvider.GetRequiredService<SadieContext>();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
 
         await context
             .PlayerData
@@ -77,7 +86,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         
         logger.LogWarning("Server is about to shut down...");
 
-        var networkClientRepository = serviceProvider.GetRequiredService<INetworkClientRepository>();
         await networkClientRepository.DisposeAsync();
     }
 }

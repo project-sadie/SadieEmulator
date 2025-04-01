@@ -8,5 +8,4 @@ public class PlayerSsoToken
     public DateTime CreatedAt { get; init; }
     public DateTime ExpiresAt { get; init; }
     public DateTime? UsedAt { get; set; }
-    public bool KeepAlive { get; set; }
 }
