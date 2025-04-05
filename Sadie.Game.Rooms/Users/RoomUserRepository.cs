@@ -104,16 +104,19 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                     .Room
                     .BotRepository
                     .GetAll();
-                
-                await BroadcastDataAsync(new RoomBotStatusWriter
-                {
-                    Bots = bots
-                });
 
-                await BroadcastDataAsync(new RoomBotDataWriter
+                if (bots.Count != 0)
                 {
-                    Bots = bots
-                });
+                    await BroadcastDataAsync(new RoomBotStatusWriter
+                    {
+                        Bots = bots
+                    });
+
+                    await BroadcastDataAsync(new RoomBotDataWriter
+                    {
+                        Bots = bots
+                    });
+                }
             }
             
             var statusWriter = new RoomUserStatusWriter
