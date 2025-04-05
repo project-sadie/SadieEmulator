@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
@@ -7,7 +8,7 @@ using Sadie.Options.Options;
 namespace Sadie.Game.Players;
 
 public class PlayerLoaderService(IDbContextFactory<SadieContext> dbContextFactory,
-    PlayerOptions playerOptions) : IPlayerLoaderService
+    IOptions<PlayerOptions> playerOptions) : IPlayerLoaderService
 {
     public async Task<PlayerSsoToken?> GetTokenAsync(string token, int delayMs)
     {
@@ -29,7 +30,7 @@ public class PlayerLoaderService(IDbContextFactory<SadieContext> dbContextFactor
             return tokenRecord;
         }
 
-        if (playerOptions.CanReuseSsoTokens)
+        if (playerOptions.Value.CanReuseSsoTokens)
         {
             return tokenRecord;
         }

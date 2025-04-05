@@ -16,6 +16,7 @@ public class Player
     private ICollection<PlayerFriendship> _incomingFriendships = [];
     private ICollection<PlayerFurnitureItem> _furnitureItems = [];
     private ICollection<Room> _rooms = [];
+    private ICollection<PlayerIgnore> _ignores = [];
 
     public Player()
     {
@@ -26,7 +27,7 @@ public class Player
         _lazyLoader = lazyLoader;
     }
 
-    public int Id { get; init; }
+    public long Id { get; init; }
     public required string Username { get; init; }
     public required string Email { get; init; }
     public ICollection<Role> Roles { get; init; } = [];
@@ -82,6 +83,12 @@ public class Player
         set => _rooms = value;
     }
     
+    public ICollection<PlayerIgnore> Ignores
+    {
+        get => _lazyLoader.Load(this, ref _ignores);
+        set => _ignores = value;
+    }
+
     public ICollection<Group> Groups { get; init; } = [];
     public ICollection<PlayerBot> Bots { get; init; } = [];
     public ICollection<PlayerRoomVisit> RoomVisits { get; init; } = [];
@@ -111,7 +118,7 @@ public class Player
                null;
     }
 
-    public PlayerFriendship? TryGetAcceptedFriendshipFor(int targetId)
+    public PlayerFriendship? TryGetAcceptedFriendshipFor(long targetId)
     {
         var incoming = IncomingFriendships
             .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
@@ -125,7 +132,7 @@ public class Player
             .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
     }
 
-    public PlayerFriendship? TryGetFriendshipFor(int targetId)
+    public PlayerFriendship? TryGetFriendshipFor(long targetId)
     {
         var incoming = IncomingFriendships
             .FirstOrDefault(x => x.OriginPlayerId == targetId);
@@ -139,7 +146,7 @@ public class Player
             .FirstOrDefault(x => x.TargetPlayerId == targetId);
     }
 
-    public void DeleteFriendshipFor(int targetId)
+    public void DeleteFriendshipFor(long targetId)
     {
         var incoming = IncomingFriendships
             .FirstOrDefault(x => x.OriginPlayerId == targetId);

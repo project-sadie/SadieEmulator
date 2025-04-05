@@ -208,7 +208,7 @@ public static class NetworkPacketEventHelpers
             TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };
-
+        
         var excludedIds = room
             .UserRepository
             .GetAll()
