@@ -159,4 +159,5 @@ public class ServerPacketId
     public const short RoomPollOffer = 3785;
     public const short RoomPollResults = 5201;
     public const short RoomPollStarted = 5200;
+    public const short PlayerIgnoreState = 207;
 }
