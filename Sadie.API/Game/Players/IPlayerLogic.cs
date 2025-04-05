@@ -9,7 +9,7 @@ namespace Sadie.API.Game.Players;
 
 public interface IPlayerLogic
 {
-    int Id { get; init; }
+    long Id { get; init; }
     string Username { get; init; }
     string Email { get; init; }
     ICollection<Role> Roles { get; init; }
@@ -31,15 +31,16 @@ public interface IPlayerLogic
     ICollection<PlayerFriendship> IncomingFriendships { get; init; }
     ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; init; }
     ICollection<Room> Rooms { get; set; }
+    ICollection<PlayerIgnore> Ignores { get; set; }
     ICollection<Group> Groups { get; init; }
     ICollection<PlayerBot> Bots { get; init; }
     ICollection<PlayerRoomVisit> RoomVisits { get; init; }
     int GetAcceptedFriendshipCount();
     List<PlayerFriendship> GetMergedFriendships();
     bool IsFriendsWith(int targetId);
-    PlayerFriendship? TryGetAcceptedFriendshipFor(int targetId);
-    PlayerFriendship? TryGetFriendshipFor(int targetId);
-    void DeleteFriendshipFor(int targetId);
+    PlayerFriendship? TryGetAcceptedFriendshipFor(long targetId);
+    PlayerFriendship? TryGetFriendshipFor(long targetId);
+    void DeleteFriendshipFor(long targetId);
     bool HasPermission(string name);
     IPlayerState State { get; }
     IChannel? Channel { get; set; }

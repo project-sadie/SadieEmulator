@@ -91,7 +91,7 @@ public class FloorPlanEditorSaveEventHandler(
 
         foreach (var user in room.UserRepository.GetAll())
         {
-            await room.UserRepository.TryRemoveAsync(user.Id, false, true);
+            await room.UserRepository.TryRemoveAsync(user.Player.Id, false, true);
             playersToForward.Add(user.Player);
         }
 
