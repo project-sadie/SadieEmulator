@@ -35,7 +35,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         IEnumerable<PlayerFurnitureItemPlacementData> rollers)
     {
         var writers = new List<RoomObjectsRollingWriter>();
-        var userIdsProcessed = new HashSet<int>();
+        var userIdsProcessed = new HashSet<long>();
         var itemIdsProcessed = new HashSet<int>();
 
         foreach (var roller in rollers)
@@ -55,7 +55,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             
             var users = room.UserRepository
                 .GetAll()
-                .Where(u => !userIdsProcessed.Contains(u.Id));
+                .Where(u => !userIdsProcessed.Contains(u.Player.Id));
 
             var nextStepOpen = room.TileMap.TileExists(nextStep) &&
                 room.TileMap.Map[nextStep.Y, nextStep.X] == (int)RoomTileState.Open &&
@@ -178,7 +178,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         int x,
         int y,
         Point nextStep,
-        ISet<int> userIdsProcessed,
+        ISet<long> playerIdsProcessed,
         IRoomUser rollingUser,
         ICollection<RoomObjectsRollingWriter> writers,
         IRoomLogic room,
@@ -186,7 +186,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         PlayerFurnitureItemPlacementData? nextRoller,
         double nextHeight)
     {
-        userIdsProcessed.Add(rollingUser.Id);
+        playerIdsProcessed.Add(rollingUser.Player.Id);
 
         if (rollingUser.StatusMap.ContainsKey(RoomUserStatus.Move))
         {
@@ -202,7 +202,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             Objects = [],
             RollerId = roller.PlayerFurnitureItemId,
             MovementType = 2,
-            RoomUserId = rollingUser.Id,
+            RoomUserId = rollingUser.Player.Id,
             Height = rollingUser.PointZ.ToString(),
             NextHeight = nextHeight.ToString()
         });

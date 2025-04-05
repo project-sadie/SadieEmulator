@@ -12,12 +12,12 @@ public class PlayerRepository(
     SadieContext dbContext,
     IMapper mapper) : IPlayerRepository
 {
-    private readonly ConcurrentDictionary<int, IPlayerLogic> _players = new();
+    private readonly ConcurrentDictionary<long, IPlayerLogic> _players = new();
 
-    public IPlayerLogic? GetPlayerLogicById(int id) => _players.GetValueOrDefault(id);
+    public IPlayerLogic? GetPlayerLogicById(long id) => _players.GetValueOrDefault(id);
     public IPlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Username == username);
     
-    public async Task<Player?> GetPlayerByIdAsync(int id)
+    public async Task<Player?> GetPlayerByIdAsync(long id)
     {
         if (_players.TryGetValue(id, out var byId))
         {
@@ -53,7 +53,7 @@ public class PlayerRepository(
     
     public bool TryAddPlayer(IPlayerLogic player) => _players.TryAdd(player.Id, player);
 
-    public async Task<bool> TryRemovePlayerAsync(int playerId)
+    public async Task<bool> TryRemovePlayerAsync(long playerId)
     {
         var result = _players.TryRemove(playerId, out var player);
 
@@ -67,12 +67,12 @@ public class PlayerRepository(
         return result;
     }
 
-    public int Count()
+    public long Count()
     {
         return _players.Count;
     }
 
-    public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, int[] excludeIds)
+    public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, long[] excludeIds)
     {
         return await dbContext
             .Set<Player>()
@@ -83,7 +83,7 @@ public class PlayerRepository(
             .ToListAsync();
     }
 
-    public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(int playerId)
+    public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(long playerId)
     {
         return await dbContext
             .Set<PlayerRelationship>()

@@ -50,7 +50,7 @@ public class VendingInteractor(IRoomTileMapHelperService tileMapHelperService,
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             ItemId = handItem.Id
         });
     }

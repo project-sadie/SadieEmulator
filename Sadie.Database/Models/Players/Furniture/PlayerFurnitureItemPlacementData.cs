@@ -9,14 +9,14 @@ namespace Sadie.Database.Models.Players.Furniture;
 
 public class PlayerFurnitureItemPlacementData
 {
-    private readonly ILazyLoader _lazyLoader;
+    private readonly ILazyLoader? _lazyLoader;
     private PlayerFurnitureItemWiredData? _wiredData;
     
     public PlayerFurnitureItemPlacementData()
     {
     }
 
-    public PlayerFurnitureItemPlacementData(ILazyLoader lazyLoader)
+    public PlayerFurnitureItemPlacementData(ILazyLoader? lazyLoader)
     {
         _lazyLoader = lazyLoader;
     }

@@ -17,7 +17,7 @@ public class PlayerSearchResultWriter : AbstractPacketWriter
 
         foreach (var friend in Friends)
         {
-            writer.WriteInteger(friend.Id);
+            writer.WriteLong(friend.Id);
             writer.WriteString(friend.Username);
             writer.WriteString(friend.AvatarData.Motto);
             writer.WriteBool(false);

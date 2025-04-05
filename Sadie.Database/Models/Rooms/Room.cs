@@ -36,7 +36,7 @@ public class Room : IRoom
         set => _layout = value;
     }
     
-    public int OwnerId { get; init; }
+    public long OwnerId { get; init; }
     
     public Player? Owner
     {

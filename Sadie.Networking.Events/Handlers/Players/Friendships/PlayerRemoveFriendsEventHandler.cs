@@ -15,7 +15,7 @@ public class PlayerRemoveFriendsEventHandler(
     : INetworkPacketEventHandler
 {
     public int Amount { get; set; }
-    public List<int> Ids { get; init; } = [];
+    public List<long> Ids { get; init; } = [];
     
     public async Task HandleAsync(INetworkClient client)
     {

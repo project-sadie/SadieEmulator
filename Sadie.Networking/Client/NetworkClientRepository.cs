@@ -33,7 +33,7 @@ public class NetworkClientRepository(
 
         if (roomUser != null)
         {
-            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true, true);
+            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Id, true, true);
         }
         
         if (player != null)

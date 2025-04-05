@@ -21,7 +21,7 @@ public class RoomUserStatusWriter : AbstractPacketWriter
                 StatusMap.
                 Select(x => x.Key + (string.IsNullOrEmpty(x.Value) ? "" : " " + x.Value));
             
-            writer.WriteLong(user.Id);
+            writer.WriteLong(user.Player.Id);
             writer.WriteInteger(user.Point.X);
             writer.WriteInteger(user.Point.Y);
             writer.WriteString(user.PointZ.ToString("0.00"));

@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Rooms.Furniture;
 [PacketId(ServerPacketId.RoomWallItems)]
 public class RoomWallItemsWriter : AbstractPacketWriter
 {
-    public required Dictionary<int, string> FurnitureOwners { get; init; }
+    public required Dictionary<long, string> FurnitureOwners { get; init; }
     public required ICollection<PlayerFurnitureItemPlacementData> WallItems { get; init; }
 
     public override void OnConfigureRules()

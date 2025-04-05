@@ -10,7 +10,6 @@ using Sadie.Enums.Unsorted;
 namespace Sadie.Game.Rooms.Unit;
 
 public class RoomUnitData(
-    int id,
     IRoomLogic room,
     Point point,
     double pointZ,
@@ -20,7 +19,6 @@ public class RoomUnitData(
     IRoomWiredService wiredService,
     IRoomPathFinderHelperService pathFinderHelperService) : IRoomUnitData
 {
-    public int Id { get; } = id;
     public HDirection DirectionHead { get; set; } = directionHead;
     public HDirection Direction { get; set; } = direction;
     public bool CanWalk { get; set; } = true;

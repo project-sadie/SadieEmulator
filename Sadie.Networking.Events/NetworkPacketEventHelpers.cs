@@ -201,7 +201,7 @@ public static class NetworkPacketEventHelpers
         var chatMessage = new RoomChatMessage
         {
             RoomId = room.Id,
-            PlayerId = roomUser.Id,
+            PlayerId = roomUser.Player.Id,
             Message = message,
             ChatBubbleId = bubble,
             EmotionId = roomHelperService.GetEmotionFromMessage(message),
@@ -209,11 +209,19 @@ public static class NetworkPacketEventHelpers
             CreatedAt = DateTime.Now
         };
 
+        var excludedIds = room
+            .UserRepository
+            .GetAll()
+            .Where(x =>
+                x.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Id))
+            .Select(x => x.Player.Id)
+            .ToList();
+
         if (shouting)
         {
             var writer = new RoomUserShoutWriter
             {
-                SenderId = roomUser.Id,
+                SenderId = roomUser.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
@@ -221,13 +229,13 @@ public static class NetworkPacketEventHelpers
                 MessageLength = message.Length
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer);
+            await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
         }
         else
         {
             var writer = new RoomUserChatWriter
             {
-                SenderId = roomUser.Id,
+                SenderId = roomUser.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
@@ -235,7 +243,7 @@ public static class NetworkPacketEventHelpers
                 MessageLength = message.Length
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer);
+            await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
         }
         
         room.ChatMessages.Add(chatMessage);

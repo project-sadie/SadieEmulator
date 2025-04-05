@@ -7,5 +7,5 @@ namespace Sadie.Networking.Writers.Rooms.Users;
 public class RoomBannedUsersWriter : AbstractPacketWriter
 {
     public required int RoomId { get; init; }
-    public required Dictionary<int, string> BannedUsersMap { get; init; }
+    public required Dictionary<long, string> BannedUsersMap { get; init; }
 }

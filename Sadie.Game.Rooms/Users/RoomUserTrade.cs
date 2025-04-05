@@ -45,7 +45,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
     
     public async Task SwapItemsAsync(SadieContext dbContext)
     {
-        var map = new Dictionary<int, List<PlayerFurnitureItem>>();
+        var map = new Dictionary<long, List<PlayerFurnitureItem>>();
         
         foreach (var item in Items)
         {

@@ -6,7 +6,7 @@ public class RoomData
 {
     [PacketData] public required int Id { get; set; }
     [PacketData] public required string Name { get; set; }
-    [PacketData] public required int OwnerId { get; set; }
+    [PacketData] public required long OwnerId { get; set; }
     [PacketData] public required string OwnerUsername { get; set; }
     [PacketData] public required int AccessType { get; set; }
     [PacketData] public required int UserCount { get; set; }

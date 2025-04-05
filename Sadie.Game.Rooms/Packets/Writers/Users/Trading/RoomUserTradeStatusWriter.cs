@@ -7,6 +7,6 @@ namespace Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 [PacketId(ServerPacketId.RoomUserTradeStatus)]
 public class RoomUserTradeStatusWriter : AbstractPacketWriter
 {
-    public required int UserId { get; set; }
+    public required long UserId { get; set; }
     public required int Status { get; set; }
 }

@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Players.Friendships;
 public class PlayerRemoveFriendsWriter : AbstractPacketWriter
 {
     public required int Unknown1 { get; init; }
-    public required List<int> PlayerIds { get; init; }
+    public required List<long> PlayerIds { get; init; }
 
     public override void OnConfigureRules()
     {
@@ -16,7 +16,7 @@ public class PlayerRemoveFriendsWriter : AbstractPacketWriter
             foreach (var playerId in PlayerIds)
             {
                 writer.WriteInteger(-1);
-                writer.WriteInteger(playerId);
+                writer.WriteLong(playerId);
             }
         });
     }

@@ -58,7 +58,7 @@ public class RoomUserRespectEventHandler(
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             Action = (int) RoomUserAction.ThumbsUp
         });
     }

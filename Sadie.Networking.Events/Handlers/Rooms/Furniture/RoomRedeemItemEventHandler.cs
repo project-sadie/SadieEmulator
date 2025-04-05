@@ -19,7 +19,7 @@ public class RoomRedeemItemEventHandler(SadieContext dbContext) : INetworkPacket
 
         if (player?.NetworkObject == null || 
             client.RoomUser == null || 
-            room.OwnerId != client.RoomUser.Id)
+            room.OwnerId != client.Player!.Id)
         {
             return;
         }

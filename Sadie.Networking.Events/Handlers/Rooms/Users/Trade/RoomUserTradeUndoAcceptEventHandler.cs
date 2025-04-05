@@ -22,7 +22,7 @@ public class RoomUserTradeUndoAcceptEventHandler(IRoomRepository roomRepository)
         
         await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeStatusWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             Status = roomUser.TradeStatus
         });
     }

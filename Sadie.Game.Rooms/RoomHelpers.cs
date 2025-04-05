@@ -91,7 +91,6 @@ public static class RoomHelpers
         return roomUserFactory.Create(
             room,
             player.NetworkObject!,
-            player.Id,
             spawnPoint,
             room.TileMap.ZMap[spawnPoint.Y, spawnPoint.X],
             direction,

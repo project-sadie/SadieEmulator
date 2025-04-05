@@ -16,7 +16,7 @@ public class RoomObjectsRollingWriter : AbstractPacketWriter
     public required ICollection<IRoomRollingObjectData> Objects { init; get; }
     public required int RollerId { init; get; }
     public required int MovementType { init; get; }
-    public required int RoomUserId { init; get; }
+    public required long RoomUserId { init; get; }
     public required string Height { init; get; }
     public required string NextHeight { init; get; }
 
@@ -29,7 +29,7 @@ public class RoomObjectsRollingWriter : AbstractPacketWriter
         writer.WriteInteger(0);
         writer.WriteInteger(RollerId);
         writer.WriteInteger(MovementType);
-        writer.WriteInteger(RoomUserId);
+        writer.WriteLong(RoomUserId);
         writer.WriteString(Height);
         writer.WriteString(NextHeight);
     }

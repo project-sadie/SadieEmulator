@@ -17,9 +17,12 @@ public class RoomUserTradeUpdateWriter : AbstractPacketWriter
     {
         foreach (var user in Trade.Users)
         {
-            writer.WriteInteger(user.Id);
+            writer.WriteLong(user.Player.Id);
 
-            var usersOfferedItems = Trade.Items.Where(x => x.PlayerId == user.Id).ToList();
+            var usersOfferedItems = Trade
+                .Items
+                .Where(x => x.PlayerId == user.Player.Id)
+                .ToList();
             
             writer.WriteInteger(usersOfferedItems.Count);
             

@@ -17,7 +17,7 @@ public class RoomUserStartTypingEventHandler(IRoomRepository roomRepository) : I
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             IsTyping = true
         });
     }

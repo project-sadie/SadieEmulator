@@ -21,7 +21,7 @@ public class RoomBotDataWriter : AbstractPacketWriter
             {
                 var botData = bot.Bot;
                 
-                writer.WriteInteger(bot.Id);
+                writer.WriteLong(bot.Bot.Id);
                 writer.WriteString(botData.Username);
                 writer.WriteString(botData.Motto);
                 writer.WriteString(botData.FigureCode);
@@ -32,7 +32,7 @@ public class RoomBotDataWriter : AbstractPacketWriter
                 writer.WriteInteger((int) bot.Direction);
                 writer.WriteInteger(3);
                 writer.WriteString(botData.Gender == AvatarGender.Male ? "M" : "F");
-                writer.WriteInteger(bot.Bot.PlayerId);
+                writer.WriteLong(bot.Bot.PlayerId);
                 writer.WriteString("");
                 writer.WriteInteger(10);
                 writer.WriteInteger(0);

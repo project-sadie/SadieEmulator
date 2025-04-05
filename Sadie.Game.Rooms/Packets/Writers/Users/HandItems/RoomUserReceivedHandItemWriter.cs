@@ -7,6 +7,6 @@ namespace Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 [PacketId(ServerPacketId.RoomUserReceivedHandItem)]
 public class RoomUserReceivedHandItemWriter : AbstractPacketWriter
 {
-    public required int FromId { get; set; }
+    public required long FromId { get; set; }
     public required int HandItemId { get; set; }
 }

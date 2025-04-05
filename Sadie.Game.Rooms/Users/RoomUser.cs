@@ -19,7 +19,6 @@ using Sadie.Networking.Writers.Rooms.Users;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser(
-    int id,
     RoomLogic room,
     INetworkObject networkObject,
     Point point,
@@ -33,7 +32,7 @@ public class RoomUser(
     IRoomHelperService roomHelperService,
     IRoomWiredService wiredService,
     IRoomPathFinderHelperService pathFinderHelperService)
-    : RoomUnitData(id,
+    : RoomUnitData(
             room,
             point,
             pointZ,
@@ -87,7 +86,7 @@ public class RoomUser(
         
             await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
             {
-                UserId = Id,
+                UserId = Player.Id,
                 ItemId = 0
             });
         }
@@ -162,7 +161,7 @@ public class RoomUser(
 
             var writer = new RoomUserIdleWriter
             {
-                UserId = Id,
+                UserId = Player.Id,
                 IsIdle = IsIdle
             };
             
@@ -181,7 +180,7 @@ public class RoomUser(
     {
         await NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
         {
-            SenderId = Id,
+            SenderId = Player.Id,
             Message = message,
             EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
             ChatBubbleId = 0,
@@ -196,7 +195,7 @@ public class RoomUser(
         
         var writer = new RoomUserEffectWriter
         {
-            UserId = Id,
+            UserId = Player.Id,
             EffectId = (int) effect,
             DelayMs = 0
         };

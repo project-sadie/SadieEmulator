@@ -14,7 +14,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
 {
     public required int Pages { get; init; }
     public required int Index { get; init; }
-    public required int PlayerId { get; init; }
+    public required long PlayerId { get; init; }
     public required ICollection<PlayerFriendship> Friends { get; init; }
     public required IPlayerRepository PlayerRepository { get; init; }
     public required ICollection<PlayerRelationship> Relationships { get; init; }
@@ -40,7 +40,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
                ?.TypeId ??
            PlayerRelationshipType.None;
 
-            writer.WriteInteger(friendData.Id);
+            writer.WriteLong(friendData.Id);
             writer.WriteString(friendData.Username);
             writer.WriteInteger(friendData.AvatarData.Gender == AvatarGender.Male ? 0 : 1);
             writer.WriteBool(isOnline);

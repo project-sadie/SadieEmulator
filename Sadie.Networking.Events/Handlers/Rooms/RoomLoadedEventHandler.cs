@@ -59,9 +59,9 @@ public class RoomLoadedEventHandler(
                 dbContext, 
                 mapper);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var existingUser) && existingUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(existingUser.Player.Id);
             }
         }
 

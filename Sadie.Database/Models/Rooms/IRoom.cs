@@ -11,7 +11,7 @@ public interface IRoom
     string Name { get; set; }
     int LayoutId { get; set; }
     RoomLayout? Layout { get; set; }
-    int OwnerId { get; init; }
+    long OwnerId { get; init; }
     Player? Owner { get; set; }
     int MaxUsersAllowed { get; set; }
     string Description { get; set; }

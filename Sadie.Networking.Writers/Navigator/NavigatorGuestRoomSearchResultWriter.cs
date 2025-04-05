@@ -44,7 +44,7 @@ public class NavigatorGuestRoomSearchResultWriter : AbstractPacketWriter
                     
                     writer.WriteInteger(guestRoom!.Id);
                     writer.WriteString(guestRoom.Name);
-                    writer.WriteInteger(guestRoom.OwnerId);
+                    writer.WriteLong(guestRoom.OwnerId);
                     writer.WriteString(guestRoom.Owner!.Username);
                     writer.WriteInteger((int) guestRoom.Settings!.AccessType);
                     writer.WriteInteger(guestRoom.UserRepository.Count);

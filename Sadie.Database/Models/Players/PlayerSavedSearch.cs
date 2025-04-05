@@ -9,5 +9,5 @@ public class PlayerSavedSearch
     [PacketData] public string? Search { get; init; }
     [PacketData] public string? Filter { get; init; }
     [NotMapped] [PacketData] public string Localization => "";
-    public int PlayerId { get; init; }
+    public long PlayerId { get; init; }
 }

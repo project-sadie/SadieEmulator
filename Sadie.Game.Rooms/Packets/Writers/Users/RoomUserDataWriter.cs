@@ -23,11 +23,11 @@ public class RoomUserDataWriter : AbstractPacketWriter
 
             foreach (var user in Users)
             {
-                writer.WriteInteger(user.Id);
+                writer.WriteLong(user.Player.Id);
                 writer.WriteString(user.Player.Username);
                 writer.WriteString(user.Player.AvatarData?.Motto ?? "");
                 writer.WriteString(user.Player.AvatarData?.FigureCode ?? "");
-                writer.WriteInteger(user.Id);
+                writer.WriteLong(user.Player.Id);
                 writer.WriteInteger(user.Point.X);
                 writer.WriteInteger(user.Point.Y);
                 writer.WriteString(user.PointZ + "");

@@ -11,7 +11,6 @@ using Sadie.Game.Rooms.Unit;
 namespace Sadie.Game.Rooms.Bots;
 
 public class RoomBot(
-    int id,
     IRoomLogic room,
     Point point,
     double pointZ,
@@ -20,8 +19,7 @@ public class RoomBot(
     IRoomTileMapHelperService tileMapHelperService,
     IRoomWiredService wiredService,
     IRoomPathFinderHelperService pathFinderHelperService)
-    : RoomUnitData(id,
-            room,
+    : RoomUnitData(room,
             point,
             pointZ,
             directionHead,

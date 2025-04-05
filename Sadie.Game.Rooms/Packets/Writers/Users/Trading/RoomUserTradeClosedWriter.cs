@@ -8,7 +8,7 @@ namespace Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 [PacketId(ServerPacketId.RoomUserTradeClosed)]
 public class RoomUserTradeClosedWriter : AbstractPacketWriter
 {
-    public required int UserId { get; set; }
+    public required long UserId { get; set; }
     public required RoomUserTradeCloseReason Reason { get; init; }
 
     public override void OnConfigureRules()

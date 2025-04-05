@@ -110,7 +110,7 @@ public class PlayerSendFriendRequestEventHandler(
         PlayerFriendship incomingRequest, 
         bool targetOnline, 
         IPlayerLogic? onlineTarget,
-        int playerId)
+        long playerId)
     {
         if (incomingRequest.Status != PlayerFriendshipStatus.Pending)
         {

@@ -7,7 +7,7 @@ namespace Sadie.Networking.Writers.Rooms;
 public class RoomPromotionWriter : AbstractPacketWriter
 {
     public required int AdId { get; set; }
-    public required int OwnerId { get; set; }
+    public required long OwnerId { get; set; }
     public required string OwnerUsername { get; set; }
     public required int FlatId { get; set; }
     public required int Type { get; set; }

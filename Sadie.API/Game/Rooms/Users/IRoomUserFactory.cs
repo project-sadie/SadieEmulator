@@ -10,7 +10,6 @@ public interface IRoomUserFactory
     IRoomUser Create(
         IRoomLogic room,
         INetworkObject networkObject, 
-        int id, 
         Point point, 
         double pointZ,
         HDirection directionHead,

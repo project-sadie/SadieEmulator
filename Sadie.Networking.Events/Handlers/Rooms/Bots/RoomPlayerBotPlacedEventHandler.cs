@@ -30,14 +30,17 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        var bot = client.Player.Bots.FirstOrDefault(x => x.Id == Id);
+        var bot = client
+            .Player!
+            .Bots
+            .FirstOrDefault(x => x.Id == Id);
 
         if (bot == null)
         {
             return;
         }
 
-        if (room.OwnerId != roomUser.Id)
+        if (room.OwnerId != roomUser.Player.Id)
         {
             return;
         }

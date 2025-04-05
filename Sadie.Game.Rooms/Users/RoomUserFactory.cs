@@ -14,7 +14,6 @@ public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactor
     public IRoomUser Create(
         IRoomLogic room,
         INetworkObject networkObject, 
-        int id, 
         Point point, 
         double pointZ,
         HDirection directionHead,
@@ -26,7 +25,6 @@ public class RoomUserFactory(IServiceProvider serviceProvider) : IRoomUserFactor
             serviceProvider,
             room,
             networkObject, 
-            id, 
             point, 
             pointZ,
             directionHead, 

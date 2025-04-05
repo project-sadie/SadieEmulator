@@ -16,7 +16,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 
     public ICollection<IRoomUser> GetAll() => _users.Values;
-    public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Id, user);
+    public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Player.Id, user);
     public bool TryGetById(long id, out IRoomUser? user) => _users.TryGetValue(id, out user);
 
     public bool TryGetByUsername(string username, out IRoomUser? user)
@@ -75,7 +75,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         
         foreach (var roomUser in _users
                      .Values
-                     .Where(x => excludedIds == null || !excludedIds.Contains(x.Id)))
+                     .Where(x => excludedIds == null || !excludedIds.Contains(x.Player.Id)))
         {
             await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
         }
@@ -142,7 +142,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     {
         foreach (var user in _users.Values)
         {
-            await TryRemoveAsync(user.Id, false);
+            await TryRemoveAsync(user.Player.Id, false);
         }
         
         _users.Clear();

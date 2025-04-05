@@ -12,7 +12,7 @@ public class PlayerLogic : Player, IPlayerLogic
     private readonly ILogger<PlayerLogic> _logger;
 
     public PlayerLogic(ILogger<PlayerLogic> logger,
-        int id,
+        long id,
         string username,
         PlayerData data)
     {
