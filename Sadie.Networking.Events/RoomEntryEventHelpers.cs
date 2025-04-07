@@ -92,30 +92,33 @@ public static class RoomEntryEventHelpers
         client.RoomUser = roomUser;
         
         await SendRoomEntryPacketsToUserAsync(client, room);
-
-        var usersIgnoringYou = room
-            .UserRepository
-            .GetAll()
-            .Where(x => x.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Id));
-
-        foreach (var user in usersIgnoringYou)
-        {
-            if (user.Player.NetworkObject == null)
-            {
-                continue;
-            }
-            
-            await user.Player.NetworkObject.WriteToStreamAsync(
-                new PlayerIgnoreStateWriter
-                {
-                    State = (int) PlayerIgnoreState.Ignored,
-                    Username = player.Username,
-                });
-        }
         
         await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
 
         await Task.Delay(100);
+
+        foreach (var user in room.UserRepository.GetAll())
+        {
+            if (user.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Id))
+            {
+                await user.Player.NetworkObject!.WriteToStreamAsync(
+                    new PlayerIgnoreStateWriter
+                    {
+                        State = (int) PlayerIgnoreState.Ignored,
+                        Username = player.Username,
+                    });
+            }
+            
+            if (player.Ignores.Any(pi => pi.TargetPlayerId == user.Player.Id))
+            {
+                await player.NetworkObject!.WriteToStreamAsync(
+                    new PlayerIgnoreStateWriter
+                    {
+                        State = (int) PlayerIgnoreState.Ignored,
+                        Username = user.Player.Username,
+                    });
+            }
+        }
             
         var matchingWiredTriggers = room.FurnitureItems
             .Where(x =>
