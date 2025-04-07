@@ -118,27 +118,35 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                     });
                 }
             }
-            
-            var statusWriter = new RoomUserStatusWriter
-            {
-                Users = users
-                    .Where(x => x.NeedsStatusUpdate)
-                    .ToList()
-            };
 
-            var dataWriter = new RoomUserDataWriter
-            {
-                Users = users
-                    .ToList()
-            };
-
-            await BroadcastDataAsync(statusWriter);
-            await BroadcastDataAsync(dataWriter);
+            await SendUserStatusUpdatesAsync();
+            await SendUserDataUpdatesAsync();
         }
         catch (Exception e)
         {
             logger.LogError(e.ToString());
         }
+    }
+
+    public async Task SendUserStatusUpdatesAsync()
+    {
+        await BroadcastDataAsync(
+            new RoomUserStatusWriter
+            {
+                Users = _users
+                    .Values
+                    .Where(x => x.NeedsStatusUpdate)
+                    .ToList()
+            });
+    }
+
+    public async Task SendUserDataUpdatesAsync()
+    {
+        await BroadcastDataAsync(
+            new RoomUserDataWriter
+            {
+                Users = _users.Values
+            });
     }
 
     public async ValueTask DisposeAsync()

@@ -3,6 +3,7 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
@@ -47,16 +48,16 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             WallThickness = room.Settings.WallThickness,
             FloorThickness = room.Settings.FloorThickness
         });
+
+        var userRepo = client
+            .RoomUser!
+            .Room
+            .UserRepository;
+
+        client.RoomUser.Direction = HDirection.East;
         
-        await client.WriteToStreamAsync(new RoomUserDataWriter
-        {
-            Users = room.UserRepository.GetAll()
-        });
-        
-        await client.WriteToStreamAsync(new RoomUserStatusWriter
-        {
-            Users = room.UserRepository.GetAll()
-        });
+        await userRepo.SendUserStatusUpdatesAsync();
+        await userRepo.SendUserDataUpdatesAsync();
 
         if (room.BotRepository.Count > 0)
         {

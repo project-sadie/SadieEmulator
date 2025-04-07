@@ -8,8 +8,10 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
+using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
+using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms;
 using Serilog;
 
@@ -41,15 +43,9 @@ public static class RoomEntryEventHelpers
             player.State.Teleport = null;
         }
         
-        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
+        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, HDirection.South);
         
         roomUser.ApplyFlatCtrlStatus();
-        
-        if (!room.UserRepository.TryAdd(roomUser))
-        {
-            Log.Error($"Failed to add user {player.Id} to room {room.Id}");
-            return;
-        }
         
         if (teleport != null)
         {
@@ -83,6 +79,12 @@ public static class RoomEntryEventHelpers
                 playerRepository);
         }
         
+        if (!room.UserRepository.TryAdd(roomUser))
+        {
+            Log.Error($"Failed to add user {player.Id} to room {room.Id}");
+            return;
+        }
+        
         player.State.CurrentRoomId = room.Id;
 
         room.TileMap.AddUnitToMap(entryPoint, roomUser);
@@ -90,6 +92,27 @@ public static class RoomEntryEventHelpers
         client.RoomUser = roomUser;
         
         await SendRoomEntryPacketsToUserAsync(client, room);
+
+        var usersIgnoringYou = room
+            .UserRepository
+            .GetAll()
+            .Where(x => x.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Id));
+
+        foreach (var user in usersIgnoringYou)
+        {
+            if (user.Player.NetworkObject == null)
+            {
+                continue;
+            }
+            
+            await user.Player.NetworkObject.WriteToStreamAsync(
+                new PlayerIgnoreStateWriter
+                {
+                    State = (int) PlayerIgnoreState.Ignored,
+                    Username = player.Username,
+                });
+        }
+        
         await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContext);
 
         await Task.Delay(100);

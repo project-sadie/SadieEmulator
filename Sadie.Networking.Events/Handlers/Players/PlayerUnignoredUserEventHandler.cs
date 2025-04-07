@@ -25,8 +25,7 @@ public class PlayerRemoveUserIgnoreEventHandler(IPlayerRepository playerReposito
         
         var targetPlayer = playerRepository.GetPlayerLogicByUsername(Username);
         
-        if (targetPlayer == null || 
-            player.Ignores.Any(x => x.TargetPlayerId == targetPlayer.Id))
+        if (targetPlayer == null || player.Ignores.All(x => x.TargetPlayerId != targetPlayer.Id))
         {
             return;
         }
@@ -37,6 +36,8 @@ public class PlayerRemoveUserIgnoreEventHandler(IPlayerRepository playerReposito
         {
             return;
         }
+
+        player.Ignores.Remove(ignore);
 
         await player.NetworkObject.WriteToStreamAsync(
             new PlayerIgnoreStateWriter
