@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Constants;
@@ -14,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 public class PlayerSendFriendRequestEventHandler(
     IPlayerRepository playerRepository,
     ServerPlayerConstants playerConstants,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper)
     : INetworkPacketEventHandler
 {
@@ -131,6 +132,7 @@ public class PlayerSendFriendRequestEventHandler(
             }
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         await dbContext.SaveChangesAsync();
     }
 
@@ -163,6 +165,7 @@ public class PlayerSendFriendRequestEventHandler(
             await onlineTarget.NetworkObject.WriteToStreamAsync(friendRequestWriter);
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Set<PlayerFriendship>().Add(playerFriendship);
         await dbContext.SaveChangesAsync();
     }

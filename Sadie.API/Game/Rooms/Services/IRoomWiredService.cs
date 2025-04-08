@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
@@ -24,6 +25,6 @@ public interface IRoomWiredService
 
     Task SaveSettingsAsync(
         PlayerFurnitureItemPlacementData placementData,
-        SadieContext dbContext,
+        IDbContextFactory<SadieContext> dbContextFactory,
         PlayerFurnitureItemWiredData wiredData);
 }

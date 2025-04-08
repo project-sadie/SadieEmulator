@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomDelete)]
 public class RoomDeleteEventHandler(
     IRoomRepository roomRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
     IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
@@ -24,7 +24,7 @@ public class RoomDeleteEventHandler(
         var room = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(
             RoomId, 
             roomRepository, 
-            dbContext, 
+            dbContextFactory, 
             mapper);
 
         if (room == null || room.OwnerId != client.Player.Id)
@@ -32,6 +32,7 @@ public class RoomDeleteEventHandler(
             return;
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = NULL WHERE home_room_id = {0}", RoomId);
 
         var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();

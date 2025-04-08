@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Networking;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
@@ -10,6 +11,6 @@ public interface IRoomUserTrade
     List<PlayerFurnitureItem> Items { get; init; }
     void OfferItems(List<PlayerFurnitureItem> playerItems);
     Task BroadcastToUsersAsync(AbstractPacketWriter writer);
-    Task SwapItemsAsync(SadieContext dbContext);
+    Task SwapItemsAsync(IDbContextFactory<SadieContext> dbContextFactory);
     void RemoveOfferedItem(PlayerFurnitureItem item);
 }

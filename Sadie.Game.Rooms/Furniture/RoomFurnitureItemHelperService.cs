@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Networking;
@@ -14,7 +15,7 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
     public async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
         PlayerFurnitureItemPlacementData roomFurnitureItem,
-        SadieContext dbContext)
+        IDbContextFactory<SadieContext> dbContextFactory)
     {
         if (string.IsNullOrEmpty(roomFurnitureItem.PlayerFurnitureItem.MetaData))
         {
@@ -33,6 +34,8 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
         }
 
         await UpdateMetaDataForItemAsync(room, roomFurnitureItem, (state + 1).ToString());
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();

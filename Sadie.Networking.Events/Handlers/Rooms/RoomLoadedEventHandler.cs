@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
@@ -24,7 +25,7 @@ public class RoomLoadedEventHandler(
     IRoomRepository roomRepository,
     IRoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
     IRoomTileMapHelperService tileMapHelperService,
     IPlayerHelperService playerHelperService,
@@ -47,7 +48,7 @@ public class RoomLoadedEventHandler(
         var room = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(
             RoomId,
             roomRepository,
-            dbContext,
+            dbContextFactory,
             mapper);
         
         var lastRoomId = player.State.CurrentRoomId;
@@ -56,7 +57,7 @@ public class RoomLoadedEventHandler(
         {
             var lastRoom = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
                 roomRepository,
-                dbContext, 
+                dbContextFactory, 
                 mapper);
 
             if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var existingUser) && existingUser != null)
@@ -96,7 +97,7 @@ public class RoomLoadedEventHandler(
             client, 
             room, 
             roomUserFactory, 
-            dbContext, 
+            dbContextFactory, 
             playerRepository,
             tileMapHelperService,
             playerHelperService,

@@ -120,10 +120,12 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
 
     public async Task SaveSettingsAsync(
         PlayerFurnitureItemPlacementData placementData,
-        SadieContext dbContext,
+        IDbContextFactory<SadieContext> dbContextFactory,
         PlayerFurnitureItemWiredData wiredData)
     {
         var existingData = placementData.WiredData;
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         if (existingData != null)
         {
