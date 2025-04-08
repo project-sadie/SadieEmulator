@@ -3,9 +3,7 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
@@ -53,12 +51,10 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             .RoomUser!
             .Room
             .UserRepository;
-
-        client.RoomUser.Direction = HDirection.East;
         
         await userRepo.SendUserStatusUpdatesAsync();
         await userRepo.SendUserDataUpdatesAsync();
-
+        
         if (room.BotRepository.Count > 0)
         {
             await client.WriteToStreamAsync(new RoomBotDataWriter

@@ -31,7 +31,7 @@ public class RoomUserDataWriter : AbstractPacketWriter
                 writer.WriteInteger(user.Point.X);
                 writer.WriteInteger(user.Point.Y);
                 writer.WriteString(user.PointZ + "");
-                writer.WriteInteger(4);
+                writer.WriteInteger((int) user.Direction);
                 writer.WriteInteger(1);
                 writer.WriteString(user.Player.AvatarData.Gender == AvatarGender.Male ? "M" : "F");
                 writer.WriteInteger(-1);
