@@ -37,23 +37,30 @@ public class ClientPacketHandler(
         {
             return;
         }
-        
-        EventSerializer.SetPropertiesForEventHandler(eventHandler, packet);
 
-        if (client.RoomUser != null && 
-            (packetEventType == typeof(RoomUserWalkEventHandler) || 
-             packetEventType == typeof(RoomUserChatEventHandler) ||
-             packetEventType == typeof(RoomUserShoutEventHandler) ||
-             packetEventType == typeof(RoomUserActionEventHandler) ||
-             packetEventType == typeof(RoomUserDanceEventHandler) ||
-             packetEventType == typeof(RoomUserSignEventHandler) ||
-             packetEventType == typeof(RoomUserSitEventHandler) ||
-             packetEventType == typeof(RoomUserLookAtEventHandler)))
+        try
         {
-            client.RoomUser.LastAction = DateTime.Now;
+            EventSerializer.SetPropertiesForEventHandler(eventHandler, packet);
+
+            if (client.RoomUser != null &&
+                (packetEventType == typeof(RoomUserWalkEventHandler) ||
+                 packetEventType == typeof(RoomUserChatEventHandler) ||
+                 packetEventType == typeof(RoomUserShoutEventHandler) ||
+                 packetEventType == typeof(RoomUserActionEventHandler) ||
+                 packetEventType == typeof(RoomUserDanceEventHandler) ||
+                 packetEventType == typeof(RoomUserSignEventHandler) ||
+                 packetEventType == typeof(RoomUserSitEventHandler) ||
+                 packetEventType == typeof(RoomUserLookAtEventHandler)))
+            {
+                client.RoomUser.LastAction = DateTime.Now;
+            }
+
+            await ExecuteAsync(client, eventHandler);
         }
-        
-        await ExecuteAsync(client, eventHandler);
+        catch (IndexOutOfRangeException e)
+        {
+            logger.LogCritical(e.ToString());
+        }
     }
 
     private static bool ValidateAttributes(INetworkPacketEventHandler eventHandler, 
