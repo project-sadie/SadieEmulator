@@ -14,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {
@@ -105,6 +105,7 @@ public class RoomSettingsSaveEventHandler(
         UpdateSettings(room.Settings);
         UpdateChatSettings(room.ChatSettings);
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(room).State = EntityState.Modified;
         dbContext.Entry(room.Settings).State = EntityState.Modified;
         dbContext.Entry(room.ChatSettings).State = EntityState.Modified;

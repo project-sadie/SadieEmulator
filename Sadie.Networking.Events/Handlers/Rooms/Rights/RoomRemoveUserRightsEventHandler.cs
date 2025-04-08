@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Rights;
@@ -11,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 [PacketId(EventHandlerId.RoomRemoveUserRights)]
 public class RoomRemoveUserRightsEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required List<int> Ids { get; init; }
@@ -58,6 +59,7 @@ public class RoomRemoveUserRightsEventHandler(
         
         room.PlayerRights.Remove(right);
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.RoomPlayerRights.Remove(right);
         await dbContext.SaveChangesAsync();
 

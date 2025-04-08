@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
@@ -23,7 +24,7 @@ public class SecureLoginEventHandler(
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
     IPlayerLoaderService playerLoaderService,
     IPlayerHelperService playerHelperService)
@@ -81,6 +82,8 @@ public class SecureLoginEventHandler(
             .ToString()?
             .Split(":")
             .First() ?? "";
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
         {

@@ -17,7 +17,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemEjected)]
 public class RoomItemEjectedEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository,
     IPlayerRepository playerRepository,
     IRoomFurnitureItemInteractorRepository interactorRepository,
@@ -133,6 +133,7 @@ public class RoomItemEjectedEventHandler(
         
         itemRecord.PlacementData = null;
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
     }

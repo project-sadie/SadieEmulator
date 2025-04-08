@@ -199,5 +199,13 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         modelBuilder.Entity<Player>()
             .HasMany<PlayerBan>(x => x.Bans)
             .WithOne(x => x.Player);
+
+        modelBuilder.Entity<PlayerFriendship>()
+            .Navigation(x => x.OriginPlayer)
+            .AutoInclude();
+
+        modelBuilder.Entity<PlayerFriendship>()
+            .Navigation(x => x.TargetPlayer)
+            .AutoInclude();
     }
 }

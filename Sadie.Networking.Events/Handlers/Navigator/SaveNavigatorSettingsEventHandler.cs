@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
@@ -5,7 +6,8 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.SaveNavigatorSettings)]
-public class SaveNavigatorSettingsEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class SaveNavigatorSettingsEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int WindowX { get; set; }
     public int WindowY { get; set; }
@@ -32,6 +34,7 @@ public class SaveNavigatorSettingsEventHandler(SadieContext dbContext) : INetwor
         navigatorSettings.OpenSearches = OpenSearches;
         navigatorSettings.ResultsMode = 0;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.PlayerNavigatorSettings.Update(player.NavigatorSettings);
         await dbContext.SaveChangesAsync();
     }

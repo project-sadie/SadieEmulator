@@ -9,7 +9,7 @@ using Sadie.Database.Models.Players;
 namespace Sadie.Game.Players;
 
 public class PlayerRepository(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper) : IPlayerRepository
 {
     private readonly ConcurrentDictionary<long, IPlayerLogic> _players = new();
@@ -23,6 +23,8 @@ public class PlayerRepository(
         {
             return mapper.Map<Player>(byId);
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         return await dbContext
             .Set<Player>()
@@ -42,6 +44,8 @@ public class PlayerRepository(
         {
             return mapper.Map<Player>(online);
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         return await dbContext
             .Set<Player>()
@@ -74,6 +78,8 @@ public class PlayerRepository(
 
     public async Task<List<Player>> GetPlayersForSearchAsync(string searchQuery, long[] excludeIds)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         return await dbContext
             .Set<Player>()
             .Include(x => x.AvatarData)
@@ -85,6 +91,8 @@ public class PlayerRepository(
 
     public async Task<List<PlayerRelationship>> GetRelationshipsForPlayerAsync(long playerId)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         return await dbContext
             .Set<PlayerRelationship>()
             .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)

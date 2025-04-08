@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
 [PacketId(EventHandlerId.FloorPlanEditorSave)]
 public class FloorPlanEditorSaveEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required string HeightMap { get; init; }
@@ -53,6 +53,8 @@ public class FloorPlanEditorSaveEventHandler(
 
         var newLayout = false;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         if (!room.Layout.Name!.Contains("custom_"))
         {
             room.Layout = new RoomLayout

@@ -10,7 +10,7 @@ namespace Sadie.Game.Navigator;
 
 public class NavigatorRoomProvider(
     IRoomRepository roomRepository, 
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IEnumerable<INavigatorSearchFilterer> filterers) : INavigatorRoomProvider
 {
     public Task<List<Room>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
@@ -25,6 +25,8 @@ public class NavigatorRoomProvider(
 
     public async Task<List<Room>> GetRoomsForSearchQueryAsync(string searchQuery)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var query = dbContext
             .Rooms
             .AsQueryable();

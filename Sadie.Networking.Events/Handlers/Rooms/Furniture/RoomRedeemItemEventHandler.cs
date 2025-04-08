@@ -8,7 +8,8 @@ using Sadie.Networking.Writers.Players.Purse;
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RedeemItem)]
-public class RoomRedeemItemEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomRedeemItemEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }
     
@@ -56,6 +57,7 @@ public class RoomRedeemItemEventHandler(SadieContext dbContext) : INetworkPacket
             Delay = 0
         });
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();

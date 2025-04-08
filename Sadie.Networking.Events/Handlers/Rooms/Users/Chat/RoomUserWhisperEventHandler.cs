@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
@@ -15,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 public class RoomUserWhisperEventHandler(
     IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomHelperService roomHelperService)
     : INetworkPacketEventHandler
 {

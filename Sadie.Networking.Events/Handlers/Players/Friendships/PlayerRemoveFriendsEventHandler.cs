@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 [PacketId(EventHandlerId.PlayerRemoveFriends)]
 public class PlayerRemoveFriendsEventHandler(
     IPlayerRepository playerRepository,
-    SadieContext dbContext)
+    IDbContextFactory<SadieContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public int Amount { get; set; }
@@ -47,6 +47,8 @@ public class PlayerRemoveFriendsEventHandler(
             client.Player.DeleteFriendshipFor(currentId);
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         await dbContext
             .Set<PlayerFriendship>()
             .Where(x => 
