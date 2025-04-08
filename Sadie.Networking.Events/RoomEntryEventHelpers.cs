@@ -9,7 +9,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
-using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players;
@@ -44,8 +43,7 @@ public static class RoomEntryEventHelpers
             player.State.Teleport = null;
         }
         
-        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, HDirection.South);
-        
+        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
         roomUser.ApplyFlatCtrlStatus();
         
         if (teleport != null)
@@ -95,9 +93,9 @@ public static class RoomEntryEventHelpers
         await SendRoomEntryPacketsToUserAsync(client, room);
         
         await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContextFactory);
-
+        
         await Task.Delay(100);
-
+        
         foreach (var user in room.UserRepository.GetAll())
         {
             if (user.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Id))
