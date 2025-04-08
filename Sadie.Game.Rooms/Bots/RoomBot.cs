@@ -17,7 +17,6 @@ public class RoomBot(
     HDirection directionHead,
     HDirection direction,
     IRoomTileMapHelperService tileMapHelperService,
-    IRoomWiredService wiredService,
     IRoomPathFinderHelperService pathFinderHelperService)
     : RoomUnitData(room,
             point,
@@ -25,7 +24,6 @@ public class RoomBot(
             directionHead,
             direction,
             tileMapHelperService,
-            wiredService,
             pathFinderHelperService),
         IRoomBot
 {

@@ -52,13 +52,6 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         
         player.State.CurrentRoomId = 0;
         
-        /*await playerHelperService.UpdatePlayerStatusForFriendsAsync(
-            player, 
-            player.GetMergedFriendships(),
-            player.Data.IsOnline, 
-            false,
-            playerRepository);*/
-        
         if (hotelView)
         {
             await roomUser.NetworkObject.WriteToStreamAsync(new RoomUserHotelViewWriter());
@@ -92,31 +85,33 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         {
             var users = _users.Values;
 
+            if (users.Count == 0)
+            {
+                return;
+            }
+            
             foreach (var roomUser in users)
             {
                 await roomUser.RunPeriodicCheckAsync();
             }
 
-            if (users.Count != 0)
+            var bots = users
+                .First()
+                .Room
+                .BotRepository
+                .GetAll();
+
+            if (bots.Count != 0)
             {
-                var bots = users
-                    .First()
-                    .Room
-                    .BotRepository
-                    .GetAll();
-
-                if (bots.Count != 0)
+                await BroadcastDataAsync(new RoomBotStatusWriter
                 {
-                    await BroadcastDataAsync(new RoomBotStatusWriter
-                    {
-                        Bots = bots
-                    });
+                    Bots = bots
+                });
 
-                    await BroadcastDataAsync(new RoomBotDataWriter
-                    {
-                        Bots = bots
-                    });
-                }
+                await BroadcastDataAsync(new RoomBotDataWriter
+                {
+                    Bots = bots
+                });
             }
 
             await SendUserStatusUpdatesAsync();
@@ -135,8 +130,6 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
             {
                 Users = _users
                     .Values
-                    .Where(x => x.NeedsStatusUpdate)
-                    .ToList()
             });
     }
 
@@ -145,7 +138,8 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         await BroadcastDataAsync(
             new RoomUserDataWriter
             {
-                Users = _users.Values
+                Users = _users
+                    .Values
             });
     }
 

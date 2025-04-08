@@ -39,7 +39,6 @@ public class RoomUser(
             directionHead,
             direction,
             tileMapHelperService,
-            wiredService,
             pathFinderHelperService),
         IRoomUser
 {
@@ -69,8 +68,6 @@ public class RoomUser(
         {
             DirectionHead = direction;
         }
-
-        NeedsStatusUpdate = true;
     }
 
     public void ApplyFlatCtrlStatus()

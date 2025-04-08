@@ -46,14 +46,6 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             WallThickness = room.Settings.WallThickness,
             FloorThickness = room.Settings.FloorThickness
         });
-
-        var userRepo = client
-            .RoomUser!
-            .Room
-            .UserRepository;
-        
-        await userRepo.SendUserStatusUpdatesAsync();
-        await userRepo.SendUserDataUpdatesAsync();
         
         if (room.BotRepository.Count > 0)
         {

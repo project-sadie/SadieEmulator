@@ -16,7 +16,6 @@ public class RoomUnitData(
     HDirection directionHead,
     HDirection direction,
     IRoomTileMapHelperService tileMapHelperService,
-    IRoomWiredService wiredService,
     IRoomPathFinderHelperService pathFinderHelperService) : IRoomUnitData
 {
     public HDirection DirectionHead { get; set; } = directionHead;
@@ -31,7 +30,6 @@ public class RoomUnitData(
     protected Point PathGoal { get; set; }
     protected List<Point> PathPoints { get; set; } = [];
     public Dictionary<string, string> StatusMap { get; } = [];
-    public bool NeedsStatusUpdate { get; set; }
     public List<Point> OverridePoints { get; set; } = [];
 
     public void RemoveStatuses(params string[] statuses)
@@ -40,8 +38,6 @@ public class RoomUnitData(
         {
             StatusMap.Remove(status);
         }
-
-        NeedsStatusUpdate = true;
     }
 
     private void ClearWalking(bool reachedGoal = true)
@@ -104,13 +100,11 @@ public class RoomUnitData(
             topItem.PositionZ + (topItemSitOrLay ? topItem.FurnitureItem.StackHeight : 0);
         
         PointZ = zHeightNextStep;
-        NeedsStatusUpdate = true;
     }
 
     public void AddStatus(string key, string value)
     {
         StatusMap[key] = value;
-        NeedsStatusUpdate = true;
     }
 
     private void CalculatePath()
