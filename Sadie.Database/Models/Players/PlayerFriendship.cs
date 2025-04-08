@@ -10,4 +10,5 @@ public class PlayerFriendship
     public long TargetPlayerId { get; init; }
     public Player? TargetPlayer { get; init; }
     public PlayerFriendshipStatus Status { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

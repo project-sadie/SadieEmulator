@@ -146,7 +146,8 @@ public class PlayerSendFriendRequestEventHandler(
         {
             OriginPlayerId = player.Id,
             TargetPlayerId = targetPlayer.Id,
-            Status = PlayerFriendshipStatus.Pending
+            Status = PlayerFriendshipStatus.Pending,
+            CreatedAt = DateTime.Now
         };
             
         player.OutgoingFriendships.Add(playerFriendship);
