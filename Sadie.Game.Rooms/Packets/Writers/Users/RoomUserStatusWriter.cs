@@ -28,8 +28,6 @@ public class RoomUserStatusWriter : AbstractPacketWriter
             writer.WriteInteger((int) user.DirectionHead);
             writer.WriteInteger((int) user.Direction);
             writer.WriteString("/" + string.Join("/", statusList).TrimEnd('/'));
-            
-            user.NeedsStatusUpdate = false; 
         }
     }
 }

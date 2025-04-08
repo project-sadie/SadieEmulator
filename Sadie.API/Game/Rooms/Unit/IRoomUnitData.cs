@@ -13,7 +13,6 @@ public interface IRoomUnitData
     HDirection Direction { get; set; }
     bool CanWalk { get; set; }
     public Dictionary<string, string> StatusMap { get; }
-    bool NeedsStatusUpdate { get; set; }
     List<Point> OverridePoints { get; set; }
     void AddStatus(string key, string value);
     void RemoveStatuses(params string[] statuses);
