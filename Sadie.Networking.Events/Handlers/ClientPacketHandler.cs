@@ -1,32 +1,32 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
+using Sadie.Options.Options;
 
 namespace Sadie.Networking.Events.Handlers;
 
 public class ClientPacketHandler(
     ILogger<ClientPacketHandler> logger,
     Dictionary<short, Type> packetHandlerTypeMap,
-    IServiceProvider serviceProvider)
+    IServiceProvider serviceProvider,
+    IOptions<PlayerOptions> playerOptions)
     : INetworkPacketHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
         if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
         {
-            var writer = new ServerErrorWriter
+            if (playerOptions.Value.ServerErrorAlerts)
             {
-                MessageId = packet.PacketId,
-                ErrorCode = 1,
-                DateTime = DateTime.Now.ToString("M/d/yy, h:mm tt")
-            };
-                
-            await client.WriteToStreamAsync(writer);
+                _ = NotifyMissingPacketAsync(packet.PacketId, client);
+            }
+            
             logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
             return;
         }
@@ -58,6 +58,25 @@ public class ClientPacketHandler(
             await ExecuteAsync(client, eventHandler);
         }
         catch (IndexOutOfRangeException e)
+        {
+            logger.LogCritical(e.ToString());
+        }
+    }
+
+    private async Task NotifyMissingPacketAsync(int messageId, INetworkClient client)
+    {
+        try
+        {
+            var writer = new ServerErrorWriter
+            {
+                MessageId = messageId,
+                ErrorCode = 1,
+                DateTime = DateTime.Now.ToString("M/d/yy, h:mm tt")
+            };
+
+            await client.WriteToStreamAsync(writer);
+        }
+        catch (Exception e)
         {
             logger.LogCritical(e.ToString());
         }
