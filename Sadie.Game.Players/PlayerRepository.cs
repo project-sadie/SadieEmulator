@@ -32,6 +32,14 @@ public class PlayerRepository(
             .Include(x => x.AvatarData)
             .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
             .Include(x => x.Bans)
+            .Include(x => x.GameSettings)
+            .Include(x => x.NavigatorSettings)
+            .Include(x => x.FurnitureItems)
+            .Include(x => x.OutgoingFriendships)
+            .Include(x => x.IncomingFriendships)
+            .Include(x => x.Rooms)
+            .Include(x => x.Ignores)
+            .Include(x => x.Rooms)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
     }

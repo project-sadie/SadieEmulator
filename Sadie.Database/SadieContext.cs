@@ -195,7 +195,11 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .HasOne(x => x.PlacementData)
             .WithOne(x => x.WiredData)
             .HasForeignKey<PlayerFurnitureItemWiredData>(e => e.PlayerFurnitureItemPlacementDataId);
-        
+
+        modelBuilder.Entity<PlayerFurnitureItemPlacementData>()
+            .Navigation(x => x.WiredData)
+            .AutoInclude();
+
         modelBuilder.Entity<Player>()
             .HasMany<PlayerBan>(x => x.Bans)
             .WithOne(x => x.Player);
@@ -206,6 +210,10 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
 
         modelBuilder.Entity<PlayerFriendship>()
             .Navigation(x => x.TargetPlayer)
+            .AutoInclude();
+        
+        modelBuilder.Entity<Player>()
+            .Navigation(x => x.AvatarData)
             .AutoInclude();
     }
 }

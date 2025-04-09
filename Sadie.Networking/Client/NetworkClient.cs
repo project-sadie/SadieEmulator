@@ -36,19 +36,7 @@ public class NetworkClient(
         }
 
         var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
-
-        try
-        {
-            await Channel.WriteAndFlushAsync(serializedObject);
-        }
-        catch (ClosedChannelException)
-        {
-            
-        }
-        catch (ObjectDisposedException)
-        {
-            
-        }
+        await Channel.WriteAndFlushAsync(serializedObject);
     }
 
     public async Task WriteToStreamAsync(INetworkPacketWriter writer)

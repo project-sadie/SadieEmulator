@@ -9,16 +9,8 @@ namespace Sadie.Database.Models.Players.Furniture;
 
 public class PlayerFurnitureItemPlacementData
 {
-    private readonly ILazyLoader? _lazyLoader;
-    private PlayerFurnitureItemWiredData? _wiredData;
-    
     public PlayerFurnitureItemPlacementData()
     {
-    }
-
-    public PlayerFurnitureItemPlacementData(ILazyLoader? lazyLoader)
-    {
-        _lazyLoader = lazyLoader;
     }
     
     [Key] public int Id { get; init; }
@@ -32,11 +24,7 @@ public class PlayerFurnitureItemPlacementData
     public string? WallPosition { get; set; }
     public HDirection Direction { get; set; }
     public DateTime CreatedAt { get; init; }
-    public PlayerFurnitureItemWiredData? WiredData
-    {
-        get => _lazyLoader.Load(this, ref _wiredData);
-        set => _wiredData = value;
-    }
+    public PlayerFurnitureItemWiredData? WiredData { get; set; }
     
     public ICollection<PlayerFurnitureItemWiredData> SelectedBy { get; init; } = [];
 
