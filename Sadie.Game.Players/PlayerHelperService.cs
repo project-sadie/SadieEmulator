@@ -96,6 +96,7 @@ public class PlayerHelperService : IPlayerHelperService
             Type = 0,
             Friend = new FriendData
             {
+                Id = player.Id,
                 Username = player.Username,
                 FigureCode = player.AvatarData.FigureCode,
                 Motto = player.AvatarData.Motto,
