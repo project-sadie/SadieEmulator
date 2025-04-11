@@ -49,8 +49,14 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
         }
         
         var player = roomUser.Player;
-        
         player.State.CurrentRoomId = 0;
+        
+        await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+            player,
+            player.GetMergedFriendships(),
+            true, 
+            false,
+            playerRepository);
         
         if (hotelView)
         {

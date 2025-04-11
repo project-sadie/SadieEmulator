@@ -63,21 +63,6 @@ public static class RoomEntryEventHelpers
             });
         }
         
-        if (player.State.CurrentRoomId == 0)
-        {
-            var friends = player
-                .GetMergedFriendships()
-                .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-                .ToList();
-        
-            await playerHelperService.UpdatePlayerStatusForFriendsAsync(
-                player,
-                friends, 
-                true, 
-                true,
-                playerRepository);
-        }
-        
         if (!room.UserRepository.TryAdd(roomUser))
         {
             Log.Error($"Failed to add user {player.Id} to room {room.Id}");
@@ -91,6 +76,16 @@ public static class RoomEntryEventHelpers
         client.RoomUser = roomUser;
         
         await SendRoomEntryPacketsToUserAsync(client, room);
+        
+        var friends = player
+            .GetMergedFriendships();
+        
+        await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+            player,
+            friends, 
+            true, 
+            true,
+            playerRepository);
         
         await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContextFactory);
         

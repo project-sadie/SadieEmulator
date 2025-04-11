@@ -11,7 +11,6 @@ public class Room : IRoom
     private readonly ILazyLoader _lazyLoader;
     private Player? _owner;
     private RoomLayout? _layout;
-    private RoomSettings? _settings;
     private RoomPaintSettings? _paintSettings;
     private RoomChatSettings? _chatSettings;
     private ICollection<RoomPlayerRight> _playerRights = [];
@@ -19,11 +18,6 @@ public class Room : IRoom
     
     public Room()
     {
-    }
-
-    public Room(ILazyLoader lazyLoader)
-    {
-        _lazyLoader = lazyLoader;
     }
     
     public int Id { get; init; }
@@ -48,11 +42,7 @@ public class Room : IRoom
     public required string Description { get; set; }
     public bool IsMuted { get; init; }
     
-    public RoomSettings? Settings
-    {
-        get => _lazyLoader.Load(this, ref _settings);
-        set => _settings = value;
-    }
+    public RoomSettings Settings { get; set; }
     
     public RoomPaintSettings? PaintSettings
     {

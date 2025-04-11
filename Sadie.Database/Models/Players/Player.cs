@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Sadie.Database.Models.Players.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Database.Models.Server;
@@ -60,6 +59,7 @@ public class Player
     {
         return OutgoingFriendships
             .Concat(IncomingFriendships)
+            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
             .ToList();
     }
 

@@ -31,6 +31,7 @@ public static class RoomHelpers
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var room = await dbContext.Set<Room>()
+            .Include(x => x.ChatSettings)
             .Include(x => x.PlayerLikes)
             .Include(x => x.Tags)
             .Include(x => x.Group)

@@ -167,6 +167,10 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
             .WithOne(x => x.Room)
             .HasForeignKey(e => e.RoomId);
 
+        modelBuilder.Entity<Room>()
+            .Navigation(x => x.Settings)
+            .AutoInclude();
+
         modelBuilder.Entity<PlayerFurnitureItem>()
             .Navigation(x => x.FurnitureItem)
             .AutoInclude();

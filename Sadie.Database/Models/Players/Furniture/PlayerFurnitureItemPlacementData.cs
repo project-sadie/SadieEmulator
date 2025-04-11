@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Unsorted;

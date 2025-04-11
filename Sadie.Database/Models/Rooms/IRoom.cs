@@ -16,7 +16,7 @@ public interface IRoom
     int MaxUsersAllowed { get; set; }
     string Description { get; set; }
     bool IsMuted { get; init; }
-    RoomSettings? Settings { get; set; }
+    RoomSettings Settings { get; set; }
     RoomPaintSettings? PaintSettings { get; set; }
     RoomChatSettings? ChatSettings { get; set; }
     ICollection<RoomPlayerRight> PlayerRights { get; init; }
