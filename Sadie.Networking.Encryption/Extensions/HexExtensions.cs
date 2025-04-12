@@ -4,7 +4,7 @@ public static class HexExtensions
 {
     public static string ToHexString(this byte[] bytes)
     {
-        return BitConverter.ToString(bytes).Replace("-", string.Empty);
+        return Convert.ToHexString(bytes);
     }
 
     public static byte[] ToBytes(this string hex)
