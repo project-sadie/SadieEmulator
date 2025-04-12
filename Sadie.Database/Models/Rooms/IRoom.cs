@@ -12,7 +12,7 @@ public interface IRoom
     int LayoutId { get; set; }
     RoomLayout? Layout { get; set; }
     long OwnerId { get; init; }
-    Player? Owner { get; set; }
+    Player Owner { get; set; }
     int MaxUsersAllowed { get; set; }
     string Description { get; set; }
     bool IsMuted { get; init; }
