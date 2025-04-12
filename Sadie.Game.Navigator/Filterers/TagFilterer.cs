@@ -6,7 +6,7 @@ public class TagFilterer : INavigatorSearchFilterer
 {
     public string Name => "tag";
     
-    public IQueryable<Room> ApplyFilter(
+    public IQueryable<Room> Apply(
         IQueryable<Room> query, 
         string value)
     {

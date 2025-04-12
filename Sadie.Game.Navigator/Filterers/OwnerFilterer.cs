@@ -6,7 +6,7 @@ public class OwnerFilterer : INavigatorSearchFilterer
 {
     public string Name => "owner";
     
-    public IQueryable<Room> ApplyFilter(IQueryable<Room> query, string value)
+    public IQueryable<Room> Apply(IQueryable<Room> query, string value)
     {
         return query
             .Where(x => x.Owner.Username.Contains(value));

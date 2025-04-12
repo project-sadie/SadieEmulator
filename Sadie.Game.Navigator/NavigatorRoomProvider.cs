@@ -54,7 +54,7 @@ public class NavigatorRoomProvider(
         var filterer = filterers.FirstOrDefault(x => x.Name == filterData[0]);
 
         return filterer != null ? 
-            filterer.ApplyFilter(query, filterData[1]) : 
+            filterer.Apply(query, filterData[1]) : 
             query;
     }
 }
