@@ -13,7 +13,7 @@ using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
-using Sadie.Networking.Writers;
+using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 
@@ -104,8 +104,8 @@ public class RoomLoadedEventHandler(
             roomFurnitureItemHelperService,
             wiredService);
     }
-    
-    public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, IRoomLogic room, string password)
+
+    private static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, IRoomLogic room, string password)
     {
         var player = client.Player!;
         
@@ -156,7 +156,6 @@ public class RoomLoadedEventHandler(
                 return false;
             }
             case RoomAccessType.Open:
-                break;
             case RoomAccessType.Invisible:
                 break;
             default:
