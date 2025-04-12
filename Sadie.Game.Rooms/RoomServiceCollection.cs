@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.API;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Chat.Commands;
@@ -27,7 +26,7 @@ public static class RoomServiceCollection
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo<AbstractRoomChatCommand>())
+            .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
             .As<IRoomChatCommand>()
             .WithSingletonLifetime());
 
