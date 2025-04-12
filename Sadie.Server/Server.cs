@@ -2,9 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.Database;
 using Sadie.Networking;
-using Sadie.Shared;
 using SadieEmulator.Tasks;
 using System.Diagnostics;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.Networking.Client;
@@ -18,15 +19,18 @@ public class Server(ILogger<Server> logger,
     INetworkListener networkListener,
     IDbContextFactory<SadieContext> dbContextFactory,
     IOptions<PlayerOptions> playerOptions,
-    INetworkClientRepository networkClientRepository) : IServer
+    INetworkClientRepository networkClientRepository,
+    IConfiguration config) : IServer
 {
     private readonly CancellationTokenSource _tokenSource = new();
     
     public async Task RunAsync()
     {
         var stopwatch = Stopwatch.StartNew();
-        WriteHeaderToConsole();
+        
+        Log.Logger.Information("Booting up...");
         await CleanUpDataAsync();
+        LoadPlugins();
 
         if (playerOptions.Value.CanReuseSsoTokens)
         {
@@ -42,6 +46,25 @@ public class Server(ILogger<Server> logger,
         await StartListeningForConnectionsAsync();
     }
 
+    private void LoadPlugins()
+    {
+        var pluginFolder = config.GetValue<string>("PluginDirectory");
+
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console().CreateLogger();
+
+        if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
+        {
+            return;
+        }
+        
+        foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
+        {
+            Assembly.LoadFile(plugin);
+            Log.Logger.Warning($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)}");
+        }
+    }
+
     private async Task StartListeningForConnectionsAsync()
     {
         networkListener.Bootstrap();
@@ -55,29 +78,6 @@ public class Server(ILogger<Server> logger,
         await context
             .PlayerData
             .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false));
-    }
-
-    private void WriteHeaderToConsole()
-    {
-        Console.ForegroundColor = ConsoleColor.Magenta;
-
-        Console.WriteLine(@"");
-        Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
-        Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
-        Console.WriteLine(@"  $$ /  \__| $$$$$$\   $$$$$$$ |$$\  $$$$$$\  ");
-        Console.WriteLine(@"  \$$$$$$\   \____$$\ $$  __$$ |$$ |$$  __$$\ ");
-        Console.WriteLine(@"   \____$$\  $$$$$$$ |$$ /  $$ |$$ |$$$$$$$$ |");
-        Console.WriteLine(@"  $$\   $$ |$$  __$$ |$$ |  $$ |$$ |$$   ____|");
-        Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
-        Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
-        Console.WriteLine(@"");
-
-        Console.ForegroundColor = ConsoleColor.White;
-
-        Console.WriteLine($"         You are running version {GlobalState.Version}");
-        Console.WriteLine(@"");
-
-        logger.LogTrace("Booting up...");
     }
 
     public async ValueTask DisposeAsync()

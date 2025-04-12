@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
@@ -21,15 +20,6 @@ public static class ServerServiceCollection
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        var pluginFolder = config.GetValue<string>("PluginDirectory");
-
-        if (!string.IsNullOrEmpty(pluginFolder) && Directory.Exists(pluginFolder))
-        {
-            foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
-            {
-                Assembly.LoadFile(plugin);
-            }
-        }
 
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
