@@ -137,8 +137,8 @@ public static class NetworkPacketWriterSerializer
             writer.WriteString(item ?? "");
         }
     }
-    
-    public static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
+
+    private static void WriteArbitraryListPropertyToWriter(PropertyInfo propertyInfo, NetworkPacketWriter writer, object packet)
     {
         var elements = (ICollection)propertyInfo.GetValue(packet)!;
         writer.WriteInteger(elements.Count);
