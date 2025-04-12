@@ -41,6 +41,7 @@ public class PlayerCreateRoomEventHandler(
         {
             Name = Name,
             OwnerId = client.Player.Id,
+            Layout = layout,
             LayoutId = layout.Id,
             MaxUsersAllowed = 50,
             Description = Description,
