@@ -9,6 +9,7 @@ using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
 using Sadie.Networking;
+using Sadie.Networking.Encryption;
 using Sadie.Networking.Events;
 using Sadie.Options;
 using SadieEmulator.Tasks;
@@ -43,6 +44,7 @@ public static class ServerServiceCollection
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         CatalogServiceProvider.AddServices(serviceCollection);
+        NetworkEncryptionServiceCollection.AddServices(serviceCollection);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
