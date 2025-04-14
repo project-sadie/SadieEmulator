@@ -120,7 +120,7 @@ public static class NetworkPacketEventHelpers
 
         if (player.HasPermission(PlayerPermissionName.Moderator))
         {
-            await networkObject.WriteToStreamAsync(new ModerationToolsWriter
+            await networkObject.WriteToStreamAsync(new ModToolsWriter
             {
                 Issues = [],
                 MessageTemplates = [],
