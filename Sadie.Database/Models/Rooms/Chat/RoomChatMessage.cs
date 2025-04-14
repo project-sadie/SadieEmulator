@@ -1,4 +1,5 @@
-﻿using Sadie.Enums.Game.Rooms;
+﻿using Sadie.Database.Models.Players;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
 
@@ -9,6 +10,7 @@ public class RoomChatMessage
     public int Id { get; init; }
     public int RoomId { get; init; }
     public long PlayerId { get; init; }
+    public Player? Player { get; init; }
     public string? Message { get; init; }
     public ChatBubble ChatBubbleId { get; init; }
     public RoomUserEmotion EmotionId { get; init; }

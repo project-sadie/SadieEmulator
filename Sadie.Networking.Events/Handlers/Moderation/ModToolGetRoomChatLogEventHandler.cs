@@ -17,6 +17,22 @@ public class ModToolGetRoomChatLogEventHandler : INetworkPacketEventHandler
             return;
         }
 
-        await client.WriteToStreamAsync(new ModToolRoomChatLogWriter());
+        await client.WriteToStreamAsync(new ModToolRoomChatLogWriter
+        {
+            Unknown1 = 1,
+            Unknown2 = 2,
+            Unknown3 = "roomName",
+            Unknown4 = 2,
+            Unknown5 = client.RoomUser.Room.Name,
+            Unknown6 = "roomId",
+            Unknown7 = 1,
+            Unknown8 = client.RoomUser.Room.Id,
+            Messages = client
+                .RoomUser
+                .Room
+                .ChatMessages
+                .Take(150)
+                .ToList()
+        });
     }
 }
