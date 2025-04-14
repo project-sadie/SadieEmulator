@@ -219,5 +219,9 @@ public class SadieContext(DbContextOptions<SadieContext> options) : DbContext(op
         modelBuilder.Entity<Player>()
             .Navigation(x => x.AvatarData)
             .AutoInclude();
+
+        modelBuilder.Entity<Role>()
+            .Navigation(x => x.Permissions)
+            .AutoInclude();
     }
 }
