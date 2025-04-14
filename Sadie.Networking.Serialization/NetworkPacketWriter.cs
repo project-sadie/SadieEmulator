@@ -38,6 +38,8 @@ public class NetworkPacketWriter : INetworkPacketWriter
     {
         WriteBytes([(byte) (boolean ? 1 : 0)]);
     }
+    
+    public void WriteByte(byte b) => _packet.Write([b]);
 
     public byte[] GetAllBytes()
     {
