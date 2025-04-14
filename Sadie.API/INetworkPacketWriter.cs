@@ -7,5 +7,6 @@ public interface INetworkPacketWriter
     void WriteInteger(int data);
     void WriteLong(long data);
     void WriteBool(bool boolean);
+    void WriteByte(byte b);
     byte[] GetAllBytes();
 }
