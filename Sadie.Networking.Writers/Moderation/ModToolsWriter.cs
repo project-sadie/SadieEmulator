@@ -3,8 +3,8 @@ using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Writers.Moderation;
 
-[PacketId(ServerPacketId.ModerationTools)]
-public class ModerationToolsWriter : AbstractPacketWriter
+[PacketId(ServerPacketId.ModTools)]
+public class ModToolsWriter : AbstractPacketWriter
 {
     public required List<IssueData> Issues { get; set; }
     public required List<string> MessageTemplates { get; set; }
