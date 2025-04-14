@@ -58,7 +58,7 @@ public class ServerPacketId
     public const short PlayerRelationships = 2016;
     public const short RoomUserTags = 1255;
     public const short RoomForwardData = 687;
-    public const short ModerationTools = 2696;
+    public const short ModTools = 2696;
     public const short PlayerProfile = 3898;
     public const short PlayerBadges = 1087;
     public const short PlayerAlert = 3801;
@@ -160,4 +160,5 @@ public class ServerPacketId
     public const short RoomPollResults = 5201;
     public const short RoomPollStarted = 5200;
     public const short PlayerIgnoreState = 207;
+    public const short ModToolsRoomInfo = 1333;
 }
