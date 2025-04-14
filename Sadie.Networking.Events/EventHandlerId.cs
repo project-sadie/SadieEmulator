@@ -137,4 +137,5 @@ public static class EventHandlerId
     public const short ModToolsRoomAlert = 3842;
     public const short ModToolsUpdateRoomSettings = 3260;
     public const short ModToolsRoomInfo = 707;
+    public const short ModToolsRoomChatLog = 2587;
 }

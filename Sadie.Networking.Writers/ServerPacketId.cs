@@ -161,4 +161,5 @@ public class ServerPacketId
     public const short RoomPollStarted = 5200;
     public const short PlayerIgnoreState = 207;
     public const short ModToolsRoomInfo = 1333;
+    public const short ModToolsRoomChatLog = 3434;
 }
