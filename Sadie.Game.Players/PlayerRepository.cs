@@ -38,8 +38,10 @@ public class PlayerRepository(
             .Include(x => x.OutgoingFriendships)
             .Include(x => x.IncomingFriendships)
             .Include(x => x.Rooms)
+            .Include(x => x.Roles)
             .Include(x => x.Ignores)
             .Include(x => x.Rooms)
+            .Include(x => x.RoomLikes)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
