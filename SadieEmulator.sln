@@ -5,8 +5,6 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Server", "Sadie.Server\Sadie.Server.csproj", "{C1876B7B-B71D-41EE-A812-FF518D36D004}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Database", "Sadie.Database\Sadie.Database.csproj", "{49A8F049-8021-4882-AD19-8C0FF171CC14}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Networking", "Sadie.Networking\Sadie.Networking.csproj", "{62284185-265A-467C-AF4B-5D416D3446B0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Players", "Sadie.Game.Players\Sadie.Game.Players.csproj", "{D3C7859C-E142-4157-915A-25DAB8125C20}"
@@ -35,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Encryption
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.API", "Sadie.API\Sadie.API.csproj", "{8BF292AE-09B4-4285-A073-6DFCF6018D27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Plugins.BaseCommands", "Sadie.Plugins.BaseCommands\Sadie.Plugins.BaseCommands.csproj", "{EBAB47EF-BECA-4822-937D-FF04EC113704}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,10 +45,6 @@ Global
 		{C1876B7B-B71D-41EE-A812-FF518D36D004}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1876B7B-B71D-41EE-A812-FF518D36D004}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1876B7B-B71D-41EE-A812-FF518D36D004}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49A8F049-8021-4882-AD19-8C0FF171CC14}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62284185-265A-467C-AF4B-5D416D3446B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62284185-265A-467C-AF4B-5D416D3446B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62284185-265A-467C-AF4B-5D416D3446B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -105,6 +101,10 @@ Global
 		{8BF292AE-09B4-4285-A073-6DFCF6018D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BF292AE-09B4-4285-A073-6DFCF6018D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BF292AE-09B4-4285-A073-6DFCF6018D27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
