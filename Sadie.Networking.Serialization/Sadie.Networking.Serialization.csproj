@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.API\Sadie.API.csproj" />
+      <PackageReference Include="Sadie.API" Version="1.0.0" />
     </ItemGroup>
 
 </Project>

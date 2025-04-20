@@ -31,8 +31,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Serializat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Encryption", "Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj", "{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.API", "Sadie.API\Sadie.API.csproj", "{8BF292AE-09B4-4285-A073-6DFCF6018D27}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Plugins.BaseCommands", "Sadie.Plugins.BaseCommands\Sadie.Plugins.BaseCommands.csproj", "{EBAB47EF-BECA-4822-937D-FF04EC113704}"
 EndProject
 Global
@@ -97,10 +95,6 @@ Global
 		{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BF292AE-09B4-4285-A073-6DFCF6018D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BF292AE-09B4-4285-A073-6DFCF6018D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BF292AE-09B4-4285-A073-6DFCF6018D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BF292AE-09B4-4285-A073-6DFCF6018D27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Release|Any CPU.ActiveCfg = Release|Any CPU
