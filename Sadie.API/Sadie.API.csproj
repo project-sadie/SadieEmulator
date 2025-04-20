@@ -7,11 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="DotNetty.Transport" Version="0.7.6" />
+      <PackageReference Include="Sadie.Db" Version="1.0.0" />
       <PackageReference Include="Sadie.Enums" Version="1.2.7" />
     </ItemGroup>
 

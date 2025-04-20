@@ -7,11 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.API\Sadie.API.csproj" />
-      <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <PackageReference Include="Sadie.Db" Version="1.0.0" />
       <PackageReference Include="Scrutor" Version="4.2.2" />
     </ItemGroup>
 
