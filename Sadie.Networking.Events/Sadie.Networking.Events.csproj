@@ -9,7 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj" />
-      <ProjectReference Include="..\Sadie.Networking.Writers\Sadie.Networking.Writers.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
 

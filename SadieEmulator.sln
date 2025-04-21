@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Players", "Sadie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Rooms", "Sadie.Game.Rooms\Sadie.Game.Rooms.csproj", "{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Networking.Writers", "Sadie.Networking.Writers\Sadie.Networking.Writers.csproj", "{77B3B583-B714-4489-9506-D0C45EAA403B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Networking.Events", "Sadie.Networking.Events\Sadie.Networking.Events.csproj", "{F9BA4ED3-4CAB-42DD-AE23-F6261FC358D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Game.Navigator", "Sadie.Game.Navigator\Sadie.Game.Navigator.csproj", "{A0156BF5-EA41-4AAD-B9E7-99420621F62C}"
@@ -27,11 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Database.Mappers", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Options", "Sadie.Options\Sadie.Options.csproj", "{6508F006-DE36-47D1-A812-F140DE3325A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Serialization", "Sadie.Networking.Serialization\Sadie.Networking.Serialization.csproj", "{9D884E48-D7CF-4654-A828-D32CFE782DED}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Encryption", "Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj", "{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Plugins.BaseCommands", "Sadie.Plugins.BaseCommands\Sadie.Plugins.BaseCommands.csproj", "{EBAB47EF-BECA-4822-937D-FF04EC113704}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +49,6 @@ Global
 		{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F23B92D-DAFA-4CF9-A793-0378E8D2DDD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77B3B583-B714-4489-9506-D0C45EAA403B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77B3B583-B714-4489-9506-D0C45EAA403B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77B3B583-B714-4489-9506-D0C45EAA403B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77B3B583-B714-4489-9506-D0C45EAA403B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9BA4ED3-4CAB-42DD-AE23-F6261FC358D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9BA4ED3-4CAB-42DD-AE23-F6261FC358D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9BA4ED3-4CAB-42DD-AE23-F6261FC358D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,18 +77,10 @@ Global
 		{6508F006-DE36-47D1-A812-F140DE3325A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D884E48-D7CF-4654-A828-D32CFE782DED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2ACAA65-2AA2-4D1B-B5E5-EECD23C998EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBAB47EF-BECA-4822-937D-FF04EC113704}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
