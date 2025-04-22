@@ -1,9 +1,9 @@
-name: build-test
+name: Build & Test
 
 on: [push]
 
 jobs:
-  build-test:
+  run:
 
     runs-on: ubuntu-latest
 
