@@ -1,20 +1,20 @@
-name: Build & Release for Windows & Linux
+name: Build and Release Executables for Windows and Linux
 
 on:
   push:
     branches:
-      - feature/final-changes
+      - main
+  workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Install xmlstarlet (Ubuntu)
+      - name: Install xmlstarlet (Linux)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
@@ -63,35 +63,49 @@ jobs:
           dotnet build "${{ steps.find_console_csproj.outputs.console_csproj }}" -c Release
 
       - name: Publish for Linux (self-contained binary)
-        if: matrix.os == 'ubuntu-latest'
+        if: runner.os == 'Linux'
         run: |
           dotnet publish "${{ steps.find_console_csproj.outputs.console_csproj }}" -c Release -r linux-x64 --self-contained true -o ./publish/linux
 
       - name: Publish for Windows (self-contained executable)
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: |
           dotnet publish "${{ steps.find_console_csproj.outputs.console_csproj }}" -c Release -r win-x64 --self-contained true -o ./publish/windows
 
-      - name: Find Linux executable
-        if: matrix.os == 'ubuntu-latest'
-        id: find_linux
+      - name: Combine Executables for Release
         run: |
-          executable="./publish/linux/$(basename ${{ steps.find_console_csproj.outputs.console_csproj }} .csproj)"
-          echo "linux_executable=$executable" >> $GITHUB_OUTPUT
+          mkdir -p ./publish/release/linux
+          mkdir -p ./publish/release/windows
+          
+          # Move the Linux executable to the combined release folder
+          if [ "${{ runner.os }}" == "Linux" ]; then
+            mv ./publish/linux/Sadie.Console ./publish/release/linux/Sadie.Console
+          fi
 
-      - name: Find Windows executable
-        if: matrix.os == 'windows-latest'
-        id: find_windows
+          # Move the Windows executable to the combined release folder
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            mv ./publish/windows/Sadie.Console.exe ./publish/release/windows/Sadie.Console.exe
+          fi
+
+      - name: Check if release tag exists
+        id: check_tag
         run: |
-          executable="./publish/windows/$(basename ${{ steps.find_console_csproj.outputs.console_csproj }} .csproj).exe"
-          echo "windows_executable=$executable" >> $GITHUB_OUTPUT
+          tag="v${{ steps.get_version.outputs.version }}"
+          echo "Checking if tag $tag exists"
+          exists=$(curl -s --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag" | jq -r .message)
+          if [[ "$exists" == "Not Found" ]]; then
+            echo "Tag does not exist, proceeding to create release"
+            echo "tag_exists=false" >> $GITHUB_ENV
+          else
+            echo "Tag exists, skipping release creation"
+            echo "tag_exists=true" >> $GITHUB_ENV
+          fi
 
       - name: Create GitHub Release and Upload Executables
+        if: env.tag_exists == 'false'
         uses: ncipollo/release-action@v1
         with:
           tag: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
           generateReleaseNotes: true
           artifacts: |
-            ${{ steps.find_linux.outputs.linux_executable }}
-            ${{ steps.find_windows.outputs.windows_executable }}
