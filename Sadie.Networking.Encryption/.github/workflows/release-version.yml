@@ -1,0 +1,74 @@
+name: Build and Release Executables for Windows and Linux
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest  # The primary runner is Ubuntu, but we'll build for both platforms
+
+    permissions:
+      contents: write  # Required to create a GitHub release and upload assets
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]  # Run for both Linux (Ubuntu) and Windows
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'  # Use .NET 8.x or the version you're targeting
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore ./SadieEmulator.sln  # Use your solution file to restore dependencies
+
+      - name: Find .csproj file
+        id: find_csproj
+        run: |
+          file=$(find . -name "Sadie.Console.csproj" | head -n 1)  # Explicitly search for your .csproj file
+          echo "file=$file" >> $GITHUB_OUTPUT
+
+      - name: Build the project
+        run: |
+          dotnet build "${{ steps.find_csproj.outputs.file }}" -c Release
+
+      - name: Publish for Linux (self-contained binary)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          dotnet publish "${{ steps.find_csproj.outputs.file }}" -c Release -r linux-x64 --self-contained true -o ./publish/linux
+
+      - name: Publish for Windows (self-contained executable)
+        if: matrix.os == 'windows-latest'
+        run: |
+          dotnet publish "${{ steps.find_csproj.outputs.file }}" -c Release -r win-x64 --self-contained true -o ./publish/windows
+
+      - name: Find Linux executable
+        if: matrix.os == 'ubuntu-latest'
+        id: find_linux
+        run: |
+          executable="./publish/linux/$(basename ${{ steps.find_csproj.outputs.file }} .csproj)"
+          echo "linux_executable=$executable" >> $GITHUB_OUTPUT
+
+      - name: Find Windows executable
+        if: matrix.os == 'windows-latest'
+        id: find_windows
+        run: |
+          executable="./publish/windows/$(basename ${{ steps.find_csproj.outputs.file }} .csproj).exe"
+          echo "windows_executable=$executable" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release and Upload Executables
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v1.0.0  # Or use a dynamic tag for versioning
+          name: Release v1.0.0
+          generateReleaseNotes: true
+          artifacts: |
+            ${{ steps.find_linux.outputs.linux_executable }}
+            ${{ steps.find_windows.outputs.windows_executable }}
