@@ -1,4 +1,4 @@
-name: Build and Release Executables for Windows and Linux
+name: Build & Release for Windows & Linux
 
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
 
       - name: Restore dependencies
         run: |
-          dotnet restore ./Sadie.sln
+          dotnet restore ./SadieEmulator.sln
 
       - name: Find Sadie.Server .csproj file
         id: find_server_csproj
