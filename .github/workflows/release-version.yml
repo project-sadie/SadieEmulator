@@ -111,3 +111,12 @@ jobs:
           artifacts: |
             ./publish/release/linux/Sadie.Console
             ./publish/release/windows/Sadie.Console.exe
+
+
+      - name: Send Discord Notification
+        if: env.tag_exists == 'false'
+        run: |
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"🚀 A new version \`v${{ steps.get_version.outputs.version }}\` has been released! Check it out: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}\"}" \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
