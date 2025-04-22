@@ -49,7 +49,7 @@ jobs:
       - name: Get version from Sadie.Server .csproj
         id: get_version
         run: |
-          version=$(xmlstarlet sel -t -v "/Project/PropertyGroup/Version" "${{ steps.find_server_csproj.outputs.server_csproj }}" || echo "1.0.0")
+          version=$(xmlstarlet sel -t -v "/Project/PropertyGroup/AssemblyVersion" "${{ steps.find_server_csproj.outputs.server_csproj }}" || echo "1.0.0")
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Find Sadie.Console .csproj file
