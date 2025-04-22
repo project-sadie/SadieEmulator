@@ -23,51 +23,64 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x'  # Use .NET 8.x or the version you're targeting
+          dotnet-version: '9.x'
 
       - name: Restore dependencies
         run: |
-          dotnet restore ./SadieEmulator.sln  # Use your solution file to restore dependencies
+          dotnet restore ./Sadie.sln  # Restore dependencies using the solution file
 
-      - name: Find .csproj file
-        id: find_csproj
+      - name: Find Sadie.Server .csproj file
+        id: find_server_csproj
         run: |
-          file=$(find . -name "Sadie.Console.csproj" | head -n 1)  # Explicitly search for your .csproj file
-          echo "file=$file" >> $GITHUB_OUTPUT
+          file=$(find . -name "Sadie.Server.csproj" | head -n 1)  # Search for Sadie.Server.csproj
+          echo "server_csproj=$file" >> $GITHUB_OUTPUT
 
-      - name: Build the project
+      - name: Get version from Sadie.Server .csproj
+        id: get_version
         run: |
-          dotnet build "${{ steps.find_csproj.outputs.file }}" -c Release
+          # Use xmlstarlet to extract the version from the Sadie.Server .csproj file
+          version=$(xmlstarlet sel -t -v "/Project/PropertyGroup/Version" "${{ steps.find_server_csproj.outputs.server_csproj }}" || echo "1.0.0")
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Find Sadie.Console .csproj file
+        id: find_console_csproj
+        run: |
+          file=$(find . -name "Sadie.Console.csproj" | head -n 1)  # Search for Sadie.Console.csproj
+          echo "console_csproj=$file" >> $GITHUB_OUTPUT
+
+      - name: Build Sadie.Console project
+        run: |
+          dotnet build "${{ steps.find_console_csproj.outputs.console_csproj }}" -c Release
 
       - name: Publish for Linux (self-contained binary)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          dotnet publish "${{ steps.find_csproj.outputs.file }}" -c Release -r linux-x64 --self-contained true -o ./publish/linux
+          dotnet publish "${{ steps.find_console_csproj.outputs.console_csproj }}" -c Release -r linux-x64 --self-contained true -o ./publish/linux
 
       - name: Publish for Windows (self-contained executable)
         if: matrix.os == 'windows-latest'
         run: |
-          dotnet publish "${{ steps.find_csproj.outputs.file }}" -c Release -r win-x64 --self-contained true -o ./publish/windows
+          dotnet publish "${{ steps.find_console_csproj.outputs.console_csproj }}" -c Release -r win-x64 --self-contained true -o ./publish/windows
 
       - name: Find Linux executable
         if: matrix.os == 'ubuntu-latest'
         id: find_linux
         run: |
-          executable="./publish/linux/$(basename ${{ steps.find_csproj.outputs.file }} .csproj)"
+          executable="./publish/linux/$(basename ${{ steps.find_console_csproj.outputs.console_csproj }} .csproj)"
           echo "linux_executable=$executable" >> $GITHUB_OUTPUT
 
       - name: Find Windows executable
         if: matrix.os == 'windows-latest'
         id: find_windows
         run: |
-          executable="./publish/windows/$(basename ${{ steps.find_csproj.outputs.file }} .csproj).exe"
+          executable="./publish/windows/$(basename ${{ steps.find_console_csproj.outputs.console_csproj }} .csproj).exe"
           echo "windows_executable=$executable" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release and Upload Executables
         uses: ncipollo/release-action@v1
         with:
-          tag: v1.0.0  # Or use a dynamic tag for versioning
-          name: Release v1.0.0
+          tag: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
           generateReleaseNotes: true
           artifacts: |
             ${{ steps.find_linux.outputs.linux_executable }}
