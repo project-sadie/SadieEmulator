@@ -3,18 +3,18 @@ name: Build and Release Executables for Windows and Linux
 on:
   push:
     branches:
-      - feature/final-changes
+      - main
 
 jobs:
   release:
-    runs-on: ubuntu-latest  # The primary runner is Ubuntu, but we'll build for both platforms
+    runs-on: ubuntu-latest
 
     permissions:
-      contents: write  # Required to create a GitHub release and upload assets
+      contents: write
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]  # Run for both Linux (Ubuntu) and Windows
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout code
@@ -25,27 +25,37 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Install xmlstarlet (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xmlstarlet
+
+      - name: Install xmlstarlet (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          choco install xmlstarlet -y
+
       - name: Restore dependencies
         run: |
-          dotnet restore ./SadieEmulator.sln  # Restore dependencies using the solution file
+          dotnet restore ./SadieEmulator.sln
 
       - name: Find Sadie.Server .csproj file
         id: find_server_csproj
         run: |
-          file=$(find . -name "Sadie.Server.csproj" | head -n 1)  # Search for Sadie.Server.csproj
+          file=$(find . -name "Sadie.Server.csproj" | head -n 1)
           echo "server_csproj=$file" >> $GITHUB_OUTPUT
 
       - name: Get version from Sadie.Server .csproj
         id: get_version
         run: |
-          # Use xmlstarlet to extract the version from the Sadie.Server .csproj file
           version=$(xmlstarlet sel -t -v "/Project/PropertyGroup/Version" "${{ steps.find_server_csproj.outputs.server_csproj }}" || echo "1.0.0")
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Find Sadie.Console .csproj file
         id: find_console_csproj
         run: |
-          file=$(find . -name "Sadie.Console.csproj" | head -n 1)  # Search for Sadie.Console.csproj
+          file=$(find . -name "Sadie.Console.csproj" | head -n 1)
           echo "console_csproj=$file" >> $GITHUB_OUTPUT
 
       - name: Build Sadie.Console project
