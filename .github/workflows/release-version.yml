@@ -109,3 +109,5 @@ jobs:
           name: Release v${{ steps.get_version.outputs.version }}
           generateReleaseNotes: true
           artifacts: |
+            ./publish/release/linux/Sadie.Console
+            ./publish/release/windows/Sadie.Console.exe
