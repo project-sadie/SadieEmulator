@@ -3,7 +3,7 @@ name: Build and Release Executables for Windows and Linux
 on:
   push:
     branches:
-      - main
+      - feature/final-changes
   workflow_dispatch:
 
 jobs:
