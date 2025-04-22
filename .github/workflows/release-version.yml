@@ -27,7 +27,7 @@ jobs:
 
       - name: Restore dependencies
         run: |
-          dotnet restore ./Sadie.sln  # Restore dependencies using the solution file
+          dotnet restore ./SadieEmulator.sln  # Restore dependencies using the solution file
 
       - name: Find Sadie.Server .csproj file
         id: find_server_csproj
