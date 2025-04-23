@@ -44,7 +44,7 @@ public static class ServerServiceCollection
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         CatalogServiceProvider.AddServices(serviceCollection);
-        NetworkEncryptionServiceCollection.AddServices(serviceCollection);
+        EncryptionServiceCollection.AddServices(serviceCollection, config);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)

@@ -3,7 +3,7 @@ name: Build and Release Executables for Windows and Linux
 on:
   push:
     branches:
-      - feature/final-changes
+      - main
   workflow_dispatch:
 
 jobs:
@@ -118,5 +118,5 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d "{\"content\": \"🚀 A new version \`v${{ steps.get_version.outputs.version }}\` has been released! Check it out: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }}\"}" \
+               -d "{\"content\": \"🚀 A new version \`v${{ steps.get_version.outputs.version }}\` has been released! Check it out: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.get_version.outputs.version }} @here\"}" \
                ${{ secrets.DISCORD_WEBHOOK_URL }}
