@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Tests", "Sadie.Tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Database.Mappers", "Sadie.Database.Mappers\Sadie.Database.Mappers.csproj", "{5E4537C2-F21E-4125-8638-83D6A8204111}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Options", "Sadie.Options\Sadie.Options.csproj", "{6508F006-DE36-47D1-A812-F140DE3325A4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,10 +63,6 @@ Global
 		{5E4537C2-F21E-4125-8638-83D6A8204111}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E4537C2-F21E-4125-8638-83D6A8204111}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E4537C2-F21E-4125-8638-83D6A8204111}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6508F006-DE36-47D1-A812-F140DE3325A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6508F006-DE36-47D1-A812-F140DE3325A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6508F006-DE36-47D1-A812-F140DE3325A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
