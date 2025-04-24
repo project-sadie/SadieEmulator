@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using Sadie.Options.Options;
+using Sadie.Networking.Options;
 
-namespace Sadie.Options.Validation;
+namespace Sadie.Networking.Validators;
 
 public class NetworkOptionsValidator : IValidateOptions<NetworkOptions>
 {

@@ -5,6 +5,7 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
+using Sadie.Networking.Options;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Options.Options;
@@ -15,14 +16,14 @@ public class ClientPacketHandler(
     ILogger<ClientPacketHandler> logger,
     Dictionary<short, Type> packetHandlerTypeMap,
     IServiceProvider serviceProvider,
-    IOptions<PlayerOptions> playerOptions)
+    IOptions<NetworkPacketOptions> packetOptions)
     : INetworkPacketHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
         if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
         {
-            if (playerOptions.Value.ServerErrorAlerts)
+            if (packetOptions.Value.NotifyMissingPacket)
             {
                 _ = NotifyMissingPacketAsync(packet.PacketId, client);
             }

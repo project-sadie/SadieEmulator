@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Sadie.Options.Options;
-using Sadie.Options.Validation;
 
 namespace Sadie.Options;
 
@@ -12,8 +10,5 @@ public static class OptionsServiceCollection
     {
         serviceCollection.AddOptions();
         serviceCollection.Configure<PlayerOptions>(options => config.GetSection("PlayerOptions").Bind(options));
-
-        serviceCollection.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
-        serviceCollection.AddSingleton<IValidateOptions<NetworkPacketOptions>, NetworkPacketOptionsValidator>();
     }
 }
