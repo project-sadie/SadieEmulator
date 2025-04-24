@@ -15,7 +15,6 @@ using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
-using Sadie.Options.Options;
 
 namespace Sadie.Tests.Networking;
 

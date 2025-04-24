@@ -21,11 +21,11 @@ public static class ServerServiceCollection
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
+        serviceCollection.AddOptions();
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
         serviceCollection.AddSingleton<ServerTaskWorker>();
 
-        OptionsServiceCollection.AddServices(serviceCollection, config);
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
         serviceCollection.AddSingleton<ServerSettings>(p => 
@@ -37,7 +37,7 @@ public static class ServerServiceCollection
             p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());
 
         MapperServiceCollection.AddServices(serviceCollection);
-        PlayerServiceCollection.AddServices(serviceCollection);
+        PlayerServiceCollection.AddServices(serviceCollection, config);
         RoomServiceCollection.AddServices(serviceCollection);
         NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
