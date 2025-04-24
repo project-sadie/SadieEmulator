@@ -15,6 +15,8 @@ using Sadie.Networking.Packets;
 using Sadie.Options.Options;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using NetworkOptions = Sadie.Networking.Options.NetworkOptions;
+using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
 
 namespace Sadie.Networking
 {

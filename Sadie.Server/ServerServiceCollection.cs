@@ -39,7 +39,7 @@ public static class ServerServiceCollection
         MapperServiceCollection.AddServices(serviceCollection);
         PlayerServiceCollection.AddServices(serviceCollection);
         RoomServiceCollection.AddServices(serviceCollection);
-        NetworkServiceCollection.AddServices(serviceCollection);
+        NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         EncryptionServiceCollection.AddServices(serviceCollection, config);

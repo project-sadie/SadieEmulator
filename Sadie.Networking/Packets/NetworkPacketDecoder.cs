@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Buffers.Binary;
 using Sadie.Options.Options;
+using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
 
 namespace Sadie.Networking.Packets;
 

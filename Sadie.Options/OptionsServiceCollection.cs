@@ -11,9 +11,6 @@ public static class OptionsServiceCollection
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
         serviceCollection.AddOptions();
-
-        serviceCollection.Configure<NetworkOptions>(options => config.GetSection("NetworkOptions").Bind(options));
-        serviceCollection.Configure<NetworkPacketOptions>(options => config.GetSection("NetworkOptions:PacketOptions").Bind(options));
         serviceCollection.Configure<PlayerOptions>(options => config.GetSection("PlayerOptions").Bind(options));
 
         serviceCollection.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
