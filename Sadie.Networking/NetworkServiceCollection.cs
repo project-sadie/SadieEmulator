@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
 using Sadie.Networking.Validators;
-using Sadie.Options.Options;
 using NetworkOptions = Sadie.Networking.Options.NetworkOptions;
 using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
 

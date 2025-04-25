@@ -1,9 +1,9 @@
 using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users.Trading;
-using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers;
+using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 

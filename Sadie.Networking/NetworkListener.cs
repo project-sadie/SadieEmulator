@@ -1,4 +1,6 @@
-﻿using DotNetty.Buffers;
+﻿using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Codecs.Http;
 using DotNetty.Codecs.Http.WebSockets;
@@ -12,9 +14,6 @@ using Sadie.Networking.Client;
 using Sadie.Networking.Codecs;
 using Sadie.Networking.Handlers;
 using Sadie.Networking.Packets;
-using Sadie.Options.Options;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using NetworkOptions = Sadie.Networking.Options.NetworkOptions;
 using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
 

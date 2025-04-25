@@ -11,10 +11,9 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
-using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Game.Rooms.Unit;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Networking.Writers.Rooms.Users.HandItems;
 
 namespace Sadie.Game.Rooms.Users;
 

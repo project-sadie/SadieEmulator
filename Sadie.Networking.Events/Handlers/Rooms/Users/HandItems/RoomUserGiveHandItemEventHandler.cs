@@ -1,6 +1,6 @@
-using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Users.HandItems;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
 

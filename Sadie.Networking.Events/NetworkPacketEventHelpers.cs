@@ -12,7 +12,6 @@ using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
@@ -25,6 +24,7 @@ using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Networking.Writers.Players.Subscriptions;
+using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Helpers;
 
 namespace Sadie.Networking.Events;

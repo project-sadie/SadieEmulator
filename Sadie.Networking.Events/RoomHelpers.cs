@@ -11,7 +11,7 @@ using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
 
-namespace Sadie.Game.Rooms;
+namespace Sadie.Networking.Events;
 
 public static class RoomHelpers
 {
@@ -50,7 +50,7 @@ public static class RoomHelpers
             return null;
         }
 
-        var roomLogic = mapper.Map<RoomLogic>(room);
+        var roomLogic = mapper.Map<IRoomLogic>(room);
         roomRepository.AddRoom(roomLogic);
 
         return roomLogic;

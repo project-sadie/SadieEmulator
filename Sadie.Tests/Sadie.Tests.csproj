@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Sadie.Game\Sadie.Game.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
     </ItemGroup>
 

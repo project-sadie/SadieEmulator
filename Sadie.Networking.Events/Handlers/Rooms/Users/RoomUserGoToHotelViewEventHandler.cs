@@ -19,7 +19,7 @@ public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository,
         
         if (lastRoomId != 0)
         {
-            var lastRoom = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
+            var lastRoom = await RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
                 roomRepository,
                 dbContextFactory,
                 mapper);

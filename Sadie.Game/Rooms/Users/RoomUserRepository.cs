@@ -3,9 +3,10 @@ using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
-using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Serialization;
+using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Bots;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Users;
 

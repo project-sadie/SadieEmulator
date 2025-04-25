@@ -3,11 +3,12 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Bots;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 

@@ -2,10 +2,10 @@
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 

@@ -5,10 +5,10 @@ using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
+using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Helpers;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;

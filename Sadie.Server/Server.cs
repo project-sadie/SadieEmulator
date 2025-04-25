@@ -1,15 +1,15 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Sadie.Database;
-using Sadie.Networking;
-using SadieEmulator.Tasks;
 using System.Diagnostics;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
+using Sadie.Database;
+using Sadie.Networking;
 using Sadie.Networking.Client;
 using Sadie.Options.Options;
+using SadieEmulator.Tasks;
 using Serilog;
 
 namespace SadieEmulator;

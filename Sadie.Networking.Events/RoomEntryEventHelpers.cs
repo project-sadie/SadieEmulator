@@ -9,7 +9,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
-using Sadie.Game.Rooms;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms;

@@ -10,7 +10,6 @@ using Sadie.Game.Rooms;
 using Sadie.Networking;
 using Sadie.Networking.Encryption;
 using Sadie.Networking.Events;
-using Sadie.Options;
 using SadieEmulator.Tasks;
 
 namespace SadieEmulator;

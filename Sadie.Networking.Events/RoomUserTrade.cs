@@ -5,8 +5,8 @@ using Sadie.API.Networking;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Players.Furniture;
-using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Serialization;
+using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Game.Rooms.Users;
 

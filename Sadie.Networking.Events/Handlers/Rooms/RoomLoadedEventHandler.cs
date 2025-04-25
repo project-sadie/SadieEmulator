@@ -10,12 +10,12 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
@@ -45,7 +45,7 @@ public class RoomLoadedEventHandler(
             return;
         }
 
-        var room = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(
+        var room = await RoomHelpers.TryLoadRoomByIdAsync(
             RoomId,
             roomRepository,
             dbContextFactory,
@@ -55,7 +55,7 @@ public class RoomLoadedEventHandler(
         
         if (lastRoomId != 0)
         {
-            var lastRoom = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
+            var lastRoom = await RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
                 roomRepository,
                 dbContextFactory, 
                 mapper);
