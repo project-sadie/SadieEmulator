@@ -43,7 +43,7 @@ public class PlayerCreateRoomEventHandler(
             OwnerId = client.Player.Id,
             Layout = layout,
             LayoutId = layout.Id,
-            MaxUsersAllowed = 50,
+            MaxUsersAllowed = MaxUsersAllowed,
             Description = Description,
             CreatedAt = DateTime.Now
         };
