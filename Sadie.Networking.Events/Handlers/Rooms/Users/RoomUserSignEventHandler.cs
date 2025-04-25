@@ -18,6 +18,7 @@ public class RoomUserSignEventHandler(IRoomRepository roomRepository) : INetwork
         }
 
         roomUser.AddStatus(RoomUserStatus.Sign, SignId.ToString());
+        roomUser.SignSet = DateTime.Now;
         
         return Task.CompletedTask;
     }

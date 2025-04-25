@@ -1,19 +1,19 @@
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.Database;
-using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
+using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Bots;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 
 [PacketId(EventHandlerId.RoomPlayerBotPlaced)]
 public class RoomPlayerBotPlacedEventHandler(
-    SadieContext dbContext, 
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository,
     IRoomBotFactory roomBotFactory) : INetworkPacketEventHandler
 {
@@ -31,14 +31,17 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        var bot = client.Player.Bots.FirstOrDefault(x => x.Id == Id);
+        var bot = client
+            .Player!
+            .Bots
+            .FirstOrDefault(x => x.Id == Id);
 
         if (bot == null)
         {
             return;
         }
 
-        if (room.OwnerId != roomUser.Id)
+        if (room.OwnerId != roomUser.Player.Id)
         {
             return;
         }
@@ -59,10 +62,7 @@ public class RoomPlayerBotPlacedEventHandler(
             room, 
             room.MaxUsersAllowed + bot.Id, 
             new Point(X, Y), 
-            room.TileMap.ZMap[Y, X],
-            HDirection.North,
-            HDirection.North,
-            bot);
+            room.TileMap.ZMap[Y, X]);
 
         if (!room.BotRepository.TryAdd(roomBot))
         {
@@ -71,6 +71,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         bot.RoomId = room.Id;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(bot).Property(x => x.RoomId).IsModified = true;
         await dbContext.SaveChangesAsync();
 

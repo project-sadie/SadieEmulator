@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Database;
 using Sadie.Database.Models.Players.Furniture;
@@ -10,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture.Wired;
 
 [PacketId(EventHandlerId.RoomWiredTriggerSaved)]
 public class RoomWiredTriggerSavedEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }
@@ -25,41 +26,28 @@ public class RoomWiredTriggerSavedEventHandler(
         var room = client.RoomUser?.Room;
 
         var roomItem = room?.FurnitureItems
-            .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
+            .FirstOrDefault(x => x.Id == ItemId);
 
         if (roomItem == null)
         {
             return;
         }
 
-        var selectedItems = room!
+        var roomItems = room!
             .FurnitureItems
-            .Where(x => ItemIds.Contains(x.PlayerFurnitureItemId))
+            .Where(x => ItemIds.Contains(x.Id))
             .ToList();
-
-        var parameters = Parameters
-            .Select(x => new PlayerFurnitureItemWiredParameter
-            {
-                Value = x
-            }).ToList();
-
-        var wiredData = new PlayerFurnitureItemWiredData
-        {
-            PlayerFurnitureItemPlacementDataId = roomItem.Id,
-            PlacementData = roomItem,
-            Message = Input,
-            PlayerFurnitureItemWiredParameters = parameters,
-            PlayerFurnitureItemWiredItems = selectedItems.Select(x => new PlayerFurnitureItemWiredItem
-            {
-                PlayerFurnitureItemPlacementDataId = x.Id,
-                PlayerFurnitureItemWiredDataId = roomItem.WiredData!.Id
-            }).ToList()
-        };
 
         await wiredService.SaveSettingsAsync(
             roomItem,
-            dbContext,
-            wiredData);
+            dbContextFactory,
+            new PlayerFurnitureItemWiredData
+            {
+                PlayerFurnitureItemPlacementDataId = roomItem.Id,
+                PlacementData = roomItem,
+                SelectedItems = roomItems,
+                Message = Input
+            });
         
         await client.WriteToStreamAsync(new WiredSavedWriter());
     }

@@ -6,15 +6,15 @@ using Sadie.Database.Models.Furniture;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Events.Dtos;
+using Sadie.Networking.Options;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players.Navigator;
 using Sadie.Networking.Writers.Players.Other;
-using Sadie.Options.Options;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Tests.Networking;
 
@@ -28,7 +28,8 @@ public class NetworkPacketWriterSerializerTests
         _options = Microsoft.Extensions.Options.Options.Create(new NetworkPacketOptions
         {
             BufferByteSize = 4024,
-            FrameLengthByteCount = 4
+            FrameLengthByteCount = 4,
+            NotifyMissingPacket = false
         });
     }
     

@@ -1,10 +1,11 @@
+using System.Drawing;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Game.Rooms.Mapping;
 using Sadie.Database;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
@@ -15,10 +16,11 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemEjected)]
 public class RoomItemEjectedEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository,
     IPlayerRepository playerRepository,
-    IRoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
+    IRoomFurnitureItemInteractorRepository interactorRepository,
+    IRoomTileMapHelperService tileMapHelperService) : INetworkPacketEventHandler
 {
     public int Category { get; init; }
     public int ItemId { get; init; }
@@ -33,7 +35,10 @@ public class RoomItemEjectedEventHandler(
         var player = client.Player;
         var itemId = ItemId;
         var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
-        var roomFurnitureItem = room?.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
+        
+        var roomFurnitureItem = room?
+            .FurnitureItems
+            .FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
 
         if (roomFurnitureItem == null)
         {
@@ -69,6 +74,15 @@ public class RoomItemEjectedEventHandler(
         }
 
         room.FurnitureItems.Remove(roomFurnitureItem);
+        
+        var point = new Point(
+            roomFurnitureItem.PositionX,
+            roomFurnitureItem.PositionY);
+        
+        foreach (var user in tileMapHelperService.GetUsersAtPoints([point], room.UserRepository.GetAll()))
+        {
+            user.CheckStatusForCurrentTile();
+        }
 
         var itemRecord = roomFurnitureItem.PlayerFurnitureItem;
         
@@ -118,6 +132,7 @@ public class RoomItemEjectedEventHandler(
         
         itemRecord.PlacementData = null;
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
     }

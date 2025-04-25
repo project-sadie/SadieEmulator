@@ -30,7 +30,7 @@ public class OwnerFiltererTests : RoomMockHelpers
         dbContext.SaveChanges();
         
         var query = dbContext.Rooms.AsQueryable();
-        var newQuery = _filterer!.ApplyFilter(query, "2");
+        var newQuery = _filterer!.Apply(query, "2");
 
         Assert.That(newQuery.ToList(), Has.Count.EqualTo(1));
     }
@@ -51,7 +51,7 @@ public class OwnerFiltererTests : RoomMockHelpers
         dbContext.SaveChanges();
         
         var query = dbContext.Rooms.AsQueryable();
-        var newQuery = _filterer!.ApplyFilter(query, "1");
+        var newQuery = _filterer!.Apply(query, "1");
 
         Assert.That(newQuery.ToList(), Has.Count.EqualTo(2));
     }

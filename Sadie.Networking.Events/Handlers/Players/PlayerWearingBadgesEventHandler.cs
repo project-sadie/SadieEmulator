@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerWearingBadges)]
 public class PlayerWearingBadgesEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler
@@ -21,10 +21,13 @@ public class PlayerWearingBadgesEventHandler(
     public async Task HandleAsync(INetworkClient networkClient)
     {
         var player = playerRepository.GetPlayerLogicById(PlayerId);
-
-        var playerBadges = player != null
-            ? player.Badges
-            : await dbContext.Set<PlayerBadge>().Where(x =>  x.PlayerId == PlayerId).ToListAsync();
+        var playerBadges = player?.Badges;
+        
+        if (playerBadges == null)
+        {
+            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+            playerBadges = await dbContext.Set<PlayerBadge>().Where(x =>  x.PlayerId == PlayerId).ToListAsync();;
+        }
 
         playerBadges = playerBadges.
             Where(x => x.Slot != 0 && x.Slot <= 5).

@@ -28,5 +28,8 @@
       "BufferByteSize": 4024,
       "FrameLengthByteCount": 4
     }
+  },
+  "PlayerOptions": {
+    "CanReuseSsoTokens": false
   }
 }

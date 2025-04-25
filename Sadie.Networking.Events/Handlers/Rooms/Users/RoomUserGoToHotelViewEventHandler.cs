@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Networking.Client;
@@ -8,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
 [PacketId(EventHandlerId.RoomUserGoToHotelView)]
 public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
@@ -18,14 +19,14 @@ public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository,
         
         if (lastRoomId != 0)
         {
-            var lastRoom = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
+            var lastRoom = await RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
                 roomRepository,
-                dbContext,
+                dbContextFactory,
                 mapper);
 
             if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id, true);
+                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Player.Id);
             }
         }
     }

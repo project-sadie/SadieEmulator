@@ -7,13 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="13.0.1" />
+      <PackageReference Include="AutoMapper" Version="14.0.0" />
+      <PackageReference Include="Sadie.API" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.Database\Sadie.Database.csproj" />
-      <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
-      <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
+      <ProjectReference Include="..\Sadie.Game\Sadie.Game.csproj" />
     </ItemGroup>
 
 </Project>

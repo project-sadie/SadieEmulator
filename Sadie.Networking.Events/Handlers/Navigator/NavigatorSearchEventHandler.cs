@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.NavigatorSearch)]
 public class NavigatorSearchEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     INavigatorRoomProvider navigatorRoomProvider,
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler
@@ -26,6 +26,8 @@ public class NavigatorSearchEventHandler(
         {
             return;
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var tab = await dbContext.Set<NavigatorTab>()
             .Include(x => x.Categories)

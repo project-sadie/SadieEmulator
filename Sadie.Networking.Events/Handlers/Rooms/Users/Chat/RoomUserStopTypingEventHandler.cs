@@ -19,7 +19,7 @@ public class RoomUserStopTypingEventHandler(IRoomRepository roomRepository) : IN
 
         await roomUser.Room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             IsTyping = false
         });
     }

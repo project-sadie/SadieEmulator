@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
@@ -15,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 public class RoomDoorbellAnswerEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomUserFactory roomUserFactory,
     INetworkClientRepository clientRepository,
     IRoomTileMapHelperService tileMapHelperService,
@@ -55,7 +56,7 @@ public class RoomDoorbellAnswerEventHandler(
                     playerClient, 
                     room, 
                     roomUserFactory, 
-                    dbContext, 
+                    dbContextFactory, 
                     playerRepository,
                     tileMapHelperService,
                     playerHelperService,

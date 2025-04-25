@@ -34,6 +34,10 @@ public static class EventSerializer
             {
                 property.SetValue(handler, ReadIntegerList(packet), null);
             }
+            else if (type == typeof(List<long>))
+            {
+                property.SetValue(handler, ReadLongList(packet), null);
+            }
             else if (type == typeof(Dictionary<string, string>))
             {
                 property.SetValue(handler, ReadAllStringDictionary(packet), null);
@@ -61,6 +65,19 @@ public static class EventSerializer
     private static List<int> ReadIntegerList(INetworkPacketReader packet)
     {
         var tempList = new List<int>();
+        var amount = packet.ReadInt();
+
+        for (var i = 0; i < amount; i++)
+        {
+            tempList.Add(packet.ReadInt());
+        }
+
+        return tempList;
+    }
+
+    private static List<long> ReadLongList(INetworkPacketReader packet)
+    {
+        var tempList = new List<long>();
         var amount = packet.ReadInt();
 
         for (var i = 0; i < amount; i++)

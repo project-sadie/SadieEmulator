@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
 using Sadie.Enums.Unsorted;
@@ -8,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Wardrobe;
 
 [PacketId(EventHandlerId.PlayerWardrobeSave)]
 public class PlayerWardrobeSaveEventHandler(
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int SlotId { get; set; }
     public required string FigureCode { get; set; }
@@ -31,6 +32,9 @@ public class PlayerWardrobeSaveEventHandler(
         };
             
         player.WardrobeItems.Add(wardrobeItem);
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.Entry(wardrobeItem).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
     }
 }

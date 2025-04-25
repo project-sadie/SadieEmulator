@@ -8,10 +8,13 @@ using Sadie.Networking.Writers.Navigator;
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.RoomCategories)]
-public class RoomCategoriesEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomCategoriesEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var categories = await dbContext
             .Set<RoomCategory>()
             .ToListAsync();

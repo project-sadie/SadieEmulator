@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
-using Sadie.Game.Rooms.Packets.Writers;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Purse;
+using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RedeemItem)]
-public class RoomRedeemItemEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class RoomRedeemItemEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }
     
@@ -19,7 +20,7 @@ public class RoomRedeemItemEventHandler(SadieContext dbContext) : INetworkPacket
 
         if (player?.NetworkObject == null || 
             client.RoomUser == null || 
-            room.OwnerId != client.RoomUser.Id)
+            room.OwnerId != client.Player!.Id)
         {
             return;
         }
@@ -56,6 +57,7 @@ public class RoomRedeemItemEventHandler(SadieContext dbContext) : INetworkPacket
             Delay = 0
         });
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(roomFurnitureItem).State = EntityState.Deleted;
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();

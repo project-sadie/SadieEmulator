@@ -30,7 +30,7 @@ public class RoomNameFiltererTests : RoomMockHelpers
         dbContext.SaveChanges();
         
         var query = dbContext.Rooms.AsQueryable();
-        var newQuery = _filterer!.ApplyFilter(query, "someName2");
+        var newQuery = _filterer!.Apply(query, "someName2");
 
         Assert.That(newQuery.ToList(), Has.Count.EqualTo(1));
     }

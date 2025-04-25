@@ -24,7 +24,7 @@ public class TagFiltererTests : RoomMockHelpers
         using var dbContext = new SadieContext(options);
         
         var query = dbContext.Rooms.AsQueryable();
-        var newQuery = _filterer!.ApplyFilter(query, "match");
+        var newQuery = _filterer!.Apply(query, "match");
         
         Assert.That(newQuery.ToList(), Has.Count.EqualTo(0));
     }
@@ -45,7 +45,7 @@ public class TagFiltererTests : RoomMockHelpers
         dbContext.SaveChanges();
         
         var query = dbContext.Rooms.AsQueryable();
-        var newQuery = _filterer!.ApplyFilter(query, "2");
+        var newQuery = _filterer!.Apply(query, "2");
 
         Assert.That(newQuery.ToList(), Has.Count.EqualTo(1));
     }
@@ -66,7 +66,7 @@ public class TagFiltererTests : RoomMockHelpers
         dbContext.SaveChanges();
         
         var query = dbContext.Rooms.AsQueryable();
-        var newQuery = _filterer!.ApplyFilter(query, "1");
+        var newQuery = _filterer!.Apply(query, "1");
 
         Assert.That(newQuery.ToList(), Has.Count.EqualTo(2));
     }

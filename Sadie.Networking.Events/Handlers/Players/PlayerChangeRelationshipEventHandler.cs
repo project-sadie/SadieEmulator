@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
     IPlayerRepository playerRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper)
     : INetworkPacketEventHandler
 {
@@ -34,6 +34,8 @@ public class PlayerChangeRelationshipEventHandler(
             return;
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         if (relationId == 0)
         {
             var relationship = client.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);

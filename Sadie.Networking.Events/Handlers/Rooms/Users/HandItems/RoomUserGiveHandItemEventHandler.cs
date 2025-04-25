@@ -1,6 +1,6 @@
-using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Users.HandItems;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
 
@@ -23,19 +23,19 @@ public class RoomUserGiveHandItemEventHandler : INetworkPacketEventHandler
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = fromUser.Id,
+            UserId = fromUser.Player.Id,
             ItemId = 0
         });
 
         await toUser.NetworkObject.WriteToStreamAsync(new RoomUserReceivedHandItemWriter
         {
-            FromId = fromUser.Id,
+            FromId = fromUser.Player.Id,
             HandItemId = handItemId
         });
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = toUser.Id,
+            UserId = toUser.Player.Id,
             ItemId = handItemId
         });
 

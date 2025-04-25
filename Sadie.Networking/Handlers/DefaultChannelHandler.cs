@@ -35,6 +35,14 @@ public class DefaultChannelHandler(
             return;
         }
 
-        await packetHandler.HandleAsync(client, packet);
+        try
+        {
+            await packetHandler.HandleAsync(client, packet);
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            logger.LogError($"Failed to handle packet: {packet.GetType().BaseType?.Name}");
+            logger.LogError(e.ToString());
+        }
     }
 }

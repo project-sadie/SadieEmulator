@@ -22,6 +22,7 @@ public class RollerProcessorTests : RoomMockHelpers
         var updates = await processor.GetUpdatesForRoomAsync(room);
         
         Assert.That(updates.Count(), Is.EqualTo(0));
+        Assert.That(updates.Count(), Is.EqualTo(0));
     }
     
     [Test]

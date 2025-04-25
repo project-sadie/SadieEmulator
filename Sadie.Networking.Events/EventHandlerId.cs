@@ -132,4 +132,10 @@ public static class EventHandlerId
     public const short RoomPollStart = 109;
     public const short RoomPollVoteCounter = 6200;
     public const short RedeemItem = 3115;
+    public const short PlayerIgnoredUser = 1117;
+    public const short PlayerRemoveUserIgnore = 2061;
+    public const short ModToolsRoomAlert = 3842;
+    public const short ModToolsUpdateRoomSettings = 3260;
+    public const short ModToolsRoomInfo = 707;
+    public const short ModToolsRoomChatLog = 2587;
 }

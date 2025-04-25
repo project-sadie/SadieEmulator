@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AutoMapper;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
@@ -10,7 +11,6 @@ using Sadie.Database.Models.Server;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
-using Sadie.Networking.Writers.Players.Other;
 using Sadie.Options.Options;
 using Sadie.Shared;
 
@@ -24,7 +24,7 @@ public class SecureLoginEventHandler(
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
     IPlayerLoaderService playerLoaderService,
     IPlayerHelperService playerHelperService)
@@ -83,6 +83,8 @@ public class SecureLoginEventHandler(
             .Split(":")
             .First() ?? "";
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
         {
             logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
@@ -109,7 +111,7 @@ public class SecureLoginEventHandler(
             
             if (roomUser != null)
             {
-                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Id, true);
+                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Id);
             }
         }
 
@@ -140,8 +142,6 @@ public class SecureLoginEventHandler(
             playerRepository);
         
         await SendWelcomeMessageAsync(playerLogic);
-        
-        await client.WriteToStreamAsync(new PlayerPingWriter());
         
         logger.LogInformation($"Player '{playerLogic.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }

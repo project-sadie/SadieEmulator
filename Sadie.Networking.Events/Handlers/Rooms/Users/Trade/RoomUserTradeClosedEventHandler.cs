@@ -1,8 +1,8 @@
 using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users.Trading;
-using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
@@ -28,7 +28,7 @@ public class RoomUserTradeClosedEventHandler(IRoomRepository roomRepository) : I
         
         await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeClosedWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             Reason = RoomUserTradeCloseReason.Cancelled
         });
 

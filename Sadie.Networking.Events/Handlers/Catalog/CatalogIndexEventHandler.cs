@@ -8,10 +8,13 @@ using Sadie.Networking.Writers.Catalog;
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogIndex)]
-public class CatalogIndexEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+public class CatalogIndexEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var parentlessPages = await dbContext.Set<CatalogPage>()
             .Include(x => x.Pages.OrderBy(y => y.OrderId))
             .ThenInclude(x => x.Pages.OrderBy(y => y.OrderId))

@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 public class PlayerAcceptFriendRequestEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
@@ -43,6 +43,7 @@ public class PlayerAcceptFriendRequestEventHandler(
 
         request.Status = PlayerFriendshipStatus.Accepted;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(request).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();
         

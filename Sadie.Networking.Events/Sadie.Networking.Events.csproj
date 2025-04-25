@@ -7,17 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj" />
-      <ProjectReference Include="..\Sadie.Networking.Writers\Sadie.Networking.Writers.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="13.0.1" />
+      <PackageReference Include="Sadie.Networking.Encryption" Version="1.0.1" />
+      <PackageReference Include="Sadie.Networking.Writers" Version="1.1.0" />
       <PackageReference Include="Sadie.Shared" Version="1.1.0" />
       <PackageReference Include="Scrutor" Version="4.2.2" />
-      <PackageReference Include="Serilog" Version="4.0.0" />
+      <PackageReference Include="Serilog" Version="4.2.1-dev-02352" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Sadie.Networking.Encryption">
+        <HintPath>..\..\..\..\..\..\home\ash\.nuget\packages\sadie.networking.encryption\1.0.0\lib\net9.0\Sadie.Networking.Encryption.dll</HintPath>
+      </Reference>
+    </ItemGroup>
 </Project>

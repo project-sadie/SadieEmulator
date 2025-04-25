@@ -26,7 +26,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IPlayerHelperService playerHelperService,
     IMapper mapper) : INetworkPacketEventHandler
 {
@@ -55,6 +55,8 @@ public class CatalogPurchaseEventHandler(
             return;
         }
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var page = await dbContext
             .Set<CatalogPage>()
             .Include(catalogPage => catalogPage.Items)
@@ -189,6 +191,8 @@ public class CatalogPurchaseEventHandler(
         client.Player.FurnitureItems.Add(parent);
         client.Player.FurnitureItems.Add(child);
             
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         dbContext.Entry(parent).State = EntityState.Added;
         dbContext.Entry(child).State = EntityState.Added;
             
@@ -238,6 +242,8 @@ public class CatalogPurchaseEventHandler(
             CreatedAt = DateTime.Now
         };
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         dbContext.Entry(bot).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
 
@@ -259,6 +265,8 @@ public class CatalogPurchaseEventHandler(
     private async Task ProcessVipPurchaseAsync(INetworkClient client)
     {
         var player = client.Player;
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var offer = await dbContext
                 .Set<CatalogClubOffer>()

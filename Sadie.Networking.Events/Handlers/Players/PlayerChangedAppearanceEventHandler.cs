@@ -1,17 +1,18 @@
-﻿using Sadie.API.Game.Rooms;
+﻿using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
     IRoomRepository roomRepository,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Gender { get; set; }
     public required string FigureCode { get; set; }
@@ -31,6 +32,8 @@ public class PlayerChangedAppearanceEventHandler(
 
         var figureCode = FigureCode;
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         if (player.AvatarData.Gender != gender)
         {
             player.AvatarData.Gender = gender;

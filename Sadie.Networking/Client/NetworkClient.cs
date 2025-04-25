@@ -1,18 +1,15 @@
 using DotNetty.Transport.Channels;
-using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
 using Sadie.Networking.Codecs.Encryption;
 using Sadie.Networking.Serialization;
-using Sadie.Options.Options;
 
 namespace Sadie.Networking.Client;
 
 public class NetworkClient(
-    IChannel channel,
-    IOptions<NetworkPacketOptions> options)
+    IChannel channel)
     : INetworkClient
 {
     public IChannel Channel { get; set; } = channel;
@@ -33,37 +30,25 @@ public class NetworkClient(
 
     public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
-        if (!channel.IsWritable)
+        if (!Channel.IsWritable)
         {
             return;
         }
 
         var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
-
-        try
-        {
-            await channel.WriteAndFlushAsync(serializedObject);
-        }
-        catch (ClosedChannelException)
-        {
-            
-        }
-        catch (ObjectDisposedException)
-        {
-            
-        }
+        await Channel.WriteAndFlushAsync(serializedObject);
     }
 
     public async Task WriteToStreamAsync(INetworkPacketWriter writer)
     {
-        if (!channel.IsWritable)
+        if (!Channel.IsWritable)
         {
             return;
         }
 
         try
         {
-            await channel.WriteAndFlushAsync(writer);
+            await Channel.WriteAndFlushAsync(writer);
         }
         catch (ClosedChannelException)
         {
@@ -86,6 +71,6 @@ public class NetworkClient(
 
         _disposed = true;
         
-        await channel.CloseAsync();
+        await Channel.CloseAsync();
     }
 }

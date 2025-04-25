@@ -1,7 +1,7 @@
 using Sadie.API.Game.Rooms;
-using Sadie.Game.Rooms.Packets.Writers.Users.Trading;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
@@ -24,7 +24,7 @@ public class RoomUserTradeAcceptedEventHandler(IRoomRepository roomRepository) :
         
         await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeStatusWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             Status = roomUser.TradeStatus
         });
 

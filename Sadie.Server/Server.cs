@@ -1,27 +1,42 @@
+using System.Diagnostics;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Sadie.API;
 using Sadie.Database;
 using Sadie.Networking;
-using Sadie.Shared;
-using SadieEmulator.Tasks;
-using System.Diagnostics;
-using Sadie.API;
 using Sadie.Networking.Client;
+using Sadie.Options.Options;
+using SadieEmulator.Tasks;
+using Serilog;
 
 namespace SadieEmulator;
 
-public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : IServer
+public class Server(ILogger<Server> logger,
+    IServerTaskWorker taskWorker,
+    INetworkListener networkListener,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IOptions<PlayerOptions> playerOptions,
+    INetworkClientRepository networkClientRepository,
+    IConfiguration config) : IServer
 {
     private readonly CancellationTokenSource _tokenSource = new();
     
     public async Task RunAsync()
     {
         var stopwatch = Stopwatch.StartNew();
-        WriteHeaderToConsole();
-        await CleanUpDataAsync();
         
-        var taskWorker = serviceProvider.GetRequiredService<IServerTaskWorker>();
+        Log.Logger.Information("Booting up...");
+        await CleanUpDataAsync();
+        LoadPlugins();
+
+        if (playerOptions.Value.CanReuseSsoTokens)
+        {
+            Log.Logger.Warning($"Reusable SSO tokens activated, this results in reduced security.");
+        }
+        
         taskWorker.WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
@@ -31,44 +46,38 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         await StartListeningForConnectionsAsync();
     }
 
+    private void LoadPlugins()
+    {
+        var pluginFolder = config.GetValue<string>("PluginDirectory");
+
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console().CreateLogger();
+
+        if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
+        {
+            return;
+        }
+        
+        foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
+        {
+            Assembly.LoadFile(plugin);
+            Log.Logger.Warning($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)}");
+        }
+    }
+
     private async Task StartListeningForConnectionsAsync()
     {
-        var networkListener = serviceProvider.GetRequiredService<INetworkListener>();
         networkListener.Bootstrap();
-        
         await networkListener.ListenAsync();
     }
 
     private async Task CleanUpDataAsync()
     {
-        var context = serviceProvider.GetRequiredService<SadieContext>();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
 
         await context
             .PlayerData
             .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false));
-    }
-
-    private void WriteHeaderToConsole()
-    {
-        Console.ForegroundColor = ConsoleColor.Magenta;
-
-        Console.WriteLine(@"");
-        Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
-        Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
-        Console.WriteLine(@"  $$ /  \__| $$$$$$\   $$$$$$$ |$$\  $$$$$$\  ");
-        Console.WriteLine(@"  \$$$$$$\   \____$$\ $$  __$$ |$$ |$$  __$$\ ");
-        Console.WriteLine(@"   \____$$\  $$$$$$$ |$$ /  $$ |$$ |$$$$$$$$ |");
-        Console.WriteLine(@"  $$\   $$ |$$  __$$ |$$ |  $$ |$$ |$$   ____|");
-        Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
-        Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
-        Console.WriteLine(@"");
-
-        Console.ForegroundColor = ConsoleColor.White;
-
-        Console.WriteLine($"         You are running version {GlobalState.Version}");
-        Console.WriteLine(@"");
-
-        logger.LogTrace("Booting up...");
     }
 
     public async ValueTask DisposeAsync()
@@ -77,7 +86,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         
         logger.LogWarning("Server is about to shut down...");
 
-        var networkClientRepository = serviceProvider.GetRequiredService<INetworkClientRepository>();
         await networkClientRepository.DisposeAsync();
     }
 }

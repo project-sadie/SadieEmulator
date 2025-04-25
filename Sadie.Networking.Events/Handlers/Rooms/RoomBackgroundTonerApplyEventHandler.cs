@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.Database;
 using Sadie.Networking.Client;
@@ -7,7 +8,8 @@ using Sadie.Networking.Serialization.Attributes;
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomBackgroundTonerApply)]
-public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext,
+public class RoomBackgroundTonerApplyEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }
@@ -39,6 +41,7 @@ public class RoomBackgroundTonerApplyEventHandler(SadieContext dbContext,
         
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }

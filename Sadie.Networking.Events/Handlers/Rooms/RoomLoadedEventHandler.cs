@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
@@ -9,12 +10,12 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Database;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
@@ -24,7 +25,7 @@ public class RoomLoadedEventHandler(
     IRoomRepository roomRepository,
     IRoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository,
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IMapper mapper,
     IRoomTileMapHelperService tileMapHelperService,
     IPlayerHelperService playerHelperService,
@@ -44,24 +45,24 @@ public class RoomLoadedEventHandler(
             return;
         }
 
-        var room = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(
+        var room = await RoomHelpers.TryLoadRoomByIdAsync(
             RoomId,
             roomRepository,
-            dbContext,
+            dbContextFactory,
             mapper);
         
         var lastRoomId = player.State.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
-            var lastRoom = await Game.Rooms.RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
+            var lastRoom = await RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
                 roomRepository,
-                dbContext, 
+                dbContextFactory, 
                 mapper);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var existingUser) && existingUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id, true);
+                await lastRoom.UserRepository.TryRemoveAsync(existingUser.Player.Id);
             }
         }
 
@@ -96,15 +97,15 @@ public class RoomLoadedEventHandler(
             client, 
             room, 
             roomUserFactory, 
-            dbContext, 
+            dbContextFactory, 
             playerRepository,
             tileMapHelperService,
             playerHelperService,
             roomFurnitureItemHelperService,
             wiredService);
     }
-    
-    public static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, IRoomLogic room, string password)
+
+    private static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, IRoomLogic room, string password)
     {
         var player = client.Player!;
         
@@ -155,7 +156,6 @@ public class RoomLoadedEventHandler(
                 return false;
             }
             case RoomAccessType.Open:
-                break;
             case RoomAccessType.Invisible:
                 break;
             default:

@@ -1,7 +1,7 @@
 using Sadie.API.Game.Rooms;
-using Sadie.Game.Rooms.Packets.Writers.Users.HandItems;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Users.HandItems;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
 
@@ -17,7 +17,7 @@ public class RoomUserDropHandItemEventHandler(IRoomRepository roomRepository) : 
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             ItemId = 0
         });
     }

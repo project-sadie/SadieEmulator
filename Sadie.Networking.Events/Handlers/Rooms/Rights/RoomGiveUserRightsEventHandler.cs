@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Rooms.Rights;
@@ -11,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 [PacketId(EventHandlerId.RoomGiveUserRights)]
 public class RoomGiveUserRightsEventHandler(
-    SadieContext dbContext,
+    IDbContextFactory<SadieContext> dbContextFactory,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public int PlayerId { get; init; }
@@ -60,6 +61,7 @@ public class RoomGiveUserRightsEventHandler(
         
         room.PlayerRights.Add(roomPlayerRight);
         
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.RoomPlayerRights.Add(roomPlayerRight);
         await dbContext.SaveChangesAsync();
     }

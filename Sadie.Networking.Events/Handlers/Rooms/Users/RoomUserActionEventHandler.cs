@@ -1,6 +1,5 @@
 ﻿using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -28,7 +27,7 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
             
             await room.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter
             {
-                UserId = roomUser.Id,
+                UserId = roomUser.Player.Id,
                 IsIdle = roomUser.IsIdle
             });
             
@@ -37,7 +36,7 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
         {
-            UserId = roomUser.Id,
+            UserId = roomUser.Player.Id,
             Action = Action
         });
     }

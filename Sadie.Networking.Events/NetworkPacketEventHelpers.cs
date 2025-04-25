@@ -12,7 +12,6 @@ using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
-using Sadie.Game.Rooms.Packets.Writers.Users;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
@@ -25,6 +24,7 @@ using Sadie.Networking.Writers.Players.Other;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Networking.Writers.Players.Subscriptions;
+using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Helpers;
 
 namespace Sadie.Networking.Events;
@@ -120,7 +120,7 @@ public static class NetworkPacketEventHelpers
 
         if (player.HasPermission(PlayerPermissionName.Moderator))
         {
-            await networkObject.WriteToStreamAsync(new ModerationToolsWriter
+            await networkObject.WriteToStreamAsync(new ModToolsWriter
             {
                 Issues = [],
                 MessageTemplates = [],
@@ -201,19 +201,27 @@ public static class NetworkPacketEventHelpers
         var chatMessage = new RoomChatMessage
         {
             RoomId = room.Id,
-            PlayerId = roomUser.Id,
+            PlayerId = roomUser.Player.Id,
             Message = message,
             ChatBubbleId = bubble,
             EmotionId = roomHelperService.GetEmotionFromMessage(message),
             TypeId = RoomChatMessageType.Shout,
             CreatedAt = DateTime.Now
         };
+        
+        var excludedIds = room
+            .UserRepository
+            .GetAll()
+            .Where(x =>
+                x.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Id))
+            .Select(x => x.Player.Id)
+            .ToList();
 
         if (shouting)
         {
             var writer = new RoomUserShoutWriter
             {
-                SenderId = roomUser.Id,
+                SenderId = roomUser.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
@@ -221,13 +229,13 @@ public static class NetworkPacketEventHelpers
                 MessageLength = message.Length
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer);
+            await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
         }
         else
         {
             var writer = new RoomUserChatWriter
             {
-                SenderId = roomUser.Id,
+                SenderId = roomUser.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
@@ -235,26 +243,16 @@ public static class NetworkPacketEventHelpers
                 MessageLength = message.Length
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer);
+            await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
         }
         
         room.ChatMessages.Add(chatMessage);
 
         var triggers = wiredService.GetTriggers(
-                FurnitureItemInteractionType.WiredTriggerSaysSomething, 
-                room.FurnitureItems, 
-                message)
-            .ToList();
-
+            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.FurnitureItems, message);
+        
         foreach (var trigger in triggers)
         {
-            if (trigger.WiredData == null || 
-                trigger.WiredData.PlayerFurnitureItemWiredParameters.First().Value == 1 && 
-                client.Player!.Id != room.OwnerId)
-            {
-                continue;
-            }
-            
             await wiredService.RunTriggerForRoomAsync(room, trigger, roomUser);
         }
     }
