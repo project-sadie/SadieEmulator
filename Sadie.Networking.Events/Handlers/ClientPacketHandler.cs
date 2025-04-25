@@ -8,7 +8,6 @@ using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Options;
 using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
-using Sadie.Options.Options;
 
 namespace Sadie.Networking.Events.Handlers;
 

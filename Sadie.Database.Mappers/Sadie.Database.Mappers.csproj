@@ -10,9 +10,4 @@
       <PackageReference Include="AutoMapper" Version="13.0.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Sadie.Game.Players\Sadie.Game.Players.csproj" />
-      <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
-    </ItemGroup>
-
 </Project>
