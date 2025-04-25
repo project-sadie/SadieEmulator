@@ -1,4 +1,5 @@
 using Moq;
+using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Database.Models.Furniture;
@@ -113,11 +114,20 @@ public class RoomMockHelpers
 
     protected static IRoomUser MockRoomUser()
     {
+        var player = new Mock<IPlayerLogic>();
+        
+        player
+            .SetupGet(x => x.Id)
+            .Returns(1);
+        
         var roomUser = new Mock<IRoomUser>();
         
         roomUser
             .SetupGet(x => x.StatusMap)
             .Returns([]);
+        
+        roomUser.SetupGet(x => x.Player)
+            .Returns(player.Object);
         
         return roomUser.Object;
     }
