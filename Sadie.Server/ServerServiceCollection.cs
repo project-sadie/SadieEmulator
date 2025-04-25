@@ -41,7 +41,7 @@ public static class ServerServiceCollection
         NetworkServiceCollection.AddServices(serviceCollection, config);
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
-        EncryptionServiceCollection.AddServices(serviceCollection, config);
+        EncryptionServiceProvider.AddServices(serviceCollection, config);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
