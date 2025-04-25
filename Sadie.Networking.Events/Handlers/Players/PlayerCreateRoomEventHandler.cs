@@ -1,28 +1,36 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
+using Sadie.Database.Models.Players;
 using Sadie.Database.Models.Rooms;
-using Sadie.Game.Rooms;
+using Sadie.Enums.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerId.PlayerCreateRoom)]
 public class PlayerCreateRoomEventHandler(
-    SadieContext dbContext,
-    PlayerCreateRoomEventParser eventParser,
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IRoomRepository roomRepository,
+    IMapper mapper) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerCreateRoom;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public required string Name { get; set; }
+    public required string Description { get; set; }
+    public required string LayoutName { get; set; }
+    public int CategoryId { get; set; }
+    public int MaxUsersAllowed { get; set; }
+    public int TradingPermission { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
         var layout = dbContext
             .RoomLayouts
-            .Select(x => new { x.Id, x.Name })
-            .FirstOrDefault(x => x.Name == eventParser.LayoutName);
+            .FirstOrDefault(x => x.Name == LayoutName);
 
         if (layout == null)
         {
@@ -31,35 +39,46 @@ public class PlayerCreateRoomEventHandler(
 
         var newRoom = new Room
         {
-            Name = eventParser.Name,
-            LayoutId = layout.Id,
+            Name = Name,
             OwnerId = client.Player.Id,
-            MaxUsersAllowed = 50,
-            Description = eventParser.Description,
+            Layout = layout,
+            LayoutId = layout.Id,
+            MaxUsersAllowed = MaxUsersAllowed,
+            Description = Description,
             CreatedAt = DateTime.Now
         };
 
-        dbContext.Rooms.Add(newRoom);
-
-        await dbContext.SaveChangesAsync();
-
         newRoom.Settings = new RoomSettings
+        {
+            RoomId = newRoom.Id,
+            WalkDiagonal = true,
+            TradeOption = RoomTradeOption.Allowed
+        };
+
+        newRoom.ChatSettings = new RoomChatSettings
         {
             RoomId = newRoom.Id
         };
 
         newRoom.PaintSettings = new RoomPaintSettings
         {
-            RoomId = newRoom.Id,
+            RoomId = newRoom.Id
         };
-
+        
+        dbContext.Rooms.Add(newRoom);
         await dbContext.SaveChangesAsync();
 
-        var room = await roomRepository.TryLoadRoomByIdAsync(newRoom.Id);
+        newRoom.Owner = (Player) client.Player;
+        newRoom.Layout = layout;
 
-        if (room != null)
+        var roomLogic = mapper.Map<IRoomLogic>(newRoom);
+            
+        roomRepository.AddRoom(roomLogic);
+
+        await client.WriteToStreamAsync(new RoomCreatedWriter
         {
-            await client.WriteToStreamAsync(new RoomCreatedWriter(room.Id, room.Name));
-        }
+            Id = newRoom.Id,
+            Name = newRoom.Name
+        });
     }
 }

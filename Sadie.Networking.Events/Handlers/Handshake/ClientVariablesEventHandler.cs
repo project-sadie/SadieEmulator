@@ -1,11 +1,10 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
+[PacketId(EventHandlerId.ClientVariables)]
 public class ClientVariablesEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.ClientVariables;
-
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader) => Task.CompletedTask;
+    public Task HandleAsync(INetworkClient client) => Task.CompletedTask;
 }

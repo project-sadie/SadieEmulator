@@ -1,42 +1,41 @@
-using Sadie.Game.Catalog.FrontPage;
-using Sadie.Game.Catalog.Pages;
+using Sadie.Database.Models.Catalog.FrontPage;
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Catalog;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-public class CatalogPageEventHandler(CatalogPageEventParser eventParser, 
-    CatalogPageRepository catalogPageRepo,
-    CatalogFrontPageItemRepository frontPageItemRepo) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.CatalogPage)]
+public class CatalogPageEventHandler(
+    List<CatalogFrontPageItem> catalogFrontPageItems,
+    List<CatalogPage> catalogPages) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.CatalogPage;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int PageId { get; set; }
+    public int OfferId { get; set; }
+    public string? CatalogMode { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-        
-        var page = catalogPageRepo.TryGet(eventParser.PageId);
+        var page = catalogPages
+            .FirstOrDefault(x => x.Id == PageId);
 
         if (page is not { Enabled: true } || !page.Visible)
         {
             return;
         }
 
-        await client.WriteToStreamAsync(new CatalogPageWriter(
-            page.Id,
-            page.Layout, 
-            page.HeaderImage,
-            page.TeaserImage, 
-            page.SpecialImage, 
-            page.PrimaryText ?? string.Empty, 
-            page.SecondaryText ?? string.Empty, 
-            page.TeaserText ?? string.Empty,
-            page.DetailsText ?? string.Empty,
-            page.Items, 
-            eventParser.CatalogMode,
-            false,
-            frontPageItemRepo.Items));
+        await client.WriteToStreamAsync(new CatalogPageWriter
+        {
+            PageId = page.Id,
+            PageLayout = page.Layout,
+            Images = page.ImagesJson,
+            Texts = page.TextsJson,
+            Items = page.Items.ToList(),
+            CatalogMode = CatalogMode,
+            AcceptSeasonCurrencyAsCredits = false,
+            FrontPageItems = catalogFrontPageItems,
+            Unknown = -1
+        });
     }
 }

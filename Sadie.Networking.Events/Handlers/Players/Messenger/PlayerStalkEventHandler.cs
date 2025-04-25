@@ -1,45 +1,61 @@
-using Sadie.Game.Players;
+using Sadie.API.Game.Players;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Messenger;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
-using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
-public class PlayerStalkEventHandler(PlayerStalkEventParser eventParser, PlayerRepository playerRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.PlayerStalk)]
+public class PlayerStalkEventHandler(IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerStalk;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int PlayerId { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
+        var playerId = PlayerId;
 
-        var playerId = eventParser.PlayerId;
-
-        if (!client.Player.IsFriendsWith(eventParser.PlayerId))
+        if (!client.Player.IsFriendsWith(PlayerId))
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.NotFriends));
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter
+            {
+                StalkError = (int) PlayerStalkError.NotFriends
+            });
+            
             return;
         }
 
-        if (!playerRepository.TryGetPlayerById(playerId, out var targetPlayer))
+        var targetPlayer = playerRepository.GetPlayerLogicById(playerId);
+        
+        if (targetPlayer == null)
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetOffline));
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter
+            {
+                StalkError = (int) PlayerStalkError.TargetOffline
+            });
+            
             return;
         }
 
-        if (targetPlayer.CurrentRoomId == 0)
+        if (targetPlayer.State.CurrentRoomId == 0)
         {
-            await client.WriteToStreamAsync(new PlayerStalkErrorWriter(PlayerStalkError.TargetNotInRoom));
+            await client.WriteToStreamAsync(new PlayerStalkErrorWriter
+            {
+                StalkError = (int) PlayerStalkError.TargetNotInRoom
+            });
+            
             return;
         }
 
-        if (client.Player.CurrentRoomId == targetPlayer.CurrentRoomId)
+        if (client.Player.State.CurrentRoomId == targetPlayer.State.CurrentRoomId)
         {
             return;
         }
 
-        await client.WriteToStreamAsync(new RoomForwardEntryWriter(targetPlayer.CurrentRoomId));
+        await client.WriteToStreamAsync(new RoomForwardEntryWriter
+        {
+            RoomId = targetPlayer.State.CurrentRoomId
+        });
     }
 }

@@ -1,35 +1,30 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Drawing;
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserWalkEventHandler(RoomUserWalkEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.RoomUserWalk)]
+public class RoomUserWalkEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserWalk;
-
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int X { get; init; }
+    public int Y { get; init; }
+    
+    public Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
-        {
-            return Task.CompletedTask;
-        }
-        
-        roomUser.LastAction = DateTime.Now;
-        
-        var tile = room!.TileMap.Tiles.FirstOrDefault(z => z.Point.X == eventParser.X && z.Point.Y == eventParser.Y);
-        
-        if (tile == null)
+        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }
 
-        var point = tile.Point;
-
-        roomUser.WalkToPoint(point);
+        if (!roomUser.CanWalk)
+        {
+            return Task.CompletedTask;
+        }
+        
+        roomUser.WalkToPoint(new Point(X, Y));
+        
         return Task.CompletedTask;
     }
 }

@@ -1,39 +1,34 @@
-﻿using Sadie.Game.Rooms;
+﻿using System.Drawing;
+using Sadie.API.Game.Rooms;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
-using Sadie.Networking.Packets;
-using Sadie.Shared.Unsorted.Game.Rooms;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserLookAtEventHandler(RoomUserLookAtEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.RoomUserLookAt)]
+public class RoomUserLookAtEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserLookAt;
-
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int X { get; init; }
+    public int Y { get; init; }
+    
+    public Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }
-
-        if (roomUser.IsWalking)
-        {
-            return Task.CompletedTask;
-        }
-
+        
         var currentPoint = roomUser.Point;
-        var x = eventParser.X;
-        var y = eventParser.Y;
-
-        if (currentPoint.X == x && currentPoint.Y == y)
+        
+        if (roomUser.StatusMap.ContainsKey(RoomUserStatus.Lay) || 
+            roomUser.IsWalking ||
+            currentPoint.X == X && currentPoint.Y == Y)
         {
             return Task.CompletedTask;
         }
 
-        roomUser.LookAtPoint(new HPoint(x, y, currentPoint.Z));
+        roomUser.LookAtPoint(new Point(X, Y));
         return Task.CompletedTask;
     }
 }

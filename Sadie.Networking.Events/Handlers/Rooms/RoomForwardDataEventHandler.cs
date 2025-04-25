@@ -1,21 +1,30 @@
-using Sadie.Game.Rooms;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
+using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms;
-using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
-public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.RoomForwardData)]
+public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomForwardData;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int RoomId { get; init; }
+    public int EnterRoom { get; init; }
+    public int ForwardRoom { get; init; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
+        var room = await RoomHelpers.TryLoadRoomByIdAsync(
+            RoomId, 
+            roomRepository, 
+            dbContextFactory, 
+            mapper);
         
-        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
-
         if (room == null)
         {
             return;
@@ -25,10 +34,15 @@ public class RoomForwardDataEventHandler(RoomForwardDataEventParser eventParser,
         {
             return;
         }
-        
-        var unknown3 = eventParser is not { Unknown1: 0, Unknown2: 1 };
+
         var isOwner = room.OwnerId == client.Player.Id;
         
-        await client.WriteToStreamAsync(new RoomForwardDataWriter(room!, true, unknown3, isOwner));
+        await client.WriteToStreamAsync(new  RoomForwardDataWriter
+        {
+            Room = room,
+            RoomForward = true,
+            EnterRoom = EnterRoom != 0 || ForwardRoom != 1,
+            IsOwner = isOwner
+        });
     }
 }

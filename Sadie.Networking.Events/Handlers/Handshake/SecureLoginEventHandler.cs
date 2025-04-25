@@ -1,90 +1,152 @@
+using System.Diagnostics;
+using AutoMapper;
 using DotNetty.Transport.Channels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Sadie.Database.Models;
+using Microsoft.Extensions.Options;
+using Sadie.API.Game.Players;
+using Sadie.Database;
 using Sadie.Database.Models.Constants;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Effects;
-using Sadie.Game.Players.Packets;
+using Sadie.Database.Models.Server;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Handshake;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
-using Sadie.Networking.Writers.Moderation;
-using Sadie.Networking.Writers.Players;
-using Sadie.Networking.Writers.Players.Clothing;
-using Sadie.Networking.Writers.Players.Effects;
-using Sadie.Networking.Writers.Players.Navigator;
-using Sadie.Networking.Writers.Players.Other;
-using Sadie.Networking.Writers.Players.Permission;
-using Sadie.Networking.Writers.Players.Rooms;
+using Sadie.Options.Options;
 using Sadie.Shared;
-using Sadie.Shared.Unsorted;
-using Sadie.Shared.Unsorted.Networking;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
+[PacketId(EventHandlerId.SecureLogin)]
 public class SecureLoginEventHandler(
-    SecureLoginEventParser eventParser,
     ILogger<SecureLoginEventHandler> logger,
-    PlayerRepository playerRepository,
+    IOptions<EncryptionOptions> encryptionOptions,
+    IPlayerRepository playerRepository,
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
-    ServerSettings serverSettings)
+    ServerSettings serverSettings,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IMapper mapper,
+    IPlayerLoaderService playerLoaderService,
+    IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.SecureLogin;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public string? Token { get; set; }
+    public int DelayMs { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
+        var sw = Stopwatch.StartNew();
 
-        if (!ValidateSso(eventParser.Token)) 
+        if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
             logger.LogWarning("Rejected an insecure sso token");
-            await DisconnectAsync(client.Channel.Id);
-            return;
-        }
-
-        var token = await playerRepository.TryGetSsoTokenAsync(eventParser.Token, eventParser.Delay);
-
-        if (token == null)
-        {
-            logger.LogWarning("Failed to find token record for provided sso.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
         
-        var player = await playerRepository.TryGetPlayerInstanceByIdAsync(client, token.PlayerId);
+        if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
+        {
+            logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+
+        var tokenRecord = await playerLoaderService.GetTokenAsync(Token, DelayMs);
+        
+        if (tokenRecord == null)
+        {
+            logger.LogWarning("Failed to find token record for provided sso.");
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+        
+        var player = await playerRepository.GetPlayerByIdAsync(tokenRecord.PlayerId);
 
         if (player == null)
         {
             logger.LogError("Failed to resolve player record.");
-            await DisconnectAsync(client.Channel.Id);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
+        
+        if (player.Bans.Any(x => x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now))
+        {
+            logger.LogWarning("Disconnected banned player {@PlayerUsername}", player.Username);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+
+        var ipAddress = client
+            .Channel
+            .RemoteAddress
+            .ToString()?
+            .Split(":")
+            .First() ?? "";
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
+        {
+            logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
+            await DisconnectNetworkClientAsync(client.Channel.Id);
+            return;
+        }
+        
+        var playerLogic = mapper.Map<IPlayerLogic>(player);
+
+        playerLogic.NetworkObject = client;
+        playerLogic.Channel = client.Channel;
 
         var playerId = player.Id;
-            
-        client.Player = player;
-        
-        if (!playerRepository.TryAddPlayer(player))
+        var existingPlayer = playerRepository.GetPlayerLogicById(playerId);
+
+        client.Player = playerLogic;
+
+        if (existingPlayer is { Channel: not null })
         {
-            logger.LogError($"Player {playerId} could not be registered");
-            await DisconnectAsync(client.Channel.Id);
+            await playerRepository.TryRemovePlayerAsync(existingPlayer.Id);
+            await networkClientRepository.TryRemoveAsync(existingPlayer.Channel.Id);
+
+            var roomUser = client.RoomUser;
+            
+            if (roomUser != null)
+            {
+                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Id);
+            }
+        }
+
+        if (!playerRepository.TryAddPlayer(playerLogic))
+        {
+            logger.LogError($"Player {playerLogic.Username} could not be registered");
+            await DisconnectNetworkClientAsync(client.Channel.Id);
             return;
         }
-            
-        logger.LogInformation($"Player '{player.Username}' has logged in");
-        await playerRepository.UpdateOnlineStatusAsync(playerId, true);
+        
+        await client.WriteToStreamAsync(new SecureLoginWriter());
+        
+        playerLogic.Data.IsOnline = true;
+        playerLogic.Data.LastOnline = DateTime.Now;
+        
+        playerLogic.Authenticated = true;
 
-        player.Data.LastOnline = DateTime.Now;
-        player.Authenticated = true;
-
-        await SendExtraPacketsAsync(client, player);
-        await SendWelcomeMessageAsync(player);
+        await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
+        await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
+        
+        await playerHelperService.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+        
+        await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+            playerLogic, 
+            player.GetMergedFriendships(), 
+            true, 
+            false, 
+            playerRepository);
+        
+        await SendWelcomeMessageAsync(playerLogic);
+        
+        logger.LogInformation($"Player '{playerLogic.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 
-    private async Task SendWelcomeMessageAsync(PlayerLogic player)
+    private async Task SendWelcomeMessageAsync(IPlayerLogic player)
     {
         if (string.IsNullOrEmpty(serverSettings.PlayerWelcomeMessage))
         {
@@ -94,93 +156,13 @@ public class SecureLoginEventHandler(
         var formattedMessage = serverSettings.PlayerWelcomeMessage
             .Replace("[username]", player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
-        
-        await player.NetworkObject.WriteToStreamAsync(new PlayerAlertWriter(formattedMessage));
+
+        await player.SendAlertAsync(formattedMessage);
     }
 
-    private async Task SendExtraPacketsAsync(INetworkObject networkObject, PlayerLogic player)
-    {
-        var playerData = player.Data;
-        var playerSubscriptions = player.Subscriptions;
-        
-        await networkObject.WriteToStreamAsync(new SecureLoginWriter());
-        await networkObject.WriteToStreamAsync(new NoobnessLevelWriter(1));
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter(playerData.HomeRoomId, playerData.HomeRoomId));
-        await networkObject.WriteToStreamAsync(new PlayerEffectListWriter(new List<PlayerEffect>()));
-        await networkObject.WriteToStreamAsync(new PlayerClothingListWriter());
-        
-        await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter(
-            playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
-            2,
-            true));
-        
-        await networkObject.WriteToStreamAsync(new PlayerStatusWriter(true, false, true));
-        await networkObject.WriteToStreamAsync(new PlayerNavigatorSettingsWriter(player.NavigatorSettings));
-        await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter(player.GameSettings.ShowNotifications));
-        await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter(playerData.AchievementScore));
+    private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;
 
-        foreach (var playerSub in playerSubscriptions)
-        {
-            var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
-            var daysLeft = (int) tillExpire.TotalDays;
-            var minutesLeft = (int) tillExpire.TotalMinutes;
-            var minutesSinceMod = (int)(DateTime.Now - player.State.LastSubscriptionModification).TotalMinutes;
-            
-            await networkObject.WriteToStreamAsync(new PlayerSubscriptionWriter(
-                playerSub.Subscription.Name,
-                daysLeft,
-                0, 
-                0, 
-                1, 
-                true, 
-                true, 
-                0, 
-                0, 
-                minutesLeft,
-                minutesSinceMod));
-            
-            player.State.LastSubscriptionModification = DateTime.Now;
-        }
-
-        if (player.HasPermission("moderation_tools"))
-        {
-            await networkObject.WriteToStreamAsync(new ModerationToolsWriter());
-        }
-
-        var allFriends = player.GetMergedFriendships();
-        
-        await playerRepository.UpdateMessengerStatusForFriends(player.Id,
-            allFriends, true, player.CurrentRoomId != 0);
-
-        foreach (var friend in allFriends)
-        {
-            var isOnline = playerRepository.TryGetPlayerById(friend.TargetPlayerId, out var friendPlayer) && friendPlayer != null;
-            var isInRoom = isOnline && friendPlayer!.CurrentRoomId != 0;
-                    
-            var relationship = isOnline
-                ? friendPlayer!
-                    .Relationships
-                    .FirstOrDefault(x => x.TargetPlayerId == friend.OriginPlayerId || x.TargetPlayerId == friend.TargetPlayerId) : null;
-
-            await networkObject.WriteToStreamAsync(new PlayerUpdateFriendWriter(0, 
-                1, 
-                0,
-                friend, 
-                isOnline, 
-                isInRoom, 
-                0, 
-                "", 
-                "", 
-                false, 
-                false, 
-                false,
-                relationship?.TypeId ?? PlayerRelationshipType.None));   
-        }
-    }
-
-    private bool ValidateSso(string sso) => !string.IsNullOrEmpty(sso) && sso.Length >= constants.MinSsoLength;
-
-    private async Task DisconnectAsync(IChannelId channelId)
+    private async Task DisconnectNetworkClientAsync(IChannelId channelId)
     {
         if (!await networkClientRepository.TryRemoveAsync(channelId))
         {

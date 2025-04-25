@@ -1,43 +1,30 @@
-﻿using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Club;
-using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players.Other;
+﻿using Sadie.API.Game.Players;
+using Sadie.Networking.Client;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Players.Subscriptions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
-public class PlayerSubscriptionEventHandler(PlayerSubscriptionEventParser eventParser) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.PlayerSubscription)]
+public class PlayerSubscriptionEventHandler(IPlayerHelperService playerHelperService) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerSubscription;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public string? Name { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
+        if (string.IsNullOrEmpty(Name) || client.Player == null)
+        {
+            return;
+        }
 
-        var playerSub = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == eventParser.Name);
-        
-        if (playerSub == null)
+        var writer = playerHelperService.GetSubscriptionWriterAsync(client.Player, Name);
+
+        if (writer == null)
         {
             return;
         }
         
-        var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
-        var daysLeft = (int) tillExpire.TotalDays;
-        var minutesLeft = (int) tillExpire.TotalMinutes;
-        var lastMod = client.Player.State.LastSubscriptionModification;
-            
-        await client.WriteToStreamAsync(new PlayerSubscriptionWriter(
-            playerSub.Subscription.Name,
-            daysLeft,
-            1, 
-            2, 
-            0, 
-            true, 
-            true, 
-            0, 
-            0, 
-            minutesLeft,
-            (int)(DateTime.Now - lastMod).TotalMinutes));
-
+        await client.WriteToStreamAsync((PlayerSubscriptionWriter) writer);
         client.Player.State.LastSubscriptionModification = DateTime.Now;
     }
 }

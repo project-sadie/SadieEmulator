@@ -2,18 +2,26 @@
 using Sadie.Database;
 using Sadie.Database.Models.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-public class RoomCategoriesEventHandler(SadieContext dbContext) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.RoomCategories)]
+public class RoomCategoriesEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomCategories;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        var categories = await dbContext.Set<RoomCategory>().ToListAsync();
-        await client.WriteToStreamAsync(new RoomCategoriesWriter(categories));
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        var categories = await dbContext
+            .Set<RoomCategory>()
+            .ToListAsync();
+        
+        await client.WriteToStreamAsync(new RoomCategoriesWriter
+        {
+            Categories = categories
+        });
     }
 }

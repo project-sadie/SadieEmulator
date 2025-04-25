@@ -1,28 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Messenger;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
-using Sadie.Shared;
+using Sadie.Shared.Constants;
 using Sadie.Shared.Extensions;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
+[PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
-    PlayerSendDirectMessageEventParser eventParser,
-    PlayerRepository playerRepository,
-    SadieContext dbContext)
+    IPlayerRepository playerRepository,
+    IDbContextFactory<SadieContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerSendDirectMessage;
+    public int PlayerId { get; set; }
+    public required string Message { get; set; }
 
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         if ((DateTime.Now - client.Player.State.LastDirectMessage).TotalMilliseconds < CooldownIntervals.PlayerDirectMessage)
         {
             return;
@@ -30,26 +29,30 @@ public class PlayerSendDirectMessageEventHandler(
         
         client.Player.State.LastDirectMessage = DateTime.Now;
 
-        var playerId = eventParser.PlayerId;
-        var message = eventParser.Message;
+        var playerId = PlayerId;
+        var message = Message;
 
         if (string.IsNullOrEmpty(message))
         {
             return;
         }
 
-        if (message.Length > 500)
-        {
-            message = message.Truncate(500);
-        }
+        message = message.Truncate(500);
 
-        if (!client.Player.IsFriendsWith(eventParser.PlayerId))
+        if (!client.Player.IsFriendsWith(PlayerId))
         {
-            await client.WriteToStreamAsync(new PlayerMessageErrorWriter(PlayerMessageError.NotFriends, playerId));
+            await client.WriteToStreamAsync(new PlayerMessageErrorWriter
+            {
+                Error = (int) PlayerMessageError.NotFriends,
+                TargetId = playerId
+            });
+            
             return;
         }
 
-        if (!playerRepository.TryGetPlayerById(playerId, out var targetPlayer) || targetPlayer == null)
+        var targetPlayer = playerRepository.GetPlayerLogicById(playerId);
+        
+        if (targetPlayer == null)
         {
             return;
         }
@@ -58,14 +61,17 @@ public class PlayerSendDirectMessageEventHandler(
         {
             OriginPlayerId = client.Player.Id,
             TargetPlayerId = targetPlayer.Id,
-            Message = message
+            Message = message,
+            CreatedAt = DateTime.Now
         };
 
-        client.Player.MessagesSent.Add(playerMessage);
-        targetPlayer.MessagesReceived.Add(playerMessage);
-
+        await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter
+        {
+            Message = playerMessage
+        });
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.PlayerMessages.Add(playerMessage);
         await dbContext.SaveChangesAsync();
-
-        await targetPlayer.NetworkObject.WriteToStreamAsync(new PlayerDirectMessageWriter(playerMessage));
     }
 }

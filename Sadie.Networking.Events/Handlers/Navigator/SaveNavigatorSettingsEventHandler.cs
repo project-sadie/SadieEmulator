@@ -1,32 +1,41 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Navigator;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
-public class SaveNavigatorSettingsEventHandler(SaveNavigatorSettingsEventParser eventParser) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.SaveNavigatorSettings)]
+public class SaveNavigatorSettingsEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.SaveNavigatorSettings;
+    public int WindowX { get; set; }
+    public int WindowY { get; set; }
+    public int WindowWidth { get; set; }
+    public int WindowHeight { get; set; }
+    public bool OpenSearches { get; set; }
+    public int Mode { get; set; }
 
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
 
-        if (player == null)
+        if (player?.NavigatorSettings == null)
         {
-            return Task.CompletedTask;
+            return;
         }
         
         var navigatorSettings = player.NavigatorSettings;
 
-        navigatorSettings.WindowX = eventParser.WindowX;
-        navigatorSettings.WindowY = eventParser.WindowY;
-        navigatorSettings.WindowWidth = eventParser.WindowWidth;
-        navigatorSettings.WindowHeight = eventParser.WindowHeight;
-        navigatorSettings.OpenSearches = eventParser.OpenSearches;
+        navigatorSettings.WindowX = WindowX;
+        navigatorSettings.WindowY = WindowY;
+        navigatorSettings.WindowWidth = WindowWidth;
+        navigatorSettings.WindowHeight = WindowHeight;
+        navigatorSettings.OpenSearches = OpenSearches;
+        navigatorSettings.ResultsMode = 0;
 
-        return Task.CompletedTask;
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.PlayerNavigatorSettings.Update(player.NavigatorSettings);
+        await dbContext.SaveChangesAsync();
     }
 }

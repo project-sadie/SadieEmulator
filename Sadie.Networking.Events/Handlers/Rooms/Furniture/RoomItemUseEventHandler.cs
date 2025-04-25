@@ -1,48 +1,47 @@
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Furniture;
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms.Furniture;
+using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Furniture;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Events.Attributes;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
+[PacketId(EventHandlerId.RoomItemUse)]
 public class RoomItemUseEventHandler(
-    RoomFurnitureItemUseEventParser eventParser,
-    RoomRepository roomRepository,
-    RoomFurnitureItemInteractorRepository interactorRepository) : INetworkPacketEventHandler
+    IRoomFurnitureItemInteractorRepository interactorRepository,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomFurnitureItemUse;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int ItemId { get; init; }
+    
+    [RequiresRoomRights]
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
+        var room = client.RoomUser!.Room;
 
-        if (client.Player == null || client.RoomUser == null)
-        {
-            return;
-        }
-        
-        var room = roomRepository.TryGetRoomById(client.Player.CurrentRoomId);
-
-        if (room == null)
-        {
-            return;
-        }
-        
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.Id == eventParser.ItemId);
+        var roomFurnitureItem = room
+                .FurnitureItems
+                .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomFurnitureItem == null)
         {
             return;
         }
+        
+        var interactors = interactorRepository
+            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
 
-        var interactor = interactorRepository.GetInteractorForType(roomFurnitureItem.FurnitureItem.InteractionType);
-
-        if (interactor == null)
+        if (!interactors.Any())
         {
-            return;
+            await roomFurnitureItemHelperService.CycleInteractionStateForItemAsync(room, roomFurnitureItem, dbContextFactory);
         }
-
-        await interactor.OnClickAsync(room, roomFurnitureItem, client.RoomUser);
+        else
+        {
+            foreach (var interactor in interactors)
+            {
+                await interactor.OnTriggerAsync(room, roomFurnitureItem, client.RoomUser);
+            }
+        }
     }
 }

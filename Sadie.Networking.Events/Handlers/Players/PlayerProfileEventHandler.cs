@@ -1,60 +1,37 @@
-using AutoMapper;
-using Sadie.Database.Models.Players;
-using Sadie.Game.Players;
+using Sadie.API.Game.Players;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Unsorted;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
-public class PlayerProfileEventHandler(
-    PlayerProfileEventParser eventParser,
-    PlayerRepository playerRepository,
-    IMapper mapper)
+[PacketId(EventHandlerId.PlayerProfile)]
+public class PlayerProfileEventHandler(IPlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerProfile;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int ProfileId { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
-        var player = client.Player;
-        var playerId = player.Id;
-
-        var profileId = eventParser.ProfileId;
-
-        Player playerRecord = null;
-        var profileOnline = false;
+        var profilePlayer = await playerRepository.GetPlayerByIdAsync(ProfileId);
         
-        if (profileId == playerId)
-        {
-            playerRecord = client.Player;
-            profileOnline = true;
-        }
-        
-        if (playerRecord == null && playerRepository.TryGetPlayerById(profileId, out var onlinePlayer))
-        {
-            playerRecord = mapper.Map<Player>(onlinePlayer);
-            profileOnline = true;
-        }
-
-        if (playerRecord == null)
+        if (profilePlayer == null)
         {
             return;
         }
+        
+        var friendCount = profilePlayer.GetAcceptedFriendshipCount();
+        var friendship = client.Player.TryGetFriendshipFor(ProfileId);
 
-        var friendCount = playerRecord.GetAcceptedFriendshipCount();
-        var friendship = playerRecord.TryGetFriendshipFor(profileId);
-
-        var profileWriter = new PlayerProfileWriter(
-            playerRecord, 
-            profileOnline, 
-            friendCount, 
-            friendship is { Status: PlayerFriendshipStatus.Accepted }, 
-            friendship != null);
+        var profileWriter = new PlayerProfileWriter
+        {
+            Player = profilePlayer,
+            Online = profilePlayer.Data.IsOnline,
+            FriendshipCount = friendCount,
+            FriendshipExists = friendship is { Status: PlayerFriendshipStatus.Accepted },
+            FriendshipRequestExists = friendship is { Status: PlayerFriendshipStatus.Pending }
+        };
         
         await client.WriteToStreamAsync(profileWriter);
     }

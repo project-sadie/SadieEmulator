@@ -2,5 +2,5 @@
 
 public interface INetworkPacket : INetworkPacketReader
 {
-    int PacketId { get; }
+    short PacketId { get; }
 }

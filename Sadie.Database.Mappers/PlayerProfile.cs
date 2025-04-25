@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Sadie.API.Game.Players;
 using Sadie.Database.Models.Players;
 using Sadie.Game.Players;
 
@@ -10,12 +11,18 @@ public class PlayerProfile : Profile
 {
     public PlayerProfile(IServiceProvider provider)
     {
-        CreateMap<Player, PlayerLogic>()
+        CreateMap<Player, IPlayerLogic>()
             .ConstructUsing(x => new PlayerLogic(
                 provider.GetRequiredService<ILogger<PlayerLogic>>(),
                 x.Id,
                 x.Username,
-                x.Data))
-            .ForMember(x => x.NetworkObject, option => option.Ignore());
+                x.Data)
+            {
+                Username = x.Username,
+                Email = x.Email,
+                Data = x.Data
+            })
+            .ForMember(x => x.NetworkObject, option => option.Ignore())
+            .ForMember(x => x.Channel, option => option.Ignore());
     }
 }

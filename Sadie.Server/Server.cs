@@ -1,110 +1,83 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Sadie.Database;
-using Sadie.Game.Catalog.Club;
-using Sadie.Game.Catalog.FrontPage;
-using Sadie.Game.Catalog.Pages;
-using Sadie.Game.Furniture;
-using Sadie.Game.Navigator.Tabs;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
-using Sadie.Networking;
-using Sadie.Shared;
-using SadieEmulator.Tasks;
 using System.Diagnostics;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Sadie.API;
+using Sadie.Database;
+using Sadie.Networking;
+using Sadie.Networking.Client;
+using Sadie.Options.Options;
+using SadieEmulator.Tasks;
+using Serilog;
 
 namespace SadieEmulator;
 
-public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : IServer
+public class Server(ILogger<Server> logger,
+    IServerTaskWorker taskWorker,
+    INetworkListener networkListener,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IOptions<PlayerOptions> playerOptions,
+    INetworkClientRepository networkClientRepository,
+    IConfiguration config) : IServer
 {
     private readonly CancellationTokenSource _tokenSource = new();
     
     public async Task RunAsync()
     {
         var stopwatch = Stopwatch.StartNew();
-
-        WriteHeaderToConsole();
-
+        
+        Log.Logger.Information("Booting up...");
         await CleanUpDataAsync();
-        await LoadInitialDataAsync();
+        LoadPlugins();
 
-        serviceProvider.GetRequiredService<IServerTaskWorker>().WorkAsync(_tokenSource.Token);
+        if (playerOptions.Value.CanReuseSsoTokens)
+        {
+            Log.Logger.Warning($"Reusable SSO tokens activated, this results in reduced security.");
+        }
+        
+        taskWorker.WorkAsync(_tokenSource.Token);
 
         stopwatch.Stop();
 
         logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
-
+        
         await StartListeningForConnectionsAsync();
+    }
+
+    private void LoadPlugins()
+    {
+        var pluginFolder = config.GetValue<string>("PluginDirectory");
+
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console().CreateLogger();
+
+        if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
+        {
+            return;
+        }
+        
+        foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
+        {
+            Assembly.LoadFile(plugin);
+            Log.Logger.Warning($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)}");
+        }
     }
 
     private async Task StartListeningForConnectionsAsync()
     {
-        var networkListener = serviceProvider.GetRequiredService<INetworkListener>();
         networkListener.Bootstrap();
         await networkListener.ListenAsync();
     }
 
     private async Task CleanUpDataAsync()
     {
-        var context = serviceProvider.GetRequiredService<SadieContext>();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
 
         await context
             .PlayerData
             .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false));
-    }
-
-    private async Task LoadInitialDataAsync()
-    {
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<NavigatorTabRepository>().LoadInitialDataAsync,
-            "navigator tabs");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<FurnitureItemRepository>().LoadInitialDataAsync,
-            "furniture items");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<CatalogPageRepository>().LoadInitialDataAsync,
-            "catalog pages");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<CatalogFrontPageItemRepository>().LoadInitialDataAsync,
-            "catalog front page items");
-
-        await LoadInitialDataAsync(
-            serviceProvider.GetRequiredService<CatalogClubOfferRepository>().LoadInitialDataAsync,
-            "player club offers");
-
-    }
-
-    private async Task LoadInitialDataAsync(Func<Task> action, string name)
-    {
-        logger.LogTrace($"Loading {name}...");
-        await action.Invoke();
-    }
-
-    private void WriteHeaderToConsole()
-    {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-
-        Console.WriteLine(@"");
-        Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
-        Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
-        Console.WriteLine(@"  $$ /  \__| $$$$$$\   $$$$$$$ |$$\  $$$$$$\  ");
-        Console.WriteLine(@"  \$$$$$$\   \____$$\ $$  __$$ |$$ |$$  __$$\ ");
-        Console.WriteLine(@"   \____$$\  $$$$$$$ |$$ /  $$ |$$ |$$$$$$$$ |");
-        Console.WriteLine(@"  $$\   $$ |$$  __$$ |$$ |  $$ |$$ |$$   ____|");
-        Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
-        Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
-        Console.WriteLine(@"");
-
-        Console.ForegroundColor = ConsoleColor.White;
-
-        Console.WriteLine($"         You are running version {GlobalState.Version}");
-        Console.WriteLine(@"");
-
-        logger.LogTrace("Booting up...");
     }
 
     public async ValueTask DisposeAsync()
@@ -113,13 +86,6 @@ public class Server(ILogger<Server> logger, IServiceProvider serviceProvider) : 
         
         logger.LogWarning("Server is about to shut down...");
 
-        var roomRepository = serviceProvider.GetRequiredService<RoomRepository>();
-        var playerRepository = serviceProvider.GetRequiredService<PlayerRepository>();
-
-        logger.LogInformation("Disposing rooms...");
-        await roomRepository.DisposeAsync();
-
-        logger.LogInformation("Disposing players...");
-        await playerRepository.DisposeAsync();
+        await networkClientRepository.DisposeAsync();
     }
 }

@@ -1,28 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Users;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
+[PacketId(EventHandlerId.RoomUserRespect)]
 public class RoomUserRespectEventHandler(
-    RoomUserRespectEventParser eventParser,
-    PlayerRepository playerRepository,
-    RoomRepository roomRepository,
-    SadieContext dbContext)
+    IPlayerRepository playerRepository,
+    IRoomRepository roomRepository,
+    IDbContextFactory<SadieContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserRespect;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int TargetId { get; init; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
@@ -30,17 +28,16 @@ public class RoomUserRespectEventHandler(
         
         var player = client.Player!;
         var playerData = player.Data;
-        var lastRoom = player.CurrentRoomId;
+        var lastRoom = player.State.CurrentRoomId;
+        var targetPlayer = playerRepository.GetPlayerLogicById(TargetId);
         
         if (playerData.RespectPoints < 1 || 
-            player.Id == eventParser.TargetId || 
-            !playerRepository.TryGetPlayerById(eventParser.TargetId, out var targetPlayer) || 
-            targetPlayer!.CurrentRoomId != 0 && lastRoom != targetPlayer.CurrentRoomId)
+            player.Id == TargetId || 
+            targetPlayer == null || 
+            targetPlayer.State.CurrentRoomId != 0 && lastRoom != targetPlayer.State.CurrentRoomId)
         {
             return;
         }
-
-        var targetData = targetPlayer.Data;
 
         var respect = new PlayerRespect
         {
@@ -51,9 +48,20 @@ public class RoomUserRespectEventHandler(
         playerData.RespectPoints--;
         targetPlayer.Respects.Add(respect);
 
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.Entry(playerData).Property(x => x.RespectPoints).IsModified = true;
         await dbContext.SaveChangesAsync();
 
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter(eventParser.TargetId, targetPlayer.Respects.Count));
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserActionWriter(roomUser!.Id, (int) RoomUserAction.ThumbsUp));
+        await room.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter
+        {
+            UserId = TargetId,
+            TotalRespects = targetPlayer.Respects.Count
+        });
+        
+        await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
+        {
+            UserId = roomUser.Player.Id,
+            Action = (int) RoomUserAction.ThumbsUp
+        });
     }
 }

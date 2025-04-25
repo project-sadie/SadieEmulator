@@ -1,26 +1,26 @@
-using Sadie.Game.Rooms;
+using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
+[PacketId(EventHandlerId.RoomSettings)]
 public class RequestRoomSettingsEventHandler(
-    RequestRoomSettingsEventParser eventParser, 
-    RoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomSettings;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int RoomId { get; init; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-        
-        var room = roomRepository.TryGetRoomById(eventParser.RoomId);
+        var room = roomRepository.TryGetRoomById(RoomId);
         
         if (room != null)
         {
-            await client.WriteToStreamAsync(new RoomSettingsWriter(room));
+            await client.WriteToStreamAsync(new RoomSettingsWriter
+            {
+                Room = room
+            });
         }
     }
 }

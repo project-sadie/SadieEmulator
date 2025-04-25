@@ -1,17 +1,27 @@
-{
-    "rules": {
-        "class.maxNameLength": 50,
-        "class.maxLineCount": 300,
-        "class.maxLineLength": 150,
-        "method.maxLineCount": 95,
-        "check.multipleEmptyLines": true
-    },
-
-    "ignoredClassNames": [
-        "NetworkPacketEventHelpers",
-        "RoomFloorItemUpdatedEventHandler"
-    ],
-
-    "rules.override": {
-    }
-}
+{                                                                                                                                                                                                                                                                                                              
+    "rules": {                                                                                                                                                                                                                                                                                                 
+        "class.maxNameLength": 45,                                                                                                                                                                                                                                                                             
+        "class.maxLineCount": 450,                                                                                                                                                                                                                                                                             
+        "class.maxLineLength": 140,                                                                                                                                                                                                                                                                            
+        "method.maxLineCount": 100,                                                                                                                                                                                                                                                                            
+        "check.multipleEmptyLines": true                                                                                                                                                                                                                                                                       
+    },                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                               
+    "ignoredClassNames": [                                                                                                                                                                                                                                                                                     
+        "RoomHelpersDirty",                                                                                                                                                                                                                                                                                    
+        "RoomTileMapHelperTests"                                                                                                                                                                                                                                                                               
+    ],                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                               
+    "rules.override": {                                                                                                                                                                                                                                                                                        
+        "CatalogPurchaseEventHandler": {                                                                                                                                                                                                                                                                       
+            "method.maxLineCount": 150                                                                                                                                                                                                                                                                    
+        },                                                                                                                                                                                                                                                                    
+        "RoomFloorItemUpdatedEventHandler": {                                                                                                                                                                                                                                                                       
+            "method.maxLineCount": 150                                                                                                                                                                                                                                                                    
+        },
+        "SadieContext": {                                                                                                                                                                                                                                                         
+            "method.maxLineCount": 150           
+        }                                                                                                                                                                                                                                                                    
+    }                                                                                                                                                                                                                                                                                                          
+}                                                                                                                                                                                                                                                                                                              
+                                                   

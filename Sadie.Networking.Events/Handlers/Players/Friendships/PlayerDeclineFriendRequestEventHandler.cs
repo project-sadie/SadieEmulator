@@ -1,30 +1,30 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Players;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Friendships;
-using Sadie.Networking.Packets;
-using Sadie.Shared.Unsorted;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
+[PacketId(EventHandlerId.PlayerDeclineFriendRequest)]
 public class PlayerDeclineFriendRequestEventHandler(
-    PlayerDeclineFriendRequestEventParser eventParser,
-    PlayerRepository playerRepository,
-    SadieContext dbContext)
+    IPlayerRepository playerRepository,
+    IDbContextFactory<SadieContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerDeclineFriendRequest;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public bool DeclineAll { get; set; }
+    public required List<int> Ids { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         var player = client.Player;
         var playerId = player.Id;
 
-        if (eventParser.DeclineAll)
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        if (DeclineAll)
         {
             player.IncomingFriendships.Clear();
             
@@ -34,7 +34,7 @@ public class PlayerDeclineFriendRequestEventHandler(
         }
         else
         {
-            foreach (var originId in eventParser.Ids) 
+            foreach (var originId in Ids) 
             {
                 var targetId = playerId;
                 
@@ -42,16 +42,12 @@ public class PlayerDeclineFriendRequestEventHandler(
                     .Where(x => x.OriginPlayerId == originId && x.TargetPlayerId == targetId)
                     .ExecuteDeleteAsync();
 
-                if (!playerRepository.TryGetPlayerById(originId, out var origin) || origin == null)
-                {
-                    continue;
-                }
-                
-                var request = origin.OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
+                var origin = await playerRepository.GetPlayerByIdAsync(originId);
+                var request = origin?.OutgoingFriendships.FirstOrDefault(x => x.TargetPlayerId == targetId);
 
                 if (request != null)
                 {
-                    origin.OutgoingFriendships.Remove(request);
+                    origin?.OutgoingFriendships.Remove(request);
                 }
             }
         }

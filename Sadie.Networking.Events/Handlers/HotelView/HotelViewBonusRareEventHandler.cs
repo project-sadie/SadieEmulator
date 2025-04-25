@@ -1,19 +1,20 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.HotelView;
 
 namespace Sadie.Networking.Events.Handlers.HotelView;
 
+[PacketId(EventHandlerId.HotelViewBonusRare)]
 public class HotelViewBonusRareEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.HotelViewBonusRare;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        await client.WriteToStreamAsync(new HotelViewBonusRareWriter(
-            "", 
-            -1, 
-            -1, 
-            -1));
+        await client.WriteToStreamAsync(new HotelViewBonusRareWriter
+        {
+            Name = "",
+            Id = -1,
+            Coins = -1,
+            CoinsRequiredToBuy = -1
+        });
     }
 }

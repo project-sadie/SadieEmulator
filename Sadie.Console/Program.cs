@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sadie.API;
 using Sadie.Shared;
 using SadieEmulator;
 using Serilog;
@@ -22,12 +23,35 @@ internal static class Program
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning))
             .Build();
         
+        WriteHeaderToConsole();
+        
         _server = host.Services.GetRequiredService<IServer>();
         await _server.RunAsync();
 
         System.Console.ReadKey(true);
     }
+    
+    private static void WriteHeaderToConsole()
+    {
+        System.Console.ForegroundColor = ConsoleColor.Magenta;
 
+        System.Console.WriteLine(@"");
+        System.Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
+        System.Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
+        System.Console.WriteLine(@"  $$ /  \__| $$$$$$\   $$$$$$$ |$$\  $$$$$$\  ");
+        System.Console.WriteLine(@"  \$$$$$$\   \____$$\ $$  __$$ |$$ |$$  __$$\ ");
+        System.Console.WriteLine(@"   \____$$\  $$$$$$$ |$$ /  $$ |$$ |$$$$$$$$ |");
+        System.Console.WriteLine(@"  $$\   $$ |$$  __$$ |$$ |  $$ |$$ |$$   ____|");
+        System.Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
+        System.Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
+        System.Console.WriteLine(@"");
+
+        System.Console.ForegroundColor = ConsoleColor.White;
+
+        System.Console.WriteLine($"         You are running version {GlobalState.Version}");
+        System.Console.WriteLine("");
+    }
+    
     private static void SetEventHandlers()
     {
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;

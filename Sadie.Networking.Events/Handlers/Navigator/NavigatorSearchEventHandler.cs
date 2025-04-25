@@ -1,104 +1,76 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Navigator;
+using Sadie.API.Game.Rooms;
+using Sadie.Database;
 using Sadie.Database.Models.Navigator;
-using Sadie.Game.Navigator;
-using Sadie.Game.Navigator.Tabs;
-using Sadie.Game.Rooms;
+using Sadie.Database.Models.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Navigator;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
+[PacketId(EventHandlerId.NavigatorSearch)]
 public class NavigatorSearchEventHandler(
-    NavigatorSearchEventParser eventParser,
-    NavigatorTabRepository navigatorTabRepository,
-    NavigatorRoomProvider navigatorRoomProvider)
+    IDbContextFactory<SadieContext> dbContextFactory,
+    INavigatorRoomProvider navigatorRoomProvider,
+    IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.NavigatorSearch;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public string? TabName { get; set; }
+    public string? SearchQuery { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null)
         {
             return;
         }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        var tab = await dbContext.Set<NavigatorTab>()
+            .Include(x => x.Categories)
+            .FirstOrDefaultAsync(x => x.Name == TabName);
 
-        var playerId = client.Player.Id;
-        var tabName = eventParser.TabName;
-        var searchQuery = eventParser.SearchQuery;
-
-        if (!navigatorTabRepository.TryGetByCodeName(tabName, out var tab))
+        if (tab == null)
         {
-            var writer = new NavigatorSearchResultPagesWriter(
-                tabName, 
-                searchQuery, 
-                new Dictionary<NavigatorCategory, List<RoomLogic>>());
-            
-            await client.WriteToStreamAsync(writer);
             return;
         }
 
-        var categories = tab!.
+        var categories = tab.
             Categories.
             OrderBy(x => x.OrderId).
             ToList();
 
-        var categoryRoomMap = new Dictionary<NavigatorCategory, List<RoomLogic>>();
+        var categoryRoomMap = new Dictionary<NavigatorCategory, List<Room>>();
 
-        foreach (var category in categories)
+        if (!string.IsNullOrEmpty(SearchQuery))
         {
-            categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(playerId, category.CodeName));
+            categoryRoomMap[new NavigatorCategory
+            {
+                Name = "Search Results",
+                CodeName = "",
+                OrderId = 0,
+                TabId = 1
+            }] = await navigatorRoomProvider.GetRoomsForSearchQueryAsync(SearchQuery);
         }
-
-        categoryRoomMap = ApplyFilter(searchQuery, categoryRoomMap);
+        else
+        {
+            foreach (var category in categories)
+            {
+                categoryRoomMap.Add(category, await navigatorRoomProvider.GetRoomsForCategoryNameAsync(client.Player, category.CodeName));
+            }
+        }
         
-        var searchResultPagesWriter = new NavigatorSearchResultPagesWriter(
-            tabName, 
-            searchQuery, 
-            categoryRoomMap);
+        var searchResultPagesWriter = new NavigatorSearchResultPagesWriter
+        {
+            TabName = TabName,
+            SearchQuery = SearchQuery,
+            CategoryRoomMap = categoryRoomMap,
+            RoomRepository = roomRepository
+        };
         
         await client.WriteToStreamAsync(searchResultPagesWriter);
-    }
-
-    private static Dictionary<NavigatorCategory, List<RoomLogic>> ApplyFilter(
-        string searchQuery, 
-        Dictionary<NavigatorCategory, List<RoomLogic>> categoryRoomMap)
-    {
-        if (searchQuery.Contains(':'))
-        {
-            var searchQueryParts = searchQuery.Split(":");
-            var filterName = searchQueryParts[0];
-            var filterValue = searchQuery[(filterName.Length + 1)..];
-
-            if (string.IsNullOrEmpty(filterValue))
-            {
-                return categoryRoomMap;
-            }
-            
-            switch (filterName)
-            {
-                case "roomname":
-                    return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.Name.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
-                        .ToDictionary();
-                case "owner":
-                    return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.Owner.Username.Contains(filterValue, StringComparison.OrdinalIgnoreCase)))
-                        .ToDictionary();
-                case "tag":
-                    return categoryRoomMap
-                        .Where(x => x.Value.Any(r => r.Tags.Any(t => t.Name.Contains(filterValue, StringComparison.OrdinalIgnoreCase))))
-                        .ToDictionary();
-            }
-        }
-        else if (!string.IsNullOrEmpty(searchQuery))
-        {
-            // TODO: Filter on anything
-        }
-
-        return categoryRoomMap;
     }
 }

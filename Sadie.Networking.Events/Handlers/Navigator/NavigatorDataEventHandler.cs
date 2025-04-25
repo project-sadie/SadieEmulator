@@ -1,15 +1,14 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 using Sadie.Networking.Writers.Players.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
+[PacketId(EventHandlerId.NavigatorData)]
 public class NavigatorDataEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.NavigatorData;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var metaData = new Dictionary<string, int>
         {
@@ -70,9 +69,24 @@ public class NavigatorDataEventHandler : INetworkPacketEventHandler
 
         var savedSearches = client.Player.SavedSearches;
         
-        await client.WriteToStreamAsync(new NavigatorMetaDataWriter(metaData));
-        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter([]));
-        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter(categories));
-        await client.WriteToStreamAsync(new PlayerSavedSearchesWriter(savedSearches));
+        await client.WriteToStreamAsync(new NavigatorMetaDataWriter
+        {
+            MetaData = metaData
+        });
+        
+        await client.WriteToStreamAsync(new NavigatorLiftedRoomsWriter
+        {
+            Rooms = []
+        });
+        
+        await client.WriteToStreamAsync(new NavigatorCollapsedCategoriesWriter
+        {
+            Categories = categories
+        });
+        
+        await client.WriteToStreamAsync(new PlayerSavedSearchesWriter
+        {
+            Searches = savedSearches
+        });
     }
 }

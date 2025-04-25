@@ -40,4 +40,9 @@ public class NetworkPacketReader : INetworkPacketReader
 
         return data;
     }
+
+    public long ReadLong()
+    {
+        return BinaryPrimitives.ReadInt64BigEndian(ReadBytes(4));
+    }
 }

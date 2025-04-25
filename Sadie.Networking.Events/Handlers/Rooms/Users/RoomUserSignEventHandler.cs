@@ -1,25 +1,24 @@
-﻿using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Users;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserSignEventHandler(RoomUserSignEventParser eventParser, RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.RoomUserSign)]
+public class RoomUserSignEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserSign;
-
-    public Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int SignId { get; init; }
+    
+    public Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }
 
-        roomUser.AddStatus(RoomUserStatus.Sign, eventParser.SignId.ToString());
+        roomUser.AddStatus(RoomUserStatus.Sign, SignId.ToString());
+        roomUser.SignSet = DateTime.Now;
         
         return Task.CompletedTask;
     }

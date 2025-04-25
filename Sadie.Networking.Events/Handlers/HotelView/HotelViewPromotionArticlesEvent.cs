@@ -1,13 +1,12 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.HotelView;
 
+[PacketId(EventHandlerId.HotelViewPromotions)]
 public class HotelViewPromotionsEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.HotelViewPromotions;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
     }
 }

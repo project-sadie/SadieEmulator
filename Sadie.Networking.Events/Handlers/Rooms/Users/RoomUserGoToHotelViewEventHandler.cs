@@ -1,25 +1,32 @@
-using Sadie.Game.Rooms;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
+using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
-public class RoomUserGoToHotelViewEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.RoomUserGoToHotelView)]
+public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserGoToHotelView;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
-        var lastRoomId = player.CurrentRoomId;
+        var lastRoomId = player.State.CurrentRoomId;
         
         if (lastRoomId != 0)
         {
-            var lastRoom = await roomRepository.TryLoadRoomByIdAsync(lastRoomId);
+            var lastRoom = await RoomHelpers.TryLoadRoomByIdAsync(lastRoomId,
+                roomRepository,
+                dbContextFactory,
+                mapper);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGet(player.Id, out var oldUser) && oldUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Id, true);
+                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Player.Id);
             }
         }
     }

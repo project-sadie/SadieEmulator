@@ -1,28 +1,40 @@
+using Microsoft.EntityFrameworkCore;
 using Sadie.Database;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Players.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
+[PacketId(EventHandlerId.PlayerSetHomeRoom)]
 public class PlayerSetHomeRoomEventHandler(
-    PlayerSetHomeRoomEventParser parser,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerSetHomeRoom;
+    public int RoomId { get; set; }
     
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        parser.Parse(reader);
-
-        if (client.Player == null)
+        if (client.Player?.NetworkObject == null ||
+            client.Player.Data.HomeRoomId == RoomId)
         {
             return;
         }
-        
-        client.Player.Data.HomeRoomId = parser.RoomId;
 
-        dbContext.PlayerData.Update(client.Player.Data);
+        await client.Player.NetworkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+        {
+            HomeRoom = RoomId,
+            RoomIdToEnter = 0
+        });
+        
+        client.Player.Data.HomeRoomId = RoomId;
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        dbContext
+            .Entry(client.Player.Data)
+            .Property(x => x.HomeRoomId)
+            .IsModified = true;
+        
         await dbContext.SaveChangesAsync();
     }
 }

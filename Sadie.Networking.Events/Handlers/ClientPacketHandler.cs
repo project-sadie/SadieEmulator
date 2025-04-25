@@ -1,44 +1,115 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
+using Sadie.Networking.Events.Attributes;
+using Sadie.Networking.Events.Handlers.Rooms.Users;
+using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
+using Sadie.Networking.Options;
 using Sadie.Networking.Packets;
+using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Handlers;
 
-public class ClientPacketHandler : INetworkPacketHandler
+public class ClientPacketHandler(
+    ILogger<ClientPacketHandler> logger,
+    Dictionary<short, Type> packetHandlerTypeMap,
+    IServiceProvider serviceProvider,
+    IOptions<NetworkPacketOptions> packetOptions)
+    : INetworkPacketHandler
 {
-    private readonly ILogger<ClientPacketHandler> _logger;
-    private readonly Dictionary<int, INetworkPacketEventHandler> _packets;
-
-    public ClientPacketHandler(
-        ILogger<ClientPacketHandler> logger, 
-        IEnumerable<INetworkPacketEventHandler> packetHandlers)
-    {
-        _logger = logger;
-        _packets = packetHandlers.ToDictionary(i => i.Id, h => h);
-    }
-
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
-        if (!_packets.TryGetValue(packet.PacketId, out var packetEvent))
+        if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
         {
-            _logger.LogError($"Couldn't resolve packet eventHandler for header '{packet.PacketId}'");
+            if (packetOptions.Value.NotifyMissingPacket)
+            {
+                _ = NotifyMissingPacketAsync(packet.PacketId, client);
+            }
+            
+            logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
             return;
         }
 
-        await ExecuteAsync(client, packet, packetEvent);
-    }
+        var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
 
-    private async Task ExecuteAsync(INetworkClient client, INetworkPacketReader packet, INetworkPacketEventHandler eventHandler)
-    {
-        _logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
-        
+        if (!ValidateAttributes(eventHandler, client))
+        {
+            return;
+        }
+
         try
         {
-            await eventHandler.HandleAsync(client, packet);
+            EventSerializer.SetPropertiesForEventHandler(eventHandler, packet);
+
+            if (client.RoomUser != null &&
+                (packetEventType == typeof(RoomUserWalkEventHandler) ||
+                 packetEventType == typeof(RoomUserChatEventHandler) ||
+                 packetEventType == typeof(RoomUserShoutEventHandler) ||
+                 packetEventType == typeof(RoomUserActionEventHandler) ||
+                 packetEventType == typeof(RoomUserDanceEventHandler) ||
+                 packetEventType == typeof(RoomUserSignEventHandler) ||
+                 packetEventType == typeof(RoomUserSitEventHandler) ||
+                 packetEventType == typeof(RoomUserLookAtEventHandler)))
+            {
+                client.RoomUser.LastAction = DateTime.Now;
+            }
+
+            await ExecuteAsync(client, eventHandler);
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            logger.LogCritical(e.ToString());
+        }
+    }
+
+    private async Task NotifyMissingPacketAsync(int messageId, INetworkClient client)
+    {
+        try
+        {
+            var writer = new ServerErrorWriter
+            {
+                MessageId = messageId,
+                ErrorCode = 1,
+                DateTime = DateTime.Now.ToString("M/d/yy, h:mm tt")
+            };
+
+            await client.WriteToStreamAsync(writer);
         }
         catch (Exception e)
         {
-            _logger.LogError(e.ToString());
+            logger.LogCritical(e.ToString());
+        }
+    }
+
+    private static bool ValidateAttributes(INetworkPacketEventHandler eventHandler, 
+        INetworkClient client)
+    {
+        var method = eventHandler.GetType().GetMethods()
+            .SingleOrDefault(x => x.Name == "HandleAsync");
+
+        var requiresRoomRights = method?.GetCustomAttributes(typeof(RequiresRoomRightsAttribute), true)
+            .FirstOrDefault() != null;
+
+        if (requiresRoomRights)
+        {
+            return client.RoomUser != null && client.RoomUser.HasRights();
+        }
+
+        return true;
+    }
+
+    private async Task ExecuteAsync(INetworkClient client, INetworkPacketEventHandler eventHandler)
+    {
+        logger.LogDebug($"Executing packet '{eventHandler.GetType().Name}'");
+        
+        try
+        {
+            await eventHandler.HandleAsync(client);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
         }
     }
 }

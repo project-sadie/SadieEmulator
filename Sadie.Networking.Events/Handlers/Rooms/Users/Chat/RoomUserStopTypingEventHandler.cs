@@ -1,23 +1,26 @@
-﻿using Sadie.Game.Rooms;
+﻿using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
-public class RoomUserStopTypingEventHandler(RoomRepository roomRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.RoomUserStopTyping)]
+public class RoomUserStopTypingEventHandler(IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserStopTyping;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        var roomUser = client.RoomUser;
+        
+        if (roomUser == null)
         {
             return;
         }
 
-        roomUser.UpdateLastAction();
-        
-        await room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter(roomUser.Id, false));
+        await roomUser.Room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
+        {
+            UserId = roomUser.Player.Id,
+            IsTyping = false
+        });
     }
 }

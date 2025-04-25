@@ -1,12 +1,13 @@
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
+using System.Diagnostics;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Shared;
 
 namespace SadieEmulator.Tasks.Other;
 
 public class UpdateConsoleTitleTask(
-    PlayerRepository playerRepository, 
-    RoomRepository roomRepository) : IServerTask
+    IPlayerRepository playerRepository, 
+    IRoomRepository roomRepository) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
     public DateTime LastExecuted { get; set; }
@@ -15,9 +16,9 @@ public class UpdateConsoleTitleTask(
     {
         var usersOnline = playerRepository.Count();
         var roomCount = roomRepository.Count;
+        var started = Process.GetCurrentProcess().StartTime;
         
-        Console.Title = $"Sadie {GlobalState.Version} - Players Online: {usersOnline} - Rooms Loaded: {roomCount}";
-        
+        Console.Title = $"Sadie {GlobalState.Version} - Started: {started:HH:mm:ss} - Players: {usersOnline} - Rooms: {roomCount}";
         return Task.CompletedTask;
     }
 }

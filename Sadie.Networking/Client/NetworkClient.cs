@@ -1,73 +1,62 @@
 using DotNetty.Transport.Channels;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Users;
-using Sadie.Networking.Packets;
-using Sadie.Options.Options;
+using Sadie.API;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Networking;
+using Sadie.Networking.Codecs.Encryption;
+using Sadie.Networking.Serialization;
 
 namespace Sadie.Networking.Client;
 
-public class NetworkClient : NetworkPacketDecoder, INetworkClient
+public class NetworkClient(
+    IChannel channel)
+    : INetworkClient
 {
-    public IChannel Channel { get; set; }
+    public IChannel Channel { get; set; } = channel;
 
-    private readonly ILogger<NetworkClient> _logger;
-    private readonly IChannel _channel;
-    private readonly PlayerRepository _playerRepository;
-    private readonly RoomRepository _roomRepository;
-    private readonly INetworkPacketHandler _packetHandler;
+    public IPlayerLogic? Player { get; set; }
+    public IRoomUser? RoomUser { get; set; }
+    public bool EncryptionEnabled { get; private set; }
 
-    public NetworkClient(
-        ILogger<NetworkClient> logger,
-        IChannel channel,
-        PlayerRepository playerRepository,
-        RoomRepository roomRepository,
-        INetworkPacketHandler packetHandler,
-        IOptions<NetworkPacketOptions> options) : base(options)
+    public void EnableEncryption(byte[] sharedKey)
     {
-        Channel = channel;
+        Channel.Pipeline.AddFirst(new EncryptionDecoder(sharedKey));
+        Channel.Pipeline.AddFirst(new EncryptionEncoder(sharedKey));
 
-        _logger = logger;
-        _channel = channel;
-        _playerRepository = playerRepository;
-        _roomRepository = roomRepository;
-        _packetHandler = packetHandler;
+        EncryptionEnabled = true;
     }
 
-    public PlayerLogic? Player { get; set; }
-    public RoomUser? RoomUser { get; set; }
+    public DateTime LastPing { get; set; } = DateTime.Now;
 
-    public Task ListenAsync()
+    public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
-        return Task.CompletedTask;
+        if (!Channel.IsWritable)
+        {
+            return;
+        }
+
+        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        await Channel.WriteAndFlushAsync(serializedObject);
     }
 
-    public DateTime LastPing { get; set; }
-
-    public async Task WriteToStreamAsync(NetworkPacketWriter data)
+    public async Task WriteToStreamAsync(INetworkPacketWriter writer)
     {
-        if (_disposed)
+        if (!Channel.IsWritable)
         {
             return;
         }
 
         try
         {
-            await _channel.WriteAndFlushAsync(data);
+            await Channel.WriteAndFlushAsync(writer);
         }
-        catch (Exception e)
+        catch (ClosedChannelException)
         {
-            _logger.LogError($"Error whilst writing to stream: {e}");
+            
         }
-    }
-
-    public async Task OnReceivedAsync(byte[] data)
-    {
-        foreach (var packet in DecodePacketsFromBytes(data))
+        catch (ObjectDisposedException)
         {
-            await _packetHandler.HandleAsync(this, packet);
+            
         }
     }
 
@@ -81,23 +70,7 @@ public class NetworkClient : NetworkPacketDecoder, INetworkClient
         }
 
         _disposed = true;
-
-        if (RoomUser != null)
-        {
-            var lastRoom = _roomRepository.TryGetRoomById(RoomUser.Player.CurrentRoomId);
-
-            if (lastRoom != null)
-            {
-                await lastRoom.UserRepository.TryRemoveAsync(RoomUser.Id);
-                RoomUser = null;
-            }
-        }
-
-        if (Player != null && !await _playerRepository.TryRemovePlayerAsync(Player.Id))
-        {
-            _logger.LogError("Failed to dispose of player");
-        }
-
-        await _channel.CloseAsync();
+        
+        await Channel.CloseAsync();
     }
 }

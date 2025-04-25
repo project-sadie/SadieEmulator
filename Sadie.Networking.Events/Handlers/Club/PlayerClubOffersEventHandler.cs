@@ -1,21 +1,20 @@
-﻿using Sadie.Game.Catalog.Club;
+﻿using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Club;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
+[PacketId(EventHandlerId.HabboClubData)]
 public class PlayerClubOffersEventHandler(
-    PlayerClubOffersEventParser eventParser, 
-    CatalogClubOfferRepository clubOfferRepository) : INetworkPacketEventHandler
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.HabboClubData;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int WindowId { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
         if (client.Player == null)
         {
             return;
@@ -35,12 +34,20 @@ public class PlayerClubOffersEventHandler(
 
             daysRemaining = (int)(daysTotal - daysSinceStarted);
         }
-
-        await client.WriteToStreamAsync(new PlayerClubOffersWriter(
-            clubOfferRepository.Offers,
-            eventParser.WindowId,
-            false,
-            false,
-            daysRemaining));
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        
+        var catalogClubOffers = await dbContext
+            .Set<CatalogClubOffer>()
+            .ToListAsync();
+        
+        await client.WriteToStreamAsync(new PlayerClubOffersWriter
+        {
+            Offers = catalogClubOffers,
+            WindowId = WindowId,
+            Unused = false,
+            CanGift = false,
+            RemainingDays = daysRemaining
+        });
     }
 }

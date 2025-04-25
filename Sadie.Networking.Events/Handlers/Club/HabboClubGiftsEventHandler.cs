@@ -1,34 +1,42 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.Database;
+using Sadie.Database.Models.Catalog.Pages;
 using Sadie.Database.Models.Players;
-using Sadie.Game.Catalog.Pages;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
-public class HabboClubGiftsEventHandler(CatalogPageRepository catalogPageRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.HabboClubGifts)]
+public class HabboClubGiftsEventHandler(
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.HabboClubGifts;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {
             return;
         }
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
-        var clubGiftPage = catalogPageRepository.TryGetByLayout("club_gift");
+        var clubGiftPage = await dbContext
+            .Set<CatalogPage>()
+            .IgnoreAutoIncludes()
+            .FirstOrDefaultAsync(x => x.Layout == "club_gift");
 
         var daysAsClub = CalculateDaysAsClub(client.Player.Subscriptions);
         var daysTillNextClubGift = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400;
-        var claimedGifts = 0;
         var unclaimedGifts = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400; 
         
-        await client.WriteToStreamAsync(new HabboClubGiftsWriter(
-            daysTillNextClubGift, 
-            unclaimedGifts, 
-            daysAsClub, 
-            clubGiftPage));
+        await client.WriteToStreamAsync(new HabboClubGiftsWriter
+        {
+            DaysTillNext = daysTillNextClubGift,
+            UnclaimedGifts = unclaimedGifts,
+            DaysAsClub = daysAsClub,
+            ClubGiftPage = clubGiftPage
+        });
     }
 
     private int CalculateDaysAsClub(ICollection<PlayerSubscription> subscriptions)

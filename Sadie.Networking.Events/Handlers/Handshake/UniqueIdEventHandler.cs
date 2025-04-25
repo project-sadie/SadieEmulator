@@ -1,17 +1,19 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Handshake;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
-public class UniqueIdEventHandler(UniqueIdEventParser eventParser) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.UniqueId)]
+public class UniqueIdEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.UniqueId;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public required string Fingerprint { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-        await client.WriteToStreamAsync(new UniqueIdWriter(eventParser.Fingerprint));
+        await client.WriteToStreamAsync(new UniqueIdWriter
+        {
+            MachineId = Fingerprint
+        });
     }
 }

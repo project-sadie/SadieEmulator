@@ -1,34 +1,33 @@
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms;
 using Sadie.Database;
-using Sadie.Game.Players;
-using Sadie.Game.Players.Packets;
-using Sadie.Game.Rooms;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players.Friendships;
-using Sadie.Networking.Packets;
-using Sadie.Shared.Unsorted;
+using Sadie.Networking.Events.Dtos;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
+[PacketId(EventHandlerId.PlayerAcceptFriendRequest)]
 public class PlayerAcceptFriendRequestEventHandler(
-    PlayerAcceptFriendRequestEventParser eventParser,
-    PlayerRepository playerRepository,
-    RoomRepository roomRepository,
-    SadieContext dbContext)
+    IPlayerRepository playerRepository,
+    IRoomRepository roomRepository,
+    IDbContextFactory<SadieContext> dbContextFactory,
+    IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerAcceptFriendRequest;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public List<int> Ids { get; set; } = [];
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-        
-        foreach (var originId in eventParser.Ids)
+        foreach (var originId in Ids)
         {
-            await AcceptAsync(client, originId);
+            await AcceptRequestAsync(client, originId);
         }
     }
 
-    private async Task AcceptAsync(INetworkClient client, int originId)
+    private async Task AcceptRequestAsync(INetworkClient client, int originId)
     {
         var player = client.Player;
         var playerId = player.Id;
@@ -43,76 +42,69 @@ public class PlayerAcceptFriendRequestEventHandler(
         }
 
         request.Status = PlayerFriendshipStatus.Accepted;
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.Entry(request).State = EntityState.Modified;
         await dbContext.SaveChangesAsync();
         
-        if (playerRepository.TryGetPlayerById(originId, out var origin) && origin != null)
+        var targetPlayer = playerRepository.GetPlayerLogicById(originId);
+        var targetOnline = targetPlayer != null;
+        var targetInRoom = targetPlayer != null && targetPlayer.State.CurrentRoomId != 0;
+
+        var targetRelationship = targetOnline
+            ? targetPlayer!
+                .Relationships
+                .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
+
+        await playerHelperService.SendFriendUpdatesToPlayerAsync(client.Player, [
+            new PlayerFriendshipUpdate
+            {
+                Type = 0,
+                Friend = new FriendData
+                {
+                    Username = targetPlayer.Username,
+                    FigureCode = targetPlayer.AvatarData.FigureCode,
+                    Motto = targetPlayer.AvatarData.Motto,
+                    Gender = targetPlayer.AvatarData.Gender
+                },
+                FriendOnline = targetOnline,
+                FriendInRoom = targetInRoom,
+                Relation = targetRelationship?.TypeId ?? PlayerRelationshipType.None
+            }
+        ]);
+
+        if (targetOnline)
         {
-            var targetRequest = origin.
+            var targetRequest = targetPlayer.
                 OutgoingFriendships.
                 FirstOrDefault(x => x.TargetPlayerId == playerId);
 
-            if (targetRequest != null)
+            if (targetRequest == null)
             {
-                const bool isOnline = true;
-                var inRoom = origin.CurrentRoomId != 0;
-
-                var relationship = origin
-                        .Relationships
-                        .FirstOrDefault(x =>
-                            x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
-
-                var updateFriendWriter = new PlayerUpdateFriendWriter(
-                    0, 
-                    1, 
-                    0, 
-                    targetRequest, 
-                    isOnline, 
-                    inRoom, 
-                    0,
-                    "", 
-                    "", 
-                    false, 
-                    false, 
-                    false,
-                    relationship?.TypeId ?? PlayerRelationshipType.None);
-                
-                await origin.NetworkObject.WriteToStreamAsync(updateFriendWriter);    
+                return;
             }
-        }
-
-        var targetOnline = origin != null;
-        var targetInRoom = false;
-
-        if (targetOnline && origin != null)
-        {
-            var lastRoom = roomRepository.TryGetRoomById(origin.CurrentRoomId);
-
-            if (lastRoom != null && lastRoom.UserRepository.TryGet(origin.Id, out _))
-            {
-                targetInRoom = true;
-            }
-        }
-                
-        var targetRelationship = targetOnline
-            ? origin!
+            
+            var relationship = targetPlayer
                 .Relationships
-                .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
-        
-        var updateFriendWriter2 = new PlayerUpdateFriendWriter(
-                0, 
-                1, 
-                0, 
-                request, 
-                targetOnline,
-                targetInRoom, 
-                0, 
-                "", 
-                "", 
-                false, 
-                false,
-                false,
-                targetRelationship?.TypeId ?? PlayerRelationshipType.None);
-        
-        await client.WriteToStreamAsync(updateFriendWriter2);
+                .FirstOrDefault(x =>
+                    x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
+
+            await playerHelperService.SendFriendUpdatesToPlayerAsync(targetPlayer, [
+                new PlayerFriendshipUpdate
+                {
+                    Type = 0,
+                    Friend = new FriendData
+                    {
+                        Username = player.Username,
+                        FigureCode = player.AvatarData.FigureCode,
+                        Motto = player.AvatarData.Motto,
+                        Gender = player.AvatarData.Gender
+                    },
+                    FriendOnline = true,
+                    FriendInRoom = player.State.CurrentRoomId != 0,
+                    Relation = relationship?.TypeId ?? PlayerRelationshipType.None
+                }
+            ]);
+        }
     }
 }

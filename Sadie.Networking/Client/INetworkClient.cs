@@ -1,16 +1,16 @@
 using DotNetty.Transport.Channels;
-using Sadie.Game.Players;
-using Sadie.Game.Rooms.Users;
-using Sadie.Shared.Unsorted.Networking;
+using Sadie.API;
+using Sadie.API.Game.Players;
+using Sadie.API.Game.Rooms.Users;
 
 namespace Sadie.Networking.Client;
 
 public interface INetworkClient : IAsyncDisposable, INetworkObject
 {
     IChannel Channel { get; set; }
-    PlayerLogic? Player { get; set; }
-    RoomUser? RoomUser { get; set; }
-    Task ListenAsync();
+    IPlayerLogic? Player { get; set; }
+    IRoomUser? RoomUser { get; set; }
+    bool EncryptionEnabled { get; }
+    void EnableEncryption(byte[] sharedKey);
     DateTime LastPing { get; set; }
-    Task OnReceivedAsync(byte[] data);
 }

@@ -1,21 +1,25 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 
 namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 
+[PacketId(EventHandlerId.PlayerInventoryBadges)]
 public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerInventoryBadges;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        var badges = client.Player.Badges;
+        var badges = client.Player.Badges
+            .ToDictionary(x => x.Id, x => x.Badge?.Code ?? "");
         
-        var equippedBadges = badges.
-            Where(x => x.Slot is > 0 and <= 5).
-            ToList();
+        var equippedBadges = client.Player.Badges
+            .Where(x => x.Slot is > 0 and <= 5)
+            .ToDictionary(x => x.Id, x => x.Badge?.Code ?? "");
         
-        await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter(badges, equippedBadges));
+        await client.WriteToStreamAsync(new PlayerInventoryBadgesWriter
+        {
+            Badges = badges,
+            EquippedBadges = equippedBadges
+        });
     }
 }

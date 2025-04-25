@@ -1,25 +1,26 @@
-using Sadie.Game.Catalog.Pages;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Catalog;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
-public class CatalogModeEventHandler(
-    CatalogModeEventParser eventParser,
-    CatalogPageRepository catalogPageRepository) : INetworkPacketEventHandler
+[PacketId(EventHandlerId.CatalogMode)]
+public class CatalogModeEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.CatalogMode;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public string? Mode { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
-        var mode = eventParser.Mode;
-        var pages = catalogPageRepository.GetByParentId(-1);
-
-        await client.WriteToStreamAsync(new CatalogModeWriter(mode == "BUILDERS_CLUB" ? 1 : 0));
-        await client.WriteToStreamAsync(new CatalogTabsWriter(mode, pages));
+        if (string.IsNullOrWhiteSpace(Mode))
+        {
+            return;
+        }
+        
+        client.Player!.State.CatalogMode = Mode;
+        
+        await client.WriteToStreamAsync(new CatalogModeWriter
+        {
+            Mode = Mode == "BUILDERS_CLUB" ? 1 : 0
+        });
     }
 }

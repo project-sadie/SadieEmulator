@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
@@ -10,16 +10,19 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0-2.final" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0-preview.7.24405.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+        <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
         <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
+        <PackageReference Include="Sadie.API" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.Game.Rooms\Sadie.Game.Rooms.csproj" />
-      <ProjectReference Include="..\Sadie.Shared\Sadie.Shared.csproj" />
+      <ProjectReference Include="..\Sadie.Game\Sadie.Game.csproj" />
+      <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,31 +1,31 @@
-﻿using Sadie.Database.Models.Constants;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Packets.Writers;
-using Sadie.Game.Rooms.Users;
+﻿using Microsoft.EntityFrameworkCore;
+using Sadie.API.Game.Rooms;
+using Sadie.Database;
+using Sadie.Database.Models.Constants;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Players;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
+using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerId.PlayerChangedMotto)]
 public class PlayerChangedMottoEventHandler(
-    PlayerChangedMottoEventParser eventParser,
-    RoomRepository roomRepository, ServerPlayerConstants constants) : INetworkPacketEventHandler
+    IRoomRepository roomRepository, 
+    ServerPlayerConstants constants,
+    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerChangedMotto;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public required string Motto { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
-
-        var player = client.Player;
-        var newMotto = eventParser.Motto;
-
-        if (newMotto.Length >= constants.MaxMottoLength)
+        if (client.Player?.AvatarData == null)
         {
-            newMotto = newMotto.Truncate(constants.MaxMottoLength);
+            return;
         }
+        
+        var player = client.Player!;
+        var newMotto = Motto.Truncate(constants.MaxMottoLength);
 
         player.AvatarData.Motto = newMotto;
         
@@ -34,6 +34,12 @@ public class PlayerChangedMottoEventHandler(
             return;
         }
         
-        await room!.UserRepository.BroadcastDataAsync(new RoomUserDataWriter(new List<IRoomUser> { roomUser }));
+        await room.UserRepository.BroadcastDataAsync(new RoomUserDataWriter{
+            Users = [roomUser]
+        });
+
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.Entry(player.AvatarData).Property(x => x.Motto).IsModified = true;
+        await dbContext.SaveChangesAsync();
     }
 }

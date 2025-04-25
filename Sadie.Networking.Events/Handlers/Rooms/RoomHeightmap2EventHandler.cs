@@ -1,17 +1,16 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
+[PacketId(EventHandlerId.RoomHeightmap2)]
 public class RoomHeightmap2EventHandler(RoomHeightmapEventHandler eventHandler) : INetworkPacketEventHandler
 {
     // Nitro sends a different header based on if the user is exiting a room to enter another
     // Just call the original / other event
     
-    public int Id => EventHandlerIds.RoomHeightmap2;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        await eventHandler.HandleAsync(client, reader);
+        await eventHandler.HandleAsync(client);
     }
 }

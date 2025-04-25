@@ -1,33 +1,35 @@
-﻿using Sadie.Database;
+﻿using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Chat.Commands;
+using Sadie.API.Game.Rooms.Services;
 using Sadie.Database.Models.Constants;
-using Sadie.Game.Rooms;
-using Sadie.Game.Rooms.Chat.Commands;
+using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Rooms.Users.Chat;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
+[PacketId(EventHandlerId.RoomUserShout)]
 public class RoomUserShoutEventHandler(
-    RoomUserChatEventParser parser,
-    RoomRepository roomRepository, 
+    IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants, 
     IRoomChatCommandRepository commandRepository,
-    SadieContext dbContext)
+    IRoomWiredService wiredService,
+    IRoomHelperService roomHelperService)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.RoomUserShout;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public required string Message { get; init; }
+    public int Bubble { get; init; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        parser.Parse(reader);
-
-        await NetworkPacketEventHelpers.ProcessChatMessageAsync(client,
-            parser,
+        await NetworkPacketEventHelpers.OnChatMessageAsync(client,
+            Message,
             true,
             roomConstants,
             roomRepository,
             commandRepository,
-            dbContext);
+            (ChatBubble) Bubble,
+            wiredService,
+            roomHelperService);
     }
 }

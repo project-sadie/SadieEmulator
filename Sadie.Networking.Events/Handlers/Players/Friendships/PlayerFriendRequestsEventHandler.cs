@@ -1,28 +1,52 @@
-﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+﻿using Sadie.Enums.Game.Players;
+using Sadie.Networking.Client;
+using Sadie.Networking.Events.Dtos;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
-using Sadie.Shared.Unsorted;
+using IPlayerFriendshipRequestData = Sadie.API.Game.Players.Friendships.IPlayerFriendshipRequestData;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
-public class PlayerFriendRequestsEventHandler() : INetworkPacketEventHandler
+[PacketId(EventHandlerId.PlayerFriendRequestsList)]
+public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerFriendRequestsList;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player == null)
         {
             return;
         }
         
-        var pending = client
+        var friendRequests = client
             .Player
-            .OutgoingFriendships
+            .IncomingFriendships
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
-            .Select(x => x.TargetPlayer)
             .ToList();
+
+        var requests = new List<IPlayerFriendshipRequestData>();
         
-        await client.WriteToStreamAsync(new PlayerFriendRequestsWriter(pending));
+        foreach (var data in friendRequests.Select(request => request.TargetPlayerId == client.Player.Id ? 
+                     request.OriginPlayer : 
+                     request.TargetPlayer))
+        {
+            if (data?.AvatarData == null)
+            {
+                continue;
+            }
+            
+            requests.Add(new PlayerFriendshipRequestData
+            {
+                Username = data.Username,
+                FigureCode = data.AvatarData.FigureCode
+            });
+        }
+
+        var requestsWriter = new PlayerFriendRequestsWriter
+        {
+            TotalRequests = requests.Count,
+            Requests = requests
+        };
+        
+        await client.WriteToStreamAsync(requestsWriter);
     }
 }

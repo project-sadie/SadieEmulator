@@ -1,38 +1,19 @@
-using Sadie.Game.Players;
+using Sadie.API.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
-using Sadie.Networking.Writers.Players.Friendships;
-using Sadie.Shared.Unsorted;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
+[PacketId(EventHandlerId.PlayerFriendListUpdate)]
 public class PlayerFriendListUpdateEventHandler(
-    PlayerRepository playerRepository)
+    IPlayerRepository playerRepository,
+    IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerFriendListUpdate;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        var player = client.Player!;
-        
-        var friends = player
-            .GetMergedFriendships()
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-        
-        var pages = friends.Count / 500 + 1;
-        
-        for (var i = 0; i < pages; i++)
-        {
-            var batch = friends.Skip(i * 500).
-                Take(500).
-                ToList();
-            
-            await client.WriteToStreamAsync(new PlayerFriendsListWriter(
-                pages, i, batch, 
-                playerRepository, 
-                player.Relationships));
-        }
+        await playerHelperService.SendPlayerFriendListUpdate(
+            client.Player!, 
+            playerRepository);
     }
 }

@@ -1,15 +1,17 @@
 using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
+[PacketId(EventHandlerId.CatalogRecyclerLogic)]
 public class CatalogRecyclerLogicEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.CatalogRecyclerLogic;
-    
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
-        await client.WriteToStreamAsync(new CatalogRecyclerLogicWriter());
+        await client.WriteToStreamAsync(new CatalogRecyclerLogicWriter
+        {
+            PrizeSize = 0
+        });
     }
 }

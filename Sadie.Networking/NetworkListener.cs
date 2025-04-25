@@ -1,10 +1,21 @@
 ﻿using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using DotNetty.Buffers;
+using DotNetty.Codecs;
+using DotNetty.Codecs.Http;
+using DotNetty.Codecs.Http.WebSockets;
+using DotNetty.Handlers.Tls;
+using DotNetty.Transport.Bootstrapping;
+using DotNetty.Transport.Channels;
+using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.Networking.Client;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-using Sadie.Options.Options;
+using Sadie.Networking.Codecs;
+using Sadie.Networking.Handlers;
+using Sadie.Networking.Packets;
+using NetworkOptions = Sadie.Networking.Options.NetworkOptions;
+using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
 
 namespace Sadie.Networking
 {
@@ -20,7 +31,7 @@ namespace Sadie.Networking
     {
         private readonly NetworkOptions _networkOptions = options.Value;
         private readonly NetworkPacketOptions _packetOptions = packetOptions.Value;
-        
+
         private ServerBootstrap _bootstrap;
         private IChannel? _channel;
 
@@ -39,7 +50,8 @@ namespace Sadie.Networking
                 {
                     var pipeline = channel.Pipeline;
 
-                    if (!string.IsNullOrWhiteSpace(_networkOptions.CertificateFile))
+                    if (_networkOptions.UseWss &&
+                        !string.IsNullOrWhiteSpace(_networkOptions.CertificateFile))
                     {
                         var certificate = new X509Certificate(_networkOptions.CertificateFile);
                         pipeline.AddLast(TlsHandler.Server(certificate));
@@ -49,26 +61,26 @@ namespace Sadie.Networking
                     pipeline.AddLast(new WebSocketServerProtocolHandler("/", null, true, 65536, false, true));
                     pipeline.AddLast(new WebSocketCodec());
                     pipeline.AddLast(new LengthFieldBasedFrameDecoder(
-                        65536, 
-                        0, 
-                        _packetOptions.FrameLengthByteCount, 
-                        0, 
+                        65536,
+                        0,
+                        _packetOptions.FrameLengthByteCount,
+                        0,
                         _packetOptions.FrameLengthByteCount));
-                    
+
                     pipeline.AddLast(new PacketDecoder());
                     pipeline.AddLast(new PacketEncoder());
                     pipeline.AddLast(new DefaultChannelHandler(logger2, packetHandler, clientRepository, clientFactory));
                 }));
         }
-        
+
         public async Task ListenAsync()
         {
             _channel = await _bootstrap.BindAsync(
-                IPAddress.Parse(_networkOptions.Host), 
+                IPAddress.Parse(_networkOptions.Host),
                 _networkOptions.Port);
 
             var address = $"{(_networkOptions.UseWss ? "wss" : "ws")}/{_networkOptions.Host}:{_networkOptions.Port}";
-            
+
             logger.LogInformation($"Networking is listening for connections on {address}");
         }
 

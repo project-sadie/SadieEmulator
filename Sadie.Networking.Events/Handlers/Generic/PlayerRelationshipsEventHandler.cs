@@ -1,41 +1,28 @@
-using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
-using Sadie.Game.Players;
+using Sadie.API.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Events.Parsers.Generic;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Handlers.Generic;
 
+[PacketId(EventHandlerId.PlayerRelationships)]
 public class PlayerRelationshipsEventHandler(
-    PlayerRelationshipsEventParser eventParser,
-    PlayerRepository playerRepository,
-    SadieContext dbContext) : INetworkPacketEventHandler
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerRelationships;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public int PlayerId { get; set; }
+    
+    public async Task HandleAsync(INetworkClient client)
     {
-        eventParser.Parse(reader);
+        var player = await playerRepository.GetPlayerByIdAsync(PlayerId);
 
-        var playerId = eventParser.PlayerId;
-        var isOnline = playerRepository.TryGetPlayerById(playerId, out var player);
+        var relationships = player != null ? 
+                player.Relationships : 
+                await playerRepository.GetRelationshipsForPlayerAsync(PlayerId);
 
-        var relationships = isOnline ? 
-                player!.Relationships : 
-                await playerRepository.GetRelationshipsForPlayerAsync(playerId);
-
-        var playerFriends = isOnline
-            ? player!.GetMergedFriendships()
-            : await dbContext
-                .Set<PlayerFriendship>()
-                .Where(x => x.OriginPlayerId == playerId || x.TargetPlayerId == playerId)
-                .ToListAsync();
-        
-        await client.WriteToStreamAsync(new PlayerRelationshipsWriter(playerId, 
-            relationships, 
-            playerFriends));
+        await client.WriteToStreamAsync(new PlayerRelationshipsWriter
+        {
+            PlayerId = PlayerId,
+            Relationships = relationships
+        });
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.Networking.Serialization.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
+[PacketId(EventHandlerId.PlayerPong)]
 public class PlayerPongEventHandler : INetworkPacketEventHandler
 {
-    public int Id => EventHandlerIds.PlayerPong;
-
-    public async Task HandleAsync(INetworkClient client, INetworkPacketReader reader)
+    public async Task HandleAsync(INetworkClient client)
     {
         client.LastPing = DateTime.Now;
     }
