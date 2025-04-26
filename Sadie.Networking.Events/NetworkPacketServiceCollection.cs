@@ -29,7 +29,7 @@ public static class NetworkPacketServiceCollection
                 continue;
             }
             
-            packetHandlerTypeMap.Add(((PacketIdAttribute) headerAttribute).Id, type);
+            packetHandlerTypeMap[((PacketIdAttribute) headerAttribute).Id] = type;
         }
 
         serviceCollection.AddSingleton(packetHandlerTypeMap);

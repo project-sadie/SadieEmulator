@@ -112,4 +112,6 @@ public class ClientPacketHandler(
             logger.LogError(e.ToString());
         }
     }
+
+    public void Remove(short packetId) => packetHandlerTypeMap.Remove(packetId);
 }
