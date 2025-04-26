@@ -1,7 +1,7 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
-using Sadie.Networking.Client;
-using Sadie.Networking.Packets;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Packets;
 
 namespace Sadie.Networking.Handlers;
 

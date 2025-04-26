@@ -1,5 +1,6 @@
 ﻿using Sadie.API;
-using Sadie.Networking.Client;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;

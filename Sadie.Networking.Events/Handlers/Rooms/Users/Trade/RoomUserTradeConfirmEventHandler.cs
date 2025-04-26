@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Database;
-using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 

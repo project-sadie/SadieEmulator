@@ -1,5 +1,5 @@
 using System.Reflection;
-using Sadie.Networking.Packets;
+using Sadie.API.Networking.Packets;
 
 namespace Sadie.Networking;
 

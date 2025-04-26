@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Database;
 using Sadie.Database.Models.Catalog;
-using Sadie.Networking.Client;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
 

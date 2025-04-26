@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sadie.Networking.Client;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Networking.Packets;
 using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 using Sadie.Networking.Options;
-using Sadie.Networking.Packets;
 using Sadie.Networking.Writers.Generic;
 
 namespace Sadie.Networking.Events.Handlers;

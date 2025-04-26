@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.Text;
+using Sadie.API.Networking.Packets;
 
 namespace Sadie.Networking.Packets;
 
