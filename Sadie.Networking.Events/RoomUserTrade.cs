@@ -8,7 +8,7 @@ using Sadie.Database.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 
-namespace Sadie.Game.Rooms.Users;
+namespace Sadie.Networking.Events;
 
 public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUserTrade
 {

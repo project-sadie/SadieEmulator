@@ -2,11 +2,10 @@
 using Microsoft.Extensions.Hosting;
 using Sadie.API;
 using Sadie.Shared;
-using SadieEmulator;
 using Serilog;
 using Serilog.Events;
 
-namespace Sadie.Console;
+namespace SadieEmulator;
 
 internal static class Program
 {

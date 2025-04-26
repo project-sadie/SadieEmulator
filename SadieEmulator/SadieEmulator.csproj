@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
         <RootNamespace>SadieEmulator</RootNamespace>
         <AssemblyVersion>0.9.1</AssemblyVersion>
+        <OutputType>Exe</OutputType>
+        <AssemblyName>SadieEmulator</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,6 +25,15 @@
       <ProjectReference Include="..\Sadie.Database.Mappers\Sadie.Database.Mappers.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="appsettings.json.example">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

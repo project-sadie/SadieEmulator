@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
 using Sadie.Database;
 using Sadie.Database.Models.Players;
-using Sadie.Options.Options;
+using Sadie.Game.Players.Options;
 
 namespace Sadie.Game.Players;
 
