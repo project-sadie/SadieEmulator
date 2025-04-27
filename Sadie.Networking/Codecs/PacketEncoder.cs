@@ -7,8 +7,9 @@ namespace Sadie.Networking.Codecs;
 
 public class PacketEncoder : MessageToByteEncoder<NetworkPacketWriter>
 {
-    protected override void Encode(IChannelHandlerContext context, NetworkPacketWriter message, IByteBuffer output)
-    {
-        output.WriteBytes(message.GetAllBytes());
-    }
+    protected override void Encode(
+        IChannelHandlerContext context, 
+        NetworkPacketWriter message,
+        IByteBuffer output)
+            => output.WriteBytes(message.GetAllBytes());
 }

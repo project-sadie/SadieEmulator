@@ -12,9 +12,7 @@ public class EncryptionDecoder(byte[] key) : ByteToMessageDecoder
     protected override void Decode(IChannelHandlerContext context, IByteBuffer input, List<object> output)
     {
         var data = input.ReadBytes(input.ReadableBytes);
-
         _rc4.Parse(data.Array);
-
         output.Add(data);
     }
 }
