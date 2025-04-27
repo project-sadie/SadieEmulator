@@ -1,10 +1,11 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Rooms.Bots;
-using Serilog;
 
 namespace Sadie.Game.Rooms.Bots;
 
-public class RoomBotRepository : IRoomBotRepository
+public class RoomBotRepository(
+    ILogger<RoomBotRepository> logger) : IRoomBotRepository
 {
     private readonly ConcurrentDictionary<int, IRoomBot> _bots = new();
 
@@ -26,11 +27,12 @@ public class RoomBotRepository : IRoomBotRepository
         }
         catch (Exception e)
         {
-            Log.Logger.Error(e.ToString());
+            logger.LogError(e.ToString());
         }
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
+        return ValueTask.CompletedTask;
     }
 }

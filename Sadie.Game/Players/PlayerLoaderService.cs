@@ -25,12 +25,8 @@ public class PlayerLoaderService(IDbContextFactory<SadieContext> dbContextFactor
                 x.ExpiresAt > expires &&
                 x.UsedAt == null);
 
-        if (tokenRecord == null)
-        {
-            return tokenRecord;
-        }
-
-        if (playerOptions.Value.CanReuseSsoTokens)
+        if (tokenRecord == null || 
+            playerOptions.Value.CanReuseSsoTokens)
         {
             return tokenRecord;
         }

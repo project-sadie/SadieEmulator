@@ -91,22 +91,23 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
 
     public Dictionary<string, string> GetObjectDataForItem(PlayerFurnitureItemPlacementData furnitureItem)
     {
-        if (furnitureItem.FurnitureItem!.InteractionType == FurnitureItemInteractionType.RoomAdsBg)
+        if (furnitureItem.FurnitureItem!.InteractionType != FurnitureItemInteractionType.RoomAdsBg)
         {
-            var data = new Dictionary<string, string>();
+            return new Dictionary<string, string>();
+        }
+        
+        var data = new Dictionary<string, string>();
             
-            foreach (var piece in furnitureItem.PlayerFurnitureItem.MetaData.Split(";"))
-            {
-                var parts = piece.Split("=");
-                var key = parts[0];
-                var value = parts.Length < 2 ? "" : parts[1];
+        foreach (var piece in furnitureItem.PlayerFurnitureItem.MetaData.Split(";"))
+        {
+            var parts = piece.Split("=");
+            var key = parts[0];
+            var value = parts.Length < 2 ? "" : parts[1];
 
-                data[key] = value;
-            }
-
-            return data;
+            data[key] = value;
         }
 
-        return new Dictionary<string, string>();
+        return data;
+
     }
 }

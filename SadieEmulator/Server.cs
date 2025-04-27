@@ -9,7 +9,6 @@ using Sadie.API.Networking;
 using Sadie.API.Networking.Client;
 using Sadie.Database;
 using Sadie.Game.Players.Options;
-using Sadie.Networking;
 using SadieEmulator.Tasks;
 using Serilog;
 
