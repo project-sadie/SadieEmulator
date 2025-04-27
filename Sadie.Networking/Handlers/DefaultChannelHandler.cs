@@ -20,9 +20,16 @@ public class DefaultChannelHandler(
 
     public override async void ChannelInactive(IChannelHandlerContext context)
     {
-        if (!await clientRepository.TryRemoveAsync(context.Channel.Id))
+        try
         {
-            logger.LogError("Failed to remove channel from client repository.");
+            if (!await clientRepository.TryRemoveAsync(context.Channel.Id))
+            {
+                logger.LogError("Failed to remove channel from client repository.");
+            }
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.ToString());
         }
     }
 

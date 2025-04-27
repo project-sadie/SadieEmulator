@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
@@ -10,27 +11,36 @@ using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events;
 
-public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUserTrade
+public class RoomUserTrade(
+    ILogger<RoomUserTrade> logger,
+    IPlayerHelperService playerHelperService) : IRoomUserTrade
 {
     public required List<IRoomUser> Users { get; init; }
     public required List<PlayerFurnitureItem> Items { get; init; }
     
     public async void OfferItems(List<PlayerFurnitureItem> playerItems)
     {
-        foreach (var item in playerItems.Where(item => !Items.Contains(item)))
+        try
         {
-            Items.Add(item);
-        }
+            foreach (var item in playerItems.Where(item => !Items.Contains(item)))
+            {
+                Items.Add(item);
+            }
 
-        foreach (var user in Users)
-        {
-            user.TradeStatus = 0;
-        }
+            foreach (var user in Users)
+            {
+                user.TradeStatus = 0;
+            }
 
-        await BroadcastToUsersAsync(new RoomUserTradeUpdateWriter
+            await BroadcastToUsersAsync(new RoomUserTradeUpdateWriter
+            {
+                Trade = this
+            });
+        }
+        catch (Exception e)
         {
-            Trade = this
-        });
+            logger.LogError(e.ToString());
+        }
     }
     
     public async Task BroadcastToUsersAsync(AbstractPacketWriter writer)

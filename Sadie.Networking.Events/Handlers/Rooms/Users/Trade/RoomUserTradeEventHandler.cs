@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Networking.Client;
@@ -12,7 +14,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 [PacketId(EventHandlerId.RoomUserTrade)]
 public class RoomUserTradeEventHandler(
     IRoomRepository roomRepository,
-    IPlayerHelperService playerHelperService) : INetworkPacketEventHandler
+    IPlayerHelperService playerHelperService,
+    IServiceProvider serviceProvider) : INetworkPacketEventHandler
 {
     public required int TargetUserId { get; init; }
     
@@ -59,7 +62,8 @@ public class RoomUserTradeEventHandler(
             State = 1
         });
 
-        var trade = new RoomUserTrade(playerHelperService)
+        var trade = new RoomUserTrade(serviceProvider.GetRequiredService<ILogger<RoomUserTrade>>(),
+            playerHelperService)
         {
             Users = [roomUser, targetUser],
             Items = []
