@@ -6,7 +6,15 @@
       "Microsoft": "Warning"
     },
     "WriteTo": [
-      { "Name": "Console" }
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "log-.txt",
+          "rollingInterval": "Day",
+          "restrictedToMinimumLevel": "Warning"
+        }
+      }
     ]
   },
   "ConnectionStrings": {
