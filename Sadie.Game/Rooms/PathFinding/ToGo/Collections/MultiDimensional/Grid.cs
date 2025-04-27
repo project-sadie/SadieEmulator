@@ -1,5 +1,3 @@
-using System.Drawing;
-
 namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.MultiDimensional;
 
 public class Grid<T> : IModelAGrid<T>
@@ -7,16 +5,9 @@ public class Grid<T> : IModelAGrid<T>
     private readonly T[] _grid;
     public Grid(int height, int width)
     {
-        if (height <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(height));
-        }
-            
-        if (width <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(width));
-        }
-            
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(height);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width);
+
         Height = height;
         Width = width;
 
@@ -51,38 +42,16 @@ public class Grid<T> : IModelAGrid<T>
         }
     }
 
-    public T this[Point point]
-    {
-        get
-        {
-            return this[point.ToPosition()];
-        }
-        set
-        {
-            this[point.ToPosition()] = value;
-        }
-    }
     public T this[Position position]
     {
-        get
-        {
-            return _grid[ConvertRowColumnToIndex(position.Row, position.Column)];
-        }
-        set
-        {
-            _grid[ConvertRowColumnToIndex(position.Row, position.Column)] = value;
-        }
+        get => _grid[ConvertRowColumnToIndex(position.Row, position.Column)];
+        set => _grid[ConvertRowColumnToIndex(position.Row, position.Column)] = value;
     }
+    
     public T this[int row, int column]
     {
-        get
-        {
-            return _grid[ConvertRowColumnToIndex(row, column)];
-        }
-        set
-        {
-            _grid[ConvertRowColumnToIndex(row, column)] = value;
-        }
+        get => _grid[ConvertRowColumnToIndex(row, column)];
+        set => _grid[ConvertRowColumnToIndex(row, column)] = value;
     }
 
     private int ConvertRowColumnToIndex(int row, int column)

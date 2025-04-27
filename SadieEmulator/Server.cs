@@ -83,9 +83,7 @@ public class Server(ILogger<Server> logger,
     public async ValueTask DisposeAsync()
     {
         await _tokenSource.CancelAsync();
-        
         logger.LogWarning("Server is about to shut down...");
-
         await networkClientRepository.DisposeAsync();
     }
 }

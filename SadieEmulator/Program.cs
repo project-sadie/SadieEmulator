@@ -27,28 +27,28 @@ internal static class Program
         _server = host.Services.GetRequiredService<IServer>();
         await _server.RunAsync();
 
-        System.Console.ReadKey(true);
+        Console.ReadKey(true);
     }
     
     private static void WriteHeaderToConsole()
     {
-        System.Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.ForegroundColor = ConsoleColor.Magenta;
 
-        System.Console.WriteLine(@"");
-        System.Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
-        System.Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
-        System.Console.WriteLine(@"  $$ /  \__| $$$$$$\   $$$$$$$ |$$\  $$$$$$\  ");
-        System.Console.WriteLine(@"  \$$$$$$\   \____$$\ $$  __$$ |$$ |$$  __$$\ ");
-        System.Console.WriteLine(@"   \____$$\  $$$$$$$ |$$ /  $$ |$$ |$$$$$$$$ |");
-        System.Console.WriteLine(@"  $$\   $$ |$$  __$$ |$$ |  $$ |$$ |$$   ____|");
-        System.Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
-        System.Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
-        System.Console.WriteLine(@"");
+        Console.WriteLine(@"");
+        Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
+        Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
+        Console.WriteLine(@"  $$ /  \__| $$$$$$\   $$$$$$$ |$$\  $$$$$$\  ");
+        Console.WriteLine(@"  \$$$$$$\   \____$$\ $$  __$$ |$$ |$$  __$$\ ");
+        Console.WriteLine(@"   \____$$\  $$$$$$$ |$$ /  $$ |$$ |$$$$$$$$ |");
+        Console.WriteLine(@"  $$\   $$ |$$  __$$ |$$ |  $$ |$$ |$$   ____|");
+        Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
+        Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
+        Console.WriteLine(@"");
 
-        System.Console.ForegroundColor = ConsoleColor.White;
+        Console.ForegroundColor = ConsoleColor.White;
 
-        System.Console.WriteLine($"         You are running version {GlobalState.Version}");
-        System.Console.WriteLine("");
+        Console.WriteLine($"         You are running version {GlobalState.Version}");
+        Console.WriteLine("");
     }
     
     private static void SetEventHandlers()
@@ -56,21 +56,28 @@ internal static class Program
         AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
         AppDomain.CurrentDomain.ProcessExit += OnClose;
         
-        System.Console.CancelKeyPress += OnClose;
+        Console.CancelKeyPress += OnClose;
     }
 
     private static async void OnClose(object? sender, EventArgs e)
     {
-        if (_server == null)
+        try
         {
-            return;
-        }
+            if (_server == null)
+            {
+                return;
+            }
 
-        await _server.DisposeAsync();
+            await _server.DisposeAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Fatal(ex.ToString());
+        }
     }
 
     private static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
     {
-        Log.Logger.Error(e.ExceptionObject.ToString());
+        Log.Logger.Error(e.ExceptionObject.ToString() ?? "Unhandled exception");
     }
 }

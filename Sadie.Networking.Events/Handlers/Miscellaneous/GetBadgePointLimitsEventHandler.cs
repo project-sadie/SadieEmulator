@@ -2,12 +2,13 @@
 using Sadie.API.Networking.Events.Handlers;
 using Sadie.Networking.Serialization.Attributes;
 
-namespace Sadie.Networking.Events.Handlers.Unsorted;
+namespace Sadie.Networking.Events.Handlers.Miscellaneous;
 
 [PacketId(EventHandlerId.GetBadgePointLimits)]
 public class GetBadgePointLimitsEventHandler : INetworkPacketEventHandler
 {
-    public async Task HandleAsync(INetworkClient client)
+    public Task HandleAsync(INetworkClient client)
     {
+        return Task.CompletedTask;
     }
 }

@@ -2,10 +2,10 @@
 using Sadie.API.Networking.Events.Handlers;
 using Sadie.Networking.Serialization.Attributes;
 
-namespace Sadie.Networking.Events.Handlers.Unsorted;
+namespace Sadie.Networking.Events.Handlers.Catalog;
 
-[PacketId(EventHandlerId.GetInterstitial)]
-public class GetInterstitialEventHandler : INetworkPacketEventHandler
+[PacketId(EventHandlerId.GetTargetedOffer)]
+public class GetTargetedOfferEventHandler : INetworkPacketEventHandler
 {
     public Task HandleAsync(INetworkClient client)
     {

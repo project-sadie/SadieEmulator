@@ -4,7 +4,7 @@ using Sadie.API.Networking.Events.Handlers;
 using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 
-namespace Sadie.Networking.Events.Handlers.Generic;
+namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerRelationships)]
 public class PlayerRelationshipsEventHandler(
