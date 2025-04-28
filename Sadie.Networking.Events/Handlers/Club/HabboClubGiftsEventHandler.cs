@@ -15,11 +15,6 @@ public class HabboClubGiftsEventHandler(
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null)
-        {
-            return;
-        }
-
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var clubGiftPage = await dbContext
@@ -27,7 +22,7 @@ public class HabboClubGiftsEventHandler(
             .IgnoreAutoIncludes()
             .FirstOrDefaultAsync(x => x.Layout == "club_gift");
 
-        var daysAsClub = CalculateDaysAsClub(client.Player.Subscriptions);
+        var daysAsClub = CalculateDaysAsClub(client.Player!.Subscriptions);
         var daysTillNextClubGift = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400;
         var unclaimedGifts = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400; 
         
@@ -40,7 +35,7 @@ public class HabboClubGiftsEventHandler(
         });
     }
 
-    private int CalculateDaysAsClub(ICollection<PlayerSubscription> subscriptions)
+    private static int CalculateDaysAsClub(ICollection<PlayerSubscription> subscriptions)
     {
         var days = 0;
 

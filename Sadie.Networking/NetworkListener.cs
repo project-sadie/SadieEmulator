@@ -33,7 +33,7 @@ namespace Sadie.Networking
         private readonly NetworkOptions _networkOptions = options.Value;
         private readonly NetworkPacketOptions _packetOptions = packetOptions.Value;
 
-        private ServerBootstrap _bootstrap;
+        private ServerBootstrap? _bootstrap;
         private IChannel? _channel;
 
         public void Bootstrap()

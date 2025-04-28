@@ -22,14 +22,4 @@
         <PackageReference Include="Sadie.Networking.Serialization" Version="1.0.0" />
         <PackageReference Include="Serilog" Version="4.0.0" />
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Sadie.Networking.Encryption\Sadie.Networking.Encryption.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Sadie.Networking.Encryption">
-        <HintPath>..\..\..\..\..\..\home\ash\.nuget\packages\sadie.networking.encryption\1.0.0\lib\net9.0\Sadie.Networking.Encryption.dll</HintPath>
-      </Reference>
-    </ItemGroup>
 </Project>

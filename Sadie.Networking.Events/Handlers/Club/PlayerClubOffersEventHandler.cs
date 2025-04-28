@@ -16,15 +16,10 @@ public class PlayerClubOffersEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player == null)
-        {
-            return;
-        }
-
         var daysRemaining = 0;
         
         var clubSubscription = client
-            .Player
+            .Player!
             .Subscriptions
             .FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
 

@@ -119,7 +119,7 @@ public class FloorPlanEditorSaveEventHandler(
         }
     }
 
-    public List<string> GetErrors()
+    private List<string> GetErrors()
     {
         var errors = new List<string>();
 

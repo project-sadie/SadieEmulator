@@ -25,7 +25,7 @@ public class NetworkPacketWriterSerializerTests
     [SetUp]
     public void SetUp()
     {
-        _options = Options.Create(new NetworkPacketOptions
+        _options = Microsoft.Extensions.Options.Options.Create(new NetworkPacketOptions
         {
             BufferByteSize = 4024,
             FrameLengthByteCount = 4,
