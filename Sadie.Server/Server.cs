@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Networking;
 using Sadie.Networking.Client;
 using Sadie.Options.Options;

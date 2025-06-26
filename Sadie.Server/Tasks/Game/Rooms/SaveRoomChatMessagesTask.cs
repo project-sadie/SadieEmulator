@@ -1,8 +1,8 @@
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
-using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Db;
+using Sadie.Db.Models.Rooms.Chat;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 

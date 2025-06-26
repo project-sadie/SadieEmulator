@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Navigator;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db;
+using Sadie.Db.Models.Rooms;
 using Sadie.Game.Navigator.Filterers;
 
 namespace Sadie.Game.Navigator;

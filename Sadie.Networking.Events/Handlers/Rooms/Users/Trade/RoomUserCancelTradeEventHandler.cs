@@ -1,7 +1,7 @@
 using Sadie.API.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users.Trading;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 

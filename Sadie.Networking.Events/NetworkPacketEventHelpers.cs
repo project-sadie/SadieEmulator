@@ -4,9 +4,8 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Constants;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Db.Models.Constants;
+using Sadie.Db.Models.Players;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
@@ -26,6 +25,7 @@ using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Networking.Writers.Players.Subscriptions;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Helpers;
+using RoomChatMessage = Sadie.Db.Models.Rooms.Chat.RoomChatMessage;
 
 namespace Sadie.Networking.Events;
 
@@ -198,7 +198,7 @@ public static class NetworkPacketEventHelpers
             return;
         }
         
-        var chatMessage = new RoomChatMessage
+        var chatMessage = new RoomChatMessage()
         {
             RoomId = room.Id,
             PlayerId = roomUser.Player.Id,

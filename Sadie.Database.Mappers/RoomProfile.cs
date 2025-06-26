@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 

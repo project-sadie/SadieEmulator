@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 

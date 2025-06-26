@@ -1,6 +1,6 @@
 ﻿using Sadie.API.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Subscriptions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;

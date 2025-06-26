@@ -2,8 +2,8 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db;
+using Sadie.Db.Models.Rooms;
 
 namespace Sadie.Game.Rooms;
 

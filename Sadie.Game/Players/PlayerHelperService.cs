@@ -1,8 +1,8 @@
-using Sadie.API;
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Players.Friendships;
 using Sadie.API.Game.Players.Packets.Writers;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db.Models.Players;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Events.Dtos;

@@ -4,7 +4,7 @@ using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
-using Sadie.Database.Models.Players;
+using Sadie.Db.Models.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Game.Rooms.Unit;
 

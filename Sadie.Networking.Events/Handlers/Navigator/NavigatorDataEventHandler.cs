@@ -1,5 +1,5 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Navigator;
 using Sadie.Networking.Writers.Players.Navigator;
 

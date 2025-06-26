@@ -2,7 +2,7 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Unit;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Mapping;

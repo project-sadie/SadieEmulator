@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
