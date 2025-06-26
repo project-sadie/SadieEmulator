@@ -37,15 +37,14 @@ public class CatalogPurchaseEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var newPlayer= client.Player;
+        var player = client.Player;
 
         if (client.Player == null)
         {
             return;
         }
         
-        if ((DateTime.Now - newPlayer
-	!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
+        if ((DateTime.Now - player!.State.LastPlayerSearch).TotalMilliseconds < CooldownIntervals.CatalogPurchase)
         {
             var bytes = new CatalogPurchaseFailedWriter
             {
@@ -133,7 +132,7 @@ public class CatalogPurchaseEventHandler(
             return;
         }
         
-        newPlayer.State.LastCatalogPurchase = DateTime.Now;
+        player.State.LastCatalogPurchase = DateTime.Now;
 
         for (var i = 0; i < Amount; i++)
         {
@@ -265,7 +264,7 @@ public class CatalogPurchaseEventHandler(
 
     private async Task ProcessVipPurchaseAsync(INetworkClient client)
     {
-        var newPlayer= client.Player;
+        var player = client.Player;
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
@@ -331,15 +330,13 @@ public class CatalogPurchaseEventHandler(
 
             var subscription = new PlayerSubscription
             {
-                PlayerId = newPlayer
-.Id,
+                PlayerId = player.Id,
                 SubscriptionId = clubSubscription.Id,
                 CreatedAt = DateTime.Now,
                 ExpiresAt = DateTime.Now.AddDays(offer.DurationDays)
             };
 
-            newPlayer
-newPlay.Add(subscription);
+            player.Subscriptions.Add(subscription);
             
             dbContext.PlayerSubscriptions.Add(subscription);
             await dbContext.SaveChangesAsync();
@@ -366,7 +363,7 @@ newPlay.Add(subscription);
             await client.WriteToStreamAsync(new PlayerPermissionsWriter
             {
                 Club = 2,
-                Rank = newPlayer.Roles.Count != 0 ? newPlayer.Roles.Max(x => x.Id) : 1,
+                Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
                 Ambassador = true
             });
             
