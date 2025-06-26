@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers.Rooms;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events;
 

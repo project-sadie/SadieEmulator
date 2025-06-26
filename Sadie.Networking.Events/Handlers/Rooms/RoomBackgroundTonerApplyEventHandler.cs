@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Furniture;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Attributes;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 

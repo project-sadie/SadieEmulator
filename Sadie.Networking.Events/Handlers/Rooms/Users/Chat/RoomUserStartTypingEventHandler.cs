@@ -1,6 +1,6 @@
 ﻿using Sadie.API.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;

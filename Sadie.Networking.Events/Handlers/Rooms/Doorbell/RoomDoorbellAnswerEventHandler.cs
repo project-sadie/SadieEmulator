@@ -5,9 +5,9 @@ using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;

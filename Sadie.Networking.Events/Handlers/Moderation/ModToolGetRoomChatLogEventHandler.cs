@@ -1,6 +1,6 @@
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Moderation;
 
 namespace Sadie.Networking.Events.Handlers.Moderation;

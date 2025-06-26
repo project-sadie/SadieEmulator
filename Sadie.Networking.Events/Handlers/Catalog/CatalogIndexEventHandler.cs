@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
-using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Db;
+using Sadie.Db.Models.Catalog.Pages;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;

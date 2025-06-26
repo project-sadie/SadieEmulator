@@ -1,4 +1,4 @@
-using Sadie.API;
+using Sadie.API.Game.Players.Friendships;
 using Sadie.Enums.Game.Players;
 
 namespace Sadie.Networking.Events.Dtos;

@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
-using Sadie.Database;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
 

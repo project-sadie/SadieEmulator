@@ -1,5 +1,5 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Competition;
 
 namespace Sadie.Networking.Events.Handlers.Competition;

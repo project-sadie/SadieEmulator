@@ -1,4 +1,4 @@
-using Sadie.Database.Models.Rooms;
+using Sadie.Db.Models.Rooms;
 
 namespace Sadie.Game.Navigator.Filterers;
 

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
+using Sadie.Db;
+using Sadie.Db.Models.Players;
 using Sadie.Options.Options;
 
 namespace Sadie.Game.Players;

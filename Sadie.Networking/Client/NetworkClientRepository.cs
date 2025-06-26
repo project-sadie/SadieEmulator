@@ -3,7 +3,7 @@ using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
-using Sadie.Database;
+using Sadie.Db;
 
 namespace Sadie.Networking.Client;
 

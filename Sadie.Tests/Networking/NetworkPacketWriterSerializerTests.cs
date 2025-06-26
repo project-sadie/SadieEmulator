@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Options;
-using Sadie.Database.Models.Catalog.FrontPage;
-using Sadie.Database.Models.Catalog.Items;
-using Sadie.Database.Models.Catalog.Pages;
-using Sadie.Database.Models.Furniture;
-using Sadie.Database.Models.Players;
+using Sadie.Db.Models.Catalog.FrontPage;
+using Sadie.Db.Models.Catalog.Items;
+using Sadie.Db.Models.Catalog.Pages;
+using Sadie.Db.Models.Furniture;
+using Sadie.Db.Models.Players;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Events.Dtos;

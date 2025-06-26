@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db;
+using Sadie.Db.Models.Players;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 

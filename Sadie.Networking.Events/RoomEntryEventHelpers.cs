@@ -6,7 +6,7 @@ using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;

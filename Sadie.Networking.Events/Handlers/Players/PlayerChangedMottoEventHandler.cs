@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
-using Sadie.Database.Models.Constants;
+using Sadie.Db;
+using Sadie.Db.Models.Constants;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Extensions;
 

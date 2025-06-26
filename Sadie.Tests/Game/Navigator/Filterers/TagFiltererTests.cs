@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Game.Navigator.Filterers;
 
 namespace Sadie.Tests.Game.Navigator.Filterers;
