@@ -13,7 +13,7 @@ namespace Sadie.Migrations.Migrations
 {
     [DbContext(typeof(SadieMigrationsContext))]
     [Migration("20250626205448_SeedInitialData")]
-    partial class SeedInitialData
+    partial class SeedConstants
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
