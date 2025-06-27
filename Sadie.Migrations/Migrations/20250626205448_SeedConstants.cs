@@ -10,15 +10,35 @@ namespace Sadie.Migrations.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("INSERT INTO server_settings (player_welcome_message, fair_currency_rewards) VALUES ('Welcome (back) to Sadie [username], we''re running version [version]!', 1)");
-            migrationBuilder.Sql("INSERT INTO server_player_constants (max_motto_length, min_sso_length, max_friendships) VALUES (35, 8, 20000)");
+            migrationBuilder.InsertData(
+                table: "server_settings",
+                columns: new[] { "player_welcome_message", "fair_currency_rewards" },
+                values: new object[,]
+                {
+                    { "Welcome (back) to Sadie [username], we're running version [version]!", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "server_player_constants",
+                columns: new[] { "max_motto_length", "min_sso_length", "max_friendships" },
+                values: new object[,]
+                {
+                    { 35, 8, 20000 }
+                });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("TRUNCATE TABLE server_settings;");
-            migrationBuilder.Sql("TRUNCATE TABLE server_player_constants;");
+            migrationBuilder.DeleteData(
+                table: "server_settings",
+                keyColumns: new[] { "player_welcome_message", "fair_currency_rewards" },
+                keyValues: new object[] { "Welcome (back) to Sadie [username], we're running version [version]!", 1 });
+
+            migrationBuilder.DeleteData(
+                table: "server_player_constants",
+                keyColumns: new[] { "max_motto_length", "min_sso_length", "max_friendships" },
+                keyValues: new object[] { 35, 8, 20000 });
         }
     }
 }
