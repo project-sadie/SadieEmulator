@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.Db;
+using Sadie.Migrations;
 using Sadie.Networking;
 using Sadie.Networking.Client;
 using Sadie.Options.Options;
@@ -29,6 +30,8 @@ public class Server(ILogger<Server> logger,
         var stopwatch = Stopwatch.StartNew();
         
         Log.Logger.Information("Booting up...");
+        
+        await MigrateIfNeededAsync();
         await CleanUpDataAsync();
         LoadPlugins();
 
@@ -44,6 +47,23 @@ public class Server(ILogger<Server> logger,
         logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
         
         await StartListeningForConnectionsAsync();
+    }
+
+    private async Task MigrateIfNeededAsync()
+    {
+        await using var context = await dbContextFactory.CreateDbContextAsync();
+        
+        var applied = await context.Database.GetAppliedMigrationsAsync();
+        var hasSetupDb = applied.Any(m => m.Contains("InitialCreate"));
+
+        if (!hasSetupDb)
+        {
+            logger.LogWarning($"Running initial migrations");
+            await context.Database.MigrateAsync();
+            
+            logger.LogWarning($"Seeding initial data");
+            await DatabaseSeeder.SeedInitialDataAsync(context);
+        }
     }
 
     private void LoadPlugins()

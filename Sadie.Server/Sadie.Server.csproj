@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Database.Mappers\Sadie.Database.Mappers.csproj" />
+      <ProjectReference Include="..\Sadie.Migrations\Sadie.Migrations.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
