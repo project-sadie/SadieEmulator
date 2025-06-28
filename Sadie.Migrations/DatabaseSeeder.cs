@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Db.Models.Navigator;
@@ -14,21 +14,15 @@ public static class DatabaseSeeder
         await SeedConstantsAsync(context);
         await SeedNavigatorAsync(context);
         
-        // TODO; badges
-        // TODO; catalog pages
-        // TODO; hand items
-        // TODO; permissions
-        // TODO; player relationship types
-        // TODO; roles
-        // TODO; room layouts
-        // TODO; subscriptions
-        // TODO; catalog items
-        // TODO; furniture items
-        // TODO; roles_permissions
-        // TODO; catalog front page items
-        // TODO; catalog_item_furniture_item
-        // TODO; furniture_item_hand_item
-        // TODO; catalog_club_offers
+        // already got the others as raw sql files so just source them, cba
+        
+        var rawSqlFiles = Directory.EnumerateFiles("Seeders", "*.sql");
+
+        foreach (var file in rawSqlFiles)
+        {
+            var sql = await File.ReadAllTextAsync(file);
+            await context.Database.ExecuteSqlRawAsync(sql);
+        }
     }
 
     private static async Task SeedServerSettingsAsync(SadieContext context)
@@ -41,6 +35,8 @@ public static class DatabaseSeeder
                 FairCurrencyRewards = true
             });
         }
+        
+        await context.SaveChangesAsync();
     }
     
     private static async Task SeedConstantsAsync(SadieContext context)
