@@ -16,7 +16,10 @@ public static class DatabaseSeeder
         
         // already got the others as raw sql files so just source them, cba
         
-        var rawSqlFiles = Directory.EnumerateFiles("Seeders", "*.sql");
+        var baseDir = AppContext.BaseDirectory;
+        var seedersPath = Path.Combine(baseDir, "..", "..", "..", "Sadie.Migrations", "Seeders");
+
+        var rawSqlFiles = Directory.EnumerateFiles(seedersPath, "*.sql");
 
         foreach (var file in rawSqlFiles)
         {
@@ -27,13 +30,14 @@ public static class DatabaseSeeder
 
     private static async Task SeedServerSettingsAsync(SadieContext context)
     {
-        if (!context.ServerSettings.Any())
+        if (!context.ServerSettings.Any())  
         {
-            context.ServerSettings.Add(new ServerSettings
-            {
-                PlayerWelcomeMessage = "Welcome (back) to Sadie [username], we're running version [version]!",
-                FairCurrencyRewards = true
-            });
+            var sql = @"
+                INSERT INTO server_settings (player_welcome_message, fair_currency_rewards) 
+                VALUES ('Welcome (back) to Sadie [username], we''re running version [version]!', true);
+            ";
+
+            await context.Database.ExecuteSqlRawAsync(sql);
         }
         
         await context.SaveChangesAsync();
@@ -43,26 +47,22 @@ public static class DatabaseSeeder
     {
         if (!context.ServerPlayerConstants.Any())
         {
-            context.ServerPlayerConstants.Add(new ServerPlayerConstants
-            {
-                MaxMottoLength = 35,
-                MinSsoLength = 8,
-                MaxFriendships = 20000
-            });
+            var playerConstantsSql = @"
+                INSERT INTO server_player_constants (max_motto_length, min_sso_length, max_friendships)
+                VALUES (35, 8, 20000);
+            ";
+            await context.Database.ExecuteSqlRawAsync(playerConstantsSql);
         }
 
         if (!context.ServerRoomConstants.Any())
         {
-            context.ServerRoomConstants.Add(new ServerRoomConstants
-            {
-                MaxChatMessageLength = 500,
-                SecondsTillUserIdle = 300,
-                MaxNameLength = 60,
-                MaxDescriptionLength = 250,
-                MaxTagLength = 30,
-                WiredMaxFurnitureSelection = 5,
-                CreatedAt = DateTime.Now
-            });
+            var insertRoomConstantsSql = @"
+                INSERT INTO server_room_constants
+                    (max_chat_message_length, seconds_till_user_idle, max_name_length, max_description_length, max_tag_length, wired_max_furniture_selection, created_at)
+                VALUES
+                    (500, 300, 60, 250, 30, 5, NOW());
+            ";
+            await context.Database.ExecuteSqlRawAsync(insertRoomConstantsSql);
         }
 
         await context.SaveChangesAsync();

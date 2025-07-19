@@ -71,8 +71,8 @@ public static class NetworkPacketEventHelpers
 
         await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
         {
-            HomeRoom = playerData.HomeRoomId,
-            RoomIdToEnter = playerData.HomeRoomId
+            HomeRoom = playerData.HomeRoomId.Value,
+            RoomIdToEnter = playerData.HomeRoomId.Value
         });
 
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter
