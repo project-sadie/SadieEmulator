@@ -19,6 +19,7 @@ public class Server(ILogger<Server> logger,
     IServerTaskWorker taskWorker,
     INetworkListener networkListener,
     IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieMigrationsContext> dbContextFactoryMigrate,
     IOptions<PlayerOptions> playerOptions,
     INetworkClientRepository networkClientRepository,
     IConfiguration config) : IServer
@@ -51,18 +52,25 @@ public class Server(ILogger<Server> logger,
 
     private async Task MigrateIfNeededAsync()
     {
-        await using var context = await dbContextFactory.CreateDbContextAsync();
+        await using var context = await dbContextFactoryMigrate.CreateDbContextAsync();
         
         var applied = await context.Database.GetAppliedMigrationsAsync();
         var hasSetupDb = applied.Any(m => m.Contains("InitialCreate"));
 
         if (!hasSetupDb)
         {
-            logger.LogWarning($"Running initial migrations");
-            await context.Database.MigrateAsync();
-            
-            logger.LogWarning($"Seeding initial data");
-            await DatabaseSeeder.SeedInitialDataAsync(context);
+            try
+            {
+                logger.LogWarning($"Running initial migrations");
+                await context.Database.MigrateAsync();
+
+                logger.LogWarning($"Seeding initial data");
+                await DatabaseSeeder.SeedInitialDataAsync(context);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 
