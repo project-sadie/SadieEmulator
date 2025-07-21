@@ -1,25 +1,40 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 using Sadie.Db;
 
 namespace Sadie.Migrations;
 
-public class SadieMigrationsContext() : SadieContext(CreateOptions())
+public class SadieMigrationsContext : SadieContext
 {
-    private static DbContextOptions<SadieContext> CreateOptions()
+    public SadieMigrationsContext(DbContextOptions<SadieContext> options) : base(options)
     {
-        var connectionString = Environment.GetEnvironmentVariable("SADIE_CONNECTION_STRING");
+    }
+}
 
+public class SadieMigrationsContextFactory : IDesignTimeDbContextFactory<SadieMigrationsContext>
+{
+    public SadieMigrationsContext CreateDbContext(string[] args)
+    {
+        var config = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+        var connectionString = config.GetConnectionString("Default");
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new InvalidOperationException("Missing SADIE_CONNECTION_STRING environment variable.");
+            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         }
 
-        return new DbContextOptionsBuilder<SadieContext>()
+        return new SadieMigrationsContext(new DbContextOptionsBuilder<SadieContext>()
             .UseMySql(
                 connectionString,
                 ServerVersion.AutoDetect(connectionString),
                 b => b.MigrationsAssembly("Sadie.Migrations"))
             .UseSnakeCaseNamingConvention()
-            .Options;
+            .Options);
     }
 }

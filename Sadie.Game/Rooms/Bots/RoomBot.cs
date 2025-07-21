@@ -19,8 +19,8 @@ public class RoomBot(
     HDirection direction,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomWiredService wiredService,
-    IRoomPathFinderHelperService pathFinderHelperService,
-    PlayerBot playerBot)
+    PlayerBot playerBot,
+    IRoomPathFinderHelperService pathFinderHelperService)
     : RoomUnitData(room,
             point,
             pointZ,

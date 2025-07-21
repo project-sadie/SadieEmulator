@@ -7,6 +7,7 @@ using Sadie.Db.Models.Server;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
+using Sadie.Migrations;
 using Sadie.Networking;
 using Sadie.Networking.Encryption;
 using Sadie.Networking.Events;
@@ -25,15 +26,12 @@ public static class ServerServiceCollection
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
         serviceCollection.AddSingleton<ServerTaskWorker>();
 
+        serviceCollection.AddDbContextFactory<SadieMigrationsContext>();
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
-        serviceCollection.AddSingleton<ServerSettings>(p => 
-            p.GetRequiredService<SadieContext>()
-                .ServerSettings
-                .First());
+        serviceCollection.AddSingleton<ServerSettings>(p => new ServerSettings());
         
-        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => 
-            p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());
+        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => []);
 
         MapperServiceCollection.AddServices(serviceCollection);
         PlayerServiceCollection.AddServices(serviceCollection, config);

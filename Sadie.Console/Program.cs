@@ -27,8 +27,7 @@ internal static class Program
         
         _server = host.Services.GetRequiredService<IServer>();
         await _server.RunAsync();
-
-        System.Console.ReadKey(true);
+        await host.RunAsync();
     }
     
     private static void WriteHeaderToConsole()

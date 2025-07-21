@@ -69,11 +69,14 @@ public static class NetworkPacketEventHelpers
             Level = 1
         });
 
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+        if (playerData.HomeRoomId != null)
         {
-            HomeRoom = playerData.HomeRoomId,
-            RoomIdToEnter = playerData.HomeRoomId
-        });
+            await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+            {
+                HomeRoom = playerData.HomeRoomId.Value,
+                RoomIdToEnter = playerData.HomeRoomId.Value
+            });
+        }
 
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter
         {
