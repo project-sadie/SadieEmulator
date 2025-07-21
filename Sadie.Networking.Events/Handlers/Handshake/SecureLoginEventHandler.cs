@@ -40,14 +40,14 @@ public class SecureLoginEventHandler(
         if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
             logger.LogWarning("Rejected an insecure sso token");
-            await DisconnectNetworkClientAsync(client.Channel.Id);
+            await client.DisposeAsync();
             return;
         }
         
         if (encryptionOptions.Value.Enabled && !client.EncryptionEnabled)
         {
             logger.LogWarning("Encryption is enabled and TLS Handshake isn't finished.");
-            await DisconnectNetworkClientAsync(client.Channel.Id);
+            await client.DisposeAsync();
             return;
         }
 
@@ -56,23 +56,26 @@ public class SecureLoginEventHandler(
         if (tokenRecord == null)
         {
             logger.LogWarning("Failed to find token record for provided sso.");
-            await DisconnectNetworkClientAsync(client.Channel.Id);
+            await client.DisposeAsync();
             return;
         }
         
         var player = await playerRepository.GetPlayerByIdAsync(tokenRecord.PlayerId);
 
-        if (player == null)
+        if (player?.Data == null ||
+            player.AvatarData == null ||
+            player.NavigatorSettings == null ||
+            player.GameSettings == null)
         {
             logger.LogError("Failed to resolve player record.");
-            await DisconnectNetworkClientAsync(client.Channel.Id);
+            await client.DisposeAsync();
             return;
         }
         
         if (player.Bans.Any(x => x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now))
         {
             logger.LogWarning("Disconnected banned player {@PlayerUsername}", player.Username);
-            await DisconnectNetworkClientAsync(client.Channel.Id);
+            await client.DisposeAsync();
             return;
         }
 
@@ -88,7 +91,7 @@ public class SecureLoginEventHandler(
         if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
         {
             logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
-            await DisconnectNetworkClientAsync(client.Channel.Id);
+            await client.DisposeAsync();
             return;
         }
         
@@ -118,7 +121,7 @@ public class SecureLoginEventHandler(
         if (!playerRepository.TryAddPlayer(playerLogic))
         {
             logger.LogError($"Player {playerLogic.Username} could not be registered");
-            await DisconnectNetworkClientAsync(client.Channel.Id);
+            await client.DisposeAsync();
             return;
         }
         
@@ -161,12 +164,4 @@ public class SecureLoginEventHandler(
     }
 
     private bool ValidateSso(string sso) => sso.Length >= constants.MinSsoLength;
-
-    private async Task DisconnectNetworkClientAsync(IChannelId channelId)
-    {
-        if (!await networkClientRepository.TryRemoveAsync(channelId))
-        {
-            logger.LogError("Failed to remove network client");
-        }
-    }
 }
