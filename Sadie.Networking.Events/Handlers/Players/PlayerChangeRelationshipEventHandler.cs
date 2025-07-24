@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
+using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
