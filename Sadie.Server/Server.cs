@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.Db;
-using Sadie.Migrations;
 using Sadie.Networking;
 using Sadie.Networking.Client;
 using Sadie.Options.Options;
@@ -19,7 +18,6 @@ public class Server(ILogger<Server> logger,
     IServerTaskWorker taskWorker,
     INetworkListener networkListener,
     IDbContextFactory<SadieContext> dbContextFactory,
-    IDbContextFactory<SadieMigrationsContext> dbContextFactoryMigrate,
     IOptions<PlayerOptions> playerOptions,
     INetworkClientRepository networkClientRepository,
     IConfiguration config) : IServer
@@ -52,7 +50,7 @@ public class Server(ILogger<Server> logger,
 
     private async Task MigrateIfNeededAsync()
     {
-        await using var context = await dbContextFactoryMigrate.CreateDbContextAsync();
+        await using var context = await dbContextFactory.CreateDbContextAsync();
         
         var applied = await context.Database.GetAppliedMigrationsAsync();
         var hasSetupDb = applied.Any(m => m.Contains("InitialCreate"));
@@ -65,7 +63,7 @@ public class Server(ILogger<Server> logger,
                 await context.Database.MigrateAsync();
 
                 logger.LogWarning($"Seeding initial data");
-                await DatabaseSeeder.SeedInitialDataAsync(context);
+                await SeedData.SeedRawSqlFilesAsync(context);
             }
             catch (Exception ex)
             {
