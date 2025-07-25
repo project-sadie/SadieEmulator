@@ -18,6 +18,7 @@
         <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
         <PackageReference Include="coverlet.collector" Version="3.1.2" />
         <PackageReference Include="Sadie.API" Version="1.1.2" />
+        <PackageReference Include="Sadie.Game.Navigator" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>

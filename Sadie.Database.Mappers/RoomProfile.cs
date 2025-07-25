@@ -18,7 +18,7 @@ public class RoomProfile : Profile
                 x.Id,
                 x.Name,
                 x.Layout,
-                new RoomTileMap(x.Layout.HeightMap, x.FurnitureItems),
+                new RoomTileMap(x.Layout.Heightmap, x.FurnitureItems),
                 x.Owner,
                 x.Description,
                 x.MaxUsersAllowed,

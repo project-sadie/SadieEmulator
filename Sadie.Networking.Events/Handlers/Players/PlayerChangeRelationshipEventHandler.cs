@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
+using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -58,7 +58,7 @@ public class PlayerChangeRelationshipEventHandler(
                     OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
                     TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
-                    TypeId = (PlayerRelationshipType)relationId
+                    TypeId = relationId
                 };
                 
                 client.Player.Relationships.Add(relationship);
@@ -70,7 +70,7 @@ public class PlayerChangeRelationshipEventHandler(
             }
             else
             {
-                relationship.TypeId = (PlayerRelationshipType)relationId;
+                relationship.TypeId = relationId;
                 dbContext.Entry(relationship).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
             }
