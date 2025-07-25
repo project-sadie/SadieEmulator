@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.Db;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players;
@@ -27,8 +27,8 @@ public class PlayerChangedAppearanceEventHandler(
         }
 
         var gender = Gender == "M" ? 
-            AvatarGender.Male : 
-            AvatarGender.Female;
+            PlayerAvatarGender.Male : 
+            PlayerAvatarGender.Female;
 
         var figureCode = FigureCode;
 

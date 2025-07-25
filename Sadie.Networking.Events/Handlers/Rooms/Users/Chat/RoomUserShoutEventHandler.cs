@@ -2,7 +2,7 @@
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.Db.Models.Constants;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 

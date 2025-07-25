@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Shared.Attributes;
@@ -87,7 +87,7 @@ public class PlayerChangeRelationshipEventHandler(
         var newFriendData = new FriendData
         {
             Motto = friend.AvatarData.Motto,
-            Gender = AvatarGender.Male,
+            Gender = PlayerAvatarGender.Male,
             Username = friend.Username,
             FigureCode = friend.AvatarData.FigureCode
         };

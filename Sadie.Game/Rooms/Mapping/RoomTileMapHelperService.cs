@@ -5,7 +5,7 @@ using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Mapping;
 using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 
 namespace Sadie.Game.Rooms.Mapping;
 

@@ -9,6 +9,7 @@ using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.Db;
 using Sadie.Enums.Game.Rooms;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
@@ -119,7 +120,7 @@ public class RoomLoadedEventHandler(
                 
                 await client.WriteToStreamAsync(new GenericErrorWriter
                 {
-                    ErrorCode = (int) GenericErrorCode.IncorrectRoomPassword
+                    ErrorCode = (int) GenericErrorCode.NavigatorInvalidPassword
                 });
                 
                 await client.WriteToStreamAsync(new RoomUserHotelViewWriter());

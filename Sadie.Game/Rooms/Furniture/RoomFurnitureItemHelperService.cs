@@ -5,7 +5,7 @@ using Sadie.API.Networking;
 using Sadie.Db;
 using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture;

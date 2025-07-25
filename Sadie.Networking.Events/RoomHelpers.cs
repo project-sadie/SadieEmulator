@@ -9,7 +9,7 @@ using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Rooms;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 
 namespace Sadie.Networking.Events;
 

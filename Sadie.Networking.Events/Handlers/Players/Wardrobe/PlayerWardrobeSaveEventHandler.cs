@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 
@@ -28,7 +28,7 @@ public class PlayerWardrobeSaveEventHandler(
         {
             SlotId = SlotId,
             FigureCode = FigureCode,
-            Gender = Gender == "M" ? AvatarGender.Male : AvatarGender.Female
+            Gender = Gender == "M" ? PlayerAvatarGender.Male : PlayerAvatarGender.Female
         };
             
         player.WardrobeItems.Add(wardrobeItem);

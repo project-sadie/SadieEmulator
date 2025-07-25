@@ -10,7 +10,7 @@ using Sadie.Db.Models.Constants;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Game.Rooms.Unit;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Networking.Writers.Rooms.Users.HandItems;
