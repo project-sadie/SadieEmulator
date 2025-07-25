@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.Db;
+using Sadie.Game.Players.Options;
 using Sadie.Networking;
 using Sadie.Networking.Client;
-using Sadie.Options.Options;
 using SadieEmulator.Tasks;
 using Serilog;
 

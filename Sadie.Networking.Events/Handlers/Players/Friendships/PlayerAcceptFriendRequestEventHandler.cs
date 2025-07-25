@@ -69,7 +69,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 },
                 FriendOnline = targetOnline,
                 FriendInRoom = targetInRoom,
-                Relation = targetRelationship?.TypeId ?? PlayerRelationshipType.None
+                Relation = (PlayerRelationshipType?)targetRelationship?.TypeId ?? PlayerRelationshipType.None
             }
         ]);
 
@@ -102,7 +102,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                     },
                     FriendOnline = true,
                     FriendInRoom = player.State.CurrentRoomId != 0,
-                    Relation = relationship?.TypeId ?? PlayerRelationshipType.None
+                    Relation = (PlayerRelationshipType?)relationship?.TypeId ?? PlayerRelationshipType.None
                 }
             ]);
         }

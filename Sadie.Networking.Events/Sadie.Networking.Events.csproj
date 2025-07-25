@@ -18,10 +18,4 @@
       <PackageReference Include="Scrutor" Version="4.2.2" />
       <PackageReference Include="Serilog" Version="4.2.1-dev-02352" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Sadie.Db">
-        <HintPath>..\..\..\..\..\..\home\a\.nuget\packages\sadie.db\1.1.0\lib\net9.0\Sadie.Db.dll</HintPath>
-      </Reference>
-    </ItemGroup>
 </Project>

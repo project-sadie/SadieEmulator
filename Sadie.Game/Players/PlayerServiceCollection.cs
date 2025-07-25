@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Game.Players;
-using Sadie.Options.Options;
+using Sadie.Game.Players.Options;
 
 namespace Sadie.Game.Players;
 

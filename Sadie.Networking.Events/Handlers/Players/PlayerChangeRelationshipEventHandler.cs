@@ -58,7 +58,7 @@ public class PlayerChangeRelationshipEventHandler(
                     OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
                     TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
-                    TypeId = (PlayerRelationshipType)relationId
+                    TypeId = relationId
                 };
                 
                 client.Player.Relationships.Add(relationship);
@@ -70,7 +70,7 @@ public class PlayerChangeRelationshipEventHandler(
             }
             else
             {
-                relationship.TypeId = (PlayerRelationshipType)relationId;
+                relationship.TypeId = relationId;
                 dbContext.Entry(relationship).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
             }
