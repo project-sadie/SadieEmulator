@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomForwardData)]
 public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper) : INetworkPacketEventHandler
 {
     public int RoomId { get; init; }

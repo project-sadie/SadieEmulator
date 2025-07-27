@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Gender { get; set; }
     public required string FigureCode { get; set; }

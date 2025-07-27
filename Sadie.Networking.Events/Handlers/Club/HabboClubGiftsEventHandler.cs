@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubGifts)]
 public class HabboClubGiftsEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerRemoveUserIgnore)]
 public class PlayerRemoveUserIgnoreEventHandler(IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Username { get; set; }
     

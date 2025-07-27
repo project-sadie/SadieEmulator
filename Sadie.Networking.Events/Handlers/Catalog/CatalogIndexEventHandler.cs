@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogIndex)]
 public class CatalogIndexEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

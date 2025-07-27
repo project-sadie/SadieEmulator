@@ -39,6 +39,8 @@ public static class ServerServiceCollection
         NavigatorServiceCollection.AddServices(serviceCollection);
         EncryptionServiceProvider.AddServices(serviceCollection, config);
         
+        serviceCollection.AddDbContextFactory<SadieMigrationsDbContext>();
+        
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
             .AddClasses(classes => classes.AssignableTo<IServerTask>())

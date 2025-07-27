@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomPaintItemPlaced)]
 public class RoomPaintItemPlacedEventHandler(
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int ItemId { get; init; }
     

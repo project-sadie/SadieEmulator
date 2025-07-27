@@ -15,7 +15,7 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
     public async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
         PlayerFurnitureItemPlacementData roomFurnitureItem,
-        IDbContextFactory<SadieContext> dbContextFactory)
+        IDbContextFactory<SadieDbContext> dbContextFactory)
     {
         if (string.IsNullOrEmpty(roomFurnitureItem.PlayerFurnitureItem.MetaData))
         {

@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerIgnoredUser)]
 public class PlayerIgnoreUserEventHandler(IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Username { get; set; }
     

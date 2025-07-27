@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerChangedMottoEventHandler(
     IRoomRepository roomRepository, 
     ServerPlayerConstants constants,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Motto { get; set; }
     

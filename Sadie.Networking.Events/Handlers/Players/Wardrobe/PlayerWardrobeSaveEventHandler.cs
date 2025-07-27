@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Wardrobe;
 
 [PacketId(EventHandlerId.PlayerWardrobeSave)]
 public class PlayerWardrobeSaveEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int SlotId { get; set; }
     public required string FigureCode { get; set; }

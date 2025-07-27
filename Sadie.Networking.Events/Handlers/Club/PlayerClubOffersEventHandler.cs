@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubData)]
 public class PlayerClubOffersEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int WindowId { get; set; }
     

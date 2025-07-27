@@ -16,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 public class RoomDoorbellAnswerEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomUserFactory roomUserFactory,
     INetworkClientRepository clientRepository,
     IRoomTileMapHelperService tileMapHelperService,

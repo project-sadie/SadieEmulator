@@ -17,7 +17,8 @@ namespace SadieEmulator;
 public class Server(ILogger<Server> logger,
     IServerTaskWorker taskWorker,
     INetworkListener networkListener,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IDbContextFactory<SadieMigrationsDbContext> dbContextFactoryMigrate,
     IOptions<PlayerOptions> playerOptions,
     INetworkClientRepository networkClientRepository,
     IConfiguration config) : IServer
@@ -50,7 +51,7 @@ public class Server(ILogger<Server> logger,
 
     private async Task MigrateIfNeededAsync()
     {
-        await using var context = await dbContextFactory.CreateDbContextAsync();
+        await using var context = await dbContextFactoryMigrate.CreateDbContextAsync();
         
         var applied = await context.Database.GetAppliedMigrationsAsync();
         var hasSetupDb = applied.Any(m => m.Contains("InitialCreate"));
@@ -63,7 +64,7 @@ public class Server(ILogger<Server> logger,
                 await context.Database.MigrateAsync();
 
                 logger.LogWarning($"Seeding initial data");
-                await SeedData.SeedRawSqlFilesAsync(context);
+                await SeedData.SeedInitialDataAsync(context);
             }
             catch (Exception ex)
             {

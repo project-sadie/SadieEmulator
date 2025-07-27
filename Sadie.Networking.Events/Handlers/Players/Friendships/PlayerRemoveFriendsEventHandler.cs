@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 [PacketId(EventHandlerId.PlayerRemoveFriends)]
 public class PlayerRemoveFriendsEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public List<long> Ids { get; init; } = [];

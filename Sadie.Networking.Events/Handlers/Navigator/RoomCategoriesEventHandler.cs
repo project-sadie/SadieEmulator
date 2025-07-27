@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.RoomCategories)]
 public class RoomCategoriesEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

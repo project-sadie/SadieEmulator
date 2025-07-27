@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomSettingsSave)]
 public class RoomSettingsSaveEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants) : INetworkPacketEventHandler
 {

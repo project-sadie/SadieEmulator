@@ -43,7 +43,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         }
     }
     
-    public async Task SwapItemsAsync(IDbContextFactory<SadieContext> dbContextFactory)
+    public async Task SwapItemsAsync(IDbContextFactory<SadieDbContext> dbContextFactory)
     {
         var map = new Dictionary<long, List<PlayerFurnitureItem>>();
         

@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerCreateRoom)]
 public class PlayerCreateRoomEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository,
     IMapper mapper) : INetworkPacketEventHandler
 {

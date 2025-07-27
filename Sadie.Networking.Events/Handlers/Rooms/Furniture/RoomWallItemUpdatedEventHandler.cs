@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomWallItemUpdated)]
 public class RoomWallItemUpdatedEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {

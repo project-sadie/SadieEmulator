@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
 [PacketId(EventHandlerId.FloorPlanEditorSave)]
 public class FloorPlanEditorSaveEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required string HeightMap { get; init; }

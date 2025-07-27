@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture.Wired;
 
 [PacketId(EventHandlerId.RoomWiredEffectSaved)]
 public class RoomWiredEffectSavedEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }

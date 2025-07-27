@@ -27,7 +27,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerHelperService playerHelperService,
     IMapper mapper) : INetworkPacketEventHandler
 {

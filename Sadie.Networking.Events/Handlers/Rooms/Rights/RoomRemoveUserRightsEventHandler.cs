@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 [PacketId(EventHandlerId.RoomRemoveUserRights)]
 public class RoomRemoveUserRightsEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required List<int> Ids { get; init; }

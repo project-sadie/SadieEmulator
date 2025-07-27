@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerWearingBadges)]
 public class PlayerWearingBadgesEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler

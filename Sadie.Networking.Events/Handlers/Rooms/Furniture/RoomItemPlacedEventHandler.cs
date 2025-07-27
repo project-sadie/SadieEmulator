@@ -16,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemPlaced)]
 public class RoomItemPlacedEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository,
     IRoomFurnitureItemInteractorRepository interactorRepository,
     IRoomTileMapHelperService tileMapHelperService,

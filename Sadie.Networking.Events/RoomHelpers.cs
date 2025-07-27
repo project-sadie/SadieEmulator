@@ -18,7 +18,7 @@ public static class RoomHelpers
     public static async Task<IRoomLogic?> TryLoadRoomByIdAsync(
         long id, 
         IRoomRepository roomRepository, 
-        IDbContextFactory<SadieContext> dbContextFactory,
+        IDbContextFactory<SadieDbContext> dbContextFactory,
         IMapper mapper)
     {
         var memoryValue = roomRepository.TryGetRoomById(id);
@@ -109,7 +109,7 @@ public static class RoomHelpers
     public static async Task CreateRoomVisitForPlayerAsync(
         IPlayerLogic player, 
         int roomId, 
-        IDbContextFactory<SadieContext> dbContextFactory)
+        IDbContextFactory<SadieDbContext> dbContextFactory)
     {
         var roomVisit = new PlayerRoomVisit
         {

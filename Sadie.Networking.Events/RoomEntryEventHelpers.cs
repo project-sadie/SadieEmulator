@@ -23,7 +23,7 @@ public static class RoomEntryEventHelpers
         INetworkClient client, 
         IRoomLogic room, 
         IRoomUserFactory roomUserFactory,
-        IDbContextFactory<SadieContext> dbContextFactory,
+        IDbContextFactory<SadieDbContext> dbContextFactory,
         IPlayerRepository playerRepository,
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,

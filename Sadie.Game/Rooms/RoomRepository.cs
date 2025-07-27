@@ -8,7 +8,7 @@ using Sadie.Db.Models.Rooms;
 namespace Sadie.Game.Rooms;
 
 public class RoomRepository(
-    IDbContextFactory<SadieContext> dbContextFactory, 
+    IDbContextFactory<SadieDbContext> dbContextFactory, 
     IMapper mapper) : IRoomRepository
 {
     private readonly ConcurrentDictionary<long, IRoomLogic> _rooms = new();

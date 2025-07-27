@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper)
     : INetworkPacketEventHandler
 {

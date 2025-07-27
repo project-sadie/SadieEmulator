@@ -10,7 +10,6 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Db;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Miscellaneous;
-using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Generic;
@@ -26,7 +25,7 @@ public class RoomLoadedEventHandler(
     IRoomRepository roomRepository,
     IRoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper,
     IRoomTileMapHelperService tileMapHelperService,
     IPlayerHelperService playerHelperService,

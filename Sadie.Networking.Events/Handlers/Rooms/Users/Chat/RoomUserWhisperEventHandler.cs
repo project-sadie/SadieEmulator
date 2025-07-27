@@ -16,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 public class RoomUserWhisperEventHandler(
     IRoomRepository roomRepository, 
     ServerRoomConstants roomConstants,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomHelperService roomHelperService)
     : INetworkPacketEventHandler
 {
