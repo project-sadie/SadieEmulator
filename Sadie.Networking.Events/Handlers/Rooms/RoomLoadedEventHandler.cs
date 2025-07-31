@@ -11,11 +11,11 @@ using Sadie.Db;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
@@ -76,7 +76,7 @@ public class RoomLoadedEventHandler(
 
         var isOwner = room.OwnerId == player.Id;
 
-        if (room.UserRepository.Count > room.MaxUsersAllowed && !isOwner)
+        if (room.UserRepository.Count >= room.MaxUsersAllowed && !isOwner)
         {
             await client.WriteToStreamAsync(new RoomEnterErrorWriter
             {
