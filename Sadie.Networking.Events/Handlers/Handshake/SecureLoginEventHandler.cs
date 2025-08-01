@@ -8,8 +8,8 @@ using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Db.Models.Server;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Handshake;
+using Sadie.Shared.Attributes;
 using Sadie.Options.Options;
 using Sadie.Shared;
 
