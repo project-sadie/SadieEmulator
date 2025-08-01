@@ -14,13 +14,13 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Players.Subscriptions;
+using Sadie.Shared.Attributes;
 using Sadie.Shared.Constants;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
