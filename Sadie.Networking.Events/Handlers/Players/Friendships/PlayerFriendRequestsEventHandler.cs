@@ -1,8 +1,8 @@
 ﻿using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
+using Sadie.Shared.Attributes;
 using IPlayerFriendshipRequestData = Sadie.API.Game.Players.Friendships.IPlayerFriendshipRequestData;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;

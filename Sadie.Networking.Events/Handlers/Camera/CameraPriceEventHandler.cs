@@ -1,6 +1,6 @@
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Camera;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Camera;
 

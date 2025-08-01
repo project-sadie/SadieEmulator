@@ -3,9 +3,9 @@ using Sadie.API.Game.Rooms;
 using Sadie.Db;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
