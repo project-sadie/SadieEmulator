@@ -2,8 +2,8 @@
 using Sadie.Db;
 using Sadie.Db.Models.Catalog;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Other;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 

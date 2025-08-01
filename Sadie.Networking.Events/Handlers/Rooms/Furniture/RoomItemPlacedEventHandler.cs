@@ -8,9 +8,9 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 

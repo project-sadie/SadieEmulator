@@ -1,6 +1,7 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Db.Models.Rooms;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;

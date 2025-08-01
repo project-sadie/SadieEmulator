@@ -3,9 +3,9 @@ using Sadie.API.Game.Rooms;
 using Sadie.Db;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
