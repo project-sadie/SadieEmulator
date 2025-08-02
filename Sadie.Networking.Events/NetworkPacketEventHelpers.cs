@@ -178,6 +178,18 @@ public static class NetworkPacketEventHelpers
             }
         });
     }
+
+    private static async Task ShowCommandsAsync(
+        IRoomChatCommandRepository commandRepository,
+        INetworkClient client)
+    {
+        var commands = commandRepository.GetRegisteredCommands();
+            
+        await client.WriteToStreamAsync(new PlayerAlertWriter
+        {
+            Message = string.Join(Environment.NewLine, commands.Select(c => $":{c.Trigger} - {c.Description}"))
+        });
+    }
     
     public static async Task OnChatMessageAsync(
         INetworkClient client,
@@ -190,6 +202,12 @@ public static class NetworkPacketEventHelpers
         IRoomWiredService wiredService,
         IRoomHelperService roomHelperService)
     {
+        if (message.Length >= 9 && message[..9] == ":commands")
+        {
+            await ShowCommandsAsync(commandRepository, client);
+            return;
+        }
+        
         if (string.IsNullOrEmpty(message) || 
             message.Length > roomConstants.MaxChatMessageLength ||
             !TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser) ||
