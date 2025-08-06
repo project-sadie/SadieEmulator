@@ -1,7 +1,7 @@
 using System.Drawing;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Pathfinding;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Game.Rooms.PathFinding.ToGo;
 using Sadie.Game.Rooms.PathFinding.ToGo.Options;
 

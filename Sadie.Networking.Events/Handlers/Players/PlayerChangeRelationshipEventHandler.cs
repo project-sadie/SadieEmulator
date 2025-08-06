@@ -1,21 +1,21 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
+using Sadie.Db;
+using Sadie.Db.Models.Players;
 using Sadie.Enums.Game.Players;
-using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
+using Sadie.Shared.Attributes;
+using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper)
     : INetworkPacketEventHandler
 {
@@ -58,7 +58,7 @@ public class PlayerChangeRelationshipEventHandler(
                     OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
                     TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
-                    TypeId = (PlayerRelationshipType)relationId
+                    TypeId = relationId
                 };
                 
                 client.Player.Relationships.Add(relationship);
@@ -70,7 +70,7 @@ public class PlayerChangeRelationshipEventHandler(
             }
             else
             {
-                relationship.TypeId = (PlayerRelationshipType)relationId;
+                relationship.TypeId = relationId;
                 dbContext.Entry(relationship).State = EntityState.Modified;
                 await dbContext.SaveChangesAsync();
             }
@@ -87,7 +87,7 @@ public class PlayerChangeRelationshipEventHandler(
         var newFriendData = new FriendData
         {
             Motto = friend.AvatarData.Motto,
-            Gender = AvatarGender.Male,
+            Gender = PlayerAvatarGender.Male,
             Username = friend.Username,
             FigureCode = friend.AvatarData.FigureCode
         };

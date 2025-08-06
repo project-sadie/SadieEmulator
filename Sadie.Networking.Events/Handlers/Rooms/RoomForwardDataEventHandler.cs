@@ -1,16 +1,16 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomForwardData)]
 public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper) : INetworkPacketEventHandler
 {
     public int RoomId { get; init; }

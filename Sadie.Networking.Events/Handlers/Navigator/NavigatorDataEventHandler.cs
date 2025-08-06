@@ -1,7 +1,7 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
 using Sadie.Networking.Writers.Players.Navigator;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 

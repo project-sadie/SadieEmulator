@@ -2,31 +2,32 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API;
 using Sadie.API.Game.Players;
-using Sadie.Database;
-using Sadie.Database.Models.Catalog;
-using Sadie.Database.Models.Catalog.Items;
-using Sadie.Database.Models.Catalog.Pages;
-using Sadie.Database.Models.Furniture;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db;
+using Sadie.Db.Models.Catalog;
+using Sadie.Db.Models.Catalog.Items;
+using Sadie.Db.Models.Catalog.Pages;
+using Sadie.Db.Models.Furniture;
+using Sadie.Db.Models.Players;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Catalog;
 using Sadie.Enums.Game.Furniture;
+using Sadie.Enums.Game.Players;
 using Sadie.Enums.Unsorted;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Players.Subscriptions;
+using Sadie.Shared.Attributes;
 using Sadie.Shared.Constants;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogPurchase)]
 public class CatalogPurchaseEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerHelperService playerHelperService,
     IMapper mapper) : INetworkPacketEventHandler
 {
@@ -238,7 +239,7 @@ public class CatalogPurchaseEventHandler(
             Username = information["name"],
             FigureCode = information["figure"],
             Motto = information["motto"],
-            Gender = information["gender"].ToUpper() == "M" ? AvatarGender.Male : AvatarGender.Female,
+            Gender = information["gender"].ToUpper() == "M" ? PlayerAvatarGender.Male : PlayerAvatarGender.Female,
             CreatedAt = DateTime.Now
         };
 
@@ -254,7 +255,7 @@ public class CatalogPurchaseEventHandler(
             Id = bot.Id,
             Username = bot.Username,
             Motto = bot.Motto,
-            Gender = bot.Gender == AvatarGender.Male ? "m" : "f",
+            Gender = bot.Gender == PlayerAvatarGender.Male ? "m" : "f",
             FigureCode = bot.FigureCode,
             OpenInventory = true
         });

@@ -4,14 +4,13 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Constants;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Rooms.Chat;
+using Sadie.Db.Models.Constants;
+using Sadie.Db.Models.Players;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
@@ -26,6 +25,7 @@ using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Networking.Writers.Players.Subscriptions;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Shared.Helpers;
+using RoomChatMessage = Sadie.Db.Models.Rooms.Chat.RoomChatMessage;
 
 namespace Sadie.Networking.Events;
 
@@ -69,11 +69,14 @@ public static class NetworkPacketEventHelpers
             Level = 1
         });
 
-        await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+        if (playerData.HomeRoomId != null)
         {
-            HomeRoom = playerData.HomeRoomId,
-            RoomIdToEnter = playerData.HomeRoomId
-        });
+            await networkObject.WriteToStreamAsync(new PlayerHomeRoomWriter
+            {
+                HomeRoom = playerData.HomeRoomId.Value,
+                RoomIdToEnter = playerData.HomeRoomId.Value
+            });
+        }
 
         await networkObject.WriteToStreamAsync(new PlayerEffectListWriter
         {
@@ -175,7 +178,28 @@ public static class NetworkPacketEventHelpers
             }
         });
     }
-    
+
+    private static async Task ShowCommandsAsync(
+        IRoomChatCommandRepository commandRepository,
+        INetworkClient client)
+    {
+        var commands = commandRepository.GetRegisteredCommands();
+            
+        await client.WriteToStreamAsync(new PlayerAlertWriter
+        {
+            Message = string.Join(Environment.NewLine, commands.Select(BuildCommandLine))
+        });
+    }
+
+    private static string BuildCommandLine(IRoomChatCommand command)
+    {
+        var parameters = command.Parameters.Count != 0
+            ? " " + string.Join(" ", command.Parameters.Select(p => $"[{p}]"))
+            : "";
+
+        return $":{command.Trigger}{parameters} - {command.Description}";
+    }
+
     public static async Task OnChatMessageAsync(
         INetworkClient client,
         string message,
@@ -187,6 +211,24 @@ public static class NetworkPacketEventHelpers
         IRoomWiredService wiredService,
         IRoomHelperService roomHelperService)
     {
+        if (message.Length >= 9 && message[..9] == ":commands")
+        {
+
+            if (
+                TryResolveRoomObjectsForClient(roomRepository, client, out var room2, out var roomUser2))
+            {
+                await roomUser2.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
+                {
+                    UserId = roomUser2.Player.Id,
+                    EffectId = new Random().Next(1, 100),
+                    DelayMs = 0
+                });
+            }
+            
+            await ShowCommandsAsync(commandRepository, client);
+            return;
+        }
+        
         if (string.IsNullOrEmpty(message) || 
             message.Length > roomConstants.MaxChatMessageLength ||
             !TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser) ||
@@ -198,7 +240,7 @@ public static class NetworkPacketEventHelpers
             return;
         }
         
-        var chatMessage = new RoomChatMessage
+        var chatMessage = new RoomChatMessage()
         {
             RoomId = room.Id,
             PlayerId = roomUser.Player.Id,
@@ -262,7 +304,8 @@ public static class NetworkPacketEventHelpers
         string message,
         IRoomUser roomUser)
     {
-        var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
+        var triggerWord = message.Split(" ")[0][1..].ToLower();
+        var command = commandRepository.TryGetCommandByTriggerWord(triggerWord);
         
         if (command == null)
         {
@@ -280,9 +323,11 @@ public static class NetworkPacketEventHelpers
         {
             return false;
         }
+
+        var parameterQueue = new Queue<string>(message.Split(" ").Skip(1));
+        var reader = new RoomChatCommandParameterReader(parameterQueue);
         
-        var parameters = message.Split(" ").Skip(1);
-        await command.ExecuteAsync(roomUser, parameters);
+        await command.ExecuteAsync(roomUser, reader);
         
         return true;
     }

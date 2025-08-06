@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 
@@ -18,7 +18,7 @@ public class RoomProfile : Profile
                 x.Id,
                 x.Name,
                 x.Layout,
-                new RoomTileMap(x.Layout.HeightMap, x.FurnitureItems),
+                new RoomTileMap(x.Layout.Heightmap, x.FurnitureItems),
                 x.Owner,
                 x.Description,
                 x.MaxUsersAllowed,

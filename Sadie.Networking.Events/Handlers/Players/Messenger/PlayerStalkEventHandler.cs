@@ -1,9 +1,9 @@
 using Sadie.API.Game.Players;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 

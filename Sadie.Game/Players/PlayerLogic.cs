@@ -2,7 +2,7 @@ using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Sadie.API;
 using Sadie.API.Game.Players;
-using Sadie.Database.Models.Players;
+using Sadie.Db.Models.Players;
 using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Game.Players;

@@ -5,10 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
-using Sadie.Database;
+using Sadie.Db;
+using Sadie.Game.Players.Options;
 using Sadie.Networking;
 using Sadie.Networking.Client;
-using Sadie.Options.Options;
 using SadieEmulator.Tasks;
 using Serilog;
 
@@ -17,7 +17,8 @@ namespace SadieEmulator;
 public class Server(ILogger<Server> logger,
     IServerTaskWorker taskWorker,
     INetworkListener networkListener,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IDbContextFactory<SadieMigrationsDbContext> dbContextFactoryMigrate,
     IOptions<PlayerOptions> playerOptions,
     INetworkClientRepository networkClientRepository,
     IConfiguration config) : IServer
@@ -29,8 +30,9 @@ public class Server(ILogger<Server> logger,
         var stopwatch = Stopwatch.StartNew();
         
         Log.Logger.Information("Booting up...");
+        
+        await MigrateIfNeededAsync();
         await CleanUpDataAsync();
-        LoadPlugins();
 
         if (playerOptions.Value.CanReuseSsoTokens)
         {
@@ -46,22 +48,27 @@ public class Server(ILogger<Server> logger,
         await StartListeningForConnectionsAsync();
     }
 
-    private void LoadPlugins()
+    private async Task MigrateIfNeededAsync()
     {
-        var pluginFolder = config.GetValue<string>("PluginDirectory");
-
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console().CreateLogger();
-
-        if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
-        {
-            return;
-        }
+        await using var context = await dbContextFactoryMigrate.CreateDbContextAsync();
         
-        foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
+        var applied = await context.Database.GetAppliedMigrationsAsync();
+        var hasSetupDb = applied.Any(m => m.Contains("InitialCreate"));
+
+        if (!hasSetupDb)
         {
-            Assembly.LoadFile(plugin);
-            Log.Logger.Warning($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)}");
+            try
+            {
+                logger.LogWarning($"Running initial migrations");
+                await context.Database.MigrateAsync();
+
+                logger.LogWarning($"Seeding initial data");
+                await SeedData.SeedInitialDataAsync(context);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 

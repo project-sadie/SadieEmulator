@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
-using Sadie.Database.Models.Catalog.Pages;
-using Sadie.Database.Models.Players;
+using Sadie.Db;
+using Sadie.Db.Models.Catalog.Pages;
+using Sadie.Db.Models.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubGifts)]
 public class HabboClubGiftsEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

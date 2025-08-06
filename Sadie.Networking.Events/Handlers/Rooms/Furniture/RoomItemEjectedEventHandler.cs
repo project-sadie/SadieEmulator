@@ -4,19 +4,19 @@ using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemEjected)]
 public class RoomItemEjectedEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository,
     IPlayerRepository playerRepository,
     IRoomFurnitureItemInteractorRepository interactorRepository,

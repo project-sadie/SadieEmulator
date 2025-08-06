@@ -7,15 +7,15 @@ using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
@@ -25,7 +25,7 @@ public class RoomLoadedEventHandler(
     IRoomRepository roomRepository,
     IRoomUserFactory roomUserFactory,
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper,
     IRoomTileMapHelperService tileMapHelperService,
     IPlayerHelperService playerHelperService,
@@ -76,7 +76,7 @@ public class RoomLoadedEventHandler(
 
         var isOwner = room.OwnerId == player.Id;
 
-        if (room.UserRepository.Count > room.MaxUsersAllowed && !isOwner)
+        if (room.UserRepository.Count >= room.MaxUsersAllowed && !isOwner)
         {
             await client.WriteToStreamAsync(new RoomEnterErrorWriter
             {
@@ -119,7 +119,7 @@ public class RoomLoadedEventHandler(
                 
                 await client.WriteToStreamAsync(new GenericErrorWriter
                 {
-                    ErrorCode = (int) GenericErrorCode.IncorrectRoomPassword
+                    ErrorCode = (int) GenericErrorCode.NavigatorInvalidPassword
                 });
                 
                 await client.WriteToStreamAsync(new RoomUserHotelViewWriter());

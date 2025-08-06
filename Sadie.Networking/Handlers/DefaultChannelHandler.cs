@@ -26,7 +26,7 @@ public class DefaultChannelHandler(
         }
     }
 
-    protected override async void ChannelRead0(IChannelHandlerContext context, INetworkPacket packet)
+    protected override void ChannelRead0(IChannelHandlerContext context, INetworkPacket packet)
     {
         var client = clientRepository.TryGetClientByChannelId(context.Channel.Id);
 
@@ -35,14 +35,6 @@ public class DefaultChannelHandler(
             return;
         }
 
-        try
-        {
-            await packetHandler.HandleAsync(client, packet);
-        }
-        catch (IndexOutOfRangeException e)
-        {
-            logger.LogError($"Failed to handle packet: {packet.GetType().BaseType?.Name}");
-            logger.LogError(e.ToString());
-        }
+        _ = packetHandler.HandleAsync(client, packet);
     }
 }

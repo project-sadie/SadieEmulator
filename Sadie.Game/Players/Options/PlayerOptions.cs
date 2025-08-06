@@ -1,4 +1,4 @@
-namespace Sadie.Options.Options;
+namespace Sadie.Game.Players.Options;
 
 public class PlayerOptions
 {

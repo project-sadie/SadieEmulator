@@ -1,7 +1,7 @@
 using Sadie.Networking.Client;
 using Sadie.Networking.Encryption;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Handshake;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 

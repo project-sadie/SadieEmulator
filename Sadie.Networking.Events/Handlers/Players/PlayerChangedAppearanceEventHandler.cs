@@ -1,18 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
-using Sadie.Enums.Unsorted;
+using Sadie.Db;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Gender { get; set; }
     public required string FigureCode { get; set; }
@@ -27,8 +27,8 @@ public class PlayerChangedAppearanceEventHandler(
         }
 
         var gender = Gender == "M" ? 
-            AvatarGender.Male : 
-            AvatarGender.Female;
+            PlayerAvatarGender.Male : 
+            PlayerAvatarGender.Female;
 
         var figureCode = FigureCode;
 

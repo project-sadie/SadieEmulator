@@ -1,8 +1,8 @@
-using Sadie.Database.Models.Catalog.FrontPage;
-using Sadie.Database.Models.Catalog.Pages;
+using Sadie.Db.Models.Catalog.FrontPage;
+using Sadie.Db.Models.Catalog.Pages;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Catalog;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 

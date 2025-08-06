@@ -1,8 +1,8 @@
-using Sadie.API;
 using Sadie.API.Game.Players;
+using Sadie.API.Game.Players.Friendships;
 using Sadie.API.Game.Players.Packets.Writers;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db.Models.Players;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Events.Dtos;
@@ -10,6 +10,7 @@ using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Subscriptions;
+using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players;
 
@@ -33,8 +34,8 @@ public class PlayerHelperService : IPlayerHelperService
             .GetMergedFriendships()
             .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
             .ToList();
-        
-        var pages = friends.Count / 500 + 1;
+
+        var pages = friends.Count / 500 + (friends.Count > 0 ? 1 : 0);
         
         for (var i = 0; i < pages; i++)
         {

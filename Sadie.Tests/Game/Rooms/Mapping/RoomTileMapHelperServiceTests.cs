@@ -2,12 +2,12 @@ using System.Drawing;
 using Moq;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Furniture;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db.Models.Furniture;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms.Mapping;
 using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Tests.Game.Rooms.Mapping;
@@ -447,7 +447,7 @@ public class RoomTileMapHelperServiceTests
     {
         Assert.That(_tileMapHelperService.GetPointInFront(1, 2, HDirection.North), Is.EqualTo(new Point(1, 1)));
     }
-    
+        
     [Test]
     public void GetPointInFront_East_ReturnsCorrect()
     {

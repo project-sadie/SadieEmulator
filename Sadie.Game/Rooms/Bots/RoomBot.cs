@@ -4,8 +4,8 @@ using Sadie.API.Game.Rooms.Bots;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
-using Sadie.Database.Models.Players;
-using Sadie.Enums.Unsorted;
+using Sadie.Db.Models.Players;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Game.Rooms.Unit;
 
 namespace Sadie.Game.Rooms.Bots;
@@ -19,8 +19,8 @@ public class RoomBot(
     HDirection direction,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomWiredService wiredService,
-    IRoomPathFinderHelperService pathFinderHelperService,
-    PlayerBot playerBot)
+    PlayerBot playerBot,
+    IRoomPathFinderHelperService pathFinderHelperService)
     : RoomUnitData(room,
             point,
             pointZ,

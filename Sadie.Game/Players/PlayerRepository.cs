@@ -3,13 +3,13 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Networking;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
+using Sadie.Db;
+using Sadie.Db.Models.Players;
 
 namespace Sadie.Game.Players;
 
 public class PlayerRepository(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper) : IPlayerRepository
 {
     private readonly ConcurrentDictionary<long, IPlayerLogic> _players = new();

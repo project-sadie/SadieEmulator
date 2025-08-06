@@ -1,6 +1,6 @@
 ﻿using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.GameCentre;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.GameCenter;
 

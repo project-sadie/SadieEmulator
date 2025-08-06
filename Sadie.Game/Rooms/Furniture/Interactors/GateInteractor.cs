@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class GateInteractor(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Gate];

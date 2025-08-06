@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
-using Sadie.Database;
 using Sadie.Database.Mappers;
-using Sadie.Database.Models.Server;
+using Sadie.Db;
+using Sadie.Db.Models.Server;
+using Sadie.Game.Locale;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -18,8 +19,6 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
         serviceCollection.AddOptions();
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
@@ -27,13 +26,9 @@ public static class ServerServiceCollection
 
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
-        serviceCollection.AddSingleton<ServerSettings>(p => 
-            p.GetRequiredService<SadieContext>()
-                .ServerSettings
-                .First());
+        serviceCollection.AddSingleton<ServerSettings>(p => new ServerSettings());
         
-        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => 
-            p.GetRequiredService<SadieContext>().ServerPeriodicCurrencyRewards.ToList());
+        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => []);
 
         MapperServiceCollection.AddServices(serviceCollection);
         PlayerServiceCollection.AddServices(serviceCollection, config);
@@ -42,6 +37,18 @@ public static class ServerServiceCollection
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         EncryptionServiceProvider.AddServices(serviceCollection, config);
+        
+        LocaleServiceCollection.AddServices(serviceCollection);
+        
+        serviceCollection.AddDbContextFactory<SadieMigrationsDbContext>();
+
+        ServiceCollectionHelpers.LoadPlugins(config);
+        
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        serviceCollection.RegisterRoomChatCommands(assemblies);
+        serviceCollection.RegisterFurnitureInteractors(assemblies);
+        serviceCollection.RegisterRoomFurnitureProcessors(assemblies);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)

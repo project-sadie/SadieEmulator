@@ -2,15 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
-using Sadie.Database;
-using Sadie.Database.Models.Server;
+using Sadie.Db;
+using Sadie.Db.Models.Server;
 using Sadie.Networking.Events;
 using Sadie.Networking.Writers.Players.Purse;
 
 namespace SadieEmulator.Tasks.Game.Players;
 
 public class PlayerCurrencyRewardsTask(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     List<ServerPeriodicCurrencyReward> rewards, 
     IPlayerRepository playerRepository,
     ServerSettings serverSettings,

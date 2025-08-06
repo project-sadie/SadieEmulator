@@ -3,14 +3,14 @@ using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Game.Players;
-using Sadie.Database;
+using Sadie.Db;
 
 namespace Sadie.Networking.Client;
 
 public class NetworkClientRepository(
     ILogger<NetworkClientRepository> logger,
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerHelperService playerHelperService) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();

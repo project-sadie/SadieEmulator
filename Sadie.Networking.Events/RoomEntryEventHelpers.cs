@@ -6,9 +6,10 @@ using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Services;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms;
@@ -22,7 +23,7 @@ public static class RoomEntryEventHelpers
         INetworkClient client, 
         IRoomLogic room, 
         IRoomUserFactory roomUserFactory,
-        IDbContextFactory<SadieContext> dbContextFactory,
+        IDbContextFactory<SadieDbContext> dbContextFactory,
         IPlayerRepository playerRepository,
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,
@@ -37,12 +38,12 @@ public static class RoomEntryEventHelpers
         if (teleport != null)
         {
             entryPoint = new Point(teleport.PositionX, teleport.PositionY);
-            entryDirection = teleport.Direction;
+            entryDirection = (int) teleport.Direction;
             
             player.State.Teleport = null;
         }
         
-        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
+        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, (HDirection) entryDirection);
         roomUser.ApplyFlatCtrlStatus();
         
         if (teleport != null)

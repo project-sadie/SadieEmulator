@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Game.Navigator.Filterers;
 
 namespace Sadie.Tests.Game.Navigator.Filterers;
@@ -17,11 +17,11 @@ public class OwnerFiltererTests : RoomMockHelpers
     [Test]
     public void ApplyFilter_OneInMany_AppliedCorrectly()
     {
-        var options = new DbContextOptionsBuilder<SadieContext>()
+        var options = new DbContextOptionsBuilder<SadieDbContext>()
             .UseInMemoryDatabase(databaseName: "sadie")
             .Options;
 
-        using var dbContext = new SadieContext(options);
+        using var dbContext = new SadieDbContext(options);
         
         dbContext.Rooms.Add(MockRoomWithOwner("1"));
         dbContext.Rooms.Add(MockRoomWithOwner("2"));
@@ -38,11 +38,11 @@ public class OwnerFiltererTests : RoomMockHelpers
     [Test]
     public void ApplyFilter_ManyInMany_AppliedCorrectly()
     {
-        var options = new DbContextOptionsBuilder<SadieContext>()
+        var options = new DbContextOptionsBuilder<SadieDbContext>()
             .UseInMemoryDatabase(databaseName: "sadie")
             .Options;
 
-        using var dbContext = new SadieContext(options);
+        using var dbContext = new SadieDbContext(options);
         
         dbContext.Rooms.Add(MockRoomWithOwner("1"));
         dbContext.Rooms.Add(MockRoomWithOwner("1"));

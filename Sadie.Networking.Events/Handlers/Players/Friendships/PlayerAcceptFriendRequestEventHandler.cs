@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
+using Sadie.Db;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 public class PlayerAcceptFriendRequestEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerHelperService playerHelperService)
     : INetworkPacketEventHandler
 {
@@ -69,7 +69,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                 },
                 FriendOnline = targetOnline,
                 FriendInRoom = targetInRoom,
-                Relation = targetRelationship?.TypeId ?? PlayerRelationshipType.None
+                Relation = (PlayerRelationshipType?)targetRelationship?.TypeId ?? PlayerRelationshipType.None
             }
         ]);
 
@@ -102,7 +102,7 @@ public class PlayerAcceptFriendRequestEventHandler(
                     },
                     FriendOnline = true,
                     FriendInRoom = player.State.CurrentRoomId != 0,
-                    Relation = relationship?.TypeId ?? PlayerRelationshipType.None
+                    Relation = (PlayerRelationshipType?)relationship?.TypeId ?? PlayerRelationshipType.None
                 }
             ]);
         }

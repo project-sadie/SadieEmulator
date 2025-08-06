@@ -1,7 +1,7 @@
-﻿using Sadie.Database.Models.Constants;
+﻿using Sadie.Db.Models.Constants;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 

@@ -1,7 +1,7 @@
 using Sadie.API.Game.Rooms;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 

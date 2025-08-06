@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Services;
-using Sadie.Database;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Attributes;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture.Wired;
 
 [PacketId(EventHandlerId.RoomWiredTriggerSaved)]
 public class RoomWiredTriggerSavedEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomWiredService wiredService) : INetworkPacketEventHandler
 {
     public required int ItemId { get; init; }

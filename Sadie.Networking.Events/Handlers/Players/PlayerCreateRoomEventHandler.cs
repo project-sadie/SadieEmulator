@@ -1,19 +1,19 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db;
+using Sadie.Db.Models.Players;
+using Sadie.Db.Models.Rooms;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerCreateRoom)]
 public class PlayerCreateRoomEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository,
     IMapper mapper) : INetworkPacketEventHandler
 {

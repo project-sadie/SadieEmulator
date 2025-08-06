@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
+using Sadie.Db;
+using Sadie.Db.Models.Players;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
@@ -14,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 public class RoomUserRespectEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public int TargetId { get; init; }

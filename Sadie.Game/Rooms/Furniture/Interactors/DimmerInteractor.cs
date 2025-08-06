@@ -2,15 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database;
-using Sadie.Database.Models.Players.Furniture;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db;
+using Sadie.Db.Models.Players.Furniture;
+using Sadie.Db.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class DimmerInteractor(
-    IDbContextFactory<SadieContext> dbContextFactory) : AbstractRoomFurnitureItemInteractor
+    IDbContextFactory<SadieDbContext> dbContextFactory) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Dimmer];
     

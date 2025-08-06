@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db;
+using Sadie.Db.Models.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Navigator;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.RoomCategories)]
 public class RoomCategoriesEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {

@@ -2,10 +2,10 @@ using Moq;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
-using Sadie.Database.Models.Furniture;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Players.Furniture;
-using Sadie.Database.Models.Rooms;
+using Sadie.Db.Models.Furniture;
+using Sadie.Db.Models.Players;
+using Sadie.Db.Models.Players.Furniture;
+using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Tests;
@@ -50,7 +50,8 @@ public class RoomMockHelpers
                 Data = new PlayerData
                 {
                     Player = null!
-                }
+                },
+                Password = ""
             }
         };
     }

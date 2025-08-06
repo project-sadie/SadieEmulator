@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sadie.Database;
-using Sadie.Database.Models.Catalog;
+using Sadie.Db;
+using Sadie.Db.Models.Catalog;
 using Sadie.Networking.Client;
-using Sadie.Networking.Serialization.Attributes;
 using Sadie.Networking.Writers.Players.Other;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubData)]
 public class PlayerClubOffersEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int WindowId { get; set; }
     

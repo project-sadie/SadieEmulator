@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms.Users;
 using Sadie.API.Networking;
-using Sadie.Database;
-using Sadie.Database.Models.Players;
-using Sadie.Database.Models.Players.Furniture;
+using Sadie.Db;
+using Sadie.Db.Models.Players;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 
-namespace Sadie.Game.Rooms.Users;
+namespace Sadie.Networking.Events;
 
 public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUserTrade
 {
@@ -43,7 +43,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         }
     }
     
-    public async Task SwapItemsAsync(IDbContextFactory<SadieContext> dbContextFactory)
+    public async Task SwapItemsAsync(IDbContextFactory<SadieDbContext> dbContextFactory)
     {
         var map = new Dictionary<long, List<PlayerFurnitureItem>>();
         
