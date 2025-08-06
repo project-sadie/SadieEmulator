@@ -3,14 +3,14 @@ using Sadie.API.Game.Rooms;
 using Sadie.Db;
 using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomWallItemUpdated)]
 public class RoomWallItemUpdatedEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler
 {

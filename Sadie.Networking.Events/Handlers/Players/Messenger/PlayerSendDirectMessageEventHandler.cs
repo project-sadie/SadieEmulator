@@ -4,8 +4,8 @@ using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Messenger;
+using Sadie.Shared.Attributes;
 using Sadie.Shared.Constants;
 using Sadie.Shared.Extensions;
 
@@ -14,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 [PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }

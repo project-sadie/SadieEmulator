@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Moderation;
 [PacketId(EventHandlerId.ModToolsUpdateRoomSettings)]
 public class ModToolUpdateRoomSettingsEventHandler(
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
     public int LockDoor { get; set; }

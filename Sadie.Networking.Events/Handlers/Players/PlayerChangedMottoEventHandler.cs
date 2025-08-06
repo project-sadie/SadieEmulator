@@ -3,8 +3,8 @@ using Sadie.API.Game.Rooms;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Shared.Attributes;
 using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players;
@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerChangedMottoEventHandler(
     IRoomRepository roomRepository, 
     ServerPlayerConstants constants,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Motto { get; set; }
     

@@ -1,7 +1,7 @@
-﻿using Sadie.Enums.Unsorted;
+﻿using Sadie.Enums.Game.Rooms;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Navigator;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 

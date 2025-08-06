@@ -8,9 +8,9 @@ using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Db.Models.Server;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Options.Options;
+using Sadie.Shared.Attributes;
 using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
@@ -23,7 +23,7 @@ public class SecureLoginEventHandler(
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper,
     IPlayerLoaderService playerLoaderService,
     IPlayerHelperService playerHelperService)

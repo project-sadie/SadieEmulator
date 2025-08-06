@@ -9,7 +9,7 @@ using Sadie.API.Game.Rooms.Users;
 using Sadie.Db;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Client;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms;
@@ -23,7 +23,7 @@ public static class RoomEntryEventHelpers
         INetworkClient client, 
         IRoomLogic room, 
         IRoomUserFactory roomUserFactory,
-        IDbContextFactory<SadieContext> dbContextFactory,
+        IDbContextFactory<SadieDbContext> dbContextFactory,
         IPlayerRepository playerRepository,
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,

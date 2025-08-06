@@ -17,11 +17,11 @@ public class RoomNameFiltererTests : RoomMockHelpers
     [Test]
     public void ApplyFilter_OneInMany_AppliedCorrectly()
     {
-        var options = new DbContextOptionsBuilder<SadieContext>()
+        var options = new DbContextOptionsBuilder<SadieDbContext>()
             .UseInMemoryDatabase(databaseName: "sadie")
             .Options;
 
-        using var dbContext = new SadieContext(options);
+        using var dbContext = new SadieDbContext(options);
         
         dbContext.Rooms.Add(MockRoomWithName("someName1"));
         dbContext.Rooms.Add(MockRoomWithName("someName2"));

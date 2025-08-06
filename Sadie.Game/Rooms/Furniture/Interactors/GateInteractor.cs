@@ -10,7 +10,7 @@ using Sadie.Enums.Game.Furniture;
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class GateInteractor(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Gate];

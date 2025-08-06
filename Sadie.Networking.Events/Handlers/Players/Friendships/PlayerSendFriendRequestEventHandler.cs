@@ -6,8 +6,8 @@ using Sadie.Db.Models.Constants;
 using Sadie.Db.Models.Players;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 public class PlayerSendFriendRequestEventHandler(
     IPlayerRepository playerRepository,
     ServerPlayerConstants playerConstants,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper)
     : INetworkPacketEventHandler
 {

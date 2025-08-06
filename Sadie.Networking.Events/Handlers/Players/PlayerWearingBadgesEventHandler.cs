@@ -4,14 +4,14 @@ using Sadie.API.Game.Rooms;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerWearingBadges)]
 public class PlayerWearingBadgesEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler

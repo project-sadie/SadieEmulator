@@ -11,7 +11,7 @@ using Sadie.Enums.Game.Furniture;
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class OneWayGateInteractor(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : AbstractRoomFurnitureItemInteractor
 {

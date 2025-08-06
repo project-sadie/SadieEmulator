@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Players;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
 using Sadie.Networking.Events.Dtos;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Friendships;
+using Sadie.Shared.Attributes;
 using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Networking.Events.Handlers.Players;
@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerChangeRelationship)]
 public class PlayerChangeRelationshipEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper)
     : INetworkPacketEventHandler
 {
@@ -87,7 +87,7 @@ public class PlayerChangeRelationshipEventHandler(
         var newFriendData = new FriendData
         {
             Motto = friend.AvatarData.Motto,
-            Gender = AvatarGender.Male,
+            Gender = PlayerAvatarGender.Male,
             Username = friend.Username,
             FigureCode = friend.AvatarData.FigureCode
         };

@@ -3,14 +3,14 @@ using Sadie.API.Game.Players;
 using Sadie.Db;
 using Sadie.Enums.Game.Players;
 using Sadie.Networking.Client;
-using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players;
+using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerRemoveUserIgnore)]
 public class PlayerRemoveUserIgnoreEventHandler(IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Username { get; set; }
     
