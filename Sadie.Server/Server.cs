@@ -24,6 +24,7 @@ public class Server(ILogger<Server> logger,
     IConfiguration config) : IServer
 {
     private readonly CancellationTokenSource _tokenSource = new();
+    private bool _disposed = false;
     
     public async Task RunAsync()
     {
@@ -31,6 +32,7 @@ public class Server(ILogger<Server> logger,
         
         Log.Logger.Information("Booting up...");
         
+        await WarnIfOutdatedAsync();
         await MigrateIfNeededAsync();
         await CleanUpDataAsync();
         LoadPlugins();
@@ -49,6 +51,17 @@ public class Server(ILogger<Server> logger,
         await StartListeningForConnectionsAsync();
     }
 
+    private async Task WarnIfOutdatedAsync()
+    {
+        var latest = await LatestVersionProvider.GetLatestVersionAsync();
+        var current = Assembly.GetExecutingAssembly().GetName().Version;
+        
+        if (latest != null && latest > current)
+        {
+            Log.Logger.Warning($"Version ({current}) is outdated, {latest} available.");
+        }
+    }
+
     private async Task MigrateIfNeededAsync()
     {
         await using var context = await dbContextFactoryMigrate.CreateDbContextAsync();
@@ -64,7 +77,7 @@ public class Server(ILogger<Server> logger,
                 await context.Database.MigrateAsync();
 
                 logger.LogWarning($"Seeding initial data");
-                await DatabaseSeeder.SeedInitialDataAsync(context);
+                await SeedData.SeedInitialDataAsync(context);
             }
             catch (Exception ex)
             {
@@ -109,6 +122,13 @@ public class Server(ILogger<Server> logger,
 
     public async ValueTask DisposeAsync()
     {
+        if (_disposed)
+        {
+            return;
+        }
+        
+        _disposed = true;
+        
         await _tokenSource.CancelAsync();
         
         logger.LogWarning("Server is about to shut down...");
