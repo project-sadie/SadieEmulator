@@ -3,7 +3,7 @@ using Sadie.API.Game.Rooms;
 using Sadie.API.Networking.Client;
 using Sadie.API.Networking.Events.Handlers;
 using Sadie.Db;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Game.Players;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Players;
 [PacketId(EventHandlerId.PlayerChangedAppearance)]
 public class PlayerChangedAppearanceEventHandler(
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public required string Gender { get; set; }
     public required string FigureCode { get; set; }
@@ -28,8 +28,8 @@ public class PlayerChangedAppearanceEventHandler(
         }
 
         var gender = Gender == "M" ? 
-            AvatarGender.Male : 
-            AvatarGender.Female;
+            PlayerAvatarGender.Male : 
+            PlayerAvatarGender.Female;
 
         var figureCode = FigureCode;
 
