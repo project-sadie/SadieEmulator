@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomDimmerSave)]
 public class RoomDimmerSaveEventHandler(
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
 {
     public required int PresetId { get; init; }

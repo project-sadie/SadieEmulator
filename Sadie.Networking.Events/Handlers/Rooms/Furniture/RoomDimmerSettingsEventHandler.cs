@@ -11,7 +11,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomDimmerSettings)]
 public class RoomDimmerSettingsEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
