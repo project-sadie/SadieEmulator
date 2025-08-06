@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Sadie.API;
 using Sadie.Shared;
 using SadieEmulator;
@@ -19,8 +20,7 @@ internal static class Program
         var host = Host.CreateDefaultBuilder()
             .ConfigureServices((context, collection) => ServerServiceCollection.AddServices(collection, context.Configuration))
             .UseSerilog((hostContext, _, logger) => 
-                logger.ReadFrom.Configuration(hostContext.Configuration)
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning))
+                logger.ReadFrom.Configuration(hostContext.Configuration))
             .Build();
         
         WriteHeaderToConsole();

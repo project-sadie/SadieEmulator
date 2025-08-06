@@ -50,7 +50,8 @@ public class RoomMockHelpers
                 Data = new PlayerData
                 {
                     Player = null!
-                }
+                },
+                Password = ""
             }
         };
     }
