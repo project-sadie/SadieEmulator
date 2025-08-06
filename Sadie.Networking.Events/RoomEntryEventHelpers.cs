@@ -22,7 +22,7 @@ public static class RoomEntryEventHelpers
         INetworkClient client, 
         IRoomLogic room, 
         IRoomUserFactory roomUserFactory,
-        IDbContextFactory<SadieContext> dbContextFactory,
+        IDbContextFactory<SadieDbContext> dbContextFactory,
         IPlayerRepository playerRepository,
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,
@@ -37,7 +37,7 @@ public static class RoomEntryEventHelpers
         if (teleport != null)
         {
             entryPoint = new Point(teleport.PositionX, teleport.PositionY);
-            entryDirection = teleport.Direction;
+            entryDirection = (int) teleport.Direction;
             
             player.State.Teleport = null;
         }
