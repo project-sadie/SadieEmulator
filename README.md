@@ -4,6 +4,9 @@ A lightweight and customizable emulation server designed to recreate and host yo
 
 Targeting **PRODUCTION-201601012205-226667486**
 
+## Plugins
+Example; https://github.com/project-sadie/Sadie.Plugins.BaseCommands
+
 ## Contribute
 
 Please read the [contribution guidelines](contributing.md)
