@@ -7,7 +7,6 @@ using Sadie.Db.Models.Server;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
-using Sadie.Migrations;
 using Sadie.Networking;
 using Sadie.Networking.Encryption;
 using Sadie.Networking.Events;
@@ -26,7 +25,6 @@ public static class ServerServiceCollection
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
         serviceCollection.AddSingleton<ServerTaskWorker>();
 
-        serviceCollection.AddDbContextFactory<SadieMigrationsContext>();
         DatabaseServiceCollection.AddServices(serviceCollection, config);
 
         serviceCollection.AddSingleton<ServerSettings>(p => new ServerSettings());
