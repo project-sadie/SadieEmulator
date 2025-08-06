@@ -10,52 +10,40 @@ namespace SadieEmulator;
 
 public static class ServiceCollectionHelpers
 {
-    public static void RegisterRoomChatCommands(this IServiceCollection serviceCollection, Assembly[]  assemblies)
+    public static IServiceCollection RegisterRoomChatCommands(this IServiceCollection serviceCollection, Assembly[]  assemblies)
     {
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
             .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
             .As<IRoomChatCommand>()
             .WithSingletonLifetime());
+
+        return serviceCollection;
     }
     
-    public static void RegisterFurnitureInteractors(this IServiceCollection serviceCollection, Assembly[]  assemblies)
+    public static IServiceCollection RegisterFurnitureInteractors(this IServiceCollection serviceCollection, Assembly[]  assemblies)
     {
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
             .AddClasses(classes => classes.AssignableTo<AbstractRoomFurnitureItemInteractor>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
+
+        return serviceCollection;
     }
     
-    public static void RegisterRoomFurnitureProcessors(this IServiceCollection serviceCollection, Assembly[]  assemblies)
+    public static IServiceCollection RegisterRoomFurnitureProcessors(this IServiceCollection serviceCollection, Assembly[]  assemblies)
     {
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
             .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemProcessor>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
+
+        return serviceCollection;
     }
 
-    public static void LoadPlugins(IConfiguration config)
-    {
-        var pluginFolder = config.GetValue<string>("PluginDirectory");
-
-        if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
-        {
-            return;
-        }
-        
-        foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
-        {
-            var assembly = Assembly.LoadFile(plugin);
-            var version = assembly.GetName().Version;
-            
-            Console.WriteLine($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)} {version}");
-        }
-    }
-
-    public static void RegisterPluginServices(this IServiceCollection serviceCollection, Assembly[]  assemblies)
+    public static IServiceCollection RegisterPluginServices(this IServiceCollection serviceCollection, Assembly[]  assemblies)
     {
         var pluginTypes = assemblies
             .SelectMany(asm => asm.GetTypes())
@@ -66,5 +54,7 @@ public static class ServiceCollectionHelpers
         {
             plugin.RegisterServicesAsync(serviceCollection);
         }
+
+        return serviceCollection;
     }
 }

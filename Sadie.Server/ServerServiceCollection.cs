@@ -42,10 +42,10 @@ public static class ServerServiceCollection
         
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         
-        serviceCollection.RegisterPluginServices(assemblies);
-        serviceCollection.RegisterRoomChatCommands(assemblies);
-        serviceCollection.RegisterFurnitureInteractors(assemblies);
-        serviceCollection.RegisterRoomFurnitureProcessors(assemblies);
+        serviceCollection.RegisterPluginServices(assemblies)
+            .RegisterRoomChatCommands(assemblies)
+            .RegisterFurnitureInteractors(assemblies)
+            .RegisterRoomFurnitureProcessors(assemblies);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)
