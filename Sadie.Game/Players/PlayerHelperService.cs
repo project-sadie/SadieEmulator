@@ -10,6 +10,7 @@ using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Subscriptions;
+using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players;
 
@@ -104,7 +105,7 @@ public class PlayerHelperService : IPlayerHelperService
             },
             FriendOnline = isOnline,
             FriendInRoom = inRoom,
-            Relation = PlayerRelationshipType.None
+            Relation = (int) PlayerRelationshipType.None
         };
         
         foreach (var friend in friendships)

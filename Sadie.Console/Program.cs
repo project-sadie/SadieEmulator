@@ -47,7 +47,7 @@ internal static class Program
 
         System.Console.ForegroundColor = ConsoleColor.White;
 
-        System.Console.WriteLine($"         You are running version {GlobalState.Version}");
+        System.Console.WriteLine($"         You're running version {GlobalState.Version}");
         System.Console.WriteLine("");
     }
     
@@ -67,6 +67,7 @@ internal static class Program
         }
 
         await _server.DisposeAsync();
+        _server = null;
     }
 
     private static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)

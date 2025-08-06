@@ -2,6 +2,7 @@ using System.Drawing;
 using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
+using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
@@ -11,6 +12,7 @@ using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Rooms;
 using Sadie.Enums.Game.Rooms.Users;
 using Sadie.Enums.Miscellaneous;
+using Sadie.Game.Rooms.Chat.Commands;
 using Sadie.Game.Rooms.Unit;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Networking.Writers.Rooms.Users.HandItems;
@@ -191,13 +193,21 @@ public class RoomUser(
         
         var writer = new RoomUserEffectWriter
         {
-            UserId = Player.Id,
+            UserId = (int) Player.Id,
             EffectId = (int) effect,
             DelayMs = 0
         };
 
         await Room.UserRepository.BroadcastDataAsync(writer);
     }
+
+    public async Task ExecuteCommandAsync(IRoomChatCommand command, IEnumerable<string> parameters)
+    {
+        var parameterQueue = new Queue<string>(parameters);
+        var reader = new RoomChatCommandParameterReader(parameterQueue);
+        await command.ExecuteAsync(this, reader);
+    }
+    
     public async ValueTask DisposeAsync()
     {
         room.TileMap.UnitMap[Point].Remove(this);

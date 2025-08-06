@@ -10,6 +10,7 @@ using Sadie.API.Networking.Client;
 using Sadie.Db;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms;
 using Serilog;
@@ -42,7 +43,7 @@ public static class RoomEntryEventHelpers
             player.State.Teleport = null;
         }
         
-        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, entryDirection);
+        var roomUser = RoomHelpers.CreateUserForEntry(roomUserFactory, room, player, entryPoint, (HDirection) entryDirection);
         roomUser.ApplyFlatCtrlStatus();
         
         if (teleport != null)

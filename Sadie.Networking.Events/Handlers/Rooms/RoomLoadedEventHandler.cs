@@ -120,7 +120,7 @@ public class RoomLoadedEventHandler(
                 
                 await client.WriteToStreamAsync(new GenericErrorWriter
                 {
-                    ErrorCode = (int) GenericErrorCode.IncorrectRoomPassword
+                    ErrorCode = (int) GenericErrorCode.NavigatorInvalidPassword
                 });
                 
                 await client.WriteToStreamAsync(new RoomUserHotelViewWriter());

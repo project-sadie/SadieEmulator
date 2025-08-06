@@ -283,9 +283,10 @@ public static class NetworkPacketEventHelpers
         {
             return false;
         }
-        
-        var parameters = message.Split(" ").Skip(1);
-        await command.ExecuteAsync(roomUser, parameters);
+
+        await roomUser.ExecuteCommandAsync(
+            command, 
+            message.Split(" ").Skip(1));
         
         return true;
     }

@@ -43,6 +43,7 @@ public static class RoomServiceCollection
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
         
+        serviceCollection.AddTransient<IRoomChatCommandParameterReader, RoomChatCommandParameterReader>();
         serviceCollection.AddTransient<IRoomUserRepository, RoomUserRepository>();
         serviceCollection.AddTransient<IRoomBotRepository, RoomBotRepository>();
         serviceCollection.AddSingleton<IRoomUserFactory, RoomUserFactory>();

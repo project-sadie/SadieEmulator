@@ -14,7 +14,6 @@ using Sadie.Db.Models.Players.Furniture;
 using Sadie.Enums.Game.Catalog;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Enums.Game.Players;
-using Sadie.Enums.Unsorted;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Catalog;
 using Sadie.Networking.Writers.Players;
