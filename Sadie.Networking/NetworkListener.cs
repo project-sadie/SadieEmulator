@@ -10,7 +10,7 @@ using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sadie.Networking.Client;
+using Sadie.API.Networking.Client;
 using Sadie.Networking.Codecs;
 using Sadie.Networking.Handlers;
 using Sadie.Networking.Packets;

@@ -1,4 +1,4 @@
-using Sadie.Networking.Client;
+using Sadie.API.Networking.Client;
 
 namespace Sadie.Networking.Packets;
 

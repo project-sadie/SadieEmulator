@@ -1,14 +1,14 @@
 using System.Diagnostics;
 using AutoMapper;
-using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Db.Models.Server;
-using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Options.Options;

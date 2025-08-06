@@ -1,9 +1,10 @@
 ﻿using Sadie.API;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Db.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
-using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Bots;

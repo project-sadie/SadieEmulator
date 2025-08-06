@@ -1,9 +1,10 @@
 ﻿using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Services;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Db.Models.Constants;
 using Sadie.Enums.Unsorted;
-using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;

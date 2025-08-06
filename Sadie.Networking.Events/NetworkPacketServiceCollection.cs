@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers.Rooms;
 using Sadie.Networking.Packets;

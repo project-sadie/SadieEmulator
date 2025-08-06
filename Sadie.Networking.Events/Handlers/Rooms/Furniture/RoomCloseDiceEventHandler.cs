@@ -2,8 +2,9 @@ using System.Drawing;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Mapping;
+using Sadie.API.Networking.Client;
+using Sadie.API.Networking.Events.Handlers;
 using Sadie.Db;
-using Sadie.Networking.Client;
 using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
