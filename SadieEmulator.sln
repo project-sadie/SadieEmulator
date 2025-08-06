@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sadie.Database.Mappers", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Game", "Sadie.Game\Sadie.Game.csproj", "{343259E5-3475-4D06-BE09-1F030F663CD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Migrations", "Sadie.Migrations\Sadie.Migrations.csproj", "{CA2CCFED-87DD-410D-A447-B7AB7CC69584}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
