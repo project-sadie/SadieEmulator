@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sadie.Migrations\Sadie.Migrations.csproj" />
       <ProjectReference Include="..\Sadie.Server\Sadie.Server.csproj" />
     </ItemGroup>
 
@@ -29,7 +28,7 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Sadie.API" Version="1.4.4" />
+      <PackageReference Include="Sadie.API" Version="1.4.6" />
       <PackageReference Include="Serilog.Expressions" Version="5.1.0-dev-00186" />
     </ItemGroup>
 </Project>
