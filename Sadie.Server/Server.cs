@@ -33,7 +33,6 @@ public class Server(ILogger<Server> logger,
         
         await MigrateIfNeededAsync();
         await CleanUpDataAsync();
-        LoadPlugins();
 
         if (playerOptions.Value.CanReuseSsoTokens)
         {
@@ -70,25 +69,6 @@ public class Server(ILogger<Server> logger,
             {
                 Console.WriteLine(ex);
             }
-        }
-    }
-
-    private void LoadPlugins()
-    {
-        var pluginFolder = config.GetValue<string>("PluginDirectory");
-
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console().CreateLogger();
-
-        if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
-        {
-            return;
-        }
-        
-        foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
-        {
-            Assembly.LoadFile(plugin);
-            Log.Logger.Warning($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)}");
         }
     }
 

@@ -4,6 +4,7 @@ using Sadie.API;
 using Sadie.Database.Mappers;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
+using Sadie.Game.Locale;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -18,8 +19,6 @@ public static class ServerServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
         serviceCollection.AddOptions();
         serviceCollection.AddSingleton<IServer, Server>();
         serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
@@ -39,7 +38,17 @@ public static class ServerServiceCollection
         NavigatorServiceCollection.AddServices(serviceCollection);
         EncryptionServiceProvider.AddServices(serviceCollection, config);
         
+        LocaleServiceCollection.AddServices(serviceCollection);
+        
         serviceCollection.AddDbContextFactory<SadieMigrationsDbContext>();
+
+        ServiceCollectionHelpers.LoadPlugins(config);
+        
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        serviceCollection.RegisterRoomChatCommands(assemblies);
+        serviceCollection.RegisterFurnitureInteractors(assemblies);
+        serviceCollection.RegisterRoomFurnitureProcessors(assemblies);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)

@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Game.Rooms.Furniture.Processors;
-using Serilog;
 
 namespace SadieEmulator;
 
@@ -51,7 +50,7 @@ public static class ServiceCollectionHelpers
             var assembly = Assembly.LoadFile(plugin);
             var version = assembly.GetName().Version;
             
-            Log.Logger.Warning($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)} {version}");
+            Console.WriteLine($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)} {version}");
         }
     }
 }
