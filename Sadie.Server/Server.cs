@@ -6,9 +6,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.API.Networking.Client;
+using Sadie.API.Plugins;
 using Sadie.Db;
 using Sadie.Networking;
 using Sadie.Options.Options;
+using SadieEmulator.Plugins;
 using SadieEmulator.Tasks;
 using Serilog;
 
@@ -35,7 +37,8 @@ public class Server(ILogger<Server> logger,
         await WarnIfOutdatedAsync();
         await MigrateIfNeededAsync();
         await CleanUpDataAsync();
-        LoadPlugins();
+        
+        await PluginService.BootstrapPluginsAsync();
 
         if (playerOptions.Value.CanReuseSsoTokens)
         {
@@ -83,25 +86,6 @@ public class Server(ILogger<Server> logger,
             {
                 Console.WriteLine(ex);
             }
-        }
-    }
-
-    private void LoadPlugins()
-    {
-        var pluginFolder = config.GetValue<string>("PluginDirectory");
-
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console().CreateLogger();
-
-        if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
-        {
-            return;
-        }
-        
-        foreach (var plugin in Directory.GetFiles(pluginFolder, "*.dll", SearchOption.AllDirectories))
-        {
-            Assembly.LoadFile(plugin);
-            Log.Logger.Warning($"Loaded plugin: {Path.GetFileNameWithoutExtension(plugin)}");
         }
     }
 
