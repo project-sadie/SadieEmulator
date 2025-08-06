@@ -17,7 +17,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
 [PacketId(EventHandlerId.RoomItemEjected)]
 public class RoomItemEjectedEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository,
     IPlayerRepository playerRepository,
     IRoomFurnitureItemInteractorRepository interactorRepository,

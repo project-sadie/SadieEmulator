@@ -3,14 +3,14 @@ using Sadie.API.Networking.Client;
 using Sadie.API.Networking.Events.Handlers;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Game.Players;
 using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Wardrobe;
 
 [PacketId(EventHandlerId.PlayerWardrobeSave)]
 public class PlayerWardrobeSaveEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int SlotId { get; set; }
     public required string FigureCode { get; set; }
@@ -29,7 +29,7 @@ public class PlayerWardrobeSaveEventHandler(
         {
             SlotId = SlotId,
             FigureCode = FigureCode,
-            Gender = Gender == "M" ? AvatarGender.Male : AvatarGender.Female
+            Gender = Gender == "M" ? PlayerAvatarGender.Male : PlayerAvatarGender.Female
         };
             
         player.WardrobeItems.Add(wardrobeItem);

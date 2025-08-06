@@ -1,6 +1,7 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Db.Models.Rooms;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Users;
@@ -9,7 +10,7 @@ using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Rooms;
 using Sadie.Enums.Game.Players;
 using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 
 namespace Sadie.Networking.Events;
 
@@ -18,7 +19,7 @@ public static class RoomHelpers
     public static async Task<IRoomLogic?> TryLoadRoomByIdAsync(
         long id, 
         IRoomRepository roomRepository, 
-        IDbContextFactory<SadieContext> dbContextFactory,
+        IDbContextFactory<SadieDbContext> dbContextFactory,
         IMapper mapper)
     {
         var memoryValue = roomRepository.TryGetRoomById(id);
@@ -109,7 +110,7 @@ public static class RoomHelpers
     public static async Task CreateRoomVisitForPlayerAsync(
         IPlayerLogic player, 
         int roomId, 
-        IDbContextFactory<SadieContext> dbContextFactory)
+        IDbContextFactory<SadieDbContext> dbContextFactory)
     {
         var roomVisit = new PlayerRoomVisit
         {

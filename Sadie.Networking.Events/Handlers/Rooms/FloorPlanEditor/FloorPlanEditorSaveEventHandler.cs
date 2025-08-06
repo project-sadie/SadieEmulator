@@ -6,7 +6,7 @@ using Sadie.API.Networking.Client;
 using Sadie.API.Networking.Events.Handlers;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms;
-using Sadie.Enums.Unsorted;
+using Sadie.Enums.Miscellaneous;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -16,7 +16,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
 [PacketId(EventHandlerId.FloorPlanEditorSave)]
 public class FloorPlanEditorSaveEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IRoomRepository roomRepository) : INetworkPacketEventHandler
 {
     public required string HeightMap { get; init; }
@@ -61,10 +61,10 @@ public class FloorPlanEditorSaveEventHandler(
             room.Layout = new RoomLayout
             {
                 Name = $"custom_{Guid.NewGuid().ToString().Replace("-", "")[..15]}",
-                DoorDirection = (HDirection)DoorDirection,
+                DoorDirection = DoorDirection,
                 DoorX = DoorX,
                 DoorY = DoorY,
-                HeightMap = HeightMap
+                Heightmap = HeightMap
             };
             
             dbContext.Entry(room.Layout).State = EntityState.Added;
@@ -72,10 +72,10 @@ public class FloorPlanEditorSaveEventHandler(
         }
         else
         {
-            room.Layout.DoorDirection = (HDirection) DoorDirection;
+            room.Layout.DoorDirection = DoorDirection;
             room.Layout.DoorX = DoorX;
             room.Layout.DoorY = DoorY;
-            room.Layout.HeightMap = HeightMap;
+            room.Layout.Heightmap = HeightMap;
             
             dbContext.Entry(room.Layout).State = EntityState.Modified;
         }

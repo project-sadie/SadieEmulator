@@ -1,9 +1,9 @@
 ﻿using Sadie.API;
+using Sadie.API.Db.Models.Rooms;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
 using Sadie.API.Networking.Client;
 using Sadie.API.Networking.Events.Handlers;
-using Sadie.Db.Models.Rooms;
 using Sadie.Enums.Game.Furniture;
 using Sadie.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms;
@@ -39,7 +39,7 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
         {
             Scale = true,
             WallHeight = -1,
-            RelativeHeightmap = room.Layout.HeightMap.Replace("\r\n", "\r")
+            RelativeHeightmap = room.Layout.Heightmap.Replace("\r\n", "\r")
         });
         
         await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter
