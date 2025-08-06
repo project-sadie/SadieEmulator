@@ -187,10 +187,19 @@ public static class NetworkPacketEventHelpers
             
         await client.WriteToStreamAsync(new PlayerAlertWriter
         {
-            Message = string.Join(Environment.NewLine, commands.Select(c => $":{c.Trigger} - {c.Description}"))
+            Message = string.Join(Environment.NewLine, commands.Select(BuildCommandLine))
         });
     }
-    
+
+    private static string BuildCommandLine(IRoomChatCommand command)
+    {
+        var parameters = command.Parameters.Count != 0
+            ? " " + string.Join(" ", command.Parameters.Select(p => $"[{p}]"))
+            : "";
+
+        return $":{command.Trigger}{parameters} - {command.Description}";
+    }
+
     public static async Task OnChatMessageAsync(
         INetworkClient client,
         string message,
@@ -204,6 +213,18 @@ public static class NetworkPacketEventHelpers
     {
         if (message.Length >= 9 && message[..9] == ":commands")
         {
+
+            if (
+                TryResolveRoomObjectsForClient(roomRepository, client, out var room2, out var roomUser2))
+            {
+                await roomUser2.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
+                {
+                    UserId = roomUser2.Player.Id,
+                    EffectId = new Random().Next(1, 100),
+                    DelayMs = 0
+                });
+            }
+            
             await ShowCommandsAsync(commandRepository, client);
             return;
         }
@@ -283,7 +304,8 @@ public static class NetworkPacketEventHelpers
         string message,
         IRoomUser roomUser)
     {
-        var command = commandRepository.TryGetCommandByTriggerWord(message.Split(" ")[0][1..]);
+        var triggerWord = message.Split(" ")[0][1..].ToLower();
+        var command = commandRepository.TryGetCommandByTriggerWord(triggerWord);
         
         if (command == null)
         {
@@ -301,9 +323,11 @@ public static class NetworkPacketEventHelpers
         {
             return false;
         }
+
+        var parameterQueue = new Queue<string>(message.Split(" ").Skip(1));
+        var reader = new RoomChatCommandParameterReader(parameterQueue);
         
-        var parameters = message.Split(" ").Skip(1);
-        await command.ExecuteAsync(roomUser, parameters);
+        await command.ExecuteAsync(roomUser, reader);
         
         return true;
     }
