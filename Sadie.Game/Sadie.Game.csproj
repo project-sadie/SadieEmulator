@@ -9,15 +9,9 @@
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="14.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.0-preview.3.25171.5" />
-      <PackageReference Include="Sadie.API" Version="1.3.3" />
-      <PackageReference Include="Sadie.Networking.Writers" Version="1.4.2" />
+      <PackageReference Include="Sadie.API" Version="1.4.2" />
+      <PackageReference Include="Sadie.Networking.Writers" Version="1.4.3" />
       <PackageReference Include="Scrutor" Version="6.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Serilog">
-        <HintPath>..\..\..\..\..\..\home\ash\.nuget\packages\serilog\4.0.0\lib\net8.0\Serilog.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
     <ItemGroup>
