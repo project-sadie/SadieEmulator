@@ -10,7 +10,7 @@ using Sadie.Enums.Game.Furniture;
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class DimmerInteractor(
-    IDbContextFactory<SadieContext> dbContextFactory) : AbstractRoomFurnitureItemInteractor
+    IDbContextFactory<SadieDbContext> dbContextFactory) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Dimmer];
     

@@ -18,7 +18,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0-preview.3.25171.5" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
         <PackageReference Include="Sadie.API" Version="1.1.2" />
-        <PackageReference Include="Sadie.Db" Version="1.2.1" />
+        <PackageReference Include="Sadie.Db" Version="1.8.8" />
         <PackageReference Include="Sadie.Networking.Encryption" Version="1.0.0" />
         <PackageReference Include="Sadie.Networking.Serialization" Version="1.0.0" />
         <PackageReference Include="Serilog" Version="4.0.0" />

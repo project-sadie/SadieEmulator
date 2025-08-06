@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 [PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }

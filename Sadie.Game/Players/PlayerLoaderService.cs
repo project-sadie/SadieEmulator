@@ -7,7 +7,7 @@ using Sadie.Options.Options;
 
 namespace Sadie.Game.Players;
 
-public class PlayerLoaderService(IDbContextFactory<SadieContext> dbContextFactory,
+public class PlayerLoaderService(IDbContextFactory<SadieDbContext> dbContextFactory,
     IOptions<PlayerOptions> playerOptions) : IPlayerLoaderService
 {
     public async Task<PlayerSsoToken?> GetTokenAsync(string token, int delayMs)

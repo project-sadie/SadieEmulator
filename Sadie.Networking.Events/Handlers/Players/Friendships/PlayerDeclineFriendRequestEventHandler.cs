@@ -12,7 +12,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 [PacketId(EventHandlerId.PlayerDeclineFriendRequest)]
 public class PlayerDeclineFriendRequestEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public bool DeclineAll { get; set; }

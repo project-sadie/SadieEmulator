@@ -5,10 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
+using Sadie.API.Networking.Client;
 using Sadie.Db;
-using Sadie.Migrations;
 using Sadie.Networking;
-using Sadie.Networking.Client;
 using Sadie.Options.Options;
 using SadieEmulator.Tasks;
 using Serilog;
@@ -18,8 +17,8 @@ namespace SadieEmulator;
 public class Server(ILogger<Server> logger,
     IServerTaskWorker taskWorker,
     INetworkListener networkListener,
-    IDbContextFactory<SadieContext> dbContextFactory,
-    IDbContextFactory<SadieMigrationsContext> dbContextFactoryMigrate,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactoryMigrate,
     IOptions<PlayerOptions> playerOptions,
     INetworkClientRepository networkClientRepository,
     IConfiguration config) : IServer

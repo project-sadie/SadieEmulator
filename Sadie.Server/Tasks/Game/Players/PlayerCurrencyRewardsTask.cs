@@ -10,7 +10,7 @@ using Sadie.Networking.Writers.Players.Purse;
 namespace SadieEmulator.Tasks.Game.Players;
 
 public class PlayerCurrencyRewardsTask(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     List<ServerPeriodicCurrencyReward> rewards, 
     IPlayerRepository playerRepository,
     ServerSettings serverSettings,

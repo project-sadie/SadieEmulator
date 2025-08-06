@@ -9,7 +9,7 @@ namespace Sadie.Networking.Events.Handlers.Players.Club;
 
 [PacketId(EventHandlerId.PlayerSetHomeRoom)]
 public class PlayerSetHomeRoomEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
 {
     public int RoomId { get; set; }
     

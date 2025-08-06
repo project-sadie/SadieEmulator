@@ -15,7 +15,7 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 public class RoomUserRespectEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory)
     : INetworkPacketEventHandler
 {
     public int TargetId { get; init; }
