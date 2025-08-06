@@ -200,6 +200,9 @@ public class RoomUser(
     }
     public async ValueTask DisposeAsync()
     {
-        room.TileMap.UnitMap[Point].Remove(this);
+        if (room.TileMap.UnitMap.TryGetValue(Point, out var value))
+        {
+            value.Remove(this);
+        }
     }
 }
