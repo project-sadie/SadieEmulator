@@ -24,7 +24,7 @@ public class SecureLoginEventHandler(
     ServerPlayerConstants constants,
     INetworkClientRepository networkClientRepository,
     ServerSettings serverSettings,
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper,
     IPlayerLoaderService playerLoaderService,
     IPlayerHelperService playerHelperService)

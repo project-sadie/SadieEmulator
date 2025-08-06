@@ -10,7 +10,7 @@ namespace Sadie.Game.Navigator;
 
 public class NavigatorRoomProvider(
     IRoomRepository roomRepository, 
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     IEnumerable<INavigatorSearchFilterer> filterers) : INavigatorRoomProvider
 {
     public Task<List<Room>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)

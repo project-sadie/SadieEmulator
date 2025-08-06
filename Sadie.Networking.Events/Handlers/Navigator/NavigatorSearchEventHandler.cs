@@ -13,7 +13,7 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.NavigatorSearch)]
 public class NavigatorSearchEventHandler(
-    IDbContextFactory<SadieContext> dbContextFactory,
+    IDbContextFactory<SadieDbContext> dbContextFactory,
     INavigatorRoomProvider navigatorRoomProvider,
     IRoomRepository roomRepository)
     : INetworkPacketEventHandler
