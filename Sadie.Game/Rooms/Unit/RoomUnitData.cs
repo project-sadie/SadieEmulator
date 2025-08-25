@@ -150,6 +150,12 @@ public class RoomUnitData(
             
             PointZ = NextZ;
             NextPoint = null;
+
+            if (Point == PathGoal)
+            {
+                ClearWalking();
+                return;
+            }
         }
         
         if (NeedsPathCalculated)
@@ -165,13 +171,13 @@ public class RoomUnitData(
 
     private async Task ProcessMovementAsync()
     {
-        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
+        StepsWalked++;
+
+        if (StepsWalked >= PathPoints.Count)
         {
             ClearWalking();
             return;
         }
-        
-        StepsWalked++;
         
         var nextStep = PathPoints[StepsWalked];
         var lastStep = PathPoints.Count == StepsWalked + 1;
