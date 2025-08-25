@@ -23,13 +23,15 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
         ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
     {
         var heightmapLines = heightmap
-            .Replace("\n", "")
-            .Split("\r")
+            .Replace("\r\n", "\n")
+            .Replace("\r", "\n")
+            .Split('\n')
+            .Where(line => !string.IsNullOrWhiteSpace(line))
             .ToList();
         
         SizeX = heightmapLines[0].Length;
         SizeY = heightmapLines.Count;
-        Size = SizeY * SizeX;
+        Size = 0;
         Map = new short[SizeY, SizeX];
         ZMap = new short[SizeY, SizeX];
         TileExistenceMap = new short[SizeY, SizeX];
@@ -39,10 +41,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
         {
             for (var x = 0; x < SizeX; x++)
             {
-                if (heightmapLines[y].Length != SizeX)
-                {
-                    break;
-                }
+                Size++;
 
                 var square = heightmapLines[y][x].ToString().ToUpper();
                 
