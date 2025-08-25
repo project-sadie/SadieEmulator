@@ -39,7 +39,7 @@ public class RoomItemUpdateObjectDataEventHandler(
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
+        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
 }

@@ -37,7 +37,7 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
-        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
+        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
 
@@ -91,7 +91,7 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
 
     public Dictionary<string, string> GetObjectDataForItem(PlayerFurnitureItemPlacementData furnitureItem)
     {
-        if (furnitureItem.FurnitureItem!.InteractionType == FurnitureItemInteractionType.RoomAdsBg)
+        if (furnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.RoomAdsBg)
         {
             var data = new Dictionary<string, string>();
             

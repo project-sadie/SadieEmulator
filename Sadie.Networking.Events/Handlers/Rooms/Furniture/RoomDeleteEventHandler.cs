@@ -40,7 +40,7 @@ public class RoomDeleteEventHandler(
 
         foreach (var item in room.FurnitureItems)
         {
-            var playerItem = item.PlayerFurnitureItem!;
+            var playerItem = item.PlayerFurnitureItem;
             playerItem.PlacementData = null;
             dbContext.Entry(item).State = EntityState.Deleted;
             
