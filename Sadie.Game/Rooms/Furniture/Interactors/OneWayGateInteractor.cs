@@ -60,7 +60,7 @@ public class OneWayGateInteractor(
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "0");
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.Entry(item.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
+        dbContext.Entry(item.PlayerFurnitureItem).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
 }

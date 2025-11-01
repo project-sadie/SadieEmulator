@@ -295,7 +295,7 @@ public class CatalogPurchaseEventHandler(
             
             var playerData = client.Player!.Data;
             
-            if (playerData!.CreditBalance < offer.CostCredits || 
+            if (playerData.CreditBalance < offer.CostCredits || 
                 (offer.CostPointsType == 0 && playerData.PixelBalance < offer.CostPoints) ||
                 (offer.CostPointsType != 0 && playerData.SeasonalBalance < offer.CostPoints))
             {

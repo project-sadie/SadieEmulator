@@ -21,7 +21,7 @@ public class RoomTriggerDiceEventHandler(IRoomFurnitureItemInteractorRepository 
             .FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
 
-        if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem!.MetaData == "-1")
+        if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem.MetaData == "-1")
         {
             return;
         }
