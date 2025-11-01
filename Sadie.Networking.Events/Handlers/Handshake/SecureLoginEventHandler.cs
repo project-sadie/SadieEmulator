@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Game.Players;
@@ -27,7 +28,8 @@ public class SecureLoginEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper,
     IPlayerLoaderService playerLoaderService,
-    IPlayerHelperService playerHelperService)
+    IPlayerHelperService playerHelperService,
+    IConfiguration config)
     : INetworkPacketEventHandler
 {
     public string? Token { get; set; }
@@ -41,6 +43,11 @@ public class SecureLoginEventHandler(
         {
             logger.LogWarning("Rejected an insecure sso token");
             await client.DisposeAsync();
+            return;
+        }
+
+        if (DelayMs >= config.GetValue("PlayerOptions:MaxSsoDelayMs", 300_000))
+        {
             return;
         }
         
