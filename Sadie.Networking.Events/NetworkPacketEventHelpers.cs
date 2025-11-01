@@ -171,7 +171,7 @@ public static class NetworkPacketEventHelpers
     {
         await client.WriteToStreamAsync(new BubbleAlertWriter
         {
-            Key = EnumHelpers.GetEnumDescription(NotificationType.FurniturePlacementError)!,
+            Key = EnumHelpers.GetEnumDescription(NotificationType.FurniturePlacementError),
             Messages = new Dictionary<string, string>
             {
                 { "message", error.ToString() }

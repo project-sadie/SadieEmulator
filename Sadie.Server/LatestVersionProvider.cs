@@ -15,7 +15,7 @@ public static class LatestVersionProvider
             var doc = XDocument.Parse(xmlContent);
             var versionElement = doc.Descendants("AssemblyVersion").FirstOrDefault();
 
-            return versionElement == null ? null : Version.Parse(versionElement!.Value);
+            return versionElement == null ? null : Version.Parse(versionElement.Value);
         }
         catch (Exception)
         {

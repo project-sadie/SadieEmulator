@@ -42,7 +42,7 @@ public class FloorPlanEditorSaveEventHandler(
         {
             await client.WriteToStreamAsync(new BubbleAlertWriter
             {
-                Key = EnumHelpers.GetEnumDescription(NotificationType.FloorPlanEditor)!,
+                Key = EnumHelpers.GetEnumDescription(NotificationType.FloorPlanEditor),
                 Messages = new Dictionary<string, string>
                 {
                     { "message", string.Join("<br>", errors) }
