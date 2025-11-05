@@ -2,7 +2,6 @@ using System.Drawing;
 using Sadie.API;
 using Sadie.API.Game.Players;
 using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Chat.Commands;
 using Sadie.API.Game.Rooms.Mapping;
 using Sadie.API.Game.Rooms.Pathfinding;
 using Sadie.API.Game.Rooms.Services;
@@ -199,6 +198,7 @@ public class RoomUser(
 
         await Room.UserRepository.BroadcastDataAsync(writer);
     }
+    
     public async ValueTask DisposeAsync()
     {
         if (room.TileMap.UnitMap.TryGetValue(Point, out var value))
