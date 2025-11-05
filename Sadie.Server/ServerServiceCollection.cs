@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
-using Sadie.Database.Mappers;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
 using Sadie.Game.Locale;
+using Sadie.Game.Mappers;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;

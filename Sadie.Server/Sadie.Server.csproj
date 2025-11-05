@@ -11,7 +11,6 @@
     <ItemGroup>
         <PackageReference Include="EFCore.BulkExtensions" Version="8.0.4" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.2-mauipre.1.22054.8" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
         <PackageReference Include="Sadie.API" Version="1.5.2" />
         <PackageReference Include="Sadie.Networking.Encryption" Version="1.0.1" />
         <PackageReference Include="Sadie.Plugins.BaseCommands" Version="1.0.0" />
@@ -19,10 +18,13 @@
         <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.1-dev-00296" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.2-dev-00890" />
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Database.Mappers\Sadie.Database.Mappers.csproj" />
+      <ProjectReference Include="..\Sadie.Db\Sadie.Db.csproj" />
+      <ProjectReference Include="..\Sadie.Game\Sadie.Game.csproj" />
       <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
       <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>

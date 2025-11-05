@@ -5,7 +5,7 @@ using Sadie.API.Game.Players;
 using Sadie.Db.Models.Players;
 using Sadie.Game.Players;
 
-namespace Sadie.Database.Mappers;
+namespace Sadie.Game.Mappers;
 
 public class PlayerProfile : Profile
 {

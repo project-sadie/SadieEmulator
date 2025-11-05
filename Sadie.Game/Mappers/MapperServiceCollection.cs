@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Sadie.Database.Mappers;
+namespace Sadie.Game.Mappers;
 
 public static class MapperServiceCollection
 {

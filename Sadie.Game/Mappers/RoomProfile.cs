@@ -7,7 +7,7 @@ using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 
-namespace Sadie.Database.Mappers;
+namespace Sadie.Game.Mappers;
 
 public class RoomProfile : Profile
 {
