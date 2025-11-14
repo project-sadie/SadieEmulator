@@ -7,5 +7,5 @@ public class PlayerRelationship
     public Player? OriginPlayer { get; init; }
     public long TargetPlayerId { get; init; }
     public Player? TargetPlayer { get; init; }
-    public int TypeId { get; set; }
+    public int TypeId { get; init; }
 }
