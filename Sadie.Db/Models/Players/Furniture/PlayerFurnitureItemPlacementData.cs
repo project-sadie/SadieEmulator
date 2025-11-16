@@ -12,7 +12,7 @@ public class PlayerFurnitureItemPlacementData
     public int PlayerFurnitureItemId { get; init; }
     public required PlayerFurnitureItem PlayerFurnitureItem { get; init; }
     public int RoomId { get; init; }
-    public Room? Room { get; init; }z
+    public Room? Room { get; init; }
     public int PositionX { get; set; }
     public int PositionY { get; set; }
     public double PositionZ { get; set; }
