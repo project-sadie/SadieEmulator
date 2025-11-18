@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
 using Sadie.Game.Players.Options;
 using Sadie.Networking;
