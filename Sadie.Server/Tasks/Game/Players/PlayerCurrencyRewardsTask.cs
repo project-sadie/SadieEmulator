@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
 using Sadie.Networking.Events;

@@ -1,6 +1,6 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Networking.Client;
 
 namespace Sadie.Networking.Client;
 

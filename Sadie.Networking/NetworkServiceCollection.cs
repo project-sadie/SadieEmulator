@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Networking.Client;
 using Sadie.Networking.Validators;
 using NetworkOptions = Sadie.Networking.Options.NetworkOptions;

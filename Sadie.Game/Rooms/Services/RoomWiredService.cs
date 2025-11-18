@@ -12,7 +12,9 @@ using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Services;
 
-public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelperService) : IRoomWiredService
+public class RoomWiredService(
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IRoomFurnitureItemHelperService furnitureItemHelperService) : IRoomWiredService
 {
     public IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
         string interactionType,
@@ -33,7 +35,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         PlayerFurnitureItemPlacementData trigger,
         IRoomUser userWhoTriggered)
     {
-        CycleInteractionStateAsync(room, trigger);
+        _ = CycleInteractionStateAsync(room, trigger);
         
         var effectsOnTrigger = GetEffectsForTrigger(trigger, room.FurnitureItems);
 
@@ -120,7 +122,6 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
 
     public async Task SaveSettingsAsync(
         PlayerFurnitureItemPlacementData placementData,
-        IDbContextFactory<SadieDbContext> dbContextFactory,
         PlayerFurnitureItemWiredData wiredData)
     {
         var existingData = placementData.WiredData;

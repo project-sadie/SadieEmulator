@@ -1,6 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
-using Sadie.API.Plugins;
+using Sadie.API.Interfaces.Plugins;
 
 namespace SadieEmulator.Plugins;
 

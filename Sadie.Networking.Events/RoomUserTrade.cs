@@ -10,7 +10,9 @@ using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events;
 
-public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUserTrade
+public class RoomUserTrade(
+    IPlayerHelperService playerHelperService,
+    IDbContextFactory<SadieDbContext> dbContextFactory) : IRoomUserTrade
 {
     public required List<IRoomUser> Users { get; init; }
     public required List<PlayerFurnitureItem> Items { get; init; }
@@ -43,19 +45,19 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         }
     }
     
-    public async Task SwapItemsAsync(IDbContextFactory<SadieDbContext> dbContextFactory)
+    public async Task SwapItemsAsync()
     {
         var map = new Dictionary<long, List<PlayerFurnitureItem>>();
         
         foreach (var item in Items)
         {
-            if (!map.ContainsKey(item.PlayerId))
+            if (!map.TryGetValue(item.PlayerId, out var value))
             {
-                map[item.PlayerId] = [];
+                value = [];
+                map[item.PlayerId] = value;
             }
 
-            map[item.PlayerId].Add(item);
-            
+            value.Add(item);
         }
 
         var userOne = Users[0].Player;

@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Game.Rooms;
 using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Networking;
 using Sadie.API.Networking;
 using Sadie.Db;
 using Sadie.Db.Models.Players.Furniture;
@@ -10,12 +13,12 @@ using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture;
 
-public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
+public class RoomFurnitureItemHelperService(
+    IDbContextFactory<SadieDbContext> dbContextFactory) : IRoomFurnitureItemHelperService
 {
     public async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
-        PlayerFurnitureItemPlacementData roomFurnitureItem,
-        IDbContextFactory<SadieDbContext> dbContextFactory)
+        PlayerFurnitureItemPlacementData roomFurnitureItem)
     {
         if (string.IsNullOrEmpty(roomFurnitureItem.PlayerFurnitureItem.MetaData))
         {
