@@ -44,7 +44,10 @@ internal static class Program
 
         System.Console.ForegroundColor = ConsoleColor.White;
 
-        System.Console.WriteLine($"         You're running version {GlobalState.Version}");
+        var assembly = typeof(Server).Assembly;
+        var version = assembly.GetName().Version;
+        
+        System.Console.WriteLine($"         You're running version {version}");
         System.Console.WriteLine("");
     }
     

@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
@@ -8,7 +10,9 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.SaveNavigatorSettings)]
 public class SaveNavigatorSettingsEventHandler(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper,
+    ILogger<SaveNavigatorSettingsEventHandler> logger) : INetworkPacketEventHandler
 {
     public int WindowX { get; set; }
     public int WindowY { get; set; }
@@ -27,16 +31,21 @@ public class SaveNavigatorSettingsEventHandler(
         }
         
         var navigatorSettings = player.NavigatorSettings;
-
-        navigatorSettings.WindowX = WindowX;
-        navigatorSettings.WindowY = WindowY;
-        navigatorSettings.WindowWidth = WindowWidth;
-        navigatorSettings.WindowHeight = WindowHeight;
-        navigatorSettings.OpenSearches = OpenSearches;
-        navigatorSettings.ResultsMode = 0;
-
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.PlayerNavigatorSettings.Update(player.NavigatorSettings);
+
+        var entity = await dbContext.PlayerNavigatorSettings
+            .FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+
+        if (entity == null)
+        {
+            #pragma warning disable CA1873
+            logger.LogWarning("PlayerNavigatorSettings missing for player {PlayerId}", player.Id);
+            #pragma warning restore CA1873
+            return;
+        }
+
+        mapper.Map(navigatorSettings, entity);
         await dbContext.SaveChangesAsync();
     }
 }
