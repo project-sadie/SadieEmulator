@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Navigator;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
@@ -13,7 +14,7 @@ public class NavigatorRoomProvider(
     IDbContextFactory<SadieDbContext> dbContextFactory,
     IEnumerable<INavigatorSearchFilterer> filterers) : INavigatorRoomProvider
 {
-    public Task<List<Room>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
+    public Task<List<RoomDto>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
     {
         return Task.FromResult(category switch
         {
@@ -23,7 +24,7 @@ public class NavigatorRoomProvider(
         });
     }
 
-    public async Task<List<Room>> GetRoomsForSearchQueryAsync(string searchQuery)
+    public async Task<List<RoomDto>> GetRoomsForSearchQueryAsync(string searchQuery)
     {
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
