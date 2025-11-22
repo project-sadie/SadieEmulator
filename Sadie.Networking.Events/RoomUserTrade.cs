@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Players.Furniture;
@@ -15,9 +16,9 @@ public class RoomUserTrade(
     IDbContextFactory<SadieDbContext> dbContextFactory) : IRoomUserTrade
 {
     public required List<IRoomUser> Users { get; init; }
-    public required List<PlayerFurnitureItem> Items { get; init; }
+    public required List<PlayerFurnitureItemDto> Items { get; init; }
     
-    public async void OfferItems(List<PlayerFurnitureItem> playerItems)
+    public async void OfferItems(List<PlayerFurnitureItemDto> playerItems)
     {
         foreach (var item in playerItems.Where(item => !Items.Contains(item)))
         {
@@ -47,7 +48,7 @@ public class RoomUserTrade(
     
     public async Task SwapItemsAsync()
     {
-        var map = new Dictionary<long, List<PlayerFurnitureItem>>();
+        var map = new Dictionary<long, List<PlayerFurnitureItemDto>>();
         
         foreach (var item in Items)
         {
@@ -118,7 +119,7 @@ public class RoomUserTrade(
         await dbContext.SaveChangesAsync();
     }
 
-    public void RemoveOfferedItem(PlayerFurnitureItem item)
+    public void RemoveOfferedItem(PlayerFurnitureItemDto item)
     {
         Items.Remove(item);
     }

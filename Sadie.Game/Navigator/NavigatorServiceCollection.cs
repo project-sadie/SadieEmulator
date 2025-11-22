@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.API.Game.Navigator;
+using Sadie.API.Interfaces.Game.Navigator;
 using Sadie.Game.Navigator.Filterers;
 
 namespace Sadie.Game.Navigator;

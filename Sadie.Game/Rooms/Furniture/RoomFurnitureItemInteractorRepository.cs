@@ -1,4 +1,4 @@
-using Sadie.API.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture;
 

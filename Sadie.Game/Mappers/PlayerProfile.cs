@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Sadie.API.Game.Players;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.Db.Models.Players;
 using Sadie.Game.Players;
 

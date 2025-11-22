@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Sadie.API.Game.Players;
+using Sadie.API.DTOs.Player;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Game.Players.Options;
@@ -10,7 +11,7 @@ namespace Sadie.Game.Players;
 public class PlayerLoaderService(IDbContextFactory<SadieDbContext> dbContextFactory,
     IOptions<PlayerOptions> playerOptions) : IPlayerLoaderService
 {
-    public async Task<PlayerSsoToken?> GetTokenAsync(string token, int delayMs)
+    public async Task<PlayerSsoTokenDto?> GetTokenAsync(string token, int delayMs)
     {
         var expires = DateTime
             .Now

@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Options;
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db.Models.Catalog.FrontPage;
 using Sadie.Db.Models.Catalog.Items;
 using Sadie.Db.Models.Catalog.Pages;
 using Sadie.Db.Models.Furniture;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Options;
 using Sadie.Networking.Packets;

@@ -1,8 +1,8 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Bots;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Bots;
+using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;

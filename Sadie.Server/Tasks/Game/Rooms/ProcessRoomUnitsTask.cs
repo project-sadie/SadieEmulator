@@ -1,4 +1,4 @@
-using Sadie.API.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms;
 
 namespace SadieEmulator.Tasks.Game.Rooms;
 

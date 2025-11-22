@@ -1,16 +1,15 @@
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Players.Friendships;
-using Sadie.API.Game.Players.Packets.Writers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Players.Friendships;
+using Sadie.API.Interfaces.Game.Players.Packets.Writers;
+using Sadie.Core.Enums.Game.Players;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Subscriptions;
-using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players;
 

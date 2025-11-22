@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
 using Sadie.Db;
-using Sadie.Enums.Game.Players;
 using Sadie.Networking.Writers.Players;
 using Sadie.Shared.Attributes;
 

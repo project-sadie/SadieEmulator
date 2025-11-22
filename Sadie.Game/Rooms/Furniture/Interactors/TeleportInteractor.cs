@@ -1,13 +1,13 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
 using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Events;
 using Sadie.Networking.Writers.Rooms.Users;
 

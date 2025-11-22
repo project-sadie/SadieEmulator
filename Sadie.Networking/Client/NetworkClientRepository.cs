@@ -51,8 +51,6 @@ public class NetworkClientRepository(
                 false, 
                 false, 
                 playerRepository);
-                
-            player.Data.IsOnline = false;
 
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
             dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;

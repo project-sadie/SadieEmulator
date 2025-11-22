@@ -1,10 +1,10 @@
 using System.Drawing;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Pathfinding;
-using Sadie.API.Game.Rooms.Unit;
-using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Miscellaneous;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding;
+using Sadie.API.Interfaces.Game.Rooms.Unit;
+using Sadie.Core.Enums.Game.Rooms.Users;
+using Sadie.Core.Enums.Miscellaneous;
 
 namespace Sadie.Game.Rooms.Unit;
 

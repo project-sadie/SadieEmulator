@@ -1,11 +1,11 @@
 ﻿using Sadie.API;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking;
+using Sadie.Core.Enums.Game.Players;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Players;
 using Sadie.Networking.Writers;
 using Sadie.Shared.Attributes;
-using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
+using PlayerRelationshipType = Sadie.Db.Models.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players.Packets.Writers;
 

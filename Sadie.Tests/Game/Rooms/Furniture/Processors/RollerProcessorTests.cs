@@ -1,6 +1,6 @@
 using System.Drawing;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Miscellaneous;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Furniture.Processors;
 using Sadie.Game.Rooms.Mapping;

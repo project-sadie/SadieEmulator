@@ -1,5 +1,5 @@
-using Sadie.API.Game.Rooms.Services;
-using Sadie.Enums.Game.Rooms.Users;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.Core.Enums.Game.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Services;
 

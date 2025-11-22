@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Rooms;
-using Sadie.Enums.Game.Rooms;
 using Sadie.Networking.Writers.Navigator;
 using Sadie.Shared.Attributes;
 

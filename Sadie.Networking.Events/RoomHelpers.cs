@@ -1,16 +1,16 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Db.Models.Rooms;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Rooms;
-using Sadie.Enums.Game.Players;
-using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Miscellaneous;
 
 namespace Sadie.Networking.Events;
 
@@ -57,7 +57,7 @@ public static class RoomHelpers
         return roomLogic;
     }
     
-    private static RoomControllerLevel GetControllerLevelForUser(IRoom room, IPlayerLogic player)
+    private static RoomControllerLevel GetControllerLevelForUser(RoomDto room, IPlayerLogic player)
     {
         var controllerLevel = RoomControllerLevel.None;
         

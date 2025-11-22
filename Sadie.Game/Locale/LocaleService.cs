@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Locale;
+using Sadie.API.Interfaces.Game.Locale;
 using Sadie.Db;
 
 namespace Sadie.Game.Locale;

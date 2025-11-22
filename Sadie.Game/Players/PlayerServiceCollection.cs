@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.API.Game.Players;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.Game.Players.Options;
 
 namespace Sadie.Game.Players;

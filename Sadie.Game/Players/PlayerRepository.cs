@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 

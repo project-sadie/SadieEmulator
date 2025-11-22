@@ -1,7 +1,7 @@
 using Moq;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Db.Models.Furniture;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Players.Furniture;

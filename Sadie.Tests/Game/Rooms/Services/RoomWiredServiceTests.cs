@@ -1,5 +1,5 @@
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Services;
 

@@ -1,11 +1,11 @@
 ﻿using System.Drawing;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Miscellaneous;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Enums.Miscellaneous;
 
 namespace Sadie.Game.Rooms.Users;
 

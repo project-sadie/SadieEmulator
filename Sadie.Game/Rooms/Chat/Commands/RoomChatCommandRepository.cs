@@ -1,4 +1,4 @@
-using Sadie.API.Game.Rooms.Chat.Commands;
+using Sadie.API.Interfaces.Game.Rooms.Chat.Commands;
 
 namespace Sadie.Game.Rooms.Chat.Commands;
 
