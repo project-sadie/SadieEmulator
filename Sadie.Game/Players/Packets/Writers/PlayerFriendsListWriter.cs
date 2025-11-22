@@ -2,9 +2,9 @@
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db.Models.Players;
 using Sadie.Networking.Writers;
-using Sadie.Shared.Attributes;
 using PlayerRelationshipType = Sadie.Db.Models.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players.Packets.Writers;

@@ -3,9 +3,9 @@ using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Shared.Extensions;
 using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Writers.Rooms.Users.HandItems;
-using Sadie.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 

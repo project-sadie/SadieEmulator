@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Rooms.Furniture;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 

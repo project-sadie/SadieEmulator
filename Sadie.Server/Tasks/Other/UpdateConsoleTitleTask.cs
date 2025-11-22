@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
-using Sadie.Shared;
 
 namespace SadieEmulator.Tasks.Other;
 

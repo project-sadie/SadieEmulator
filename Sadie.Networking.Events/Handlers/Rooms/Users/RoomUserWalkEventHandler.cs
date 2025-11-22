@@ -2,7 +2,7 @@
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
-using Sadie.Shared.Attributes;
+using Sadie.Core.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 

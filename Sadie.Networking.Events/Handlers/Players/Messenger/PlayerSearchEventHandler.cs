@@ -1,10 +1,10 @@
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
+using Sadie.Core.Shared.Constants;
+using Sadie.Core.Shared.Extensions;
 using Sadie.Networking.Writers.Players.Messenger;
-using Sadie.Shared.Attributes;
-using Sadie.Shared.Constants;
-using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 

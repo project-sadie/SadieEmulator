@@ -7,9 +7,9 @@ using Sadie.API.Interfaces.Game.Rooms.Services;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Rooms.Doorbell;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 

@@ -7,6 +7,8 @@ using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Catalog;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
+using Sadie.Core.Shared.Constants;
 using Sadie.Db;
 using Sadie.Db.Models.Catalog;
 using Sadie.Db.Models.Catalog.Items;
@@ -20,8 +22,6 @@ using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Players.Subscriptions;
-using Sadie.Shared.Attributes;
-using Sadie.Shared.Constants;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 

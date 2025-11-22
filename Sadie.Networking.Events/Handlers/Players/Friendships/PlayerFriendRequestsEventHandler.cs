@@ -2,9 +2,9 @@
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players.Messenger;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 

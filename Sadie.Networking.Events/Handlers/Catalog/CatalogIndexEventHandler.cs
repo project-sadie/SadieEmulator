@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Catalog.Pages;
 using Sadie.Networking.Writers.Catalog;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
