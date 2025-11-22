@@ -1,9 +1,9 @@
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Players.Friendships;
 using Sadie.API.Interfaces.Game.Players.Packets.Writers;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Db.Models.Players;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players;
@@ -122,7 +122,7 @@ public class PlayerHelperService : IPlayerHelperService
         }
     }
 
-    public async Task SendUnseenInventoryItemsAsync(IPlayerLogic player, List<PlayerFurnitureItem> items)
+    public async Task SendUnseenInventoryItemsAsync(IPlayerLogic player, List<PlayerFurnitureItemDto> items)
     {
         await player.NetworkObject!.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
         {

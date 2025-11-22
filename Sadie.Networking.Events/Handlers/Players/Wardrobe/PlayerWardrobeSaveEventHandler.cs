@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Players;
@@ -10,7 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Wardrobe;
 
 [PacketId(EventHandlerId.PlayerWardrobeSave)]
 public class PlayerWardrobeSaveEventHandler(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public int SlotId { get; set; }
     public required string FigureCode { get; set; }
@@ -31,11 +34,13 @@ public class PlayerWardrobeSaveEventHandler(
             FigureCode = FigureCode,
             Gender = Gender == "M" ? PlayerAvatarGender.Male : PlayerAvatarGender.Female
         };
-            
-        player.WardrobeItems.Add(wardrobeItem);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.PlayerWardrobeItems.Add(wardrobeItem);
         dbContext.Entry(wardrobeItem).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
+            
+        player.WardrobeItems.Add(
+            mapper.Map<PlayerWardrobeItemDto>(wardrobeItem));
     }
 }

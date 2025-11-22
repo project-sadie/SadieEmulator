@@ -1,8 +1,8 @@
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Db.Models.Players.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
@@ -24,7 +24,7 @@ public class RoomUserTradeOfferItemsEventHandler(IRoomRepository roomRepository)
         }
 
         var player = client.Player;
-        var items = new List<PlayerFurnitureItem>();
+        var items = new List<PlayerFurnitureItemDto>();
         
         foreach (var id in Ids)
         {

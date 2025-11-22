@@ -5,7 +5,6 @@ using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 
@@ -70,7 +69,7 @@ public class RoomUserTrade(
         var userTwoItems = map.TryGetValue(userTwo.Id, out var twoItems) ? 
             twoItems : [];
         
-        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();
+        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItemDto>>();
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         

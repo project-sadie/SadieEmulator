@@ -1,3 +1,5 @@
+using AutoMapper;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -8,7 +10,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomSettings)]
 public class RequestRoomSettingsEventHandler(
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public int RoomId { get; init; }
     
@@ -20,7 +23,7 @@ public class RequestRoomSettingsEventHandler(
         {
             await client.WriteToStreamAsync(new RoomSettingsWriter
             {
-                Room = room
+                Room = mapper.Map<RoomDto>(room)
             });
         }
     }

@@ -1,16 +1,16 @@
+using Sadie.API.DTOs.Catalog.FrontPage;
+using Sadie.API.DTOs.Catalog.Pages;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Db.Models.Catalog.FrontPage;
-using Sadie.Db.Models.Catalog.Pages;
 using Sadie.Networking.Writers.Catalog;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogPage)]
 public class CatalogPageEventHandler(
-    List<CatalogFrontPageItem> catalogFrontPageItems,
-    List<CatalogPage> catalogPages) : INetworkPacketEventHandler
+    List<CatalogFrontPageItemDto> catalogFrontPageItems,
+    List<CatalogPageDto> catalogPages) : INetworkPacketEventHandler
 {
     public int PageId { get; set; }
     public int OfferId { get; set; }

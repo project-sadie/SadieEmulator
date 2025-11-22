@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -42,13 +43,13 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        Player? targetPlayer;
+        PlayerDto? targetPlayer;
         var targetOnline = false;
         var onlineTarget = playerRepository.GetPlayerLogicByUsername(TargetUsername);
         
         if (onlineTarget != null)
         {
-            targetPlayer = mapper.Map<Player>(onlineTarget);
+            targetPlayer = mapper.Map<PlayerDto>(onlineTarget);
             targetOnline = true;
         }
         else
@@ -109,7 +110,7 @@ public class PlayerSendFriendRequestEventHandler(
     }
 
     private async Task AcceptPendingAsync(
-        PlayerFriendship incomingRequest, 
+        PlayerFriendshipDto incomingRequest, 
         bool targetOnline, 
         IPlayerLogic? onlineTarget,
         long playerId)

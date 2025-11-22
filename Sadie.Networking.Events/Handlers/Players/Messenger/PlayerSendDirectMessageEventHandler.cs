@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -15,7 +17,8 @@ namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 [PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieDbContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
@@ -58,7 +61,7 @@ public class PlayerSendDirectMessageEventHandler(
             return;
         }
 
-        var playerMessage = new PlayerMessage
+        var playerMessage = new PlayerMessageDto
         {
             OriginPlayerId = client.Player.Id,
             TargetPlayerId = targetPlayer.Id,
@@ -70,9 +73,11 @@ public class PlayerSendDirectMessageEventHandler(
         {
             Message = playerMessage
         });
+
+        var entity = mapper.Map<PlayerMessage>(playerMessage);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.PlayerMessages.Add(playerMessage);
+        dbContext.PlayerMessages.Add(entity);
         await dbContext.SaveChangesAsync();
     }
 }

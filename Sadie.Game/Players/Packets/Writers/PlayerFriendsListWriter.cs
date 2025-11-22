@@ -5,7 +5,6 @@ using Sadie.Core.Enums.Game.Players;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db.Models.Players;
 using Sadie.Networking.Writers;
-using PlayerRelationshipType = Sadie.Db.Models.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players.Packets.Writers;
 
@@ -37,7 +36,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
             
             var relationshipType = Relationships
                .FirstOrDefault(x => x.TargetPlayerId == friendData.Id)
-               ?.TypeId ?? (int) PlayerRelationshipType.None;
+               ?.TypeId ?? (int) Core.Enums.Game.Players.PlayerRelationshipType.None;
 
             writer.WriteLong(friendData.Id);
             writer.WriteString(friendData.Username);

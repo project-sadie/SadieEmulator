@@ -27,8 +27,6 @@ public class PlayerChangedMottoEventHandler(
         
         var player = client.Player!;
         var newMotto = Motto.Truncate(constants.MaxMottoLength);
-
-        player.AvatarData.Motto = newMotto;
         
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
@@ -40,7 +38,11 @@ public class PlayerChangedMottoEventHandler(
         });
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.Entry(player.AvatarData).Property(x => x.Motto).IsModified = true;
-        await dbContext.SaveChangesAsync();
+        
+        await dbContext.PlayerAvatarData
+            .Where(x => x.PlayerId == player.Id)
+            .ExecuteUpdateAsync(x => x.SetProperty(p => p.Motto, newMotto));
+
+        player.AvatarData = player.AvatarData with { Motto = newMotto };
     }
 }

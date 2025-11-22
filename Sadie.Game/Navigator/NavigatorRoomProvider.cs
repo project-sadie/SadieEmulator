@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Navigator;
@@ -12,7 +13,8 @@ namespace Sadie.Game.Navigator;
 public class NavigatorRoomProvider(
     IRoomRepository roomRepository, 
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IEnumerable<INavigatorSearchFilterer> filterers) : INavigatorRoomProvider
+    IEnumerable<INavigatorSearchFilterer> filterers,
+    IMapper mapper) : INavigatorRoomProvider
 {
     public Task<List<RoomDto>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
     {
@@ -45,9 +47,11 @@ public class NavigatorRoomProvider(
                 x.Owner!.Username.Contains(searchQuery));
         }
 
-        return await query
+        var rooms = await query
             .Include(x => x.Settings)
             .ToListAsync();
+        
+        return mapper.Map<List<RoomDto>>(rooms);
     }
 
     private IQueryable<Room> ApplyFilter(IQueryable<Room> query, IReadOnlyList<string> filterData)
