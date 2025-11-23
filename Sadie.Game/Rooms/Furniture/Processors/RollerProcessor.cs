@@ -55,7 +55,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             
             var users = room.UserRepository
                 .GetAll()
-                .Where(u => !userIdsProcessed.Contains(u.Player.Id));
+                .Where(u => !userIdsProcessed.Contains(u.Player.Player.Id));
 
             var nextStepOpen = room.TileMap.TileExists(nextStep) &&
                 room.TileMap.Map[nextStep.Y, nextStep.X] == (int)RoomTileState.Open &&
@@ -188,7 +188,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         PlayerFurnitureItemPlacementDataDto? nextRoller,
         double nextHeight)
     {
-        playerIdsProcessed.Add(rollingUser.Player.Id);
+        playerIdsProcessed.Add(rollingUser.Player.Player.Id);
 
         if (rollingUser.StatusMap.ContainsKey(RoomUserStatus.Move))
         {
@@ -204,7 +204,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             Objects = [],
             RollerId = roller.PlayerFurnitureItemId,
             MovementType = 2,
-            RoomUserId = rollingUser.Player.Id,
+            RoomUserId = rollingUser.Player.Player.Id,
             Height = rollingUser.PointZ.ToString(),
             NextHeight = nextHeight.ToString()
         });

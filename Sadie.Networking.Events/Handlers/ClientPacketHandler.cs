@@ -33,11 +33,6 @@ public class ClientPacketHandler(
                 logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
                 return;
             }
-            
-            if (packet.PacketId == 2419)
-            {
-                var x = 0;
-            }
 
             var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
 

@@ -82,7 +82,7 @@ public class RoomUser(
         
             await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
             {
-                UserId = Player.Id,
+                UserId = Player.Player.Id,
                 ItemId = 0
             });
         }
@@ -157,7 +157,7 @@ public class RoomUser(
 
             var writer = new RoomUserIdleWriter
             {
-                UserId = Player.Id,
+                UserId = Player.Player.Id,
                 IsIdle = IsIdle
             };
             
@@ -176,7 +176,7 @@ public class RoomUser(
     {
         await NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
         {
-            SenderId = Player.Id,
+            SenderId = Player.Player.Id,
             Message = message,
             EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
             ChatBubbleId = 0,
@@ -191,7 +191,7 @@ public class RoomUser(
         
         var writer = new RoomUserEffectWriter
         {
-            UserId = (int) Player.Id,
+            UserId = (int) Player.Player.Id,
             EffectId = (int) effect,
             DelayMs = 0
         };

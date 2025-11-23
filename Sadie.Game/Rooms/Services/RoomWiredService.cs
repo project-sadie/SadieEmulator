@@ -88,7 +88,7 @@ public class RoomWiredService(
             case FurnitureItemInteractionType.WiredEffectShowMessage:
                 await userWhoTriggered.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
                 {
-                    SenderId = userWhoTriggered.Player.Id,
+                    SenderId = userWhoTriggered.Player.Player.Id,
                     Message = effect.WiredData.Message,
                     EmotionId = 0,
                     ChatBubbleId = (int)ChatBubble.Alert,
@@ -99,7 +99,7 @@ public class RoomWiredService(
             case FurnitureItemInteractionType.WiredEffectKickUser:
                 foreach (var user in room.UserRepository.GetAll())
                 {
-                    await user.Room.UserRepository.TryRemoveAsync(user.Player.Id, true, true);
+                    await user.Room.UserRepository.TryRemoveAsync(user.Player.Player.Id, true, true);
                     await user.Player.SendAlertAsync(effect.WiredData.Message);
                 }
                 break;
