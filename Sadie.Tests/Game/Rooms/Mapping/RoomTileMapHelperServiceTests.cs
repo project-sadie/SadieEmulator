@@ -33,7 +33,7 @@ public class RoomTileMapHelperServiceTests
     [TestCase(HDirection.NorthWest, HDirection.SouthEast)]
     public void GetOppositeDirection_ReturnsCorrect(HDirection d, HDirection t)
     {
-        var eastResult = _tileMapHelperService.GetOppositeDirection((int) d);
+        var eastResult = _tileMapHelperService.GetOppositeDirection(d);
         Assert.That(eastResult, Is.EqualTo(t));
     }
 

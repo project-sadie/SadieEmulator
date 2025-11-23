@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Server;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
@@ -14,7 +16,8 @@ public class PlayerCurrencyRewardsTask(
     List<ServerPeriodicCurrencyReward> rewards, 
     IPlayerRepository playerRepository,
     ServerSettings serverSettings,
-    IRoomUserRepository roomUserRepository) : IServerTask
+    IRoomUserRepository roomUserRepository,
+    IMapper mapper) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
     public DateTime LastExecuted { get; set; }
@@ -39,7 +42,7 @@ public class PlayerCurrencyRewardsTask(
     private async Task CheckRewardsForPlayersAsync(ServerPeriodicCurrencyReward reward)
     {
         var players = playerRepository.GetAll();
-        var logs = new List<ServerPeriodicCurrencyRewardLog>();
+        var logs = new List<ServerPeriodicCurrencyRewardLogDto>();
         
         foreach (var player in players)
         {
@@ -60,7 +63,7 @@ public class PlayerCurrencyRewardsTask(
 
             await RewardPlayerAsync(player, reward);
 
-            var log = new ServerPeriodicCurrencyRewardLog
+            var log = new ServerPeriodicCurrencyRewardLogDto
             {
                 PlayerId = player.Id,
                 Type = reward.Type,
@@ -72,8 +75,10 @@ public class PlayerCurrencyRewardsTask(
             logs.Add(log);
         }
 
+        var entityLogs = mapper.Map<List<ServerPeriodicCurrencyRewardLog>>(logs);
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(logs);
+        await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(entityLogs);
         await dbContext.SaveChangesAsync();
     }
 

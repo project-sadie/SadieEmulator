@@ -16,8 +16,10 @@ public class UpdateConsoleTitleTask(
         var usersOnline = playerRepository.Count();
         var roomCount = roomRepository.Count;
         var started = Process.GetCurrentProcess().StartTime;
+        var assembly = typeof(Server).Assembly;
+        var version = assembly.GetName().Version;
         
-        Console.Title = $"Sadie {GlobalState.Version} - Started: {started:HH:mm:ss} - Players: {usersOnline} - Rooms: {roomCount}";
+        Console.Title = $"Sadie {version} - Started: {started:HH:mm:ss} - Players: {usersOnline} - Rooms: {roomCount}";
         return Task.CompletedTask;
     }
 }

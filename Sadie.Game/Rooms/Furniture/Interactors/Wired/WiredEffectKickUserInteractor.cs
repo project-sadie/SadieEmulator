@@ -18,18 +18,19 @@ public class WiredEffectKickUserInteractor(IRoomWiredService wiredService) : Abs
     {
         var wiredData = item.WiredData;
         var input = wiredData?.Message ?? "";
+        var furnitureItem = item.PlayerFurnitureItem.FurnitureItem;
         
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredMessageEffectWriter
         {
             StuffTypeSelectionEnabled = false,
             MaxItemsSelected = 5,
             SelectedItemIds = [],
-            WiredEffectType = item.FurnitureItem.AssetId,
+            WiredEffectType = furnitureItem.AssetId,
             Id = item.Id,
             Input = input,
             IntParams = [],
             StuffTypeSelectionCode = 0,
-            Type = wiredService.GetWiredCode(item.FurnitureItem.InteractionType),
+            Type = wiredService.GetWiredCode(furnitureItem.InteractionType ?? ""),
             DelayInPulses = 0,
             ConflictingTriggerIds = []
         });
