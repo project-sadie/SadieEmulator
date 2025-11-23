@@ -1,20 +1,23 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Db.Models.Rooms;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class DimmerInteractor(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : AbstractRoomFurnitureItemInteractor
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Dimmer];
     
-    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         if (room.DimmerSettings == null)
         {
@@ -45,7 +48,7 @@ public class DimmerInteractor(
                 Intensity = 255
             };
             
-            room.DimmerSettings = new RoomDimmerSettings
+            room.DimmerSettings = new RoomDimmerSettingsDto()
             {
                 RoomId = room.Id,
                 Enabled = false,
@@ -57,13 +60,15 @@ public class DimmerInteractor(
             dbContext.RoomDimmerPresets.Add(presetOne);
             dbContext.RoomDimmerPresets.Add(presetTwo);
             dbContext.RoomDimmerPresets.Add(presetThree);
-            dbContext.RoomDimmerSettings.Add(room.DimmerSettings);
+            
+            var dimmerSettings = mapper.Map<RoomDimmerSettings>(room.DimmerSettings);
+            dbContext.RoomDimmerSettings.Add(dimmerSettings);
 
             await dbContext.SaveChangesAsync();
         }
     }
 
-    public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
