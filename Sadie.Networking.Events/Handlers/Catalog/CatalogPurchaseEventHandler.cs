@@ -147,7 +147,7 @@ public class CatalogPurchaseEventHandler(
                 CreatedAt = created
             };
             
-            client.Player.FurnitureItems.Add(newItem);
+            client.Player.Player.FurnitureItems.Add(newItem);
 
             var newEntity = mapper.Map<PlayerFurnitureItem>(newItem);
             dbContext.PlayerFurnitureItems.Add(newEntity);
@@ -193,8 +193,8 @@ public class CatalogPurchaseEventHandler(
             CreatedAt = created
         };
             
-        client.Player.FurnitureItems.Add(parent);
-        client.Player.FurnitureItems.Add(child);
+        client.Player.Player.FurnitureItems.Add(parent);
+        client.Player.Player.FurnitureItems.Add(child);
             
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
@@ -252,7 +252,7 @@ public class CatalogPurchaseEventHandler(
         dbContext.Entry(bot).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Player.Bots.Add(bot);
+        client.Player.Player.Player.Player.Bots.Add(bot);
 
         await client.WriteToStreamAsync(new PlayerInventoryAddBotWriter
         {

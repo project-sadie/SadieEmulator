@@ -13,7 +13,7 @@ public class PlayerInventoryFurnitureItemsEventHandler : INetworkPacketEventHand
     {
         var furnitureItems = client
             .Player
-            .FurnitureItems
+            .Player.FurnitureItems
             .Where(x => x.PlacementData == null)
             .ToList();
 

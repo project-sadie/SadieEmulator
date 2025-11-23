@@ -117,7 +117,7 @@ public class RoomMockHelpers
         var player = new Mock<IPlayerLogic>();
         
         player
-            .SetupGet(x => x.Id)
+            .SetupGet(x => x.Player.Id)
             .Returns(1);
         
         var roomUser = new Mock<IRoomUser>();

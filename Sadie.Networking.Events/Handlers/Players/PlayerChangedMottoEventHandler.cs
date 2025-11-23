@@ -43,6 +43,6 @@ public class PlayerChangedMottoEventHandler(
             .Where(x => x.PlayerId == player.Player.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.Motto, newMotto));
 
-        player.Player.AvatarData = player.Player.AvatarData with { Motto = newMotto };
+        player.Player.Player.AvatarData = player.Player.AvatarData with { Motto = newMotto };
     }
 }

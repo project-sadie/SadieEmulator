@@ -21,7 +21,7 @@ public class NavigatorRoomProvider(
         return Task.FromResult(category switch
         {
             "popular" => roomRepository.GetPopularRooms(50),
-            "my_rooms" => player.Rooms.ToList(),
+            "my_rooms" => player.Player.Rooms.ToList(),
             _ => []
         });
     }

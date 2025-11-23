@@ -93,7 +93,7 @@ public class RoomItemEjectedEventHandler(
         
         if (ownsItem)
         {
-            itemRecord = client.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
+            itemRecord = client.Player.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
 
             if (itemRecord == null)
             {

@@ -8,21 +8,18 @@ using Sadie.Networking.Writers.Players;
 
 namespace Sadie.Game.Players;
 
-public class PlayerLogic : IPlayerLogic
+public class PlayerLogic(
+    ILogger<PlayerLogic> logger,
+    PlayerDto player,
+    ICollection<PlayerBotDto> bots,
+    ICollection<PlayerRoomVisitDto> roomVisits)
+    : IPlayerLogic
 {
-    private readonly ILogger<PlayerLogic> _logger;
-
-    public PlayerLogic(ILogger<PlayerLogic> logger,
-        PlayerDataDto data)
-    {
-        _logger = logger;
-    }
-
-    PlayerDto Player { get; }
+    public PlayerDto Player { get; } = player;
     public IChannel? Channel { get; set; }
     public INetworkObject? NetworkObject { get; set; }
-    public ICollection<PlayerBotDto> Bots { get; init; }
-    public ICollection<PlayerRoomVisitDto> RoomVisits { get; init; }
+    public ICollection<PlayerBotDto> Bots { get; init; } = bots;
+    public ICollection<PlayerRoomVisitDto> RoomVisits { get; init; } = roomVisits;
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }
     
@@ -105,13 +102,14 @@ public class PlayerLogic : IPlayerLogic
 
     public ValueTask DisposeAsync()
     {
-        _logger.LogInformation($"Player '{Player.Username}' has logged out");
+        logger.LogInformation($"Player '{Player.Username}' has logged out");
         return ValueTask.CompletedTask;
     }
 
     public bool DeservesReward(string? rewardType, int intervalInSeconds)
     {
-        var lastReward = Player.RewardLogs
+        var lastReward = Player
+            .RewardLogs
             .OrderByDescending(x => x.CreatedAt)
             .FirstOrDefault(x => x.Type == rewardType);
 

@@ -28,7 +28,7 @@ public class RoomUserTradeOfferItemsEventHandler(IRoomRepository roomRepository)
         
         foreach (var id in Ids)
         {
-            var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == id);
+            var playerItem = player.Player.FurnitureItems.FirstOrDefault(x => x.Id == id);
 
             if (playerItem == null)
             {

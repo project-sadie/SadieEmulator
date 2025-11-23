@@ -23,7 +23,7 @@ public class RoomUserTradeOfferItemEventHandler(IRoomRepository roomRepository) 
         }
 
         var player = client.Player;
-        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+        var playerItem = player.Player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (playerItem == null)
         {

@@ -41,7 +41,6 @@ public class Player
     [InverseProperty("TargetPlayer")]  public ICollection<PlayerFriendship> IncomingFriendships { get; init; }
     
     public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; init; } = [];
-    
     public ICollection<Room> Rooms { get; set; }
     public ICollection<PlayerIgnore> Ignores { get; set; }
 

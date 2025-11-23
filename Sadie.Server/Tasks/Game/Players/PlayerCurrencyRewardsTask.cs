@@ -47,7 +47,7 @@ public class PlayerCurrencyRewardsTask(
         foreach (var player in players)
         {
             var failIdleCheck = reward.SkipIdle && 
-                roomUserRepository.TryGetById(player.Id, out var roomUser) && 
+                roomUserRepository.TryGetById(player.Player.Id, out var roomUser) && 
                 roomUser!.IsIdle;
             
             var failRoomCheck = reward.SkipHotelView && 
@@ -65,13 +65,13 @@ public class PlayerCurrencyRewardsTask(
 
             var log = new ServerPeriodicCurrencyRewardLogDto
             {
-                PlayerId = player.Id,
+                PlayerId = player.Player.Id,
                 Type = reward.Type,
                 Amount = reward.Amount,
                 CreatedAt = DateTime.Now
             };
             
-            player.RewardLogs.Add(log);
+            player.Player.Player.RewardLogs.Add(log);
             logs.Add(log);
         }
 
@@ -89,27 +89,27 @@ public class PlayerCurrencyRewardsTask(
         switch (reward.Type)
         {
             case "credits":
-                player.Data.CreditBalance += reward.Amount;
+                player.Player.Data.CreditBalance += reward.Amount;
                 
                 writer = new PlayerCreditsBalanceWriter
                 {
-                    Credits = player.Data.CreditBalance
+                    Credits = player.Player.Data.CreditBalance
                 };
                 break;
             case "pixels":
-                player.Data.PixelBalance += reward.Amount;
+                player.Player.Data.PixelBalance += reward.Amount;
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
+                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
                 };
                 break;
             case "seasonal":
-                player.Data.SeasonalBalance += reward.Amount;
+                player.Player.Data.SeasonalBalance += reward.Amount;
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
+                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
                 };
                 break;
         }

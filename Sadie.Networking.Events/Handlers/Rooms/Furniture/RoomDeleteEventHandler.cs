@@ -71,7 +71,7 @@ public class RoomDeleteEventHandler(
         dbContext.Entry(roomEntity).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Rooms.Remove(roomDto);
+        client.Player.Player.Rooms.Remove(roomDto);
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {

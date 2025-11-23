@@ -62,10 +62,10 @@ public class RoomUserTrade(
         var userOne = Users[0].Player;
         var userTwo = Users[1].Player;
 
-        var userOneItems = map.TryGetValue(userOne.Id, out var oneItems) ? 
+        var userOneItems = map.TryGetValue(userOne.Player.Id, out var oneItems) ? 
             oneItems : [];
         
-        var userTwoItems = map.TryGetValue(userTwo.Id, out var twoItems) ? 
+        var userTwoItems = map.TryGetValue(userTwo.Player.Id, out var twoItems) ? 
             twoItems : [];
         
         var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItemDto>>();
@@ -74,10 +74,10 @@ public class RoomUserTrade(
         
         foreach (var userOneItem in userOneItems)
         {
-            userOneItem.PlayerId = userTwo.Id;
+            userOneItem.PlayerId = userTwo.Player.Id;
 
-            userOne.FurnitureItems.Remove(userOneItem);
-            userTwo.FurnitureItems.Add(userOneItem);
+            userOne.Player.FurnitureItems.Remove(userOneItem);
+            userTwo.Player.FurnitureItems.Add(userOneItem);
 
             if (!updateMap.ContainsKey(userTwo))
             {
@@ -91,10 +91,10 @@ public class RoomUserTrade(
         
         foreach (var userTwoItem in userTwoItems)
         {
-            userTwoItem.PlayerId = userOne.Id;
+            userTwoItem.PlayerId = userOne.Player.Id;
 
-            userTwo.FurnitureItems.Remove(userTwoItem);
-            userOne.FurnitureItems.Add(userTwoItem);
+            userTwo.Player.FurnitureItems.Remove(userTwoItem);
+            userOne.Player.FurnitureItems.Add(userTwoItem);
 
             if (!updateMap.ContainsKey(userOne))
             {

@@ -37,12 +37,12 @@ public class NetworkClientRepository(
 
         if (roomUser != null)
         {
-            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Id, true, true);
+            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id, true, true);
         }
         
         if (player != null)
         {
-            if (!await playerRepository.TryRemovePlayerAsync(player.Id))
+            if (!await playerRepository.TryRemovePlayerAsync(player.Player.Id))
             {
                 logger.LogError("Failed to remove player whilst disposing network client.");
                 return false;
@@ -55,7 +55,7 @@ public class NetworkClientRepository(
                 false, 
                 playerRepository);
             
-            var playerDataEntity = mapper.Map<PlayerData>(player.Data);
+            var playerDataEntity = mapper.Map<PlayerData>(player.Player.Data);
 
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
             dbContext.Entry(playerDataEntity).Property(x => x.IsOnline).IsModified = true;

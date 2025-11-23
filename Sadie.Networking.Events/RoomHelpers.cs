@@ -64,12 +64,12 @@ public static class RoomHelpers
     {
         var controllerLevel = RoomControllerLevel.None;
         
-        if (room.Room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Id) != null)
+        if (room.Room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Player.Id) != null)
         {
             controllerLevel = RoomControllerLevel.Rights;
         }
 
-        if (room.Room.OwnerId == player.Id)
+        if (room.Room.OwnerId == player.Player.Id)
         {
             controllerLevel = RoomControllerLevel.Owner;
         }
@@ -118,12 +118,12 @@ public static class RoomHelpers
     {
         var roomVisit = new PlayerRoomVisitDto
         {
-            PlayerId = player.Id,
+            PlayerId = player.Player.Id,
             RoomId = roomId,
             CreatedAt = DateTime.Now
         };
         
-        player.RoomVisits.Add(roomVisit);
+        player.Player.RoomVisits.Add(roomVisit);
         
         var roomVisitEntity = mapper.Map<PlayerRoomVisit>(roomVisit);
 

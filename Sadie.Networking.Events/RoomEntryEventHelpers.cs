@@ -133,7 +133,7 @@ public static class RoomEntryEventHelpers
     {
         var player = client.Player;
         var roomUser = client.RoomUser;
-        var canLikeRoom = player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Room.Id) == null;
+        var canLikeRoom = player.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Room.Id) == null;
         
         await client.WriteToStreamAsync(new RoomDataWriter
         {
@@ -185,7 +185,7 @@ public static class RoomEntryEventHelpers
             CategoryId = 0
         });
         
-        var owner = room.Room.OwnerId == player.Id;
+        var owner = room.Room.OwnerId == player.Player.Id;
         
         await client.WriteToStreamAsync(new RoomPaneWriter
         {
