@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Unit;
 using Sadie.Core.Shared.Extensions;
-using Sadie.Db.Models.Players.Furniture;
 
 namespace Sadie.Game.Rooms.Mapping;
 
@@ -20,7 +20,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
 
     public RoomTileMap(
         string heightmap, 
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         var heightmapLines = heightmap
             .Replace("\r\n", "\n")
@@ -67,7 +67,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
 
     public void UpdateEffectMapForTile(int x,
         int y,
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         var itemsOnSquare = GetItemsForPosition(x, y, furnitureItems);
 

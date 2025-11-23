@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Options;
+using Sadie.API.DTOs.Catalog.FrontPage;
+using Sadie.API.DTOs.Catalog.Items;
+using Sadie.API.DTOs.Catalog.Pages;
+using Sadie.API.DTOs.Furniture;
+using Sadie.API.DTOs.Player;
 using Sadie.Core.Enums.Game.Furniture;
-using Sadie.Db.Models.Catalog.FrontPage;
-using Sadie.Db.Models.Catalog.Items;
-using Sadie.Db.Models.Catalog.Pages;
-using Sadie.Db.Models.Furniture;
-using Sadie.Db.Models.Players;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Options;
 using Sadie.Networking.Packets;
@@ -94,7 +94,7 @@ public class NetworkPacketWriterSerializerTests
     {
         var writer = NetworkPacketWriterSerializer.Serialize(new PlayerNavigatorSettingsWriter
         {
-            NavigatorSettings = new PlayerNavigatorSettings
+            NavigatorSettings = new PlayerNavigatorSettingsDto
             {
                 Id = 652,
                 PlayerId = 23,
@@ -138,14 +138,14 @@ public class NetworkPacketWriterSerializerTests
             Images = ["image1", "image2"],
             Texts = ["text1", "text2", "text3"],
             Items = [
-                new CatalogItem
+                new CatalogItemDto
                 {
                     Id = 423,
                     Name = "item1",
                     CostCredits = 1923,
                     CostPoints = 23219,
                     CostPointsType = 2,
-                    FurnitureItems = [new FurnitureItem
+                    FurnitureItems = [new FurnitureItemDto
                         {
                             Type = FurnitureItemType.Bot,
                             InteractionType = "interaction9",
@@ -163,13 +163,13 @@ public class NetworkPacketWriterSerializerTests
             Unknown = 29,
             AcceptSeasonCurrencyAsCredits = false,
             FrontPageItems = [
-                new CatalogFrontPageItem
+                new CatalogFrontPageItemDto
                 {
                     Id = 23324,
                     Title = "titles",
                     Image = "image992",
                     ProductName = "product92934",
-                    CatalogPage = new CatalogPage
+                    CatalogPage = new CatalogPageDto
                     {
                         Id = 234,
                         Name = "page-name",

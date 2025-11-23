@@ -1,5 +1,7 @@
 using System.Drawing;
 using Moq;
+using Sadie.API.DTOs.Furniture;
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
@@ -88,11 +90,11 @@ public class RoomTileMapHelperServiceTests
     public void GetStateNumberForTile_Sit_ReturnsSit()
     {
         var tileState = _tileMapHelperService.GetTileState(10, 10, [
-            new PlayerFurnitureItemPlacementData
+            new PlayerFurnitureItemPlacementDataDto
             {
-                PlayerFurnitureItem = new PlayerFurnitureItem
+                PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItem = new FurnitureItemDto
                     {
                         CanSit = true,
                         InteractionType = "",
@@ -115,11 +117,11 @@ public class RoomTileMapHelperServiceTests
     public void GetStateNumberForTile_Lay_ReturnsLay()
     {
         var tileState = _tileMapHelperService.GetTileState(10, 10, [
-            new PlayerFurnitureItemPlacementData
+            new PlayerFurnitureItemPlacementDataDto
             {
-                PlayerFurnitureItem = new PlayerFurnitureItem
+                PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItem = new FurnitureItemDto
                     {
                         CanLay = true,
                         InteractionType = "",
@@ -142,11 +144,11 @@ public class RoomTileMapHelperServiceTests
     public void GetStateNumberForTile_GateInteractionType_ReturnsOpen()
     {
         var tileState = _tileMapHelperService.GetTileState(10, 10, [
-            new PlayerFurnitureItemPlacementData
+            new PlayerFurnitureItemPlacementDataDto
             {
-                PlayerFurnitureItem = new PlayerFurnitureItem
+                PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItem = new FurnitureItemDto
                     {
                         CanWalk = false,
                         InteractionType = "gate",

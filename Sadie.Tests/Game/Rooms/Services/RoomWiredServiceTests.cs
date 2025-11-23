@@ -2,6 +2,7 @@ using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db.Models.Players.Furniture;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Services;
+using Sadie.Tests.Common;
 
 namespace Sadie.Tests.Game.Rooms.Services;
 
@@ -10,8 +11,9 @@ public class RoomWiredServiceTests : RoomMockHelpers
     [Test]
     public void GetEffectsForTrigger_TriggersInStack_ReturnsJustEffects()
     {
-        var furnitureItemHelperService = new RoomFurnitureItemHelperService();
-        var wiredService = new RoomWiredService(furnitureItemHelperService);
+        var dbFactory = TestDbFactory.CreateDbFactory();
+        var furnitureItemHelperService = new RoomFurnitureItemHelperService(dbFactory);
+        var wiredService = new RoomWiredService(dbFactory, furnitureItemHelperService);
         var trigger = MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom);
         
         var items = new List<PlayerFurnitureItemPlacementData>

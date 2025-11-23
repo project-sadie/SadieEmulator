@@ -1,4 +1,5 @@
 using System.Drawing;
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
@@ -70,33 +71,34 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     public RoomTileState GetTileState(
         int x, 
         int y, 
-        IEnumerable<PlayerFurnitureItemPlacementData> furnitureItems)
+        IEnumerable<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
+        var furnitureItem = item.PlayerFurnitureItem.FurnitureItem;
 
         if (item == null ||
-            item.FurnitureItem.CanWalk)
+            furnitureItem.CanWalk)
         {
             return RoomTileState.Open;
         }
         
-        if (item.FurnitureItem.CanSit)
+        if (furnitureItem.CanSit)
         {
             return RoomTileState.Sit;
         }
 
-        if (item.FurnitureItem.InteractionType == FurnitureItemInteractionType.Gate && 
+        if (furnitureItem.InteractionType == FurnitureItemInteractionType.Gate && 
             item.PlayerFurnitureItem.MetaData == "1")
         {
             return RoomTileState.Open;
         }
 
-        return item.FurnitureItem.CanLay ? RoomTileState.Lay : RoomTileState.Blocked;
+        return furnitureItem.CanLay ? RoomTileState.Lay : RoomTileState.Blocked;
     }
 
-    public List<PlayerFurnitureItemPlacementData> GetItemsForPosition(int x,
+    public List<PlayerFurnitureItemPlacementDataDto> GetItemsForPosition(int x,
         int y,
-        IEnumerable<PlayerFurnitureItemPlacementData> items)
+        IEnumerable<PlayerFurnitureItemPlacementDataDto> items)
     {
         var tileItems = new List<PlayerFurnitureItemPlacementData>();
         
