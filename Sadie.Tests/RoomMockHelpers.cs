@@ -1,10 +1,11 @@
 using Moq;
+using Sadie.API.DTOs.Furniture;
+using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Users;
-using Sadie.Db.Models.Furniture;
 using Sadie.Db.Models.Players;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms.Mapping;
 
@@ -56,13 +57,13 @@ public class RoomMockHelpers
         };
     }
 
-    protected static PlayerFurnitureItemPlacementData MockFurnitureItemPlacementData(string interactionType, int x = 0, int y = 0, int z = 0, bool walkable = false) =>
+    protected static PlayerFurnitureItemPlacementDataDto MockFurnitureItemPlacementData(string interactionType, int x = 0, int y = 0, int z = 0, bool walkable = false) =>
         new()
         {
-            PlayerFurnitureItem = new PlayerFurnitureItem
+            PlayerFurnitureItem = new PlayerFurnitureItemDto
             {
-                Player = new Mock<Player>().Object,
-                FurnitureItem = new FurnitureItem
+                Player = new Mock<PlayerDto>().Object,
+                FurnitureItem = new FurnitureItemDto
                 {
                     InteractionType = interactionType,
                     CanWalk = walkable,
@@ -79,7 +80,7 @@ public class RoomMockHelpers
 
     protected static IRoomLogic MockRoomWithUserRepoAndFurniture(
         string heightMap,
-        List<PlayerFurnitureItemPlacementData> furnitureItems,
+        List<PlayerFurnitureItemPlacementDataDto> furnitureItems,
         List<IRoomUser>? users = null)
     {
         var room = new Mock<IRoomLogic>();

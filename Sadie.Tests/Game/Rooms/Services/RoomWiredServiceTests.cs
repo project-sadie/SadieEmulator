@@ -1,5 +1,5 @@
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.Core.Enums.Game.Furniture;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Services;
 using Sadie.Tests.Common;
@@ -16,7 +16,7 @@ public class RoomWiredServiceTests : RoomMockHelpers
         var wiredService = new RoomWiredService(dbFactory, furnitureItemHelperService);
         var trigger = MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom);
         
-        var items = new List<PlayerFurnitureItemPlacementData>
+        var items = new List<PlayerFurnitureItemPlacementDataDto>
         {
             trigger,
             MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 1),
