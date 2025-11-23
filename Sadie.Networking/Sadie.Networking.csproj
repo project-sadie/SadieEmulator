@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="DotNetty.Buffers" Version="0.7.6" />
         <PackageReference Include="DotNetty.Codecs" Version="0.7.6" />
         <PackageReference Include="DotNetty.Codecs.Http" Version="0.7.6" />
@@ -26,5 +27,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Db\Sadie.Db.csproj" />
     </ItemGroup>
-
 </Project>
