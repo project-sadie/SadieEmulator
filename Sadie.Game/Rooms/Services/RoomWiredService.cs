@@ -8,7 +8,6 @@ using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Enums.Game.Rooms.Furniture;
 using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Services;

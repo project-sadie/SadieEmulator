@@ -8,7 +8,6 @@ using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Events;
 using Sadie.Networking.Writers.Rooms.Users;
 

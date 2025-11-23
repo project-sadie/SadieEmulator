@@ -9,7 +9,6 @@ using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Enums.Game.Rooms.Mapping;
 using Sadie.Core.Enums.Game.Rooms.Users;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Processors;

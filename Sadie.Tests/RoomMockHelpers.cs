@@ -1,6 +1,5 @@
 using Moq;
 using Sadie.API.DTOs.Furniture;
-using Sadie.API.DTOs.Player;
 using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;

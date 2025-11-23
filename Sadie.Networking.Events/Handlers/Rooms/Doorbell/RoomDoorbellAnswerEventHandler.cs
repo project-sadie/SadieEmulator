@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
@@ -23,7 +24,8 @@ public class RoomDoorbellAnswerEventHandler(
     IRoomTileMapHelperService tileMapHelperService,
     IPlayerHelperService playerHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
-    IRoomWiredService wiredService) : INetworkPacketEventHandler
+    IRoomWiredService wiredService,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public required string Username { get; init; }
     public bool Accept { get; init; }
@@ -62,7 +64,8 @@ public class RoomDoorbellAnswerEventHandler(
                     tileMapHelperService,
                     playerHelperService,
                     roomFurnitureItemHelperService,
-                    wiredService);
+                    wiredService,
+                    mapper);
             }
             
             return;

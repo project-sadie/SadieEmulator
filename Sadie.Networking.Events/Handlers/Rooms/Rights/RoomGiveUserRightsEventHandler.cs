@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms.Rights;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -14,7 +16,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 [PacketId(EventHandlerId.RoomGiveUserRights)]
 public class RoomGiveUserRightsEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public int PlayerId { get; init; }
     
@@ -53,7 +56,7 @@ public class RoomGiveUserRightsEventHandler(
             });
         }
         
-        var roomPlayerRight = new RoomPlayerRight
+        var roomPlayerRight = new RoomPlayerRightDto
         {
             RoomId = room.Id,
             PlayerId = playerId,
@@ -62,8 +65,10 @@ public class RoomGiveUserRightsEventHandler(
         
         room.PlayerRights.Add(roomPlayerRight);
         
+        var entity = mapper.Map<RoomPlayerRight>(roomPlayerRight);
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.RoomPlayerRights.Add(roomPlayerRight);
+        dbContext.RoomPlayerRights.Add(entity);
         await dbContext.SaveChangesAsync();
     }
 }
