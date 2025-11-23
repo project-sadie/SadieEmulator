@@ -8,8 +8,6 @@ using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Enums.Game.Rooms.Mapping;
 using Sadie.Core.Enums.Game.Rooms.Users;
 using Sadie.Core.Enums.Miscellaneous;
-using Sadie.Db.Models.Furniture;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Tests.Game.Rooms.Mapping;

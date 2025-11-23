@@ -6,15 +6,14 @@ using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Enums.Game.Rooms.Mapping;
 using Sadie.Core.Enums.Game.Rooms.Users;
 using Sadie.Core.Enums.Miscellaneous;
-using Sadie.Db.Models.Players.Furniture;
 
 namespace Sadie.Game.Rooms.Mapping;
 
 public class RoomTileMapHelperService : IRoomTileMapHelperService
 {
-    public HDirection GetOppositeDirection(int direction)
+    public HDirection GetOppositeDirection(HDirection direction)
     {
-        return (HDirection) direction switch
+        return direction switch
         {
             HDirection.North => HDirection.South,
             HDirection.NorthEast => HDirection.SouthWest,
@@ -100,27 +99,29 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
         int y,
         IEnumerable<PlayerFurnitureItemPlacementDataDto> items)
     {
-        var tileItems = new List<PlayerFurnitureItemPlacementData>();
+        var tileItems = new List<PlayerFurnitureItemPlacementDataDto>();
         
         foreach (var item in items)
         {
             var width = 0;
             var length = 0;
+
+            var furnitureItem = item.PlayerFurnitureItem.FurnitureItem;
             
-            if (item.FurnitureItem.Type != FurnitureItemType.Floor)
+            if (furnitureItem.Type != FurnitureItemType.Floor)
             {
                 continue;
             }
 
-            switch ((int)item.Direction)
+            switch (item.Direction)
             {
-                case 2 or 6:
-                    width = item.FurnitureItem.TileSpanY > 0 ? item.FurnitureItem.TileSpanY : 1;
-                    length = item.FurnitureItem.TileSpanX > 0 ? item.FurnitureItem.TileSpanX : 1;
+                case HDirection.East or HDirection.West:
+                    width = furnitureItem.TileSpanY > 0 ? furnitureItem.TileSpanY : 1;
+                    length = furnitureItem.TileSpanX > 0 ? furnitureItem.TileSpanX : 1;
                     break;
-                case 0 or 4:
-                    width = item.FurnitureItem.TileSpanX > 0 ? item.FurnitureItem.TileSpanX : 1;
-                    length = item.FurnitureItem.TileSpanY > 0 ? item.FurnitureItem.TileSpanY : 1;
+                case HDirection.North or HDirection.South:
+                    width = furnitureItem.TileSpanX > 0 ? furnitureItem.TileSpanX : 1;
+                    length = furnitureItem.TileSpanY > 0 ? furnitureItem.TileSpanY : 1;
                     break;
             }
             
@@ -178,7 +179,7 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     public void UpdateTileMapsForPoints(
         List<Point> points, 
         IRoomTileMap tileMap, 
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         foreach (var point in points)
         {
@@ -251,14 +252,14 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     public double GetItemPlacementHeight(
         IRoomTileMap roomTileMap,
         IEnumerable<Point> pointsForPlacement, 
-        ICollection<PlayerFurnitureItemPlacementData> roomFurnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> roomFurnitureItems)
     {
         if (!pointsForPlacement.Any())
         {
             return default;
         }
         
-        var i = new List<PlayerFurnitureItemPlacementData>();
+        var i = new List<PlayerFurnitureItemPlacementDataDto>();
         
         foreach (var p in pointsForPlacement)
         {

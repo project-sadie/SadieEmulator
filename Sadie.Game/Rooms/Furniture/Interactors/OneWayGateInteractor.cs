@@ -27,7 +27,7 @@ public class OneWayGateInteractor(
         }
 
         var squareBehind = tileMapHelperService.GetPointInFront(item.PositionX, item.PositionY,
-            tileMapHelperService.GetOppositeDirection((int) item.Direction));
+            tileMapHelperService.GetOppositeDirection(item.Direction));
 
         if (!room.TileMap.TileExists(squareBehind))
         {
@@ -38,8 +38,8 @@ public class OneWayGateInteractor(
         
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "1");
 
-        roomUser.DirectionHead = tileMapHelperService.GetOppositeDirection((int) item.Direction);
-        roomUser.Direction = tileMapHelperService.GetOppositeDirection((int) item.Direction);
+        roomUser.DirectionHead = tileMapHelperService.GetOppositeDirection(item.Direction);
+        roomUser.Direction = tileMapHelperService.GetOppositeDirection(item.Direction);
         roomUser.OverridePoints.Add(itemPoint);
         roomUser.CanWalk = false;
         roomUser.WalkToPoint(squareBehind, OnReachedGoal);

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.Db;
-using Sadie.Db.Models.Rooms;
 
 namespace Sadie.Game.Rooms;
 
@@ -20,10 +20,16 @@ public class RoomRepository(
 
     public void AddRoom(IRoomLogic roomLogic) => _rooms[roomLogic.Id] = roomLogic;
 
-    public List<Room> GetPopularRooms(int amount)
+    public List<RoomDto> GetPopularRooms(int amount)
     {
-        return mapper.Map<List<Room>>(_rooms.Values.Where(x => x.UserRepository.Count > 0)
-            .OrderByDescending(x => x.UserRepository.Count).Take(amount).ToList());
+        var popularRooms = _rooms
+            .Values
+            .Where(x => x.UserRepository.Count > 0)
+            .OrderByDescending(x => x.UserRepository.Count)
+            .Take(amount)
+            .ToList();
+        
+        return mapper.Map<List<RoomDto>>(popularRooms);
     }
 
     public int Count => _rooms.Count;
