@@ -1,6 +1,7 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
@@ -24,7 +25,7 @@ public class TeleportInteractor(
 
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         var itemPosition = new Point(item.PositionX, item.PositionY);
         var itemInFront = tileMapHelperService.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
@@ -33,7 +34,7 @@ public class TeleportInteractor(
         {
             roomUser.CanWalk = false;
             
-            var facingDirection = tileMapHelperService.GetOppositeDirection((int) item.Direction);
+            var facingDirection = tileMapHelperService.GetOppositeDirection(item.Direction);
         
             roomUser.Direction = facingDirection;
             roomUser.DirectionHead = facingDirection;
@@ -53,7 +54,7 @@ public class TeleportInteractor(
             {
                 roomUser.OverridePoints.Remove(itemPosition);
 
-                if (item.FurnitureItem.InteractionModes == 1)
+                if (item.PlayerFurnitureItem.FurnitureItem.InteractionModes == 1)
                 {
                     await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "2");
                     await Task.Delay(_delay);
@@ -158,8 +159,8 @@ public class TeleportInteractor(
 
     private async Task UseTeleportInSameRoomAsync(
         IRoomUser roomUser,
-        PlayerFurnitureItemPlacementData item,
-        PlayerFurnitureItemPlacementData targetItem,
+        PlayerFurnitureItemPlacementDataDto item,
+        PlayerFurnitureItemPlacementDataDto targetItem,
         IRoomLogic room)
     {
         if (item.FurnitureItem.InteractionModes == 1)

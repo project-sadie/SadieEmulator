@@ -16,7 +16,7 @@ public class VendingInteractor(IRoomTileMapHelperService tileMapHelperService,
     
     public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
-        var direction = tileMapHelperService.GetOppositeDirection((int) item.Direction);
+        var direction = tileMapHelperService.GetOppositeDirection(item.Direction);
 
         roomUser.Direction = direction;
         roomUser.DirectionHead = direction;

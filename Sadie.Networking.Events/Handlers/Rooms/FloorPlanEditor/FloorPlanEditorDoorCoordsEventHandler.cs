@@ -20,7 +20,7 @@ public class FloorPlanEditorDoorCoordsEventHandler(IRoomRepository roomRepositor
         {
             X = room.Layout.DoorX,
             Y = room.Layout.DoorY,
-            Direction = (int) room.Layout.DoorDirection
+            Direction = room.Layout.DoorDirection
         });
     }
 }

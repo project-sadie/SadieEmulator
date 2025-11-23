@@ -213,18 +213,16 @@ public static class NetworkPacketEventHelpers
     {
         if (message.Length >= 9 && message[..9] == ":commands")
         {
-
-            if (
-                TryResolveRoomObjectsForClient(roomRepository, client, out var room2, out var roomUser2))
+            if (TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUserForCommands))
             {
-                await roomUser2.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
+                await roomUserForCommands.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
                 {
-                    UserId = (int) roomUser2.Player.Id,
+                    UserId = (int)roomUserForCommands.Player.Id,
                     EffectId = new Random().Next(1, 100),
                     DelayMs = 0
                 });
             }
-            
+
             await ShowCommandsAsync(commandRepository, client);
             return;
         }
