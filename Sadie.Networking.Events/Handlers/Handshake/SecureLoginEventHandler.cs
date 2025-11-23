@@ -7,6 +7,8 @@ using Microsoft.Extensions.Options;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
@@ -142,10 +144,14 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
         await playerHelperService.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+
+        var playersFriends = player.OutgoingFriendships
+            .Concat(player.IncomingFriendships)
+            .Where(x => x.Status == PlayerFriendshipStatus.Accepted);
         
         await playerHelperService.UpdatePlayerStatusForFriendsAsync(
             playerLogic, 
-            player.GetMergedFriendships(), 
+            playersFriends, 
             true, 
             false, 
             playerRepository);

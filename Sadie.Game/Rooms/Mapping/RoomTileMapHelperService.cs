@@ -32,13 +32,13 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
         int y, 
         int width, 
         int length, 
-        int direction)
+        HDirection direction)
     {
         var points = new List<Point>();
         
         switch (direction)
         {
-            case 0 or 4:
+            case HDirection.North or HDirection.South:
             {
                 for (var i = x; i <= x + (width - 1); i++)
                 {
@@ -50,7 +50,7 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
 
                 break;
             }
-            case 2 or 6:
+            case HDirection.East or HDirection.West:
             {
                 for (var i = x; i <= x + (length - 1); i++)
                 {
@@ -272,7 +272,7 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
         }
 
         var highestItem = i.MaxBy(x => x.PositionZ)!;
-        return highestItem.PositionZ + highestItem.FurnitureItem.StackHeight;
+        return highestItem.PositionZ + highestItem.PlayerFurnitureItem.FurnitureItem.StackHeight;
     }
 
     public int GetSquaresBetweenPoints(Point a, Point b)

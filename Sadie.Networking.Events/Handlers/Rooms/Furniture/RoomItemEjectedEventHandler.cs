@@ -49,14 +49,18 @@ public class RoomItemEjectedEventHandler(
         var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Id;
         
         var interactors = interactorRepository
-            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+            .GetInteractorsForType(roomFurnitureItem
+                .PlayerFurnitureItem
+                .FurnitureItem.InteractionType ?? "");
 
         foreach (var interactor in interactors)
         {
             await interactor.OnPickUpAsync(room, roomFurnitureItem, client.RoomUser);
         }
         
-        if (roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
+        if (roomFurnitureItem
+                .PlayerFurnitureItem
+                .FurnitureItem.Type == FurnitureItemType.Floor)
         {
             await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sadie.API;
+using Sadie.Core.Shared;
 using SadieEmulator;
 using Serilog;
 
@@ -47,6 +48,11 @@ internal static class Program
 
         var assembly = typeof(Server).Assembly;
         var version = assembly.GetName().Version;
+
+        if (version != null)
+        {
+            GlobalState.Version = version;
+        }
         
         System.Console.WriteLine($"         You're running version {version}");
         System.Console.WriteLine("");

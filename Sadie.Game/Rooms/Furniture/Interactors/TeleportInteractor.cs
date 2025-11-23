@@ -78,7 +78,7 @@ public class TeleportInteractor(
 
     private async Task UseTeleportAsync(
         IRoomLogic room,
-        PlayerFurnitureItemPlacementData item,
+        PlayerFurnitureItemPlacementDataDto item,
         IRoomUser roomUser)
     {
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
@@ -117,7 +117,7 @@ public class TeleportInteractor(
 
     private async Task UseTeleportInDifferentRoomAsync(
         IRoomUser roomUser, 
-        PlayerFurnitureItemPlacementData item,
+        PlayerFurnitureItemPlacementDataDto item,
         long targetItemId,
         IRoomLogic room)
     {
@@ -163,7 +163,7 @@ public class TeleportInteractor(
         PlayerFurnitureItemPlacementDataDto targetItem,
         IRoomLogic room)
     {
-        if (item.FurnitureItem.InteractionModes == 1)
+        if (item.PlayerFurnitureItem.FurnitureItem.InteractionModes == 1)
         {
             await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, targetItem, "2");
             await Task.Delay(_delay);

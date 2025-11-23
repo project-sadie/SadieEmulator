@@ -78,7 +78,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
         }
         
         var topItemOnSquare = itemsOnSquare.MaxBy(x => x.PositionZ);
-        var effect = GetEffectFromInteractionType(topItemOnSquare.FurnitureItem.InteractionType);
+        var effect = GetEffectFromInteractionType(topItemOnSquare.PlayerFurnitureItem.FurnitureItem.InteractionType);
                     
         EffectMap[y, x] = (short) effect;
     }

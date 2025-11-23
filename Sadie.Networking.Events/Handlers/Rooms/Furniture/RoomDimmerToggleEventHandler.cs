@@ -27,7 +27,7 @@ public class RoomDimmerToggleEventHandler(
 
         var dimmer = room
             .FurnitureItems
-            .FirstOrDefault(x => x.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
+            .FirstOrDefault(x => x.PlayerFurnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
 
         if (dimmer == null)
         {

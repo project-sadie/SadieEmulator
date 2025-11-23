@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
@@ -10,7 +12,8 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.RoomCategories)]
 public class RoomCategoriesEventHandler(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -22,7 +25,7 @@ public class RoomCategoriesEventHandler(
         
         await client.WriteToStreamAsync(new RoomCategoriesWriter
         {
-            Categories = categories
+            Categories = mapper.Map<List<RoomCategoryDto>>(categories)
         });
     }
 }
