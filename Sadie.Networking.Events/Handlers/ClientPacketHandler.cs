@@ -21,26 +21,31 @@ public class ClientPacketHandler(
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
-        if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
-        {
-            if (packetOptions.Value.NotifyMissingPacket)
-            {
-                _ = NotifyMissingPacketAsync(packet.PacketId, client);
-            }
-            
-            logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
-            return;
-        }
-
-        var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
-
-        if (!ValidateAttributes(eventHandler, client))
-        {
-            return;
-        }
-
         try
         {
+            if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
+            {
+                if (packetOptions.Value.NotifyMissingPacket)
+                {
+                    _ = NotifyMissingPacketAsync(packet.PacketId, client);
+                }
+            
+                logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
+                return;
+            }
+            
+            if (packet.PacketId == 2419)
+            {
+                var x = 0;
+            }
+
+            var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
+
+            if (!ValidateAttributes(eventHandler, client))
+            {
+                return;
+            }
+            
             EventSerializer.SetPropertiesForEventHandler(eventHandler, packet);
 
             if (client.RoomUser != null &&
@@ -58,7 +63,7 @@ public class ClientPacketHandler(
 
             await ExecuteAsync(client, eventHandler);
         }
-        catch (IndexOutOfRangeException e)
+        catch (Exception e)
         {
             logger.LogCritical(e.ToString());
         }
