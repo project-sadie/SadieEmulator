@@ -18,7 +18,7 @@ using Sadie.Networking.Writers.Rooms.Users.HandItems;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser(
-    RoomLogic room,
+    IRoomLogic room,
     INetworkObject networkObject,
     Point point,
     double pointZ,

@@ -51,8 +51,8 @@ public class RoomUnitData(
             OnReachedGoal = null;
         }
     }
-    
-    protected Action? OnReachedGoal { get; set; }
+
+    private Action? OnReachedGoal { get; set; }
 
     public void CheckStatusForCurrentTile()
     {
@@ -71,36 +71,38 @@ public class RoomUnitData(
 
         var topItem = tileItems.MaxBy(item => item.PositionZ);
 
-        if (topItem != null)
+        if (topItem == null)
         {
-            if (topItem.FurnitureItem.CanSit)
-            {
-                AddStatus(
-                    RoomUserStatus.Sit, 
-                    (topItem.FurnitureItem.StackHeight * 1.0D).ToString());
-            
-                Direction = topItem.Direction;
-                DirectionHead = topItem.Direction;
-            }
-            else if (topItem.FurnitureItem.CanLay)
-            {
-                AddStatus(
-                    RoomUserStatus.Lay, 
-                    (topItem.FurnitureItem.StackHeight + 0.1).ToString());
-            
-                Direction = topItem.Direction;
-                DirectionHead = topItem.Direction;
-            }
-            else
-            {
-                RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            }
+            return;
         }
         
-        var topItemSitOrLay = topItem?.FurnitureItem is { CanSit: false, CanLay: false };
-        var zHeightNextStep = topItem?.FurnitureItem == null ?
-            PointZ : 
-            topItem.PositionZ + (topItemSitOrLay ? topItem.FurnitureItem.StackHeight : 0);
+        var topFurnitureItem = topItem.PlayerFurnitureItem.FurnitureItem;
+
+        if (topFurnitureItem.CanSit)
+        {
+            AddStatus(
+                RoomUserStatus.Sit, 
+                (topFurnitureItem.StackHeight * 1.0D).ToString());
+            
+            Direction = topItem.Direction;
+            DirectionHead = topItem.Direction;
+        }
+        else if (topFurnitureItem.CanLay)
+        {
+            AddStatus(
+                RoomUserStatus.Lay, 
+                (topFurnitureItem.StackHeight + 0.1).ToString());
+            
+            Direction = topItem.Direction;
+            DirectionHead = topItem.Direction;
+        }
+        else
+        {
+            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
+        }
+        
+        var topItemSitOrLay = topFurnitureItem is { CanSit: false, CanLay: false };
+        var zHeightNextStep = topItem.PositionZ + (topItemSitOrLay ? topFurnitureItem.StackHeight : 0);
         
         PointZ = zHeightNextStep;
     }
@@ -194,14 +196,16 @@ public class RoomUnitData(
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
 
-        var topItemSitOrLay = topItemNextStep?.FurnitureItem is { CanSit: false, CanLay: false };
-        
-        var zHeightNextStep = topItemNextStep?.FurnitureItem == null ?
-            room.TileMap.ZMap[nextStep.Y, nextStep.X] : 
-            topItemNextStep.PositionZ + (topItemSitOrLay ? topItemNextStep.FurnitureItem.StackHeight : 0);
+        if (topItemNextStep == null)
+        {
+            return;
+        }
+
+        var topFurnitureItem = topItemNextStep.PlayerFurnitureItem.FurnitureItem;
+        var topItemSitOrLay = topFurnitureItem is { CanSit: false, CanLay: false };
+        var zHeightNextStep = topItemNextStep.PositionZ + (topItemSitOrLay ? topFurnitureItem.StackHeight : 0);
 
         ClearStatuses();
-
         AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{zHeightNextStep}");
 
         var newDirection = pathFinderHelperService.GetDirectionForNextStep(Point, nextStep);

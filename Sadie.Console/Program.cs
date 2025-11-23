@@ -23,6 +23,7 @@ internal static class Program
         WriteHeaderToConsole();
         
         _server = host.Services.GetRequiredService<IServer>();
+        
         await _server.RunAsync();
         await host.RunAsync();
     }
