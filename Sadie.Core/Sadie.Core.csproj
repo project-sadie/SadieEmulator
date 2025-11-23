@@ -9,4 +9,8 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Sadie.API" Version="2.4.0" />
+    </ItemGroup>
+
 </Project>

@@ -1,6 +1,10 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API;
+using Sadie.API.DTOs.Catalog.Items;
+using Sadie.API.DTOs.Furniture;
+using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -13,7 +17,6 @@ using Sadie.Db;
 using Sadie.Db.Models.Catalog;
 using Sadie.Db.Models.Catalog.Items;
 using Sadie.Db.Models.Catalog.Pages;
-using Sadie.Db.Models.Furniture;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Writers.Catalog;
@@ -117,19 +120,18 @@ public class CatalogPurchaseEventHandler(
         }
         
         var created = DateTime.Now;
-        var newItems = new List<PlayerFurnitureItem>();
+        var newItems = new List<PlayerFurnitureItemDto>();
         
-        var furnitureItem = catalogItem.FurnitureItems.First();
-        var mappedPlayer = mapper.Map<Player>(client.Player);
+        var furnitureItem = mapper.Map<FurnitureItemDto>(catalogItem.FurnitureItems.First());
 
         if (catalogItem.FurnitureItems.Any(x => x.InteractionType == FurnitureItemInteractionType.Teleport))
         {
             await ProcessTeleportPurchaseAsync(client,
-                mappedPlayer,
                 furnitureItem,
                 created,
                 newItems,
                 catalogItem);
+            
             return;
         }
         
@@ -137,16 +139,20 @@ public class CatalogPurchaseEventHandler(
 
         for (var i = 0; i < Amount; i++)
         {
-            var newItem = new PlayerFurnitureItem
+            var newItem = new PlayerFurnitureItemDto
             {
-                Player = mappedPlayer,
+                PlayerId = client.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
-                MetaData = MetaData,
+                MetaData = MetaData ?? "",
                 CreatedAt = created
             };
             
             client.Player.FurnitureItems.Add(newItem);
+
+            var newEntity = mapper.Map<PlayerFurnitureItem>(newItem);
+            dbContext.PlayerFurnitureItems.Add(newEntity);
+            
             dbContext.Entry(newItem).State = EntityState.Added;
             newItems.Add(newItem);
         }
@@ -165,27 +171,26 @@ public class CatalogPurchaseEventHandler(
     }
 
     private async Task ProcessTeleportPurchaseAsync(INetworkClient client,
-        Player? mappedPlayer,
-        FurnitureItem furnitureItem,
+        FurnitureItemDto furnitureItem,
         DateTime created,
-        List<PlayerFurnitureItem> newItems,
+        List<PlayerFurnitureItemDto> newItems,
         CatalogItem catalogItem)
     {
-        var parent = new PlayerFurnitureItem
+        var parent = new PlayerFurnitureItemDto
         {
-            Player = mappedPlayer,
+            PlayerId = client.Player!.Id,
             FurnitureItem = furnitureItem,
             LimitedData = "1:1",
-            MetaData = MetaData,
+            MetaData = MetaData ?? "",
             CreatedAt = created
         };
             
-        var child = new PlayerFurnitureItem
+        var child = new PlayerFurnitureItemDto
         {
-            Player = mappedPlayer,
+            PlayerId = client.Player.Id,
             FurnitureItem = furnitureItem,
             LimitedData = "1:1",
-            MetaData = MetaData,
+            MetaData = MetaData ?? "",
             CreatedAt = created
         };
             
@@ -232,9 +237,9 @@ public class CatalogPurchaseEventHandler(
             .Split(";")
             .ToDictionary(k => k.Split(":")[0], v => v.Split(":")[1]);
 
-        var bot = new PlayerBot
+        var bot = new PlayerBotDto
         {
-            PlayerId = client.Player.Id,
+            PlayerId = client.Player!.Id,
             RoomId = null,
             Username = information["name"],
             FigureCode = information["figure"],
@@ -304,6 +309,7 @@ public class CatalogPurchaseEventHandler(
 
             if (offer.CostCredits > 0)
             {
+                client.Player!.Data.CreditBalance -= offer.CostCredits;
                 playerData.CreditBalance -= offer.CostCredits;
                    
                 await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
@@ -329,7 +335,7 @@ public class CatalogPurchaseEventHandler(
                 Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(playerData)
             });
 
-            var subscription = new PlayerSubscription
+            var subscription = new PlayerSubscriptionDto
             {
                 PlayerId = player.Id,
                 SubscriptionId = clubSubscription.Id,
@@ -338,8 +344,10 @@ public class CatalogPurchaseEventHandler(
             };
 
             player.Subscriptions.Add(subscription);
+
+            var subscriptionEntity = mapper.Map<PlayerSubscription>(subscription);
+            dbContext.PlayerSubscriptions.Add(subscriptionEntity);
             
-            dbContext.PlayerSubscriptions.Add(subscription);
             await dbContext.SaveChangesAsync();
             
             await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
@@ -376,7 +384,7 @@ public class CatalogPurchaseEventHandler(
             }
     }
 
-    private async Task ConfirmPurchaseAsync(INetworkObject client, CatalogItem item)
+    private async Task ConfirmPurchaseAsync(INetworkObject client, CatalogItemDto item)
     {
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
         {

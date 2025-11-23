@@ -1,12 +1,12 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
@@ -17,7 +17,7 @@ public class OneWayGateInteractor(
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.OneWayGate];
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         var squareInFront = tileMapHelperService.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
         
@@ -55,7 +55,7 @@ public class OneWayGateInteractor(
         }
     }
 
-    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "0");
         

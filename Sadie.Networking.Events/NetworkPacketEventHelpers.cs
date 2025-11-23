@@ -1,4 +1,6 @@
 ﻿using Sadie.API;
+using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Rooms.Chat;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Chat.Commands;
@@ -12,7 +14,6 @@ using Sadie.Core.Enums.Game.Rooms.Furniture;
 using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Core.Shared.Helpers;
 using Sadie.Db.Models.Constants;
-using Sadie.Db.Models.Players;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Networking.Writers.Moderation;
@@ -25,7 +26,6 @@ using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Networking.Writers.Players.Subscriptions;
 using Sadie.Networking.Writers.Rooms.Users;
-using RoomChatMessage = Sadie.Db.Models.Rooms.Chat.RoomChatMessage;
 
 namespace Sadie.Networking.Events;
 
@@ -240,7 +240,7 @@ public static class NetworkPacketEventHelpers
             return;
         }
         
-        var chatMessage = new RoomChatMessage()
+        var chatMessage = new RoomChatMessageDto
         {
             RoomId = room.Id,
             PlayerId = roomUser.Player.Id,
@@ -332,7 +332,7 @@ public static class NetworkPacketEventHelpers
         return true;
     }
     
-    public static Dictionary<int, long> GetPlayerCurrencyMapFromData(PlayerData playerData)
+    public static Dictionary<int, long> GetPlayerCurrencyMapFromData(PlayerDataDto playerData)
     {
         return new Dictionary<int, long>
         {

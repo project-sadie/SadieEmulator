@@ -1,9 +1,9 @@
+using Sadie.API.DTOs.Player;
 using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Players.Friendships;
 using Sadie.API.Interfaces.Game.Players.Packets.Writers;
 using Sadie.Core.Enums.Game.Players;
-using Sadie.Db.Models.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players;
@@ -86,7 +86,7 @@ public class PlayerHelperService : IPlayerHelperService
 
     public async Task UpdatePlayerStatusForFriendsAsync(
         IPlayerLogic player, 
-        IEnumerable<PlayerFriendship> friendships, 
+        IEnumerable<PlayerFriendshipDto> friendships, 
         bool isOnline, 
         bool inRoom,
         IPlayerRepository playerRepository)

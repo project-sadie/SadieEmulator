@@ -18,6 +18,7 @@
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.10" />
       <PackageReference Include="MySqlConnector" Version="2.3.7" />
+      <PackageReference Include="Sadie.API" Version="2.4.0" />
     </ItemGroup>
 
     <ItemGroup>

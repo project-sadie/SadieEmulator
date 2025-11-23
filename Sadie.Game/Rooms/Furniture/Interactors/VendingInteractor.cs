@@ -1,10 +1,10 @@
+using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Shared.Extensions;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Writers.Rooms.Users.HandItems;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
@@ -14,7 +14,7 @@ public class VendingInteractor(IRoomTileMapHelperService tileMapHelperService,
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.VendingMachine];
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         var direction = tileMapHelperService.GetOppositeDirection((int) item.Direction);
 
@@ -22,6 +22,7 @@ public class VendingInteractor(IRoomTileMapHelperService tileMapHelperService,
         roomUser.DirectionHead = direction;
 
         var handItems = item
+            .PlayerFurnitureItem
             .FurnitureItem
             .HandItems
             .ToList();
