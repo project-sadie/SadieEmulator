@@ -37,7 +37,7 @@ public class RoomWiredService(
     {
         _ = CycleInteractionStateAsync(room, trigger);
         
-        var effectsOnTrigger = GetEffectsForTrigger(trigger, room.FurnitureItems);
+        var effectsOnTrigger = GetEffectsForTrigger(trigger, room.Room.FurnitureItems);
 
         foreach (var effect in effectsOnTrigger)
         {

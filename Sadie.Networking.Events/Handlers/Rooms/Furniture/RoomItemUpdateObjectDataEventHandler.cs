@@ -27,7 +27,7 @@ public class RoomItemUpdateObjectDataEventHandler(
         var roomFurnitureItem = client
             .RoomUser
             .Room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
         
         if (roomFurnitureItem == null)

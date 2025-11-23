@@ -68,6 +68,7 @@ public class SadieDbContext(DbContextOptions<SadieDbContext> options) : DbContex
     public DbSet<PlayerWebsiteData> PlayerWebsiteData { get; init; }
     public DbSet<ServerLocaleText> ServerLocaleTexts { get; init; }
     public DbSet<PlayerWardrobeItem> PlayerWardrobeItems { get; set; }
+    public DbSet<PlayerRespect> PlayerRespects { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

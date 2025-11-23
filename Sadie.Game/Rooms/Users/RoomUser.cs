@@ -109,7 +109,7 @@ public class RoomUser(
     private async Task CheckForStepTriggersAsync(Point point, string interactionType)
     {
         var itemIdsOnPoint = tileMapHelperService
-            .GetItemsForPosition(point.X, point.Y, room.FurnitureItems)
+            .GetItemsForPosition(point.X, point.Y, room.Room.FurnitureItems)
             .Select(x => x.Id)
             .ToList();
 
@@ -120,7 +120,7 @@ public class RoomUser(
         
         var triggers = wiredService.GetTriggers(
             interactionType,
-            room.FurnitureItems,
+            room.Room.FurnitureItems,
             "",
             itemIdsOnPoint);
         

@@ -31,13 +31,13 @@ public class ModToolUpdateRoomSettingsEventHandler(
         
         if (LockDoor == 1)
         {
-            room.Settings.AccessType = RoomAccessType.Doorbell;
+            room.Room.Settings.AccessType = RoomAccessType.Doorbell;
             needsSaving = true;
         }
 
         if (ChangeTitle == 1)
         {
-            room.Name = "Inappropriate to hotel management.";
+            room.Room.Name = "Inappropriate to hotel management.";
             needsSaving = true;
         }
 

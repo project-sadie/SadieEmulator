@@ -38,7 +38,7 @@ public class RoomItemEjectedEventHandler(
         var room = roomRepository.TryGetRoomById(client.Player.State.CurrentRoomId);
         
         var roomFurnitureItem = room?
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
 
         if (roomFurnitureItem == null)
@@ -78,7 +78,7 @@ public class RoomItemEjectedEventHandler(
             });
         }
 
-        room.FurnitureItems.Remove(roomFurnitureItem);
+        room.Room.FurnitureItems.Remove(roomFurnitureItem);
         
         var point = new Point(
             roomFurnitureItem.PositionX,

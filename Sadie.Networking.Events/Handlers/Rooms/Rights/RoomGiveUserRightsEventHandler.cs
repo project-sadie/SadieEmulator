@@ -33,14 +33,14 @@ public class RoomGiveUserRightsEventHandler(
             return;
         }
 
-        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId) != null)
+        if (room.Room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId) != null)
         {
             return;
         }
 
         await room.UserRepository.BroadcastDataAsync(new RoomGiveUserRightsWriter 
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             PlayerId = playerId,
             PlayerUsername = player.Username
         });
@@ -58,12 +58,12 @@ public class RoomGiveUserRightsEventHandler(
         
         var roomPlayerRight = new RoomPlayerRightDto
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             PlayerId = playerId,
             CreatedAt = DateTime.Now
         };
         
-        room.PlayerRights.Add(roomPlayerRight);
+        room.Room.PlayerRights.Add(roomPlayerRight);
         
         var entity = mapper.Map<RoomPlayerRight>(roomPlayerRight);
         

@@ -21,14 +21,14 @@ public class RoomBannedUsersEventHandler(IRoomRepository roomRepository) : INetw
 
         var banListMap = new Dictionary<long, string>();
 
-        foreach (var i in room.PlayerBans.Where(x => x.ExpiresAt > DateTime.Now))
+        foreach (var i in room.Room.PlayerBans.Where(x => x.ExpiresAt > DateTime.Now))
         {
             banListMap[i.PlayerId] = i.Player.Username;
         }
         
         await client.WriteToStreamAsync(new RoomBannedUsersWriter
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             BannedUsersMap = banListMap
         });
     }

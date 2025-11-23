@@ -21,13 +21,13 @@ public class RoomRedeemItemEventHandler(
 
         if (player?.NetworkObject == null || 
             client.RoomUser == null || 
-            room.OwnerId != client.Player!.Id)
+            room.Room.OwnerId != client.Player!.Id)
         {
             return;
         }
         
         var roomFurnitureItem = room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomFurnitureItem == null)

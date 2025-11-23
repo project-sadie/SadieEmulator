@@ -240,7 +240,7 @@ public static class NetworkPacketEventHelpers
         
         var chatMessage = new RoomChatMessageDto
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             PlayerId = roomUser.Player.Id,
             Message = message,
             ChatBubbleId = bubble,
@@ -286,10 +286,10 @@ public static class NetworkPacketEventHelpers
             await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
         }
         
-        room.ChatMessages.Add(chatMessage);
+        room.Room.ChatMessages.Add(chatMessage);
 
         var triggers = wiredService.GetTriggers(
-            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.FurnitureItems, message);
+            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.Room.FurnitureItems, message);
         
         foreach (var trigger in triggers)
         {

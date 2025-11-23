@@ -1,12 +1,13 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Db.Models.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
@@ -28,7 +29,7 @@ public class RoomDeleteEventHandler(
             dbContextFactory, 
             mapper);
 
-        if (room == null || room.OwnerId != client.Player.Id)
+        if (room == null || room.Room.OwnerId != client.Player.Id)
         {
             return;
         }
@@ -36,9 +37,9 @@ public class RoomDeleteEventHandler(
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = NULL WHERE home_room_id = {0}", RoomId);
 
-        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();
+        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItemDto>>();
 
-        foreach (var item in room.FurnitureItems)
+        foreach (var item in room.Room.FurnitureItems)
         {
             var playerItem = item.PlayerFurnitureItem;
             playerItem.PlacementData = null;
@@ -64,10 +65,13 @@ public class RoomDeleteEventHandler(
             return;
         }
 
-        dbContext.Entry((Room) room).State = EntityState.Deleted;
+        var roomEntity = mapper.Map<Room>(room);
+        var roomDto = mapper.Map<RoomDto>(room);
+        
+        dbContext.Entry(roomEntity).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Rooms.Remove((Room) room);
+        client.Player.Rooms.Remove(roomDto);
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {

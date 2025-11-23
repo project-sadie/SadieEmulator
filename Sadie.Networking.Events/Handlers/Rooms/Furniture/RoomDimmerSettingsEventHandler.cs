@@ -7,7 +7,6 @@ using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Db.Models.Rooms;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
@@ -26,7 +25,7 @@ public class RoomDimmerSettingsEventHandler(
         }
 
         var dimmer = room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x
                 .PlayerFurnitureItem
                 .FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
@@ -36,7 +35,7 @@ public class RoomDimmerSettingsEventHandler(
             return;
         }
 
-        if (room.DimmerSettings == null)
+        if (room.Room.DimmerSettings == null)
         {
             throw new Exception("DIMMER_SETTINGS_NULL_WHEN_DIMMER_IN_ROOM");
         }
@@ -45,12 +44,12 @@ public class RoomDimmerSettingsEventHandler(
 
         var dimmerPresets = dbContext
             .RoomDimmerPresets
-            .Where(x => x.RoomId == room.Id)
+            .Where(x => x.RoomId == room.Room.Id)
             .ToList();
         
         await client.WriteToStreamAsync(new RoomDimmerSettingsWriter
         {
-            DimmerSettings = room.DimmerSettings,
+            DimmerSettings = room.Room.DimmerSettings,
             DimmerPresets = mapper.Map<List<RoomDimmerPresetDto>>(dimmerPresets)
         });
     }

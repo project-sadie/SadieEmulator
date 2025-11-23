@@ -22,7 +22,7 @@ public class SaveRoomChatMessagesTask(IRoomRepository roomRepository,
         foreach (var room in roomRepository.GetAllRooms())
         {
             var chatMessages = room
-                .ChatMessages
+                .Room.ChatMessages
                 .Where(x => x.Id == 0)
                 .ToList();
 

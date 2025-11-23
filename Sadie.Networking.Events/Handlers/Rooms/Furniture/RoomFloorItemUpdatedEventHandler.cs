@@ -46,7 +46,7 @@ public class RoomFloorItemUpdatedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
+        var roomFurnitureItem = room.Room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItemId == itemId);
 
         if (roomFurnitureItem == null)
         {
@@ -74,7 +74,7 @@ public class RoomFloorItemUpdatedEventHandler(
         tileMapHelperService.UpdateTileMapsForPoints(oldPoints, 
             room.TileMap,
             room
-                .FurnitureItems
+                .Room.FurnitureItems
                 .Except([roomFurnitureItem])
                 .ToList());
         
@@ -99,6 +99,7 @@ public class RoomFloorItemUpdatedEventHandler(
             room.TileMap, 
             newPoints, 
             room
+                .Room
                 .FurnitureItems
                 .Except([roomFurnitureItem])
                 .ToList());
@@ -112,7 +113,7 @@ public class RoomFloorItemUpdatedEventHandler(
             (short) tileMapHelperService.GetTileState(
                 roomFurnitureItem.PositionX, 
                 roomFurnitureItem.PositionY,
-                room.FurnitureItems);
+                room.Room.FurnitureItems);
         
         var interactors = interactorRepository
             .GetInteractorsForType(furnitureItem.InteractionType ?? "");
@@ -132,8 +133,8 @@ public class RoomFloorItemUpdatedEventHandler(
             user.CheckStatusForCurrentTile();
         }
         
-        tileMapHelperService.UpdateTileMapsForPoints(oldPoints, room.TileMap, room.FurnitureItems);            
-        tileMapHelperService.UpdateTileMapsForPoints(newPoints, room.TileMap, room.FurnitureItems);
+        tileMapHelperService.UpdateTileMapsForPoints(oldPoints, room.TileMap, room.Room.FurnitureItems);            
+        tileMapHelperService.UpdateTileMapsForPoints(newPoints, room.TileMap, room.Room.FurnitureItems);
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(roomFurnitureItem).State = EntityState.Modified;

@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Sadie.Core.Enums.Miscellaneous;
-using Sadie.Db.Models.Furniture;
 using Sadie.Db.Models.Rooms;
 
 namespace Sadie.Db.Models.Players.Furniture;
@@ -22,6 +20,4 @@ public class PlayerFurnitureItemPlacementData
     public PlayerFurnitureItemWiredData? WiredData { get; set; }
     
     public ICollection<PlayerFurnitureItemWiredData> SelectedBy { get; init; } = [];
-
-    [NotMapped] public FurnitureItem FurnitureItem => PlayerFurnitureItem.FurnitureItem;
 }

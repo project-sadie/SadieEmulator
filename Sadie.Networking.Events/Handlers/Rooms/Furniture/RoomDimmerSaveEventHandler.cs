@@ -38,6 +38,7 @@ public class RoomDimmerSaveEventHandler(
         }
 
         var dimmer = room
+            .Room
             .FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
 
@@ -50,7 +51,7 @@ public class RoomDimmerSaveEventHandler(
         
         var presets = dbContext
             .RoomDimmerPresets
-            .Where(x => x.RoomId == room.Id)
+            .Where(x => x.RoomId == room.Room.Id)
             .ToList();
         
         var preset = presets.FirstOrDefault(x => x.PresetId == PresetId);
@@ -64,9 +65,9 @@ public class RoomDimmerSaveEventHandler(
         preset.Color = Color;
         preset.Intensity = Intensity;
 
-        room.DimmerSettings.Enabled = Apply;
+        room.Room.DimmerSettings.Enabled = Apply;
 
-        var enabled = room.DimmerSettings.Enabled ? 2 : 0;
+        var enabled = room.Room.DimmerSettings.Enabled ? 2 : 0;
         var bgOnly = preset.BackgroundOnly ? 2 : 0;
         var meta = $"{(enabled)},{preset.PresetId},{(bgOnly)},{preset.Color},{preset.Intensity}";
         
@@ -75,14 +76,14 @@ public class RoomDimmerSaveEventHandler(
             dimmer,
             meta);
 
-        dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
+        dbContext.Entry(room.Room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         dbContext.Entry(preset).State = EntityState.Modified;
         
         await dbContext.SaveChangesAsync();
         
         await room.UserRepository.BroadcastDataAsync(new RoomDimmerSettingsWriter
         {
-            DimmerSettings = room.DimmerSettings,
+            DimmerSettings = room.Room.DimmerSettings,
             DimmerPresets = mapper.Map<List<RoomDimmerPresetDto>>(presets)
         });
     }

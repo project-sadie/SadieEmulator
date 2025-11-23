@@ -22,7 +22,7 @@ public class RoomItemUseEventHandler(
         var room = client.RoomUser!.Room;
 
         var roomFurnitureItem = room
-                .FurnitureItems
+                .Room.FurnitureItems
                 .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomFurnitureItem == null)

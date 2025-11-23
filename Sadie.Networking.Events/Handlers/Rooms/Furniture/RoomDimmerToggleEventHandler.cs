@@ -18,7 +18,7 @@ public class RoomDimmerToggleEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
-            room.DimmerSettings == null ||
+            room.Room.DimmerSettings == null ||
             client.RoomUser == null ||
             !client.RoomUser.HasRights())
         {
@@ -26,7 +26,7 @@ public class RoomDimmerToggleEventHandler(
         }
 
         var dimmer = room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer);
 
         if (dimmer == null)
@@ -37,16 +37,16 @@ public class RoomDimmerToggleEventHandler(
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         var preset = dbContext.RoomDimmerPresets
-            .FirstOrDefault(x => x.RoomId == room.Id && x.PresetId == room.DimmerSettings.PresetId);
+            .FirstOrDefault(x => x.RoomId == room.Room.Id && x.PresetId == room.Room.DimmerSettings.PresetId);
 
         if (preset == null)
         {
             return;
         }
         
-        room.DimmerSettings.Enabled = !room.DimmerSettings.Enabled;
+        room.Room.DimmerSettings.Enabled = !room.Room.DimmerSettings.Enabled;
 
-        var enabled = room.DimmerSettings.Enabled ? 2 : 1;
+        var enabled = room.Room.DimmerSettings.Enabled ? 2 : 1;
         var bgOnly = preset.BackgroundOnly ? 2 : 0;
         
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(
@@ -54,7 +54,7 @@ public class RoomDimmerToggleEventHandler(
             dimmer, 
             $"{enabled},{preset.PresetId},{bgOnly},{preset.Color},{preset.Intensity}");
         
-        dbContext.Entry(room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
+        dbContext.Entry(room.Room.DimmerSettings).Property(x => x.Enabled).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
 }

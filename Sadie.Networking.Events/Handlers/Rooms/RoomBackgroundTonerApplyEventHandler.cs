@@ -29,6 +29,7 @@ public class RoomBackgroundTonerApplyEventHandler(
         var roomFurnitureItem = client
             .RoomUser!
             .Room
+            .Room
             .FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
         

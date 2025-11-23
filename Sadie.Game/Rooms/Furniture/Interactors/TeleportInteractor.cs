@@ -95,6 +95,7 @@ public class TeleportInteractor(
         var targetItemId = link.ParentId == item.PlayerFurnitureItemId ? link.ChildId : link.ParentId;
         
         var targetRoomItem = room
+            .Room
             .FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItemId == targetItemId);
         
@@ -135,7 +136,7 @@ public class TeleportInteractor(
                 dbContextFactory,
                 mapper);
 
-            var targetItem = targetRoom?.FurnitureItems
+            var targetItem = targetRoom?.Room.FurnitureItems
                 .FirstOrDefault(x => x.PlayerFurnitureItemId == targetItemId);
 
             if (targetItem != null)

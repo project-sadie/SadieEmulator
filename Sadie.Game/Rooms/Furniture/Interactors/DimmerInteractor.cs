@@ -19,11 +19,11 @@ public class DimmerInteractor(
     
     public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
-        if (room.DimmerSettings == null)
+        if (room.Room.DimmerSettings == null)
         {
             var presetOne = new RoomDimmerPreset
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 PresetId = 1,
                 BackgroundOnly = false,
                 Color = "",
@@ -32,7 +32,7 @@ public class DimmerInteractor(
 
             var presetTwo = new RoomDimmerPreset
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 PresetId = 2,
                 BackgroundOnly = false,
                 Color = "",
@@ -41,16 +41,17 @@ public class DimmerInteractor(
 
             var presetThree = new RoomDimmerPreset
             {
-                RoomId = room.Id,
+                RoomId = room
+                    .Room.Id,
                 PresetId = 3,
                 BackgroundOnly = false,
                 Color = "",
                 Intensity = 255
             };
             
-            room.DimmerSettings = new RoomDimmerSettingsDto()
+            room.Room.DimmerSettings = new RoomDimmerSettingsDto()
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 Enabled = false,
                 PresetId = 1
             };
@@ -61,7 +62,7 @@ public class DimmerInteractor(
             dbContext.RoomDimmerPresets.Add(presetTwo);
             dbContext.RoomDimmerPresets.Add(presetThree);
             
-            var dimmerSettings = mapper.Map<RoomDimmerSettings>(room.DimmerSettings);
+            var dimmerSettings = mapper.Map<RoomDimmerSettings>(room.Room.DimmerSettings);
             dbContext.RoomDimmerSettings.Add(dimmerSettings);
 
             await dbContext.SaveChangesAsync();
@@ -74,14 +75,14 @@ public class DimmerInteractor(
         
         await dbContext
             .RoomDimmerPresets
-            .Where(x => x.RoomId == room.Id)
+            .Where(x => x.RoomId == room.Room.Id)
             .ExecuteDeleteAsync();
      
-        if (room.DimmerSettings != null)
+        if (room.Room.DimmerSettings != null)
         {
-            room.DimmerSettings = null;
+            room.Room.DimmerSettings = null;
             
-            dbContext.Entry(room.DimmerSettings).State = EntityState.Deleted;
+            dbContext.Entry(room.Room.DimmerSettings).State = EntityState.Deleted;
             await dbContext.SaveChangesAsync();
         }
     }

@@ -61,7 +61,7 @@ public class RoomUnitData(
             return;
         }
         
-        var tileItems = tileMapHelperService.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
+        var tileItems = tileMapHelperService.GetItemsForPosition(Point.X, Point.Y, room.Room.FurnitureItems);
 
         if (tileItems.Count == 0)
         {
@@ -114,7 +114,7 @@ public class RoomUnitData(
 
     private void CalculatePath()
     {
-        PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
+        PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Room.Settings.WalkDiagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
@@ -131,7 +131,7 @@ public class RoomUnitData(
     public void WalkToPoint(Point point, Action? onReachedGoal = null)
     {
         if (room.TileMap.UsersAtPoint(point) &&
-            !room.Settings.CanUsersOverlap)
+            !room.Room.Settings.CanUsersOverlap)
         {
             return;
         }
@@ -193,7 +193,7 @@ public class RoomUnitData(
         }
 
         var topItemNextStep = tileMapHelperService
-            .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
+            .GetItemsForPosition(nextStep.X, nextStep.Y, room.Room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
 
         if (topItemNextStep == null)

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Sadie.Core.Enums.Game.Players;
 using Sadie.Db.Models.Players.Furniture;
 using Sadie.Db.Models.Rooms;
 using Sadie.Db.Models.Server;
@@ -51,81 +50,4 @@ public class Player
     public ICollection<PlayerRoomVisit> RoomVisits { get; init; } = [];
     public ICollection<PlayerBan> Bans { get; init; } = [];
     public ICollection<PlayerSsoToken> Tokens { get; init; } = [];
-    
-    public int GetAcceptedFriendshipCount()
-    {
-        return IncomingFriendships.Count(x => x.Status == PlayerFriendshipStatus.Accepted) + 
-               OutgoingFriendships.Count(x => x.Status == PlayerFriendshipStatus.Accepted);
-    }
-
-    public List<PlayerFriendship> GetMergedFriendships()
-    {
-        return OutgoingFriendships
-            .Concat(IncomingFriendships)
-            .Where(x => x.Status == PlayerFriendshipStatus.Accepted)
-            .ToList();
-    }
-
-    public bool IsFriendsWith(int targetId)
-    {
-        return IncomingFriendships.FirstOrDefault(x =>
-                   x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) !=
-               null 
-               ||
-               OutgoingFriendships.FirstOrDefault(x =>
-                   x.TargetPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted) !=
-               null;
-    }
-
-    public PlayerFriendship? TryGetAcceptedFriendshipFor(long targetId)
-    {
-        var incoming = IncomingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
-
-        if (incoming != null)
-        {
-            return incoming;
-        }
-        
-        return OutgoingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetId && x.Status == PlayerFriendshipStatus.Accepted);
-    }
-
-    public PlayerFriendship? TryGetFriendshipFor(long targetId)
-    {
-        var incoming = IncomingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetId);
-
-        if (incoming != null)
-        {
-            return incoming;
-        }
-        
-        return OutgoingFriendships
-            .FirstOrDefault(x => x.TargetPlayerId == targetId);
-    }
-
-    public void DeleteFriendshipFor(long targetId)
-    {
-        var incoming = IncomingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetId);
-
-        if (incoming != null)
-        {
-            IncomingFriendships.Remove(incoming);
-        }
-
-        var outgoing = OutgoingFriendships
-            .FirstOrDefault(x => x.OriginPlayerId == targetId);
-        
-        if (outgoing != null)
-        {
-            OutgoingFriendships.Remove(outgoing);
-        }
-    }
-
-    public bool HasPermission(string name)
-    {
-        return Roles.Any(r => r.Permissions.Any(x => x.Name == name));
-    }
 }

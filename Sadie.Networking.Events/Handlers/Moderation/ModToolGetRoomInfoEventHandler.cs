@@ -22,16 +22,16 @@ public class ModToolGetRoomInfoEventHandler : INetworkPacketEventHandler
 
         await client.WriteToStreamAsync(new ModToolRoomInfoWriter
         {
-            Id = room.Id,
+            Id = room.Room.Id,
             UserCount = room.UserRepository.Count,
-            OwnerInRoom = room.UserRepository.TryGetById(room.OwnerId, out _),
-            OwnerId = room.OwnerId,
-            OwnerName = room.Owner.Username,
+            OwnerInRoom = room.UserRepository.TryGetById(room.Room.OwnerId, out _),
+            OwnerId = room.Room.OwnerId,
+            OwnerName = room.Room.Owner.Username,
             Unknown1 = true,
-            Name = room.Name,
-            Description = room.Description,
+            Name = room.Room.Name,
+            Description = room.Room.Description,
             Tags = room
-                .Tags
+                .Room.Tags
                 .Select(t => t.Name)
                 .ToList()
         });

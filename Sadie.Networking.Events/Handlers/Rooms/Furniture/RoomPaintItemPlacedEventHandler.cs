@@ -53,16 +53,16 @@ public class RoomPaintItemPlacedEventHandler(
         switch (playerItem.FurnitureItem.AssetName)
         {
             case "floor":
-                room.PaintSettings.FloorPaint = playerItem.MetaData;
-                dbContext.Entry(room.PaintSettings).Property(x => x.FloorPaint).IsModified = true;
+                room.Room.PaintSettings.FloorPaint = playerItem.MetaData;
+                dbContext.Entry(room.Room.PaintSettings).Property(x => x.FloorPaint).IsModified = true;
                 break;
             case "wallpaper":
-                room.PaintSettings.WallPaint = playerItem.MetaData;
-                dbContext.Entry(room.PaintSettings).Property(x => x.WallPaint).IsModified = true;
+                room.Room.PaintSettings.WallPaint = playerItem.MetaData;
+                dbContext.Entry(room.Room.PaintSettings).Property(x => x.WallPaint).IsModified = true;
                 break;
             case "landscape":
-                room.PaintSettings.LandscapePaint = playerItem.MetaData;
-                dbContext.Entry(room.PaintSettings).Property(x => x.LandscapePaint).IsModified = true;
+                room.Room.PaintSettings.LandscapePaint = playerItem.MetaData;
+                dbContext.Entry(room.Room.PaintSettings).Property(x => x.LandscapePaint).IsModified = true;
                 break;
         }
 

@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
@@ -15,7 +17,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 public class RoomUserRespectEventHandler(
     IPlayerRepository playerRepository,
     IRoomRepository roomRepository,
-    IDbContextFactory<SadieDbContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public int TargetId { get; init; }
@@ -40,7 +43,7 @@ public class RoomUserRespectEventHandler(
             return;
         }
 
-        var respect = new PlayerRespect
+        var respect = new PlayerRespectDto
         {
             OriginPlayerId = player.Id,
             TargetPlayerId = targetPlayer.Id
@@ -49,7 +52,10 @@ public class RoomUserRespectEventHandler(
         playerData.RespectPoints--;
         targetPlayer.Respects.Add(respect);
 
+        var respectEntity = mapper.Map<PlayerRespect>(respect);
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.PlayerRespects.Add(respectEntity);
         dbContext.Entry(playerData).Property(x => x.RespectPoints).IsModified = true;
         await dbContext.SaveChangesAsync();
 

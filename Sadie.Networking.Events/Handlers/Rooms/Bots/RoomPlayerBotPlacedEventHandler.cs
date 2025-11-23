@@ -42,14 +42,14 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        if (room.OwnerId != roomUser.Player.Id)
+        if (room.Room.OwnerId != roomUser.Player.Id)
         {
             return;
         }
 
         var placePoint = new Point(X, Y);
         
-        if (room.TileMap.UsersAtPoint(placePoint) && !room.Settings.CanUsersOverlap)
+        if (room.TileMap.UsersAtPoint(placePoint) && !room.Room.Settings.CanUsersOverlap)
         {
             await client.WriteToStreamAsync(new RoomBotErrorWriter
             {
@@ -61,7 +61,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         var roomBot = roomBotFactory.Create(
             room, 
-            room.MaxUsersAllowed + bot.Id, 
+            room.Room.MaxUsersAllowed + bot.Id, 
             new Point(X, Y), 
             room.TileMap.ZMap[Y, X]);
 
@@ -70,7 +70,7 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        bot.RoomId = room.Id;
+        bot.RoomId = room.Room.Id;
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(bot).Property(x => x.RoomId).IsModified = true;

@@ -21,7 +21,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
         var writers = new List<AbstractPacketWriter>();
         
         var roomRollers = room
-            .FurnitureItems
+            .Room.FurnitureItems
             .Where(x => x.PlayerFurnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Roller);
         
         var rollerUpdates = await GetRollerUpdatesAsync(room, roomRollers);
@@ -48,7 +48,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
             var rollerPosition = new Point(x, y);
             
             var nextRoller = tileMapHelperService
-                .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
+                .GetItemsForPosition(nextStep.X, nextStep.Y, room.Room.FurnitureItems)
                 .FirstOrDefault(fi => fi.PlayerFurnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Roller);
             
             var nextHeight = nextRoller?.PlayerFurnitureItem.FurnitureItem?.StackHeight ?? 0;
@@ -83,7 +83,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
                     nextHeight);
             }
 
-            var unprocessedNonRollers = room.FurnitureItems.Where(i =>
+            var unprocessedNonRollers = room.Room.FurnitureItems.Where(i =>
                 !itemIdsProcessed.Contains(i.Id) && i.PlayerFurnitureItem.FurnitureItem.InteractionType !=
                 FurnitureItemInteractionType.Roller);
 
@@ -118,7 +118,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
 
                 tileMapHelperService.UpdateTileMapsForPoints(oldPoints, 
                     room.TileMap,
-                    room.FurnitureItems);
+                    room.Room.FurnitureItems);
 
                 var newPoints = tileMapHelperService.GetPointsForPlacement(
                     nextStep.X, nextStep.Y, 
@@ -129,7 +129,7 @@ public class RollerProcessor(IRoomTileMapHelperService tileMapHelperService,
                 tileMapHelperService.UpdateTileMapsForPoints(newPoints, 
                     room.TileMap,
                     room
-                        .FurnitureItems
+                        .Room.FurnitureItems
                         .Except([item])
                         .ToList());
                 

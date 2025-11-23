@@ -31,8 +31,8 @@ public class FloorPlanEditorSaveEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
-            room.OwnerId != client.Player.Id || 
-            room.Layout == null)
+            room.Room.OwnerId != client.Player.Id || 
+            room.Room.Layout == null)
         {
             return;
         }
@@ -57,9 +57,9 @@ public class FloorPlanEditorSaveEventHandler(
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
-        if (!room.Layout.Name!.Contains("custom_"))
+        if (!room.Room.Layout.Name!.Contains("custom_"))
         {
-            room.Layout = new RoomLayoutDto
+            room.Room.Layout = new RoomLayoutDto
             {
                 Name = $"custom_{Guid.NewGuid().ToString().Replace("-", "")[..15]}",
                 DoorDirection = DoorDirection,
@@ -68,24 +68,24 @@ public class FloorPlanEditorSaveEventHandler(
                 Heightmap = HeightMap
             };
             
-            dbContext.Entry(room.Layout).State = EntityState.Added;
+            dbContext.Entry(room.Room.Layout).State = EntityState.Added;
             newLayout = true;
         }
         else
         {
-            room.Layout.DoorDirection = DoorDirection;
-            room.Layout.DoorX = DoorX;
-            room.Layout.DoorY = DoorY;
-            room.Layout.Heightmap = HeightMap;
+            room.Room.Layout.DoorDirection = DoorDirection;
+            room.Room.Layout.DoorX = DoorX;
+            room.Room.Layout.DoorY = DoorY;
+            room.Room.Layout.Heightmap = HeightMap;
             
-            dbContext.Entry(room.Layout).State = EntityState.Modified;
+            dbContext.Entry(room.Room.Layout).State = EntityState.Modified;
         }
 
         await dbContext.SaveChangesAsync();
 
         if (newLayout)
         {
-            room.LayoutId = room.Layout.Id;
+            room.Room.LayoutId = room.Room.Layout.Id;
             
             dbContext.Entry((Room) room).Property(x => x.LayoutId).IsModified = true;
             await dbContext.SaveChangesAsync();
@@ -99,14 +99,14 @@ public class FloorPlanEditorSaveEventHandler(
             playersToForward.Add(user.Player);
         }
 
-        if (!roomRepository.TryRemove(room.Id, out var roomLogic))
+        if (!roomRepository.TryRemove(room.Room.Id, out var roomLogic))
         {
             return;
         }
 
         var writer = new RoomForwardEntryWriter
         {
-            RoomId = roomLogic!.Id
+            RoomId = roomLogic!.Room.Id
         };
 
         foreach (var player in playersToForward)

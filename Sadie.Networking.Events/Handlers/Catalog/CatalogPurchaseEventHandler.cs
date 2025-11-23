@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API;
-using Sadie.API.DTOs.Catalog.Items;
 using Sadie.API.DTOs.Furniture;
 using Sadie.API.DTOs.Player;
 using Sadie.API.DTOs.Player.Furniture;
@@ -384,7 +383,7 @@ public class CatalogPurchaseEventHandler(
             }
     }
 
-    private async Task ConfirmPurchaseAsync(INetworkObject client, CatalogItemDto item)
+    private async Task ConfirmPurchaseAsync(INetworkObject client, CatalogItem item)
     {
         await client.WriteToStreamAsync(new CatalogPurchaseOkWriter
         {
@@ -395,7 +394,7 @@ public class CatalogPurchaseEventHandler(
             CostPoints = item.CostPoints,
             CostPointsType = item.CostPointsType,
             CanGift = item.FurnitureItems.First().CanGift,
-            FurnitureItems = item.FurnitureItems,
+            FurnitureItems = mapper.Map<List<FurnitureItemDto>>(item.FurnitureItems),
             Amount = Amount,
             ClubLevel = item.RequiresClubMembership ? 1 : 0,
             CanPurchaseBundles = item.Amount != 1,

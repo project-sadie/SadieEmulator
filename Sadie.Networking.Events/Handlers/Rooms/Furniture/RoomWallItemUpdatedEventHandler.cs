@@ -38,7 +38,7 @@ public class RoomWallItemUpdatedEventHandler(
             return;
         }
 
-        var roomFurnitureItem = room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItem.Id == ItemId);
+        var roomFurnitureItem = room.Room.FurnitureItems.FirstOrDefault(x => x.PlayerFurnitureItem.Id == ItemId);
 
         if (roomFurnitureItem == null)
         {

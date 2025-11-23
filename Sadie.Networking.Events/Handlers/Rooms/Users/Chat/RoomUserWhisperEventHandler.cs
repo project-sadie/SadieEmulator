@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms.Chat;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Services;
 using Sadie.API.Interfaces.Networking.Client;
@@ -8,7 +9,6 @@ using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
-using Sadie.Db.Models.Rooms.Chat;
 using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
@@ -45,9 +45,9 @@ public class RoomUserWhisperEventHandler(
             return;
         }
 
-        var chatMessage = new RoomChatMessage
+        var chatMessage = new RoomChatMessageDto
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             PlayerId = roomUser.Player.Id,
             Message = whisperMessage,
             ChatBubbleId = (ChatBubble) Bubble,
@@ -69,6 +69,6 @@ public class RoomUserWhisperEventHandler(
         await roomUser.NetworkObject.WriteToStreamAsync(packetBytes);
         await targetUser.NetworkObject.WriteToStreamAsync(packetBytes);
         
-        room.ChatMessages.Add(chatMessage);
+        room.Room.ChatMessages.Add(chatMessage);
     }
 }

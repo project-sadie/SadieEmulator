@@ -24,14 +24,14 @@ public class ModToolGetRoomChatLogEventHandler : INetworkPacketEventHandler
             Unknown2 = 2,
             Unknown3 = "roomName",
             Unknown4 = 2,
-            Unknown5 = client.RoomUser.Room.Name,
+            Unknown5 = client.RoomUser.Room.Room.Name,
             Unknown6 = "roomId",
             Unknown7 = 1,
-            Unknown8 = client.RoomUser.Room.Id,
+            Unknown8 = client.RoomUser.Room.Room.Id,
             Messages = client
                 .RoomUser
                 .Room
-                .ChatMessages
+                .Room.ChatMessages
                 .Take(150)
                 .ToList()
         });

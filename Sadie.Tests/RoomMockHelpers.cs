@@ -85,14 +85,14 @@ public class RoomMockHelpers
         var roomUserRepo = new Mock<IRoomUserRepository>();
         
         room
-            .SetupGet(x => x.FurnitureItems)
+            .SetupGet(x => x.Room.FurnitureItems)
             .Returns(furnitureItems);
 
         roomUserRepo
             .Setup(x => x.GetAll())
             .Returns(users ?? []);
 
-        var tileMap = new RoomTileMap(heightMap, room.Object.FurnitureItems);
+        var tileMap = new RoomTileMap(heightMap, room.Object.Room.FurnitureItems);
         
         if (users != null)
         {
