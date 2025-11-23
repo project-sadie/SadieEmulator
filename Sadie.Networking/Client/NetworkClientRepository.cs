@@ -1,10 +1,13 @@
 ﻿using System.Collections.Concurrent;
+using AutoMapper;
 using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
+using Sadie.Db.Models.Players;
 
 namespace Sadie.Networking.Client;
 
@@ -12,7 +15,8 @@ public class NetworkClientRepository(
     ILogger<NetworkClientRepository> logger,
     IPlayerRepository playerRepository,
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IPlayerHelperService playerHelperService) : INetworkClientRepository
+    IPlayerHelperService playerHelperService,
+    IMapper mapper) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
 
@@ -51,9 +55,11 @@ public class NetworkClientRepository(
                 false, 
                 false, 
                 playerRepository);
+            
+            var playerDataEntity = mapper.Map<PlayerData>(player.Data);
 
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
+            dbContext.Entry(playerDataEntity).Property(x => x.IsOnline).IsModified = true;
             await dbContext.SaveChangesAsync();
         }
         

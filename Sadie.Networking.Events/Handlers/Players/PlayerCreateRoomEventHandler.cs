@@ -1,12 +1,12 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Rooms;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Rooms;
 using Sadie.Networking.Writers.Navigator;
 
@@ -38,39 +38,42 @@ public class PlayerCreateRoomEventHandler(
             return;
         }
 
-        var newRoom = new Room
+        var layoutDto = mapper.Map<RoomLayoutDto>(layout);
+        
+        var newRoom = new RoomDto
         {
             Name = Name,
             OwnerId = client.Player.Id,
-            Layout = layout,
+            Layout = layoutDto,
             LayoutId = layout.Id,
             MaxUsersAllowed = MaxUsersAllowed,
             Description = Description,
             CreatedAt = DateTime.Now
         };
 
-        newRoom.Settings = new RoomSettings
+        newRoom.Settings = new RoomSettingsDto
         {
             RoomId = newRoom.Id,
             WalkDiagonal = true,
             TradeOption = RoomTradeOption.Allowed
         };
 
-        newRoom.ChatSettings = new RoomChatSettings
+        newRoom.ChatSettings = new RoomChatSettingsDto
         {
             RoomId = newRoom.Id
         };
 
-        newRoom.PaintSettings = new RoomPaintSettings
+        newRoom.PaintSettings = new RoomPaintSettingsDto
         {
             RoomId = newRoom.Id
         };
         
-        dbContext.Rooms.Add(newRoom);
+        var newRoomEntity = mapper.Map<Room>(newRoom);
+        dbContext.Rooms.Add(newRoomEntity);
         await dbContext.SaveChangesAsync();
 
-        newRoom.Owner = (Player) client.Player;
-        newRoom.Layout = layout;
+        newRoom.OwnerId = client.Player.Id;
+        newRoom.Layout = layoutDto;
 
         var roomLogic = mapper.Map<IRoomLogic>(newRoom);
             
