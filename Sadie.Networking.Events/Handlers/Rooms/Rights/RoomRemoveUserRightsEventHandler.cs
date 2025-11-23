@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms.Rights;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -14,7 +16,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 [PacketId(EventHandlerId.RoomRemoveUserRights)]
 public class RoomRemoveUserRightsEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public required List<int> Ids { get; init; }
     
@@ -34,7 +37,7 @@ public class RoomRemoveUserRightsEventHandler(
         
         foreach (var playerId in Ids)
         {
-            var right = room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId);
+            var right = room.Room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId);
             
             if (right == null)
             {
@@ -45,7 +48,7 @@ public class RoomRemoveUserRightsEventHandler(
         }
     }
 
-    private async Task RemoveRoomPlayerRightAsync(long playerId, IRoomLogic room, RoomPlayerRight right)
+    private async Task RemoveRoomPlayerRightAsync(long playerId, IRoomLogic room, RoomPlayerRightDto right)
     {
         if (room.UserRepository.TryGetById((int) playerId, out var roomUser))
         {
@@ -58,16 +61,18 @@ public class RoomRemoveUserRightsEventHandler(
             });
         }
         
-        room.PlayerRights.Remove(right);
+        room.Room.PlayerRights.Remove(right);
+
+        var rightEntity = mapper.Map<RoomPlayerRight>(right);
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.RoomPlayerRights.Remove(right);
+        dbContext.RoomPlayerRights.Remove(rightEntity);
         await dbContext.SaveChangesAsync();
 
         await room.UserRepository.BroadcastDataAsync(
             new RoomRemoveUserRightsWriter
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 PlayerId = playerId
             });
     }

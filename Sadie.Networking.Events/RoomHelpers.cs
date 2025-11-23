@@ -2,6 +2,7 @@ using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Users;
@@ -51,7 +52,9 @@ public static class RoomHelpers
             return null;
         }
 
-        var roomLogic = mapper.Map<IRoomLogic>(room);
+        var roomDto = mapper.Map<RoomDto>(room);
+        var roomLogic = mapper.Map<IRoomLogic>(roomDto);
+        
         roomRepository.AddRoom(roomLogic);
 
         return roomLogic;
@@ -61,12 +64,12 @@ public static class RoomHelpers
     {
         var controllerLevel = RoomControllerLevel.None;
         
-        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Id) != null)
+        if (room.Room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Id) != null)
         {
             controllerLevel = RoomControllerLevel.Rights;
         }
 
-        if (room.OwnerId == player.Id)
+        if (room.Room.OwnerId == player.Id)
         {
             controllerLevel = RoomControllerLevel.Owner;
         }

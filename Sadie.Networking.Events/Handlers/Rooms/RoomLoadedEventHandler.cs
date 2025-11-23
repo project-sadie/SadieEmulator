@@ -75,9 +75,9 @@ public class RoomLoadedEventHandler(
             return;
         }
 
-        var isOwner = room.OwnerId == player.Id;
+        var isOwner = room.Room.OwnerId == player.Id;
 
-        if (room.UserRepository.Count >= room.MaxUsersAllowed && !isOwner)
+        if (room.UserRepository.Count >= room.Room.MaxUsersAllowed && !isOwner)
         {
             await client.WriteToStreamAsync(new RoomEnterErrorWriter
             {
@@ -87,7 +87,7 @@ public class RoomLoadedEventHandler(
             return;
         }
 
-        if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
+        if (room.Room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
             !isOwner && 
             !await ValidateRoomAccessForClientAsync(client, room, Password))
         {
@@ -103,17 +103,18 @@ public class RoomLoadedEventHandler(
             tileMapHelperService,
             playerHelperService,
             roomFurnitureItemHelperService,
-            wiredService);
+            wiredService,
+            mapper);
     }
 
     private static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, IRoomLogic room, string password)
     {
         var player = client.Player!;
         
-        switch (room.Settings.AccessType)
+        switch (room.Room.Settings.AccessType)
         {
             case RoomAccessType.Password:
-                if (room.Settings.Password == password)
+                if (room.Room.Settings.Password == password)
                 {
                     return true;
                 }

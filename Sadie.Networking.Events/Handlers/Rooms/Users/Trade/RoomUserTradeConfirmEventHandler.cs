@@ -36,7 +36,7 @@ public class RoomUserTradeConfirmEventHandler(IRoomRepository roomRepository,
         {
             await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeCloseWindowWriter());
             await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeCompletedWriter());
-            await roomUser.Trade.SwapItemsAsync(dbContextFactory);
+            await roomUser.Trade.SwapItemsAsync();
             
             foreach (var user in roomUser.Trade.Users)
             {

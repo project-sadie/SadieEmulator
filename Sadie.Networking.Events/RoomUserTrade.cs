@@ -76,7 +76,6 @@ public class RoomUserTrade(
         foreach (var userOneItem in userOneItems)
         {
             userOneItem.PlayerId = userTwo.Id;
-            userOneItem.Player = (Player) userTwo;
 
             userOne.FurnitureItems.Remove(userOneItem);
             userTwo.FurnitureItems.Add(userOneItem);
@@ -94,7 +93,6 @@ public class RoomUserTrade(
         foreach (var userTwoItem in userTwoItems)
         {
             userTwoItem.PlayerId = userOne.Id;
-            userTwoItem.Player = (Player) userOne;
 
             userTwo.FurnitureItems.Remove(userTwoItem);
             userOne.FurnitureItems.Add(userTwoItem);

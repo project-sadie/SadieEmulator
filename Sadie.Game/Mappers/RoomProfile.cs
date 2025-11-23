@@ -1,9 +1,9 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Bots;
 using Sadie.API.Interfaces.Game.Rooms.Users;
-using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 
@@ -13,26 +13,12 @@ public class RoomProfile : Profile
 {
     public RoomProfile(IServiceProvider provider)
     {
-        CreateMap<Room, IRoomLogic>()
+        CreateMap<RoomDto, IRoomLogic>()
             .ConstructUsing(x => new RoomLogic(
-                x.Id,
-                x.Name,
-                x.Layout,
+                x,
                 new RoomTileMap(x.Layout.Heightmap, x.FurnitureItems),
-                x.Owner,
-                x.Description,
-                x.MaxUsersAllowed,
-                x.IsMuted,
                 provider.GetRequiredService<IRoomUserRepository>(),
-                provider.GetRequiredService<IRoomBotRepository>(),
-                x.FurnitureItems,
-                x.Settings,
-                x.ChatSettings,
-                x.ChatMessages,
-                x.PlayerRights,
-                x.PaintSettings,
-                x.Tags,
-                x.PlayerLikes)
+                provider.GetRequiredService<IRoomBotRepository>())
             {
                 Name = x.Name,
                 Description = x.Description
