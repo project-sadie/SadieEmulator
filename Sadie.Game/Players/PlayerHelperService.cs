@@ -46,17 +46,17 @@ public class PlayerHelperService : IPlayerHelperService
             {
                 Pages = pages,
                 Index = i,
-                PlayerId = player.Id,
+                PlayerId = player.Player.Id,
                 Friends = batch,
                 PlayerRepository = playerRepository,
-                Relationships = player.Relationships
+                Relationships = player.Player.Relationships
             });
         }
     }
     
     public IPlayerSubscriptionWriter? GetSubscriptionWriterAsync(IPlayerLogic player, string name)
     {
-        var playerSub = player.Subscriptions.FirstOrDefault(x => x.Subscription.Name == name);
+        var playerSub = player.Player.Subscriptions.FirstOrDefault(x => x.Subscription.Name == name);
         
         if (playerSub?.Subscription == null)
         {
@@ -96,11 +96,11 @@ public class PlayerHelperService : IPlayerHelperService
             Type = 0,
             Friend = new FriendData
             {
-                Id = player.Id,
-                Username = player.Username,
-                FigureCode = player.AvatarData.FigureCode,
-                Motto = player.AvatarData.Motto,
-                Gender = player.AvatarData.Gender
+                Id = player.Player.Id,
+                Username = player.Player.Username,
+                FigureCode = player.Player.AvatarData.FigureCode,
+                Motto = player.Player.AvatarData.Motto,
+                Gender = player.Player.AvatarData.Gender
             },
             FriendOnline = isOnline,
             FriendInRoom = inRoom,
@@ -109,7 +109,7 @@ public class PlayerHelperService : IPlayerHelperService
         
         foreach (var friend in friendships)
         {
-            var targetId = friend.OriginPlayerId == player.Id ? 
+            var targetId = friend.OriginPlayerId == player.Player.Id ? 
                 friend.TargetPlayerId : 
                 friend.OriginPlayerId;
 

@@ -19,7 +19,7 @@ public class PlayerRemoveFriendsEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var playerId = client.Player.Id;
+        var playerId = client.Player.Player.Id;
         
         foreach (var currentId in Ids)
         {
@@ -30,7 +30,7 @@ public class PlayerRemoveFriendsEventHandler(
                 continue;
             }
 
-            var friendship = target.TryGetAcceptedFriendshipFor(target.Id);
+            var friendship = target.TryGetAcceptedFriendshipFor(target.Player.Id);
 
             if (friendship != null)
             {

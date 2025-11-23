@@ -10,7 +10,7 @@ public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var subscription = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
+        var subscription = client.Player?.Player.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
         
         if (subscription == null)
         {

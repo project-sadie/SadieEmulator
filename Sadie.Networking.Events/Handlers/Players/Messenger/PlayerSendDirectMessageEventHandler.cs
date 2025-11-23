@@ -63,8 +63,8 @@ public class PlayerSendDirectMessageEventHandler(
 
         var playerMessage = new PlayerMessageDto
         {
-            OriginPlayerId = client.Player.Id,
-            TargetPlayerId = targetPlayer.Id,
+            OriginPlayerId = client.Player.Player.Id,
+            TargetPlayerId = targetPlayer.Player.Id,
             Message = message,
             CreatedAt = DateTime.Now
         };

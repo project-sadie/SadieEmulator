@@ -28,7 +28,7 @@ public class PlayerClubOffersEventHandler(
         
         var clubSubscription = client
             .Player
-            .Subscriptions
+            .Player.Subscriptions
             .FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
 
         if (clubSubscription != null)

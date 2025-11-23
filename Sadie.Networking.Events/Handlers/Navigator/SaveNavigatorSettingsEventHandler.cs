@@ -25,22 +25,22 @@ public class SaveNavigatorSettingsEventHandler(
     {
         var player = client.Player;
 
-        if (player?.NavigatorSettings == null)
+        if (player?.Player.NavigatorSettings == null)
         {
             return;
         }
         
-        var navigatorSettings = player.NavigatorSettings;
+        var navigatorSettings = player.Player.NavigatorSettings;
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
         var entity = await dbContext.PlayerNavigatorSettings
-            .FirstOrDefaultAsync(x => x.PlayerId == player.Id);
+            .FirstOrDefaultAsync(x => x.PlayerId == player.Player.Id);
 
         if (entity == null)
         {
             #pragma warning disable CA1873
-            logger.LogWarning("PlayerNavigatorSettings missing for player {PlayerId}", player.Id);
+            logger.LogWarning("PlayerNavigatorSettings missing for player {PlayerId}", player.Player.Id);
             #pragma warning restore CA1873
             return;
         }

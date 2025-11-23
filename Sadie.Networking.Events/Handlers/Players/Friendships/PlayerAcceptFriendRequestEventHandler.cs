@@ -31,9 +31,10 @@ public class PlayerAcceptFriendRequestEventHandler(
     private async Task AcceptRequestAsync(INetworkClient client, int originId)
     {
         var player = client.Player;
-        var playerId = player.Id;
+        var playerId = player.Player.Id;
         
         var request = player
+            .Player
             .IncomingFriendships
             .FirstOrDefault(x => x.OriginPlayerId == originId && x.Status == PlayerFriendshipStatus.Pending);
 
@@ -54,6 +55,7 @@ public class PlayerAcceptFriendRequestEventHandler(
 
         var targetRelationship = targetOnline
             ? targetPlayer!
+                .Player
                 .Relationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
 
@@ -63,10 +65,10 @@ public class PlayerAcceptFriendRequestEventHandler(
                 Type = 0,
                 Friend = new FriendData
                 {
-                    Username = targetPlayer.Username,
-                    FigureCode = targetPlayer.AvatarData.FigureCode,
-                    Motto = targetPlayer.AvatarData.Motto,
-                    Gender = targetPlayer.AvatarData.Gender
+                    Username = targetPlayer.Player.Username,
+                    FigureCode = targetPlayer.Player.AvatarData.FigureCode,
+                    Motto = targetPlayer.Player.AvatarData.Motto,
+                    Gender = targetPlayer.Player.AvatarData.Gender
                 },
                 FriendOnline = targetOnline,
                 FriendInRoom = targetInRoom,
@@ -77,7 +79,7 @@ public class PlayerAcceptFriendRequestEventHandler(
         if (targetOnline)
         {
             var targetRequest = targetPlayer.
-                OutgoingFriendships.
+                Player.OutgoingFriendships.
                 FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (targetRequest == null)
@@ -86,7 +88,7 @@ public class PlayerAcceptFriendRequestEventHandler(
             }
             
             var relationship = targetPlayer
-                .Relationships
+                .Player.Relationships
                 .FirstOrDefault(x =>
                     x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 
@@ -96,10 +98,10 @@ public class PlayerAcceptFriendRequestEventHandler(
                     Type = 0,
                     Friend = new FriendData
                     {
-                        Username = player.Username,
-                        FigureCode = player.AvatarData.FigureCode,
-                        Motto = player.AvatarData.Motto,
-                        Gender = player.AvatarData.Gender
+                        Username = player.Player.Username,
+                        FigureCode = player.Player.AvatarData.FigureCode,
+                        Motto = player.Player.AvatarData.Motto,
+                        Gender = player.Player.AvatarData.Gender
                     },
                     FriendOnline = true,
                     FriendInRoom = player.State.CurrentRoomId != 0,

@@ -20,13 +20,14 @@ public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
         
         var friendRequests = client
             .Player
+            .Player
             .IncomingFriendships
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
             .ToList();
 
         var requests = new List<IPlayerFriendshipRequestData>();
         
-        foreach (var data in friendRequests.Select(request => request.TargetPlayerId == client.Player.Id ? 
+        foreach (var data in friendRequests.Select(request => request.TargetPlayerId == client.Player.Player.Id ? 
                      request.OriginPlayer : 
                      request.TargetPlayer))
         {

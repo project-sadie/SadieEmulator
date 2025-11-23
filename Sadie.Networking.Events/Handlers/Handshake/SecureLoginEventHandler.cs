@@ -115,28 +115,28 @@ public class SecureLoginEventHandler(
 
         if (existingPlayer is { Channel: not null })
         {
-            await playerRepository.TryRemovePlayerAsync(existingPlayer.Id);
+            await playerRepository.TryRemovePlayerAsync(existingPlayer.Player.Id);
             await networkClientRepository.TryRemoveAsync(existingPlayer.Channel.Id);
 
             var roomUser = client.RoomUser;
             
             if (roomUser != null)
             {
-                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Id);
+                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id);
             }
         }
 
         if (!playerRepository.TryAddPlayer(playerLogic))
         {
-            logger.LogError($"Player {playerLogic.Username} could not be registered");
+            logger.LogError($"Player {playerLogic.Player.Username} could not be registered");
             await client.DisposeAsync();
             return;
         }
         
         await client.WriteToStreamAsync(new SecureLoginWriter());
         
-        playerLogic.Data.IsOnline = true;
-        playerLogic.Data.LastOnline = DateTime.Now;
+        playerLogic.Player.Data.IsOnline = true;
+        playerLogic.Player.Data.LastOnline = DateTime.Now;
         
         playerLogic.Authenticated = true;
 
@@ -158,7 +158,7 @@ public class SecureLoginEventHandler(
         
         await SendWelcomeMessageAsync(playerLogic);
         
-        logger.LogInformation($"Player '{playerLogic.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
+        logger.LogInformation($"Player '{playerLogic.Player.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 
     private async Task SendWelcomeMessageAsync(IPlayerLogic player)
@@ -169,7 +169,7 @@ public class SecureLoginEventHandler(
         }
 
         var formattedMessage = serverSettings.PlayerWelcomeMessage
-            .Replace("[username]", player.Username)
+            .Replace("[username]", player.Player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
 
         await player.SendAlertAsync(formattedMessage);

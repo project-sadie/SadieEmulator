@@ -10,7 +10,7 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var playerData = client.Player.Data;
+        var playerData = client.Player.Player.Data;
         
         await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
         {

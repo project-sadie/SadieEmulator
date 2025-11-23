@@ -45,7 +45,7 @@ public class ModToolUpdateRoomSettingsEventHandler(
         {
             foreach (var user in room.UserRepository.GetAll())
             {
-                await room.UserRepository.TryRemoveAsync(user.Player.Id, true, true);
+                await room.UserRepository.TryRemoveAsync(user.Player.Player.Id, true, true);
             }
         }
 

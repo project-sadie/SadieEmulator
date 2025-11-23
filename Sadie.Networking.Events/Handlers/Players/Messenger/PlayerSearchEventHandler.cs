@@ -31,12 +31,12 @@ public class PlayerSearchEventHandler(IPlayerRepository playerRepository) : INet
 
         var outgoingFriends = client
             .Player!
-            .OutgoingFriendships
+            .Player.OutgoingFriendships
             .Select(x => x.TargetPlayer!);
         
         var incomingFriends = client
             .Player!
-            .IncomingFriendships
+            .Player.IncomingFriendships
             .Select(x => x.OriginPlayer!);
 
         var friendsList = outgoingFriends

@@ -21,13 +21,13 @@ public class PlayerDeclineFriendRequestEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player;
-        var playerId = player.Id;
+        var playerId = player.Player.Id;
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         if (DeclineAll)
         {
-            player.IncomingFriendships.Clear();
+            player.Player.IncomingFriendships.Clear();
             
             await dbContext.Set<PlayerFriendship>()
                 .Where(x => x.TargetPlayerId == playerId && x.Status == PlayerFriendshipStatus.Pending)

@@ -16,7 +16,7 @@ public class PlayerSetHomeRoomEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player?.NetworkObject == null ||
-            client.Player.Data.HomeRoomId == RoomId)
+            client.Player.Player.Data.HomeRoomId == RoomId)
         {
             return;
         }
@@ -27,12 +27,12 @@ public class PlayerSetHomeRoomEventHandler(
             RoomIdToEnter = 0
         });
         
-        client.Player.Data.HomeRoomId = RoomId;
+        client.Player.Player.Data.HomeRoomId = RoomId;
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         dbContext
-            .Entry(client.Player.Data)
+            .Entry(client.Player.Player.Data)
             .Property(x => x.HomeRoomId)
             .IsModified = true;
         

@@ -16,7 +16,7 @@ public class PlayerRepository(
     private readonly ConcurrentDictionary<long, IPlayerLogic> _players = new();
 
     public IPlayerLogic? GetPlayerLogicById(long id) => _players.GetValueOrDefault(id);
-    public IPlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Username == username);
+    public IPlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Player.Username == username);
     
     public async Task<PlayerDto?> GetPlayerByIdAsync(long id)
     {
@@ -51,7 +51,7 @@ public class PlayerRepository(
     
     public async Task<PlayerDto?> GetPlayerByUsernameAsync(string username)
     {
-        var online = _players.Values.FirstOrDefault(x => x.Username == username);
+        var online = _players.Values.FirstOrDefault(x => x.Player.Username == username);
         
         if (online != null)
         {
@@ -70,7 +70,7 @@ public class PlayerRepository(
 
     public ICollection<IPlayerLogic> GetAll() => _players.Values;
     
-    public bool TryAddPlayer(IPlayerLogic player) => _players.TryAdd(player.Id, player);
+    public bool TryAddPlayer(IPlayerLogic player) => _players.TryAdd(player.Player.Id, player);
 
     public async Task<bool> TryRemovePlayerAsync(long playerId)
     {

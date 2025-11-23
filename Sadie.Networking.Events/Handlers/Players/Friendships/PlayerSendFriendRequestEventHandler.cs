@@ -38,7 +38,7 @@ public class PlayerSendFriendRequestEventHandler(
             return;
         }
         
-        if (TargetUsername == player.Username)
+        if (TargetUsername == player.Player.Username)
         {
             return;
         }
@@ -92,7 +92,7 @@ public class PlayerSendFriendRequestEventHandler(
         }
 
         var existingRequest = player
-            .IncomingFriendships
+            .Player.IncomingFriendships
             .FirstOrDefault(x => x.OriginPlayerId == targetPlayer.Id);
 
         if (existingRequest is { Status: PlayerFriendshipStatus.Pending })
@@ -101,7 +101,7 @@ public class PlayerSendFriendRequestEventHandler(
                 existingRequest, 
                 targetOnline, 
                 onlineTarget,
-                player.Id);
+                player.Player.Id);
             
             return;
         }
@@ -129,6 +129,7 @@ public class PlayerSendFriendRequestEventHandler(
         if (targetOnline && onlineTarget != null)
         {
             var targetRequest = onlineTarget
+                .Player
                 .OutgoingFriendships
                 .FirstOrDefault(x => x.TargetPlayerId == playerId);
 
@@ -167,7 +168,7 @@ public class PlayerSendFriendRequestEventHandler(
                 FigureCode = player.AvatarData.FigureCode
             };
             
-            onlineTarget.IncomingFriendships.Add(playerFriendship);
+            onlineTarget.Player.IncomingFriendships.Add(playerFriendship);
                 
             await onlineTarget.NetworkObject.WriteToStreamAsync(friendRequestWriter);
         }
