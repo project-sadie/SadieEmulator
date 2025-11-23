@@ -9,11 +9,13 @@ public static class MapperServiceCollection
     {
         serviceCollection.AddSingleton<RoomProfile>();
         serviceCollection.AddSingleton<PlayerProfile>();
+        serviceCollection.AddSingleton<NavigatorProfile>();
 
         serviceCollection.AddSingleton(provider => new MapperConfiguration(c =>
         {
             c.AddProfile(provider.GetRequiredService<RoomProfile>());
             c.AddProfile(provider.GetRequiredService<PlayerProfile>());
+            c.AddProfile(provider.GetRequiredService<NavigatorProfile>());
         }).CreateMapper());
     }
 }

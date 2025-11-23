@@ -75,7 +75,7 @@ public class SecureLoginEventHandler(
             player.NavigatorSettings == null ||
             player.GameSettings == null)
         {
-            logger.LogError("Failed to resolve player record.");
+            logger.LogError("Player record is missing required associated data.");
             await client.DisposeAsync();
             return;
         }
