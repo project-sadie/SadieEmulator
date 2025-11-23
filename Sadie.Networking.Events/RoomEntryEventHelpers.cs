@@ -1,4 +1,5 @@
 using System.Drawing;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
@@ -28,7 +29,8 @@ public static class RoomEntryEventHelpers
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,
         IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
-        IRoomWiredService wiredService)
+        IRoomWiredService wiredService,
+        IMapper mapper)
     {
         var player = client.Player;
         var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
@@ -87,7 +89,7 @@ public static class RoomEntryEventHelpers
             true,
             playerRepository);
         
-        await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContextFactory);
+        await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContextFactory, mapper);
         
         await Task.Delay(100);
         
@@ -99,7 +101,7 @@ public static class RoomEntryEventHelpers
                     new PlayerIgnoreStateWriter
                     {
                         State = (int) PlayerIgnoreState.Ignored,
-                        Username = player.Username,
+                        Username = player.Username
                     });
             }
             
@@ -109,15 +111,16 @@ public static class RoomEntryEventHelpers
                     new PlayerIgnoreStateWriter
                     {
                         State = (int) PlayerIgnoreState.Ignored,
-                        Username = user.Player.Username,
+                        Username = user.Player.Username
                     });
             }
         }
             
         var matchingWiredTriggers = room.FurnitureItems
             .Where(x =>
-                x.FurnitureItem.InteractionType ==
-                FurnitureItemInteractionType.WiredTriggerEnterRoom)
+                x
+                    .PlayerFurnitureItem
+                    .FurnitureItem.InteractionType == FurnitureItemInteractionType.WiredTriggerEnterRoom)
             .ToList();
 
         foreach (var trigger in matchingWiredTriggers)

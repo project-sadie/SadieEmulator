@@ -5,5 +5,5 @@ public enum RoomTileState
     Blocked = 0,
     Open = 1,
     Sit = 2,
-    Lay = 3,
+    Lay = 3
 }

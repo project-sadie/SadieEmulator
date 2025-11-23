@@ -15,5 +15,5 @@ public enum WiredTriggerCode
     Collision = 11,
     ExecutePeriodicallyLong = 12,
     BotReachedFurniture = 13,
-    BotReachedAvatar = 14,
+    BotReachedAvatar = 14
 }

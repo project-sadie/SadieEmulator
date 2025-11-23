@@ -12,5 +12,5 @@ public enum GenericErrorCode
     NavigatorRoomInMaintenance = 4013,
     
     RoomKickedByOwner = 4008,
-    StripLockedForTrading = -13001,
+    StripLockedForTrading = -13001
 }

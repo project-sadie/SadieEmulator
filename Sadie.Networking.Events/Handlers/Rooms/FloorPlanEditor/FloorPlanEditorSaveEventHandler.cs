@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
@@ -58,7 +59,7 @@ public class FloorPlanEditorSaveEventHandler(
         
         if (!room.Layout.Name!.Contains("custom_"))
         {
-            room.Layout = new RoomLayout
+            room.Layout = new RoomLayoutDto
             {
                 Name = $"custom_{Guid.NewGuid().ToString().Replace("-", "")[..15]}",
                 DoorDirection = DoorDirection,

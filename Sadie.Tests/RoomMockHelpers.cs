@@ -62,7 +62,6 @@ public class RoomMockHelpers
         {
             PlayerFurnitureItem = new PlayerFurnitureItemDto
             {
-                Player = new Mock<PlayerDto>().Object,
                 FurnitureItem = new FurnitureItemDto
                 {
                     InteractionType = interactionType,

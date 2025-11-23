@@ -1,4 +1,6 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
@@ -14,7 +16,8 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerWearingBadgesEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerRepository playerRepository,
-    IRoomRepository roomRepository)
+    IRoomRepository roomRepository,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
@@ -27,7 +30,13 @@ public class PlayerWearingBadgesEventHandler(
         if (playerBadges == null)
         {
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            playerBadges = await dbContext.Set<PlayerBadge>().Where(x =>  x.PlayerId == PlayerId).ToListAsync();;
+            
+            var dbBadges = await dbContext
+                .Set<PlayerBadge>()
+                .Where(x =>  x.PlayerId == PlayerId)
+                .ToListAsync();
+            
+            playerBadges = mapper.Map<List<PlayerBadgeDto>>(dbBadges);
         }
 
         playerBadges = playerBadges.

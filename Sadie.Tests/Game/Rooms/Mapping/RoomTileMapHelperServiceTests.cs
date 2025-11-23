@@ -100,8 +100,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "",
-                    Player = null
+                    MetaData = ""
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -127,8 +126,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "",
-                    Player = null
+                    MetaData = ""
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -154,8 +152,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "1",
-                    Player = null
+                    MetaData = "1"
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -179,8 +176,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "",
-                    Player = null
+                    MetaData = ""
                 }
             }
         };
@@ -203,8 +199,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "",
-                    Player = null
+                    MetaData = ""
                 }
             }
         };
@@ -523,7 +518,7 @@ public class RoomTileMapHelperServiceTests
     {
         var furnitureItems = new List<PlayerFurnitureItemPlacementDataDto>
         {
-            MockFurnitureItem(x: 1, y: 0, canWalk: false),
+            MockFurnitureItem(x: 1, y: 0, canWalk: false)
         };
         
         var map = new RoomTileMap("00", furnitureItems);
@@ -545,6 +540,7 @@ public class RoomTileMapHelperServiceTests
 
         return item;
     }
+    
     private static PlayerFurnitureItemPlacementDataDto MockFurnitureItem(int x = 0,
         int y = 0,
         int z = 0,
@@ -573,8 +569,7 @@ public class RoomTileMapHelperServiceTests
                     CanSit = canSit,
                     Name = "",
                     AssetName = ""
-                },
-                Player = null
+                }
             },
             PositionX = x,
             PositionY = y,

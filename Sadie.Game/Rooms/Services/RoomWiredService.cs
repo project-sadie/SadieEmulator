@@ -59,10 +59,13 @@ public class RoomWiredService(
         
         foreach (var playerFurnitureItemPlacementData in stack)
         {
-            if (!playerFurnitureItemPlacementData
-                    .FurnitureItem
-                    .InteractionType
-                    .Contains("_act_"))
+            var interactionType = playerFurnitureItemPlacementData
+                .PlayerFurnitureItem
+                .FurnitureItem
+                .InteractionType;
+            
+            if (!string.IsNullOrEmpty(interactionType) && 
+                !interactionType.Contains("_act_"))
             {
                 break;
             }
@@ -81,7 +84,7 @@ public class RoomWiredService(
             return;
         }
         
-        switch (effect.FurnitureItem.InteractionType)
+        switch (effect.PlayerFurnitureItem.FurnitureItem.InteractionType)
         {
             case FurnitureItemInteractionType.WiredEffectShowMessage:
                 await userWhoTriggered.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
@@ -103,7 +106,7 @@ public class RoomWiredService(
                 break;
         }
         
-        CycleInteractionStateAsync(room, effect);
+        _ = CycleInteractionStateAsync(room, effect);
     }
     
     public int GetWiredCode(string interactionType)
@@ -122,8 +125,8 @@ public class RoomWiredService(
     }
 
     public async Task SaveSettingsAsync(
-        PlayerFurnitureItemPlacementData placementData,
-        PlayerFurnitureItemWiredData wiredData)
+        PlayerFurnitureItemPlacementDataDto placementData,
+        PlayerFurnitureItemWiredDataDto wiredData)
     {
         var existingData = placementData.WiredData;
         

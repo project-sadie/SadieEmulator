@@ -44,7 +44,7 @@ public class PlayerRemoveUserIgnoreEventHandler(IPlayerRepository playerReposito
             new PlayerIgnoreStateWriter
             {
                 State = (int) PlayerIgnoreState.NotIgnored,
-                Username = targetPlayer.Username,
+                Username = targetPlayer.Username
             });
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();

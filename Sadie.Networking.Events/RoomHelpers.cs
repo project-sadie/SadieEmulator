@@ -1,6 +1,7 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
@@ -57,7 +58,7 @@ public static class RoomHelpers
         return roomLogic;
     }
     
-    private static RoomControllerLevel GetControllerLevelForUser(RoomDto room, IPlayerLogic player)
+    private static RoomControllerLevel GetControllerLevelForUser(IRoomLogic room, IPlayerLogic player)
     {
         var controllerLevel = RoomControllerLevel.None;
         
@@ -110,9 +111,10 @@ public static class RoomHelpers
     public static async Task CreateRoomVisitForPlayerAsync(
         IPlayerLogic player, 
         int roomId, 
-        IDbContextFactory<SadieDbContext> dbContextFactory)
+        IDbContextFactory<SadieDbContext> dbContextFactory,
+        IMapper mapper)
     {
-        var roomVisit = new PlayerRoomVisit
+        var roomVisit = new PlayerRoomVisitDto
         {
             PlayerId = player.Id,
             RoomId = roomId,
@@ -120,9 +122,11 @@ public static class RoomHelpers
         };
         
         player.RoomVisits.Add(roomVisit);
+        
+        var roomVisitEntity = mapper.Map<PlayerRoomVisit>(roomVisit);
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.PlayerRoomVisits.Add(roomVisit);
+        dbContext.PlayerRoomVisits.Add(roomVisitEntity);
         await dbContext.SaveChangesAsync();
     }
 }

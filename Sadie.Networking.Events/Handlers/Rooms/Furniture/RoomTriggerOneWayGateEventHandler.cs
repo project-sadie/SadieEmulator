@@ -24,7 +24,9 @@ public class RoomTriggerOneWayGateEventHandler(IRoomFurnitureItemInteractorRepos
         }
         
         var interactors = interactorRepository
-            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+            .GetInteractorsForType(roomFurnitureItem
+                .PlayerFurnitureItem
+                .FurnitureItem.InteractionType ?? "");
         
         foreach (var interactor in interactors)
         {

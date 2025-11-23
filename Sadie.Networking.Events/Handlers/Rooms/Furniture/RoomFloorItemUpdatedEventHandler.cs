@@ -53,19 +53,23 @@ public class RoomFloorItemUpdatedEventHandler(
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
+
+        var furnitureItem = roomFurnitureItem
+            .PlayerFurnitureItem
+            .FurnitureItem;
         
         var oldPoints = tileMapHelperService.GetPointsForPlacement(
             roomFurnitureItem.PositionX, 
             roomFurnitureItem.PositionY, 
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY, 
-            (int) roomFurnitureItem.Direction);
+            furnitureItem.TileSpanX,
+            furnitureItem.TileSpanY, 
+            roomFurnitureItem.Direction);
 
         var newPoints = tileMapHelperService.GetPointsForPlacement(
             X, Y, 
-            roomFurnitureItem.FurnitureItem.TileSpanX,
-            roomFurnitureItem.FurnitureItem.TileSpanY, 
-            Direction);
+            furnitureItem.TileSpanX,
+            furnitureItem.TileSpanY, 
+            (HDirection) Direction);
 
         tileMapHelperService.UpdateTileMapsForPoints(oldPoints, 
             room.TileMap,
@@ -78,7 +82,7 @@ public class RoomFloorItemUpdatedEventHandler(
              newPoints[0].X == roomFurnitureItem.PositionX &&
              newPoints[0].Y == roomFurnitureItem.PositionY;
 
-        var checkPointsForUsers = roomFurnitureItem.FurnitureItem is
+        var checkPointsForUsers = furnitureItem is
         {
             CanSit: false, 
             CanLay: false
@@ -98,13 +102,11 @@ public class RoomFloorItemUpdatedEventHandler(
                 .FurnitureItems
                 .Except([roomFurnitureItem])
                 .ToList());
-        
-        var direction = Direction;
 
         roomFurnitureItem.PositionX = X;
         roomFurnitureItem.PositionY = Y;
         roomFurnitureItem.PositionZ = z;
-        roomFurnitureItem.Direction = (HDirection) direction;
+        roomFurnitureItem.Direction = (HDirection) Direction;
         
         room.TileMap.Map[roomFurnitureItem.PositionY, roomFurnitureItem.PositionX] =
             (short) tileMapHelperService.GetTileState(
@@ -113,7 +115,7 @@ public class RoomFloorItemUpdatedEventHandler(
                 room.FurnitureItems);
         
         var interactors = interactorRepository
-            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+            .GetInteractorsForType(furnitureItem.InteractionType ?? "");
 
         foreach (var interactor in interactors)
         {

@@ -11,5 +11,5 @@ public enum WiredEffectCode
     KickUser = 19,
     MuteTriggerer = 20,
     BotChangedClothes = 26,
-    BotTalkToAvatar = 27,
+    BotTalkToAvatar = 27
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -53,7 +54,7 @@ public class PlayerChangeRelationshipEventHandler(
         
             if (relationship == null)
             {
-                relationship = new PlayerRelationship
+                relationship = new PlayerRelationshipDto
                 {
                     OriginPlayerId = client.Player.Id,
                     TargetPlayerId = playerId,
@@ -81,7 +82,7 @@ public class PlayerChangeRelationshipEventHandler(
         var inRoom = isOnline && onlineFriend!.State.CurrentRoomId != 0;
 
         var friend = isOnline ? 
-            mapper.Map<Player>(onlineFriend) : 
+            mapper.Map<PlayerDto>(onlineFriend) : 
             await playerRepository.GetPlayerByIdAsync(playerId);
         
         var newFriendData = new FriendData
@@ -102,7 +103,7 @@ public class PlayerChangeRelationshipEventHandler(
                     Friend = newFriendData,
                     FriendOnline = isOnline,
                     FriendInRoom = inRoom,
-                    Relation = (PlayerRelationshipType)relationId
+                    Relation = (Core.Enums.Game.Players.PlayerRelationshipType) relationId
                 }
             ]
         };

@@ -43,7 +43,10 @@ public class RoomRedeemItemEventHandler(
             "PF_"
         };
 
-        var assetName = roomFurnitureItem.FurnitureItem.AssetName;
+        var assetName = roomFurnitureItem
+            .PlayerFurnitureItem
+            .FurnitureItem
+            .AssetName;
         
         if (!allowedPrefixes.Any(prefix => assetName.StartsWith(prefix)))
         {

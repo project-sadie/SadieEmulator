@@ -31,11 +31,14 @@ public class RoomItemUseEventHandler(
         }
         
         var interactors = interactorRepository
-            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+            .GetInteractorsForType(roomFurnitureItem
+                .PlayerFurnitureItem
+                .FurnitureItem.InteractionType ?? "");
 
         if (!interactors.Any())
         {
-            await roomFurnitureItemHelperService.CycleInteractionStateForItemAsync(room, roomFurnitureItem, dbContextFactory);
+            await roomFurnitureItemHelperService.CycleInteractionStateForItemAsync(
+                room, roomFurnitureItem);
         }
         else
         {

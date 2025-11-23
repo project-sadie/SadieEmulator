@@ -17,7 +17,7 @@ public class CatalogGiftConfigEventHandler : INetworkPacketEventHandler
             GiftWrappers = [],
             BoxTypes = [],
             RibbonTypes = [],
-            GiftFurniture = [],
+            GiftFurniture = []
         });
     }
 }

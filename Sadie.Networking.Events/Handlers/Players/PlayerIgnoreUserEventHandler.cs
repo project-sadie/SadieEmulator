@@ -46,7 +46,7 @@ public class PlayerIgnoreUserEventHandler(IPlayerRepository playerRepository,
             new PlayerIgnoreStateWriter
             {
                 State = (int) PlayerIgnoreState.Ignored,
-                Username = targetPlayer.Username,
+                Username = targetPlayer.Username
             });
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
