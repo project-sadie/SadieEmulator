@@ -51,7 +51,7 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
 
-        if (room.Room.OwnerId != client.Player!.Id)
+        if (room.Room.OwnerId != client.Player!.Player.Id)
         {
             return;
         }

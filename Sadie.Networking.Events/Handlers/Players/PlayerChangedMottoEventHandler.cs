@@ -20,7 +20,7 @@ public class PlayerChangedMottoEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player?.AvatarData == null)
+        if (client.Player?.Player.AvatarData == null)
         {
             return;
         }
@@ -40,9 +40,9 @@ public class PlayerChangedMottoEventHandler(
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         await dbContext.PlayerAvatarData
-            .Where(x => x.PlayerId == player.Id)
+            .Where(x => x.PlayerId == player.Player.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.Motto, newMotto));
 
-        player.AvatarData = player.AvatarData with { Motto = newMotto };
+        player.Player.AvatarData = player.Player.AvatarData with { Motto = newMotto };
     }
 }

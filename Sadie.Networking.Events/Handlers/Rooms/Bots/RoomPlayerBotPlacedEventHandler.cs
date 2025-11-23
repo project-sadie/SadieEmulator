@@ -34,7 +34,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         var bot = client
             .Player!
-            .Bots
+            .Player.Bots
             .FirstOrDefault(x => x.Id == Id);
 
         if (bot == null)
@@ -42,7 +42,7 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        if (room.Room.OwnerId != roomUser.Player.Id)
+        if (room.Room.OwnerId != roomUser.Player.Player.Id)
         {
             return;
         }

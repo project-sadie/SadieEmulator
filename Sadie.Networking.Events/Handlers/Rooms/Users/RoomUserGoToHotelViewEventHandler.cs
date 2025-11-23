@@ -25,9 +25,9 @@ public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository,
                 dbContextFactory,
                 mapper);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Player.Id, out var oldUser) && oldUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Player.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Player.Player.Id);
             }
         }
     }

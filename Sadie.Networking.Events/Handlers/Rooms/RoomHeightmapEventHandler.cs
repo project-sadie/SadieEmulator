@@ -33,7 +33,7 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
 
         var roomTileMap = room.TileMap;
         var userRepository = room.UserRepository;
-        var isOwner = room.Room.OwnerId == client.Player.Id;
+        var isOwner = room.Room.OwnerId == client.Player.Player.Id;
         
         await client.WriteToStreamAsync(new RoomRelativeMapWriter
         {

@@ -31,12 +31,12 @@ public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
             return;
         }
 
-        if (client.Player?.Data == null)
+        if (client.Player?.Player.Data == null)
         {
             return;
         }
 
-        var isOwner = room.Room.OwnerId == client.Player.Id;
+        var isOwner = room.Room.OwnerId == client.Player.Player.Id;
         
         await client.WriteToStreamAsync(new RoomForwardDataWriter
         {

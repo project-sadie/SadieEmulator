@@ -31,12 +31,12 @@ public class RoomUserRespectEventHandler(
         }
         
         var player = client.Player!;
-        var playerData = player.Data;
+        var playerData = player.Player.Data;
         var lastRoom = player.State.CurrentRoomId;
         var targetPlayer = playerRepository.GetPlayerLogicById(TargetId);
         
         if (playerData.RespectPoints < 1 || 
-            player.Id == TargetId || 
+            player.Player.Id == TargetId || 
             targetPlayer == null || 
             targetPlayer.State.CurrentRoomId != 0 && lastRoom != targetPlayer.State.CurrentRoomId)
         {
@@ -45,12 +45,12 @@ public class RoomUserRespectEventHandler(
 
         var respect = new PlayerRespectDto
         {
-            OriginPlayerId = player.Id,
-            TargetPlayerId = targetPlayer.Id
+            OriginPlayerId = player.Player.Id,
+            TargetPlayerId = targetPlayer.Player.Id
         };
 
         playerData.RespectPoints--;
-        targetPlayer.Respects.Add(respect);
+        targetPlayer.Player.Respects.Add(respect);
 
         var respectEntity = mapper.Map<PlayerRespect>(respect);
         
@@ -62,12 +62,12 @@ public class RoomUserRespectEventHandler(
         await room.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter
         {
             UserId = TargetId,
-            TotalRespects = targetPlayer.Respects.Count
+            TotalRespects = targetPlayer.Player.Respects.Count
         });
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             Action = (int) RoomUserAction.ThumbsUp
         });
     }

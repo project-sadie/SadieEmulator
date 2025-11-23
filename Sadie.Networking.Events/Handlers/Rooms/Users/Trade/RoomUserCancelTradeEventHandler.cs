@@ -36,7 +36,7 @@ public class RoomUserCancelTradeEventHandler(IRoomRepository roomRepository) : I
         
         await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeClosedWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             Reason = RoomUserTradeCloseReason.Cancelled
         });
     }

@@ -40,7 +40,7 @@ public class PlayerWardrobeSaveEventHandler(
         dbContext.Entry(wardrobeItem).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
             
-        player.WardrobeItems.Add(
+        player.Player.WardrobeItems.Add(
             mapper.Map<PlayerWardrobeItemDto>(wardrobeItem));
     }
 }

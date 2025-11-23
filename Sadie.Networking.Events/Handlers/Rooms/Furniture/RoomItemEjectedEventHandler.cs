@@ -46,7 +46,7 @@ public class RoomItemEjectedEventHandler(
             return;
         }
         
-        var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Id;
+        var ownsItem = roomFurnitureItem.PlayerFurnitureItem.PlayerId == player.Player.Id;
         
         var interactors = interactorRepository
             .GetInteractorsForType(roomFurnitureItem
@@ -115,7 +115,7 @@ public class RoomItemEjectedEventHandler(
 
             if (ownerOnline is { NetworkObject: not null })
             {
-                itemRecord = ownerOnline.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
+                itemRecord = ownerOnline.Player.FurnitureItems.FirstOrDefault(x => x.Id == roomFurnitureItem.PlayerFurnitureItemId);
 
                 if (itemRecord == null)
                 {
@@ -131,7 +131,7 @@ public class RoomItemEjectedEventHandler(
                 
                 await ownerOnline.NetworkObject.WriteToStreamAsync(new PlayerInventoryRefreshWriter());
                 
-                ownerOnline.FurnitureItems.Add(itemRecord);
+                ownerOnline.Player.FurnitureItems.Add(itemRecord);
             }
         }
         

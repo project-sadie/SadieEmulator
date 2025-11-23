@@ -95,7 +95,7 @@ public class CatalogPurchaseEventHandler(
         }
 
         if (catalogItem.RequiresClubMembership &&
-            client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB") == null)
+            client.Player?.Player.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB") == null)
         {
             await client.WriteToStreamAsync(new CatalogPurchaseUnavailableWriter
             {
@@ -140,7 +140,7 @@ public class CatalogPurchaseEventHandler(
         {
             var newItem = new PlayerFurnitureItemDto
             {
-                PlayerId = client.Player.Id,
+                PlayerId = client.Player.Player.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData ?? "",
@@ -177,7 +177,7 @@ public class CatalogPurchaseEventHandler(
     {
         var parent = new PlayerFurnitureItemDto
         {
-            PlayerId = client.Player!.Id,
+            PlayerId = client.Player!.Player.Id,
             FurnitureItem = furnitureItem,
             LimitedData = "1:1",
             MetaData = MetaData ?? "",
@@ -186,7 +186,7 @@ public class CatalogPurchaseEventHandler(
             
         var child = new PlayerFurnitureItemDto
         {
-            PlayerId = client.Player.Id,
+            PlayerId = client.Player.Player.Id,
             FurnitureItem = furnitureItem,
             LimitedData = "1:1",
             MetaData = MetaData ?? "",
@@ -238,7 +238,7 @@ public class CatalogPurchaseEventHandler(
 
         var bot = new PlayerBotDto
         {
-            PlayerId = client.Player!.Id,
+            PlayerId = client.Player!.Player.Id,
             RoomId = null,
             Username = information["name"],
             FigureCode = information["figure"],
@@ -252,7 +252,7 @@ public class CatalogPurchaseEventHandler(
         dbContext.Entry(bot).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Bots.Add(bot);
+        client.Player.Player.Bots.Add(bot);
 
         await client.WriteToStreamAsync(new PlayerInventoryAddBotWriter
         {
@@ -297,7 +297,7 @@ public class CatalogPurchaseEventHandler(
                 return;
             }
             
-            var playerData = client.Player!.Data;
+            var playerData = client.Player!.Player.Data;
             
             if (playerData.CreditBalance < offer.CostCredits || 
                 (offer.CostPointsType == 0 && playerData.PixelBalance < offer.CostPoints) ||
@@ -308,7 +308,7 @@ public class CatalogPurchaseEventHandler(
 
             if (offer.CostCredits > 0)
             {
-                client.Player!.Data.CreditBalance -= offer.CostCredits;
+                client.Player!.Player.Data.CreditBalance -= offer.CostCredits;
                 playerData.CreditBalance -= offer.CostCredits;
                    
                 await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
@@ -336,13 +336,13 @@ public class CatalogPurchaseEventHandler(
 
             var subscription = new PlayerSubscriptionDto
             {
-                PlayerId = player.Id,
+                PlayerId = player.Player.Id,
                 SubscriptionId = clubSubscription.Id,
                 CreatedAt = DateTime.Now,
                 ExpiresAt = DateTime.Now.AddDays(offer.DurationDays)
             };
 
-            player.Subscriptions.Add(subscription);
+            player.Player.Subscriptions.Add(subscription);
 
             var subscriptionEntity = mapper.Map<PlayerSubscription>(subscription);
             dbContext.PlayerSubscriptions.Add(subscriptionEntity);
@@ -371,7 +371,7 @@ public class CatalogPurchaseEventHandler(
             await client.WriteToStreamAsync(new PlayerPermissionsWriter
             {
                 Club = 2,
-                Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
+                Rank = player.Player.Roles.Count != 0 ? player.Player.Roles.Max(x => x.Id) : 1,
                 Ambassador = true
             });
             
@@ -412,7 +412,7 @@ public class CatalogPurchaseEventHandler(
         var costInCredits = item.CostCredits * amount;
         var costInPoints = item.CostPoints * amount;
 
-        var playerData = client.Player.Data;
+        var playerData = client.Player.Player.Data;
         
         if (playerData.CreditBalance < costInCredits || 
             (item.CostPointsType == 0 && playerData.PixelBalance < costInPoints) ||

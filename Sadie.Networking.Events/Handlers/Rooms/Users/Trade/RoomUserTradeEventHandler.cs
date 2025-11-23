@@ -26,7 +26,7 @@ public class RoomUserTradeEventHandler(
             return;
         }
 
-        if (roomUser.Player.Id == TargetUserId || !room.UserRepository.TryGetById(TargetUserId, out var targetUser))
+        if (roomUser.Player.Player.Id == TargetUserId || !room.UserRepository.TryGetById(TargetUserId, out var targetUser))
         {
             return;
         }
@@ -52,13 +52,13 @@ public class RoomUserTradeEventHandler(
         
         await roomUser.NetworkObject.WriteToStreamAsync(writer: new RoomUserTradeStartedWriter
         {
-            UserIds = [roomUser.Player.Id, targetUser.Player.Id],
+            UserIds = [roomUser.Player.Player.Id, targetUser.Player.Player.Id],
             State = 1
         });
         
         await targetUser.NetworkObject.WriteToStreamAsync(new RoomUserTradeStartedWriter
         {
-            UserIds = [roomUser.Player.Id, targetUser.Player.Id],
+            UserIds = [roomUser.Player.Player.Id, targetUser.Player.Player.Id],
             State = 1
         });
 

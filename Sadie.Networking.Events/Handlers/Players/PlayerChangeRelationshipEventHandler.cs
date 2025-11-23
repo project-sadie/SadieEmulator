@@ -38,30 +38,30 @@ public class PlayerChangeRelationshipEventHandler(
         
         if (relationId == 0)
         {
-            var relationship = client.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (relationship != null)
             {
-                client.Player.Relationships.Remove(relationship);
+                client.Player.Player.Relationships.Remove(relationship);
                 dbContext.Entry(relationship).State = EntityState.Deleted;
                 await dbContext.SaveChangesAsync();
             }
         }
         else
         {
-            var relationship = client.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
         
             if (relationship == null)
             {
                 relationship = new PlayerRelationshipDto
                 {
-                    OriginPlayerId = client.Player.Id,
+                    OriginPlayerId = client.Player.Player.Id,
                     TargetPlayerId = playerId,
                     TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
                     TypeId = relationId
                 };
                 
-                client.Player.Relationships.Add(relationship);
+                client.Player.Player.Relationships.Add(relationship);
                 
                 dbContext.Entry(relationship).State = EntityState.Added;
                 dbContext.Attach(relationship.TargetPlayer!).State = EntityState.Unchanged;

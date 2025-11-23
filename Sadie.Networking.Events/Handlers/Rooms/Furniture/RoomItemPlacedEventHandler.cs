@@ -59,7 +59,7 @@ public class RoomItemPlacedEventHandler(
             return;
         }
 
-        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
+        var playerItem = player.Player.FurnitureItems.FirstOrDefault(x => x.Id == itemId);
 
         if (playerItem == null)
         {
@@ -158,7 +158,7 @@ public class RoomItemPlacedEventHandler(
                 Expires = -1,
                 InteractionModes = roomFurnitureItem.InteractionModes,
                 OwnerId = roomFurniturePlacementData.PlayerFurnitureItem.PlayerId,
-                OwnerUsername = player.Username
+                OwnerUsername = player.Player.Username
             });
         }
         else if (playerItem.FurnitureItem.Type == FurnitureItemType.Wall)

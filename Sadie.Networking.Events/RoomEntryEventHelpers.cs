@@ -67,7 +67,7 @@ public static class RoomEntryEventHelpers
         
         if (!room.UserRepository.TryAdd(roomUser))
         {
-            Log.Error($"Failed to add user {player.Id} to room {room.Room.Id}");
+            Log.Error($"Failed to add user {player.Player.Id} to room {room.Room.Id}");
             return;
         }
         
@@ -95,23 +95,23 @@ public static class RoomEntryEventHelpers
         
         foreach (var user in room.UserRepository.GetAll())
         {
-            if (user.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Id))
+            if (user.Player.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Player.Id))
             {
                 await user.Player.NetworkObject!.WriteToStreamAsync(
                     new PlayerIgnoreStateWriter
                     {
                         State = (int) PlayerIgnoreState.Ignored,
-                        Username = player.Username
+                        Username = player.Player.Username
                     });
             }
             
-            if (player.Ignores.Any(pi => pi.TargetPlayerId == user.Player.Id))
+            if (player.Player.Ignores.Any(pi => pi.TargetPlayerId == user.Player.Player.Id))
             {
                 await player.NetworkObject!.WriteToStreamAsync(
                     new PlayerIgnoreStateWriter
                     {
                         State = (int) PlayerIgnoreState.Ignored,
-                        Username = user.Player.Username
+                        Username = user.Player.Player.Username
                     });
             }
         }

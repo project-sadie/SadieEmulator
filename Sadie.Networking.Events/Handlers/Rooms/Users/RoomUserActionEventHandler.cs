@@ -28,7 +28,7 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
             
             await room.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter
             {
-                UserId = roomUser.Player.Id,
+                UserId = roomUser.Player.Player.Id,
                 IsIdle = roomUser.IsIdle
             });
             
@@ -37,7 +37,7 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             Action = Action
         });
     }

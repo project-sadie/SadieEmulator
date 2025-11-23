@@ -31,7 +31,7 @@ public class FloorPlanEditorSaveEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
-            room.Room.OwnerId != client.Player.Id || 
+            room.Room.OwnerId != client.Player.Player.Id || 
             room.Room.Layout == null)
         {
             return;
@@ -95,7 +95,7 @@ public class FloorPlanEditorSaveEventHandler(
 
         foreach (var user in room.UserRepository.GetAll())
         {
-            await room.UserRepository.TryRemoveAsync(user.Player.Id, false, true);
+            await room.UserRepository.TryRemoveAsync(user.Player.Player.Id, false, true);
             playersToForward.Add(user.Player);
         }
 

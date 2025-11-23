@@ -42,7 +42,7 @@ public class RoomGiveUserRightsEventHandler(
         {
             RoomId = room.Room.Id,
             PlayerId = playerId,
-            PlayerUsername = player.Username
+            PlayerUsername = player.Player.Username
         });
 
         if (room.UserRepository.TryGetById(playerId, out var targetRoomUser))

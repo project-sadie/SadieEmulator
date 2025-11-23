@@ -11,7 +11,7 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
     public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player!;
-        var playerGameSettings = player.GameSettings;
+        var playerGameSettings = player.Player.GameSettings;
         
         await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter
         {
@@ -22,7 +22,7 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
             BlockRoomInvites = playerGameSettings.BlockRoomInvites,
             BlockCameraFollow = playerGameSettings.BlockCameraFollow,
             UiFlags = playerGameSettings.UiFlags,
-            ChatBubble = (int) player.AvatarData.ChatBubbleId
+            ChatBubble = (int) player.Player.AvatarData.ChatBubbleId
         });
     }
 }

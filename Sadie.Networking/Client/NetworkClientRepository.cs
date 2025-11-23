@@ -3,7 +3,6 @@ using AutoMapper;
 using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Sadie.API.DTOs.Player;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;

@@ -40,7 +40,7 @@ public class RoomPaintItemPlacedEventHandler(
         }
         
         var player = client.Player;
-        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+        var playerItem = player.Player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (playerItem == null)
         {
@@ -66,7 +66,7 @@ public class RoomPaintItemPlacedEventHandler(
                 break;
         }
 
-        player.FurnitureItems.Remove(playerItem);
+        player.Player.Player.FurnitureItems.Remove(playerItem);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter

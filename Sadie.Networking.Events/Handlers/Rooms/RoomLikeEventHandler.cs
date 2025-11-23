@@ -22,18 +22,18 @@ public class RoomLikeEventHandler(IRoomRepository roomRepository,
             return;
         }
 
-        if (room.Room.OwnerId == client.Player.Id || client.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Room.Id) != null)
+        if (room.Room.OwnerId == client.Player.Player.Id || client.Player.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Room.Id) != null)
         {
             return;
         }
 
         var roomLike = new PlayerRoomLikeDto()
         {
-            PlayerId = client.Player.Id,
+            PlayerId = client.Player.Player.Id,
             RoomId = room.Room.Id
         };
         
-        client.Player.RoomLikes.Add(roomLike);
+        client.Player.Player.RoomLikes.Add(roomLike);
         
         var roomLikeEntity = mapper.Map<PlayerRoomLike>(roomLike);
         

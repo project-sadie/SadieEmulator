@@ -20,7 +20,7 @@ public class RoomUserDanceEventHandler(IRoomRepository roomRepository) : INetwor
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserDanceWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             DanceId = DanceId
         });
     }

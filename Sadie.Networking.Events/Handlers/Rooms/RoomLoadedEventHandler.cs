@@ -61,21 +61,21 @@ public class RoomLoadedEventHandler(
                 dbContextFactory, 
                 mapper);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var existingUser) && existingUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Player.Id, out var existingUser) && existingUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(existingUser.Player.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(existingUser.Player.Player.Id);
             }
         }
 
         if (room == null)
         {
-            logger.LogError($"Failed to load room {RoomId} for player '{player.Username}'");
+            logger.LogError($"Failed to load room {RoomId} for player '{player.Player.Username}'");
             await client.WriteToStreamAsync(new RoomUserHotelViewWriter());
             
             return;
         }
 
-        var isOwner = room.Room.OwnerId == player.Id;
+        var isOwner = room.Room.OwnerId == player.Player.Id;
 
         if (room.UserRepository.Count >= room.Room.MaxUsersAllowed && !isOwner)
         {
@@ -135,7 +135,7 @@ public class RoomLoadedEventHandler(
                 {
                     await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter
                     {
-                        Username = player.Username
+                        Username = player.Player.Username
                     });
                     
                     return false;
@@ -145,7 +145,7 @@ public class RoomLoadedEventHandler(
                 {
                     await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter
                     {
-                        Username = player.Username
+                        Username = player.Player.Username
                     });
                     
                 }

@@ -33,7 +33,7 @@ public static class NetworkPacketEventHelpers
 {
     public static async Task SendPlayerSubscriptionPacketsAsync(IPlayerLogic player)
     {
-        foreach (var playerSub in player.Subscriptions)
+        foreach (var playerSub in player.Player.Subscriptions)
         {
             var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
             var daysLeft = (int)tillExpire.TotalDays;
@@ -61,8 +61,8 @@ public static class NetworkPacketEventHelpers
     
     public static async Task SendLoginPacketsToPlayerAsync(INetworkObject networkObject, IPlayerLogic player)
     {
-        var playerData = player.Data;
-        var playerSubscriptions = player.Subscriptions;
+        var playerData = player.Player.Data;
+        var playerSubscriptions = player.Player.Subscriptions;
 
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
         {
@@ -92,13 +92,13 @@ public static class NetworkPacketEventHelpers
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
         {
             Club = playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
-            Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
+            Rank = player.Player.Roles.Count != 0 ? player.Player.Roles.Max(x => x.Id) : 1,
             Ambassador = true
         });
 
         var navigatorSettingsWriter = new PlayerNavigatorSettingsWriter
         {
-            NavigatorSettings = player.NavigatorSettings!
+            NavigatorSettings = player.Player.NavigatorSettings!
         };
 
         var statusWriter = new PlayerStatusWriter
@@ -113,7 +113,7 @@ public static class NetworkPacketEventHelpers
 
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter
         {
-            ShowNotifications = player.GameSettings.ShowNotifications
+            ShowNotifications = player.Player.GameSettings.ShowNotifications
         });
 
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter
@@ -217,7 +217,7 @@ public static class NetworkPacketEventHelpers
             {
                 await roomUserForCommands.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
                 {
-                    UserId = (int)roomUserForCommands.Player.Id,
+                    UserId = (int)roomUserForCommands.Player.Player.Id,
                     EffectId = new Random().Next(1, 100),
                     DelayMs = 0
                 });
@@ -241,7 +241,7 @@ public static class NetworkPacketEventHelpers
         var chatMessage = new RoomChatMessageDto
         {
             RoomId = room.Room.Id,
-            PlayerId = roomUser.Player.Id,
+            PlayerId = roomUser.Player.Player.Id,
             Message = message,
             ChatBubbleId = bubble,
             EmotionId = roomHelperService.GetEmotionFromMessage(message),
@@ -253,15 +253,15 @@ public static class NetworkPacketEventHelpers
             .UserRepository
             .GetAll()
             .Where(x =>
-                x.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Id))
-            .Select(x => x.Player.Id)
+                x.Player.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Player.Id))
+            .Player.Select(x => x.Player.Id)
             .ToList();
 
         if (shouting)
         {
             var writer = new RoomUserShoutWriter
             {
-                SenderId = roomUser.Player.Id,
+                SenderId = roomUser.Player.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
@@ -275,7 +275,7 @@ public static class NetworkPacketEventHelpers
         {
             var writer = new RoomUserChatWriter
             {
-                SenderId = roomUser.Player.Id,
+                SenderId = roomUser.Player.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,

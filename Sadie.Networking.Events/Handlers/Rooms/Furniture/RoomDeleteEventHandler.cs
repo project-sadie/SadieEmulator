@@ -29,7 +29,7 @@ public class RoomDeleteEventHandler(
             dbContextFactory, 
             mapper);
 
-        if (room == null || room.Room.OwnerId != client.Player.Id)
+        if (room == null || room.Room.OwnerId != client.Player.Player.Id)
         {
             return;
         }
@@ -75,7 +75,7 @@ public class RoomDeleteEventHandler(
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {
-            await room.UserRepository.TryRemoveAsync(roomUser.Player.Id);
+            await room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id);
         }
     }
 }

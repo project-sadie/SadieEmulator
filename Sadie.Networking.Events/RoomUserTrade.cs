@@ -4,7 +4,6 @@ using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 

@@ -28,24 +28,24 @@ public class PlayerIgnoreUserEventHandler(IPlayerRepository playerRepository,
         var targetPlayer = playerRepository.GetPlayerLogicByUsername(Username);
         
         if (targetPlayer == null || 
-            player.Ignores.Any(x => x.TargetPlayerId == targetPlayer.Id))
+            player.Player.Ignores.Any(x => x.TargetPlayerId == targetPlayer.Player.Id))
         {
             return;
         }
 
         var ignore = new PlayerIgnoreDto
         {
-            PlayerId = player.Id,
-            TargetPlayerId = targetPlayer.Id
+            PlayerId = player.Player.Id,
+            TargetPlayerId = targetPlayer.Player.Id
         };
 
-        player.Ignores.Add(ignore);
+        player.Player.Ignores.Add(ignore);
 
         await player.NetworkObject.WriteToStreamAsync(
             new PlayerIgnoreStateWriter
             {
                 State = (int) PlayerIgnoreState.Ignored,
-                Username = targetPlayer.Username
+                Username = targetPlayer.Player.Username
             });
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();

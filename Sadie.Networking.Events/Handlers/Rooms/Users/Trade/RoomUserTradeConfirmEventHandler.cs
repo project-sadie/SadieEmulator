@@ -28,7 +28,7 @@ public class RoomUserTradeConfirmEventHandler(IRoomRepository roomRepository,
         
         await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeStatusWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             Status = roomUser.TradeStatus
         });
 

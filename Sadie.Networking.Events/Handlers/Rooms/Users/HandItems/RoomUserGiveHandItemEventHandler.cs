@@ -24,19 +24,19 @@ public class RoomUserGiveHandItemEventHandler : INetworkPacketEventHandler
 
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = fromUser.Player.Id,
+            UserId = fromUser.Player.Player.Id,
             ItemId = 0
         });
 
         await toUser.NetworkObject.WriteToStreamAsync(new RoomUserReceivedHandItemWriter
         {
-            FromId = fromUser.Player.Id,
+            FromId = fromUser.Player.Player.Id,
             HandItemId = handItemId
         });
         
         await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
         {
-            UserId = toUser.Player.Id,
+            UserId = toUser.Player.Player.Id,
             ItemId = handItemId
         });
 

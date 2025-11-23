@@ -25,7 +25,7 @@ public class PlayerWearingBadgesEventHandler(
     public async Task HandleAsync(INetworkClient networkClient)
     {
         var player = playerRepository.GetPlayerLogicById(PlayerId);
-        var playerBadges = player?.Badges;
+        var playerBadges = player?.Player.Badges;
         
         if (playerBadges == null)
         {
