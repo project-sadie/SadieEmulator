@@ -71,7 +71,6 @@ public class PlayerCreateRoomEventHandler(
         dbContext.Rooms.Add(newRoomEntity);
         await dbContext.SaveChangesAsync();
 
-        newRoom.Owner = client.Player.Player;
         newRoom.Layout = layoutDto;
 
         var roomLogic = mapper.Map<IRoomLogic>(newRoom);

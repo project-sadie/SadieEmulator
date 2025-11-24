@@ -68,15 +68,23 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
         }
 
         await SendFurnitureItemsAsync(room.Room, client, playerRepository);
-        
-        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter
+
+        try
         {
-            Room = room.Room,
-            RoomForward = false,
-            EnterRoom = true,
-            IsOwner = isOwner,
-            UsersNow = room.UserRepository.Count
-        });
+            await client.WriteToStreamAsync(new RoomForwardDataWriter
+            {
+                Room = room.Room,
+                RoomForward = false,
+                EnterRoom = true,
+                IsOwner = isOwner,
+                UsersNow = room.UserRepository.Count,
+                PlayerRepository = playerRepository
+            });
+        }
+        catch (NullReferenceException)
+        {
+            var y = 0;
+        }
     }
 
     private async Task SendFurnitureItemsAsync(

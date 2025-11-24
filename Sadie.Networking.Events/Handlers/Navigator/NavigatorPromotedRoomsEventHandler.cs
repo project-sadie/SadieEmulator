@@ -1,4 +1,5 @@
-﻿using Sadie.API.Interfaces.Networking.Client;
+﻿using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Rooms;
 using Sadie.Core.Shared.Attributes;
@@ -7,7 +8,7 @@ using Sadie.Networking.Writers.Navigator;
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
 [PacketId(EventHandlerId.NavigatorPromotedRooms)]
-public class NavigatorPromotedRoomsEventHandler : INetworkPacketEventHandler
+public class NavigatorPromotedRoomsEventHandler(IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -15,7 +16,9 @@ public class NavigatorPromotedRoomsEventHandler : INetworkPacketEventHandler
         {
             SearchType = 2,
             SearchParam = "",
-            Rooms = [],
+            Rooms =
+            [
+            ],
             HasAdditional = true,
             OfficialRoomEntryData = new OfficialRoomEntryData
             {
@@ -29,7 +32,8 @@ public class NavigatorPromotedRoomsEventHandler : INetworkPacketEventHandler
                 UserCount = 1,
                 Type = OfficialRoomEntryDataType.Tag,
                 Unknown14 = "E"
-            }
+            },
+            PlayerRepository = playerRepository
         });
     }
 }

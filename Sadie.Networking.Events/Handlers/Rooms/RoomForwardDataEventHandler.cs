@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -12,7 +13,8 @@ namespace Sadie.Networking.Events.Handlers.Rooms;
 [PacketId(EventHandlerId.RoomForwardData)]
 public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IMapper mapper) : INetworkPacketEventHandler
+    IMapper mapper,
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int RoomId { get; init; }
     public int EnterRoom { get; init; }
@@ -44,7 +46,8 @@ public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
             RoomForward = true,
             EnterRoom = EnterRoom != 0 || ForwardRoom != 1,
             IsOwner = isOwner,
-            UsersNow = room.UserRepository.Count
+            UsersNow = room.UserRepository.Count,
+            PlayerRepository = playerRepository
         });
     }
 }

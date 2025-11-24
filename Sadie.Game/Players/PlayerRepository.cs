@@ -22,7 +22,7 @@ public class PlayerRepository(
     {
         if (_players.TryGetValue(id, out var byId))
         {
-            return mapper.Map<PlayerDto>(byId);
+            return byId.Player;
         }
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();

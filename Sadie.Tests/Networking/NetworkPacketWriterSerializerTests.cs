@@ -33,7 +33,7 @@ public class NetworkPacketWriterSerializerTests
     }
     
     [Test]
-    public void Serialize_RoomUserWhisperWriter_ReadsCorrectly()
+    public async Task Serialize_RoomUserWhisperWriter_ReadsCorrectly_Async()
     {
         var testWriter = new RoomUserChatWriter
         {
@@ -45,7 +45,7 @@ public class NetworkPacketWriterSerializerTests
             MessageLength = 4234
         };
         
-        var writer = NetworkPacketWriterSerializer.Serialize(testWriter);
+        var writer = await NetworkPacketWriterSerializer.SerializeAsync(testWriter);
         var decoder = new NetworkPacketDecoder(_options);
         var packets = decoder.DecodePacketsFromBytes(writer.GetAllBytes());
 
@@ -66,9 +66,9 @@ public class NetworkPacketWriterSerializerTests
     }
 
     [Test]
-    public void Serialize_NestedDataWithAttribute_ReadsCorrectly()
+    public async Task Serialize_NestedDataWithAttribute_ReadsCorrectly_Async()
     {
-        var writer = NetworkPacketWriterSerializer.Serialize(new PlayerPerksWriter
+        var writer = await NetworkPacketWriterSerializer.SerializeAsync(new PlayerPerksWriter
         {
             Perks = [new PerkData("codeTest", "Some message test", false)]
         });
@@ -90,9 +90,9 @@ public class NetworkPacketWriterSerializerTests
     }
 
     [Test]
-    public void Serialize_NestedDataWithoutAttribute_ReadsCorrectly()
+    public async Task Serialize_NestedDataWithoutAttribute_ReadsCorrectly_Async()
     {
-        var writer = NetworkPacketWriterSerializer.Serialize(new PlayerNavigatorSettingsWriter
+        var writer = await NetworkPacketWriterSerializer.SerializeAsync(new PlayerNavigatorSettingsWriter
         {
             NavigatorSettings = new PlayerNavigatorSettingsDto
             {
@@ -128,9 +128,9 @@ public class NetworkPacketWriterSerializerTests
     }
 
     [Test]
-    public void Serialize_WithOnSerializeOverride_ReadsCorrectly()
+    public async Task Serialize_WithOnSerializeOverride_ReadsCorrectly_Async()
     {
-        var writer = NetworkPacketWriterSerializer.Serialize(new CatalogPageWriter
+        var writer = await NetworkPacketWriterSerializer.SerializeAsync(new CatalogPageWriter
         {
             PageId = 392,
             CatalogMode = "edom",

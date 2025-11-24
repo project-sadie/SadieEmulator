@@ -36,7 +36,7 @@ public class NetworkClient(
             return;
         }
 
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
         await Channel.WriteAndFlushAsync(serializedObject);
     }
 

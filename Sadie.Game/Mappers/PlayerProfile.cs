@@ -20,7 +20,7 @@ public class PlayerProfile : Profile
         
         CreateMap<PlayerSsoToken, PlayerSsoTokenDto>();
         CreateMap<Player, PlayerDto>();
-        CreateMap<PlayerData, PlayerDataDto>();
+        CreateMap<PlayerData, PlayerDataDto>().ReverseMap();
         CreateMap<PlayerAvatarData, PlayerAvatarDataDto>();
         CreateMap<PlayerNavigatorSettings, PlayerNavigatorSettingsDto>();
         CreateMap<PlayerGameSettings, PlayerGameSettingsDto>();

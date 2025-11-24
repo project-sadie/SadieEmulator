@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Sadie.API.DTOs.Navigator;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Navigator;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -18,6 +19,7 @@ public class NavigatorSearchEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
     INavigatorRoomProvider navigatorRoomProvider,
     IRoomRepository roomRepository,
+    IPlayerRepository playerRepository,
     IMapper mapper)
     : INetworkPacketEventHandler
 {
@@ -74,9 +76,10 @@ public class NavigatorSearchEventHandler(
             TabName = TabName,
             SearchQuery = SearchQuery,
             CategoryRoomMap = categoryRoomMap,
-            RoomRepository = roomRepository
+            RoomRepository = roomRepository,
+            PlayerRepository = playerRepository
         };
-        
+
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }
 }

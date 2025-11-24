@@ -36,7 +36,7 @@ public class RoomUserTrade(
     
     public async Task BroadcastToUsersAsync(AbstractPacketWriter writer)
     {
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
         
         foreach (var roomUser in Users)
         {

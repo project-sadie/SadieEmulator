@@ -71,7 +71,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     
     public async Task BroadcastDataAsync(AbstractPacketWriter writer, List<long>? excludedIds = null)
     {
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
         
         foreach (var roomUser in _users
                      .Values

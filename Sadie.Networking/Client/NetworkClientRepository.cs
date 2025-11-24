@@ -18,7 +18,8 @@ public class NetworkClientRepository(
     IMapper mapper) : INetworkClientRepository
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
-
+    private readonly ConcurrentDictionary<string, byte> _removalGuard = new();
+    
     public void AddClient(IChannelId channelId, INetworkClient client)
     {
         _clients[channelId] = client;
@@ -26,9 +27,13 @@ public class NetworkClientRepository(
 
     public async Task<bool> TryRemoveAsync(IChannelId channelId)
     {
+        if (!_removalGuard.TryAdd(channelId.AsShortText(), 0))
+        {
+            return false;
+        }
+
         if (!_clients.TryRemove(channelId, out var client))
         {
-            logger.LogError("Failed to remove a network client.");
             return false;
         }
 
@@ -39,27 +44,34 @@ public class NetworkClientRepository(
         {
             await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id, true, true);
         }
-        
-        if (player != null)
-        {
-            if (!await playerRepository.TryRemovePlayerAsync(player.Player.Id))
-            {
-                logger.LogError("Failed to remove player whilst disposing network client.");
-                return false;
-            }
-                
-            await playerHelperService.UpdatePlayerStatusForFriendsAsync(
-                player, 
-                player.GetMergedFriendships(), 
-                false, 
-                false, 
-                playerRepository);
-            
-            var playerDataEntity = mapper.Map<PlayerData>(player.Player.Data);
 
-            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            dbContext.Entry(playerDataEntity).Property(x => x.IsOnline).IsModified = true;
-            await dbContext.SaveChangesAsync();
+        try
+        {
+            if (player != null)
+            {
+                if (!await playerRepository.TryRemovePlayerAsync(player.Player.Id))
+                {
+                    logger.LogError("Failed to remove player whilst disposing network client.");
+                    return false;
+                }
+
+                await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+                    player,
+                    player.GetMergedFriendships(),
+                    false,
+                    false,
+                    playerRepository);
+
+                var playerDataEntity = mapper.Map<PlayerData>(player.Player.Data);
+
+                await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+                dbContext.Entry(playerDataEntity).Property(x => x.IsOnline).IsModified = true;
+                await dbContext.SaveChangesAsync();
+            }
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Another thread removed the player already, safe to ignore
         }
         
         await client.DisposeAsync();

@@ -18,7 +18,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
     public required IPlayerRepository PlayerRepository { get; init; }
     public required ICollection<PlayerRelationshipDto> Relationships { get; init; }
 
-    public override void OnSerialize(INetworkPacketWriter writer)
+    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Pages);
         writer.WriteInteger(Index);
