@@ -49,6 +49,15 @@ public class NavigatorRoomProvider(
 
         var rooms = await query
             .Include(x => x.Settings)
+            .Include(x => x.Layout)
+            .Include(x => x.FurnitureItems)
+            .Include(x => x.Owner)
+            .Include(x => x.PaintSettings)
+            .Include(x => x.ChatSettings)
+            .Include(x => x.PlayerLikes)
+            .Include(x => x.Tags)
+            .Include(x => x.Group)
+            .Include(x => x.DimmerSettings)
             .ToListAsync();
         
         return mapper.Map<List<RoomDto>>(rooms);

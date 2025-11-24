@@ -22,14 +22,13 @@ public class RoomRepository(
 
     public List<RoomDto> GetPopularRooms(int amount)
     {
-        var popularRooms = _rooms
+        return _rooms
             .Values
             .Where(x => x.UserRepository.Count > 0)
             .OrderByDescending(x => x.UserRepository.Count)
             .Take(amount)
+            .Select(x => x.Room)
             .ToList();
-        
-        return mapper.Map<List<RoomDto>>(popularRooms);
     }
 
     public int Count => _rooms.Count;
