@@ -1,10 +1,13 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Rooms.Furniture;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
@@ -12,7 +15,9 @@ namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 [PacketId(EventHandlerId.RoomWallItemUpdated)]
 public class RoomWallItemUpdatedEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IRoomRepository roomRepository)
+    IRoomRepository roomRepository,
+    IMapper mapper,
+    IPlayerRepository playerRepository)
     : INetworkPacketEventHandler
 {
     public int ItemId { get; init; }
@@ -54,13 +59,19 @@ public class RoomWallItemUpdatedEventHandler(
 
         roomFurnitureItem.WallPosition = wallPosition;
         
+        var roomFurnitureItemEntity = mapper.Map<PlayerFurnitureItemPlacementData>(roomFurnitureItem);
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.Entry(roomFurnitureItem).Property(x => x.WallPosition).IsModified = true;
+        dbContext.Entry(roomFurnitureItemEntity).Property(x => x.WallPosition).IsModified = true;
         await dbContext.SaveChangesAsync();
+        
+        var owner = await playerRepository.GetPlayerByIdAsync(
+            roomFurnitureItem.PlayerFurnitureItem.PlayerId);
         
         await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemUpdatedWriter
         {
-            Item = roomFurnitureItem
+            Item = roomFurnitureItem,
+            OwnerUsername = owner?.Username ?? "Unknown User"
         });
     }
 }

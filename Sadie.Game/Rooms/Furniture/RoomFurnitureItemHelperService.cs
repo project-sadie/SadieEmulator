@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Networking;
@@ -11,7 +12,8 @@ using Sadie.Networking.Writers.Rooms.Furniture;
 namespace Sadie.Game.Rooms.Furniture;
 
 public class RoomFurnitureItemHelperService(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : IRoomFurnitureItemHelperService
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IPlayerRepository playerRepository) : IRoomFurnitureItemHelperService
 {
     public async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
@@ -61,6 +63,9 @@ public class RoomFurnitureItemHelperService(
     {
         var furnitureItem = roomFurnitureItem.PlayerFurnitureItem.FurnitureItem;
         
+        var owner = await playerRepository.GetPlayerByIdAsync(
+            roomFurnitureItem.PlayerFurnitureItem.PlayerId);
+        
         AbstractPacketWriter itemWriter = furnitureItem.Type == FurnitureItemType.Floor ? 
             new RoomFloorItemUpdatedWriter
             {
@@ -81,7 +86,8 @@ public class RoomFurnitureItemHelperService(
             }
             : new RoomWallFurnitureItemUpdatedWriter
         {
-            Item = roomFurnitureItem
+            Item = roomFurnitureItem,
+            OwnerUsername = owner?.Username ?? "Unknown User"
         };
         
         await room.UserRepository.BroadcastDataAsync(itemWriter);

@@ -12,7 +12,7 @@ public class PlayerInventoryBotItemsEventHandler : INetworkPacketEventHandler
     {
         await client.WriteToStreamAsync(new PlayerInventoryBotItemsWriter
         {
-            Bots = client.Player.Player.Player.Bots.Where(x => x.RoomId is null).ToList()
+            Bots = client.Player.Player.Bots.Where(x => x.RoomId is null).ToList()
         });
     }
 }

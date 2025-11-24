@@ -44,7 +44,6 @@ public class PlayerCreateRoomEventHandler(
         {
             Name = Name,
             OwnerId = client.Player.Player.Id,
-            Layout = layoutDto,
             LayoutId = layout.Id,
             MaxUsersAllowed = MaxUsersAllowed,
             Description = Description,
@@ -72,7 +71,7 @@ public class PlayerCreateRoomEventHandler(
         dbContext.Rooms.Add(newRoomEntity);
         await dbContext.SaveChangesAsync();
 
-        newRoom.OwnerId = client.Player.Player.Id;
+        newRoom.Owner = client.Player.Player;
         newRoom.Layout = layoutDto;
 
         var roomLogic = mapper.Map<IRoomLogic>(newRoom);

@@ -71,7 +71,7 @@ public class PlayerCurrencyRewardsTask(
                 CreatedAt = DateTime.Now
             };
             
-            player.Player.Player.RewardLogs.Add(log);
+            player.Player.RewardLogs.Add(log);
             logs.Add(log);
         }
 

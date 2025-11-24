@@ -73,10 +73,15 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
         IEnumerable<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
+
+        if (item == null)
+        {
+            return RoomTileState.Open;
+        }
+        
         var furnitureItem = item.PlayerFurnitureItem.FurnitureItem;
 
-        if (item == null ||
-            furnitureItem.CanWalk)
+        if (furnitureItem.CanWalk)
         {
             return RoomTileState.Open;
         }

@@ -254,7 +254,7 @@ public static class NetworkPacketEventHelpers
             .GetAll()
             .Where(x =>
                 x.Player.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Player.Id))
-            .Player.Select(x => x.Player.Id)
+            .Select(x => x.Player.Player.Id)
             .ToList();
 
         if (shouting)

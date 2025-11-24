@@ -252,7 +252,7 @@ public class CatalogPurchaseEventHandler(
         dbContext.Entry(bot).State = EntityState.Added;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Player.Player.Player.Bots.Add(bot);
+        client.Player.Player.Bots.Add(bot);
 
         await client.WriteToStreamAsync(new PlayerInventoryAddBotWriter
         {

@@ -24,5 +24,6 @@ public class PlayerProfile : Profile
         CreateMap<PlayerAvatarData, PlayerAvatarDataDto>();
         CreateMap<PlayerNavigatorSettings, PlayerNavigatorSettingsDto>();
         CreateMap<PlayerGameSettings, PlayerGameSettingsDto>();
+        CreateMap<PlayerRoomVisit, PlayerRoomVisitDto>().ReverseMap();
     }
 }

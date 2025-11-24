@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
@@ -24,7 +25,8 @@ public class RoomItemPlacedEventHandler(
     IRoomFurnitureItemInteractorRepository interactorRepository,
     IRoomTileMapHelperService tileMapHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
-    IMapper mapper) : INetworkPacketEventHandler
+    IMapper mapper,
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public required string PlacementData { get; init; }
     
@@ -201,9 +203,13 @@ public class RoomItemPlacedEventHandler(
                 await interactor.OnPlaceAsync(client.RoomUser.Room, roomFurnitureItem, client.RoomUser);
             }
         
+            var owner = await playerRepository.GetPlayerByIdAsync(
+                roomFurnitureItem.PlayerFurnitureItem.PlayerId);
+        
             await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
             {
-                RoomFurnitureItem = roomFurnitureItem
+                RoomFurnitureItem = roomFurnitureItem,
+                OwnerUsername = owner?.Username ?? "Unknown User"
             });
 
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();

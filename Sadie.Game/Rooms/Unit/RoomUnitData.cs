@@ -191,21 +191,20 @@ public class RoomUnitData(
             NeedsPathCalculated = true;
             return;
         }
-
+        
         var topItemNextStep = tileMapHelperService
             .GetItemsForPosition(nextStep.X, nextStep.Y, room.Room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
 
-        if (topItemNextStep == null)
-        {
-            return;
-        }
-
-        var topFurnitureItem = topItemNextStep.PlayerFurnitureItem.FurnitureItem;
+        var topFurnitureItem = topItemNextStep?.PlayerFurnitureItem.FurnitureItem;
         var topItemSitOrLay = topFurnitureItem is { CanSit: false, CanLay: false };
-        var zHeightNextStep = topItemNextStep.PositionZ + (topItemSitOrLay ? topFurnitureItem.StackHeight : 0);
+        
+        var zHeightNextStep = topItemNextStep == null || topFurnitureItem == null ?
+            room.TileMap.ZMap[nextStep.Y, nextStep.X] : 
+            topItemNextStep.PositionZ + (topItemSitOrLay ? topFurnitureItem.StackHeight : 0);
 
         ClearStatuses();
+
         AddStatus(RoomUserStatus.Move, $"{nextStep.X},{nextStep.Y},{zHeightNextStep}");
 
         var newDirection = pathFinderHelperService.GetDirectionForNextStep(Point, nextStep);

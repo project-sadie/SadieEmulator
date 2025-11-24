@@ -10,16 +10,12 @@ namespace Sadie.Game.Players;
 
 public class PlayerLogic(
     ILogger<PlayerLogic> logger,
-    PlayerDto player,
-    ICollection<PlayerBotDto> bots,
-    ICollection<PlayerRoomVisitDto> roomVisits)
+    PlayerDto player)
     : IPlayerLogic
 {
     public PlayerDto Player { get; } = player;
     public IChannel? Channel { get; set; }
     public INetworkObject? NetworkObject { get; set; }
-    public ICollection<PlayerBotDto> Bots { get; init; } = bots;
-    public ICollection<PlayerRoomVisitDto> RoomVisits { get; init; } = roomVisits;
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }
     

@@ -128,11 +128,11 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             FurnitureOwners = floorFurnitureOwners,
             RoomFurnitureItemHelperService = roomFurnitureItemHelperService
         });
-        
+
         await client.WriteToStreamAsync(new RoomWallItemsWriter
         {
             FurnitureOwners = wallFurnitureOwners,
-            WallItems = mapper.Map<List<PlayerFurnitureItemPlacementDataDto>>(wallItems),
+            WallItems = mapper.Map<List<PlayerFurnitureItemPlacementDataDto>>(wallItems);
         });
     }
 }
