@@ -1,6 +1,10 @@
 using Moq;
+using Sadie.API.DTOs;
 using Sadie.API.DTOs.Furniture;
+using Sadie.API.DTOs.Player;
 using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.DTOs.Server;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Users;
@@ -81,18 +85,22 @@ public class MockHelpers
         List<PlayerFurnitureItemPlacementDataDto> furnitureItems,
         List<IRoomUser>? users = null)
     {
-        var room = new Mock<IRoomLogic>();
-        var roomUserRepo = new Mock<IRoomUserRepository>();
+        var roomDto = new RoomDto
+        {
+            FurnitureItems = furnitureItems
+        };
+
+        var mockRoomLogic = new Mock<IRoomLogic>();
+        mockRoomLogic.SetupGet(x => x.Room).Returns(roomDto);
+
         
-        room
-            .SetupGet(x => x.Room.FurnitureItems)
-            .Returns(furnitureItems);
+        var roomUserRepo = new Mock<IRoomUserRepository>();
+        roomUserRepo.Setup(x => x.GetAll()).Returns(users ?? []);
+        
+        mockRoomLogic.SetupGet(x => x.UserRepository).Returns(roomUserRepo.Object);
 
-        roomUserRepo
-            .Setup(x => x.GetAll())
-            .Returns(users ?? []);
-
-        var tileMap = new RoomTileMap(heightMap, room.Object.Room.FurnitureItems);
+        var tileMap = new RoomTileMap(heightMap, roomDto.FurnitureItems);
+        mockRoomLogic.SetupGet(x => x.TileMap).Returns(tileMap);
         
         if (users != null)
         {
@@ -101,34 +109,52 @@ public class MockHelpers
                 tileMap.AddUnitToMap(user.Point, user);
             }
         }
-        
-        room
-            .SetupGet(x => x.UserRepository)
-            .Returns(roomUserRepo.Object);
 
-        room.SetupGet(x => x.TileMap)
-            .Returns(tileMap);
-        
-        return room.Object;
+        return mockRoomLogic.Object;
     }
-
+    
     protected static IRoomUser MockRoomUser()
     {
+        var playerData = new PlayerDto(
+            1L,
+            "TestUser",
+            "test@example.com",
+            [],
+            DateTimeOffset.UtcNow,
+            new PlayerDataDto(),
+            new PlayerAvatarDataDto(),
+            [],
+            [],
+            [],
+            new PlayerNavigatorSettingsDto(),
+            new PlayerGameSettingsDto(),
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],[],[]);
+
         var player = new Mock<IPlayerLogic>();
-        
-        player
-            .SetupGet(x => x.Player.Id)
-            .Returns(1);
-        
+        player.SetupGet(x => x.Player).Returns(playerData);
+
         var roomUser = new Mock<IRoomUser>();
-        
+
         roomUser
             .SetupGet(x => x.StatusMap)
-            .Returns([]);
-        
-        roomUser.SetupGet(x => x.Player)
+            .Returns(new Dictionary<string, string>());
+
+        roomUser
+            .SetupGet(x => x.Player)
             .Returns(player.Object);
-        
+
         return roomUser.Object;
     }
     
