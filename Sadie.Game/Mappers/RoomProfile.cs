@@ -4,6 +4,7 @@ using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Bots;
 using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 
@@ -23,5 +24,11 @@ public class RoomProfile : Profile
                 Name = x.Name,
                 Description = x.Description
             });
+
+        CreateMap<RoomLayout, RoomLayoutDto>().ReverseMap();
+        CreateMap<Room, RoomDto>().ReverseMap();
+        CreateMap<RoomChatSettings, RoomChatSettingsDto>().ReverseMap();
+        CreateMap<RoomPaintSettings, RoomPaintSettingsDto>().ReverseMap();
+        CreateMap<RoomSettings, RoomSettingsDto>().ReverseMap();
     }
 }
