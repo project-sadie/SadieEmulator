@@ -1,3 +1,4 @@
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Players;
@@ -7,7 +8,7 @@ using Sadie.Networking.Writers.Moderation;
 namespace Sadie.Networking.Events.Handlers.Moderation;
 
 [PacketId(EventHandlerId.ModToolsRoomInfo)]
-public class ModToolGetRoomInfoEventHandler : INetworkPacketEventHandler
+public class ModToolGetRoomInfoEventHandler(IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -26,7 +27,7 @@ public class ModToolGetRoomInfoEventHandler : INetworkPacketEventHandler
             UserCount = room.UserRepository.Count,
             OwnerInRoom = room.UserRepository.TryGetById(room.Room.OwnerId, out _),
             OwnerId = room.Room.OwnerId,
-            OwnerName = room.Room.Owner.Username,
+            OwnerName = (await playerRepository.GetPlayerByIdAsync(room.Room.OwnerId))?.Username ?? "Unknown User",
             Unknown1 = true,
             Name = room.Room.Name,
             Description = room.Room.Description,

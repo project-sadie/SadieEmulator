@@ -132,7 +132,7 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
         await client.WriteToStreamAsync(new RoomWallItemsWriter
         {
             FurnitureOwners = wallFurnitureOwners,
-            WallItems = mapper.Map<List<PlayerFurnitureItemPlacementDataDto>>(wallItems);
+            WallItems = mapper.Map<List<PlayerFurnitureItemPlacementDataDto>>(wallItems)
         });
     }
 }
