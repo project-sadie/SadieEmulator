@@ -16,6 +16,8 @@ public static class MapperServiceCollection
             c.AddProfile(provider.GetRequiredService<RoomProfile>());
             c.AddProfile(provider.GetRequiredService<PlayerProfile>());
             c.AddProfile(provider.GetRequiredService<NavigatorProfile>());
+            
+            c.ShouldMapProperty = p => p.GetIndexParameters().Length == 0;
         }).CreateMapper());
     }
 }
