@@ -10,7 +10,7 @@ using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Tests;
 
-public class RoomMockHelpers
+public class MockHelpers
 {
     protected static Room MockRoomWithName(string name)
     {
@@ -130,5 +130,15 @@ public class RoomMockHelpers
             .Returns(player.Object);
         
         return roomUser.Object;
+    }
+    
+    public static Mock<IPlayerRepository> CreatePlayerRepositoryMock()
+    {
+        var mock = new Mock<IPlayerRepository>();
+
+        mock.Setup(r => r.GetPlayerLogicById(It.IsAny<long>()))
+            .Returns((long id) => new Mock<IPlayerLogic>().Object);
+
+        return mock;
     }
 }

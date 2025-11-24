@@ -6,13 +6,14 @@ using Sadie.Tests.Common;
 
 namespace Sadie.Tests.Game.Rooms.Services;
 
-public class RoomWiredServiceTests : RoomMockHelpers
+public class RoomWiredServiceTests : MockHelpers
 {
     [Test]
     public void GetEffectsForTrigger_TriggersInStack_ReturnsJustEffects()
     {
         var dbFactory = TestDbFactory.CreateDbFactory();
-        var furnitureItemHelperService = new RoomFurnitureItemHelperService(dbFactory);
+        var playerRepository = CreatePlayerRepositoryMock();
+        var furnitureItemHelperService = new RoomFurnitureItemHelperService(dbFactory, playerRepository.Object);
         var wiredService = new RoomWiredService(dbFactory, furnitureItemHelperService);
         var trigger = MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom);
         

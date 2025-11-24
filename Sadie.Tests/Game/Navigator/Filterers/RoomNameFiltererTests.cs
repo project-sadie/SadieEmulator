@@ -4,7 +4,7 @@ using Sadie.Game.Navigator.Filterers;
 
 namespace Sadie.Tests.Game.Navigator.Filterers;
 
-public class RoomNameFiltererTests : RoomMockHelpers
+public class RoomNameFiltererTests : MockHelpers
 {
     private RoomNameFilterer? _filterer;
     
