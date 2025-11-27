@@ -56,7 +56,7 @@ internal static class Program
         }
         
         AnsiConsole.Write(
-            new Markup("[white]" + $"\nYou're running version {version}" + "[/]").Centered()
+            new Markup("[white]" + $"\n\nYou're running version {version}" + "[/]").Centered()
         );
         
         System.Console.WriteLine();
