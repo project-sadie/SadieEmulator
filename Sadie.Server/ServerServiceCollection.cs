@@ -49,6 +49,7 @@ public static class ServerServiceCollection
         serviceCollection.RegisterRoomChatCommands(assemblies);
         serviceCollection.RegisterFurnitureInteractors(assemblies);
         serviceCollection.RegisterRoomFurnitureProcessors(assemblies);
+        serviceCollection.RegisterPluginServices(assemblies);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)

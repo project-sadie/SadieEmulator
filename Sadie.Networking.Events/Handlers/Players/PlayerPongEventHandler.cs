@@ -9,6 +9,6 @@ public class PlayerPongEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        client.LastPing = DateTime.Now;
+        client.LastPong = DateTime.Now;
     }
 }

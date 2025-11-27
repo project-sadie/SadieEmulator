@@ -39,6 +39,6 @@ public enum ChatBubble
     Alert = 34,
     Goat = 35,
     Hawaii = 36,
-    Adminitrator = 37,
+    Administrator = 37,
     Bee = 38
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -15,7 +14,7 @@ namespace Sadie.Networking.Events.Handlers;
 public class ClientPacketHandler(
     ILogger<ClientPacketHandler> logger,
     Dictionary<short, Type> packetHandlerTypeMap,
-    IServiceProvider serviceProvider,
+    PacketHandlerFactory handlerFactory,
     IOptions<NetworkPacketOptions> packetOptions)
     : INetworkPacketHandler
 {
@@ -34,7 +33,13 @@ public class ClientPacketHandler(
                 return;
             }
 
-            var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
+            var eventHandler = handlerFactory.Create(packet.PacketId);
+
+            if (eventHandler == null)
+            {
+                logger.LogWarning($"Unhandled packet {packet.PacketId}");
+                return;
+            }
 
             if (!ValidateAttributes(eventHandler, client))
             {

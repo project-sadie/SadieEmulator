@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
 using Sadie.Networking.Validators;
 using NetworkOptions = Sadie.Networking.Options.NetworkOptions;
 using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
@@ -26,5 +27,11 @@ public static class NetworkServiceCollection
 
         serviceCollection.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
         serviceCollection.AddSingleton<IValidateOptions<NetworkPacketOptions>, NetworkPacketOptionsValidator>();
+        
+        serviceCollection.AddSingleton<PacketHandlerFactory>(sp =>
+        {
+            var handlerTypes = sp.GetRequiredService<Dictionary<short, Type>>();
+            return new PacketHandlerFactory(sp, handlerTypes);
+        });
     }
 }

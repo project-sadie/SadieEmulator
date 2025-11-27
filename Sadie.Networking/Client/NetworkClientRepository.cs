@@ -19,6 +19,8 @@ public class NetworkClientRepository(
 {
     private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
     private readonly ConcurrentDictionary<string, byte> _removalGuard = new();
+
+    public ICollection<INetworkClient> Clients => _clients.Values;
     
     public void AddClient(IChannelId channelId, INetworkClient client)
     {
@@ -81,7 +83,7 @@ public class NetworkClientRepository(
     public async Task DisconnectIdleClientsAsync()
     {
         var idleClients = _clients.Values
-            .Where(x => (DateTime.Now - x.LastPing).TotalSeconds >= 60)
+            .Where(x => (DateTime.Now - x.LastPong).TotalSeconds >= 60)
             .Take(50)
             .ToList();
 

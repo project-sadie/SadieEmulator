@@ -40,15 +40,16 @@ public class SecureLoginEventHandler(
     {
         var sw = Stopwatch.StartNew();
 
-        if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
+        if (DelayMs >= config.GetValue("PlayerOptions:MaxSsoDelayMs", 300_000))
         {
-            logger.LogWarning("Rejected an insecure sso token");
             await client.DisposeAsync();
             return;
         }
 
-        if (DelayMs >= config.GetValue("PlayerOptions:MaxSsoDelayMs", 300_000))
+        if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
+            logger.LogWarning("Rejected an insecure sso token");
+            await client.DisposeAsync();
             return;
         }
         
@@ -94,14 +95,14 @@ public class SecureLoginEventHandler(
             .Split(":")
             .First() ?? "";
         
-        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        /*await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
         {
             logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
             await client.DisposeAsync();
             return;
-        }
+        }*/
         
         var playerLogic = mapper.Map<IPlayerLogic>(player);
 
