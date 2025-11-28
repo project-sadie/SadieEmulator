@@ -1,10 +1,10 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
@@ -25,9 +25,9 @@ public class RoomUserGoToHotelViewEventHandler(IRoomRepository roomRepository,
                 dbContextFactory,
                 mapper);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var oldUser) && oldUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Player.Id, out var oldUser) && oldUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Player.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(oldUser.Player.Player.Id);
             }
         }
     }

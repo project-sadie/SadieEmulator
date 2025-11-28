@@ -1,9 +1,9 @@
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Enums.Game.Players;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Attributes;
+using PlayerFriendshipStatus = Sadie.Core.Enums.Game.Players.PlayerFriendshipStatus;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -22,14 +22,17 @@ public class PlayerProfileEventHandler(IPlayerRepository playerRepository)
             return;
         }
         
-        var friendCount = profilePlayer.GetAcceptedFriendshipCount();
+        var incomingAccepted = profilePlayer.IncomingFriendships.Count(x => x.Status == PlayerFriendshipStatus.Accepted);
+        var outgoingAccepted = profilePlayer.OutgoingFriendships.Count(x => x.Status == PlayerFriendshipStatus.Accepted);
+        var acceptedFriendCount = incomingAccepted + outgoingAccepted;
+        
         var friendship = client.Player.TryGetFriendshipFor(ProfileId);
 
         var profileWriter = new PlayerProfileWriter
         {
             Player = profilePlayer,
             Online = profilePlayer.Data.IsOnline,
-            FriendshipCount = friendCount,
+            FriendshipCount = acceptedFriendCount,
             FriendshipExists = friendship is { Status: PlayerFriendshipStatus.Accepted },
             FriendshipRequestExists = friendship is { Status: PlayerFriendshipStatus.Pending }
         };

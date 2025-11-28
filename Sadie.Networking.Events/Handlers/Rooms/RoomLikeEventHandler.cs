@@ -1,16 +1,19 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Player;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomLike)]
 public class RoomLikeEventHandler(IRoomRepository roomRepository,
-    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -19,18 +22,23 @@ public class RoomLikeEventHandler(IRoomRepository roomRepository,
             return;
         }
 
-        if (room.OwnerId == client.Player.Id || client.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) != null)
+        if (room.Room.OwnerId == client.Player.Player.Id || client.Player.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Room.Id) != null)
         {
             return;
         }
-        
-        client.Player.RoomLikes.Add(new PlayerRoomLike
+
+        var roomLike = new PlayerRoomLikeDto()
         {
-            PlayerId = client.Player.Id,
-            RoomId = room.Id
-        });
+            PlayerId = client.Player.Player.Id,
+            RoomId = room.Room.Id
+        };
+        
+        client.Player.Player.RoomLikes.Add(roomLike);
+        
+        var roomLikeEntity = mapper.Map<PlayerRoomLike>(roomLike);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        dbContext.PlayerRoomLikes.Add(roomLikeEntity);
         await dbContext.SaveChangesAsync();
     }
 }

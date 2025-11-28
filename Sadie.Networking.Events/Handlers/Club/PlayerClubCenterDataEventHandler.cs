@@ -1,7 +1,7 @@
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Other;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
@@ -10,7 +10,7 @@ public class PlayerClubCenterDataEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var subscription = client.Player?.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
+        var subscription = client.Player?.Player.Subscriptions.FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
         
         if (subscription == null)
         {

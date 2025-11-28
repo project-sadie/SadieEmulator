@@ -1,16 +1,16 @@
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Db.Models.Catalog.FrontPage;
-using Sadie.Db.Models.Catalog.Pages;
+using Sadie.API.DTOs.Catalog.FrontPage;
+using Sadie.API.Interfaces.Game.Catalog;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Catalog;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogPage)]
 public class CatalogPageEventHandler(
-    List<CatalogFrontPageItem> catalogFrontPageItems,
-    List<CatalogPage> catalogPages) : INetworkPacketEventHandler
+    List<CatalogFrontPageItemDto> catalogFrontPageItems,
+    ICatalogPageRepository pageRepository) : INetworkPacketEventHandler
 {
     public int PageId { get; set; }
     public int OfferId { get; set; }
@@ -18,7 +18,8 @@ public class CatalogPageEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var page = catalogPages
+        var page = pageRepository
+            .Pages
             .FirstOrDefault(x => x.Id == PageId);
 
         if (page is not { Enabled: true } || !page.Visible)

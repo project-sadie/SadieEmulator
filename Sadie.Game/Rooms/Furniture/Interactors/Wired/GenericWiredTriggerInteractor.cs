@@ -1,10 +1,10 @@
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db.Models.Constants;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired;
@@ -18,7 +18,7 @@ public class GenericWiredTriggerInteractor(IRoomWiredService wiredService,
         FurnitureItemInteractionType.WiredTriggerEnterRoom
     ];
 
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         var wiredData = item.WiredData;
         
@@ -39,7 +39,7 @@ public class GenericWiredTriggerInteractor(IRoomWiredService wiredService,
             Input = input,
             IntParameters = [],
             StuffTypeSelectionCode = 0,
-            TriggerConfig = wiredService.GetWiredCode(item.FurnitureItem.InteractionType),
+            TriggerConfig = wiredService.GetWiredCode(item.PlayerFurnitureItem.FurnitureItem.InteractionType),
             ConflictingEffectIds = []
         });
     }

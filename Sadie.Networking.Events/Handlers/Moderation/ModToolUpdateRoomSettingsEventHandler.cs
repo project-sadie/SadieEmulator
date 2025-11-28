@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Enums.Game.Rooms;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Moderation;
 
@@ -31,13 +31,13 @@ public class ModToolUpdateRoomSettingsEventHandler(
         
         if (LockDoor == 1)
         {
-            room.Settings.AccessType = RoomAccessType.Doorbell;
+            room.Room.Settings.AccessType = RoomAccessType.Doorbell;
             needsSaving = true;
         }
 
         if (ChangeTitle == 1)
         {
-            room.Name = "Inappropriate to hotel management.";
+            room.Room.Name = "Inappropriate to hotel management.";
             needsSaving = true;
         }
 
@@ -45,7 +45,7 @@ public class ModToolUpdateRoomSettingsEventHandler(
         {
             foreach (var user in room.UserRepository.GetAll())
             {
-                await room.UserRepository.TryRemoveAsync(user.Player.Id, true, true);
+                await room.UserRepository.TryRemoveAsync(user.Player.Player.Id, true, true);
             }
         }
 

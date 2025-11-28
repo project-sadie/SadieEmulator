@@ -1,13 +1,14 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Db.Models.Rooms;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -28,7 +29,7 @@ public class RoomDeleteEventHandler(
             dbContextFactory, 
             mapper);
 
-        if (room == null || room.OwnerId != client.Player.Id)
+        if (room == null || room.Room.OwnerId != client.Player.Player.Id)
         {
             return;
         }
@@ -36,11 +37,11 @@ public class RoomDeleteEventHandler(
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         await dbContext.Database.ExecuteSqlRawAsync("UPDATE player_data SET home_room_id = NULL WHERE home_room_id = {0}", RoomId);
 
-        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();
+        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItemDto>>();
 
-        foreach (var item in room.FurnitureItems)
+        foreach (var item in room.Room.FurnitureItems)
         {
-            var playerItem = item.PlayerFurnitureItem!;
+            var playerItem = item.PlayerFurnitureItem;
             playerItem.PlacementData = null;
             dbContext.Entry(item).State = EntityState.Deleted;
             
@@ -64,14 +65,17 @@ public class RoomDeleteEventHandler(
             return;
         }
 
-        dbContext.Entry((Room) room).State = EntityState.Deleted;
+        var roomEntity = mapper.Map<Room>(room);
+        var roomDto = mapper.Map<RoomDto>(room);
+        
+        dbContext.Entry(roomEntity).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Rooms.Remove((Room) room);
+        client.Player.Player.Rooms.Remove(roomDto);
                 
         foreach (var roomUser in room.UserRepository.GetAll())
         {
-            await room.UserRepository.TryRemoveAsync(roomUser.Player.Id);
+            await room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id);
         }
     }
 }

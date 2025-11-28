@@ -1,34 +1,41 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Networking;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Networking;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
 using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture;
 
-public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
+public class RoomFurnitureItemHelperService(
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IPlayerRepository playerRepository,
+    IMapper mapper) : IRoomFurnitureItemHelperService
 {
     public async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
-        PlayerFurnitureItemPlacementData roomFurnitureItem,
-        IDbContextFactory<SadieDbContext> dbContextFactory)
+        PlayerFurnitureItemPlacementDataDto roomFurnitureItem)
     {
         if (string.IsNullOrEmpty(roomFurnitureItem.PlayerFurnitureItem.MetaData))
         {
             roomFurnitureItem.PlayerFurnitureItem.MetaData = 0.ToString();
         }
 
-        if (roomFurnitureItem.FurnitureItem.InteractionModes < 1 ||
+        var furnitureItem = roomFurnitureItem.PlayerFurnitureItem.FurnitureItem;
+        
+        if (furnitureItem.InteractionModes < 1 ||
             !int.TryParse(roomFurnitureItem.PlayerFurnitureItem.MetaData, out var state))
         {
             return;
         }
 
-        if (state >= roomFurnitureItem.FurnitureItem.InteractionModes)
+        if (state >= furnitureItem.InteractionModes)
         {
             state = 0;
         }
@@ -37,13 +44,18 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
-        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
+        var playerFurnitureItemEntity = mapper.Map<PlayerFurnitureItem>(roomFurnitureItem.PlayerFurnitureItem);
+        
+        dbContext
+            .Entry(playerFurnitureItemEntity)
+            .Property(x => x.MetaData).IsModified = true;
+        
         await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateMetaDataForItemAsync(
         IRoomLogic room, 
-        PlayerFurnitureItemPlacementData roomFurnitureItem, 
+        PlayerFurnitureItemPlacementDataDto roomFurnitureItem, 
         string metaData)
     {
         roomFurnitureItem.PlayerFurnitureItem.MetaData = metaData;
@@ -52,13 +64,18 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
 
     public async Task BroadcastItemUpdateToRoomAsync(
         IRoomLogic room, 
-        PlayerFurnitureItemPlacementData roomFurnitureItem)
+        PlayerFurnitureItemPlacementDataDto roomFurnitureItem)
     {
-        AbstractPacketWriter itemWriter = roomFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor ? 
+        var furnitureItem = roomFurnitureItem.PlayerFurnitureItem.FurnitureItem;
+        
+        var owner = await playerRepository.GetPlayerByIdAsync(
+            roomFurnitureItem.PlayerFurnitureItem.PlayerId);
+        
+        AbstractPacketWriter itemWriter = furnitureItem.Type == FurnitureItemType.Floor ? 
             new RoomFloorItemUpdatedWriter
             {
                 Id = roomFurnitureItem.PlayerFurnitureItemId,
-                AssetId = roomFurnitureItem.FurnitureItem.AssetId,
+                AssetId = furnitureItem.AssetId,
                 PositionX = roomFurnitureItem.PositionX,
                 PositionY = roomFurnitureItem.PositionY,
                 Direction = (int)roomFurnitureItem.Direction,
@@ -74,39 +91,40 @@ public class RoomFurnitureItemHelperService : IRoomFurnitureItemHelperService
             }
             : new RoomWallFurnitureItemUpdatedWriter
         {
-            Item = roomFurnitureItem
+            Item = roomFurnitureItem,
+            OwnerUsername = owner?.Username ?? "Unknown User"
         };
         
         await room.UserRepository.BroadcastDataAsync(itemWriter);
     }
 
-    public ObjectDataKey GetObjectDataKeyForItem(PlayerFurnitureItemPlacementData furnitureItem)
+    public ObjectDataKey GetObjectDataKeyForItem(PlayerFurnitureItemPlacementDataDto furnitureItem)
     {
-        return furnitureItem.FurnitureItem.InteractionType switch
+        return furnitureItem.PlayerFurnitureItem.FurnitureItem.InteractionType switch
         {
             FurnitureItemInteractionType.RoomAdsBg => ObjectDataKey.MapKey,
             _ => ObjectDataKey.LegacyKey
         };
     }
 
-    public Dictionary<string, string> GetObjectDataForItem(PlayerFurnitureItemPlacementData furnitureItem)
+    public Dictionary<string, string> GetObjectDataForItem(PlayerFurnitureItemPlacementDataDto furnitureItem)
     {
-        if (furnitureItem.FurnitureItem!.InteractionType == FurnitureItemInteractionType.RoomAdsBg)
+        if (furnitureItem.PlayerFurnitureItem.FurnitureItem.InteractionType != FurnitureItemInteractionType.RoomAdsBg)
         {
-            var data = new Dictionary<string, string>();
+            return new Dictionary<string, string>();
+        }
+        
+        var data = new Dictionary<string, string>();
             
-            foreach (var piece in furnitureItem.PlayerFurnitureItem.MetaData.Split(";"))
-            {
-                var parts = piece.Split("=");
-                var key = parts[0];
-                var value = parts.Length < 2 ? "" : parts[1];
+        foreach (var piece in furnitureItem.PlayerFurnitureItem.MetaData.Split(";"))
+        {
+            var parts = piece.Split("=");
+            var key = parts[0];
+            var value = parts.Length < 2 ? "" : parts[1];
 
-                data[key] = value;
-            }
-
-            return data;
+            data[key] = value;
         }
 
-        return new Dictionary<string, string>();
+        return data;
     }
 }

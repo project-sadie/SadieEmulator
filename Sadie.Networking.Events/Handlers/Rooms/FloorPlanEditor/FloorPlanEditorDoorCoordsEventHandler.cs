@@ -1,8 +1,8 @@
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.FloorPlanEditor;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
@@ -18,9 +18,9 @@ public class FloorPlanEditorDoorCoordsEventHandler(IRoomRepository roomRepositor
         
         await client.WriteToStreamAsync(new FloorPlanEditorDoorCoordsWriter
         {
-            X = room.Layout.DoorX,
-            Y = room.Layout.DoorY,
-            Direction = (int) room.Layout.DoorDirection
+            X = room.Room.Layout.DoorX,
+            Y = room.Room.Layout.DoorY,
+            Direction = room.Room.Layout.DoorDirection
         });
     }
 }

@@ -1,18 +1,20 @@
 using System.Diagnostics;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Db.Models.Server;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Options.Options;
-using Sadie.Shared.Attributes;
-using Sadie.Shared;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;
 
@@ -27,7 +29,8 @@ public class SecureLoginEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper,
     IPlayerLoaderService playerLoaderService,
-    IPlayerHelperService playerHelperService)
+    IPlayerHelperService playerHelperService,
+    IConfiguration config)
     : INetworkPacketEventHandler
 {
     public string? Token { get; set; }
@@ -36,6 +39,12 @@ public class SecureLoginEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         var sw = Stopwatch.StartNew();
+
+        if (DelayMs >= config.GetValue("PlayerOptions:MaxSsoDelayMs", 300_000))
+        {
+            await client.DisposeAsync();
+            return;
+        }
 
         if (string.IsNullOrEmpty(Token) || !ValidateSso(Token))
         {
@@ -67,7 +76,7 @@ public class SecureLoginEventHandler(
             player.NavigatorSettings == null ||
             player.GameSettings == null)
         {
-            logger.LogError("Failed to resolve player record.");
+            logger.LogError("Player record is missing required associated data.");
             await client.DisposeAsync();
             return;
         }
@@ -86,14 +95,14 @@ public class SecureLoginEventHandler(
             .Split(":")
             .First() ?? "";
         
-        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        /*await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
         {
             logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
             await client.DisposeAsync();
             return;
-        }
+        }*/
         
         var playerLogic = mapper.Map<IPlayerLogic>(player);
 
@@ -107,28 +116,28 @@ public class SecureLoginEventHandler(
 
         if (existingPlayer is { Channel: not null })
         {
-            await playerRepository.TryRemovePlayerAsync(existingPlayer.Id);
+            await playerRepository.TryRemovePlayerAsync(existingPlayer.Player.Id);
             await networkClientRepository.TryRemoveAsync(existingPlayer.Channel.Id);
 
             var roomUser = client.RoomUser;
             
             if (roomUser != null)
             {
-                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Id);
+                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id);
             }
         }
 
         if (!playerRepository.TryAddPlayer(playerLogic))
         {
-            logger.LogError($"Player {playerLogic.Username} could not be registered");
+            logger.LogError($"Player {playerLogic.Player.Username} could not be registered");
             await client.DisposeAsync();
             return;
         }
         
         await client.WriteToStreamAsync(new SecureLoginWriter());
         
-        playerLogic.Data.IsOnline = true;
-        playerLogic.Data.LastOnline = DateTime.Now;
+        playerLogic.Player.Data.IsOnline = true;
+        playerLogic.Player.Data.LastOnline = DateTime.Now;
         
         playerLogic.Authenticated = true;
 
@@ -136,17 +145,21 @@ public class SecureLoginEventHandler(
         await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
         
         await playerHelperService.SendPlayerFriendListUpdate(playerLogic, playerRepository);
+
+        var playersFriends = player.OutgoingFriendships
+            .Concat(player.IncomingFriendships)
+            .Where(x => x.Status == PlayerFriendshipStatus.Accepted);
         
         await playerHelperService.UpdatePlayerStatusForFriendsAsync(
             playerLogic, 
-            player.GetMergedFriendships(), 
+            playersFriends, 
             true, 
             false, 
             playerRepository);
         
         await SendWelcomeMessageAsync(playerLogic);
         
-        logger.LogInformation($"Player '{playerLogic.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
+        logger.LogInformation($"Player '{playerLogic.Player.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 
     private async Task SendWelcomeMessageAsync(IPlayerLogic player)
@@ -157,7 +170,7 @@ public class SecureLoginEventHandler(
         }
 
         var formattedMessage = serverSettings.PlayerWelcomeMessage
-            .Replace("[username]", player.Username)
+            .Replace("[username]", player.Player.Username)
             .Replace("[version]", GlobalState.Version.ToString());
 
         await player.SendAlertAsync(formattedMessage);

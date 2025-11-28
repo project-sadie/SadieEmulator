@@ -1,16 +1,15 @@
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Players.Friendships;
-using Sadie.API.Game.Players.Packets.Writers;
-using Sadie.Db.Models.Players;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Players;
+using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Players.Friendships;
+using Sadie.API.Interfaces.Game.Players.Packets.Writers;
+using Sadie.Core.Enums.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Players.Friendships;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Players.Subscriptions;
-using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players;
 
@@ -47,17 +46,17 @@ public class PlayerHelperService : IPlayerHelperService
             {
                 Pages = pages,
                 Index = i,
-                PlayerId = player.Id,
+                PlayerId = player.Player.Id,
                 Friends = batch,
                 PlayerRepository = playerRepository,
-                Relationships = player.Relationships
+                Relationships = player.Player.Relationships
             });
         }
     }
     
     public IPlayerSubscriptionWriter? GetSubscriptionWriterAsync(IPlayerLogic player, string name)
     {
-        var playerSub = player.Subscriptions.FirstOrDefault(x => x.Subscription.Name == name);
+        var playerSub = player.Player.Subscriptions.FirstOrDefault(x => x.Subscription.Name == name);
         
         if (playerSub?.Subscription == null)
         {
@@ -87,7 +86,7 @@ public class PlayerHelperService : IPlayerHelperService
 
     public async Task UpdatePlayerStatusForFriendsAsync(
         IPlayerLogic player, 
-        IEnumerable<PlayerFriendship> friendships, 
+        IEnumerable<PlayerFriendshipDto> friendships, 
         bool isOnline, 
         bool inRoom,
         IPlayerRepository playerRepository)
@@ -97,11 +96,11 @@ public class PlayerHelperService : IPlayerHelperService
             Type = 0,
             Friend = new FriendData
             {
-                Id = player.Id,
-                Username = player.Username,
-                FigureCode = player.AvatarData.FigureCode,
-                Motto = player.AvatarData.Motto,
-                Gender = player.AvatarData.Gender
+                Id = player.Player.Id,
+                Username = player.Player.Username,
+                FigureCode = player.Player.AvatarData.FigureCode,
+                Motto = player.Player.AvatarData.Motto,
+                Gender = player.Player.AvatarData.Gender
             },
             FriendOnline = isOnline,
             FriendInRoom = inRoom,
@@ -110,7 +109,7 @@ public class PlayerHelperService : IPlayerHelperService
         
         foreach (var friend in friendships)
         {
-            var targetId = friend.OriginPlayerId == player.Id ? 
+            var targetId = friend.OriginPlayerId == player.Player.Id ? 
                 friend.TargetPlayerId : 
                 friend.OriginPlayerId;
 
@@ -123,7 +122,7 @@ public class PlayerHelperService : IPlayerHelperService
         }
     }
 
-    public async Task SendUnseenInventoryItemsAsync(IPlayerLogic player, List<PlayerFurnitureItem> items)
+    public async Task SendUnseenInventoryItemsAsync(IPlayerLogic player, List<PlayerFurnitureItemDto> items)
     {
         await player.NetworkObject!.WriteToStreamAsync(new PlayerInventoryUnseenItemsWriter
         {

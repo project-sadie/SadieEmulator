@@ -1,21 +1,22 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events;
 
-public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUserTrade
+public class RoomUserTrade(
+    IPlayerHelperService playerHelperService,
+    IDbContextFactory<SadieDbContext> dbContextFactory) : IRoomUserTrade
 {
     public required List<IRoomUser> Users { get; init; }
-    public required List<PlayerFurnitureItem> Items { get; init; }
+    public required List<PlayerFurnitureItemDto> Items { get; init; }
     
-    public async void OfferItems(List<PlayerFurnitureItem> playerItems)
+    public async void OfferItems(List<PlayerFurnitureItemDto> playerItems)
     {
         foreach (var item in playerItems.Where(item => !Items.Contains(item)))
         {
@@ -35,7 +36,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
     
     public async Task BroadcastToUsersAsync(AbstractPacketWriter writer)
     {
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
         
         foreach (var roomUser in Users)
         {
@@ -43,41 +44,40 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         }
     }
     
-    public async Task SwapItemsAsync(IDbContextFactory<SadieDbContext> dbContextFactory)
+    public async Task SwapItemsAsync()
     {
-        var map = new Dictionary<long, List<PlayerFurnitureItem>>();
+        var map = new Dictionary<long, List<PlayerFurnitureItemDto>>();
         
         foreach (var item in Items)
         {
-            if (!map.ContainsKey(item.PlayerId))
+            if (!map.TryGetValue(item.PlayerId, out var value))
             {
-                map[item.PlayerId] = [];
+                value = [];
+                map[item.PlayerId] = value;
             }
 
-            map[item.PlayerId].Add(item);
-            
+            value.Add(item);
         }
 
         var userOne = Users[0].Player;
         var userTwo = Users[1].Player;
 
-        var userOneItems = map.TryGetValue(userOne.Id, out var oneItems) ? 
+        var userOneItems = map.TryGetValue(userOne.Player.Id, out var oneItems) ? 
             oneItems : [];
         
-        var userTwoItems = map.TryGetValue(userTwo.Id, out var twoItems) ? 
+        var userTwoItems = map.TryGetValue(userTwo.Player.Id, out var twoItems) ? 
             twoItems : [];
         
-        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItem>>();
+        var updateMap = new Dictionary<IPlayerLogic, List<PlayerFurnitureItemDto>>();
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         foreach (var userOneItem in userOneItems)
         {
-            userOneItem.PlayerId = userTwo.Id;
-            userOneItem.Player = (Player) userTwo;
+            userOneItem.PlayerId = userTwo.Player.Id;
 
-            userOne.FurnitureItems.Remove(userOneItem);
-            userTwo.FurnitureItems.Add(userOneItem);
+            userOne.Player.FurnitureItems.Remove(userOneItem);
+            userTwo.Player.FurnitureItems.Add(userOneItem);
 
             if (!updateMap.ContainsKey(userTwo))
             {
@@ -91,11 +91,10 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         
         foreach (var userTwoItem in userTwoItems)
         {
-            userTwoItem.PlayerId = userOne.Id;
-            userTwoItem.Player = (Player) userOne;
+            userTwoItem.PlayerId = userOne.Player.Id;
 
-            userTwo.FurnitureItems.Remove(userTwoItem);
-            userOne.FurnitureItems.Add(userTwoItem);
+            userTwo.Player.FurnitureItems.Remove(userTwoItem);
+            userOne.Player.FurnitureItems.Add(userTwoItem);
 
             if (!updateMap.ContainsKey(userOne))
             {
@@ -116,7 +115,7 @@ public class RoomUserTrade(IPlayerHelperService playerHelperService) : IRoomUser
         await dbContext.SaveChangesAsync();
     }
 
-    public void RemoveOfferedItem(PlayerFurnitureItem item)
+    public void RemoveOfferedItem(PlayerFurnitureItemDto item)
     {
         Items.Remove(item);
     }

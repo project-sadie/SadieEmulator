@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sadie.API;
-using Sadie.Shared;
+using Sadie.Core.Shared;
 using SadieEmulator;
 using Serilog;
+using Spectre.Console;
 
 namespace Sadie.Console;
 
@@ -14,6 +15,7 @@ internal static class Program
     private static async Task Main()
     {
         SetEventHandlers();
+        await WriteHeaderToConsoleAsync();
 
         var host = Host.CreateDefaultBuilder()
             .ConfigureServices((context, collection) => ServerServiceCollection.AddServices(collection, context.Configuration))
@@ -21,32 +23,44 @@ internal static class Program
                 logger.ReadFrom.Configuration(hostContext.Configuration))
             .Build();
         
-        WriteHeaderToConsole();
-        
         _server = host.Services.GetRequiredService<IServer>();
+        
         await _server.RunAsync();
         await host.RunAsync();
     }
     
-    private static void WriteHeaderToConsole()
+    private static async Task WriteHeaderToConsoleAsync()
     {
         System.Console.ForegroundColor = ConsoleColor.Magenta;
 
-        System.Console.WriteLine(@"");
-        System.Console.WriteLine(@"   $$$$$$\                  $$\ $$\           ");
-        System.Console.WriteLine(@"  $$  __$$\                 $$ |\__|          ");
-        System.Console.WriteLine(@"  $$ /  \__| $$$$$$\   $$$$$$$ |$$\  $$$$$$\  ");
-        System.Console.WriteLine(@"  \$$$$$$\   \____$$\ $$  __$$ |$$ |$$  __$$\ ");
-        System.Console.WriteLine(@"   \____$$\  $$$$$$$ |$$ /  $$ |$$ |$$$$$$$$ |");
-        System.Console.WriteLine(@"  $$\   $$ |$$  __$$ |$$ |  $$ |$$ |$$   ____|");
-        System.Console.WriteLine(@"  \$$$$$$  |\$$$$$$$ |\$$$$$$$ |$$ |\$$$$$$$\ ");
-        System.Console.WriteLine(@"   \______/  \_______| \_______|\__| \_______|");
-        System.Console.WriteLine(@"");
+        AnsiConsole.Write(
+            new Markup("[hotpink]" + @"
+  /$$$$$$                  /$$ /$$          
+ /$$__  $$                | $$|__/          
+| $$  \__/  /$$$$$$   /$$$$$$$ /$$  /$$$$$$ 
+|  $$$$$$  |____  $$ /$$__  $$| $$ /$$__  $$
+ \____  $$  /$$$$$$$| $$  | $$| $$| $$$$$$$$
+ /$$  \ $$ /$$__  $$| $$  | $$| $$| $$_____/
+|  $$$$$$/|  $$$$$$$|  $$$$$$$| $$|  $$$$$$$
+ \______/  \_______/ \_______/|__/ \_______/" + "[/]").Centered()
+        );
 
         System.Console.ForegroundColor = ConsoleColor.White;
 
-        System.Console.WriteLine($"         You're running version {GlobalState.Version}");
-        System.Console.WriteLine("");
+        var assembly = typeof(Server).Assembly;
+        var version = assembly.GetName().Version;
+
+        if (version != null)
+        {
+            GlobalState.Version = version;
+        }
+        
+        AnsiConsole.Write(
+            new Markup("[white]" + $"\n\nYou're running version {version}" + "[/]").Centered()
+        );
+        
+        System.Console.WriteLine();
+        System.Console.WriteLine();
     }
     
     private static void SetEventHandlers()

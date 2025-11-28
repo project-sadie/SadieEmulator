@@ -1,12 +1,14 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Player;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -14,7 +16,8 @@ namespace Sadie.Networking.Events.Handlers.Players;
 public class PlayerWearingBadgesEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
     IPlayerRepository playerRepository,
-    IRoomRepository roomRepository)
+    IRoomRepository roomRepository,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
@@ -22,12 +25,18 @@ public class PlayerWearingBadgesEventHandler(
     public async Task HandleAsync(INetworkClient networkClient)
     {
         var player = playerRepository.GetPlayerLogicById(PlayerId);
-        var playerBadges = player?.Badges;
+        var playerBadges = player?.Player.Badges;
         
         if (playerBadges == null)
         {
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            playerBadges = await dbContext.Set<PlayerBadge>().Where(x =>  x.PlayerId == PlayerId).ToListAsync();;
+            
+            var dbBadges = await dbContext
+                .Set<PlayerBadge>()
+                .Where(x =>  x.PlayerId == PlayerId)
+                .ToListAsync();
+            
+            playerBadges = mapper.Map<List<PlayerBadgeDto>>(dbBadges);
         }
 
         playerBadges = playerBadges.

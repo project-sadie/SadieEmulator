@@ -1,10 +1,10 @@
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db.Models.Constants;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired;
@@ -17,7 +17,7 @@ public class WiredTriggerUserWalksOnInteractor(IRoomWiredService wiredService,
         FurnitureItemInteractionType.WiredTriggerUserWalksOnFurniture
     ];
 
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         var wiredData = item.WiredData;
         
@@ -26,16 +26,18 @@ public class WiredTriggerUserWalksOnInteractor(IRoomWiredService wiredService,
             .Select(x => x.Id)
             .ToList() ?? [];
         
+        var furnitureItem = item.PlayerFurnitureItem.FurnitureItem;
+        
         await roomUser.NetworkObject.WriteToStreamAsync(new WiredTriggerWriter
         {
             StuffTypeSelectionEnabled = false,
             MaxItemsSelected = roomConstants.WiredMaxFurnitureSelection,
             SelectedItemIds = selectedItemIds,
-            AssetId = item.FurnitureItem.AssetId,
+            AssetId = furnitureItem.AssetId,
             Id = item.Id,
             IntParameters = [],
             StuffTypeSelectionCode = 0,
-            TriggerConfig = wiredService.GetWiredCode(item.FurnitureItem.InteractionType),
+            TriggerConfig = wiredService.GetWiredCode(furnitureItem.InteractionType ?? ""),
             ConflictingEffectIds = []
         });
     }

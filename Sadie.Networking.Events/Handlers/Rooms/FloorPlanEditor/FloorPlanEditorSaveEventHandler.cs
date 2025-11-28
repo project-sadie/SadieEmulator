@@ -1,16 +1,17 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Miscellaneous;
+using Sadie.Core.Shared.Attributes;
+using Sadie.Core.Shared.Helpers;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms;
-using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Attributes;
-using Sadie.Shared.Helpers;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 
@@ -30,8 +31,8 @@ public class FloorPlanEditorSaveEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
-            room.OwnerId != client.Player.Id || 
-            room.Layout == null)
+            room.Room.OwnerId != client.Player.Player.Id || 
+            room.Room.Layout == null)
         {
             return;
         }
@@ -42,7 +43,7 @@ public class FloorPlanEditorSaveEventHandler(
         {
             await client.WriteToStreamAsync(new BubbleAlertWriter
             {
-                Key = EnumHelpers.GetEnumDescription(NotificationType.FloorPlanEditor)!,
+                Key = EnumHelpers.GetEnumDescription(NotificationType.FloorPlanEditor),
                 Messages = new Dictionary<string, string>
                 {
                     { "message", string.Join("<br>", errors) }
@@ -56,9 +57,9 @@ public class FloorPlanEditorSaveEventHandler(
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
-        if (!room.Layout.Name!.Contains("custom_"))
+        if (!room.Room.Layout.Name!.Contains("custom_"))
         {
-            room.Layout = new RoomLayout
+            room.Room.Layout = new RoomLayoutDto
             {
                 Name = $"custom_{Guid.NewGuid().ToString().Replace("-", "")[..15]}",
                 DoorDirection = DoorDirection,
@@ -67,24 +68,24 @@ public class FloorPlanEditorSaveEventHandler(
                 Heightmap = HeightMap
             };
             
-            dbContext.Entry(room.Layout).State = EntityState.Added;
+            dbContext.Entry(room.Room.Layout).State = EntityState.Added;
             newLayout = true;
         }
         else
         {
-            room.Layout.DoorDirection = DoorDirection;
-            room.Layout.DoorX = DoorX;
-            room.Layout.DoorY = DoorY;
-            room.Layout.Heightmap = HeightMap;
+            room.Room.Layout.DoorDirection = DoorDirection;
+            room.Room.Layout.DoorX = DoorX;
+            room.Room.Layout.DoorY = DoorY;
+            room.Room.Layout.Heightmap = HeightMap;
             
-            dbContext.Entry(room.Layout).State = EntityState.Modified;
+            dbContext.Entry(room.Room.Layout).State = EntityState.Modified;
         }
 
         await dbContext.SaveChangesAsync();
 
         if (newLayout)
         {
-            room.LayoutId = room.Layout.Id;
+            room.Room.LayoutId = room.Room.Layout.Id;
             
             dbContext.Entry((Room) room).Property(x => x.LayoutId).IsModified = true;
             await dbContext.SaveChangesAsync();
@@ -94,18 +95,18 @@ public class FloorPlanEditorSaveEventHandler(
 
         foreach (var user in room.UserRepository.GetAll())
         {
-            await room.UserRepository.TryRemoveAsync(user.Player.Id, false, true);
+            await room.UserRepository.TryRemoveAsync(user.Player.Player.Id, false, true);
             playersToForward.Add(user.Player);
         }
 
-        if (!roomRepository.TryRemove(room.Id, out var roomLogic))
+        if (!roomRepository.TryRemove(room.Room.Id, out var roomLogic))
         {
             return;
         }
 
         var writer = new RoomForwardEntryWriter
         {
-            RoomId = roomLogic!.Id
+            RoomId = roomLogic!.Room.Id
         };
 
         foreach (var player in playersToForward)

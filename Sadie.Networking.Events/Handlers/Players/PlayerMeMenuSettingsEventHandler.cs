@@ -1,7 +1,7 @@
-﻿using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+﻿using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Other;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -11,7 +11,7 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
     public async Task HandleAsync(INetworkClient client)
     {
         var player = client.Player!;
-        var playerGameSettings = player.GameSettings;
+        var playerGameSettings = player.Player.GameSettings;
         
         await client.WriteToStreamAsync(new PlayerMeMenuSettingsWriter
         {
@@ -22,7 +22,7 @@ public class PlayerMeMenuSettingsEventHandler : INetworkPacketEventHandler
             BlockRoomInvites = playerGameSettings.BlockRoomInvites,
             BlockCameraFollow = playerGameSettings.BlockCameraFollow,
             UiFlags = playerGameSettings.UiFlags,
-            ChatBubble = (int) player.AvatarData.ChatBubbleId
+            ChatBubble = (int) player.Player.AvatarData.ChatBubbleId
         });
     }
 }

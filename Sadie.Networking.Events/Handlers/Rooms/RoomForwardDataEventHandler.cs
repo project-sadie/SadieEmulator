@@ -1,18 +1,20 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomForwardData)]
 public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IMapper mapper) : INetworkPacketEventHandler
+    IMapper mapper,
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public int RoomId { get; init; }
     public int EnterRoom { get; init; }
@@ -31,19 +33,21 @@ public class RoomForwardDataEventHandler(IRoomRepository roomRepository,
             return;
         }
 
-        if (client.Player?.Data == null)
+        if (client.Player?.Player.Data == null)
         {
             return;
         }
 
-        var isOwner = room.OwnerId == client.Player.Id;
+        var isOwner = room.Room.OwnerId == client.Player.Player.Id;
         
-        await client.WriteToStreamAsync(new  RoomForwardDataWriter
+        await client.WriteToStreamAsync(new RoomForwardDataWriter
         {
-            Room = room,
+            Room = room.Room,
             RoomForward = true,
             EnterRoom = EnterRoom != 0 || ForwardRoom != 1,
-            IsOwner = isOwner
+            IsOwner = isOwner,
+            UsersNow = room.UserRepository.Count,
+            PlayerRepository = playerRepository
         });
     }
 }

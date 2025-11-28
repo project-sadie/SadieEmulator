@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
@@ -15,32 +14,38 @@ namespace Sadie.Networking.Events.Handlers;
 public class ClientPacketHandler(
     ILogger<ClientPacketHandler> logger,
     Dictionary<short, Type> packetHandlerTypeMap,
-    IServiceProvider serviceProvider,
+    PacketHandlerFactory handlerFactory,
     IOptions<NetworkPacketOptions> packetOptions)
     : INetworkPacketHandler
 {
     public async Task HandleAsync(INetworkClient client, INetworkPacket packet)
     {
-        if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
-        {
-            if (packetOptions.Value.NotifyMissingPacket)
-            {
-                _ = NotifyMissingPacketAsync(packet.PacketId, client);
-            }
-            
-            logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
-            return;
-        }
-
-        var eventHandler = (INetworkPacketEventHandler) ActivatorUtilities.CreateInstance(serviceProvider, packetEventType);
-
-        if (!ValidateAttributes(eventHandler, client))
-        {
-            return;
-        }
-
         try
         {
+            if (!packetHandlerTypeMap.TryGetValue(packet.PacketId, out var packetEventType))
+            {
+                if (packetOptions.Value.NotifyMissingPacket)
+                {
+                    _ = NotifyMissingPacketAsync(packet.PacketId, client);
+                }
+            
+                logger.LogWarning($"Couldn't resolve packet event handler for header '{packet.PacketId}'");
+                return;
+            }
+
+            var eventHandler = handlerFactory.Create(packet.PacketId);
+
+            if (eventHandler == null)
+            {
+                logger.LogWarning($"Unhandled packet {packet.PacketId}");
+                return;
+            }
+
+            if (!ValidateAttributes(eventHandler, client))
+            {
+                return;
+            }
+            
             EventSerializer.SetPropertiesForEventHandler(eventHandler, packet);
 
             if (client.RoomUser != null &&
@@ -58,7 +63,7 @@ public class ClientPacketHandler(
 
             await ExecuteAsync(client, eventHandler);
         }
-        catch (IndexOutOfRangeException e)
+        catch (Exception e)
         {
             logger.LogCritical(e.ToString());
         }

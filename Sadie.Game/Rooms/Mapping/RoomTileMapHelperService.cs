@@ -1,19 +1,19 @@
 using System.Drawing;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Rooms.Mapping;
-using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Miscellaneous;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Game.Rooms.Mapping;
+using Sadie.Core.Enums.Game.Rooms.Users;
+using Sadie.Core.Enums.Miscellaneous;
 
 namespace Sadie.Game.Rooms.Mapping;
 
 public class RoomTileMapHelperService : IRoomTileMapHelperService
 {
-    public HDirection GetOppositeDirection(int direction)
+    public HDirection GetOppositeDirection(HDirection direction)
     {
-        return (HDirection) direction switch
+        return direction switch
         {
             HDirection.North => HDirection.South,
             HDirection.NorthEast => HDirection.SouthWest,
@@ -32,13 +32,13 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
         int y, 
         int width, 
         int length, 
-        int direction)
+        HDirection direction)
     {
         var points = new List<Point>();
         
         switch (direction)
         {
-            case 0 or 4:
+            case HDirection.North or HDirection.South:
             {
                 for (var i = x; i <= x + (width - 1); i++)
                 {
@@ -50,7 +50,7 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
 
                 break;
             }
-            case 2 or 6:
+            case HDirection.East or HDirection.West:
             {
                 for (var i = x; i <= x + (length - 1); i++)
                 {
@@ -70,55 +70,63 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     public RoomTileState GetTileState(
         int x, 
         int y, 
-        IEnumerable<PlayerFurnitureItemPlacementData> furnitureItems)
+        IEnumerable<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         var item = GetItemsForPosition(x, y, furnitureItems).MaxBy(x => x.PositionZ);
 
-        if (item == null ||
-            item.FurnitureItem.CanWalk)
+        if (item == null)
         {
             return RoomTileState.Open;
         }
         
-        if (item.FurnitureItem.CanSit)
+        var furnitureItem = item.PlayerFurnitureItem.FurnitureItem;
+
+        if (furnitureItem.CanWalk)
+        {
+            return RoomTileState.Open;
+        }
+        
+        if (furnitureItem.CanSit)
         {
             return RoomTileState.Sit;
         }
 
-        if (item.FurnitureItem.InteractionType == FurnitureItemInteractionType.Gate && 
+        if (furnitureItem.InteractionType == FurnitureItemInteractionType.Gate && 
             item.PlayerFurnitureItem.MetaData == "1")
         {
             return RoomTileState.Open;
         }
 
-        return item.FurnitureItem.CanLay ? RoomTileState.Lay : RoomTileState.Blocked;
+        return furnitureItem.CanLay ? RoomTileState.Lay : RoomTileState.Blocked;
     }
 
-    public List<PlayerFurnitureItemPlacementData> GetItemsForPosition(int x,
+    public List<PlayerFurnitureItemPlacementDataDto> GetItemsForPosition(int x,
         int y,
-        IEnumerable<PlayerFurnitureItemPlacementData> items)
+        IEnumerable<PlayerFurnitureItemPlacementDataDto> items)
     {
-        var tileItems = new List<PlayerFurnitureItemPlacementData>();
+        var tileItems = new List<PlayerFurnitureItemPlacementDataDto>();
         
         foreach (var item in items)
         {
             var width = 0;
             var length = 0;
+
+            var furnitureItem = item.PlayerFurnitureItem.FurnitureItem;
             
-            if (item.FurnitureItem.Type != FurnitureItemType.Floor)
+            if (furnitureItem.Type != FurnitureItemType.Floor)
             {
                 continue;
             }
 
-            switch ((int)item.Direction)
+            switch (item.Direction)
             {
-                case 2 or 6:
-                    width = item.FurnitureItem.TileSpanY > 0 ? item.FurnitureItem.TileSpanY : 1;
-                    length = item.FurnitureItem.TileSpanX > 0 ? item.FurnitureItem.TileSpanX : 1;
+                case HDirection.East or HDirection.West:
+                    width = furnitureItem.TileSpanY > 0 ? furnitureItem.TileSpanY : 1;
+                    length = furnitureItem.TileSpanX > 0 ? furnitureItem.TileSpanX : 1;
                     break;
-                case 0 or 4:
-                    width = item.FurnitureItem.TileSpanX > 0 ? item.FurnitureItem.TileSpanX : 1;
-                    length = item.FurnitureItem.TileSpanY > 0 ? item.FurnitureItem.TileSpanY : 1;
+                case HDirection.North or HDirection.South:
+                    width = furnitureItem.TileSpanX > 0 ? furnitureItem.TileSpanX : 1;
+                    length = furnitureItem.TileSpanY > 0 ? furnitureItem.TileSpanY : 1;
                     break;
             }
             
@@ -176,7 +184,7 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     public void UpdateTileMapsForPoints(
         List<Point> points, 
         IRoomTileMap tileMap, 
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         foreach (var point in points)
         {
@@ -249,14 +257,14 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     public double GetItemPlacementHeight(
         IRoomTileMap roomTileMap,
         IEnumerable<Point> pointsForPlacement, 
-        ICollection<PlayerFurnitureItemPlacementData> roomFurnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> roomFurnitureItems)
     {
         if (!pointsForPlacement.Any())
         {
             return default;
         }
         
-        var i = new List<PlayerFurnitureItemPlacementData>();
+        var i = new List<PlayerFurnitureItemPlacementDataDto>();
         
         foreach (var p in pointsForPlacement)
         {
@@ -269,7 +277,7 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
         }
 
         var highestItem = i.MaxBy(x => x.PositionZ)!;
-        return highestItem.PositionZ + highestItem.FurnitureItem.StackHeight;
+        return highestItem.PositionZ + highestItem.PlayerFurnitureItem.FurnitureItem.StackHeight;
     }
 
     public int GetSquaresBetweenPoints(Point a, Point b)

@@ -1,8 +1,8 @@
-﻿using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+﻿using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Navigator;
 using Sadie.Networking.Writers.Players.Navigator;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
@@ -68,7 +68,7 @@ public class NavigatorDataEventHandler : INetworkPacketEventHandler
             "eventcategory__Group Events"
         };
 
-        var savedSearches = client.Player.SavedSearches;
+        var savedSearches = client.Player.Player.SavedSearches;
         
         await client.WriteToStreamAsync(new NavigatorMetaDataWriter
         {

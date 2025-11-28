@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Enums.Game.Players;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -22,7 +22,7 @@ public class PlayerChangedAppearanceEventHandler(
     {
         var player = client.Player;
         
-        if (player?.AvatarData == null)
+        if (player?.Player.AvatarData == null)
         {
             return;
         }
@@ -35,14 +35,14 @@ public class PlayerChangedAppearanceEventHandler(
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
-        if (player.AvatarData.Gender != gender)
+        if (player.Player.AvatarData.Gender != gender)
         {
-            player.AvatarData.Gender = gender;
-            dbContext.Entry(player.AvatarData).Property(x => x.Gender).IsModified = true;
+            player.Player.AvatarData.Gender = gender;
+            dbContext.Entry(player.Player.AvatarData).Property(x => x.Gender).IsModified = true;
         }
 
-        player.AvatarData.FigureCode = figureCode;
-        dbContext.Entry(player.AvatarData).Property(x => x.FigureCode).IsModified = true;
+        player.Player.AvatarData.FigureCode = figureCode;
+        dbContext.Entry(player.Player.AvatarData).Property(x => x.FigureCode).IsModified = true;
         
         if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {

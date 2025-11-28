@@ -1,15 +1,14 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Player;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Players;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players.Friendships;
-using Sadie.Shared.Attributes;
-using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -39,30 +38,30 @@ public class PlayerChangeRelationshipEventHandler(
         
         if (relationId == 0)
         {
-            var relationship = client.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (relationship != null)
             {
-                client.Player.Relationships.Remove(relationship);
+                client.Player.Player.Relationships.Remove(relationship);
                 dbContext.Entry(relationship).State = EntityState.Deleted;
                 await dbContext.SaveChangesAsync();
             }
         }
         else
         {
-            var relationship = client.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
         
             if (relationship == null)
             {
-                relationship = new PlayerRelationship
+                relationship = new PlayerRelationshipDto
                 {
-                    OriginPlayerId = client.Player.Id,
+                    OriginPlayerId = client.Player.Player.Id,
                     TargetPlayerId = playerId,
                     TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
                     TypeId = relationId
                 };
                 
-                client.Player.Relationships.Add(relationship);
+                client.Player.Player.Relationships.Add(relationship);
                 
                 dbContext.Entry(relationship).State = EntityState.Added;
                 dbContext.Attach(relationship.TargetPlayer!).State = EntityState.Unchanged;
@@ -82,7 +81,7 @@ public class PlayerChangeRelationshipEventHandler(
         var inRoom = isOnline && onlineFriend!.State.CurrentRoomId != 0;
 
         var friend = isOnline ? 
-            mapper.Map<Player>(onlineFriend) : 
+            mapper.Map<PlayerDto>(onlineFriend) : 
             await playerRepository.GetPlayerByIdAsync(playerId);
         
         var newFriendData = new FriendData
@@ -103,7 +102,7 @@ public class PlayerChangeRelationshipEventHandler(
                     Friend = newFriendData,
                     FriendOnline = isOnline,
                     FriendInRoom = inRoom,
-                    Relation = (PlayerRelationshipType)relationId
+                    Relation = (Core.Enums.Game.Players.PlayerRelationshipType) relationId
                 }
             ]
         };

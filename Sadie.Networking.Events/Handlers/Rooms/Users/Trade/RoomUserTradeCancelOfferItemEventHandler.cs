@@ -1,6 +1,6 @@
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
@@ -22,7 +22,7 @@ public class RoomUserTradeCancelOfferItemEventHandler(IRoomRepository roomReposi
         }
 
         var player = client.Player;
-        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+        var playerItem = player.Player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (playerItem == null)
         {

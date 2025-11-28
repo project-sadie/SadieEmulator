@@ -1,11 +1,10 @@
 ﻿using Sadie.API;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking;
-using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Players;
+using Sadie.API.DTOs.Player;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers;
-using Sadie.Shared.Attributes;
-using PlayerRelationshipType = Sadie.Enums.Game.Players.PlayerRelationshipType;
 
 namespace Sadie.Game.Players.Packets.Writers;
 
@@ -15,11 +14,11 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
     public required int Pages { get; init; }
     public required int Index { get; init; }
     public required long PlayerId { get; init; }
-    public required ICollection<PlayerFriendship> Friends { get; init; }
+    public required ICollection<PlayerFriendshipDto> Friends { get; init; }
     public required IPlayerRepository PlayerRepository { get; init; }
-    public required ICollection<PlayerRelationship> Relationships { get; init; }
+    public required ICollection<PlayerRelationshipDto> Relationships { get; init; }
 
-    public override void OnSerialize(INetworkPacketWriter writer)
+    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Pages);
         writer.WriteInteger(Index);

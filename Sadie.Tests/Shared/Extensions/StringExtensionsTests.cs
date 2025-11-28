@@ -1,4 +1,4 @@
-using Sadie.Shared.Extensions;
+using Sadie.Core.Shared.Extensions;
 
 namespace Sadie.Tests.Shared.Extensions;
 

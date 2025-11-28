@@ -1,20 +1,26 @@
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
+using AutoMapper;
+using Moq;
+using Sadie.API.DTOs.Player.Furniture;
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Services;
+using Sadie.Tests.Common;
 
 namespace Sadie.Tests.Game.Rooms.Services;
 
-public class RoomWiredServiceTests : RoomMockHelpers
+public class RoomWiredServiceTests : MockHelpers
 {
     [Test]
     public void GetEffectsForTrigger_TriggersInStack_ReturnsJustEffects()
     {
-        var furnitureItemHelperService = new RoomFurnitureItemHelperService();
-        var wiredService = new RoomWiredService(furnitureItemHelperService);
+        var dbFactory = TestDbFactory.CreateDbFactory();
+        var playerRepository = CreatePlayerRepositoryMock();
+        var mapper = new Mock<IMapper>();
+        var furnitureItemHelperService = new RoomFurnitureItemHelperService(dbFactory, playerRepository.Object, mapper.Object);
+        var wiredService = new RoomWiredService(dbFactory, furnitureItemHelperService);
         var trigger = MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredTriggerEnterRoom);
         
-        var items = new List<PlayerFurnitureItemPlacementData>
+        var items = new List<PlayerFurnitureItemPlacementDataDto>
         {
             trigger,
             MockFurnitureItemPlacementData(FurnitureItemInteractionType.WiredEffectShowMessage, 0, 0, 1),

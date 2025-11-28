@@ -1,9 +1,11 @@
+using System.Threading.Channels;
 using DotNetty.Transport.Channels;
 using Sadie.API;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Packets;
 using Sadie.Networking.Codecs.Encryption;
 using Sadie.Networking.Serialization;
 
@@ -28,6 +30,15 @@ public class NetworkClient(
     }
 
     public DateTime LastPing { get; set; } = DateTime.Now;
+    public DateTime LastPong { get; set; } = DateTime.Now;
+    
+    public Channel<INetworkPacket> IncomingPackets { get; }
+        = System.Threading.Channels.Channel .CreateUnbounded<INetworkPacket>(new UnboundedChannelOptions
+        {
+            SingleReader = true,
+            SingleWriter = false,
+            AllowSynchronousContinuations = false
+        });
 
     public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
@@ -36,7 +47,7 @@ public class NetworkClient(
             return;
         }
 
-        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
+        var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
         await Channel.WriteAndFlushAsync(serializedObject);
     }
 

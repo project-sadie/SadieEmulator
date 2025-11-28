@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using Sadie.API.Game.Rooms.Bots;
+using Sadie.API.Interfaces.Game.Rooms.Bots;
 using Serilog;
 
 namespace Sadie.Game.Rooms.Bots;

@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Enums.Game.Players;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -26,25 +26,25 @@ public class PlayerRemoveUserIgnoreEventHandler(IPlayerRepository playerReposito
         
         var targetPlayer = playerRepository.GetPlayerLogicByUsername(Username);
         
-        if (targetPlayer == null || player.Ignores.All(x => x.TargetPlayerId != targetPlayer.Id))
+        if (targetPlayer == null || player.Player.Ignores.All(x => x.TargetPlayerId != targetPlayer.Player.Id))
         {
             return;
         }
 
-        var ignore = player.Ignores.FirstOrDefault(x => x.TargetPlayerId == targetPlayer.Id);
+        var ignore = player.Player.Ignores.FirstOrDefault(x => x.TargetPlayerId == targetPlayer.Player.Id);
 
         if (ignore == null)
         {
             return;
         }
 
-        player.Ignores.Remove(ignore);
+        player.Player.Ignores.Remove(ignore);
 
         await player.NetworkObject.WriteToStreamAsync(
             new PlayerIgnoreStateWriter
             {
                 State = (int) PlayerIgnoreState.NotIgnored,
-                Username = targetPlayer.Username,
+                Username = targetPlayer.Player.Username
             });
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();

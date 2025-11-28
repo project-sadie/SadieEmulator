@@ -1,20 +1,23 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Rooms.Rights;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms.Rights;
-using Sadie.Enums.Game.Rooms;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Rights;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 
 [PacketId(EventHandlerId.RoomGiveUserRights)]
 public class RoomGiveUserRightsEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IRoomRepository roomRepository) : INetworkPacketEventHandler
+    IRoomRepository roomRepository,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public int PlayerId { get; init; }
     
@@ -30,16 +33,16 @@ public class RoomGiveUserRightsEventHandler(
             return;
         }
 
-        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId) != null)
+        if (room.Room.PlayerRights.FirstOrDefault(x => x.PlayerId == playerId) != null)
         {
             return;
         }
 
         await room.UserRepository.BroadcastDataAsync(new RoomGiveUserRightsWriter 
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             PlayerId = playerId,
-            PlayerUsername = player.Username
+            PlayerUsername = player.Player.Username
         });
 
         if (room.UserRepository.TryGetById(playerId, out var targetRoomUser))
@@ -53,17 +56,19 @@ public class RoomGiveUserRightsEventHandler(
             });
         }
         
-        var roomPlayerRight = new RoomPlayerRight
+        var roomPlayerRight = new RoomPlayerRightDto
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             PlayerId = playerId,
             CreatedAt = DateTime.Now
         };
         
-        room.PlayerRights.Add(roomPlayerRight);
+        room.Room.PlayerRights.Add(roomPlayerRight);
+        
+        var entity = mapper.Map<RoomPlayerRight>(roomPlayerRight);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.RoomPlayerRights.Add(roomPlayerRight);
+        dbContext.RoomPlayerRights.Add(entity);
         await dbContext.SaveChangesAsync();
     }
 }

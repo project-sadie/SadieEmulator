@@ -1,10 +1,10 @@
 using System.Drawing;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Pathfinding;
-using Sadie.API.Game.Rooms.Unit;
-using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Miscellaneous;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding;
+using Sadie.API.Interfaces.Game.Rooms.Unit;
+using Sadie.Core.Enums.Game.Rooms.Users;
+using Sadie.Core.Enums.Miscellaneous;
 
 namespace Sadie.Game.Rooms.Unit;
 
@@ -51,8 +51,8 @@ public class RoomUnitData(
             OnReachedGoal = null;
         }
     }
-    
-    protected Action? OnReachedGoal { get; set; }
+
+    private Action? OnReachedGoal { get; set; }
 
     public void CheckStatusForCurrentTile()
     {
@@ -61,7 +61,7 @@ public class RoomUnitData(
             return;
         }
         
-        var tileItems = tileMapHelperService.GetItemsForPosition(Point.X, Point.Y, room.FurnitureItems);
+        var tileItems = tileMapHelperService.GetItemsForPosition(Point.X, Point.Y, room.Room.FurnitureItems);
 
         if (tileItems.Count == 0)
         {
@@ -71,36 +71,38 @@ public class RoomUnitData(
 
         var topItem = tileItems.MaxBy(item => item.PositionZ);
 
-        if (topItem != null)
+        if (topItem == null)
         {
-            if (topItem.FurnitureItem.CanSit)
-            {
-                AddStatus(
-                    RoomUserStatus.Sit, 
-                    (topItem.FurnitureItem.StackHeight * 1.0D).ToString());
-            
-                Direction = topItem.Direction;
-                DirectionHead = topItem.Direction;
-            }
-            else if (topItem.FurnitureItem.CanLay)
-            {
-                AddStatus(
-                    RoomUserStatus.Lay, 
-                    (topItem.FurnitureItem.StackHeight + 0.1).ToString());
-            
-                Direction = topItem.Direction;
-                DirectionHead = topItem.Direction;
-            }
-            else
-            {
-                RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
-            }
+            return;
         }
         
-        var topItemSitOrLay = topItem?.FurnitureItem is { CanSit: false, CanLay: false };
-        var zHeightNextStep = topItem?.FurnitureItem == null ?
-            PointZ : 
-            topItem.PositionZ + (topItemSitOrLay ? topItem.FurnitureItem.StackHeight : 0);
+        var topFurnitureItem = topItem.PlayerFurnitureItem.FurnitureItem;
+
+        if (topFurnitureItem.CanSit)
+        {
+            AddStatus(
+                RoomUserStatus.Sit, 
+                (topFurnitureItem.StackHeight * 1.0D).ToString());
+            
+            Direction = topItem.Direction;
+            DirectionHead = topItem.Direction;
+        }
+        else if (topFurnitureItem.CanLay)
+        {
+            AddStatus(
+                RoomUserStatus.Lay, 
+                (topFurnitureItem.StackHeight + 0.1).ToString());
+            
+            Direction = topItem.Direction;
+            DirectionHead = topItem.Direction;
+        }
+        else
+        {
+            RemoveStatuses(RoomUserStatus.Sit, RoomUserStatus.Lay);
+        }
+        
+        var topItemSitOrLay = topFurnitureItem is { CanSit: false, CanLay: false };
+        var zHeightNextStep = topItem.PositionZ + (topItemSitOrLay ? topFurnitureItem.StackHeight : 0);
         
         PointZ = zHeightNextStep;
     }
@@ -112,7 +114,7 @@ public class RoomUnitData(
 
     private void CalculatePath()
     {
-        PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Settings.WalkDiagonal, OverridePoints);
+        PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Room.Settings.WalkDiagonal, OverridePoints);
 
         if (PathPoints.Count > 1)
         {
@@ -129,7 +131,7 @@ public class RoomUnitData(
     public void WalkToPoint(Point point, Action? onReachedGoal = null)
     {
         if (room.TileMap.UsersAtPoint(point) &&
-            !room.Settings.CanUsersOverlap)
+            !room.Room.Settings.CanUsersOverlap)
         {
             return;
         }
@@ -150,6 +152,12 @@ public class RoomUnitData(
             
             PointZ = NextZ;
             NextPoint = null;
+
+            if (Point == PathGoal)
+            {
+                ClearWalking();
+                return;
+            }
         }
         
         if (NeedsPathCalculated)
@@ -165,13 +173,13 @@ public class RoomUnitData(
 
     private async Task ProcessMovementAsync()
     {
-        if (Point.X == PathGoal.X && Point.Y == PathGoal.Y || StepsWalked >= PathPoints.Count)
+        StepsWalked++;
+
+        if (StepsWalked >= PathPoints.Count)
         {
             ClearWalking();
             return;
         }
-        
-        StepsWalked++;
         
         var nextStep = PathPoints[StepsWalked];
         var lastStep = PathPoints.Count == StepsWalked + 1;
@@ -183,16 +191,17 @@ public class RoomUnitData(
             NeedsPathCalculated = true;
             return;
         }
-
+        
         var topItemNextStep = tileMapHelperService
-            .GetItemsForPosition(nextStep.X, nextStep.Y, room.FurnitureItems)
+            .GetItemsForPosition(nextStep.X, nextStep.Y, room.Room.FurnitureItems)
             .MaxBy(x => x.PositionZ);
 
-        var topItemSitOrLay = topItemNextStep?.FurnitureItem is { CanSit: false, CanLay: false };
+        var topFurnitureItem = topItemNextStep?.PlayerFurnitureItem.FurnitureItem;
+        var topItemSitOrLay = topFurnitureItem is { CanSit: false, CanLay: false };
         
-        var zHeightNextStep = topItemNextStep?.FurnitureItem == null ?
+        var zHeightNextStep = topItemNextStep == null || topFurnitureItem == null ?
             room.TileMap.ZMap[nextStep.Y, nextStep.X] : 
-            topItemNextStep.PositionZ + (topItemSitOrLay ? topItemNextStep.FurnitureItem.StackHeight : 0);
+            topItemNextStep.PositionZ + (topItemSitOrLay ? topFurnitureItem.StackHeight : 0);
 
         ClearStatuses();
 

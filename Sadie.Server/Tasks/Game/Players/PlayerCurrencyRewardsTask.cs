@@ -1,7 +1,9 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking;
+using Sadie.API.DTOs.Server;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
 using Sadie.Networking.Events;
@@ -14,7 +16,8 @@ public class PlayerCurrencyRewardsTask(
     List<ServerPeriodicCurrencyReward> rewards, 
     IPlayerRepository playerRepository,
     ServerSettings serverSettings,
-    IRoomUserRepository roomUserRepository) : IServerTask
+    IRoomUserRepository roomUserRepository,
+    IMapper mapper) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
     public DateTime LastExecuted { get; set; }
@@ -39,12 +42,12 @@ public class PlayerCurrencyRewardsTask(
     private async Task CheckRewardsForPlayersAsync(ServerPeriodicCurrencyReward reward)
     {
         var players = playerRepository.GetAll();
-        var logs = new List<ServerPeriodicCurrencyRewardLog>();
+        var logs = new List<ServerPeriodicCurrencyRewardLogDto>();
         
         foreach (var player in players)
         {
             var failIdleCheck = reward.SkipIdle && 
-                roomUserRepository.TryGetById(player.Id, out var roomUser) && 
+                roomUserRepository.TryGetById(player.Player.Id, out var roomUser) && 
                 roomUser!.IsIdle;
             
             var failRoomCheck = reward.SkipHotelView && 
@@ -60,20 +63,22 @@ public class PlayerCurrencyRewardsTask(
 
             await RewardPlayerAsync(player, reward);
 
-            var log = new ServerPeriodicCurrencyRewardLog
+            var log = new ServerPeriodicCurrencyRewardLogDto
             {
-                PlayerId = player.Id,
+                PlayerId = player.Player.Id,
                 Type = reward.Type,
                 Amount = reward.Amount,
                 CreatedAt = DateTime.Now
             };
             
-            player.RewardLogs.Add(log);
+            player.Player.RewardLogs.Add(log);
             logs.Add(log);
         }
 
+        var entityLogs = mapper.Map<List<ServerPeriodicCurrencyRewardLog>>(logs);
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(logs);
+        await dbContext.ServerPeriodicCurrencyRewardLogs.AddRangeAsync(entityLogs);
         await dbContext.SaveChangesAsync();
     }
 
@@ -84,27 +89,27 @@ public class PlayerCurrencyRewardsTask(
         switch (reward.Type)
         {
             case "credits":
-                player.Data.CreditBalance += reward.Amount;
+                player.Player.Data.CreditBalance += reward.Amount;
                 
                 writer = new PlayerCreditsBalanceWriter
                 {
-                    Credits = player.Data.CreditBalance
+                    Credits = player.Player.Data.CreditBalance
                 };
                 break;
             case "pixels":
-                player.Data.PixelBalance += reward.Amount;
+                player.Player.Data.PixelBalance += reward.Amount;
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
+                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
                 };
                 break;
             case "seasonal":
-                player.Data.SeasonalBalance += reward.Amount;
+                player.Player.Data.SeasonalBalance += reward.Amount;
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
+                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
                 };
                 break;
         }

@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
-using Sadie.Database.Mappers;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
+using Sadie.Game.Catalog;
 using Sadie.Game.Locale;
+using Sadie.Game.Mappers;
 using Sadie.Game.Navigator;
 using Sadie.Game.Players;
 using Sadie.Game.Rooms;
@@ -39,6 +40,7 @@ public static class ServerServiceCollection
         EncryptionServiceProvider.AddServices(serviceCollection, config);
         
         LocaleServiceCollection.AddServices(serviceCollection);
+        CatalogServiceCollection.AddServices(serviceCollection, config);
         
         serviceCollection.AddDbContextFactory<SadieMigrationsDbContext>();
 
@@ -49,6 +51,7 @@ public static class ServerServiceCollection
         serviceCollection.RegisterRoomChatCommands(assemblies);
         serviceCollection.RegisterFurnitureInteractors(assemblies);
         serviceCollection.RegisterRoomFurnitureProcessors(assemblies);
+        serviceCollection.RegisterPluginServices(assemblies);
         
         serviceCollection.Scan(scan => scan
             .FromAssemblies(assemblies)

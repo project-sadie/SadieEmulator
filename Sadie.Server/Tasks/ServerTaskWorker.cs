@@ -13,8 +13,8 @@ public class ServerTaskWorker(
         {
             foreach (var task in tasks.Where(task => task.WaitingToExecute()))
             {
+                await ProcessTaskAsync(task);
                 task.LastExecuted = DateTime.Now;
-                ProcessTaskAsync(task);
             }
 
             await Task.Delay(50, token);

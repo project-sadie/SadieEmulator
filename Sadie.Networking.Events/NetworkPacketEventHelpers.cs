@@ -1,17 +1,19 @@
 ﻿using Sadie.API;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Chat.Commands;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking.Client;
+using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Rooms.Chat;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Chat.Commands;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Enums.Game.Rooms.Furniture;
+using Sadie.Core.Enums.Miscellaneous;
+using Sadie.Core.Shared.Helpers;
 using Sadie.Db.Models.Constants;
-using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Players;
-using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Handshake;
 using Sadie.Networking.Writers.Moderation;
@@ -24,8 +26,6 @@ using Sadie.Networking.Writers.Players.Permission;
 using Sadie.Networking.Writers.Players.Rooms;
 using Sadie.Networking.Writers.Players.Subscriptions;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Helpers;
-using RoomChatMessage = Sadie.Db.Models.Rooms.Chat.RoomChatMessage;
 
 namespace Sadie.Networking.Events;
 
@@ -33,7 +33,7 @@ public static class NetworkPacketEventHelpers
 {
     public static async Task SendPlayerSubscriptionPacketsAsync(IPlayerLogic player)
     {
-        foreach (var playerSub in player.Subscriptions)
+        foreach (var playerSub in player.Player.Subscriptions)
         {
             var tillExpire = playerSub.ExpiresAt - playerSub.CreatedAt;
             var daysLeft = (int)tillExpire.TotalDays;
@@ -61,8 +61,8 @@ public static class NetworkPacketEventHelpers
     
     public static async Task SendLoginPacketsToPlayerAsync(INetworkObject networkObject, IPlayerLogic player)
     {
-        var playerData = player.Data;
-        var playerSubscriptions = player.Subscriptions;
+        var playerData = player.Player.Data;
+        var playerSubscriptions = player.Player.Subscriptions;
 
         await networkObject.WriteToStreamAsync(new NoobnessLevelWriter
         {
@@ -92,13 +92,13 @@ public static class NetworkPacketEventHelpers
         await networkObject.WriteToStreamAsync(new PlayerPermissionsWriter
         {
             Club = playerSubscriptions.Any(x => x.Subscription.Name == "HABBO_CLUB") ? 2 : 0,
-            Rank = player.Roles.Count != 0 ? player.Roles.Max(x => x.Id) : 1,
+            Rank = player.Player.Roles.Count != 0 ? player.Player.Roles.Max(x => x.Id) : 1,
             Ambassador = true
         });
 
         var navigatorSettingsWriter = new PlayerNavigatorSettingsWriter
         {
-            NavigatorSettings = player.NavigatorSettings!
+            NavigatorSettings = player.Player.NavigatorSettings!
         };
 
         var statusWriter = new PlayerStatusWriter
@@ -113,7 +113,7 @@ public static class NetworkPacketEventHelpers
 
         await networkObject.WriteToStreamAsync(new PlayerNotificationSettingsWriter
         {
-            ShowNotifications = player.GameSettings.ShowNotifications
+            ShowNotifications = player.Player.GameSettings.ShowNotifications
         });
 
         await networkObject.WriteToStreamAsync(new PlayerAchievementScoreWriter
@@ -171,7 +171,7 @@ public static class NetworkPacketEventHelpers
     {
         await client.WriteToStreamAsync(new BubbleAlertWriter
         {
-            Key = EnumHelpers.GetEnumDescription(NotificationType.FurniturePlacementError)!,
+            Key = EnumHelpers.GetEnumDescription(NotificationType.FurniturePlacementError),
             Messages = new Dictionary<string, string>
             {
                 { "message", error.ToString() }
@@ -213,18 +213,16 @@ public static class NetworkPacketEventHelpers
     {
         if (message.Length >= 9 && message[..9] == ":commands")
         {
-
-            if (
-                TryResolveRoomObjectsForClient(roomRepository, client, out var room2, out var roomUser2))
+            if (TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUserForCommands))
             {
-                await roomUser2.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
+                await roomUserForCommands.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
                 {
-                    UserId = (int) roomUser2.Player.Id,
+                    UserId = (int)roomUserForCommands.Player.Player.Id,
                     EffectId = new Random().Next(1, 100),
                     DelayMs = 0
                 });
             }
-            
+
             await ShowCommandsAsync(commandRepository, client);
             return;
         }
@@ -240,10 +238,10 @@ public static class NetworkPacketEventHelpers
             return;
         }
         
-        var chatMessage = new RoomChatMessage()
+        var chatMessage = new RoomChatMessageDto
         {
-            RoomId = room.Id,
-            PlayerId = roomUser.Player.Id,
+            RoomId = room.Room.Id,
+            PlayerId = roomUser.Player.Player.Id,
             Message = message,
             ChatBubbleId = bubble,
             EmotionId = roomHelperService.GetEmotionFromMessage(message),
@@ -255,15 +253,15 @@ public static class NetworkPacketEventHelpers
             .UserRepository
             .GetAll()
             .Where(x =>
-                x.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Id))
-            .Select(x => x.Player.Id)
+                x.Player.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Player.Id))
+            .Select(x => x.Player.Player.Id)
             .ToList();
 
         if (shouting)
         {
             var writer = new RoomUserShoutWriter
             {
-                SenderId = roomUser.Player.Id,
+                SenderId = roomUser.Player.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
@@ -277,7 +275,7 @@ public static class NetworkPacketEventHelpers
         {
             var writer = new RoomUserChatWriter
             {
-                SenderId = roomUser.Player.Id,
+                SenderId = roomUser.Player.Player.Id,
                 Message = message,
                 EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
                 ChatBubbleId = (int)bubble,
@@ -288,10 +286,10 @@ public static class NetworkPacketEventHelpers
             await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
         }
         
-        room.ChatMessages.Add(chatMessage);
+        room.Room.ChatMessages.Add(chatMessage);
 
         var triggers = wiredService.GetTriggers(
-            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.FurnitureItems, message);
+            FurnitureItemInteractionType.WiredTriggerSaysSomething, room.Room.FurnitureItems, message);
         
         foreach (var trigger in triggers)
         {
@@ -332,7 +330,7 @@ public static class NetworkPacketEventHelpers
         return true;
     }
     
-    public static Dictionary<int, long> GetPlayerCurrencyMapFromData(PlayerData playerData)
+    public static Dictionary<int, long> GetPlayerCurrencyMapFromData(PlayerDataDto playerData)
     {
         return new Dictionary<int, long>
         {

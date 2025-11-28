@@ -1,16 +1,17 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Db.Models.Rooms;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Rooms;
-using Sadie.Enums.Game.Players;
-using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Miscellaneous;
 
 namespace Sadie.Networking.Events;
 
@@ -51,22 +52,24 @@ public static class RoomHelpers
             return null;
         }
 
-        var roomLogic = mapper.Map<IRoomLogic>(room);
+        var roomDto = mapper.Map<RoomDto>(room);
+        var roomLogic = mapper.Map<IRoomLogic>(roomDto);
+        
         roomRepository.AddRoom(roomLogic);
 
         return roomLogic;
     }
     
-    private static RoomControllerLevel GetControllerLevelForUser(IRoom room, IPlayerLogic player)
+    private static RoomControllerLevel GetControllerLevelForUser(IRoomLogic room, IPlayerLogic player)
     {
         var controllerLevel = RoomControllerLevel.None;
         
-        if (room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Id) != null)
+        if (room.Room.PlayerRights.FirstOrDefault(x => x.PlayerId == player.Player.Id) != null)
         {
             controllerLevel = RoomControllerLevel.Rights;
         }
 
-        if (room.OwnerId == player.Id)
+        if (room.Room.OwnerId == player.Player.Id)
         {
             controllerLevel = RoomControllerLevel.Owner;
         }
@@ -110,19 +113,22 @@ public static class RoomHelpers
     public static async Task CreateRoomVisitForPlayerAsync(
         IPlayerLogic player, 
         int roomId, 
-        IDbContextFactory<SadieDbContext> dbContextFactory)
+        IDbContextFactory<SadieDbContext> dbContextFactory,
+        IMapper mapper)
     {
-        var roomVisit = new PlayerRoomVisit
+        var roomVisit = new PlayerRoomVisitDto
         {
-            PlayerId = player.Id,
+            PlayerId = player.Player.Id,
             RoomId = roomId,
             CreatedAt = DateTime.Now
         };
         
-        player.RoomVisits.Add(roomVisit);
+        player.Player.RoomVisits.Add(roomVisit);
+        
+        var roomVisitEntity = mapper.Map<PlayerRoomVisit>(roomVisit);
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.PlayerRoomVisits.Add(roomVisit);
+        dbContext.PlayerRoomVisits.Add(roomVisitEntity);
         await dbContext.SaveChangesAsync();
     }
 }

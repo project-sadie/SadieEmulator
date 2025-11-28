@@ -1,4 +1,4 @@
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Networking.Client;
 
 namespace SadieEmulator.Tasks.Networking;
 

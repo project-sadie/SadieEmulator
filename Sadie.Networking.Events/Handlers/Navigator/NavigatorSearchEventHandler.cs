@@ -1,13 +1,16 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Navigator;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Navigator;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Navigator;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Navigator;
-using Sadie.Db.Models.Rooms;
 using Sadie.Networking.Writers.Navigator;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 
@@ -15,7 +18,9 @@ namespace Sadie.Networking.Events.Handlers.Navigator;
 public class NavigatorSearchEventHandler(
     IDbContextFactory<SadieDbContext> dbContextFactory,
     INavigatorRoomProvider navigatorRoomProvider,
-    IRoomRepository roomRepository)
+    IRoomRepository roomRepository,
+    IPlayerRepository playerRepository,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public string? TabName { get; set; }
@@ -39,16 +44,18 @@ public class NavigatorSearchEventHandler(
             return;
         }
 
-        var categories = tab.
+        var dbCategories = tab.
             Categories.
             OrderBy(x => x.OrderId).
             ToList();
+        
+        var categories = mapper.Map<List<NavigatorCategoryDto>>(dbCategories);
 
-        var categoryRoomMap = new Dictionary<NavigatorCategory, List<Room>>();
+        var categoryRoomMap = new Dictionary<NavigatorCategoryDto, List<RoomDto>>();
 
         if (!string.IsNullOrEmpty(SearchQuery))
         {
-            categoryRoomMap[new NavigatorCategory
+            categoryRoomMap[new NavigatorCategoryDto
             {
                 Name = "Search Results",
                 CodeName = "",
@@ -69,9 +76,10 @@ public class NavigatorSearchEventHandler(
             TabName = TabName,
             SearchQuery = SearchQuery,
             CategoryRoomMap = categoryRoomMap,
-            RoomRepository = roomRepository
+            RoomRepository = roomRepository,
+            PlayerRepository = playerRepository
         };
-        
+
         await client.WriteToStreamAsync(searchResultPagesWriter);
     }
 }

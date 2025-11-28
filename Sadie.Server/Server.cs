@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Game.Catalog;
+using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
 using Sadie.Game.Players.Options;
 using Sadie.Networking;
@@ -20,7 +20,7 @@ public class Server(ILogger<Server> logger,
     IDbContextFactory<SadieMigrationsDbContext> dbContextFactoryMigrate,
     IOptions<PlayerOptions> playerOptions,
     INetworkClientRepository networkClientRepository,
-    IConfiguration config) : IServer
+    ICatalogPageRepository catalogPageRepository) : IServer
 {
     private readonly CancellationTokenSource _tokenSource = new();
     
@@ -39,6 +39,9 @@ public class Server(ILogger<Server> logger,
         }
         
         taskWorker.WorkAsync(_tokenSource.Token);
+        
+        Log.Logger.Information("Loading catalog pages...");
+        await catalogPageRepository.LoadAsync();
 
         stopwatch.Stop();
 

@@ -1,11 +1,11 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -24,7 +24,7 @@ public class RoomCloseDiceEventHandler(
             .Room;
         
         var roomFurnitureItem = room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
 
         if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem.MetaData == "-1")

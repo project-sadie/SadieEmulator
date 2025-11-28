@@ -1,4 +1,4 @@
-﻿using Sadie.API.Game.Players.Effects;
+﻿using Sadie.API.Interfaces.Game.Players.Effects;
 
 namespace Sadie.Game.Players.Effects;
 
