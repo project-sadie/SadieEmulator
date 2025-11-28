@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.DTOs.Player.Furniture;
 using Sadie.API.Interfaces.Game.Players;
@@ -7,13 +8,15 @@ using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
+using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture;
 
 public class RoomFurnitureItemHelperService(
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IPlayerRepository playerRepository) : IRoomFurnitureItemHelperService
+    IPlayerRepository playerRepository,
+    IMapper mapper) : IRoomFurnitureItemHelperService
 {
     public async Task CycleInteractionStateForItemAsync(
         IRoomLogic room, 
@@ -41,8 +44,10 @@ public class RoomFurnitureItemHelperService(
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
+        var playerFurnitureItemEntity = mapper.Map<PlayerFurnitureItem>(roomFurnitureItem.PlayerFurnitureItem);
+        
         dbContext
-            .Entry(roomFurnitureItem.PlayerFurnitureItem)
+            .Entry(playerFurnitureItemEntity)
             .Property(x => x.MetaData).IsModified = true;
         
         await dbContext.SaveChangesAsync();

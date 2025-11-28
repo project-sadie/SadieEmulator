@@ -18,5 +18,8 @@ public class FurnitureItemProfile : Profile
         CreateMap<PlayerFurnitureItemDto, PlayerFurnitureItem>()
             .ForMember(dest => dest.FurnitureItem, opt => opt.Ignore())
             .ForMember(dest => dest.FurnitureItemId, opt => opt.MapFrom(src => src.FurnitureItem.Id));
+        
+        CreateMap<PlayerFurnitureItemPlacementData, PlayerFurnitureItemPlacementDataDto>()
+            .ReverseMap();
     }
 }
