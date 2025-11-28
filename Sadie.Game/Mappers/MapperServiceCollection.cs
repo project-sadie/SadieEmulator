@@ -12,7 +12,8 @@ public static class MapperServiceCollection
             typeof(RoomProfile),
             typeof(PlayerProfile),
             typeof(NavigatorProfile),
-            typeof(CatalogProfile)
+            typeof(CatalogProfile),
+            typeof(FurnitureItemProfile)
         };
         
         foreach (var profile in profiles)

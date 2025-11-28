@@ -141,6 +141,7 @@ public class CatalogPurchaseEventHandler(
             var newItem = new PlayerFurnitureItemDto
             {
                 PlayerId = client.Player.Player.Id,
+                FurnitureItemId = furnitureItem.Id,
                 FurnitureItem = furnitureItem,
                 LimitedData = "1:1",
                 MetaData = MetaData ?? "",
@@ -150,9 +151,9 @@ public class CatalogPurchaseEventHandler(
             client.Player.Player.FurnitureItems.Add(newItem);
 
             var newEntity = mapper.Map<PlayerFurnitureItem>(newItem);
+            
             dbContext.PlayerFurnitureItems.Add(newEntity);
             
-            dbContext.Entry(newItem).State = EntityState.Added;
             newItems.Add(newItem);
         }
 
@@ -178,6 +179,7 @@ public class CatalogPurchaseEventHandler(
         var parent = new PlayerFurnitureItemDto
         {
             PlayerId = client.Player!.Player.Id,
+            FurnitureItemId = furnitureItem.Id,
             FurnitureItem = furnitureItem,
             LimitedData = "1:1",
             MetaData = MetaData ?? "",
@@ -187,6 +189,7 @@ public class CatalogPurchaseEventHandler(
         var child = new PlayerFurnitureItemDto
         {
             PlayerId = client.Player.Player.Id,
+            FurnitureItemId = furnitureItem.Id,
             FurnitureItem = furnitureItem,
             LimitedData = "1:1",
             MetaData = MetaData ?? "",

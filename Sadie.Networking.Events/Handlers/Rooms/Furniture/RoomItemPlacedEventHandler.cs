@@ -135,10 +135,11 @@ public class RoomItemPlacedEventHandler(
             }
 
             await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            dbContext.Entry(roomFurniturePlacementData.PlayerFurnitureItem).State = EntityState.Unchanged;
+            var roomFurnitureItemEntity = mapper.Map<PlayerFurnitureItem>(roomFurniturePlacementData.PlayerFurnitureItem);
+            dbContext.Entry(roomFurnitureItemEntity).State = EntityState.Unchanged;
             
-            var roomFurnitureItemEntity = mapper.Map<PlayerFurnitureItemPlacementData>(roomFurniturePlacementData);
-            dbContext.RoomFurnitureItems.Add(roomFurnitureItemEntity);
+            var roomFurnitureItemPlacementDataEntity = mapper.Map<PlayerFurnitureItemPlacementData>(roomFurniturePlacementData);
+            dbContext.RoomFurnitureItems.Add(roomFurnitureItemPlacementDataEntity);
         
             await dbContext.SaveChangesAsync();
 

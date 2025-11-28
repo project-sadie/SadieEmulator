@@ -1,5 +1,5 @@
 using Sadie.API.DTOs.Catalog.FrontPage;
-using Sadie.API.DTOs.Catalog.Pages;
+using Sadie.API.Interfaces.Game.Catalog;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
@@ -10,7 +10,7 @@ namespace Sadie.Networking.Events.Handlers.Catalog;
 [PacketId(EventHandlerId.CatalogPage)]
 public class CatalogPageEventHandler(
     List<CatalogFrontPageItemDto> catalogFrontPageItems,
-    List<CatalogPageDto> catalogPages) : INetworkPacketEventHandler
+    ICatalogPageRepository pageRepository) : INetworkPacketEventHandler
 {
     public int PageId { get; set; }
     public int OfferId { get; set; }
@@ -18,7 +18,8 @@ public class CatalogPageEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var page = catalogPages
+        var page = pageRepository
+            .Pages
             .FirstOrDefault(x => x.Id == PageId);
 
         if (page is not { Enabled: true } || !page.Visible)

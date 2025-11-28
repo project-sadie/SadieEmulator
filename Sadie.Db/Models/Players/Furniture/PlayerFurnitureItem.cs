@@ -8,7 +8,8 @@ public class PlayerFurnitureItem
     public long PlayerId { get; set; }
 
     public required Player Player { get; set; }
-    public required FurnitureItem FurnitureItem { get; init; }
+    public required int FurnitureItemId { get; set; }
+    public required FurnitureItem FurnitureItem { get; set; }
 
     public PlayerFurnitureItemPlacementData? PlacementData { get; set; }
 

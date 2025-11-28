@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
+using Sadie.Game.Catalog;
 using Sadie.Game.Locale;
 using Sadie.Game.Mappers;
 using Sadie.Game.Navigator;
@@ -39,6 +40,7 @@ public static class ServerServiceCollection
         EncryptionServiceProvider.AddServices(serviceCollection, config);
         
         LocaleServiceCollection.AddServices(serviceCollection);
+        CatalogServiceCollection.AddServices(serviceCollection, config);
         
         serviceCollection.AddDbContextFactory<SadieMigrationsDbContext>();
 
