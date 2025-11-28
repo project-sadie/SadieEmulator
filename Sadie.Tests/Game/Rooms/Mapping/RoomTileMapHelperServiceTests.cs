@@ -92,6 +92,7 @@ public class RoomTileMapHelperServiceTests
             {
                 PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
+                    FurnitureItemId = 0,
                     FurnitureItem = new FurnitureItemDto
                     {
                         CanSit = true,
@@ -100,7 +101,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = ""
+                    MetaData = "",
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -118,6 +119,7 @@ public class RoomTileMapHelperServiceTests
             {
                 PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
+                    FurnitureItemId = 0,
                     FurnitureItem = new FurnitureItemDto
                     {
                         CanLay = true,
@@ -144,6 +146,7 @@ public class RoomTileMapHelperServiceTests
             {
                 PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
+                    FurnitureItemId = 0,
                     FurnitureItem = new FurnitureItemDto
                     {
                         CanWalk = false,
@@ -152,7 +155,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "1"
+                    MetaData = "1",
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -169,6 +172,7 @@ public class RoomTileMapHelperServiceTests
         {
             new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
+                    FurnitureItemId = 0,
                     FurnitureItem = new FurnitureItemDto
                     {
                         Name = "",
@@ -199,7 +203,8 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = ""
+                    MetaData = "",
+                    FurnitureItemId = 0
                 }
             }
         };
@@ -569,7 +574,8 @@ public class RoomTileMapHelperServiceTests
                     CanSit = canSit,
                     Name = "",
                     AssetName = ""
-                }
+                },
+                FurnitureItemId = 0
             },
             PositionX = x,
             PositionY = y,

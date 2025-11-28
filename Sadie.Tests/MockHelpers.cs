@@ -63,6 +63,7 @@ public class MockHelpers
         {
             PlayerFurnitureItem = new PlayerFurnitureItemDto
             {
+                FurnitureItemId = 0,
                 FurnitureItem = new FurnitureItemDto
                 {
                     InteractionType = interactionType,
