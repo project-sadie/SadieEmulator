@@ -40,7 +40,7 @@ public class RoomUserTrade(
         
         foreach (var roomUser in Users)
         {
-            await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
+            _ = roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
         }
     }
     

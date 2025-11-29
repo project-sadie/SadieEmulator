@@ -80,7 +80,7 @@ public class RoomUser(
         {
             HandItemId = 0;
         
-            await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
+            await room.BroadcastDataAsync(new RoomUserHandItemWriter
             {
                 UserId = Player.Player.Id,
                 ItemId = 0
@@ -161,7 +161,7 @@ public class RoomUser(
                 IsIdle = IsIdle
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer);
+            await room.BroadcastDataAsync(writer);
         }
     }
 
@@ -196,7 +196,7 @@ public class RoomUser(
             DelayMs = 0
         };
 
-        await Room.UserRepository.BroadcastDataAsync(writer);
+        await Room.BroadcastDataAsync(writer);
     }
     
     public async ValueTask DisposeAsync()
