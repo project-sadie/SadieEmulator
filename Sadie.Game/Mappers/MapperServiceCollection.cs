@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Sadie.Game.Mappers;
 
@@ -29,6 +30,6 @@ public static class MapperServiceCollection
             }
 
             c.ShouldMapProperty = p => p.GetIndexParameters().Length == 0;
-        }).CreateMapper());
+        }, provider.GetRequiredService<ILoggerFactory>()).CreateMapper());
     }
 }

@@ -74,7 +74,7 @@ public class RoomPaintItemPlacedEventHandler(
             ItemId = ItemId
         });
         
-        await room.UserRepository.BroadcastDataAsync(new RoomPaintWriter
+        await room.BroadcastDataAsync(new RoomPaintWriter
         {
             Type = playerItem.FurnitureItem.AssetName,
             Value = playerItem.MetaData

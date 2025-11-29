@@ -78,12 +78,12 @@ public class RoomPlayerBotPlacedEventHandler(
 
         room.TileMap.AddUnitToMap(new Point(X, Y), roomBot);
         
-        await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
+        await room.BroadcastDataAsync(new RoomBotDataWriter
         {
             Bots = [roomBot]
         });
 
-        await room.UserRepository.BroadcastDataAsync(new RoomBotStatusWriter
+        await room.BroadcastDataAsync(new RoomBotStatusWriter
         {
             Bots = [roomBot]
         });

@@ -55,7 +55,7 @@ public class PlayerChangedAppearanceEventHandler(
             Gender = gender.ToString()
         });
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserDataWriter
+        await room.BroadcastDataAsync(new RoomUserDataWriter
         {
             Users = [roomUser]
         });

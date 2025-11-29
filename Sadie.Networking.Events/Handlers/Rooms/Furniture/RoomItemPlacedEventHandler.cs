@@ -147,7 +147,7 @@ public class RoomItemPlacedEventHandler(
 
             var roomFurnitureItem = roomFurniturePlacementData.PlayerFurnitureItem.FurnitureItem;
             
-            await room.UserRepository.BroadcastDataAsync(new RoomFloorItemPlacedWriter
+            await room.BroadcastDataAsync(new RoomFloorItemPlacedWriter
             {
                 Id = roomFurniturePlacementData.PlayerFurnitureItemId,
                 AssetId = roomFurnitureItem.AssetId,
@@ -209,7 +209,7 @@ public class RoomItemPlacedEventHandler(
             var owner = await playerRepository.GetPlayerByIdAsync(
                 roomFurnitureItem.PlayerFurnitureItem.PlayerId);
         
-            await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
+            await room.BroadcastDataAsync(new RoomWallFurnitureItemPlacedWriter
             {
                 RoomFurnitureItem = roomFurnitureItem,
                 OwnerUsername = owner?.Username ?? "Unknown User"

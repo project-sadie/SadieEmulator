@@ -54,7 +54,8 @@ public static class RoomHelpers
 
         var roomDto = mapper.Map<RoomDto>(room);
         var roomLogic = mapper.Map<IRoomLogic>(roomDto);
-        
+
+        roomLogic.UserRepository.SetRoom(roomLogic);
         roomRepository.AddRoom(roomLogic);
 
         return roomLogic;
