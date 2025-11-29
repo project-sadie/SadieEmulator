@@ -62,7 +62,7 @@ public class RoomItemEjectedEventHandler(
                 .PlayerFurnitureItem
                 .FurnitureItem.Type == FurnitureItemType.Floor)
         {
-            await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
+            await room.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
             {
                 Id = roomFurnitureItem.PlayerFurnitureItemId.ToString(),
                 Expired = false,
@@ -72,7 +72,7 @@ public class RoomItemEjectedEventHandler(
         }
         else
         {
-            await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter
+            await room.BroadcastDataAsync(new RoomWallFurnitureItemRemovedWriter
             {
                 Item = roomFurnitureItem
             });

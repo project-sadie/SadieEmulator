@@ -22,7 +22,10 @@ public class PlayerProfile : Profile
         CreateMap<Player, PlayerDto>();
         CreateMap<PlayerData, PlayerDataDto>().ReverseMap();
         CreateMap<PlayerAvatarData, PlayerAvatarDataDto>();
-        CreateMap<PlayerNavigatorSettings, PlayerNavigatorSettingsDto>();
+        
+        CreateMap<PlayerNavigatorSettings, PlayerNavigatorSettingsDto>()
+            .ForMember(dest => dest.Player, opt => opt.Ignore());
+        
         CreateMap<PlayerGameSettings, PlayerGameSettingsDto>();
         CreateMap<PlayerRoomVisit, PlayerRoomVisitDto>().ReverseMap();
     }

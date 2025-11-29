@@ -81,7 +81,7 @@ public class RoomDimmerSaveEventHandler(
         
         await dbContext.SaveChangesAsync();
         
-        await room.UserRepository.BroadcastDataAsync(new RoomDimmerSettingsWriter
+        await room.BroadcastDataAsync(new RoomDimmerSettingsWriter
         {
             DimmerSettings = room.Room.DimmerSettings,
             DimmerPresets = mapper.Map<List<RoomDimmerPresetDto>>(presets)

@@ -22,7 +22,7 @@ public class ProcessRoomFurnitureItemsTask(
         
         foreach (var writer in writersToBroadcast)
         {
-            await room.UserRepository.BroadcastDataAsync(writer);
+            await room.BroadcastDataAsync(writer);
         }
     }
 
