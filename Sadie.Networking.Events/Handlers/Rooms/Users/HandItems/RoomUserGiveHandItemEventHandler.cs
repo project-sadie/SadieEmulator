@@ -22,7 +22,7 @@ public class RoomUserGiveHandItemEventHandler : INetworkPacketEventHandler
         var fromUser = client.RoomUser;
         var handItemId = fromUser.HandItemId;
 
-        await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
+        await room.BroadcastDataAsync(new RoomUserHandItemWriter
         {
             UserId = fromUser.Player.Player.Id,
             ItemId = 0
@@ -34,7 +34,7 @@ public class RoomUserGiveHandItemEventHandler : INetworkPacketEventHandler
             HandItemId = handItemId
         });
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
+        await room.BroadcastDataAsync(new RoomUserHandItemWriter
         {
             UserId = toUser.Player.Player.Id,
             ItemId = handItemId

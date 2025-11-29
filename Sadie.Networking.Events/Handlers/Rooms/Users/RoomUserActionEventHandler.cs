@@ -26,7 +26,7 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
                 roomUser.LastAction -= roomUser.IdleTime;
             }
             
-            await room.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter
+            await room.BroadcastDataAsync(new RoomUserIdleWriter
             {
                 UserId = roomUser.Player.Player.Id,
                 IsIdle = roomUser.IsIdle
@@ -35,7 +35,7 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
             return;
         }
 
-        await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
+        await room.BroadcastDataAsync(new RoomUserActionWriter
         {
             UserId = roomUser.Player.Player.Id,
             Action = Action

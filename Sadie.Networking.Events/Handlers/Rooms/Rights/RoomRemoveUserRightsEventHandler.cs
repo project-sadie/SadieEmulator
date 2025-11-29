@@ -69,7 +69,7 @@ public class RoomRemoveUserRightsEventHandler(
         dbContext.RoomPlayerRights.Remove(rightEntity);
         await dbContext.SaveChangesAsync();
 
-        await room.UserRepository.BroadcastDataAsync(
+        await room.BroadcastDataAsync(
             new RoomRemoveUserRightsWriter
             {
                 RoomId = room.Room.Id,

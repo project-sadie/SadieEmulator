@@ -215,7 +215,7 @@ public static class NetworkPacketEventHelpers
         {
             if (TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUserForCommands))
             {
-                await roomUserForCommands.Room.UserRepository.BroadcastDataAsync(new RoomUserEffectWriter
+                await roomUserForCommands.Room.BroadcastDataAsync(new RoomUserEffectWriter
                 {
                     UserId = (int)roomUserForCommands.Player.Player.Id,
                     EffectId = new Random().Next(1, 100),
@@ -269,7 +269,7 @@ public static class NetworkPacketEventHelpers
                 MessageLength = message.Length
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
+            await room.BroadcastDataAsync(writer, excludedIds);
         }
         else
         {
@@ -283,7 +283,7 @@ public static class NetworkPacketEventHelpers
                 MessageLength = message.Length
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer, excludedIds);
+            await room.BroadcastDataAsync(writer, excludedIds);
         }
         
         room.Room.ChatMessages.Add(chatMessage);

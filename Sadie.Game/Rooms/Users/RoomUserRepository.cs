@@ -1,9 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Users;
-using Sadie.API.Interfaces.Networking;
-using Sadie.Networking.Serialization;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Bots;
 using Sadie.Networking.Writers.Rooms.Users;
@@ -17,13 +16,43 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     private readonly ConcurrentDictionary<long, IRoomUser> _users = new();
 
     public ICollection<IRoomUser> GetAll() => _users.Values;
-    public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Player.Player.Id, user);
+    
+    public bool TryAdd(IRoomUser user)
+    {
+        if (!_users.TryAdd(user.Player.Player.Id, user))
+        {
+            return false;
+        }
+        
+        var channel = user.NetworkObject.Channel;
+
+        if (_room == null)
+            logger.LogError("RoomUserRepository.TryAdd → _room is NULL");
+
+        if (user.NetworkObject == null)
+            logger.LogError("RoomUserRepository.TryAdd → NetworkObject is NULL");
+
+        if (user.NetworkObject?.Channel == null)
+            logger.LogError("RoomUserRepository.TryAdd → Channel is NULL");
+        
+        _room.ChannelGroup.Add(channel);
+        
+        return true;
+    }
+    
     public bool TryGetById(long id, out IRoomUser? user) => _users.TryGetValue(id, out user);
 
     public bool TryGetByUsername(string username, out IRoomUser? user)
     {
         user = _users.Values.FirstOrDefault(x => x.Player.Player.Username == username);
         return user != null;
+    }
+    
+    private IRoomLogic _room = null!;
+
+    public void SetRoom(IRoomLogic room)
+    {
+        _room = room;
     }
 
     public async Task TryRemoveAsync(
@@ -39,6 +68,8 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
             return;
         }
 
+        _room.ChannelGroup.Remove(roomUser.NetworkObject.Channel);
+        
         if (notifyLeft)
         {
             var writer = new RoomUserLeftWriter
@@ -46,7 +77,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                 UserId = id.ToString()
             };
 
-            await BroadcastDataAsync(writer, [id]);
+            await _room.BroadcastDataAsync(writer);
         }
         
         var player = roomUser.Player;
@@ -68,18 +99,6 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     }
     
     public int Count => _users.Count;
-    
-    public async Task BroadcastDataAsync(AbstractPacketWriter writer, List<long>? excludedIds = null)
-    {
-        var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
-        
-        foreach (var roomUser in _users
-                     .Values
-                     .Where(x => excludedIds == null || !excludedIds.Contains(x.Player.Player.Id)))
-        {
-            await roomUser.NetworkObject.WriteToStreamAsync(serializedObject);
-        }
-    }
 
     public ICollection<IRoomUser> GetAllWithRights()
     {
@@ -110,44 +129,24 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
             if (bots.Count != 0)
             {
-                await BroadcastDataAsync(new RoomBotStatusWriter
+                await _room.BroadcastDataAsync(new RoomBotStatusWriter
                 {
                     Bots = bots
                 });
 
-                await BroadcastDataAsync(new RoomBotDataWriter
+                await _room.BroadcastDataAsync(new RoomBotDataWriter
                 {
                     Bots = bots
                 });
             }
 
-            await SendUserStatusUpdatesAsync();
-            await SendUserDataUpdatesAsync();
+            await _room.SendUserStatusUpdatesAsync();
+            await _room.SendUserDataUpdatesAsync();
         }
         catch (Exception e)
         {
             logger.LogError(e.ToString());
         }
-    }
-
-    public async Task SendUserStatusUpdatesAsync()
-    {
-        await BroadcastDataAsync(
-            new RoomUserStatusWriter
-            {
-                Users = _users
-                    .Values
-            });
-    }
-
-    public async Task SendUserDataUpdatesAsync()
-    {
-        await BroadcastDataAsync(
-            new RoomUserDataWriter
-            {
-                Users = _users
-                    .Values
-            });
     }
 
     public async ValueTask DisposeAsync()

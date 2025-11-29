@@ -95,7 +95,7 @@ public class RoomFurnitureItemHelperService(
             OwnerUsername = owner?.Username ?? "Unknown User"
         };
         
-        await room.UserRepository.BroadcastDataAsync(itemWriter);
+        await room.BroadcastDataAsync(itemWriter);
     }
 
     public ObjectDataKey GetObjectDataKeyForItem(PlayerFurnitureItemPlacementDataDto furnitureItem)

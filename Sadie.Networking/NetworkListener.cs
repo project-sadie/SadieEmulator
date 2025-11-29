@@ -10,6 +10,7 @@ using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Networking.Codecs;
 using Sadie.Networking.Handlers;
@@ -34,11 +35,17 @@ namespace Sadie.Networking
 
         private ServerBootstrap _bootstrap;
         private IChannel? _channel;
+        
+        private IEventLoopGroup? _bossGroup;
+        public IEventLoopGroup? WorkerGroup { get; private set; }
 
         public void Bootstrap()
         {
+            _bossGroup = new MultithreadEventLoopGroup(1);
+            WorkerGroup = new MultithreadEventLoopGroup();
+            
             _bootstrap = new ServerBootstrap()
-                .Group(new MultithreadEventLoopGroup(1), new MultithreadEventLoopGroup())
+                .Group(_bossGroup, WorkerGroup)
                 .Channel<TcpServerSocketChannel>()
                 .ChildOption(ChannelOption.TcpNodelay, true)
                 .ChildOption(ChannelOption.SoKeepalive, true)

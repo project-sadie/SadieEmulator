@@ -18,7 +18,7 @@ public class NavigatorRoomProvider(
 {
     public Task<List<RoomDto>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
     {
-        return Task.FromResult(category switch
+        return Task.FromResult(category switch 
         {
             "popular" => roomRepository.GetPopularRooms(50),
             "my_rooms" => player.Player.Rooms.ToList(),

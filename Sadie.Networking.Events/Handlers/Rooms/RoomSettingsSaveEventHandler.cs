@@ -169,8 +169,8 @@ public class RoomSettingsSaveEventHandler(
             RoomId = RoomId
         };
 
-        await room.UserRepository.BroadcastDataAsync(floorSettingsWriter);
-        await room.UserRepository.BroadcastDataAsync(settingsWriter);
-        await room.UserRepository.BroadcastDataAsync(settingsUpdatedWriter);
+        await room.BroadcastDataAsync(floorSettingsWriter);
+        await room.BroadcastDataAsync(settingsWriter);
+        await room.BroadcastDataAsync(settingsUpdatedWriter);
     }
 }

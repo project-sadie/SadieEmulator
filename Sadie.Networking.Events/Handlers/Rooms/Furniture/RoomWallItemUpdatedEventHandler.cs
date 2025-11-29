@@ -68,7 +68,7 @@ public class RoomWallItemUpdatedEventHandler(
         var owner = await playerRepository.GetPlayerByIdAsync(
             roomFurnitureItem.PlayerFurnitureItem.PlayerId);
         
-        await room.UserRepository.BroadcastDataAsync(new RoomWallFurnitureItemUpdatedWriter
+        await room.BroadcastDataAsync(new RoomWallFurnitureItemUpdatedWriter
         {
             Item = roomFurnitureItem,
             OwnerUsername = owner?.Username ?? "Unknown User"

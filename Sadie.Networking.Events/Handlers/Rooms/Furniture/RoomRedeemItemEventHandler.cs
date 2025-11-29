@@ -53,7 +53,7 @@ public class RoomRedeemItemEventHandler(
             return;
         }
         
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
+        await room.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
         {
             Id = roomFurnitureItem.PlayerFurnitureItemId.ToString(),
             Expired = false,

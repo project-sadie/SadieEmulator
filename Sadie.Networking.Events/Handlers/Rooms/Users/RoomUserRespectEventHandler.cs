@@ -59,13 +59,13 @@ public class RoomUserRespectEventHandler(
         dbContext.Entry(playerData).Property(x => x.RespectPoints).IsModified = true;
         await dbContext.SaveChangesAsync();
 
-        await room.UserRepository.BroadcastDataAsync(new RoomUserRespectWriter
+        await room.BroadcastDataAsync(new RoomUserRespectWriter
         {
             UserId = TargetId,
             TotalRespects = targetPlayer.Player.Respects.Count
         });
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
+        await room.BroadcastDataAsync(new RoomUserActionWriter
         {
             UserId = roomUser.Player.Player.Id,
             Action = (int) RoomUserAction.ThumbsUp

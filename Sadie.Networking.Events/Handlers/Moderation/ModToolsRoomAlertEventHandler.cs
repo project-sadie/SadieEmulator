@@ -13,7 +13,7 @@ public class ModToolsRoomAlertEventHandler : INetworkPacketEventHandler
     
     public async Task HandleAsync(INetworkClient client)
     {
-        await client.RoomUser?.Room.UserRepository.BroadcastDataAsync(new PlayerAlertWriter
+        await client.RoomUser?.Room.BroadcastDataAsync(new PlayerAlertWriter
         {
             Message = Message
         })!;

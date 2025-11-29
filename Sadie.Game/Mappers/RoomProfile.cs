@@ -1,4 +1,5 @@
 using AutoMapper;
+using DotNetty.Transport.Channels;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.DTOs.Rooms.Chat;
@@ -21,7 +22,8 @@ public class RoomProfile : Profile
                 x,
                 new RoomTileMap(x.Layout.Heightmap, x.FurnitureItems),
                 provider.GetRequiredService<IRoomUserRepository>(),
-                provider.GetRequiredService<IRoomBotRepository>())
+                provider.GetRequiredService<IRoomBotRepository>(),
+                provider.GetRequiredService<IEventLoopGroup>())
             {
                 Name = x.Name,
                 Description = x.Description

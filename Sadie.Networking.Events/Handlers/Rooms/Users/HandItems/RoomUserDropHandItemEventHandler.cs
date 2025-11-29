@@ -16,7 +16,7 @@ public class RoomUserDropHandItemEventHandler(IRoomRepository roomRepository) : 
             return;
         }
 
-        await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
+        await room.BroadcastDataAsync(new RoomUserHandItemWriter
         {
             UserId = roomUser.Player.Player.Id,
             ItemId = 0

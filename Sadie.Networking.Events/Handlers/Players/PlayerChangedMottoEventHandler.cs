@@ -33,7 +33,7 @@ public class PlayerChangedMottoEventHandler(
             return;
         }
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserDataWriter{
+        await room.BroadcastDataAsync(new RoomUserDataWriter{
             Users = [roomUser]
         });
 

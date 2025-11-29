@@ -38,7 +38,7 @@ public class RoomGiveUserRightsEventHandler(
             return;
         }
 
-        await room.UserRepository.BroadcastDataAsync(new RoomGiveUserRightsWriter 
+        await room.BroadcastDataAsync(new RoomGiveUserRightsWriter 
         {
             RoomId = room.Room.Id,
             PlayerId = playerId,

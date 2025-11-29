@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.API.Interfaces.Game.Catalog;
+using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
 using Sadie.Game.Players.Options;
-using Sadie.Networking;
 using SadieEmulator.Tasks;
 using Serilog;
 

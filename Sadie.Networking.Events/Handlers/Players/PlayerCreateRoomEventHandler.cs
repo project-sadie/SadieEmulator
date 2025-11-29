@@ -24,63 +24,52 @@ public class PlayerCreateRoomEventHandler(
     public int CategoryId { get; set; }
     public int MaxUsersAllowed { get; set; }
     public int TradingPermission { get; set; }
-    
+
     public async Task HandleAsync(INetworkClient client)
     {
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        
-        var layout = dbContext
-            .RoomLayouts
-            .FirstOrDefault(x => x.Name == LayoutName);
+
+        var layout = await dbContext.RoomLayouts
+            .FirstOrDefaultAsync(x => x.Name == LayoutName);
 
         if (layout == null)
         {
             return;
         }
 
-        var layoutDto = mapper.Map<RoomLayoutDto>(layout);
-        
-        var newRoom = new RoomDto
+        var roomEntity = new Room
         {
             Name = Name,
             OwnerId = client.Player.Player.Id,
-            LayoutId = layout.Id,
-            MaxUsersAllowed = MaxUsersAllowed,
             Description = Description,
-            CreatedAt = DateTime.Now
+            LayoutId = layout.Id,
+            CreatedAt = DateTime.UtcNow,
+            MaxUsersAllowed = MaxUsersAllowed,
+
+            Settings = new RoomSettings
+            {
+                WalkDiagonal = true,
+                TradeOption = RoomTradeOption.Allowed
+            },
+
+            ChatSettings = new RoomChatSettings(),
+            PaintSettings = new RoomPaintSettings()
         };
 
-        newRoom.Settings = new RoomSettingsDto
-        {
-            RoomId = newRoom.Id,
-            WalkDiagonal = true,
-            TradeOption = RoomTradeOption.Allowed
-        };
-
-        newRoom.ChatSettings = new RoomChatSettingsDto
-        {
-            RoomId = newRoom.Id
-        };
-
-        newRoom.PaintSettings = new RoomPaintSettingsDto
-        {
-            RoomId = newRoom.Id
-        };
-        
-        var newRoomEntity = mapper.Map<Room>(newRoom);
-        dbContext.Rooms.Add(newRoomEntity);
+        dbContext.Rooms.Add(roomEntity);
         await dbContext.SaveChangesAsync();
 
-        newRoom.Layout = layoutDto;
+        var roomDto = mapper.Map<RoomDto>(roomEntity);
+        roomDto.Layout = mapper.Map<RoomLayoutDto>(layout);
 
-        var roomLogic = mapper.Map<IRoomLogic>(newRoom);
-            
+        var roomLogic = mapper.Map<IRoomLogic>(roomDto);
+        roomLogic.UserRepository.SetRoom(roomLogic);
         roomRepository.AddRoom(roomLogic);
 
         await client.WriteToStreamAsync(new RoomCreatedWriter
         {
-            Id = newRoom.Id,
-            Name = newRoom.Name
+            Id = roomDto.Id,
+            Name = roomDto.Name
         });
     }
 }
