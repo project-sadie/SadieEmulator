@@ -10,7 +10,7 @@ using Sadie.Core.Shared.Constants;
 using Sadie.Core.Shared.Extensions;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Networking.Writers.Players.Messenger;
+using Sadie.Networking.Packets.Writers.Players.Messenger;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 

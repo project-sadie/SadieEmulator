@@ -38,7 +38,7 @@ public class Server(ILogger<Server> logger,
             Log.Logger.Warning($"Reusable SSO tokens activated, this results in reduced security.");
         }
         
-        taskWorker.WorkAsync(_tokenSource.Token);
+        await taskWorker.WorkAsync(_tokenSource.Token);
         
         Log.Logger.Information("Loading catalog pages...");
         await catalogPageRepository.LoadAsync();

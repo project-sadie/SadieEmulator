@@ -9,7 +9,7 @@ using Sadie.Core.Enums.Game.Rooms.Users;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Networking.Packets.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 

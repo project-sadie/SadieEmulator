@@ -9,7 +9,7 @@ using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
 using Sadie.Networking.Events;
-using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Networking.Packets.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
@@ -37,6 +37,7 @@ public class TeleportInteractor(
         
             roomUser.Direction = facingDirection;
             roomUser.DirectionHead = facingDirection;
+            roomUser.NeedsUpdate = true;
 
             await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "1");
             await UseTeleportAsync(room, item, roomUser);
@@ -178,6 +179,7 @@ public class TeleportInteractor(
         
         roomUser.Direction = targetItem.Direction;
         roomUser.DirectionHead = targetItem.Direction;
+        roomUser.NeedsUpdate = true;
             
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, targetItem, "1");
         

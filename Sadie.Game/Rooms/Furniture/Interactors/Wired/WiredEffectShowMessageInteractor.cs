@@ -4,7 +4,7 @@ using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Services;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
-using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Networking.Packets.Writers.Rooms.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors.Wired;
 

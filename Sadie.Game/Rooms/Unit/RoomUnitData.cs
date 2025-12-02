@@ -24,6 +24,8 @@ public class RoomUnitData(
     public double PointZ { get; set; } = pointZ;
     public bool IsWalking { get; set; }
     protected bool NeedsPathCalculated { get; set; }
+    
+    public bool NeedsUpdate { get; set; }
     public Point? NextPoint { get; set; }
     protected int StepsWalked { get; set; }
     protected Point PathGoal { get; set; }
@@ -37,6 +39,8 @@ public class RoomUnitData(
         {
             StatusMap.Remove(status);
         }
+
+        NeedsUpdate = true;
     }
 
     private void ClearWalking(bool reachedGoal = true)
@@ -105,11 +109,13 @@ public class RoomUnitData(
         var zHeightNextStep = topItem.PositionZ + (topItemSitOrLay ? topFurnitureItem.StackHeight : 0);
         
         PointZ = zHeightNextStep;
+        NeedsUpdate = true;
     }
 
     public void AddStatus(string key, string value)
     {
         StatusMap[key] = value;
+        NeedsUpdate = true;
     }
 
     private void CalculatePath()
@@ -147,10 +153,10 @@ public class RoomUnitData(
         {
             room.TileMap.UnitMap[Point].Remove(this);
             room.TileMap.AddUnitToMap(NextPoint.Value, this);
-
-            await SetPositionAsync(NextPoint.Value);
             
             PointZ = NextZ;
+
+            await SetPositionAsync(NextPoint.Value);
             NextPoint = null;
 
             if (Point == PathGoal)
@@ -222,6 +228,7 @@ public class RoomUnitData(
     public async Task SetPositionAsync(Point point)
     {
         Point = point;
+        NeedsUpdate = true;
     }
 
     private void ClearStatuses()

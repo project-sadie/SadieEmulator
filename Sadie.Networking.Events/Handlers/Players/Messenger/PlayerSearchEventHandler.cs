@@ -4,7 +4,7 @@ using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Core.Shared.Constants;
 using Sadie.Core.Shared.Extensions;
-using Sadie.Networking.Writers.Players.Messenger;
+using Sadie.Networking.Packets.Writers.Players.Messenger;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 

@@ -1,7 +1,7 @@
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Writers.Rooms.Users.HandItems;
+using Sadie.Networking.Packets.Writers.Rooms.Users.HandItems;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.HandItems;
 

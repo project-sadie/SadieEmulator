@@ -13,8 +13,8 @@ using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Players.Furniture;
-using Sadie.Networking.Writers.Players.Inventory;
-using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Networking.Packets.Writers.Players.Inventory;
+using Sadie.Networking.Packets.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 

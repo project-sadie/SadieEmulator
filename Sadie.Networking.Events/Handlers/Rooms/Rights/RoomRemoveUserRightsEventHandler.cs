@@ -8,8 +8,8 @@ using Sadie.Core.Enums.Game.Rooms;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms.Rights;
-using Sadie.Networking.Writers.Rooms;
-using Sadie.Networking.Writers.Rooms.Rights;
+using Sadie.Networking.Packets.Writers.Rooms;
+using Sadie.Networking.Packets.Writers.Rooms.Rights;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Rights;
 

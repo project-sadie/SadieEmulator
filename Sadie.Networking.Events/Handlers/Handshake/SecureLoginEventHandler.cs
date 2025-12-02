@@ -13,7 +13,7 @@ using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Db.Models.Server;
-using Sadie.Networking.Writers.Handshake;
+using Sadie.Networking.Packets.Writers.Handshake;
 using Sadie.Options.Options;
 
 namespace Sadie.Networking.Events.Handlers.Handshake;

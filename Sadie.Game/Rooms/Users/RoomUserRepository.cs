@@ -3,9 +3,10 @@ using Microsoft.Extensions.Logging;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Users;
-using Sadie.Networking.Writers.Rooms;
-using Sadie.Networking.Writers.Rooms.Bots;
-using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Networking.Packets.Serialization;
+using Sadie.Networking.Packets.Writers.Rooms;
+using Sadie.Networking.Packets.Writers.Rooms.Bots;
+using Sadie.Networking.Packets.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Users;
 
@@ -49,6 +50,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     }
     
     private IRoomLogic _room = null!;
+    public DateTime? NoUsersSince { get; set; }
 
     public void SetRoom(IRoomLogic room)
     {
@@ -104,7 +106,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
     {
         return _users.Values.Where(x => x.HasRights()).ToList();
     }
-
+    
     public async Task RunPeriodicCheckAsync()
     {
         try
@@ -113,35 +115,61 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
             if (users.Count == 0)
             {
-                return;
+                NoUsersSince ??= DateTime.Now;
+            }
+            else
+            {
+                NoUsersSince = null;
             }
             
-            foreach (var roomUser in users)
+            var userCheckTasks = users.Select(user => user.RunPeriodicCheckAsync()).ToList();
+            await Task.WhenAll(userCheckTasks);
+
+            var bots = users.First().Room.BotRepository.GetAll();
+            
+            if (bots.Count > 0)
             {
-                await roomUser.RunPeriodicCheckAsync();
+                await _room.BroadcastDataAsync(new RoomBotStatusWriter { Bots = bots });
+                await _room.BroadcastDataAsync(new RoomBotDataWriter { Bots = bots });
             }
 
-            var bots = users
-                .First()
-                .Room
-                .BotRepository
-                .GetAll();
+            var usersNeedsUpdate = users
+                .Where(x => x.NeedsUpdate)
+                .ToList();
 
-            if (bots.Count != 0)
+            if (usersNeedsUpdate.Any())
             {
-                await _room.BroadcastDataAsync(new RoomBotStatusWriter
-                {
-                    Bots = bots
-                });
+                var dataWriter = await NetworkPacketWriterSerializer.SerializeAsync(
+                    new RoomUserDataWriter
+                    {
+                        Users = usersNeedsUpdate
+                    });
 
-                await _room.BroadcastDataAsync(new RoomBotDataWriter
+                var statusWriter = await NetworkPacketWriterSerializer.SerializeAsync(
+                    new RoomUserStatusWriter
+                    {
+                        Users = usersNeedsUpdate
+                    });
+
+                foreach (var u in usersNeedsUpdate)
                 {
-                    Bots = bots
-                });
+                    u.NetworkObject.Outbox.Add(dataWriter);
+                    u.NetworkObject.Outbox.Add(statusWriter);
+                }
             }
+            
+            foreach (var user in users)
+            {
+                var networkObject = user.NetworkObject;
+                
+                if (networkObject.Outbox.Count == 0)
+                {
+                    continue;
+                }
 
-            await _room.SendUserStatusUpdatesAsync();
-            await _room.SendUserDataUpdatesAsync();
+                await user.NetworkObject.WriteBatchToStreamAsync(networkObject.Outbox);
+                networkObject.Outbox.Clear();
+            }
         }
         catch (Exception e)
         {

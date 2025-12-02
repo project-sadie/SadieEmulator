@@ -8,8 +8,7 @@ using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Db.Models.Rooms;
 using Sadie.Game.Rooms.Mapping;
-using Sadie.Networking.Serialization;
-using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Networking.Packets.Serialization;
 
 namespace Sadie.Game.Rooms;
 
@@ -55,23 +54,5 @@ public class RoomLogic(
         }
 
         filtered.WriteAndFlushAsync(packet);
-    }
-
-    public async Task SendUserStatusUpdatesAsync()
-    {
-        await BroadcastDataAsync(
-            new RoomUserStatusWriter
-            {
-                Users = UserRepository.GetAll()
-            });
-    }
-
-    public async Task SendUserDataUpdatesAsync()
-    {
-        await BroadcastDataAsync(
-            new RoomUserDataWriter
-            {
-                Users = UserRepository.GetAll()
-            });
     }
 }

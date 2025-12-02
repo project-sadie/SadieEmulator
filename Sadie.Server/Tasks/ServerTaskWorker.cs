@@ -7,17 +7,39 @@ public class ServerTaskWorker(
     ILogger<ServerTaskWorker> logger, 
     IEnumerable<IServerTask> tasks) : IServerTaskWorker
 {
+    private Thread? _taskWorkerThread;
+    
     public async Task WorkAsync(CancellationToken token)
+    {
+        _taskWorkerThread = new Thread(() =>
+        {
+            try
+            {
+                RunWorkerLoopAsync(token).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        })
+        {
+            Name = "TaskWorkerThread"
+        };
+
+        _taskWorkerThread.Start();
+    }
+
+    private async Task RunWorkerLoopAsync(CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            foreach (var task in tasks.Where(task => task.WaitingToExecute()))
+            foreach (var task in tasks.Where(t => t.WaitingToExecute()))
             {
-                await ProcessTaskAsync(task);
+                await ProcessTaskAsync(task).ConfigureAwait(false);
                 task.LastExecuted = DateTime.Now;
             }
 
-            await Task.Delay(50, token);
+            await Task.Delay(50, token).ConfigureAwait(false);
         }
     }
 
