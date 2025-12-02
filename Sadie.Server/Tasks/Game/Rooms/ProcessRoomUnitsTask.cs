@@ -1,43 +1,33 @@
 using Sadie.API.Interfaces.Game.Rooms;
 
-namespace SadieEmulator.Tasks.Game.Rooms;
-
-public class ProcessRoomUnitsTask(IRoomRepository roomRepository) : IServerTask
+namespace SadieEmulator.Tasks.Game.Rooms
 {
-    public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
-    public DateTime LastExecuted { get; set; }
-
-    private int _isRunning;
-    
-    public async Task ExecuteAsync()
+    public class ProcessRoomUnitsTask(IRoomRepository roomRepository) : IServerTask
     {
-        if (Interlocked.Exchange(ref _isRunning, 1) == 1)
-        {
-            return;
-        }
+        public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(500);
+        public DateTime LastExecuted { get; set; }
 
-        try
-        {
-            await Parallel.ForEachAsync(
-                roomRepository.GetAllRooms(),
-                new ParallelOptions { MaxDegreeOfParallelism = 4 },
-                RunPeriodicChecksForRoomAsync
-            );
-        }
-        finally
-        {
-            _isRunning = 0;
-        }
-    }
+        private int _isRunning;
 
-    private static async ValueTask RunPeriodicChecksForRoomAsync(IRoomLogic? room, CancellationToken ctx)
-    {
-        if (room == null)
+        public async Task ExecuteAsync()
         {
-            return;
-        }
+            if (Interlocked.Exchange(ref _isRunning, 1) == 1)
+            {
+                return;
+            }
 
-        await room.BotRepository.RunPeriodicCheckAsync();
-        await room.UserRepository.RunPeriodicCheckAsync();
+            try
+            {
+                foreach (var room in roomRepository.GetAllRooms())
+                {
+                    await room.BotRepository.RunPeriodicCheckAsync();
+                    await room.UserRepository.RunPeriodicCheckAsync();
+                }
+            }
+            finally
+            {
+                _isRunning = 0;
+            }
+        }
     }
 }
