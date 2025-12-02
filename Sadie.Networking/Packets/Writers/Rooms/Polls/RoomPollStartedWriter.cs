@@ -1,0 +1,11 @@
+using Sadie.API.Interfaces.Networking;
+using Sadie.Core.Shared.Attributes;
+
+namespace Sadie.Networking.Packets.Writers.Rooms.Polls;
+
+[PacketId(ServerPacketId.RoomPollStarted)]
+public class RoomPollStartedWriter : AbstractPacketWriter
+{
+    public required string Question { get; init; }
+    public required List<string> Choices { get; init; }
+}
