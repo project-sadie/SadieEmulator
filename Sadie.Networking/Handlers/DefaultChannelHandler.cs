@@ -9,7 +9,8 @@ public class DefaultChannelHandler(
     ILogger<DefaultChannelHandler> logger,
     INetworkPacketHandler packetHandler,
     INetworkClientRepository clientRepository,
-    INetworkClientFactory clientFactory)
+    INetworkClientFactory clientFactory,
+    PacketWorkerPool packetWorkerPool)
     : SimpleChannelInboundHandler<INetworkPacket>
 {
     public override void ChannelActive(IChannelHandlerContext context)
@@ -35,6 +36,6 @@ public class DefaultChannelHandler(
             return;
         }
 
-        _ = packetHandler.HandleAsync(client, packet);
+        packetWorkerPool.Enqueue(client, packet);
     }
 }

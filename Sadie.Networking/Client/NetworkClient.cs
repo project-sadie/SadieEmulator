@@ -1,4 +1,5 @@
 using System.Threading.Channels;
+using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Sadie.API;
 using Sadie.API.Interfaces.Game.Players;
@@ -7,7 +8,7 @@ using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Packets;
 using Sadie.Networking.Codecs.Encryption;
-using Sadie.Networking.Serialization;
+using Sadie.Networking.Packets.Serialization;
 
 namespace Sadie.Networking.Client;
 
@@ -50,6 +51,25 @@ public class NetworkClient(
         var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
         await Channel.WriteAndFlushAsync(serializedObject);
     }
+    
+    public async Task WriteBatchToStreamAsync(List<INetworkPacketWriter> writers)
+    {
+        if (!Channel.IsWritable)
+        {
+            return;
+        }
+
+        var buffer = Unpooled.Buffer();
+
+        foreach (var writer in writers)
+        {
+            buffer.WriteBytes(writer.GetAllBytes());
+        }
+
+        await Channel.WriteAndFlushAsync(buffer);
+    }
+
+    public List<INetworkPacketWriter> Outbox { get; set; } = [];
 
     public async Task WriteToStreamAsync(INetworkPacketWriter writer)
     {

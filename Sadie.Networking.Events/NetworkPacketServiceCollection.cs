@@ -4,6 +4,7 @@ using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Events.Handlers;
 using Sadie.Networking.Events.Handlers.Rooms;
+using Sadie.Networking.Handlers;
 using Sadie.Networking.Packets;
 
 namespace Sadie.Networking.Events;
@@ -36,5 +37,6 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton(packetHandlerTypeMap);
         serviceCollection.AddSingleton<RoomHeightmapEventHandler>();
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
+        serviceCollection.AddSingleton<PacketWorkerPool>();
     }
 }

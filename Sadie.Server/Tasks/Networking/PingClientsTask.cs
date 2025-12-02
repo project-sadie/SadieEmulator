@@ -1,5 +1,5 @@
 using Sadie.API.Interfaces.Networking.Client;
-using Sadie.Networking.Writers.Players.Other;
+using Sadie.Networking.Packets.Writers.Players.Other;
 
 namespace SadieEmulator.Tasks.Networking;
 

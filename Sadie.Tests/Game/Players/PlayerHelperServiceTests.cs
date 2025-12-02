@@ -10,9 +10,9 @@ using Sadie.API.Interfaces.Game.Players.Friendships;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Game.Players;
 using Sadie.Game.Players.Packets.Writers;
-using Sadie.Networking.Writers.Players;
-using Sadie.Networking.Writers.Players.Friendships;
-using Sadie.Networking.Writers.Players.Inventory;
+using Sadie.Networking.Packets.Writers.Players;
+using Sadie.Networking.Packets.Writers.Players.Friendships;
+using Sadie.Networking.Packets.Writers.Players.Inventory;
 
 namespace Sadie.Tests.Game.Players;
 

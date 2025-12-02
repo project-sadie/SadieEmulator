@@ -27,7 +27,8 @@ namespace Sadie.Networking
         ILogger<DefaultChannelHandler> logger2,
         INetworkPacketHandler packetHandler,
         INetworkClientRepository clientRepository,
-        INetworkClientFactory clientFactory)
+        INetworkClientFactory clientFactory,
+        PacketWorkerPool packetWorkerPool)
         : INetworkListener
     {
         private readonly NetworkOptions _networkOptions = options.Value;
@@ -41,7 +42,7 @@ namespace Sadie.Networking
 
         public void Bootstrap()
         {
-            _bossGroup = new MultithreadEventLoopGroup(1);
+            _bossGroup = new MultithreadEventLoopGroup();
             WorkerGroup = new MultithreadEventLoopGroup();
             
             _bootstrap = new ServerBootstrap()
@@ -76,7 +77,7 @@ namespace Sadie.Networking
 
                     pipeline.AddLast(new PacketDecoder());
                     pipeline.AddLast(new PacketEncoder());
-                    pipeline.AddLast(new DefaultChannelHandler(logger2, packetHandler, clientRepository, clientFactory));
+                    pipeline.AddLast(new DefaultChannelHandler(logger2, packetHandler, clientRepository, clientFactory, packetWorkerPool));
                 }));
         }
 

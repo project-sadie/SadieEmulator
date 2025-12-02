@@ -3,7 +3,7 @@ using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Writers.Moderation;
+using Sadie.Networking.Packets.Writers.Moderation;
 
 namespace Sadie.Networking.Events.Handlers.Moderation;
 

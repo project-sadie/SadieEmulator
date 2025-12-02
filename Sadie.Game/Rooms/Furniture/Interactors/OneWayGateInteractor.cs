@@ -40,6 +40,7 @@ public class OneWayGateInteractor(
 
         roomUser.DirectionHead = tileMapHelperService.GetOppositeDirection(item.Direction);
         roomUser.Direction = tileMapHelperService.GetOppositeDirection(item.Direction);
+        roomUser.NeedsUpdate = true;
         roomUser.OverridePoints.Add(itemPoint);
         roomUser.CanWalk = false;
         roomUser.WalkToPoint(squareBehind, OnReachedGoal);

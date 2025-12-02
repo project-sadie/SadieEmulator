@@ -8,12 +8,12 @@ using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Options;
 using Sadie.Networking.Packets;
-using Sadie.Networking.Serialization;
-using Sadie.Networking.Writers;
-using Sadie.Networking.Writers.Catalog;
-using Sadie.Networking.Writers.Players.Navigator;
-using Sadie.Networking.Writers.Players.Other;
-using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Networking.Packets.Serialization;
+using Sadie.Networking.Packets.Writers;
+using Sadie.Networking.Packets.Writers.Catalog;
+using Sadie.Networking.Packets.Writers.Players.Navigator;
+using Sadie.Networking.Packets.Writers.Players.Other;
+using Sadie.Networking.Packets.Writers.Rooms.Users;
 
 namespace Sadie.Tests.Networking;
 

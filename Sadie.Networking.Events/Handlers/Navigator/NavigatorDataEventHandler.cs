@@ -1,8 +1,8 @@
 ﻿using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Writers.Navigator;
-using Sadie.Networking.Writers.Players.Navigator;
+using Sadie.Networking.Packets.Writers.Navigator;
+using Sadie.Networking.Packets.Writers.Players.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Navigator;
 

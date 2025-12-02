@@ -1,0 +1,11 @@
+using Sadie.API.DTOs.Player;
+using Sadie.API.Interfaces.Networking;
+using Sadie.Core.Shared.Attributes;
+
+namespace Sadie.Networking.Packets.Writers.Players.Navigator;
+
+[PacketId(ServerPacketId.NavigatorSavedSearches)]
+public class PlayerSavedSearchesWriter : AbstractPacketWriter
+{
+    public required ICollection<PlayerSavedSearchDto> Searches { get; init; }
+}

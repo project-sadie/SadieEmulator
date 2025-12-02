@@ -2,7 +2,7 @@ using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Dtos;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Writers.Rooms.Users.Groups;
+using Sadie.Networking.Packets.Writers.Rooms.Users.Groups;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Groups;
 

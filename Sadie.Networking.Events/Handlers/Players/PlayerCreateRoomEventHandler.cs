@@ -8,7 +8,7 @@ using Sadie.Core.Enums.Game.Rooms;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms;
-using Sadie.Networking.Writers.Navigator;
+using Sadie.Networking.Packets.Writers.Navigator;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -27,6 +27,11 @@ public class PlayerCreateRoomEventHandler(
 
     public async Task HandleAsync(INetworkClient client)
     {
+        if (client.Player == null)
+        {
+            return;
+        }
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
         var layout = await dbContext.RoomLayouts
