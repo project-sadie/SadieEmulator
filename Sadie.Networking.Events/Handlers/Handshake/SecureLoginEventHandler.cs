@@ -89,35 +89,37 @@ public class SecureLoginEventHandler(
         }
 
         var ipAddress = client
-            .Channel
-            .RemoteAddress
+            .IpAddress
             .ToString()?
             .Split(":")
             .First() ?? "";
         
-        /*await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         if (dbContext.BannedIpAddresses.Any(x => x.IpAddress == ipAddress && (x.ExpiresAt == null || x.ExpiresAt >= DateTime.Now)))
         {
             logger.LogWarning("Disconnected banned IP {@Ip}", ipAddress);
             await client.DisposeAsync();
             return;
-        }*/
+        }
         
         var playerLogic = mapper.Map<IPlayerLogic>(player);
 
         playerLogic.NetworkObject = client;
-        playerLogic.Channel = client.Channel;
 
         var playerId = player.Id;
         var existingPlayer = playerRepository.GetPlayerLogicById(playerId);
 
         client.Player = playerLogic;
 
-        if (existingPlayer is { Channel: not null })
+        if (existingPlayer != null)
         {
             await playerRepository.TryRemovePlayerAsync(existingPlayer.Player.Id);
-            await networkClientRepository.TryRemoveAsync(existingPlayer.Channel.Id);
+
+            if (existingPlayer.NetworkObject != null)
+            {
+                await networkClientRepository.TryRemoveAsync(existingPlayer.NetworkObject.Guid);
+            }
 
             var roomUser = client.RoomUser;
             

@@ -51,7 +51,7 @@ public class RoomDoorbellAnswerEventHandler(
                 Username = Username
             });
 
-            var playerClient = clientRepository.TryGetClientByChannelId(player.Channel!.Id);
+            var playerClient = clientRepository.TryGetClientByGuid(player.NetworkObject.Guid);
 
             if (playerClient != null)
             {

@@ -15,7 +15,6 @@ public class RoomUserDataWriter : AbstractPacketWriter
         Override(GetType().GetProperty(nameof(Users))!, writer =>
         {
             Users = Users
-                .Where(x => x.NetworkObject.Channel.IsWritable)
                 .ToList();
             
             writer.WriteInteger(Users.Count);

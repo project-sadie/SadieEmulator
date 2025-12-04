@@ -15,8 +15,7 @@ public class PlayerProfile : Profile
         CreateMap<PlayerDto, IPlayerLogic>()
             .ConstructUsing(x => new PlayerLogic(
                 provider.GetRequiredService<ILogger<PlayerLogic>>(), x))
-            .ForMember(x => x.NetworkObject, option => option.Ignore())
-            .ForMember(x => x.Channel, option => option.Ignore());
+            .ForMember(x => x.NetworkObject, option => option.Ignore());
         
         CreateMap<PlayerSsoToken, PlayerSsoTokenDto>();
         CreateMap<Player, PlayerDto>();

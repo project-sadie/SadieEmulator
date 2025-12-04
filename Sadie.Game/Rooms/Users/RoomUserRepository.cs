@@ -18,28 +18,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
     public ICollection<IRoomUser> GetAll() => _users.Values;
     
-    public bool TryAdd(IRoomUser user)
-    {
-        if (!_users.TryAdd(user.Player.Player.Id, user))
-        {
-            return false;
-        }
-        
-        var channel = user.NetworkObject.Channel;
-
-        if (_room == null)
-            logger.LogError("RoomUserRepository.TryAdd → _room is NULL");
-
-        if (user.NetworkObject == null)
-            logger.LogError("RoomUserRepository.TryAdd → NetworkObject is NULL");
-
-        if (user.NetworkObject?.Channel == null)
-            logger.LogError("RoomUserRepository.TryAdd → Channel is NULL");
-        
-        _room.ChannelGroup.Add(channel);
-        
-        return true;
-    }
+    public bool TryAdd(IRoomUser user) => _users.TryAdd(user.Player.Player.Id, user);
     
     public bool TryGetById(long id, out IRoomUser? user) => _users.TryGetValue(id, out user);
 
@@ -69,8 +48,6 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
             logger.LogError($"Failed to remove a room user");
             return;
         }
-
-        _room.ChannelGroup.Remove(roomUser.NetworkObject.Channel);
         
         if (notifyLeft)
         {
@@ -153,8 +130,8 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
                 foreach (var u in usersNeedsUpdate)
                 {
-                    u.NetworkObject.Outbox.Add(dataWriter);
-                    u.NetworkObject.Outbox.Add(statusWriter);
+                    await u.NetworkObject.WriteToStreamAsync(dataWriter);
+                    await u.NetworkObject.WriteToStreamAsync(statusWriter);
                 }
             }
         }
