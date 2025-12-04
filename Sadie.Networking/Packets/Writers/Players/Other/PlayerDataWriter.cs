@@ -11,7 +11,7 @@ public class PlayerDataWriter : AbstractPacketWriter
 {
     public required IPlayerLogic Player { get; init; }
     
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteLong(Player.Player.Id);
         writer.WriteString(Player.Player.Username);

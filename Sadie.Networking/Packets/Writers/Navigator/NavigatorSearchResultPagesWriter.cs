@@ -18,7 +18,7 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
     public required IRoomRepository RoomRepository { get; init; }
     public required IPlayerRepository PlayerRepository { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override async void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteString(TabName);
         writer.WriteString(SearchQuery);

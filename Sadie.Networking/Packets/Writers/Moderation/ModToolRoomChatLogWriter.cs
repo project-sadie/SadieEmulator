@@ -17,7 +17,7 @@ public class ModToolRoomChatLogWriter : AbstractPacketWriter
     public required int Unknown8 { get; set; }
     public required List<RoomChatMessageDto> Messages { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Unknown1))!, writer => { writer.WriteByte(Unknown1); });
         Override(GetType().GetProperty(nameof(Unknown4))!, writer => { writer.WriteByte(Unknown4); });

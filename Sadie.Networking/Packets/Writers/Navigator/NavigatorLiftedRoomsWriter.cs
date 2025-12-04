@@ -10,7 +10,7 @@ public class NavigatorLiftedRoomsWriter : AbstractPacketWriter
 {
     public required List<RoomDto> Rooms { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Rooms.Count);
 

@@ -14,7 +14,7 @@ public class PlayerClubOffersWriter : AbstractPacketWriter
     public required bool CanGift { get; init; }
     public required int RemainingDays { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Offers.Count);
 

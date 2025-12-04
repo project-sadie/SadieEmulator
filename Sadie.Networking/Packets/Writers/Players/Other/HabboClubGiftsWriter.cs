@@ -15,7 +15,7 @@ public class HabboClubGiftsWriter : AbstractPacketWriter
     public required int DaysAsClub { get; init; }
     public required CatalogPageDto? ClubGiftPage { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(DaysTillNext);
         writer.WriteInteger(UnclaimedGifts * 4932);

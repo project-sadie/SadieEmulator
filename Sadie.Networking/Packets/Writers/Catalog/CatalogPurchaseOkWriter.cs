@@ -26,7 +26,7 @@ public class CatalogPurchaseOkWriter : AbstractPacketWriter
     public required int LimitedItemSeriesSize { get; init; }
     public required int AmountLeft { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Id);
         writer.WriteString(Name);

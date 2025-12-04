@@ -11,7 +11,7 @@ public class CatalogTabsWriter : AbstractPacketWriter
     public required string? Mode { get; init; }
     public required List<CatalogPageDto> TabPages { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteBool(true);
         writer.WriteInteger(0);

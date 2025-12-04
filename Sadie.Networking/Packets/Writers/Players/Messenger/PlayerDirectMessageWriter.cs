@@ -11,7 +11,7 @@ public class PlayerDirectMessageWriter : AbstractPacketWriter
 {
     public required PlayerMessageDto Message { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteLong(Message.OriginPlayerId);
         writer.WriteString(Message.Message ?? "");

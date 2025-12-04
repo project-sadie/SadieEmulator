@@ -7,10 +7,9 @@ namespace Sadie.Networking.Handlers;
 
 public class DefaultChannelHandler(
     ILogger<DefaultChannelHandler> logger,
-    INetworkPacketHandler packetHandler,
     INetworkClientRepository clientRepository,
     INetworkClientFactory clientFactory,
-    PacketWorkerPool packetWorkerPool)
+    PacketDispatcher packetDispatcher)
     : SimpleChannelInboundHandler<INetworkPacket>
 {
     public override void ChannelActive(IChannelHandlerContext context)
@@ -36,6 +35,6 @@ public class DefaultChannelHandler(
             return;
         }
 
-        packetWorkerPool.Enqueue(client, packet);
+        packetDispatcher.Enqueue(client, packet);
     }
 }

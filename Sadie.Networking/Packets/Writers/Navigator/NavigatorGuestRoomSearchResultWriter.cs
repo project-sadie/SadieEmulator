@@ -15,7 +15,7 @@ public class NavigatorGuestRoomSearchResultWriter : AbstractPacketWriter
     public required OfficialRoomEntryData OfficialRoomEntryData { get; init; }
     public required IPlayerRepository PlayerRepository { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(OfficialRoomEntryData))!, async writer =>
         {
