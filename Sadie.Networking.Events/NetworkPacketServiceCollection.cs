@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.API.Interfaces.Networking.Packets;
 using Sadie.Core.Shared.Attributes;
@@ -38,6 +39,7 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<RoomHeightmapEventHandler>();
         serviceCollection.AddSingleton<INetworkPacketHandler, ClientPacketHandler>();
         serviceCollection.AddSingleton<INetworkPacketDecoder, NetworkPacketDecoder>();
+        serviceCollection.AddSingleton<IWebSocketMessageReader, WebSocketMessageReader>();
         serviceCollection.AddSingleton<PacketDispatcher>(p => new PacketDispatcher(
             p.GetRequiredService<INetworkPacketHandler>(),
             Environment.ProcessorCount));
