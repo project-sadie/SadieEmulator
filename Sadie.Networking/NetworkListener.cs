@@ -41,7 +41,7 @@ public class NetworkListener(
 
         app.UseWebSockets();
 
-        app.Map("/connect", async ctx =>
+        app.Map("/", async ctx =>
         {
             if (!ctx.WebSockets.IsWebSocketRequest)
             {
@@ -54,8 +54,6 @@ public class NetworkListener(
             var ip = ctx.Connection.RemoteIpAddress ?? IPAddress.None;
 
             var client = clientFactory.CreateClient(ip, guid, socket);
-
-            logger.LogInformation("Accepted client {Guid} from {IP}", guid, ip);
 
             await connectionHandler.HandleClientAsync(client, ctx.RequestAborted);
         });
