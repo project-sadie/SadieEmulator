@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.API.Interfaces.Game.Catalog;
-using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
 using Sadie.Game.Players.Options;
@@ -15,7 +14,6 @@ namespace SadieEmulator;
 
 public class Server(ILogger<Server> logger,
     IServerTaskWorker taskWorker,
-    INetworkListener networkListener,
     IDbContextFactory<SadieDbContext> dbContextFactory,
     IDbContextFactory<SadieMigrationsDbContext> dbContextFactoryMigrate,
     IOptions<PlayerOptions> playerOptions,
@@ -46,8 +44,6 @@ public class Server(ILogger<Server> logger,
         stopwatch.Stop();
 
         logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
-        
-        await StartListeningForConnectionsAsync();
     }
 
     private async Task MigrateIfNeededAsync()
@@ -72,12 +68,6 @@ public class Server(ILogger<Server> logger,
                 Console.WriteLine(ex);
             }
         }
-    }
-
-    private async Task StartListeningForConnectionsAsync()
-    {
-        networkListener.Bootstrap();
-        await networkListener.ListenAsync();
     }
 
     private async Task CleanUpDataAsync()

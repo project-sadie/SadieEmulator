@@ -32,38 +32,28 @@ namespace Sadie.Networking.Packets.Serialization
             return props;
         }
 
-        private static async Task InvokeOnConfigureRulesAsync(object packet)
+        private static void InvokeOnConfigureRules(object packet)
         {
-            var method = packet.GetType().GetMethod("OnConfigureRulesAsync");
+            var method = packet.GetType().GetMethod("OnConfigureRules");
+            
             if (method == null)
             {
                 return;
             }
-
-            var result = method.Invoke(packet, []);
-            if (result is Task task)
-            {
-                await task;
-            }
+            
+            method.Invoke(packet, []);
         }
 
-        private static async Task<bool> InvokeOnSerializeIfExistsAsync(object packet, NetworkPacketWriter writer)
+        private static bool InvokeOnSerializeIfExists(object packet, NetworkPacketWriter writer)
         {
-            var method = packet.GetType().GetMethod("OnSerializeAsync");
+            var method = packet.GetType().GetMethod("OnSerialize");
             
             if (method == null || method.GetBaseDefinition().DeclaringType == method.DeclaringType)
             {
                 return false;
             }
 
-            var result = method.Invoke(packet, [writer]);
-            
-            if (result is not Task task)
-            {
-                return false;
-            }
-            
-            await task;
+            method.Invoke(packet, [writer]);
             return true;
 
         }
@@ -199,18 +189,18 @@ namespace Sadie.Networking.Packets.Serialization
             }
         }
 
-        public static async Task<INetworkPacketWriter> SerializeAsync(object packet)
+        public static INetworkPacketWriter Serialize(object packet)
         {
             var writer = new NetworkPacketWriter();
 
             writer.WriteShort(GetPacketIdentifierFromAttribute(packet));
 
-            if (await InvokeOnSerializeIfExistsAsync(packet, writer))
+            if (InvokeOnSerializeIfExists(packet, writer))
             {
                 return writer;
             }
 
-            await InvokeOnConfigureRulesAsync(packet);
+            InvokeOnConfigureRules(packet);
 
             AddObjectToWriter(packet, writer);
 
