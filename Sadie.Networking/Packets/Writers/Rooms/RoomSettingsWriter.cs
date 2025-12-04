@@ -10,7 +10,7 @@ public class RoomSettingsWriter : AbstractPacketWriter
 {
     public required RoomDto Room { get; init; }
     
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Room.Id);
         writer.WriteString(Room.Name);

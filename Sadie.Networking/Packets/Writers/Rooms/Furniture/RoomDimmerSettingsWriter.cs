@@ -11,7 +11,7 @@ public class RoomDimmerSettingsWriter : AbstractPacketWriter
     public required RoomDimmerSettingsDto DimmerSettings { get; init; }
     public required ICollection<RoomDimmerPresetDto> DimmerPresets { get; init; } = [];
     
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer) 
+    public override void OnSerialize(INetworkPacketWriter writer) 
     {
         writer.WriteInteger(DimmerPresets.Count);
         writer.WriteInteger(DimmerSettings.PresetId);

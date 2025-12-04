@@ -20,7 +20,7 @@ public class PlayerSanctionStatusWriter : AbstractPacketWriter
     public required bool Muted { get; init; }
     public required DateTime TradeLockedUntil { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Convert<string>(GetType().GetProperty(nameof(ProbationStart))!, o => ((DateTime)o).ToString());
         

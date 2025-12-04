@@ -14,7 +14,7 @@ public class PlayerInventoryFurnitureItemsWriter : AbstractPacketWriter
     public required int CurrentPage { get; init; }
     public required List<PlayerFurnitureItemDto> Items { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Items))!, writer =>
         {

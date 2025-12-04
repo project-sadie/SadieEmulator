@@ -10,7 +10,7 @@ public class PlayerRelationshipsWriter : AbstractPacketWriter
     public required long PlayerId { get; init; }
     public required ICollection<PlayerRelationshipDto> Relationships { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Relationships))!, writer =>
         {

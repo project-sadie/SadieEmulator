@@ -10,7 +10,7 @@ public class RoomRelativeMapWriter : AbstractPacketWriter
 {
     public required IRoomTileMap TileMap { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(TileMap.Size / TileMap.SizeY);
         writer.WriteInteger(TileMap.Size);

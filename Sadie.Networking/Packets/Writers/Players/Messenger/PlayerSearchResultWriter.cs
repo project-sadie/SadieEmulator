@@ -11,7 +11,7 @@ public class PlayerSearchResultWriter : AbstractPacketWriter
     public required ICollection<PlayerDto> Friends { get; init; }
     public required ICollection<PlayerDto> Strangers { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Friends.Count);
 

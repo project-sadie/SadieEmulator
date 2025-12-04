@@ -12,7 +12,7 @@ public class PlayerInventoryUnseenItemsWriter : AbstractPacketWriter
     public required int Category { get; init; }
     public required List<PlayerFurnitureItemDto> FurnitureItems { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Count);
 

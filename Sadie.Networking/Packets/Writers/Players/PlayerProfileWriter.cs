@@ -14,7 +14,7 @@ public class PlayerProfileWriter : AbstractPacketWriter
     public required bool FriendshipExists { get; init; }
     public required bool FriendshipRequestExists { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         var lastOnline = Player.Data.LastOnline == null
             ? 0

@@ -9,7 +9,7 @@ public class PlayerEffectListWriter : AbstractPacketWriter
 {
     public required List<IPlayerEffect> Effects { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Effects))!, writer =>
         {

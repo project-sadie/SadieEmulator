@@ -9,7 +9,7 @@ public class PlayerRemoveFriendsWriter : AbstractPacketWriter
     public required int Unknown1 { get; init; }
     public required ICollection<long> PlayerIds { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(PlayerIds))!, writer =>
         {

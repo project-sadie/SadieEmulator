@@ -10,7 +10,7 @@ public class RoomBotDataWriter : AbstractPacketWriter
 {
     public required ICollection<IRoomBot> Bots { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Bots))!, writer =>
         {

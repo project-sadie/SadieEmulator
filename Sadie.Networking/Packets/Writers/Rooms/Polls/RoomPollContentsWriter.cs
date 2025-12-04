@@ -14,7 +14,7 @@ public class RoomPollContentsWriter : AbstractPacketWriter
     public required List<RoomPollQuestion> Questions { get; init; }
     public required bool Nps { get; set; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Id);
         writer.WriteString(StartMessage);

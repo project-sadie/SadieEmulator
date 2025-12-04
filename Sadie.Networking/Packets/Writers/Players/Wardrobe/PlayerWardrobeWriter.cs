@@ -11,7 +11,7 @@ public class PlayerWardrobeWriter : AbstractPacketWriter
     public required int State { get; init; }
     public required ICollection<PlayerWardrobeItemDto> Outfits { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Outfits))!, writer =>
         {
