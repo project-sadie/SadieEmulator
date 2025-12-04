@@ -1,5 +1,6 @@
 using System.Threading.Tasks.Dataflow;
 using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Packets;
 
 namespace Sadie.Networking.Packets;
 

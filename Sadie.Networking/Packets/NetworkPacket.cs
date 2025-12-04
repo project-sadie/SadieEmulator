@@ -1,4 +1,6 @@
-﻿namespace Sadie.Networking.Packets;
+﻿using Sadie.API.Interfaces.Networking.Packets;
+
+namespace Sadie.Networking.Packets;
 
 public class NetworkPacket(short header, byte[] data) : INetworkPacket
 {
