@@ -11,7 +11,7 @@ public class RoomWallFurnitureItemUpdatedWriter : AbstractPacketWriter
     public required PlayerFurnitureItemPlacementDataDto Item { get; init; }
     public required string OwnerUsername { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         var furnitureItem = Item.PlayerFurnitureItem.FurnitureItem;
         

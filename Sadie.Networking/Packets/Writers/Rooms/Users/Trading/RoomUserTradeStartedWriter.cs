@@ -10,7 +10,7 @@ public class RoomUserTradeStartedWriter : AbstractPacketWriter
     public required List<long> UserIds { get; init; }
     public required int State { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         foreach (var id in UserIds)
         {

@@ -10,7 +10,7 @@ public class RoomWallItemsWriter : AbstractPacketWriter
     public required Dictionary<long, string> FurnitureOwners { get; init; }
     public required ICollection<PlayerFurnitureItemPlacementDataDto> WallItems { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(WallItems))!, writer =>
         {

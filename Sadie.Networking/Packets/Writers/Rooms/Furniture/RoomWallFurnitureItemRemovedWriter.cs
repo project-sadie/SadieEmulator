@@ -10,7 +10,7 @@ public class RoomWallFurnitureItemRemovedWriter : AbstractPacketWriter
 {
     public required PlayerFurnitureItemPlacementDataDto Item { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteString(Item.Id.ToString());
         writer.WriteLong(Item.PlayerFurnitureItem.PlayerId);
