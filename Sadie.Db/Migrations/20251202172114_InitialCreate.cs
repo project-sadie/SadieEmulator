@@ -155,9 +155,9 @@ namespace Sadie.Db.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    secret = table.Column<string>(type: "longtext", nullable: false)
+                    secret = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    domain = table.Column<string>(type: "longtext", nullable: false)
+                    domain = table.Column<string>(type: "varchar(120)", maxLength: 120, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -187,7 +187,7 @@ namespace Sadie.Db.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "longtext", nullable: false)
+                    name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -222,7 +222,7 @@ namespace Sadie.Db.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "longtext", nullable: false)
+                    name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -784,7 +784,7 @@ namespace Sadie.Db.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     origin_player_id = table.Column<long>(type: "bigint", nullable: false),
                     target_player_id = table.Column<long>(type: "bigint", nullable: false),
-                    message = table.Column<string>(type: "longtext", nullable: true)
+                    message = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     created_at = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false)
                 },
@@ -939,7 +939,7 @@ namespace Sadie.Db.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     player_id = table.Column<long>(type: "bigint", nullable: false),
-                    token = table.Column<string>(type: "longtext", nullable: true)
+                    token = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     created_at = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     expires_at = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),

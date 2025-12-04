@@ -26,4 +26,8 @@
       <ProjectReference Include="..\Sadie.Core\Sadie.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

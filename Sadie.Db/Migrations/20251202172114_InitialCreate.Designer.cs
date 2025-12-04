@@ -12,7 +12,7 @@ using Sadie.Db;
 namespace Sadie.Db.Migrations
 {
     [DbContext(typeof(SadieMigrationsDbContext))]
-    [Migration("20250802154119_InitialCreate")]
+    [Migration("20251202172114_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Sadie.Db.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -592,12 +592,14 @@ namespace Sadie.Db.Migrations
 
                     b.Property<string>("Domain")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)")
                         .HasColumnName("domain");
 
                     b.Property<string>("Secret")
                         .IsRequired()
-                        .HasColumnType("longtext")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)")
                         .HasColumnName("secret");
 
                     b.HasKey("Id")
@@ -1225,7 +1227,8 @@ namespace Sadie.Db.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<string>("Message")
-                        .HasColumnType("longtext")
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)")
                         .HasColumnName("message");
 
                     b.Property<long>("OriginPlayerId")
@@ -1344,7 +1347,6 @@ namespace Sadie.Db.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
@@ -1527,7 +1529,8 @@ namespace Sadie.Db.Migrations
                         .HasColumnName("player_id");
 
                     b.Property<string>("Token")
-                        .HasColumnType("longtext")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
                         .HasColumnName("token");
 
                     b.Property<DateTimeOffset?>("UsedAt")
@@ -1686,7 +1689,6 @@ namespace Sadie.Db.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("name");
 
@@ -3127,8 +3129,7 @@ namespace Sadie.Db.Migrations
 
                     b.Navigation("Group");
 
-                    b.Navigation("PaintSettings")
-                        .IsRequired();
+                    b.Navigation("PaintSettings");
 
                     b.Navigation("PlayerBans");
 
@@ -3136,8 +3137,7 @@ namespace Sadie.Db.Migrations
 
                     b.Navigation("PlayerRights");
 
-                    b.Navigation("Settings")
-                        .IsRequired();
+                    b.Navigation("Settings");
 
                     b.Navigation("Tags");
                 });
