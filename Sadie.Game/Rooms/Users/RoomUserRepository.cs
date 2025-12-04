@@ -139,13 +139,13 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
 
             if (usersNeedsUpdate.Any())
             {
-                var dataWriter = await NetworkPacketWriterSerializer.SerializeAsync(
+                var dataWriter = NetworkPacketWriterSerializer.Serialize(
                     new RoomUserDataWriter
                     {
                         Users = usersNeedsUpdate
                     });
 
-                var statusWriter = await NetworkPacketWriterSerializer.SerializeAsync(
+                var statusWriter = NetworkPacketWriterSerializer.Serialize(
                     new RoomUserStatusWriter
                     {
                         Users = usersNeedsUpdate
@@ -156,19 +156,6 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                     u.NetworkObject.Outbox.Add(dataWriter);
                     u.NetworkObject.Outbox.Add(statusWriter);
                 }
-            }
-            
-            foreach (var user in users)
-            {
-                var networkObject = user.NetworkObject;
-                
-                if (networkObject.Outbox.Count == 0)
-                {
-                    continue;
-                }
-
-                await user.NetworkObject.WriteBatchToStreamAsync(networkObject.Outbox);
-                networkObject.Outbox.Clear();
             }
         }
         catch (Exception e)
