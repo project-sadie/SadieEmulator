@@ -110,23 +110,9 @@ public class SecureLoginEventHandler(
         var playerId = player.Id;
         var existingPlayer = playerRepository.GetPlayerLogicById(playerId);
 
-        client.Player = playerLogic;
-
-        if (existingPlayer != null)
+        if (existingPlayer?.NetworkObject != null)
         {
-            await playerRepository.TryRemovePlayerAsync(existingPlayer.Player.Id);
-
-            if (existingPlayer.NetworkObject != null)
-            {
-                await networkClientRepository.TryRemoveAsync(existingPlayer.NetworkObject.Guid);
-            }
-
-            var roomUser = client.RoomUser;
-            
-            if (roomUser != null)
-            {
-                await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id);
-            }
+            await networkClientRepository.TryRemoveAsync(existingPlayer.NetworkObject.Guid);
         }
 
         if (!playerRepository.TryAddPlayer(playerLogic))
@@ -160,7 +146,8 @@ public class SecureLoginEventHandler(
             playerRepository);
         
         await SendWelcomeMessageAsync(playerLogic);
-        
+
+        client.Player = playerLogic;
         logger.LogInformation($"Player '{playerLogic.Player.Username}' has logged in from {ipAddress} ({Math.Round(sw.Elapsed.TotalMilliseconds)}ms)");
     }
 
