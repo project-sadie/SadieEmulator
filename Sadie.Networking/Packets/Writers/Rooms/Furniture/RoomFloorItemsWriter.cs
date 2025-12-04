@@ -14,7 +14,7 @@ public class RoomFloorItemsWriter : AbstractPacketWriter
     public required ICollection<PlayerFurnitureItemPlacementDataDto> FloorItems { get; init; }
     public required IRoomFurnitureItemHelperService RoomFurnitureItemHelperService { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(FurnitureOwners.Count);
 

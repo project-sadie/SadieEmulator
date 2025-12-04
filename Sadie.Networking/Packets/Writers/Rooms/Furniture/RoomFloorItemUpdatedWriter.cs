@@ -21,7 +21,7 @@ public class RoomFloorItemUpdatedWriter : AbstractPacketWriter
     public required int InteractionModes { get; init; }
     public required long OwnerId { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Convert<string>(GetType().GetProperty(nameof(PositionZ))!, o => ((double)o).ToString("0.00"));
         Convert<int>(GetType().GetProperty(nameof(InteractionModes))!, o => (int)o > 1 ? 1 : 0);

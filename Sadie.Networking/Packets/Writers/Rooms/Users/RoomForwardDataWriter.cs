@@ -17,7 +17,7 @@ public class RoomForwardDataWriter : AbstractPacketWriter
     public required int UsersNow { get; init; }
     public required IPlayerRepository PlayerRepository { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override async void OnSerialize(INetworkPacketWriter writer)
     {
         var settings = Room.Settings;
         var chatSettings = Room.ChatSettings;

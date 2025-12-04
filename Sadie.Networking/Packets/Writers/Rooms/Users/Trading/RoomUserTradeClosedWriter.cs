@@ -10,7 +10,7 @@ public class RoomUserTradeClosedWriter : AbstractPacketWriter
     public required long UserId { get; set; }
     public required RoomUserTradeCloseReason Reason { get; init; }
 
-    public override async Task OnConfigureRulesAsync()
+    public override void OnConfigureRules()
     {
         Override(GetType().GetProperty(nameof(Reason))!, 
             writer => writer.WriteInteger((int)Reason));
