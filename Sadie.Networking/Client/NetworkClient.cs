@@ -1,19 +1,24 @@
+using System.Net;
+using System.Net.WebSockets;
 using DotNetty.Transport.Channels;
 using Sadie.API;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Networking.Client;
-using Sadie.Networking.Codecs.Encryption;
 using Sadie.Networking.Packets.Serialization;
 
 namespace Sadie.Networking.Client;
 
 public class NetworkClient(
-    IChannel channel)
+    IPAddress ipAddress,
+    Guid guid,
+    WebSocket webSocket)
     : INetworkClient
 {
-    public IChannel Channel { get; set; } = channel;
+    public IPAddress IpAddress { get; set; } = ipAddress;
+    public Guid Guid { get; set; } = guid;
+    public WebSocket WebSocket { get; set; } = webSocket;
 
     public IPlayerLogic? Player { get; set; }
     public IRoomUser? RoomUser { get; set; }
@@ -21,9 +26,6 @@ public class NetworkClient(
 
     public void EnableEncryption(byte[] sharedKey)
     {
-        Channel.Pipeline.AddFirst(new EncryptionDecoder(sharedKey));
-        Channel.Pipeline.AddFirst(new EncryptionEncoder(sharedKey));
-
         EncryptionEnabled = true;
     }
 
@@ -32,27 +34,17 @@ public class NetworkClient(
 
     public async Task WriteToStreamAsync(AbstractPacketWriter writer)
     {
-        if (!Channel.IsWritable)
-        {
-            return;
-        }
-
         var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
-        _ = Channel.WriteAsync(serializedObject);
+        await WriteToStreamAsync(serializedObject);
     }
 
     public List<INetworkPacketWriter> Outbox { get; set; } = [];
 
     public async Task WriteToStreamAsync(INetworkPacketWriter writer)
     {
-        if (!Channel.IsWritable)
-        {
-            return;
-        }
-
         try
         {
-            _ = Channel.WriteAsync(writer);
+            _ = WebSocket.SendAsync(writer.GetAllBytes(), WebSocketMessageType.Binary, true, CancellationToken.None);
         }
         catch (ClosedChannelException)
         {
@@ -74,7 +66,18 @@ public class NetworkClient(
         }
 
         _disposed = true;
-        
-        await Channel.CloseAsync();
+
+        try
+        {
+            if (WebSocket.State is WebSocketState.Open or WebSocketState.CloseReceived)
+            {
+                await WebSocket.CloseAsync(
+                    WebSocketCloseStatus.NormalClosure,
+                    "Closing",
+                    CancellationToken.None
+                );
+            }
+        }
+        catch (WebSocketException) {}
     }
 }

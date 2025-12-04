@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using AutoMapper;
-using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Interfaces.Game.Players;
@@ -17,24 +16,24 @@ public class NetworkClientRepository(
     IPlayerHelperService playerHelperService,
     IMapper mapper) : INetworkClientRepository
 {
-    private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
-    private readonly ConcurrentDictionary<string, byte> _removalGuard = new();
+    private readonly ConcurrentDictionary<Guid, INetworkClient> _clients = new();
+    private readonly ConcurrentDictionary<Guid, byte> _removalGuard = new();
 
     public ICollection<INetworkClient> Clients => _clients.Values;
     
-    public void AddClient(IChannelId channelId, INetworkClient client)
+    public void AddClient(Guid guid, INetworkClient client)
     {
-        _clients[channelId] = client;
+        _clients[guid] = client;
     }
 
-    public async Task<bool> TryRemoveAsync(IChannelId channelId)
+    public async Task<bool> TryRemoveAsync(Guid guid)
     {
-        if (!_removalGuard.TryAdd(channelId.AsShortText(), 0))
+        if (!_removalGuard.TryAdd(guid, 0))
         {
             return false;
         }
 
-        if (!_clients.TryRemove(channelId, out var client))
+        if (!_clients.TryRemove(guid, out var client))
         {
             return false;
         }
@@ -96,16 +95,16 @@ public class NetworkClientRepository(
 
         foreach (var client in idleClients)
         {
-            if (!await TryRemoveAsync(client.Channel.Id))
+            if (!await TryRemoveAsync(client.Guid))
             {
                 logger.LogError("Failed to dispose of network client");
             }
         }
     }
 
-    public INetworkClient? TryGetClientByChannelId(IChannelId channelId)
+    public INetworkClient? TryGetClientByGuid(Guid guid)
     {
-        return _clients.GetValueOrDefault(channelId);
+        return _clients.GetValueOrDefault(guid);
     }
 
     public async ValueTask DisposeAsync()

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Networking.Packets;
 using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Events.Handlers.Rooms.Users;
 using Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
@@ -35,18 +36,13 @@ public class ClientPacketHandler(
 
             var eventHandler = handlerFactory.Create(packet.PacketId);
 
-            if (eventHandler == null)
-            {
-                logger.LogWarning($"Unhandled packet {packet.PacketId}");
-                return;
-            }
-
             if (!ValidateAttributes(eventHandler, client))
             {
                 return;
             }
             
-            EventSerializer.SetPropertiesForEventHandler(eventHandler, packet);
+            var packetReader = new NetworkPacketReader(packet.Data);
+            EventSerializer.SetPropertiesForEventHandler(eventHandler, packetReader);
 
             if (client.RoomUser != null &&
                 (packetEventType == typeof(RoomUserWalkEventHandler) ||
