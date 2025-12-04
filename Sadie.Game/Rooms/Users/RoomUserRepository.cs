@@ -102,12 +102,17 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
             var userCheckTasks = users.Select(user => user.RunPeriodicCheckAsync()).ToList();
             await Task.WhenAll(userCheckTasks);
 
-            var bots = users.First().Room.BotRepository.GetAll();
+            var firstUser = users.FirstOrDefault();
             
-            if (bots.Count > 0)
+            if (firstUser != null)
             {
-                await _room.BroadcastDataAsync(new RoomBotStatusWriter { Bots = bots });
-                await _room.BroadcastDataAsync(new RoomBotDataWriter { Bots = bots });
+                var bots = firstUser.Room.BotRepository.GetAll();
+
+                if (bots.Count > 0)
+                {
+                    await _room.BroadcastDataAsync(new RoomBotStatusWriter { Bots = bots });
+                    await _room.BroadcastDataAsync(new RoomBotDataWriter { Bots = bots });
+                }
             }
 
             var usersNeedsUpdate = users

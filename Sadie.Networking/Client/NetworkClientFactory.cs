@@ -1,4 +1,5 @@
-using DotNetty.Transport.Channels;
+using System.Net;
+using System.Net.WebSockets;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.Interfaces.Networking.Client;
 
@@ -6,8 +7,8 @@ namespace Sadie.Networking.Client;
 
 public class NetworkClientFactory(IServiceProvider serviceProvider) : INetworkClientFactory
 {
-    public INetworkClient CreateClient(IChannel channel)
+    public INetworkClient CreateClient(IPAddress ipAddress, Guid guid, WebSocket webSocket)
     {
-        return ActivatorUtilities.CreateInstance<NetworkClient>(serviceProvider, channel);
+        return ActivatorUtilities.CreateInstance<NetworkClient>(serviceProvider, ipAddress, guid, webSocket);
     }
 }
