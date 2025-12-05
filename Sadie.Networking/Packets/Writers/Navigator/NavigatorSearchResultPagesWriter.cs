@@ -43,7 +43,7 @@ public class NavigatorSearchResultPagesWriter : AbstractPacketWriter
                 writer.WriteLong(room.Id);
                 writer.WriteString(room.Name);
                 writer.WriteLong(room.OwnerId);
-                writer.WriteString((await PlayerRepository.GetPlayerByIdAsync(room.OwnerId))?.Username ?? "Unknown User");
+                writer.WriteString((await PlayerRepository.GetPlayerByIdAsyncT(room.OwnerId))?.Username ?? "Unknown User");
                 writer.WriteInteger((int) room.Settings.AccessType);
                 writer.WriteInteger(userCount);
                 writer.WriteInteger(room.MaxUsersAllowed);

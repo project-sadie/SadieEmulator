@@ -47,7 +47,7 @@ public class NavigatorGuestRoomSearchResultWriter : AbstractPacketWriter
                     writer.WriteInteger(guestRoom!.Id);
                     writer.WriteString(guestRoom.Name);
                     writer.WriteLong(guestRoom.OwnerId);
-                    writer.WriteString((await PlayerRepository.GetPlayerByIdAsync(guestRoom.OwnerId))?.Username ?? "Unknown User");
+                    writer.WriteString((await PlayerRepository.GetPlayerByIdAsyncT(guestRoom.OwnerId))?.Username ?? "Unknown User");
                     writer.WriteInteger((int) guestRoom.Settings.AccessType);
                     writer.WriteInteger(OfficialRoomEntryData.UserCount);
                     writer.WriteInteger(guestRoom.MaxUsersAllowed);

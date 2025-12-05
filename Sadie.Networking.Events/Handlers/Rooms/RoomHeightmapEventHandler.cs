@@ -105,7 +105,7 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             {
                 Key = item.PlayerFurnitureItem.PlayerId,
                 Value = (await playerRepository
-                        .GetPlayerByIdAsync(item.PlayerFurnitureItem.PlayerId))
+                        .GetPlayerByIdAsyncT(item.PlayerFurnitureItem.PlayerId))
                     ?.Username ?? "Unknown User"
             });
 
@@ -120,7 +120,7 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             {
                 Key = item.PlayerFurnitureItem.PlayerId,
                 Value = (await playerRepository
-                        .GetPlayerByIdAsync(item.PlayerFurnitureItem.PlayerId))
+                        .GetPlayerByIdAsyncT(item.PlayerFurnitureItem.PlayerId))
                     ?.Username ?? "Unknown User"
             });
 

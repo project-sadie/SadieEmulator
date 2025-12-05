@@ -69,7 +69,7 @@ public class RoomFurnitureItemHelperService(
         var furnitureItem = roomFurnitureItem.PlayerFurnitureItem.FurnitureItem;
         
         var owner = await playerRepository.GetPlayerByIdAsync(
-            roomFurnitureItem.PlayerFurnitureItem.PlayerId);
+            roomFurnitureItem.PlayerFurnitureItem.PlayerId)T;
         
         AbstractPacketWriter itemWriter = furnitureItem.Type == FurnitureItemType.Floor ? 
             new RoomFloorItemUpdatedWriter

@@ -22,7 +22,7 @@ public class RoomForwardDataWriter : AbstractPacketWriter
         var settings = Room.Settings;
         var chatSettings = Room.ChatSettings;
         
-        var owner = await PlayerRepository.GetPlayerByIdAsync(Room.OwnerId);
+        var owner = await PlayerRepository.GetPlayerByIdAsyncT(Room.OwnerId);
 
         writer.WriteBool(EnterRoom);
         writer.WriteLong(Room.Id);
