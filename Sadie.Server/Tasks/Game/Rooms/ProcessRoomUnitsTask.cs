@@ -18,11 +18,30 @@ namespace SadieEmulator.Tasks.Game.Rooms
 
             try
             {
+                var roomTasks = new List<Task>();
+                var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
+        
                 foreach (var room in roomRepository.GetAllRooms())
                 {
-                    await room.BotRepository.RunPeriodicCheckAsync();
-                    await room.UserRepository.RunPeriodicCheckAsync();
+                    await semaphore.WaitAsync();
+
+                    var roomTask = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await room.BotRepository.RunPeriodicCheckAsync();
+                            await room.UserRepository.RunPeriodicCheckAsync();
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    });
+
+                    roomTasks.Add(roomTask);
                 }
+
+                await Task.WhenAll(roomTasks);
             }
             finally
             {
