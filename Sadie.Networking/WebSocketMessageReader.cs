@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Net.WebSockets;
 using Sadie.API.Interfaces.Networking;
 
@@ -5,29 +6,51 @@ namespace Sadie.Networking;
 
 public class WebSocketMessageReader : IWebSocketMessageReader
 {
-    public async Task<byte[]> ReadMessageAsync(WebSocket socket, CancellationToken token)
+    public async ValueTask<(byte[] buffer, int length)> ReadMessageAsync(WebSocket socket, CancellationToken token)
     {
-        var buffer = new byte[4096];
-            
-        using var ms = new MemoryStream();
-            
-        while (true)
+        var recv = ArrayPool<byte>.Shared.Rent(4096);
+        var message = ArrayPool<byte>.Shared.Rent(4096);
+        var len = 0;
+
+        try
         {
-            var result = await socket.ReceiveAsync(buffer, CancellationToken.None);
-            
-            if (result.MessageType == WebSocketMessageType.Close)
+            while (true)
             {
-                return [];
+                var result = await socket.ReceiveAsync(recv, token);
+
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    ArrayPool<byte>.Shared.Return(message);
+                    ArrayPool<byte>.Shared.Return(recv);
+                    
+                    return ([], 0);
+                }
+
+                if (len + result.Count > message.Length)
+                {
+                    var newMessage = ArrayPool<byte>.Shared.Rent(message.Length * 2);
+                    Buffer.BlockCopy(message, 0, newMessage, 0, len);
+                    ArrayPool<byte>.Shared.Return(message);
+                    message = newMessage;
+                }
+
+                Buffer.BlockCopy(recv, 0, message, len, result.Count);
+                len += result.Count;
+
+                if (result.EndOfMessage)
+                {
+                    break;
+                }
             }
-            
-            ms.Write(buffer, 0, result.Count);
-            
-            if (result.EndOfMessage)
-            {
-                break;
-            }
+
+            ArrayPool<byte>.Shared.Return(recv);
+            return (message, len);
         }
-            
-        return ms.ToArray();
+        catch
+        {
+            ArrayPool<byte>.Shared.Return(recv);
+            ArrayPool<byte>.Shared.Return(message);
+            throw;
+        }
     }
 }
