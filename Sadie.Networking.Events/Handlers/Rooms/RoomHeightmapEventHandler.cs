@@ -104,9 +104,8 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             .Select(async item => new
             {
                 Key = item.PlayerFurnitureItem.PlayerId,
-                Value = (await playerRepository
-                        .GetPlayerByIdAsyncT(item.PlayerFurnitureItem.PlayerId))
-                    ?.Username ?? "Unknown User"
+                Value = await playerRepository
+                    .GetPlayerUsernameByIdAsync(item.PlayerFurnitureItem.PlayerId) ?? "Unknown User"
             });
 
         var results = await Task.WhenAll(tasks);
@@ -119,9 +118,8 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             .Select(async item => new
             {
                 Key = item.PlayerFurnitureItem.PlayerId,
-                Value = (await playerRepository
-                        .GetPlayerByIdAsyncT(item.PlayerFurnitureItem.PlayerId))
-                    ?.Username ?? "Unknown User"
+                Value = await playerRepository
+                    .GetPlayerUsernameByIdAsync(item.PlayerFurnitureItem.PlayerId) ?? "Unknown User"
             });
 
         var wallResults = await Task.WhenAll(wallTasks);

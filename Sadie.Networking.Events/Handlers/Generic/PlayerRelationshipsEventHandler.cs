@@ -14,10 +14,10 @@ public class PlayerRelationshipsEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var player = await playerRepository.GetPlayerByIdAsyncT(PlayerId);
+        var player = playerRepository.GetPlayerLogicById(PlayerId);
 
         var relationships = player != null ? 
-                player.Relationships : 
+                player.Player.Relationships : 
                 await playerRepository.GetRelationshipsForPlayerAsync(PlayerId);
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter

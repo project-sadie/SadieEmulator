@@ -15,6 +15,7 @@ public class PlayerRepository(
     IMapper mapper) : IPlayerRepository
 {
     private readonly ConcurrentDictionary<long, IPlayerLogic> _players = new();
+    private readonly ConcurrentDictionary<long, string> _playerIdToUsernameCache = new();
 
     public IPlayerLogic? GetPlayerLogicById(long id) => _players.GetValueOrDefault(id);
     public IPlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Player.Username == username);
@@ -136,10 +137,22 @@ public class PlayerRepository(
 
     public async Task<string?> GetPlayerUsernameByIdAsync(long playerId)
     {
+        if (_playerIdToUsernameCache.TryGetValue(playerId, out var username))
+        {
+            return username;
+        }
+        
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
 
-        return dbContext.Players
+        username = dbContext.Players
             .Where(x => x.Id == playerId)
             .Select(x => x.Username).FirstOrDefault();
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            _playerIdToUsernameCache[playerId] = username;
+        }
+        
+        return username;
     }
 }

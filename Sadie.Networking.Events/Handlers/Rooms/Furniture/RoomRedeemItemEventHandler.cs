@@ -66,8 +66,8 @@ public class RoomRedeemItemEventHandler(
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
-        if ((assetName.StartsWith("CF_") ||
-            assetName.StartsWith("CFC_")) ||
+        if (assetName.StartsWith("CF_") ||
+            assetName.StartsWith("CFC_") ||
             assetName.Contains("_diamond_"))
         {
             var value = int.TryParse(assetName.Split("_")[1], out var amount) ? 
