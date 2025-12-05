@@ -45,6 +45,6 @@ public static class NetworkPacketServiceCollection
         serviceCollection.AddSingleton<INetworkClientConnectionHandler, NetworkClientConnectionHandler>();
         serviceCollection.AddSingleton<PacketDispatcher>(p => new PacketDispatcher(
             p.GetRequiredService<INetworkPacketHandler>(),
-            Environment.ProcessorCount));
+            Environment.ProcessorCount / 2));
     }
 }
