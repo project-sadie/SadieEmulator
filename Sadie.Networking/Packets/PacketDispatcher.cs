@@ -1,3 +1,5 @@
+using System.Buffers;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks.Dataflow;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Packets;
@@ -27,6 +29,19 @@ public class PacketDispatcher
 
     private async Task HandleInternal(INetworkClient client, INetworkPacket packet)
     {
-        await _packetHandler.HandleAsync(client, packet);
+        try
+        {
+            await _packetHandler.HandleAsync(client, packet);
+        }
+        finally
+        {
+            if (packet is NetworkPacket p)
+            {
+                if (MemoryMarshal.TryGetArray(p.Data, out var segment))
+                {
+                    ArrayPool<byte>.Shared.Return(segment.Array!);
+                }
+            }
+        }
     }
 }
