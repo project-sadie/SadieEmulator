@@ -1,5 +1,5 @@
 ﻿using Sadie.API;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.DTOs.Rooms.Chat;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;

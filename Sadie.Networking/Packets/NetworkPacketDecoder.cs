@@ -5,17 +5,21 @@ namespace Sadie.Networking.Packets;
 
 public class NetworkPacketDecoder : INetworkPacketDecoder
 {
-    public INetworkPacket Decode(Guid guid, ReadOnlySpan<byte> data)
+    public INetworkPacket Decode(Guid guid, byte[] buffer, int length)
     {
+        var span = buffer.AsSpan(0, length);
+
         var offset = 0;
 
-        _ = BinaryPrimitives.ReadInt32BigEndian(data.Slice(offset, 4));
+        _ = BinaryPrimitives.ReadInt32BigEndian(span.Slice(offset, 4));
         offset += 4;
 
-        var packetId = BinaryPrimitives.ReadInt16BigEndian(data.Slice(offset, 2));
+        var packetId = BinaryPrimitives.ReadInt16BigEndian(span.Slice(offset, 2));
         offset += 2;
-            
-        var body = data[offset..].ToArray();
-        return new NetworkPacket(packetId, body);
+
+        var bodyOffset = offset;
+        var bodyLength = length - offset;
+
+        return new NetworkPacket(packetId, buffer, bodyOffset, bodyLength);
     }
 }
