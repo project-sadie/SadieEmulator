@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
 
 namespace Sadie.Networking.Client;
 
@@ -56,18 +55,24 @@ public class NetworkClientRepository(
                     return false;
                 }
 
-                await playerHelperService.UpdatePlayerStatusForFriendsAsync(
-                    player,
-                    player.GetMergedFriendships(),
-                    false,
-                    false,
-                    playerRepository);
+                var friendships = player.GetMergedFriendships();
 
-                var playerDataEntity = mapper.Map<PlayerData>(player.Player.Data);
-
+                if (friendships.Count != 0)
+                {
+                    await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+                        player,
+                        friendships,
+                        false,
+                        false,
+                        playerRepository);
+                }
+                
                 await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-                dbContext.Entry(playerDataEntity).Property(x => x.IsOnline).IsModified = true;
-                await dbContext.SaveChangesAsync();
+                
+                await dbContext.Database
+                    .ExecuteSqlRawAsync(
+                        "UPDATE player_data SET is_online = 0 WHERE id = @p0 LIMIT 1", 
+                        player.Player.Id);
             }
         }
         catch (DbUpdateConcurrencyException)
@@ -83,23 +88,33 @@ public class NetworkClientRepository(
     {
         var idleClients = _clients.Values
             .Where(x => (DateTime.Now - x.LastPong).TotalSeconds >= 60)
-            .Take(50)
+            .Take(20)
             .ToList();
-
+        
         if (idleClients.Count < 1)
         {
             return;
         }
         
         logger.LogWarning($"Disconnecting {idleClients.Count} idle players");
+        
+        var throttler = new SemaphoreSlim(5);
 
-        foreach (var client in idleClients)
+        var tasks = idleClients.Select(async client =>
         {
-            if (!await TryRemoveAsync(client.Guid))
+            await throttler.WaitAsync();
+
+            try
             {
-                logger.LogError("Failed to dispose of network client");
+                await TryRemoveAsync(client.Guid);
             }
-        }
+            finally
+            {
+                throttler.Release();
+            }
+        });
+
+        await Task.WhenAll(tasks);
     }
 
     public INetworkClient? TryGetClientByGuid(Guid guid)

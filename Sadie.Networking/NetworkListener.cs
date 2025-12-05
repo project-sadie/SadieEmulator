@@ -36,6 +36,8 @@ public class NetworkListener(
                 k.Listen(ip, _options.Port);
             }
         });
+        
+        builder.Logging.ClearProviders();
 
         var app = builder.Build();
 
