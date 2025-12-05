@@ -41,7 +41,7 @@ public class ClientPacketHandler(
                 return;
             }
             
-            var packetReader = new NetworkPacketReader(packet.Data);
+            var packetReader = new NetworkPacketReader(packet.Data.Span);
             EventSerializer.SetPropertiesForEventHandler(eventHandler, packetReader);
 
             if (client.RoomUser != null &&
