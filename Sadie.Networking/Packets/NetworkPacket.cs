@@ -2,8 +2,9 @@
 
 namespace Sadie.Networking.Packets;
 
-public class NetworkPacket(short header, byte[] data) : INetworkPacket
+public sealed class NetworkPacket(short packetId, byte[] buffer, int offset, int length)
+    : INetworkPacket
 {
-    public short PacketId { get; } = header;
-    public byte[] Data { get; } = data;
+    public short PacketId { get; } = packetId;
+    public ReadOnlyMemory<byte> Data { get; } = new(buffer, offset, length);
 }

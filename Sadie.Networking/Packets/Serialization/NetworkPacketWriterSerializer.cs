@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Sadie.API;
@@ -18,36 +19,23 @@ namespace Sadie.Networking.Packets.Serialization
                 { typeof(bool), (v, w) => w.WriteBool((bool)v) }
             };
 
-        private static readonly Dictionary<Type, PropertyInfo[]> propertyCache = new();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> propertyCache = new();
 
         private static PropertyInfo[] GetCachedProperties(Type type)
         {
-            if (propertyCache.TryGetValue(type, out var props))
-            {
-                return props;
-            }
-
-            props = type.GetProperties();
-            propertyCache[type] = props;
-            return props;
+            return propertyCache.GetOrAdd(type, t => t.GetProperties());
         }
 
         private static void InvokeOnConfigureRules(object packet)
         {
             var method = packet.GetType().GetMethod("OnConfigureRules");
-            
-            if (method == null)
-            {
-                return;
-            }
-            
-            method.Invoke(packet, []);
+            method?.Invoke(packet, []);
         }
 
         private static bool InvokeOnSerializeIfExists(object packet, NetworkPacketWriter writer)
         {
             var method = packet.GetType().GetMethod("OnSerialize");
-            
+
             if (method == null || method.GetBaseDefinition().DeclaringType == method.DeclaringType)
             {
                 return false;
@@ -55,7 +43,6 @@ namespace Sadie.Networking.Packets.Serialization
 
             method.Invoke(packet, [writer]);
             return true;
-
         }
 
         private static short GetPacketIdentifierFromAttribute(object packetObject)
@@ -82,19 +69,13 @@ namespace Sadie.Networking.Packets.Serialization
         }
 
         private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetBeforeRuleMap(object obj)
-        {
-            return GetRuleMap(obj, "BeforeRulesSerialize");
-        }
+            => GetRuleMap(obj, "BeforeRulesSerialize");
 
         private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetInsteadRuleMap(object obj)
-        {
-            return GetRuleMap(obj, "InsteadRulesSerialize");
-        }
+            => GetRuleMap(obj, "InsteadRulesSerialize");
 
         private static Dictionary<PropertyInfo, Action<INetworkPacketWriter>> GetAfterRuleMap(object obj)
-        {
-            return GetRuleMap(obj, "AfterRulesSerialize");
-        }
+            => GetRuleMap(obj, "AfterRulesSerialize");
 
         private static Dictionary<PropertyInfo, KeyValuePair<Type, Func<object, object>>> GetConversionRules(object obj)
         {
@@ -138,26 +119,14 @@ namespace Sadie.Networking.Packets.Serialization
             var props =
                 GetCachedProperties(packet.GetType())
                 .Where(p =>
-                {
-                    if (needsAttribute == false)
-                    {
-                        return true;
-                    }
+                    needsAttribute == false ||
+                    Attribute.IsDefined(p, typeof(PacketDataAttribute))
+                );
 
-                    return Attribute.IsDefined(p, typeof(PacketDataAttribute));
-                });
-
-            var conversionRules =
-                GetConversionRules(packet);
-
-            var beforeRules =
-                GetBeforeRuleMap(packet);
-
-            var insteadRules =
-                GetInsteadRuleMap(packet);
-
-            var afterRules =
-                GetAfterRuleMap(packet);
+            var conversionRules = GetConversionRules(packet);
+            var beforeRules     = GetBeforeRuleMap(packet);
+            var insteadRules    = GetInsteadRuleMap(packet);
+            var afterRules      = GetAfterRuleMap(packet);
 
             foreach (var property in props)
             {
@@ -201,7 +170,6 @@ namespace Sadie.Networking.Packets.Serialization
             }
 
             InvokeOnConfigureRules(packet);
-
             AddObjectToWriter(packet, writer);
 
             return writer;
@@ -226,7 +194,6 @@ namespace Sadie.Networking.Packets.Serialization
             foreach (var item in collection)
             {
                 var props = GetCachedProperties(item.GetType());
-
                 foreach (var p in props)
                 {
                     WriteProperty(p, writer, item);
@@ -273,17 +240,14 @@ namespace Sadie.Networking.Packets.Serialization
                 var dict = (Dictionary<int, List<string>>)value;
 
                 writer.WriteInteger(dict.Count);
-
                 foreach (var kv in dict)
                 {
                     writer.WriteInteger(kv.Key);
-
                     foreach (var s in kv.Value)
                     {
                         writer.WriteString(s);
                     }
                 }
-
                 return;
             }
 
