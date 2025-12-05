@@ -1,4 +1,4 @@
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Core.Shared.Attributes;

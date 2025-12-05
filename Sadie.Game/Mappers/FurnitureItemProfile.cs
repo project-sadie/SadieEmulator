@@ -1,6 +1,6 @@
 using AutoMapper;
 using Sadie.API.DTOs.Furniture;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.Db.Models.Furniture;
 using Sadie.Db.Models.Players.Furniture;
 
