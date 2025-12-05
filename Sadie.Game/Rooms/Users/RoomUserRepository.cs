@@ -99,11 +99,32 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                 NoUsersSince = null;
             }
             
-            var userCheckTasks = users.Select(user => user.RunPeriodicCheckAsync()).ToList();
-            await Task.WhenAll(userCheckTasks);
+            var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 4);
+            var userCheckTasks = new List<Task>();
 
+            foreach (var user in users)
+            {
+                await semaphore.WaitAsync();
+
+                var userTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await user.RunPeriodicCheckAsync();
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
+
+                userCheckTasks.Add(userTask);
+            }
+
+            await Task.WhenAll(userCheckTasks);
+        
             var firstUser = users.FirstOrDefault();
-            
+        
             if (firstUser != null)
             {
                 var bots = firstUser.Room.BotRepository.GetAll();
