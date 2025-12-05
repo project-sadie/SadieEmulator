@@ -1,5 +1,5 @@
 using Sadie.API;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Shared.Attributes;

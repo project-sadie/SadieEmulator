@@ -1,7 +1,8 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
@@ -24,6 +25,8 @@ public class PlayerRepository(
         {
             return byId.Player;
         }
+
+        var sw = Stopwatch.StartNew();
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
@@ -35,10 +38,8 @@ public class PlayerRepository(
             .Include(x => x.Bans)
             .Include(x => x.GameSettings)
             .Include(x => x.NavigatorSettings)
-            .Include(x => x.FurnitureItems)
             .Include(x => x.OutgoingFriendships)
             .Include(x => x.IncomingFriendships)
-            .Include(x => x.Rooms)
             .Include(x => x.Roles)
             .Include(x => x.Ignores)
             .Include(x => x.Rooms)
@@ -46,7 +47,14 @@ public class PlayerRepository(
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
         
-        return mapper.Map<PlayerDto>(player);
+        var value = mapper.Map<PlayerDto>(player);
+        sw.Stop();
+
+        if (sw.Elapsed.TotalMilliseconds > 300)
+        {
+            Console.WriteLine($"Finding a player {id}, {value.Username} took {sw.Elapsed.TotalMilliseconds}ms");
+        }
+        return value;
     }
     
     public async Task<PlayerDto?> GetPlayerByUsernameAsync(string username)
@@ -124,5 +132,14 @@ public class PlayerRepository(
         {
             await player.NetworkObject!.WriteToStreamAsync(writer);
         }
+    }
+
+    public async Task<string?> GetPlayerUsernameByIdAsync(long playerId)
+    {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        return dbContext.Players
+            .Where(x => x.Id == playerId)
+            .Select(x => x.Username).FirstOrDefault();
     }
 }

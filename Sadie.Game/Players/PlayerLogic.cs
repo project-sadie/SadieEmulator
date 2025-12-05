@@ -1,7 +1,7 @@
 using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Sadie.API;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Networking.Packets.Writers.Players;
