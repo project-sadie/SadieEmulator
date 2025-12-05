@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Unit;
 using Sadie.Core.Shared.Extensions;
