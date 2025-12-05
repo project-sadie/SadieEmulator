@@ -1,5 +1,5 @@
-using Sadie.API.DTOs.Player;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Players.Friendships;
 using Sadie.API.Interfaces.Game.Players.Packets.Writers;

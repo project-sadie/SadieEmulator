@@ -1,5 +1,5 @@
 ﻿using Sadie.API;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Players;

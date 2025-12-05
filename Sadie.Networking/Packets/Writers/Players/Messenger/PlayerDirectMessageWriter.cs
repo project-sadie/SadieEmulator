@@ -1,5 +1,5 @@
 using Sadie.API;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Core.Shared.Extensions;
