@@ -2,11 +2,13 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.DTOs.Rooms.Chat;
+using Sadie.API.DTOs.Rooms.Rights;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Bots;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Db.Models.Rooms;
 using Sadie.Db.Models.Rooms.Chat;
+using Sadie.Db.Models.Rooms.Rights;
 using Sadie.Game.Rooms;
 using Sadie.Game.Rooms.Mapping;
 
@@ -34,5 +36,8 @@ public class RoomProfile : Profile
         CreateMap<List<RoomChatMessage>, List<RoomChatMessageDto>>().ReverseMap();
         CreateMap<RoomPaintSettings, RoomPaintSettingsDto>().ReverseMap();
         CreateMap<RoomSettings, RoomSettingsDto>().ReverseMap();
+        CreateMap<RoomPlayerRight,  RoomPlayerRightDto>();
+        CreateMap<RoomTag, RoomTagDto>();
+        CreateMap<RoomDimmerSettings, RoomDimmerSettingsDto>();
     }
 }
