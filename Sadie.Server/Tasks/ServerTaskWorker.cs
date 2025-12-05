@@ -3,66 +3,51 @@ using Microsoft.Extensions.Logging;
 
 namespace SadieEmulator.Tasks;
 
-public class ServerTaskWorker(
-    ILogger<ServerTaskWorker> logger, 
-    IEnumerable<IServerTask> tasks) : IServerTaskWorker
+public class ServerTaskWorker(ILogger<ServerTaskWorker> logger, IEnumerable<IServerTask> tasks)
+    : IServerTaskWorker
 {
-    private Thread? _taskWorkerThread;
-    
-    public async Task WorkAsync(CancellationToken token)
+    public Task WorkAsync(CancellationToken token)
     {
-        _taskWorkerThread = new Thread(() =>
+        foreach (var task in tasks)
         {
-            try
-            {
-                RunWorkerLoopAsync(token).GetAwaiter().GetResult();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        })
-        {
-            Name = "TaskWorkerThread"
-        };
+            _ = RunTaskLoopAsync(task, token);
+        }
 
-        _taskWorkerThread.Start();
+        return Task.CompletedTask;
     }
 
-    private async Task RunWorkerLoopAsync(CancellationToken token)
+    private async Task RunTaskLoopAsync(IServerTask task, CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            foreach (var task in tasks.Where(t => t.WaitingToExecute()))
+            try
             {
-                await ProcessTaskAsync(task).ConfigureAwait(false);
-                task.LastExecuted = DateTime.Now;
+                if (task.WaitingToExecute())
+                {
+                    var sw = Stopwatch.StartNew();
+                    await task.ExecuteAsync();
+                    sw.Stop();
+
+                    if (sw.Elapsed >= task.PeriodicInterval)
+                    {
+                        logger.LogWarning(
+                            $"Task '{task.GetType().Name}' took {sw.ElapsedMilliseconds}ms to execute.");
+                    }
+
+                    task.LastExecuted = DateTime.Now;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while executing server task.");
             }
 
-            await Task.Delay(50, token).ConfigureAwait(false);
-        }
-    }
-
-    private async Task ProcessTaskAsync(IServerTask task)
-    {
-        try
-        {
-            var stopwatch = Stopwatch.StartNew();
-            await task.ExecuteAsync();
-            stopwatch.Stop();
-
-            if (stopwatch.Elapsed >= task.PeriodicInterval)
-            {
-                logger.LogWarning($"Task '{task.GetType().Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
-            }
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
+            await Task.Delay(5, token);
         }
     }
 
     public void Dispose()
     {
+        
     }
 }
