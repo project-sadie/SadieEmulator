@@ -79,6 +79,10 @@ public class NetworkClientRepository(
         {
             // Another thread removed the player already, safe to ignore
         }
+        finally
+        {
+            _removalGuard.TryRemove(guid, out _);
+        }
         
         await client.DisposeAsync();
         return true;
@@ -98,7 +102,7 @@ public class NetworkClientRepository(
         
         logger.LogWarning($"Disconnecting {idleClients.Count} idle players");
         
-        var throttler = new SemaphoreSlim(5);
+        var throttler = new SemaphoreSlim(10);
 
         var tasks = idleClients.Select(async client =>
         {
