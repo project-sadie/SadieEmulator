@@ -1,4 +1,5 @@
 using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo.Heuristics;
 
 namespace Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
 

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
+using Sadie.API.Interfaces.Server.Tasks;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
 using Sadie.Game;

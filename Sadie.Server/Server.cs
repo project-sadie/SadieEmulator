@@ -5,9 +5,9 @@ using Microsoft.Extensions.Options;
 using Sadie.API;
 using Sadie.API.Interfaces.Game.Catalog;
 using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Server.Tasks;
 using Sadie.Db;
 using Sadie.Game.Players.Options;
-using SadieEmulator.Tasks;
 using Serilog;
 
 namespace SadieEmulator;

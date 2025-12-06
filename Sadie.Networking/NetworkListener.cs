@@ -37,6 +37,7 @@ public class NetworkListener(
             }
         });
         
+        builder.Logging.SetMinimumLevel(LogLevel.Warning);
         builder.Logging.ClearProviders();
 
         var app = builder.Build();

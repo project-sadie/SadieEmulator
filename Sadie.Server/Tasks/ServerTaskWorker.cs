@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Sadie.API.Interfaces.Server.Tasks;
 
 namespace SadieEmulator.Tasks;
 

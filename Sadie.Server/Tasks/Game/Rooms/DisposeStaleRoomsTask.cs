@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Server.Tasks;
 
 namespace SadieEmulator.Tasks.Game.Rooms
 {

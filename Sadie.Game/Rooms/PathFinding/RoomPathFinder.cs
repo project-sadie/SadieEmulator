@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Sadie.API.Interfaces.Game.Rooms.Pathfinding;
 using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo.Heuristics;
 using Sadie.Game.Rooms.PathFinding.ToGo;
 using Sadie.Game.Rooms.PathFinding.ToGo.Collections.PathFinder;
 using Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
