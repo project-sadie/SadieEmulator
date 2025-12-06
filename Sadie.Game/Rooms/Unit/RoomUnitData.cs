@@ -120,7 +120,11 @@ public class RoomUnitData(
 
     private void CalculatePath()
     {
-        PathPoints = pathFinderHelperService.BuildPathForWalk(room.TileMap, Point, PathGoal, room.Room.Settings.WalkDiagonal, OverridePoints);
+        PathPoints = pathFinderHelperService.BuildPathForWalk(
+            room,
+            point,
+            PathGoal,
+            OverridePoints);
 
         if (PathPoints.Count > 1)
         {
