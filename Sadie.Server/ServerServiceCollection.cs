@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
+using Sadie.Game;
 using Sadie.Game.Catalog;
 using Sadie.Game.Locale;
 using Sadie.Game.Mappers;
@@ -38,6 +39,8 @@ public static class ServerServiceCollection
         NetworkPacketServiceCollection.AddServices(serviceCollection);
         NavigatorServiceCollection.AddServices(serviceCollection);
         EncryptionServiceProvider.AddServices(serviceCollection, config);
+
+        serviceCollection.AddHostedService<GameWorker>();
         
         LocaleServiceCollection.AddServices(serviceCollection);
         CatalogServiceCollection.AddServices(serviceCollection, config);
