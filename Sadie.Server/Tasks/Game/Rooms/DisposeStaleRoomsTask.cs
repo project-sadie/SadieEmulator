@@ -6,27 +6,45 @@ namespace SadieEmulator.Tasks.Game.Rooms
     public class DisposeStaleRoomsTask(IRoomRepository roomRepository,
         IConfiguration configuration) : IServerTask
     {
-        public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(20);
+        public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
         public DateTime LastExecuted { get; set; }
+
+        private readonly SemaphoreSlim _semaphore = new(5);
 
         public async Task ExecuteAsync()
         {
-            var keepAliveMinutes = configuration.GetValue("RoomOptions:KeepAliveMinutes", 5);
-            
+            var keepAlive = configuration.GetValue("RoomOptions:KeepAliveSeconds", 60);
+
             var staleRooms = roomRepository
                 .GetAllRooms()
-                .Where(x => 
-                    x.UserRepository.NoUsersSince != null && 
-                    (DateTime.Now - x.UserRepository.NoUsersSince.Value).TotalMinutes >= keepAliveMinutes)
+                .Where(x =>
+                    x.UserRepository.NoUsersSince != null &&
+                    (DateTime.UtcNow - x.UserRepository.NoUsersSince.Value).TotalSeconds >= keepAlive)
                 .OrderBy(x => x.UserRepository.NoUsersSince)
                 .Take(100)
                 .ToList();
-            
+
+            var tasks = new List<Task>();
+
             foreach (var room in staleRooms)
             {
-                roomRepository.TryRemove(room.Room.Id, out _);
-                await room.DisposeAsync();
+                await _semaphore.WaitAsync();
+
+                tasks.Add(Task.Run(async () =>
+                {
+                    try
+                    {
+                        roomRepository.TryRemove(room.Room.Id, out _);
+                        await room.DisposeAsync();
+                    }
+                    finally
+                    {
+                        _semaphore.Release();
+                    }
+                }));
             }
+
+            await Task.WhenAll(tasks);
         }
     }
 }
