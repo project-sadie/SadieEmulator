@@ -20,7 +20,7 @@ public class PlayerCurrencyRewardsTask(
     IMapper mapper) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
-    public DateTime LastExecuted { get; set; }
+    public long LastExecutedTicks { get; set; }
 
     private readonly Dictionary<int, DateTime> _lastProcessed = rewards
         .ToDictionary(k => k.Id, _ => DateTime.Now);

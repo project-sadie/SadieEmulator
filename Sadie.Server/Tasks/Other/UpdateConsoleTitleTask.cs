@@ -9,7 +9,7 @@ public class UpdateConsoleTitleTask(
     IRoomRepository roomRepository) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
-    public DateTime LastExecuted { get; set; }
+    public long LastExecutedTicks { get; set; }
 
     public Task ExecuteAsync()
     {

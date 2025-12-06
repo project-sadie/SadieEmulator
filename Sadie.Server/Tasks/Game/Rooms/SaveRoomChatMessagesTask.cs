@@ -13,7 +13,7 @@ public class SaveRoomChatMessagesTask(IRoomRepository roomRepository,
     IMapper mapper) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
-    public DateTime LastExecuted { get; set; }
+    public long LastExecutedTicks { get; set; }
 
     public async Task ExecuteAsync()
     {
