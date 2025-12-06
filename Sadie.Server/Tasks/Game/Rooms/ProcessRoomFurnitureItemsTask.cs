@@ -9,7 +9,7 @@ public class ProcessRoomFurnitureItemsTask(
     IEnumerable<IRoomFurnitureItemProcessor> processors) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(1000);
-    public DateTime LastExecuted { get; set; }
+    public long LastExecutedTicks { get; set; }
     
     public async Task ExecuteAsync()
     {

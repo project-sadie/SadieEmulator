@@ -6,30 +6,24 @@ using Sadie.API.Interfaces.Game.Rooms;
 
 namespace Sadie.Game
 {
-    public class GameWorker(
-        IRoomRepository roomRepository,
-        ILogger<GameWorker> logger)
-        : IHostedService
+    public class GameWorker(IRoomRepository roomRepository, ILogger<GameWorker> logger) : IHostedService
     {
         private CancellationTokenSource? _cts;
         private Thread? _thread;
+        private readonly SemaphoreSlim _semaphore = new(Environment.ProcessorCount);
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _cts = new CancellationTokenSource();
-
             _thread = new Thread(() =>
             {
-                GameLoopAsync(_cts.Token)
-                    .GetAwaiter()
-                    .GetResult();
+                GameLoopAsync(_cts.Token).GetAwaiter().GetResult();
             })
             {
                 IsBackground = true
             };
-
+            
             _thread.Start();
-
             return Task.CompletedTask;
         }
 
@@ -44,49 +38,64 @@ namespace Sadie.Game
             while (!token.IsCancellationRequested)
             {
                 var sw = Stopwatch.StartNew();
+                var roomTasks = new List<Task>();
 
                 foreach (var room in roomRepository.GetAllRooms())
                 {
-                    await room.BotRepository.RunPeriodicCheckAsync();
-                    await room.UserRepository.RunPeriodicCheckAsync();
+                    await _semaphore.WaitAsync(token);
 
-                    foreach (var user in room.UserRepository.GetAll())
+                    var roomTask = Task.Run(async () =>
                     {
-                        var obj = user.NetworkObject;
-
-                        if (obj.Outbox.Count == 0)
+                        try
                         {
-                            continue;
-                        }
+                            await room.BotRepository.RunPeriodicCheckAsync();
+                            await room.UserRepository.RunPeriodicCheckAsync();
 
-                        foreach (var p in obj.Outbox)
+                            foreach (var user in room.UserRepository.GetAll())
+                            {
+                                var obj = user.NetworkObject;
+
+                                if (obj.Outbox.Count == 0)
+                                {
+                                    continue;
+                                }
+
+                                await obj.WebSocket.SendAsync
+                                (
+                                    obj
+                                        .Outbox
+                                        .SelectMany(x => x.GetAllBytes())
+                                        .ToArray(),
+                                    WebSocketMessageType.Binary,
+                                    true,
+                                    token
+                                );
+
+                                obj.Outbox.Clear();
+                            }
+                        }
+                        finally
                         {
-                            await obj.WebSocket.SendAsync
-                            (
-                                p.GetAllBytes(),
-                                WebSocketMessageType.Binary,
-                                true,
-                                token
-                            );
+                            _semaphore.Release();
                         }
+                    }, token);
 
-                        obj.Outbox.Clear();
-                    }
+                    roomTasks.Add(roomTask);
                 }
 
+                await Task.WhenAll(roomTasks);
                 sw.Stop();
-                
+
                 var elapsed = sw.ElapsedMilliseconds;
                 var delay = 500 - (int)elapsed;
 
-                switch (delay)
+                if (delay < 0)
                 {
-                    case < 0:
-                        logger.LogWarning("Game loop tick is lagging by {ms}ms", -delay);
-                        break;
-                    case > 0:
-                        Thread.Sleep(delay);
-                        break;
+                    logger.LogWarning("Game loop tick is lagging by {ms}ms", -delay);
+                }
+                else if (delay > 0)
+                {
+                    Thread.Sleep(delay);
                 }
             }
         }

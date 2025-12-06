@@ -99,29 +99,10 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                 NoUsersSince = null;
             }
             
-            var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 4);
-            var userCheckTasks = new List<Task>();
-
             foreach (var user in users)
             {
-                await semaphore.WaitAsync();
-
-                var userTask = Task.Run(async () =>
-                {
-                    try
-                    {
-                        await user.RunPeriodicCheckAsync();
-                    }
-                    finally
-                    {
-                        semaphore.Release();
-                    }
-                });
-
-                userCheckTasks.Add(userTask);
+                await user.RunPeriodicCheckAsync();
             }
-
-            await Task.WhenAll(userCheckTasks);
         
             var firstUser = users.FirstOrDefault();
         
@@ -140,7 +121,7 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                 .Where(x => x.NeedsUpdate)
                 .ToList();
 
-            if (usersNeedsUpdate.Any())
+            if (usersNeedsUpdate.Count != 0)
             {
                 var dataWriter = NetworkPacketWriterSerializer.Serialize(
                     new RoomUserDataWriter
@@ -154,10 +135,15 @@ public class RoomUserRepository(ILogger<RoomUserRepository> logger,
                         Users = usersNeedsUpdate
                     });
 
+                foreach (var u in users)
+                {
+                    u.NetworkObject.Outbox.Add(dataWriter);
+                    u.NetworkObject.Outbox.Add(statusWriter);
+                }
+
                 foreach (var u in usersNeedsUpdate)
                 {
-                    await u.NetworkObject.WriteToStreamAsync(dataWriter);
-                    await u.NetworkObject.WriteToStreamAsync(statusWriter);
+                    u.NeedsUpdate = false;
                 }
             }
         }
