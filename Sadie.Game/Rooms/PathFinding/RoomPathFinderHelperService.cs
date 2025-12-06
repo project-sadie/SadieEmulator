@@ -1,9 +1,6 @@
 using System.Drawing;
-using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Pathfinding;
 using Sadie.Core.Enums.Miscellaneous;
-using Sadie.Game.Rooms.PathFinding.ToGo;
-using Sadie.Game.Rooms.PathFinding.ToGo.Options;
 
 namespace Sadie.Game.Rooms.PathFinding;
 
@@ -47,25 +44,5 @@ public class RoomPathFinderHelperService : IRoomPathFinderHelperService
         }
 
         return rotation;
-    }
-    
-    public List<Point> BuildPathForWalk(IRoomTileMap tileMap,
-        Point start,
-        Point end,
-        bool useDiagonal,
-        List<Point> overridePoints)
-    {
-        var pathfinderOptions = new PathFinderOptions
-        {
-            UseDiagonals = useDiagonal
-        };
-
-        var worldArray = tileMap.GetWorldArrayFromTileMap(tileMap, end, overridePoints);
-        var worldGrid = new WorldGrid(worldArray);
-        var pathfinder = new PathFinder(worldGrid, pathfinderOptions);
-
-        return pathfinder
-            .FindPath(start, end)
-            .ToList();
     }
 }
