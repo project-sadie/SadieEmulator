@@ -7,7 +7,7 @@ namespace SadieEmulator.Tasks.Game.Rooms
         IConfiguration configuration) : IServerTask
     {
         public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(10);
-        public DateTime LastExecuted { get; set; }
+        public long LastExecutedTicks { get; set; }
 
         private readonly SemaphoreSlim _semaphore = new(5);
 

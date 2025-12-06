@@ -34,7 +34,7 @@ public class ServerTaskWorker(ILogger<ServerTaskWorker> logger, IEnumerable<ISer
                             $"Task '{task.GetType().Name}' took {sw.ElapsedMilliseconds}ms to execute.");
                     }
 
-                    task.LastExecuted = DateTime.Now;
+                    task.LastExecutedTicks = Stopwatch.GetTimestamp();
                 }
             }
             catch (Exception ex)
