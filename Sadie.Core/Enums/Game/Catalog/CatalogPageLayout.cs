@@ -1,6 +1,6 @@
 namespace Sadie.Core.Enums.Game.Catalog;
 
-public class CatalogPageLayout
+public static class CatalogPageLayout
 {
     public const string Guilds = "guilds";
     public const string GuildsCustomFurniture = "guild_custom_furni";
