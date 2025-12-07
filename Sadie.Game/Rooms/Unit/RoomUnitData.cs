@@ -122,7 +122,7 @@ public class RoomUnitData(
     {
         PathPoints = pathFinderHelperService.BuildPathForWalk(
             room,
-            point,
+            Point,
             PathGoal,
             OverridePoints);
 

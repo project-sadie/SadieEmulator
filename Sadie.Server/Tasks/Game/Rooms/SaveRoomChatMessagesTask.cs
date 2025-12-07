@@ -3,6 +3,7 @@ using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.DTOs.Rooms.Chat;
 using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Server.Tasks;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms.Chat;
 
