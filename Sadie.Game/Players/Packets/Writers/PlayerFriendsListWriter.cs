@@ -4,7 +4,7 @@ using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Packets.Writers;
+using Sadie.Networking.Writers;
 
 namespace Sadie.Game.Players.Packets.Writers;
 

@@ -9,7 +9,7 @@ using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
 using Sadie.Networking.Events;
-using Sadie.Networking.Packets.Writers.Rooms.Users;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 

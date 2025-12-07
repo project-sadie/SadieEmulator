@@ -5,7 +5,7 @@ using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
 using Sadie.Networking.Packets.Serialization;
-using Sadie.Networking.Packets.Writers.Rooms.Users.Trading;
+using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events;
 

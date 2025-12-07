@@ -8,7 +8,7 @@ using Sadie.Core.Enums.Game.Rooms.Furniture;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Players.Furniture;
-using Sadie.Networking.Packets.Writers.Rooms.Furniture;
+using Sadie.Networking.Writers.Rooms.Furniture;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 

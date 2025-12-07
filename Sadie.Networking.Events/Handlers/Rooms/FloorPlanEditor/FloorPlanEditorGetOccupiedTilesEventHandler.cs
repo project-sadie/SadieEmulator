@@ -2,7 +2,7 @@ using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Packets.Writers.Rooms.FloorPlanEditor;
+using Sadie.Networking.Writers.Rooms.FloorPlanEditor;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 

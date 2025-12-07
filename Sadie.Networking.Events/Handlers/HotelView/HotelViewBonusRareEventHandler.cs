@@ -1,7 +1,7 @@
 ﻿using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Packets.Writers.HotelView;
+using Sadie.Networking.Writers.HotelView;
 
 namespace Sadie.Networking.Events.Handlers.HotelView;
 

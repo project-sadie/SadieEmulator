@@ -4,7 +4,7 @@ using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Events.Dtos;
-using Sadie.Networking.Packets.Writers.Players.Messenger;
+using Sadie.Networking.Writers.Players.Messenger;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Db", "Sadie.Db\Sadie.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Core", "Sadie.Core\Sadie.Core.csproj", "{7BAA4676-08C4-4ACF-B4DE-B0A37767866D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sadie.Networking.Writers", "Sadie.Networking.Writers\Sadie.Networking.Writers.csproj", "{227C73F3-B99D-45FB-BF47-6FB9823D2C50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{7BAA4676-08C4-4ACF-B4DE-B0A37767866D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BAA4676-08C4-4ACF-B4DE-B0A37767866D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BAA4676-08C4-4ACF-B4DE-B0A37767866D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227C73F3-B99D-45FB-BF47-6FB9823D2C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227C73F3-B99D-45FB-BF47-6FB9823D2C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227C73F3-B99D-45FB-BF47-6FB9823D2C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227C73F3-B99D-45FB-BF47-6FB9823D2C50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

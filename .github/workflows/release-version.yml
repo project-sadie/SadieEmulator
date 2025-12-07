@@ -104,10 +104,25 @@ jobs:
             -p:PackageVersion=${{ steps.get_version.outputs.version }} \
             -o ./nuget
 
+      - name: Pack Sadie.Networking.Writers
+        run: |
+          dotnet pack ./Sadie.Networking.Writers/Sadie.Networking.Writers.csproj \
+            -c Release \
+            -p:PackageVersion=${{ steps.get_version.outputs.version }} \
+            -o ./nuget
+
       - name: Publish Sadie.Core to NuGet
         if: env.tag_exists == 'false'
         run: |
-          dotnet nuget push "./nuget/*.nupkg" \
+          dotnet nuget push "./nuget/Sadie.Core.*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Publish Sadie.Networking.Writers to NuGet
+        if: env.tag_exists == 'false'
+        run: |
+          dotnet nuget push "./nuget/Sadie.Networking.Writers.*.nupkg" \
             --api-key ${{ secrets.NUGET_API_KEY }} \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate

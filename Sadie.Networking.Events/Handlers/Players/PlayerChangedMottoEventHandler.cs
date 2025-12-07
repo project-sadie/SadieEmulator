@@ -6,7 +6,7 @@ using Sadie.Core.Shared.Attributes;
 using Sadie.Core.Shared.Extensions;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
-using Sadie.Networking.Packets.Writers.Rooms.Users;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 

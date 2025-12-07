@@ -9,10 +9,10 @@ using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Packets.Writers.Rooms;
-using Sadie.Networking.Packets.Writers.Rooms.Bots;
-using Sadie.Networking.Packets.Writers.Rooms.Furniture;
-using Sadie.Networking.Packets.Writers.Rooms.Users;
+using Sadie.Networking.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms.Bots;
+using Sadie.Networking.Writers.Rooms.Furniture;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 

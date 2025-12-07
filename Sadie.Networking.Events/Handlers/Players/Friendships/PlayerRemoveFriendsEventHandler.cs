@@ -5,7 +5,7 @@ using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Networking.Packets.Writers.Players.Friendships;
+using Sadie.Networking.Writers.Players.Friendships;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 

@@ -8,7 +8,7 @@ using Sadie.API.Interfaces.Server.Tasks;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
 using Sadie.Networking.Events;
-using Sadie.Networking.Packets.Writers.Players.Purse;
+using Sadie.Networking.Writers.Players.Purse;
 
 namespace SadieEmulator.Tasks.Game.Players;
 

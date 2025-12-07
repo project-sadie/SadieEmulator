@@ -12,8 +12,8 @@ using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Core.Enums.Game.Players;
 using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
-using Sadie.Networking.Packets.Writers.Players;
-using Sadie.Networking.Packets.Writers.Rooms;
+using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Rooms;
 using Serilog;
 
 namespace Sadie.Networking.Events;

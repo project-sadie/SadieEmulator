@@ -10,8 +10,8 @@ using Sadie.Core.Shared.Attributes;
 using Sadie.Core.Shared.Helpers;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms;
-using Sadie.Networking.Packets.Writers.Generic;
-using Sadie.Networking.Packets.Writers.Rooms.Users;
+using Sadie.Networking.Writers.Generic;
+using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.FloorPlanEditor;
 

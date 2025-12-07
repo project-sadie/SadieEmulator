@@ -1,7 +1,7 @@
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Packets.Writers.Players.Groups;
+using Sadie.Networking.Writers.Players.Groups;
 
 namespace Sadie.Networking.Events.Handlers.Players.Groups;
 

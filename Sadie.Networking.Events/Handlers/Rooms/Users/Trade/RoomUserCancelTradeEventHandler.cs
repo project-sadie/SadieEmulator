@@ -3,8 +3,8 @@ using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Game.Rooms.Users.Trading;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Packets.Writers;
-using Sadie.Networking.Packets.Writers.Rooms.Users.Trading;
+using Sadie.Networking.Writers;
+using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 

@@ -8,7 +8,7 @@ using Sadie.Core.Shared.Attributes;
 using Sadie.Core.Shared.Extensions;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
-using Sadie.Networking.Packets.Writers.Rooms;
+using Sadie.Networking.Writers.Rooms;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 

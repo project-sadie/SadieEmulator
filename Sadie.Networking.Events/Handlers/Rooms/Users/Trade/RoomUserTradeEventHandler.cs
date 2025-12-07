@@ -7,7 +7,7 @@ using Sadie.Core.Enums.Game.Rooms;
 using Sadie.Core.Enums.Game.Rooms.Users.Trading;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Networking.Packets.Writers.Rooms.Users.Trading;
+using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 

@@ -15,5 +15,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Networking.Events\Sadie.Networking.Events.csproj" />
+      <ProjectReference Include="..\Sadie.Networking.Writers\Sadie.Networking.Writers.csproj" />
     </ItemGroup>
 </Project>

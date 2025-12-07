@@ -18,12 +18,12 @@ using Sadie.Db.Models.Catalog.Items;
 using Sadie.Db.Models.Catalog.Pages;
 using Sadie.Db.Models.Players;
 using Sadie.Db.Models.Players.Furniture;
-using Sadie.Networking.Packets.Writers.Catalog;
-using Sadie.Networking.Packets.Writers.Players;
-using Sadie.Networking.Packets.Writers.Players.Inventory;
-using Sadie.Networking.Packets.Writers.Players.Permission;
-using Sadie.Networking.Packets.Writers.Players.Purse;
-using Sadie.Networking.Packets.Writers.Players.Subscriptions;
+using Sadie.Networking.Writers.Catalog;
+using Sadie.Networking.Writers.Players;
+using Sadie.Networking.Writers.Players.Inventory;
+using Sadie.Networking.Writers.Players.Permission;
+using Sadie.Networking.Writers.Players.Purse;
+using Sadie.Networking.Writers.Players.Subscriptions;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 

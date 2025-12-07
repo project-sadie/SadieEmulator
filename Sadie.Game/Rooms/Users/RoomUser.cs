@@ -12,8 +12,8 @@ using Sadie.Core.Enums.Game.Rooms.Users;
 using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db.Models.Constants;
 using Sadie.Game.Rooms.Unit;
-using Sadie.Networking.Packets.Writers.Rooms.Users;
-using Sadie.Networking.Packets.Writers.Rooms.Users.HandItems;
+using Sadie.Networking.Writers.Rooms.Users;
+using Sadie.Networking.Writers.Rooms.Users.HandItems;
 
 namespace Sadie.Game.Rooms.Users;
 

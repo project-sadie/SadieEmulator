@@ -2,7 +2,7 @@ using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Shared.Attributes;
-using Sadie.Networking.Packets.Writers.Players;
+using Sadie.Networking.Writers.Players;
 using PlayerFriendshipStatus = Sadie.Core.Enums.Game.Players.PlayerFriendshipStatus;
 
 namespace Sadie.Networking.Events.Handlers.Players;
