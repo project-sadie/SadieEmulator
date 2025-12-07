@@ -13,11 +13,9 @@ public class RoomPathFinder : IRoomPathFinder
 {
     private const int Closed = 0;
     private const int StepCost = 1;
-
     private readonly PathFinderOptions _opts;
     private readonly ICalculateHeuristic _heuristic;
     private readonly PathFinderGraph _graph;
-
     private readonly IPosition[] _backtrackBuf;
     private readonly Point[] _pointBuf;
 
@@ -25,116 +23,112 @@ public class RoomPathFinder : IRoomPathFinder
     {
         _opts = opts ?? new PathFinderOptions();
         _heuristic = HeuristicFactory.Create(_opts.HeuristicFormula);
-
         _graph = new PathFinderGraph(height, width, _opts.UseDiagonals);
-
         _backtrackBuf = new IPosition[height * width];
         _pointBuf = new Point[height * width];
     }
 
     public IEnumerable<Point> FindPath(Point start, Point end, IWorldGrid world)
     {
-        var result = FindPath(
-            new Position(start.Y, start.X),
-            new Position(end.Y, end.X),
-            world,
-            out var count);
-
+        var count = InternalFindPath(new Position(start.Y, start.X), new Position(end.Y, end.X), world);
+        
         for (var i = 0; i < count; i++)
         {
-            _pointBuf[i] = new Point(result[i].Column, result[i].Row);
+            var p = _backtrackBuf[i];
+            _pointBuf[i] = new Point(p.Column, p.Row);
         }
-
-        return _pointBuf.Take(count);
+        
+        return CreatePointEnumerable(count);
     }
 
     public IEnumerable<IPosition> FindPath(IPosition start, IPosition end, IWorldGrid world)
     {
-        var pos = FindPath(
-            new Position(start.Row, start.Column),
-            new Position(end.Row, end.Column),
-            world,
-            out var count);
-
-        return pos.Take(count);
+        var count = InternalFindPath(new Position(start.Row, start.Column), new Position(end.Row, end.Column), world);
+        return CreatePositionEnumerable(count);
     }
 
-    private IPosition[] FindPath(IPosition start, IPosition end, IWorldGrid world, out int outCount)
+    private int InternalFindPath(Position start, Position end, IWorldGrid world)
     {
         _graph.Reset();
-
+        
         var startNode = new PathFinderNode(start, 0, 0, start);
         _graph.OpenNode(startNode);
-
+        
         var visited = 0;
-
+        
         while (_graph.HasOpenNodes)
         {
             var q = _graph.GetOpenNodeWithSmallestF();
-
-            if (q.Position.Row == end.Row && q.Position.Column == end.Column)
+            
+            if (q.Position.Equals(end))
             {
-                outCount = Backtrack(q);
-                return _backtrackBuf;
+                return Backtrack(q);
             }
-
+            
             if (visited++ > _opts.SearchLimit)
             {
-                outCount = 0;
-                return _backtrackBuf;
+                return 0;
             }
-
+            
             foreach (var s in _graph.GetSuccessors(q))
             {
                 if (world[s.Position] == Closed)
                 {
                     continue;
                 }
-
                 var g = q.G + StepCost;
-
                 if (_opts.PunishChangeDirection)
                 {
                     g += CalculateModifier(q, s, end);
                 }
-
-                var n = new PathFinderNode(
-                    s.Position,
-                    g,
-                    _heuristic.Calculate(s.Position, end),
-                    q.Position);
-
+                
+                var n = new PathFinderNode(s.Position, g, _heuristic.Calculate(s.Position, end), q.Position);
+                
                 if (!_graph.WasVisited(s.Position) || n.F < s.F)
                 {
                     _graph.OpenNode(n);
                 }
             }
         }
-
-        outCount = 0;
-        return _backtrackBuf;
+        
+        return 0;
     }
 
     private int Backtrack(PathFinderNode endNode)
     {
         var count = 0;
         var current = endNode;
-
         var guard = 0;
-
+        
         while (!current.Position.Equals(current.ParentNodePosition))
         {
             if (guard++ > 50000)
             {
                 return 0;
             }
-
             _backtrackBuf[count++] = current.Position;
             current = _graph.GetParent(current);
         }
-
+        
         _backtrackBuf[count++] = current.Position;
-        Array.Reverse(_backtrackBuf, 0, count);
+        var left = 0;
+        var right = count - 1;
+        
+        while (left < right)
+        {
+            var tmp = _backtrackBuf[left];
+            
+            _backtrackBuf[left] = _backtrackBuf[right];
+            _backtrackBuf[right] = tmp;
+            
+            left++;
+            right--;
+        }
+        
+        for (var i = count; i < _backtrackBuf.Length; i++)
+        {
+            _backtrackBuf[i] = null;
+        }
         
         return count;
     }
@@ -145,31 +139,41 @@ public class RoomPathFinder : IRoomPathFinder
         {
             return 0;
         }
-
-        var p = Math.Abs(s.Position.Row - end.Row) +
-                Math.Abs(s.Position.Column - end.Column);
-
-        var v = s.Position.Row != q.Position.Row;
-        if (v)
-        {
-            var pv = q.Position.Row == q.ParentNodePosition.Row;
-            if (pv)
-            {
-                return p;
-            }
-        }
-
-        var h = s.Position.Column != q.Position.Column;
         
-        if (h)
+        var p = Math.Abs(s.Position.Row - end.Row) + Math.Abs(s.Position.Column - end.Column);
+        
+        if (s.Position.Row != q.Position.Row)
         {
-            var ph = q.Position.Column == q.ParentNodePosition.Column;
-            if (ph)
+            if (q.Position.Row == q.ParentNodePosition.Row)
             {
                 return p;
             }
         }
-
+        
+        if (s.Position.Column != q.Position.Column)
+        {
+            if (q.Position.Column == q.ParentNodePosition.Column)
+            {
+                return p;
+            }
+        }
+        
         return 0;
+    }
+
+    private IEnumerable<Point> CreatePointEnumerable(int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            yield return _pointBuf[i];
+        }
+    }
+
+    private IEnumerable<IPosition> CreatePositionEnumerable(int count)
+    {
+        for (var i = 0; i < count; i++)
+        {
+            yield return _backtrackBuf[i];
+        }
     }
 }
