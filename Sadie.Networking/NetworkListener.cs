@@ -10,7 +10,6 @@ using Sadie.Networking.Options;
 namespace Sadie.Networking;
 
 public class NetworkListener(
-    ILogger<NetworkListener> logger,
     IOptions<NetworkOptions> options,
     INetworkClientFactory clientFactory,
     INetworkClientConnectionHandler connectionHandler)
