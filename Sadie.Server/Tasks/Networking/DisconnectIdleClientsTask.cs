@@ -1,7 +1,7 @@
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Server.Tasks;
 
-namespace SadieEmulator.Tasks.Networking;
+namespace Sadie.Server.Tasks.Networking;
 
 public class DisconnectIdleClientsTask(INetworkClientRepository clientRepository) : IServerTask
 {

@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Server.Tasks;
 
-namespace SadieEmulator.Tasks.Game.Rooms
+namespace Sadie.Server.Tasks.Game.Rooms
 {
     public class DisposeStaleRoomsTask(IRoomRepository roomRepository,
         IConfiguration configuration) : IServerTask

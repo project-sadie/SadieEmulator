@@ -1,90 +1,32 @@
-using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Sadie.API;
 using Sadie.API.Interfaces.Game.Catalog;
 using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Server;
 using Sadie.API.Interfaces.Server.Tasks;
-using Sadie.Db;
-using Sadie.Game.Players.Options;
-using Serilog;
+using IServer = Sadie.API.IServer;
 
-namespace SadieEmulator;
+namespace Sadie.Server;
 
-public class Server(ILogger<Server> logger,
+public class Server(
+    ILogger<Server> logger,
+    IServerMigrator migrator,
+    IServerDataCleaner dataCleaner,
     IServerTaskWorker taskWorker,
-    IDbContextFactory<SadieDbContext> dbContextFactory,
-    IDbContextFactory<SadieMigrationsDbContext> dbContextFactoryMigrate,
-    IOptions<PlayerOptions> playerOptions,
     INetworkClientRepository networkClientRepository,
     ICatalogPageRepository catalogPageRepository) : IServer
 {
-    private readonly CancellationTokenSource _tokenSource = new();
     
-    public async Task RunAsync()
+    public async Task RunAsync(CancellationToken token)
     {
-        var stopwatch = Stopwatch.StartNew();
-        
-        Log.Logger.Information("Booting up...");
-        
-        await MigrateIfNeededAsync();
-        await CleanUpDataAsync();
-
-        if (playerOptions.Value.CanReuseSsoTokens)
-        {
-            Log.Logger.Warning($"Reusable SSO tokens activated, this results in reduced security.");
-        }
-        
-        await taskWorker.WorkAsync(_tokenSource.Token);
-        
-        Log.Logger.Information("Loading catalog pages...");
+        await migrator.MigrateAsync(token);
+        await dataCleaner.CleanAsync(token);
+        await taskWorker.WorkAsync(token);
         await catalogPageRepository.LoadAsync();
-
-        stopwatch.Stop();
-
-        logger.LogInformation($"Server booted up in {Math.Round(stopwatch.Elapsed.TotalMilliseconds)}ms");
-    }
-
-    private async Task MigrateIfNeededAsync()
-    {
-        await using var context = await dbContextFactoryMigrate.CreateDbContextAsync();
-        
-        var applied = await context.Database.GetAppliedMigrationsAsync();
-        var hasSetupDb = applied.Any(m => m.Contains("InitialCreate"));
-
-        if (!hasSetupDb)
-        {
-            try
-            {
-                logger.LogWarning($"Running initial migrations");
-                await context.Database.MigrateAsync();
-
-                logger.LogWarning($"Seeding initial data");
-                await SeedData.SeedInitialDataAsync(context);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-    }
-
-    private async Task CleanUpDataAsync()
-    {
-        await using var context = await dbContextFactory.CreateDbContextAsync();
-
-        await context
-            .PlayerData
-            .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsOnline, b => false));
     }
 
     public async ValueTask DisposeAsync()
     {
-        await _tokenSource.CancelAsync();
-        
-        logger.LogWarning("Server is about to shut down...");
-
+        logger.LogWarning("Server is shutting down...");
         await networkClientRepository.DisposeAsync();
     }
 }

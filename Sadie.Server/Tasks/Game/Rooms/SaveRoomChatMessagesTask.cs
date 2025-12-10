@@ -7,7 +7,7 @@ using Sadie.API.Interfaces.Server.Tasks;
 using Sadie.Db;
 using Sadie.Db.Models.Rooms.Chat;
 
-namespace SadieEmulator.Tasks.Game.Rooms;
+namespace Sadie.Server.Tasks.Game.Rooms;
 
 public class SaveRoomChatMessagesTask(IRoomRepository roomRepository,
     IDbContextFactory<SadieDbContext> dbContextFactory,

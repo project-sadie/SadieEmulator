@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace SadieEmulator;
+namespace Sadie.Server;
 
 public static class LatestVersionProvider
 {
