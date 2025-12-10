@@ -2,7 +2,7 @@
 
 internal class SimplePriorityQueue<T>(IComparer<T>? comparer = null) : IModelAPriorityQueue<T>
 {
-    private readonly List<T> _innerList = new List<T>();
+    private readonly List<T> _innerList = [];
     private readonly IComparer<T> _comparer = comparer ?? Comparer<T>.Default;
 
     public T Peek()
