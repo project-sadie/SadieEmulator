@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sadie.API;
+using Sadie.API.Interfaces.Server;
 using Sadie.API.Interfaces.Server.Tasks;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
@@ -14,52 +15,60 @@ using Sadie.Game.Rooms;
 using Sadie.Networking;
 using Sadie.Networking.Encryption;
 using Sadie.Networking.Events;
-using SadieEmulator.Tasks;
+using Sadie.Server.Infrastructure;
+using Sadie.Server.Tasks;
 
-namespace SadieEmulator;
+namespace Sadie.Server;
 
 public static class ServerServiceCollection
 {
-    public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
+    public static void AddServices(IServiceCollection services, IConfiguration config)
     {
-        serviceCollection.AddOptions();
-        serviceCollection.AddSingleton<IServer, Server>();
-        serviceCollection.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
-        serviceCollection.AddSingleton<ServerTaskWorker>();
-
-        DatabaseServiceCollection.AddServices(serviceCollection, config);
-
-        serviceCollection.AddSingleton<ServerSettings>(p => new ServerSettings());
+        services.AddOptions();
         
-        serviceCollection.AddSingleton<List<ServerPeriodicCurrencyReward>>(p => []);
+        services.AddSingleton<IServer, Server>();
+        services.AddSingleton<IServerMigrator, ServerMigrator>();
+        services.AddSingleton<IServerDataCleaner, ServerDataCleaner>();
+        services.AddSingleton<IServerTaskWorker, ServerTaskWorker>();
 
-        MapperServiceCollection.AddServices(serviceCollection);
-        PlayerServiceCollection.AddServices(serviceCollection, config);
-        RoomServiceCollection.AddServices(serviceCollection);
-        NetworkServiceCollection.AddServices(serviceCollection, config);
-        NetworkPacketServiceCollection.AddServices(serviceCollection);
-        NavigatorServiceCollection.AddServices(serviceCollection);
-        EncryptionServiceProvider.AddServices(serviceCollection, config);
+        MapperServiceCollection.AddServices(services);
+        DatabaseServiceCollection.AddServices(services, config);
+        NetworkServiceCollection.AddServices(services, config);
+        NetworkPacketServiceCollection.AddServices(services);
 
-        serviceCollection.AddHostedService<GameWorker>();
+        services.AddSingleton(new ServerSettings());
+        services.AddSingleton(new List<ServerPeriodicCurrencyReward>());
+        services.AddHostedService<GameWorker>();
         
-        LocaleServiceCollection.AddServices(serviceCollection);
-        CatalogServiceCollection.AddServices(serviceCollection, config);
-        
-        serviceCollection.AddDbContextFactory<SadieMigrationsDbContext>();
+        RegisterGameServices(services, config);
 
         ServiceCollectionHelpers.LoadPlugins(config);
         
+        RegisterReflectionDiscoveredServices(services);
+    }
+    
+    private static void RegisterGameServices(IServiceCollection services, IConfiguration config)
+    {
+        PlayerServiceCollection.AddServices(services, config);
+        RoomServiceCollection.AddServices(services);
+        NavigatorServiceCollection.AddServices(services);
+        EncryptionServiceProvider.AddServices(services, config);
+        LocaleServiceCollection.AddServices(services);
+        CatalogServiceCollection.AddServices(services, config);
+    }
+    
+    private static void RegisterReflectionDiscoveredServices(IServiceCollection services)
+    {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-        serviceCollection.RegisterRoomChatCommands(assemblies);
-        serviceCollection.RegisterFurnitureInteractors(assemblies);
-        serviceCollection.RegisterRoomFurnitureProcessors(assemblies);
-        serviceCollection.RegisterPluginServices(assemblies);
-        
-        serviceCollection.Scan(scan => scan
+        services.RegisterRoomChatCommands(assemblies);
+        services.RegisterFurnitureInteractors(assemblies);
+        services.RegisterRoomFurnitureProcessors(assemblies);
+        services.RegisterPluginServices(assemblies);
+
+        services.Scan(scan => scan
             .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo<IServerTask>())
+            .AddClasses(c => c.AssignableTo<IServerTask>())
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
     }
