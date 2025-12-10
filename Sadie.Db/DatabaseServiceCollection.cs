@@ -11,6 +11,7 @@ public static class DatabaseServiceCollection
 {
     public static void AddServices(IServiceCollection serviceCollection, IConfiguration config)
     {
+        serviceCollection.AddDbContextFactory<SadieMigrationsDbContext>();
         serviceCollection.AddDbContextFactory<SadieDbContext>(); 
         
         serviceCollection.AddDbContext<SadieDbContext>(options =>

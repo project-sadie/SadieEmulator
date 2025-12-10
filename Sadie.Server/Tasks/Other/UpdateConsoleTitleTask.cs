@@ -3,7 +3,7 @@ using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Server.Tasks;
 
-namespace SadieEmulator.Tasks.Other;
+namespace Sadie.Server.Tasks.Other;
 
 public class UpdateConsoleTitleTask(
     IPlayerRepository playerRepository, 
