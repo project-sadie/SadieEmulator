@@ -1,9 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.Core.Enums.Game.Furniture;
-using Sadie.Core.Enums.Game.Players;
-using Sadie.Core.Enums.Game.Rooms;
-using Sadie.Core.Enums.Miscellaneous;
-using Sadie.Core.Shared.Helpers;
 using Sadie.Db.Models;
 using Sadie.Db.Models.Catalog;
 using Sadie.Db.Models.Catalog.FrontPage;
@@ -18,7 +13,6 @@ using Sadie.Db.Models.Rooms;
 using Sadie.Db.Models.Rooms.Chat;
 using Sadie.Db.Models.Rooms.Rights;
 using Sadie.Db.Models.Server;
-using PlayerRelationshipType = Sadie.Db.Models.Players.PlayerRelationshipType;
 
 namespace Sadie.Db;
 
@@ -73,7 +67,5 @@ public class SadieDbContext(DbContextOptions<SadieDbContext> options) : DbContex
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SadieDbContext).Assembly);
-        
-        
     }
 }
