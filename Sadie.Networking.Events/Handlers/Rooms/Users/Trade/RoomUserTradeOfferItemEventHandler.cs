@@ -30,6 +30,6 @@ public class RoomUserTradeOfferItemEventHandler(IRoomRepository roomRepository) 
             return;
         }
 
-        roomUser.Trade.OfferItems([playerItem]);
+        await roomUser.Trade.OfferItemsAsync([playerItem]);
     }
 }

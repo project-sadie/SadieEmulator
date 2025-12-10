@@ -16,7 +16,7 @@ public class RoomUserTrade(
     public required List<IRoomUser> Users { get; init; }
     public required List<PlayerFurnitureItemDto> Items { get; init; }
     
-    public async void OfferItems(List<PlayerFurnitureItemDto> playerItems)
+    public async Task OfferItemsAsync(List<PlayerFurnitureItemDto> playerItems)
     {
         foreach (var item in playerItems.Where(item => !Items.Contains(item)))
         {
