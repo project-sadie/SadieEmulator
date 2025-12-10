@@ -38,18 +38,18 @@ public class PlayerChangeRelationshipEventHandler(
         
         if (relationId == 0)
         {
-            var relationship = client.Player.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Player.OriginRelationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
 
             if (relationship != null)
             {
-                client.Player.Player.Relationships.Remove(relationship);
+                client.Player.Player.OriginRelationships.Remove(relationship);
                 dbContext.Entry(relationship).State = EntityState.Deleted;
                 await dbContext.SaveChangesAsync();
             }
         }
         else
         {
-            var relationship = client.Player.Player.Relationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
+            var relationship = client.Player.Player.OriginRelationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
         
             if (relationship == null)
             {
@@ -61,7 +61,7 @@ public class PlayerChangeRelationshipEventHandler(
                     TypeId = relationId
                 };
                 
-                client.Player.Player.Relationships.Add(relationship);
+                client.Player.Player.OriginRelationships.Add(relationship);
                 
                 dbContext.Entry(relationship).State = EntityState.Added;
                 dbContext.Attach(relationship.TargetPlayer!).State = EntityState.Unchanged;

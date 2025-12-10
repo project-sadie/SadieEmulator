@@ -253,7 +253,7 @@ public static class NetworkPacketEventHelpers
             .UserRepository
             .GetAll()
             .Where(x =>
-                x.Player.Player.Ignores.Any(pi => pi.TargetPlayerId == roomUser.Player.Player.Id))
+                x.Player.Player.OutgoingIgnores.Any(pi => pi.TargetPlayerId == roomUser.Player.Player.Id))
             .Select(x => x.Player.Player.Id)
             .ToList();
 

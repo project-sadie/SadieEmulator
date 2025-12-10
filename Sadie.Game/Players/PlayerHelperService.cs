@@ -49,7 +49,7 @@ public class PlayerHelperService : IPlayerHelperService
                 PlayerId = player.Player.Id,
                 Friends = batch,
                 PlayerRepository = playerRepository,
-                Relationships = player.Player.Relationships
+                Relationships = player.Player.OriginRelationships
             });
         }
     }

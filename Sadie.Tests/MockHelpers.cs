@@ -118,10 +118,11 @@ public class MockHelpers
             1L,
             "TestUser",
             "test@example.com",
-            [],
             DateTimeOffset.UtcNow,
+            [],
             new PlayerDataDto(),
             new PlayerAvatarDataDto(),
+            [],
             [],
             [],
             [],
@@ -139,7 +140,11 @@ public class MockHelpers
             [],
             [],
             [],
-            [],[],[]);
+            [],
+            [],
+            [],
+            [],
+            []);
 
         var player = new Mock<IPlayerLogic>();
         player.SetupGet(x => x.Player).Returns(playerData);

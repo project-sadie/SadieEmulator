@@ -17,7 +17,7 @@ public class PlayerRelationshipsEventHandler(
         var player = playerRepository.GetPlayerLogicById(PlayerId);
 
         var relationships = player != null ? 
-                player.Player.Relationships : 
+                player.Player.OriginRelationships : 
                 await playerRepository.GetRelationshipsForPlayerAsync(PlayerId);
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter

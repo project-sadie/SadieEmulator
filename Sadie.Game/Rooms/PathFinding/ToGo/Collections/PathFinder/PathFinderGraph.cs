@@ -56,10 +56,10 @@ internal class PathFinderGraph : IModelAGraph<PathFinderNode>
         private PathFinderNode _current = default;
 
         private static readonly (int r, int c)[] Offsets =
-        {
+        [
             (-1,0),(1,0),(0,-1),(0,1),
             (-1,-1),(-1,1),(1,-1),(1,1)
-        };
+        ];
 
         public bool MoveNext()
         {
