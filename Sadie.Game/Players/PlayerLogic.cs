@@ -1,4 +1,3 @@
-using DotNetty.Transport.Channels;
 using Microsoft.Extensions.Logging;
 using Sadie.API;
 using Sadie.API.DTOs.Players;
@@ -14,7 +13,6 @@ public class PlayerLogic(
     : IPlayerLogic
 {
     public PlayerDto Player { get; } = player;
-    public IChannel? Channel { get; set; }
     public INetworkObject? NetworkObject { get; set; }
     public IPlayerState State { get; } = new PlayerState();
     public bool Authenticated { get; set; }

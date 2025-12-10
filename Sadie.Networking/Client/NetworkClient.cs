@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.WebSockets;
-using DotNetty.Transport.Channels;
+using Microsoft.Extensions.Logging;
 using Sadie.API;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms.Users;
@@ -11,6 +11,7 @@ using Sadie.Networking.Packets.Serialization;
 namespace Sadie.Networking.Client;
 
 public class NetworkClient(
+    ILogger<NetworkClient> logger,
     IPAddress ipAddress,
     Guid guid,
     WebSocket webSocket)
@@ -46,13 +47,9 @@ public class NetworkClient(
         {
             _ = WebSocket.SendAsync(writer.GetAllBytes(), WebSocketMessageType.Binary, true, CancellationToken.None);
         }
-        catch (ClosedChannelException)
+        catch (Exception e)
         {
-            
-        }
-        catch (ObjectDisposedException)
-        {
-            
+            logger.LogError(e.ToString());
         }
     }
 
