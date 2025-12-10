@@ -11,6 +11,5 @@ public class PlayerFurnitureItemPlacementDataConfiguration : IEntityTypeConfigur
         entity.ToTable("player_furniture_item_placement_data");
 
         entity.Navigation(x => x.PlayerFurnitureItem).AutoInclude();
-        entity.Navigation(x => x.WiredData).AutoInclude();
     }
 }
