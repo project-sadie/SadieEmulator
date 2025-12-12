@@ -55,7 +55,7 @@ public class RoomItemPlacedEventHandler(
         var player = client.Player;
         var placementData = PlacementData.Split(" ");
         
-        if (!int.TryParse(placementData[0], out var itemId))
+        if (!int.TryParse(placementData[0], out var itemId) || itemId == 0)
         {
             await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
