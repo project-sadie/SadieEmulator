@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <Reference Include="Sadie.API">
-        <HintPath>..\..\..\..\..\..\home\a\.nuget\packages\sadie.api\5.9.8\lib\net10.0\Sadie.API.dll</HintPath>
+        <HintPath>..\..\..\..\..\..\home\a\.nuget\packages\sadie.api\6.0.3\lib\net10.0\Sadie.API.dll</HintPath>
       </Reference>
     </ItemGroup>
 
@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Sadie.API" Version="5.9.8" />
+      <PackageReference Include="Sadie.API" Version="6.0.3" />
     </ItemGroup>
 
 </Project>
