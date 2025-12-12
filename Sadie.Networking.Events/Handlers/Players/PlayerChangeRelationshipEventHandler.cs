@@ -13,7 +13,7 @@ using Sadie.Networking.Writers.Players.Friendships;
 namespace Sadie.Networking.Events.Handlers.Players;
 
 [PacketId(EventHandlerId.PlayerChangeRelationship)]
-public class PlayerChangeRelationshipEventHandler(
+public sealed class PlayerChangeRelationshipEventHandler(
     IPlayerRepository playerRepository,
     IDbContextFactory<SadieDbContext> dbContextFactory,
     IMapper mapper)
@@ -21,92 +21,117 @@ public class PlayerChangeRelationshipEventHandler(
 {
     public int PlayerId { get; set; }
     public int RelationId { get; set; }
-    
+
     public async Task HandleAsync(INetworkClient client)
     {
-        var playerId = PlayerId;
+        var targetPlayerId = PlayerId;
         var relationId = RelationId;
 
-        var friendship = client.Player.TryGetAcceptedFriendshipFor(playerId);
-        
-        if (friendship == null)
+        var friendship = client.Player.TryGetAcceptedFriendshipFor(targetPlayerId);
+        if (friendship is null)
         {
             return;
         }
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        
+
+        await UpdateRelationshipAsync(
+            client,
+            dbContext,
+            targetPlayerId,
+            relationId
+        );
+
+        await SendFriendUpdateAsync(
+            client,
+            playerRepository,
+            mapper,
+            targetPlayerId,
+            relationId
+        );
+    }
+
+    private static async Task UpdateRelationshipAsync(
+        INetworkClient client,
+        SadieDbContext dbContext,
+        int targetPlayerId,
+        int relationId)
+    {
+        var originPlayer = client.Player.Player;
+
+        var relationship = originPlayer.OriginRelationships
+            .FirstOrDefault(x => x.TargetPlayerId == targetPlayerId);
+
         if (relationId == 0)
         {
-            var relationship = client.Player.Player.OriginRelationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
-
-            if (relationship != null)
+            if (relationship is null)
             {
-                client.Player.Player.OriginRelationships.Remove(relationship);
-                dbContext.Entry(relationship).State = EntityState.Deleted;
-                await dbContext.SaveChangesAsync();
+                return;
             }
+
+            originPlayer.OriginRelationships.Remove(relationship);
+            dbContext.Remove(relationship);
+            await dbContext.SaveChangesAsync();
+            return;
         }
-        else
+
+        if (relationship is null)
         {
-            var relationship = client.Player.Player.OriginRelationships.FirstOrDefault(x => x.TargetPlayerId == playerId);
-        
-            if (relationship == null)
+            relationship = new PlayerRelationshipDto
             {
-                relationship = new PlayerRelationshipDto
-                {
-                    OriginPlayerId = client.Player.Player.Id,
-                    TargetPlayerId = playerId,
-                    TargetPlayer = await playerRepository.GetPlayerByIdAsync(playerId),
-                    TypeId = relationId
-                };
-                
-                client.Player.Player.OriginRelationships.Add(relationship);
-                
-                dbContext.Entry(relationship).State = EntityState.Added;
-                dbContext.Attach(relationship.TargetPlayer!).State = EntityState.Unchanged;
-                
-                await dbContext.SaveChangesAsync();
-            }
-            else
-            {
-                relationship.TypeId = relationId;
-                dbContext.Entry(relationship).State = EntityState.Modified;
-                await dbContext.SaveChangesAsync();
-            }
+                OriginPlayerId = originPlayer.Id,
+                TargetPlayerId = targetPlayerId,
+                TypeId = relationId
+            };
+
+            originPlayer.OriginRelationships.Add(relationship);
+            dbContext.Add(relationship);
+            await dbContext.SaveChangesAsync();
+            return;
         }
 
-        var onlineFriend = playerRepository.GetPlayerLogicById(playerId);
-        var isOnline = onlineFriend != null;
+        relationship.TypeId = relationId;
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task SendFriendUpdateAsync(
+        INetworkClient client,
+        IPlayerRepository playerRepository,
+        IMapper mapper,
+        int targetPlayerId,
+        int relationId)
+    {
+        var onlineFriend = playerRepository.GetPlayerLogicById(targetPlayerId);
+        var isOnline = onlineFriend is not null;
         var inRoom = isOnline && onlineFriend!.State.CurrentRoomId != 0;
 
-        var friend = isOnline ? 
-            mapper.Map<PlayerDto>(onlineFriend) : 
-            await playerRepository.GetPlayerByIdAsync(playerId);
-        
-        var newFriendData = new FriendData
+        var friend = isOnline
+            ? mapper.Map<PlayerDto>(onlineFriend!)
+            : await playerRepository.GetPlayerByIdAsync(targetPlayerId);
+
+        var friendData = new FriendData
         {
-            Motto = friend.AvatarData.Motto,
-            Gender = PlayerAvatarGender.Male,
             Username = friend.Username,
-            FigureCode = friend.AvatarData.FigureCode
+            Motto = friend.AvatarData.Motto,
+            FigureCode = friend.AvatarData.FigureCode,
+            Gender = PlayerAvatarGender.Male 
         };
-        
-        var updateFriendWriter = new PlayerUpdateFriendWriter
+
+        var writer = new PlayerUpdateFriendWriter
         {
             Updates =
             [
                 new PlayerFriendshipUpdate
                 {
                     Type = 0,
-                    Friend = newFriendData,
+                    Friend = friendData,
                     FriendOnline = isOnline,
                     FriendInRoom = inRoom,
-                    Relation = (Core.Enums.Game.Players.PlayerRelationshipType) relationId
+                    Relation = (PlayerRelationshipType) relationId
                 }
             ]
         };
-            
-        await client.WriteToStreamAsync(updateFriendWriter);
+
+        await client.WriteToStreamAsync(writer);
     }
 }
