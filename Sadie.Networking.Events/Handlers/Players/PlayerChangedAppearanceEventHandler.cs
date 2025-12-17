@@ -44,7 +44,7 @@ public class PlayerChangedAppearanceEventHandler(
         player.Player.AvatarData.FigureCode = figureCode;
         dbContext.Entry(player.Player.AvatarData).Property(x => x.FigureCode).IsModified = true;
         
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }

@@ -30,7 +30,7 @@ public class FloorPlanEditorSaveEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
             room.Room.OwnerId != client.Player.Player.Id || 
             room.Room.Layout == null)
         {

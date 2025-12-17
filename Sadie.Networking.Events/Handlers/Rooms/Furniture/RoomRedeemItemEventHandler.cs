@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Players;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Players.Purse;
@@ -81,7 +82,10 @@ public class RoomRedeemItemEventHandler(
                 
                 await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
+                    Currencies = PlayerCurrencyMapper.FromBalances(
+                        player.Player.Data.PixelBalance,
+                        player.Player.Data.SeasonalBalance,
+                        player.Player.Data.GotwPoints)
                 });
             }
             else
@@ -116,7 +120,10 @@ public class RoomRedeemItemEventHandler(
                 
             await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
             {
-                Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
+                Currencies = PlayerCurrencyMapper.FromBalances(
+    player.Player.Data.PixelBalance,
+    player.Player.Data.SeasonalBalance,
+    player.Player.Data.GotwPoints)
             });
         }
 

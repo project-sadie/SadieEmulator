@@ -6,6 +6,7 @@ using Sadie.API.Interfaces.Networking.Events.Handlers;
 using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Core.Shared.Attributes;
 using Sadie.Db.Models.Constants;
+using Sadie.Networking.Events.Application;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
@@ -23,7 +24,7 @@ public class RoomUserChatEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        await NetworkPacketEventHelpers.OnChatMessageAsync(client,
+        await RoomChatService.OnChatMessageAsync(client,
             Message,
             false,
             roomConstants,

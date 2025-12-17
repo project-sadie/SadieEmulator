@@ -42,7 +42,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
         if (!client.RoomUser.HasRights())
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MissingRights);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.MissingRights);
             return;
         }
 
@@ -50,7 +50,7 @@ public class RoomFloorItemUpdatedEventHandler(
 
         if (roomFurnitureItem == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -91,7 +91,7 @@ public class RoomFloorItemUpdatedEventHandler(
         if (!rotatingSingleTileItem && 
             !tileMapHelperService.CanPlaceAt(newPoints, room.TileMap, checkPointsForUsers))
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 

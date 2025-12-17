@@ -21,13 +21,13 @@ public class RoomPaintItemPlacedEventHandler(
     {
         if (client.Player == null || client.RoomUser == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
         if (!client.RoomUser.HasRights())
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MissingRights);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.MissingRights);
             return;
         }
         
@@ -35,7 +35,7 @@ public class RoomPaintItemPlacedEventHandler(
         
         if (room == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
         
@@ -44,7 +44,7 @@ public class RoomPaintItemPlacedEventHandler(
 
         if (playerItem == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
         

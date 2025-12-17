@@ -1,7 +1,7 @@
 using Sadie.API.DTOs.Catalog.Items;
 using Sadie.API.Interfaces.Game.Catalog;
 using Sadie.API.Interfaces.Networking.Client;
-using Sadie.Networking.Events;
+using Sadie.Core.Players;
 using Sadie.Networking.Writers.Players.Purse;
 
 namespace Sadie.Game.Catalog.Purchase;
@@ -58,7 +58,10 @@ public class CatalogChargeService : ICatalogChargeService
 
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
         {
-            Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(data)
+            Currencies = PlayerCurrencyMapper.FromBalances(
+                data.PixelBalance,
+                data.SeasonalBalance,
+                data.GotwPoints)
         });
 
         return true;

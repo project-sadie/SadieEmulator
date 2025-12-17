@@ -39,7 +39,7 @@ public class RoomWallItemUpdatedEventHandler(
 
         if (!client.RoomUser.HasRights())
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MissingRights);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.MissingRights);
             return;
         }
 

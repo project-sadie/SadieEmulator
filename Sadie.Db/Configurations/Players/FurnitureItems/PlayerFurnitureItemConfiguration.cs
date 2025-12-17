@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Sadie.Db.Models.Players.Furniture;
 
-namespace Sadie.Db.Configurations.Players;
+namespace Sadie.Db.Configurations.Players.FurnitureItems;
 
 public class PlayerFurnitureItemConfiguration : IEntityTypeConfiguration<PlayerFurnitureItem>
 {

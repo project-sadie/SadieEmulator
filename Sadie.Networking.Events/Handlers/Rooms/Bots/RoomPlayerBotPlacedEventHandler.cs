@@ -24,7 +24,7 @@ public class RoomPlayerBotPlacedEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository,
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository,
                 client,
                 out var room,
                 out var roomUser))

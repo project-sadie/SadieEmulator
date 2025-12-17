@@ -5,9 +5,9 @@ using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Server.Tasks;
+using Sadie.Core.Players;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
-using Sadie.Networking.Events;
 using Sadie.Networking.Writers.Players.Purse;
 
 namespace Sadie.Server.Tasks.Game.Players;
@@ -102,7 +102,10 @@ public class PlayerCurrencyRewardsTask(
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
+                    Currencies = PlayerCurrencyMapper.FromBalances(
+    player.Player.Data.PixelBalance,
+    player.Player.Data.SeasonalBalance,
+    player.Player.Data.GotwPoints)
                 };
                 break;
             case "seasonal":
@@ -110,7 +113,10 @@ public class PlayerCurrencyRewardsTask(
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
+                    Currencies = PlayerCurrencyMapper.FromBalances(
+                        player.Player.Data.PixelBalance,
+                        player.Player.Data.SeasonalBalance,
+                        player.Player.Data.GotwPoints)
                 };
                 break;
         }
