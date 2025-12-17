@@ -30,7 +30,8 @@ public class SecureLoginEventHandler(
     IMapper mapper,
     IPlayerLoaderService playerLoaderService,
     IPlayerHelperService playerHelperService,
-    IConfiguration config)
+    IConfiguration config,
+    PlayerLoginPacketService playerLoginPacketService)
     : INetworkPacketEventHandler
 {
     public string? Token { get; set; }
@@ -129,8 +130,8 @@ public class SecureLoginEventHandler(
         
         playerLogic.Authenticated = true;
 
-        await NetworkPacketEventHelpers.SendLoginPacketsToPlayerAsync(client, playerLogic);
-        await NetworkPacketEventHelpers.SendPlayerSubscriptionPacketsAsync(playerLogic);
+        await playerLoginPacketService.SendAsync(client, playerLogic);
+        await PlayerSubscriptionPacketHelper.SendAsync(playerLogic);
         
         await playerHelperService.SendPlayerFriendListUpdate(playerLogic, playerRepository);
 
