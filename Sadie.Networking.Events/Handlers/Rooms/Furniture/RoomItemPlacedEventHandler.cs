@@ -89,6 +89,7 @@ public class RoomItemPlacedEventHandler(
             if (!pointsForPlacement.All(p => tileMapHelperService.CanPlaceAt([p], room.TileMap)))
             {
                 await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
+                return;
             }
             
             var z = tileMapHelperService.GetItemPlacementHeight(
