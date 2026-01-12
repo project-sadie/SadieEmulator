@@ -196,10 +196,26 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     public bool CanPlaceAt(
         IEnumerable<Point> points,  
         IRoomTileMap tileMap,
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems,
         bool checkForUsers = true)
     {
-        return points.All(point => tileMap.Map[point.Y, point.X] != 0 && 
-            (!checkForUsers || !tileMap.UsersAtPoint(point)));
+        foreach (var point in points)
+        {
+            var topItem = GetItemsForPosition(point.X, point.Y, furnitureItems)
+                .MaxBy(x => x.PositionZ);
+            
+            if (tileMap.Map[point.Y, point.X] == 0 && topItem is { PlayerFurnitureItem.FurnitureItem.CanStack: false })
+            {
+                return false;
+            }
+
+            if (checkForUsers && tileMap.UsersAtPoint(point))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     public List<IRoomUser> GetUsersAtPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)
