@@ -27,7 +27,7 @@ public class CatalogTabsWriter : AbstractPacketWriter
         }
         
         writer.WriteBool(false);
-        writer.WriteString(Mode);
+        writer.WriteString(Mode ?? "");
     }
 
     private void AppendPage(CatalogPageDto page, INetworkPacketWriter writer)
@@ -35,8 +35,8 @@ public class CatalogTabsWriter : AbstractPacketWriter
         writer.WriteBool(page.Visible);
         writer.WriteInteger(page.IconId);
         writer.WriteInteger(page.Enabled ? page.Id : -page.Id);
-        writer.WriteString(page.Name);
-        writer.WriteString(page.Caption);
+        writer.WriteString(page.Name ?? "");
+        writer.WriteString(page.Caption ?? "");
         writer.WriteInteger(0);
         writer.WriteInteger(page.Pages.Count);
         
