@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sadie.Game\Sadie.Game.csproj" />
+      <ProjectReference Include="..\Sadie.Networking\Sadie.Networking.csproj" />
     </ItemGroup>
 
 </Project>

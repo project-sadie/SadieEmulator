@@ -194,7 +194,24 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     }
 
     public bool CanPlaceAt(
-        IEnumerable<Point> points,  
+        IEnumerable<Point> points,
+        IRoomTileMap tileMap,
+        bool checkForUsers = true)
+    {
+        foreach (var point in points)
+        {
+            if (tileMap.Map[point.Y, point.X] == 0)
+                return false;
+
+            if (checkForUsers && tileMap.UsersAtPoint(point))
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool CanPlaceAt(
+        IEnumerable<Point> points,
         IRoomTileMap tileMap,
         ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems,
         bool checkForUsers = true)
