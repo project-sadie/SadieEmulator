@@ -43,7 +43,6 @@ public class PlayerRepository(
             .Include(x => x.IncomingFriendships)
             .Include(x => x.Roles)
             .Include(x => x.OutgoingIgnores)
-            .Include(x => x.Rooms)
             .Include(x => x.RoomLikes)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
