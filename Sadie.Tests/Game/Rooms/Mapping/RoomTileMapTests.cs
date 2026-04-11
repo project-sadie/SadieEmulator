@@ -28,9 +28,11 @@ public class RoomTileMapTests
         var point = new Point(0, 0);
 
         tileMap.AddUnitToMap(point, unit);
-
-        Assert.That(tileMap.UnitMap.ContainsKey(point), Is.True);
-        Assert.That(tileMap.UnitMap[point], Has.Count.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(tileMap.UnitMap.ContainsKey(point), Is.True);
+            Assert.That(tileMap.UnitMap[point], Has.Count.EqualTo(1));
+        });
     }
 
     [Test]
@@ -41,9 +43,11 @@ public class RoomTileMapTests
         var point = new Point(0, 0);
 
         tileMap.AddUnitToMap(point, bot);
-
-        Assert.That(tileMap.UnitMap.ContainsKey(point), Is.True);
-        Assert.That(tileMap.UnitMap[point], Has.Count.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(tileMap.UnitMap.ContainsKey(point), Is.True);
+            Assert.That(tileMap.UnitMap[point], Has.Count.EqualTo(1));
+        });
     }
 
     [Test]
