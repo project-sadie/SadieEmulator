@@ -13,7 +13,7 @@ public class RoomUserSignEventHandler(IRoomRepository roomRepository) : INetwork
     
     public Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return Task.CompletedTask;
         }

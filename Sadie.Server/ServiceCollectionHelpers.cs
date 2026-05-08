@@ -7,7 +7,7 @@ using Sadie.API.Interfaces.Game.Rooms.Furniture.Processors;
 using Sadie.API.Interfaces.Plugins;
 using Serilog;
 
-namespace SadieEmulator;
+namespace Sadie.Server;
 
 public static class ServiceCollectionHelpers
 {

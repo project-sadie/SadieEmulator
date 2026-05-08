@@ -1,4 +1,4 @@
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Services;

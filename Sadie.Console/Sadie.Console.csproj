@@ -27,11 +27,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Sadie.API" Version="4.7.0" />
+      <PackageReference Include="Sadie.API" Version="6.0.3" />
       <PackageReference Include="Serilog.Expressions" Version="5.1.0-dev-00186" />
       <PackageReference Include="Spectre.Console" Version="0.54.1-alpha.0.7" />
     </ItemGroup>

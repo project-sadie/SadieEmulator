@@ -27,7 +27,7 @@ public class RoomDimmerSaveEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }
@@ -69,7 +69,7 @@ public class RoomDimmerSaveEventHandler(
 
         var enabled = room.Room.DimmerSettings.Enabled ? 2 : 0;
         var bgOnly = preset.BackgroundOnly ? 2 : 0;
-        var meta = $"{(enabled)},{preset.PresetId},{(bgOnly)},{preset.Color},{preset.Intensity}";
+        var meta = $"{enabled},{preset.PresetId},{bgOnly},{preset.Color},{preset.Intensity}";
         
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(
             room, 

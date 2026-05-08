@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="Sadie.API">
+        <HintPath>..\..\..\..\..\..\home\a\.nuget\packages\sadie.api\6.0.3\lib\net10.0\Sadie.API.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Sadie.Core\Sadie.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Sadie.API" Version="6.0.3" />
+    </ItemGroup>
+
+</Project>

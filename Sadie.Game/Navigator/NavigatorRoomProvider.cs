@@ -16,14 +16,34 @@ public class NavigatorRoomProvider(
     IEnumerable<INavigatorSearchFilterer> filterers,
     IMapper mapper) : INavigatorRoomProvider
 {
-    public Task<List<RoomDto>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
+    public async Task<List<RoomDto>> GetRoomsForCategoryNameAsync(IPlayerLogic player, string category)
     {
-        return Task.FromResult(category switch 
+        return category switch
         {
-            "popular" => roomRepository.GetPopularRooms(50),
-            "my_rooms" => player.Player.Rooms.ToList(),
+            "popular" => roomRepository.GetPopularRooms(100),
+            "my_rooms" => await GetPlayerRoomsAsync(player.Player.Id),
             _ => []
-        });
+        };
+    }
+
+    private async Task<List<RoomDto>> GetPlayerRoomsAsync(long playerId)
+    {
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        var rooms = await dbContext
+            .Set<Room>()
+            .Where(x => x.OwnerId == playerId)
+            .Include(x => x.Settings)
+            .Include(x => x.Layout)
+            .Include(x => x.PaintSettings)
+            .Include(x => x.ChatSettings)
+            .Include(x => x.Tags)
+            .Include(x => x.PlayerLikes)
+            .Include(x => x.Group)
+            .Include(x => x.DimmerSettings)
+            .ToListAsync();
+
+        return mapper.Map<List<RoomDto>>(rooms);
     }
 
     public async Task<List<RoomDto>> GetRoomsForSearchQueryAsync(string searchQuery)

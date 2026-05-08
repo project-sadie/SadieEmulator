@@ -26,7 +26,7 @@ public class RoomUserWhisperEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }

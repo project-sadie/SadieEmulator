@@ -1,7 +1,8 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
@@ -14,6 +15,7 @@ public class PlayerRepository(
     IMapper mapper) : IPlayerRepository
 {
     private readonly ConcurrentDictionary<long, IPlayerLogic> _players = new();
+    private readonly ConcurrentDictionary<long, string> _playerIdToUsernameCache = new();
 
     public IPlayerLogic? GetPlayerLogicById(long id) => _players.GetValueOrDefault(id);
     public IPlayerLogic? GetPlayerLogicByUsername(string username) => _players.Values.FirstOrDefault(x => x.Player.Username == username);
@@ -24,6 +26,8 @@ public class PlayerRepository(
         {
             return byId.Player;
         }
+
+        var sw = Stopwatch.StartNew();
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
@@ -31,22 +35,26 @@ public class PlayerRepository(
             .Set<Player>()
             .Include(x => x.Data)
             .Include(x => x.AvatarData)
-            .Include(x => x.Relationships).ThenInclude(x => x.TargetPlayer)
+            .Include(x => x.OriginRelationships).ThenInclude(x => x.TargetPlayer)
             .Include(x => x.Bans)
             .Include(x => x.GameSettings)
             .Include(x => x.NavigatorSettings)
-            .Include(x => x.FurnitureItems)
             .Include(x => x.OutgoingFriendships)
             .Include(x => x.IncomingFriendships)
-            .Include(x => x.Rooms)
             .Include(x => x.Roles)
-            .Include(x => x.Ignores)
-            .Include(x => x.Rooms)
+            .Include(x => x.OutgoingIgnores)
             .Include(x => x.RoomLikes)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == id);
         
-        return mapper.Map<PlayerDto>(player);
+        var value = mapper.Map<PlayerDto>(player);
+        sw.Stop();
+
+        if (sw.Elapsed.TotalMilliseconds > 300)
+        {
+            Console.WriteLine($"Finding a player {id}, {value.Username} took {sw.Elapsed.TotalMilliseconds}ms");
+        }
+        return value;
     }
     
     public async Task<PlayerDto?> GetPlayerByUsernameAsync(string username)
@@ -124,5 +132,26 @@ public class PlayerRepository(
         {
             await player.NetworkObject!.WriteToStreamAsync(writer);
         }
+    }
+
+    public async Task<string?> GetPlayerUsernameByIdAsync(long playerId)
+    {
+        if (_playerIdToUsernameCache.TryGetValue(playerId, out var username))
+        {
+            return username;
+        }
+        
+        await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        username = dbContext.Players
+            .Where(x => x.Id == playerId)
+            .Select(x => x.Username).FirstOrDefault();
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            _playerIdToUsernameCache[playerId] = username;
+        }
+        
+        return username;
     }
 }

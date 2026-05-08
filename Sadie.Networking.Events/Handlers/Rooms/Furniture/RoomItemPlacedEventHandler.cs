@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
@@ -34,13 +34,13 @@ public class RoomItemPlacedEventHandler(
     {
         if (client.Player == null || client.RoomUser == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
         if (!client.RoomUser.HasRights())
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MissingRights);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.MissingRights);
             return;
         }
         
@@ -48,16 +48,16 @@ public class RoomItemPlacedEventHandler(
         
         if (room == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
         
         var player = client.Player;
         var placementData = PlacementData.Split(" ");
         
-        if (!int.TryParse(placementData[0], out var itemId))
+        if (!int.TryParse(placementData[0], out var itemId) || itemId == 0)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -65,7 +65,7 @@ public class RoomItemPlacedEventHandler(
 
         if (playerItem == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
@@ -75,7 +75,7 @@ public class RoomItemPlacedEventHandler(
                 !int.TryParse(placementData[2], out var y) || 
                 !int.TryParse(placementData[3], out var direction))
             {
-                await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+                await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
                 return;
             }
             
@@ -88,7 +88,8 @@ public class RoomItemPlacedEventHandler(
 
             if (!pointsForPlacement.All(p => tileMapHelperService.CanPlaceAt([p], room.TileMap)))
             {
-                await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+                await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
+                return;
             }
             
             var z = tileMapHelperService.GetItemPlacementHeight(
@@ -171,7 +172,7 @@ public class RoomItemPlacedEventHandler(
             if (playerItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer && 
                 room.Room.FurnitureItems.Any(x => x.PlayerFurnitureItem.FurnitureItem.InteractionType == FurnitureItemInteractionType.Dimmer))
             {
-                await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MaxDimmers);
+                await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.MaxDimmers);
                 return;
             }
         

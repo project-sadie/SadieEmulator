@@ -95,7 +95,7 @@ public static class RoomEntryEventHelpers
         
         foreach (var user in room.UserRepository.GetAll())
         {
-            if (user.Player.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Player.Id))
+            if (user.Player.Player.OutgoingIgnores.Any(pi => pi.TargetPlayerId == player.Player.Id))
             {
                 await user.Player.NetworkObject!.WriteToStreamAsync(
                     new PlayerIgnoreStateWriter
@@ -105,7 +105,7 @@ public static class RoomEntryEventHelpers
                     });
             }
             
-            if (player.Player.Ignores.Any(pi => pi.TargetPlayerId == user.Player.Player.Id))
+            if (player.Player.OutgoingIgnores.Any(pi => pi.TargetPlayerId == user.Player.Player.Id))
             {
                 await player.NetworkObject!.WriteToStreamAsync(
                     new PlayerIgnoreStateWriter

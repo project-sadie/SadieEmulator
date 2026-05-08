@@ -1,15 +1,16 @@
 using System.Diagnostics;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Server.Tasks;
 
-namespace SadieEmulator.Tasks.Other;
+namespace Sadie.Server.Tasks.Other;
 
 public class UpdateConsoleTitleTask(
     IPlayerRepository playerRepository, 
     IRoomRepository roomRepository) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
-    public DateTime LastExecuted { get; set; }
+    public long LastExecutedTicks { get; set; }
 
     public Task ExecuteAsync()
     {

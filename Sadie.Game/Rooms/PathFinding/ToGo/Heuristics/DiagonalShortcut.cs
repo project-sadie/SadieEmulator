@@ -1,8 +1,11 @@
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo.Heuristics;
+
 namespace Sadie.Game.Rooms.PathFinding.ToGo.Heuristics;
 
 public class DiagonalShortcut : ICalculateHeuristic
 {
-    public int Calculate(Position source, Position destination)
+    public int Calculate(IPosition source, IPosition destination)
     {
         var hDiagonal = Math.Min(Math.Abs(source.Row - destination.Row), Math.Abs(source.Column - destination.Column));
         var hStraight = Math.Abs(source.Row - destination.Row) + Math.Abs(source.Column - destination.Column);

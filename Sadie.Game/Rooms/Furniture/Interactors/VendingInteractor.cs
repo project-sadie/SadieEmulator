@@ -1,4 +1,4 @@
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
@@ -20,6 +20,7 @@ public class VendingInteractor(IRoomTileMapHelperService tileMapHelperService,
 
         roomUser.Direction = direction;
         roomUser.DirectionHead = direction;
+        roomUser.NeedsUpdate = true;
 
         var handItems = item
             .PlayerFurnitureItem

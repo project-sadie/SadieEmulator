@@ -1,7 +1,7 @@
 using System.Drawing;
 using Moq;
 using Sadie.API.DTOs.Furniture;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;

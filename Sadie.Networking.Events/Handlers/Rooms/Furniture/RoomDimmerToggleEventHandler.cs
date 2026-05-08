@@ -17,7 +17,7 @@ public class RoomDimmerToggleEventHandler(
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _) ||
             room.Room.DimmerSettings == null ||
             client.RoomUser == null ||
             !client.RoomUser.HasRights())

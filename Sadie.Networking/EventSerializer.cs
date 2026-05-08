@@ -5,7 +5,7 @@ namespace Sadie.Networking;
 
 public static class EventSerializer
 {
-    public static void SetPropertiesForEventHandler(object handler, INetworkPacket packet)
+    public static void SetPropertiesForEventHandler(object handler, NetworkPacketReader packetReader)
     {
         var t = handler.GetType();
         var properties = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -16,31 +16,31 @@ public static class EventSerializer
 
             if (type == typeof(int) || type == typeof(long))
             {
-                property.SetValue(handler, packet.ReadInt(), null);
+                property.SetValue(handler, packetReader.ReadInt(), null);
             }
             else if (type == typeof(string))
             {
-                property.SetValue(handler, packet.ReadString(), null);
+                property.SetValue(handler, packetReader.ReadString(), null);
             }
             else if (type == typeof(bool))
             {
-                property.SetValue(handler, packet.ReadBool(), null);
+                property.SetValue(handler, packetReader.ReadBool(), null);
             }
             else if (type == typeof(List<string>))
             {
-                property.SetValue(handler, ReadStringList(packet), null);
+                property.SetValue(handler, ReadStringList(packetReader), null);
             }
             else if (type == typeof(List<int>))
             {
-                property.SetValue(handler, ReadIntegerList(packet), null);
+                property.SetValue(handler, ReadIntegerList(packetReader), null);
             }
             else if (type == typeof(List<long>))
             {
-                property.SetValue(handler, ReadLongList(packet), null);
+                property.SetValue(handler, ReadLongList(packetReader), null);
             }
             else if (type == typeof(Dictionary<string, string>))
             {
-                property.SetValue(handler, ReadAllStringDictionary(packet), null);
+                property.SetValue(handler, ReadAllStringDictionary(packetReader), null);
             }
             else
             {
@@ -49,52 +49,52 @@ public static class EventSerializer
         }
     }
 
-    private static Dictionary<string, string> ReadAllStringDictionary(INetworkPacketReader packet)
+    private static Dictionary<string, string> ReadAllStringDictionary(NetworkPacketReader packetReader)
     {
         var temp = new Dictionary<string, string>();
-        var amount = packet.ReadInt();
+        var amount = packetReader.ReadInt();
 
         for (var i = 0; i < amount / 2; i++)
         {
-            temp[packet.ReadString()] = packet.ReadString();
+            temp[packetReader.ReadString()] = packetReader.ReadString();
         }
 
         return temp;
     }
 
-    private static List<int> ReadIntegerList(INetworkPacketReader packet)
+    private static List<int> ReadIntegerList(NetworkPacketReader packetReader)
     {
         var tempList = new List<int>();
-        var amount = packet.ReadInt();
+        var amount = packetReader.ReadInt();
 
         for (var i = 0; i < amount; i++)
         {
-            tempList.Add(packet.ReadInt());
+            tempList.Add(packetReader.ReadInt());
         }
 
         return tempList;
     }
 
-    private static List<long> ReadLongList(INetworkPacketReader packet)
+    private static List<long> ReadLongList(NetworkPacketReader packetReader)
     {
         var tempList = new List<long>();
-        var amount = packet.ReadInt();
+        var amount = packetReader.ReadInt();
 
         for (var i = 0; i < amount; i++)
         {
-            tempList.Add(packet.ReadInt());
+            tempList.Add(packetReader.ReadInt());
         }
 
         return tempList;
     }
 
-    private static List<string> ReadStringList(INetworkPacketReader packet)
+    private static List<string> ReadStringList(NetworkPacketReader packetReader)
     {
         var tempList = new List<string>();
 
-        for (var i = 0; i < packet.ReadInt(); i++)
+        for (var i = 0; i < packetReader.ReadInt(); i++)
         {
-            tempList.Add(packet.ReadString());
+            tempList.Add(packetReader.ReadString());
         }
 
         return tempList;

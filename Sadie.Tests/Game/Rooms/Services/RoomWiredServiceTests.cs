@@ -1,6 +1,6 @@
 using AutoMapper;
 using Moq;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Game.Rooms.Furniture;
 using Sadie.Game.Rooms.Services;

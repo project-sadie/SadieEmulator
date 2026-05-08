@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Db;
-using Sadie.Networking.Serialization;
+using Sadie.Networking.Packets.Serialization;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
 
 namespace Sadie.Networking.Events;
@@ -16,7 +16,7 @@ public class RoomUserTrade(
     public required List<IRoomUser> Users { get; init; }
     public required List<PlayerFurnitureItemDto> Items { get; init; }
     
-    public async void OfferItems(List<PlayerFurnitureItemDto> playerItems)
+    public async Task OfferItemsAsync(List<PlayerFurnitureItemDto> playerItems)
     {
         foreach (var item in playerItems.Where(item => !Items.Contains(item)))
         {
@@ -36,7 +36,7 @@ public class RoomUserTrade(
     
     public async Task BroadcastToUsersAsync(AbstractPacketWriter writer)
     {
-        var serializedObject = await NetworkPacketWriterSerializer.SerializeAsync(writer);
+        var serializedObject = NetworkPacketWriterSerializer.Serialize(writer);
         
         foreach (var roomUser in Users)
         {

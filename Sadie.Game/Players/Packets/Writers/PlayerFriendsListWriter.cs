@@ -1,5 +1,5 @@
 ﻿using Sadie.API;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking;
 using Sadie.Core.Enums.Game.Players;
@@ -18,7 +18,7 @@ public class PlayerFriendsListWriter : AbstractPacketWriter
     public required IPlayerRepository PlayerRepository { get; init; }
     public required ICollection<PlayerRelationshipDto> Relationships { get; init; }
 
-    public override async Task OnSerializeAsync(INetworkPacketWriter writer)
+    public override void OnSerialize(INetworkPacketWriter writer)
     {
         writer.WriteInteger(Pages);
         writer.WriteInteger(Index);

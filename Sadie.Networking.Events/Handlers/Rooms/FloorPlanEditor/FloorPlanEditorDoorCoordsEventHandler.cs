@@ -11,7 +11,7 @@ public class FloorPlanEditorDoorCoordsEventHandler(IRoomRepository roomRepositor
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }

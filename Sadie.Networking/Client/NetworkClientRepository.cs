@@ -1,12 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using AutoMapper;
-using DotNetty.Transport.Channels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
 
 namespace Sadie.Networking.Client;
 
@@ -17,24 +15,24 @@ public class NetworkClientRepository(
     IPlayerHelperService playerHelperService,
     IMapper mapper) : INetworkClientRepository
 {
-    private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
-    private readonly ConcurrentDictionary<string, byte> _removalGuard = new();
+    private readonly ConcurrentDictionary<Guid, INetworkClient> _clients = new();
+    private readonly ConcurrentDictionary<Guid, byte> _removalGuard = new();
 
     public ICollection<INetworkClient> Clients => _clients.Values;
     
-    public void AddClient(IChannelId channelId, INetworkClient client)
+    public void AddClient(Guid guid, INetworkClient client)
     {
-        _clients[channelId] = client;
+        _clients[guid] = client;
     }
 
-    public async Task<bool> TryRemoveAsync(IChannelId channelId)
+    public async Task<bool> TryRemoveAsync(Guid guid)
     {
-        if (!_removalGuard.TryAdd(channelId.AsShortText(), 0))
+        if (!_removalGuard.TryAdd(guid, 0))
         {
             return false;
         }
 
-        if (!_clients.TryRemove(channelId, out var client))
+        if (!_clients.TryRemove(guid, out var client))
         {
             return false;
         }
@@ -57,23 +55,33 @@ public class NetworkClientRepository(
                     return false;
                 }
 
-                await playerHelperService.UpdatePlayerStatusForFriendsAsync(
-                    player,
-                    player.GetMergedFriendships(),
-                    false,
-                    false,
-                    playerRepository);
+                var friendships = player.GetMergedFriendships();
 
-                var playerDataEntity = mapper.Map<PlayerData>(player.Player.Data);
-
+                if (friendships.Count != 0)
+                {
+                    await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+                        player,
+                        friendships,
+                        false,
+                        false,
+                        playerRepository);
+                }
+                
                 await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-                dbContext.Entry(playerDataEntity).Property(x => x.IsOnline).IsModified = true;
-                await dbContext.SaveChangesAsync();
+                
+                await dbContext.Database
+                    .ExecuteSqlRawAsync(
+                        "UPDATE player_data SET is_online = 0 WHERE id = @p0 LIMIT 1", 
+                        player.Player.Id);
             }
         }
         catch (DbUpdateConcurrencyException)
         {
             // Another thread removed the player already, safe to ignore
+        }
+        finally
+        {
+            _removalGuard.TryRemove(guid, out _);
         }
         
         await client.DisposeAsync();
@@ -84,28 +92,38 @@ public class NetworkClientRepository(
     {
         var idleClients = _clients.Values
             .Where(x => (DateTime.Now - x.LastPong).TotalSeconds >= 60)
-            .Take(50)
+            .Take(20)
             .ToList();
-
+        
         if (idleClients.Count < 1)
         {
             return;
         }
         
         logger.LogWarning($"Disconnecting {idleClients.Count} idle players");
+        
+        var throttler = new SemaphoreSlim(10);
 
-        foreach (var client in idleClients)
+        var tasks = idleClients.Select(async client =>
         {
-            if (!await TryRemoveAsync(client.Channel.Id))
+            await throttler.WaitAsync();
+
+            try
             {
-                logger.LogError("Failed to dispose of network client");
+                await TryRemoveAsync(client.Guid);
             }
-        }
+            finally
+            {
+                throttler.Release();
+            }
+        });
+
+        await Task.WhenAll(tasks);
     }
 
-    public INetworkClient? TryGetClientByChannelId(IChannelId channelId)
+    public INetworkClient? TryGetClientByGuid(Guid guid)
     {
-        return _clients.GetValueOrDefault(channelId);
+        return _clients.GetValueOrDefault(guid);
     }
 
     public async ValueTask DisposeAsync()

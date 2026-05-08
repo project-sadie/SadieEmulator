@@ -13,7 +13,7 @@ public class RoomUserTagsEventHandler(IRoomRepository roomRepository) : INetwork
 
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }

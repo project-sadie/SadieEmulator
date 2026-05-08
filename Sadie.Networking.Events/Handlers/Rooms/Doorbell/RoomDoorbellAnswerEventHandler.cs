@@ -32,7 +32,7 @@ public class RoomDoorbellAnswerEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }
@@ -51,7 +51,7 @@ public class RoomDoorbellAnswerEventHandler(
                 Username = Username
             });
 
-            var playerClient = clientRepository.TryGetClientByChannelId(player.Channel!.Id);
+            var playerClient = clientRepository.TryGetClientByGuid(player.NetworkObject.Guid);
 
             if (playerClient != null)
             {

@@ -1,7 +1,7 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
@@ -37,6 +37,7 @@ public class TeleportInteractor(
         
             roomUser.Direction = facingDirection;
             roomUser.DirectionHead = facingDirection;
+            roomUser.NeedsUpdate = true;
 
             await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "1");
             await UseTeleportAsync(room, item, roomUser);
@@ -178,6 +179,7 @@ public class TeleportInteractor(
         
         roomUser.Direction = targetItem.Direction;
         roomUser.DirectionHead = targetItem.Direction;
+        roomUser.NeedsUpdate = true;
             
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, targetItem, "1");
         

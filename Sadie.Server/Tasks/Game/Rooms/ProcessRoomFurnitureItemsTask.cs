@@ -1,15 +1,16 @@
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture.Processors;
 using Sadie.API.Interfaces.Networking;
+using Sadie.API.Interfaces.Server.Tasks;
 
-namespace SadieEmulator.Tasks.Game.Rooms;
+namespace Sadie.Server.Tasks.Game.Rooms;
 
 public class ProcessRoomFurnitureItemsTask(
     IRoomRepository roomRepository, 
     IEnumerable<IRoomFurnitureItemProcessor> processors) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromMilliseconds(1000);
-    public DateTime LastExecuted { get; set; }
+    public long LastExecutedTicks { get; set; }
     
     public async Task ExecuteAsync()
     {

@@ -22,8 +22,8 @@ public class Player
     public PlayerAvatarData? AvatarData { get; set; }
     public List<PlayerTag> Tags { get; init; } = [];
     public ICollection<PlayerRoomLike> RoomLikes { get; init; } = [];
-    [InverseProperty("OriginPlayer")] public ICollection<PlayerRelationship> Relationships { get; init; } = [];
-    
+    public ICollection<PlayerRelationship> OriginRelationships { get; init; } = [];
+    public ICollection<PlayerRelationship> TargetRelationships { get; init; } = [];
     public PlayerNavigatorSettings? NavigatorSettings { get; set; }
     
     public PlayerGameSettings? GameSettings { get; set; }
@@ -42,8 +42,8 @@ public class Player
     
     public ICollection<ServerPeriodicCurrencyRewardLog> RewardLogs { get; init; } = [];
     public ICollection<Room> Rooms { get; set; }
-    public ICollection<PlayerIgnore> Ignores { get; set; }
-
+    public ICollection<PlayerIgnore> OutgoingIgnores { get; init; } = [];
+    public ICollection<PlayerIgnore> IncomingIgnores { get; init; } = [];
     public ICollection<Group> Groups { get; init; } = [];
     public ICollection<PlayerBot> Bots { get; init; } = [];
     public ICollection<PlayerRoomVisit> RoomVisits { get; init; } = [];

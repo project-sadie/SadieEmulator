@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player;
+using Sadie.API.DTOs.Players;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.API.Interfaces.Networking.Events.Handlers;
@@ -28,7 +28,7 @@ public class PlayerIgnoreUserEventHandler(IPlayerRepository playerRepository,
         var targetPlayer = playerRepository.GetPlayerLogicByUsername(Username);
         
         if (targetPlayer == null || 
-            player.Player.Ignores.Any(x => x.TargetPlayerId == targetPlayer.Player.Id))
+            player.Player.OutgoingIgnores.Any(x => x.TargetPlayerId == targetPlayer.Player.Id))
         {
             return;
         }
@@ -39,7 +39,7 @@ public class PlayerIgnoreUserEventHandler(IPlayerRepository playerRepository,
             TargetPlayerId = targetPlayer.Player.Id
         };
 
-        player.Player.Ignores.Add(ignore);
+        player.Player.OutgoingIgnores.Add(ignore);
 
         await player.NetworkObject.WriteToStreamAsync(
             new PlayerIgnoreStateWriter

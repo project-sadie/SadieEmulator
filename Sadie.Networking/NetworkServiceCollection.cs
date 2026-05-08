@@ -1,8 +1,6 @@
-﻿using DotNetty.Transport.Channels;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Sadie.API.Interfaces.Networking;
 using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Networking.Client;
 using Sadie.Networking.Packets;
@@ -22,13 +20,7 @@ public static class NetworkServiceCollection
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
 
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
-        serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
-        
-        serviceCollection.AddSingleton<IEventLoopGroup>(sp =>
-        {
-            var listener = sp.GetRequiredService<INetworkListener>();
-            return listener.WorkerGroup!;
-        });
+        serviceCollection.AddHostedService<NetworkListener>();
         
         serviceCollection.Configure<NetworkOptions>(options => config.GetSection("NetworkOptions").Bind(options));
         serviceCollection.Configure<NetworkPacketOptions>(options => config.GetSection("NetworkOptions:PacketOptions").Bind(options));

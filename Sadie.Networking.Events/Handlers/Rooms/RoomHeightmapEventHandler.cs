@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Sadie.API;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
@@ -104,9 +104,8 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             .Select(async item => new
             {
                 Key = item.PlayerFurnitureItem.PlayerId,
-                Value = (await playerRepository
-                        .GetPlayerByIdAsync(item.PlayerFurnitureItem.PlayerId))
-                    ?.Username ?? "Unknown User"
+                Value = await playerRepository
+                    .GetPlayerUsernameByIdAsync(item.PlayerFurnitureItem.PlayerId) ?? "Unknown User"
             });
 
         var results = await Task.WhenAll(tasks);
@@ -119,9 +118,8 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             .Select(async item => new
             {
                 Key = item.PlayerFurnitureItem.PlayerId,
-                Value = (await playerRepository
-                        .GetPlayerByIdAsync(item.PlayerFurnitureItem.PlayerId))
-                    ?.Username ?? "Unknown User"
+                Value = await playerRepository
+                    .GetPlayerUsernameByIdAsync(item.PlayerFurnitureItem.PlayerId) ?? "Unknown User"
             });
 
         var wallResults = await Task.WhenAll(wallTasks);

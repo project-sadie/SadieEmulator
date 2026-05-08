@@ -1,6 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
@@ -67,10 +67,7 @@ public class RoomFurnitureItemHelperService(
         PlayerFurnitureItemPlacementDataDto roomFurnitureItem)
     {
         var furnitureItem = roomFurnitureItem.PlayerFurnitureItem.FurnitureItem;
-        
-        var owner = await playerRepository.GetPlayerByIdAsync(
-            roomFurnitureItem.PlayerFurnitureItem.PlayerId);
-        
+
         AbstractPacketWriter itemWriter = furnitureItem.Type == FurnitureItemType.Floor ? 
             new RoomFloorItemUpdatedWriter
             {
@@ -92,7 +89,9 @@ public class RoomFurnitureItemHelperService(
             : new RoomWallFurnitureItemUpdatedWriter
         {
             Item = roomFurnitureItem,
-            OwnerUsername = owner?.Username ?? "Unknown User"
+            OwnerUsername = await playerRepository.GetPlayerUsernameByIdAsync(
+                roomFurnitureItem.PlayerFurnitureItem.PlayerId
+            ) ?? "Unknown User"
         };
         
         await room.BroadcastDataAsync(itemWriter);

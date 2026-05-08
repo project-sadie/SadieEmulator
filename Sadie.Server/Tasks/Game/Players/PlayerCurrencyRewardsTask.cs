@@ -4,12 +4,13 @@ using Sadie.API.DTOs.Server;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.API.Interfaces.Networking;
+using Sadie.API.Interfaces.Server.Tasks;
+using Sadie.Core.Players;
 using Sadie.Db;
 using Sadie.Db.Models.Server;
-using Sadie.Networking.Events;
 using Sadie.Networking.Writers.Players.Purse;
 
-namespace SadieEmulator.Tasks.Game.Players;
+namespace Sadie.Server.Tasks.Game.Players;
 
 public class PlayerCurrencyRewardsTask(
     IDbContextFactory<SadieDbContext> dbContextFactory,
@@ -20,7 +21,7 @@ public class PlayerCurrencyRewardsTask(
     IMapper mapper) : IServerTask
 {
     public TimeSpan PeriodicInterval => TimeSpan.FromSeconds(1);
-    public DateTime LastExecuted { get; set; }
+    public long LastExecutedTicks { get; set; }
 
     private readonly Dictionary<int, DateTime> _lastProcessed = rewards
         .ToDictionary(k => k.Id, _ => DateTime.Now);
@@ -101,7 +102,10 @@ public class PlayerCurrencyRewardsTask(
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
+                    Currencies = PlayerCurrencyMapper.FromBalances(
+    player.Player.Data.PixelBalance,
+    player.Player.Data.SeasonalBalance,
+    player.Player.Data.GotwPoints)
                 };
                 break;
             case "seasonal":
@@ -109,7 +113,10 @@ public class PlayerCurrencyRewardsTask(
                 
                 writer = new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Player.Data)
+                    Currencies = PlayerCurrencyMapper.FromBalances(
+                        player.Player.Data.PixelBalance,
+                        player.Player.Data.SeasonalBalance,
+                        player.Player.Data.GotwPoints)
                 };
                 break;
         }

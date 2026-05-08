@@ -1,5 +1,5 @@
 using System.Drawing;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
 using Sadie.API.Interfaces.Game.Rooms.Users;
 using Sadie.Core.Enums.Game.Furniture;
@@ -194,12 +194,45 @@ public class RoomTileMapHelperService : IRoomTileMapHelperService
     }
 
     public bool CanPlaceAt(
-        IEnumerable<Point> points,  
+        IEnumerable<Point> points,
         IRoomTileMap tileMap,
         bool checkForUsers = true)
     {
-        return points.All(point => tileMap.Map[point.Y, point.X] != 0 && 
-            (!checkForUsers || !tileMap.UsersAtPoint(point)));
+        foreach (var point in points)
+        {
+            if (tileMap.Map[point.Y, point.X] == 0)
+                return false;
+
+            if (checkForUsers && tileMap.UsersAtPoint(point))
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool CanPlaceAt(
+        IEnumerable<Point> points,
+        IRoomTileMap tileMap,
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems,
+        bool checkForUsers = true)
+    {
+        foreach (var point in points)
+        {
+            var topItem = GetItemsForPosition(point.X, point.Y, furnitureItems)
+                .MaxBy(x => x.PositionZ);
+            
+            if (tileMap.Map[point.Y, point.X] == 0 && topItem is { PlayerFurnitureItem.FurnitureItem.CanStack: false })
+            {
+                return false;
+            }
+
+            if (checkForUsers && tileMap.UsersAtPoint(point))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     public List<IRoomUser> GetUsersAtPoints(IEnumerable<Point> points, IEnumerable<IRoomUser> users)

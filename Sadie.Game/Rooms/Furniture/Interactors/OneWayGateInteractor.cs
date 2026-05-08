@@ -1,6 +1,6 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Game.Rooms.Furniture;
 using Sadie.API.Interfaces.Game.Rooms.Mapping;
@@ -40,6 +40,7 @@ public class OneWayGateInteractor(
 
         roomUser.DirectionHead = tileMapHelperService.GetOppositeDirection(item.Direction);
         roomUser.Direction = tileMapHelperService.GetOppositeDirection(item.Direction);
+        roomUser.NeedsUpdate = true;
         roomUser.OverridePoints.Add(itemPoint);
         roomUser.CanWalk = false;
         roomUser.WalkToPoint(squareBehind, OnReachedGoal);

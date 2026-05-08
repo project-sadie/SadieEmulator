@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.DTOs.Player.Furniture;
-using Sadie.API.DTOs.Rooms;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
 using Sadie.API.Interfaces.Networking.Client;
@@ -66,13 +65,10 @@ public class RoomDeleteEventHandler(
         }
 
         var roomEntity = mapper.Map<Room>(room);
-        var roomDto = mapper.Map<RoomDto>(room);
-        
+
         dbContext.Entry(roomEntity).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
-        client.Player.Player.Rooms.Remove(roomDto);
-                
         foreach (var roomUser in room.UserRepository.GetAll())
         {
             await room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id);

@@ -56,7 +56,7 @@ public class PlayerAcceptFriendRequestEventHandler(
         var targetRelationship = targetOnline
             ? targetPlayer!
                 .Player
-                .Relationships
+                .OriginRelationships
                 .FirstOrDefault(x => x.TargetPlayerId == request.OriginPlayerId || x.TargetPlayerId == request.TargetPlayerId) : null;
 
         await playerHelperService.SendFriendUpdatesToPlayerAsync(client.Player, [
@@ -88,7 +88,8 @@ public class PlayerAcceptFriendRequestEventHandler(
             }
             
             var relationship = targetPlayer
-                .Player.Relationships
+                .Player
+                .OriginRelationships
                 .FirstOrDefault(x =>
                     x.TargetPlayerId == targetRequest.OriginPlayerId || x.TargetPlayerId == targetRequest.TargetPlayerId);
 

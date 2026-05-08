@@ -26,19 +26,19 @@ public class PlayerRemoveUserIgnoreEventHandler(IPlayerRepository playerReposito
         
         var targetPlayer = playerRepository.GetPlayerLogicByUsername(Username);
         
-        if (targetPlayer == null || player.Player.Ignores.All(x => x.TargetPlayerId != targetPlayer.Player.Id))
+        if (targetPlayer == null || player.Player.OutgoingIgnores.All(x => x.TargetPlayerId != targetPlayer.Player.Id))
         {
             return;
         }
 
-        var ignore = player.Player.Ignores.FirstOrDefault(x => x.TargetPlayerId == targetPlayer.Player.Id);
+        var ignore = player.Player.OutgoingIgnores.FirstOrDefault(x => x.TargetPlayerId == targetPlayer.Player.Id);
 
         if (ignore == null)
         {
             return;
         }
 
-        player.Player.Ignores.Remove(ignore);
+        player.Player.OutgoingIgnores.Remove(ignore);
 
         await player.NetworkObject.WriteToStreamAsync(
             new PlayerIgnoreStateWriter

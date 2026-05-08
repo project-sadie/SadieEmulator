@@ -1,4 +1,6 @@
 using System.Drawing;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo.Collections.MultiDimensional;
 
 namespace Sadie.Game.Rooms.PathFinding.ToGo.Collections.MultiDimensional;
 
@@ -27,7 +29,7 @@ public class Grid<T> : IModelAGrid<T>
 
     public int Width { get; }
         
-    public IEnumerable<Position> GetSuccessorPositions(Position node, bool optionsUseDiagonals = false)
+    public IEnumerable<IPosition> GetSuccessorPositions(IPosition node, bool optionsUseDiagonals = false)
     {
         var offsets = GridOffsets.GetOffsets(optionsUseDiagonals);
         foreach (var neighbourOffset in offsets)
@@ -41,7 +43,7 @@ public class Grid<T> : IModelAGrid<T>
             }
                 
             var successorColumn = node.Column + neighbourOffset.column;
-
+ 
             if (successorColumn < 0 || successorColumn >= Width)
             {
                 continue;
@@ -62,7 +64,7 @@ public class Grid<T> : IModelAGrid<T>
             this[point.ToPosition()] = value;
         }
     }
-    public T this[Position position]
+    public T this[IPosition position]
     {
         get
         {

@@ -1,8 +1,8 @@
 using Moq;
 using Sadie.API;
 using Sadie.API.DTOs;
-using Sadie.API.DTOs.Player;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.DTOs.Server;
 using Sadie.API.Interfaces.Game.Players;
@@ -41,12 +41,13 @@ public class PlayerHelperServiceTests
             id,
             "u",
             "",
-            new List<RoleDto>(),
             DateTimeOffset.Now,
+            [],
             null,
             new PlayerAvatarDataDto { FigureCode = "f", Motto = "m", Gender = PlayerAvatarGender.Male },
-            new List<PlayerTagDto>(),
+            [],
             new List<PlayerRoomLikeDto>(),
+            new List<PlayerRelationshipDto>(),
             new List<PlayerRelationshipDto>(),
             null,
             null,
@@ -58,9 +59,11 @@ public class PlayerHelperServiceTests
             new List<PlayerSavedSearchDto>(),
             new List<PlayerFriendshipDto>(),
             new List<PlayerFriendshipDto>(),
+            new List<PlayerIgnoreDto>(),
+            new List<PlayerIgnoreDto>(),
             new List<ServerPeriodicCurrencyRewardLogDto>(),
             new List<RoomDto>(),
-            new List<PlayerIgnoreDto>(),
+            new List<GroupDto>(),
             new List<PlayerBotDto>(),
             new List<PlayerRoomVisitDto>(),
             new List<PlayerBanDto>(),

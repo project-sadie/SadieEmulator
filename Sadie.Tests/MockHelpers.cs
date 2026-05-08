@@ -1,7 +1,7 @@
 using Moq;
 using Sadie.API.DTOs.Furniture;
-using Sadie.API.DTOs.Player;
-using Sadie.API.DTOs.Player.Furniture;
+using Sadie.API.DTOs.Players;
+using Sadie.API.DTOs.Players.Furniture;
 using Sadie.API.DTOs.Rooms;
 using Sadie.API.Interfaces.Game.Players;
 using Sadie.API.Interfaces.Game.Rooms;
@@ -118,10 +118,11 @@ public class MockHelpers
             1L,
             "TestUser",
             "test@example.com",
-            [],
             DateTimeOffset.UtcNow,
+            [],
             new PlayerDataDto(),
             new PlayerAvatarDataDto(),
+            [],
             [],
             [],
             [],
@@ -139,7 +140,11 @@ public class MockHelpers
             [],
             [],
             [],
-            [],[],[]);
+            [],
+            [],
+            [],
+            [],
+            []);
 
         var player = new Mock<IPlayerLogic>();
         player.SetupGet(x => x.Player).Returns(playerData);
