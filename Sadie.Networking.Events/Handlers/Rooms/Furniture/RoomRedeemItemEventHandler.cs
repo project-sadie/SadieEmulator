@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Players.Purse;
 using Sadie.Networking.Writers.Rooms.Furniture;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -21,13 +22,13 @@ public class RoomRedeemItemEventHandler(
 
         if (player?.NetworkObject == null || 
             client.RoomUser == null || 
-            room.OwnerId != client.Player!.Id)
+            room.Room.OwnerId != client.Player!.Player.Id)
         {
             return;
         }
         
         var roomFurnitureItem = room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomFurnitureItem == null)
@@ -43,14 +44,17 @@ public class RoomRedeemItemEventHandler(
             "PF_"
         };
 
-        var assetName = roomFurnitureItem.FurnitureItem.AssetName;
+        var assetName = roomFurnitureItem
+            .PlayerFurnitureItem
+            .FurnitureItem
+            .AssetName;
         
         if (!allowedPrefixes.Any(prefix => assetName.StartsWith(prefix)))
         {
             return;
         }
         
-        await room.UserRepository.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
+        await room.BroadcastDataAsync(new RoomFloorFurnitureItemRemovedWriter
         {
             Id = roomFurnitureItem.PlayerFurnitureItemId.ToString(),
             Expired = false,
@@ -63,8 +67,8 @@ public class RoomRedeemItemEventHandler(
         dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).State = EntityState.Deleted;
         await dbContext.SaveChangesAsync();
 
-        if ((assetName.StartsWith("CF_") ||
-            assetName.StartsWith("CFC_")) ||
+        if (assetName.StartsWith("CF_") ||
+            assetName.StartsWith("CFC_") ||
             assetName.Contains("_diamond_"))
         {
             var value = int.TryParse(assetName.Split("_")[1], out var amount) ? 
@@ -73,22 +77,25 @@ public class RoomRedeemItemEventHandler(
 
             if (assetName.StartsWith("PF_"))
             {
-                player.Data.PixelBalance += value;
-                dbContext.Entry(player.Data).Property(x => x.PixelBalance).IsModified = true;
+                player.Player.Data.PixelBalance += value;
+                dbContext.Entry(player.Player.Data).Property(x => x.PixelBalance).IsModified = true;
                 
                 await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
                 {
-                    Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
+                    Currencies = PlayerCurrencyMapper.FromBalances(
+                        player.Player.Data.PixelBalance,
+                        player.Player.Data.SeasonalBalance,
+                        player.Player.Data.GotwPoints)
                 });
             }
             else
             {
-                player.Data.CreditBalance += value;
-                dbContext.Entry(player.Data).Property(x => x.CreditBalance).IsModified = true;
+                player.Player.Data.CreditBalance += value;
+                dbContext.Entry(player.Player.Data).Property(x => x.CreditBalance).IsModified = true;
                 
                 await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
                 {
-                    Credits = player.Data.CreditBalance
+                    Credits = player.Player.Data.CreditBalance
                 });
             }
         }
@@ -102,18 +109,21 @@ public class RoomRedeemItemEventHandler(
 
             if (pointsType == 5 || assetName.StartsWith("CF_diamond_"))
             {
-                player.Data.SeasonalBalance += points;
-                dbContext.Entry(player.Data).Property(x => x.SeasonalBalance).IsModified = true;
+                player.Player.Data.SeasonalBalance += points;
+                dbContext.Entry(player.Player.Data).Property(x => x.SeasonalBalance).IsModified = true;
             }
             else if (pointsType == 103)
             {
-                player.Data.GotwPoints += points;
-                dbContext.Entry(player.Data).Property(x => x.SeasonalBalance).IsModified = true;
+                player.Player.Data.GotwPoints += points;
+                dbContext.Entry(player.Player.Data).Property(x => x.SeasonalBalance).IsModified = true;
             }
                 
             await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
             {
-                Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(player.Data)
+                Currencies = PlayerCurrencyMapper.FromBalances(
+    player.Player.Data.PixelBalance,
+    player.Player.Data.SeasonalBalance,
+    player.Player.Data.GotwPoints)
             });
         }
 

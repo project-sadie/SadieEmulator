@@ -1,13 +1,13 @@
 using System.Drawing;
 using Moq;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.Db.Models.Furniture;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Rooms.Mapping;
-using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Miscellaneous;
+using Sadie.API.DTOs.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Game.Rooms.Mapping;
+using Sadie.Core.Enums.Game.Rooms.Users;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Game.Rooms.Mapping;
 
 namespace Sadie.Tests.Game.Rooms.Mapping;
@@ -33,7 +33,7 @@ public class RoomTileMapHelperServiceTests
     [TestCase(HDirection.NorthWest, HDirection.SouthEast)]
     public void GetOppositeDirection_ReturnsCorrect(HDirection d, HDirection t)
     {
-        var eastResult = _tileMapHelperService.GetOppositeDirection((int) d);
+        var eastResult = _tileMapHelperService.GetOppositeDirection(d);
         Assert.That(eastResult, Is.EqualTo(t));
     }
 
@@ -80,7 +80,7 @@ public class RoomTileMapHelperServiceTests
     [Test]
     public void GetStateNumberForTile_Open_ReturnsOpen()
     {
-        var tileState = _tileMapHelperService.GetTileState(10, 10, new List<PlayerFurnitureItemPlacementData>());
+        var tileState = _tileMapHelperService.GetTileState(10, 10, new List<PlayerFurnitureItemPlacementDataDto>());
         Assert.That(tileState, Is.EqualTo(RoomTileState.Open));
     }
 
@@ -88,11 +88,12 @@ public class RoomTileMapHelperServiceTests
     public void GetStateNumberForTile_Sit_ReturnsSit()
     {
         var tileState = _tileMapHelperService.GetTileState(10, 10, [
-            new PlayerFurnitureItemPlacementData
+            new PlayerFurnitureItemPlacementDataDto
             {
-                PlayerFurnitureItem = new PlayerFurnitureItem
+                PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItemId = 0,
+                    FurnitureItem = new FurnitureItemDto
                     {
                         CanSit = true,
                         InteractionType = "",
@@ -101,7 +102,6 @@ public class RoomTileMapHelperServiceTests
                     },
                     LimitedData = "",
                     MetaData = "",
-                    Player = null
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -115,11 +115,12 @@ public class RoomTileMapHelperServiceTests
     public void GetStateNumberForTile_Lay_ReturnsLay()
     {
         var tileState = _tileMapHelperService.GetTileState(10, 10, [
-            new PlayerFurnitureItemPlacementData
+            new PlayerFurnitureItemPlacementDataDto
             {
-                PlayerFurnitureItem = new PlayerFurnitureItem
+                PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItemId = 0,
+                    FurnitureItem = new FurnitureItemDto
                     {
                         CanLay = true,
                         InteractionType = "",
@@ -127,8 +128,7 @@ public class RoomTileMapHelperServiceTests
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "",
-                    Player = null
+                    MetaData = ""
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -142,11 +142,12 @@ public class RoomTileMapHelperServiceTests
     public void GetStateNumberForTile_GateInteractionType_ReturnsOpen()
     {
         var tileState = _tileMapHelperService.GetTileState(10, 10, [
-            new PlayerFurnitureItemPlacementData
+            new PlayerFurnitureItemPlacementDataDto
             {
-                PlayerFurnitureItem = new PlayerFurnitureItem
+                PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItemId = 0,
+                    FurnitureItem = new FurnitureItemDto
                     {
                         CanWalk = false,
                         InteractionType = "gate",
@@ -155,7 +156,6 @@ public class RoomTileMapHelperServiceTests
                     },
                     LimitedData = "",
                     MetaData = "1",
-                    Player = null
                 },
                 PositionX = 10,
                 PositionY = 10
@@ -168,19 +168,19 @@ public class RoomTileMapHelperServiceTests
     [Test]
     public void GetItemsForPosition_SingleItem_ReturnsCorrect()
     {
-        var someItems = new List<PlayerFurnitureItemPlacementData>
+        var someItems = new List<PlayerFurnitureItemPlacementDataDto>
         {
-            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
+            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItemId = 0,
+                    FurnitureItem = new FurnitureItemDto
                     {
                         Name = "",
                         InteractionType = "default",
                         AssetName = ""
                     },
                     LimitedData = "",
-                    MetaData = "",
-                    Player = null
+                    MetaData = ""
                 }
             }
         };
@@ -191,11 +191,11 @@ public class RoomTileMapHelperServiceTests
     [Test]
     public void GetItemsForPosition_NotFound_ReturnsCorrect()
     {
-        var someItems = new List<PlayerFurnitureItemPlacementData>
+        var someItems = new List<PlayerFurnitureItemPlacementDataDto>
         {
-            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItem
+            new() { PositionX = 10, PositionY = 14, PlayerFurnitureItem = new PlayerFurnitureItemDto
                 {
-                    FurnitureItem = new FurnitureItem
+                    FurnitureItem = new FurnitureItemDto
                     {
                         Type = FurnitureItemType.Floor,
                         InteractionType = "default",
@@ -204,7 +204,7 @@ public class RoomTileMapHelperServiceTests
                     },
                     LimitedData = "",
                     MetaData = "",
-                    Player = null
+                    FurnitureItemId = 0
                 }
             }
         };
@@ -215,7 +215,7 @@ public class RoomTileMapHelperServiceTests
     [Test]
     public void GetItemsForPosition_OverlappingItem_ReturnsAllItems()
     {
-        var someItems = new List<PlayerFurnitureItemPlacementData>
+        var someItems = new List<PlayerFurnitureItemPlacementDataDto>
         {
             MockFurnitureItem(10, 14),
             MockLongFurnitureItem(10, 13),
@@ -475,7 +475,7 @@ public class RoomTileMapHelperServiceTests
     [Test]
     public void GetItemPlacementHeight_SingleTileItem_ReturnsCorrect()
     {
-        var furnitureItems = new List<PlayerFurnitureItemPlacementData>();
+        var furnitureItems = new List<PlayerFurnitureItemPlacementDataDto>();
         var map = new RoomTileMap("0", furnitureItems);
         var pointsForPlacement = new Point[] { new () };
         
@@ -485,7 +485,7 @@ public class RoomTileMapHelperServiceTests
     [Test]
     public void GetItemPlacementHeight_StackedSingleTileItems_ReturnsCorrect()
     {
-        var furnitureItems = new List<PlayerFurnitureItemPlacementData>
+        var furnitureItems = new List<PlayerFurnitureItemPlacementDataDto>
         {
             MockFurnitureItem(0, 0, 10, 4),
             MockFurnitureItem(0, 0, 20, 4)
@@ -521,9 +521,9 @@ public class RoomTileMapHelperServiceTests
     [Test]
     public void UpdateTileMapsForPoints_BlockingItemPlaced_MarkedAsBlocked()
     {
-        var furnitureItems = new List<PlayerFurnitureItemPlacementData>
+        var furnitureItems = new List<PlayerFurnitureItemPlacementDataDto>
         {
-            MockFurnitureItem(x: 1, y: 0, canWalk: false),
+            MockFurnitureItem(x: 1, y: 0, canWalk: false)
         };
         
         var map = new RoomTileMap("00", furnitureItems);
@@ -537,15 +537,16 @@ public class RoomTileMapHelperServiceTests
         Assert.That(map.Map[0, 0], Is.EqualTo((int) RoomTileState.Blocked));
     }
 
-    private static PlayerFurnitureItemPlacementData MockLongFurnitureItem(int x = 0,
+    private static PlayerFurnitureItemPlacementDataDto MockLongFurnitureItem(int x = 0,
         int y = 0)
     {
         var item = MockFurnitureItem(x, y);
-        item.FurnitureItem.TileSpanY = 2;
+        item.PlayerFurnitureItem.FurnitureItem.TileSpanY = 2;
 
         return item;
     }
-    private static PlayerFurnitureItemPlacementData MockFurnitureItem(int x = 0,
+    
+    private static PlayerFurnitureItemPlacementDataDto MockFurnitureItem(int x = 0,
         int y = 0,
         int z = 0,
         int stackHeight = 0,
@@ -555,13 +556,13 @@ public class RoomTileMapHelperServiceTests
         bool canLay = false,
         bool canSit = false)
     {
-        return new PlayerFurnitureItemPlacementData
+        return new PlayerFurnitureItemPlacementDataDto
         {
-            PlayerFurnitureItem = new PlayerFurnitureItem
+            PlayerFurnitureItem = new PlayerFurnitureItemDto
             {
                 LimitedData = "",
                 MetaData = "",
-                FurnitureItem = new FurnitureItem
+                FurnitureItem = new FurnitureItemDto
                 {
                     StackHeight = stackHeight,
                     InteractionType = interactionType,
@@ -574,7 +575,7 @@ public class RoomTileMapHelperServiceTests
                     Name = "",
                     AssetName = ""
                 },
-                Player = null
+                FurnitureItemId = 0
             },
             PositionX = x,
             PositionY = y,

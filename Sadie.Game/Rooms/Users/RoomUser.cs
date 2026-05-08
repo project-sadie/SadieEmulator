@@ -1,17 +1,16 @@
 using System.Drawing;
 using Sadie.API;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Chat.Commands;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Pathfinding;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Enums.Game.Rooms.Users;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db.Models.Constants;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Game.Rooms.Users;
-using Sadie.Enums.Miscellaneous;
 using Sadie.Game.Rooms.Unit;
 using Sadie.Networking.Writers.Rooms.Users;
 using Sadie.Networking.Writers.Rooms.Users.HandItems;
@@ -19,7 +18,7 @@ using Sadie.Networking.Writers.Rooms.Users.HandItems;
 namespace Sadie.Game.Rooms.Users;
 
 public class RoomUser(
-    RoomLogic room,
+    IRoomLogic room,
     INetworkObject networkObject,
     Point point,
     double pointZ,
@@ -81,9 +80,9 @@ public class RoomUser(
         {
             HandItemId = 0;
         
-            await room.UserRepository.BroadcastDataAsync(new RoomUserHandItemWriter
+            await room.BroadcastDataAsync(new RoomUserHandItemWriter
             {
-                UserId = Player.Id,
+                UserId = Player.Player.Id,
                 ItemId = 0
             });
         }
@@ -110,7 +109,7 @@ public class RoomUser(
     private async Task CheckForStepTriggersAsync(Point point, string interactionType)
     {
         var itemIdsOnPoint = tileMapHelperService
-            .GetItemsForPosition(point.X, point.Y, room.FurnitureItems)
+            .GetItemsForPosition(point.X, point.Y, room.Room.FurnitureItems)
             .Select(x => x.Id)
             .ToList();
 
@@ -121,7 +120,7 @@ public class RoomUser(
         
         var triggers = wiredService.GetTriggers(
             interactionType,
-            room.FurnitureItems,
+            room.Room.FurnitureItems,
             "",
             itemIdsOnPoint);
         
@@ -158,11 +157,11 @@ public class RoomUser(
 
             var writer = new RoomUserIdleWriter
             {
-                UserId = Player.Id,
+                UserId = Player.Player.Id,
                 IsIdle = IsIdle
             };
             
-            await room.UserRepository.BroadcastDataAsync(writer);
+            await room.BroadcastDataAsync(writer);
         }
     }
 
@@ -177,7 +176,7 @@ public class RoomUser(
     {
         await NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
         {
-            SenderId = Player.Id,
+            SenderId = Player.Player.Id,
             Message = message,
             EmotionId = (int) roomHelperService.GetEmotionFromMessage(message),
             ChatBubbleId = 0,
@@ -192,13 +191,14 @@ public class RoomUser(
         
         var writer = new RoomUserEffectWriter
         {
-            UserId = (int) Player.Id,
+            UserId = (int) Player.Player.Id,
             EffectId = (int) effect,
             DelayMs = 0
         };
 
-        await Room.UserRepository.BroadcastDataAsync(writer);
+        await Room.BroadcastDataAsync(writer);
     }
+    
     public async ValueTask DisposeAsync()
     {
         if (room.TileMap.UnitMap.TryGetValue(Point, out var value))

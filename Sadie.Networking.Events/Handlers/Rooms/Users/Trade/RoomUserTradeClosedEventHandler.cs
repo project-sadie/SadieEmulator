@@ -1,9 +1,9 @@
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Enums.Game.Rooms.Users.Trading;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms.Users.Trading;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
@@ -12,7 +12,7 @@ public class RoomUserTradeClosedEventHandler(IRoomRepository roomRepository) : I
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return;
         }
@@ -29,7 +29,7 @@ public class RoomUserTradeClosedEventHandler(IRoomRepository roomRepository) : I
         
         await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeClosedWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             Reason = RoomUserTradeCloseReason.Cancelled
         });
 

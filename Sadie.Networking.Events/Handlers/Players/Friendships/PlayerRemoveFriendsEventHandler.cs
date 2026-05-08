@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
 using Sadie.Networking.Writers.Players.Friendships;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
@@ -19,7 +19,7 @@ public class PlayerRemoveFriendsEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var playerId = client.Player.Id;
+        var playerId = client.Player.Player.Id;
         
         foreach (var currentId in Ids)
         {
@@ -30,7 +30,7 @@ public class PlayerRemoveFriendsEventHandler(
                 continue;
             }
 
-            var friendship = target.TryGetAcceptedFriendshipFor(target.Id);
+            var friendship = target.TryGetAcceptedFriendshipFor(target.Player.Id);
 
             if (friendship != null)
             {

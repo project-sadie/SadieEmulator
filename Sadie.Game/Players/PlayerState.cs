@@ -1,5 +1,5 @@
-using Sadie.API.Game.Players;
-using Sadie.Db.Models.Players.Furniture;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.Interfaces.Game.Players;
 
 namespace Sadie.Game.Players;
 
@@ -10,6 +10,6 @@ public class PlayerState : IPlayerState
     public DateTime LastCatalogPurchase { get; set; }
     public DateTime LastSubscriptionModification { get; set; }
     public string CatalogMode { get; set; }
-    public PlayerFurnitureItemPlacementData? Teleport { get; set; }
+    public PlayerFurnitureItemPlacementDataDto? Teleport { get; set; }
     public int CurrentRoomId { get; set; }
 }

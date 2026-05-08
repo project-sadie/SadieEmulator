@@ -1,26 +1,29 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Db.Models.Rooms;
-using Sadie.Enums.Game.Furniture;
 
 namespace Sadie.Game.Rooms.Furniture.Interactors;
 
 public class DimmerInteractor(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : AbstractRoomFurnitureItemInteractor
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : AbstractRoomFurnitureItemInteractor
 {
     public override List<string> InteractionTypes => [FurnitureItemInteractionType.Dimmer];
     
-    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnPlaceAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
-        if (room.DimmerSettings == null)
+        if (room.Room.DimmerSettings == null)
         {
             var presetOne = new RoomDimmerPreset
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 PresetId = 1,
                 BackgroundOnly = false,
                 Color = "",
@@ -29,7 +32,7 @@ public class DimmerInteractor(
 
             var presetTwo = new RoomDimmerPreset
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 PresetId = 2,
                 BackgroundOnly = false,
                 Color = "",
@@ -38,16 +41,17 @@ public class DimmerInteractor(
 
             var presetThree = new RoomDimmerPreset
             {
-                RoomId = room.Id,
+                RoomId = room
+                    .Room.Id,
                 PresetId = 3,
                 BackgroundOnly = false,
                 Color = "",
                 Intensity = 255
             };
             
-            room.DimmerSettings = new RoomDimmerSettings
+            room.Room.DimmerSettings = new RoomDimmerSettingsDto()
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 Enabled = false,
                 PresetId = 1
             };
@@ -57,26 +61,28 @@ public class DimmerInteractor(
             dbContext.RoomDimmerPresets.Add(presetOne);
             dbContext.RoomDimmerPresets.Add(presetTwo);
             dbContext.RoomDimmerPresets.Add(presetThree);
-            dbContext.RoomDimmerSettings.Add(room.DimmerSettings);
+            
+            var dimmerSettings = mapper.Map<RoomDimmerSettings>(room.Room.DimmerSettings);
+            dbContext.RoomDimmerSettings.Add(dimmerSettings);
 
             await dbContext.SaveChangesAsync();
         }
     }
 
-    public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnPickUpAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         await dbContext
             .RoomDimmerPresets
-            .Where(x => x.RoomId == room.Id)
+            .Where(x => x.RoomId == room.Room.Id)
             .ExecuteDeleteAsync();
      
-        if (room.DimmerSettings != null)
+        if (room.Room.DimmerSettings != null)
         {
-            room.DimmerSettings = null;
+            room.Room.DimmerSettings = null;
             
-            dbContext.Entry(room.DimmerSettings).State = EntityState.Deleted;
+            dbContext.Entry(room.Room.DimmerSettings).State = EntityState.Deleted;
             await dbContext.SaveChangesAsync();
         }
     }

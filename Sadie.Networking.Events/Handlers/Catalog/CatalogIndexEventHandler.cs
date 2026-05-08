@@ -1,21 +1,24 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Catalog.Pages;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Catalog.Pages;
 using Sadie.Networking.Writers.Catalog;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Catalog;
 
 [PacketId(EventHandlerId.CatalogIndex)]
 public class CatalogIndexEventHandler(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        
+
         var parentlessPages = await dbContext.Set<CatalogPage>()
             .Include(x => x.Pages.OrderBy(y => y.OrderId))
             .ThenInclude(x => x.Pages.OrderBy(y => y.OrderId))
@@ -26,7 +29,7 @@ public class CatalogIndexEventHandler(
         await client.WriteToStreamAsync(new CatalogTabsWriter
         {
             Mode = client.Player!.State.CatalogMode,
-            TabPages = parentlessPages
+            TabPages = mapper.Map<List<CatalogPageDto>>(parentlessPages)
         });
     }
 }

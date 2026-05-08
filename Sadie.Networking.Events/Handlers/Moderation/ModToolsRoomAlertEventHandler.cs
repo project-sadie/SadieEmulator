@@ -1,7 +1,7 @@
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Moderation;
 
@@ -13,7 +13,7 @@ public class ModToolsRoomAlertEventHandler : INetworkPacketEventHandler
     
     public async Task HandleAsync(INetworkClient client)
     {
-        await client.RoomUser?.Room.UserRepository?.BroadcastDataAsync(new PlayerAlertWriter
+        await client.RoomUser?.Room.BroadcastDataAsync(new PlayerAlertWriter
         {
             Message = Message
         })!;

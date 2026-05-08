@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Unit;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Shared.Extensions;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Unit;
+using Sadie.Core.Shared.Extensions;
 
 namespace Sadie.Game.Rooms.Mapping;
 
@@ -20,16 +20,18 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
 
     public RoomTileMap(
         string heightmap, 
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         var heightmapLines = heightmap
-            .Replace("\n", "")
-            .Split("\r")
+            .Replace("\r\n", "\n")
+            .Replace("\r", "\n")
+            .Split('\n')
+            .Where(line => !string.IsNullOrWhiteSpace(line))
             .ToList();
         
         SizeX = heightmapLines[0].Length;
         SizeY = heightmapLines.Count;
-        Size = SizeY * SizeX;
+        Size = 0;
         Map = new short[SizeY, SizeX];
         ZMap = new short[SizeY, SizeX];
         TileExistenceMap = new short[SizeY, SizeX];
@@ -39,10 +41,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
         {
             for (var x = 0; x < SizeX; x++)
             {
-                if (heightmapLines[y].Length != SizeX)
-                {
-                    break;
-                }
+                Size++;
 
                 var square = heightmapLines[y][x].ToString().ToUpper();
                 
@@ -68,7 +67,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
 
     public void UpdateEffectMapForTile(int x,
         int y,
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems)
+        ICollection<PlayerFurnitureItemPlacementDataDto> furnitureItems)
     {
         var itemsOnSquare = GetItemsForPosition(x, y, furnitureItems);
 
@@ -79,7 +78,7 @@ public class RoomTileMap : RoomTileMapHelperService, IRoomTileMap
         }
         
         var topItemOnSquare = itemsOnSquare.MaxBy(x => x.PositionZ);
-        var effect = GetEffectFromInteractionType(topItemOnSquare.FurnitureItem.InteractionType);
+        var effect = GetEffectFromInteractionType(topItemOnSquare.PlayerFurnitureItem.FurnitureItem.InteractionType);
                     
         EffectMap[y, x] = (short) effect;
     }

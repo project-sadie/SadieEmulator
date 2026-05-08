@@ -1,53 +1,42 @@
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo;
+
 namespace Sadie.Game.Rooms.PathFinding.ToGo;
 
-/// <summary>
-/// A point in a matrix. P(row, column)
-/// </summary>
-public readonly struct Position(int row = 0, int column = 0)
+public readonly struct Position(int row = 0, int column = 0) : IPosition, IEquatable<Position>
 {
-    /// <summary>
-    /// The row in the matrix
-    /// </summary>
     public int Row { get; } = row;
-
-    /// <summary>
-    /// The column in the matrix
-    /// </summary>
     public int Column { get; } = column;
 
-    public static bool operator ==(Position a, Position b)
+    public bool Equals(Position other)
     {
-        return a.Equals(b);
+        return Row == other.Row && Column == other.Column;
     }
 
-    public static bool operator !=(Position a, Position b)
+    public override bool Equals(object? obj)
     {
-        return !a.Equals(b);
-    }
-
-    public override bool Equals(Object other)
-    {
-        if (other is Position otherPoint)
-        {
-            return Row == otherPoint.Row && Column == otherPoint.Column;
-        }
-
-        return false;
+        return obj is Position other && Equals(other);
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            var hash = 17;
-            hash = hash * 23 + Row.GetHashCode();
-            hash = hash * 23 + Column.GetHashCode();
-            return hash;
+            return (Row * 397) ^ Column;
         }
+    }
+
+    public static bool operator ==(Position left, Position right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Position left, Position right)
+    {
+        return !left.Equals(right);
     }
 
     public override string ToString()
     {
-        return $"[{Row}.{Column}]";
+        return $"[{Row},{Column}]";
     }
 }

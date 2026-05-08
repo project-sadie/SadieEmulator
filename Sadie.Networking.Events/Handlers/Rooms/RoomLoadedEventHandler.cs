@@ -1,22 +1,22 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Enums.Miscellaneous;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Enums.Game.Rooms;
-using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Generic;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Doorbell;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
@@ -61,23 +61,23 @@ public class RoomLoadedEventHandler(
                 dbContextFactory, 
                 mapper);
 
-            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Id, out var existingUser) && existingUser != null)
+            if (lastRoom != null && lastRoom.UserRepository.TryGetById(player.Player.Id, out var existingUser) && existingUser != null)
             {
-                await lastRoom.UserRepository.TryRemoveAsync(existingUser.Player.Id);
+                await lastRoom.UserRepository.TryRemoveAsync(existingUser.Player.Player.Id);
             }
         }
 
         if (room == null)
         {
-            logger.LogError($"Failed to load room {RoomId} for player '{player.Username}'");
+            logger.LogError($"Failed to load room {RoomId} for player '{player.Player.Username}'");
             await client.WriteToStreamAsync(new RoomUserHotelViewWriter());
             
             return;
         }
 
-        var isOwner = room.OwnerId == player.Id;
+        var isOwner = room.Room.OwnerId == player.Player.Id;
 
-        if (room.UserRepository.Count >= room.MaxUsersAllowed && !isOwner)
+        if (room.UserRepository.Count >= room.Room.MaxUsersAllowed && !isOwner)
         {
             await client.WriteToStreamAsync(new RoomEnterErrorWriter
             {
@@ -87,7 +87,7 @@ public class RoomLoadedEventHandler(
             return;
         }
 
-        if (room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
+        if (room.Room.Settings.AccessType is RoomAccessType.Doorbell or RoomAccessType.Password && 
             !isOwner && 
             !await ValidateRoomAccessForClientAsync(client, room, Password))
         {
@@ -103,17 +103,18 @@ public class RoomLoadedEventHandler(
             tileMapHelperService,
             playerHelperService,
             roomFurnitureItemHelperService,
-            wiredService);
+            wiredService,
+            mapper);
     }
 
     private static async Task<bool> ValidateRoomAccessForClientAsync(INetworkClient client, IRoomLogic room, string password)
     {
         var player = client.Player!;
         
-        switch (room.Settings.AccessType)
+        switch (room.Room.Settings.AccessType)
         {
             case RoomAccessType.Password:
-                if (room.Settings.Password == password)
+                if (room.Room.Settings.Password == password)
                 {
                     return true;
                 }
@@ -134,7 +135,7 @@ public class RoomLoadedEventHandler(
                 {
                     await client.WriteToStreamAsync(new RoomDoorbellNoAnswerWriter
                     {
-                        Username = player.Username
+                        Username = player.Player.Username
                     });
                     
                     return false;
@@ -144,7 +145,7 @@ public class RoomLoadedEventHandler(
                 {
                     await user.NetworkObject.WriteToStreamAsync(new RoomDoorbellWriter
                     {
-                        Username = player.Username
+                        Username = player.Player.Username
                     });
                     
                 }

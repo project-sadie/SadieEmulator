@@ -1,10 +1,10 @@
-﻿using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Enums.Game.Players;
+﻿using Sadie.API.Interfaces.Game.Players.Friendships;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Events.Dtos;
 using Sadie.Networking.Writers.Players.Messenger;
-using Sadie.Shared.Attributes;
-using IPlayerFriendshipRequestData = Sadie.API.Game.Players.Friendships.IPlayerFriendshipRequestData;
 
 namespace Sadie.Networking.Events.Handlers.Players.Friendships;
 
@@ -20,13 +20,14 @@ public class PlayerFriendRequestsEventHandler : INetworkPacketEventHandler
         
         var friendRequests = client
             .Player
+            .Player
             .IncomingFriendships
             .Where(x => x.Status == PlayerFriendshipStatus.Pending)
             .ToList();
 
         var requests = new List<IPlayerFriendshipRequestData>();
         
-        foreach (var data in friendRequests.Select(request => request.TargetPlayerId == client.Player.Id ? 
+        foreach (var data in friendRequests.Select(request => request.TargetPlayerId == client.Player.Player.Id ? 
                      request.OriginPlayer : 
                      request.TargetPlayer))
         {

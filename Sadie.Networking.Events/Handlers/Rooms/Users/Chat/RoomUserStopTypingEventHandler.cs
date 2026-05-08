@@ -1,8 +1,8 @@
-﻿using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+﻿using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Users.Chat;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
@@ -18,9 +18,9 @@ public class RoomUserStopTypingEventHandler(IRoomRepository roomRepository) : IN
             return;
         }
 
-        await roomUser.Room.UserRepository.BroadcastDataAsync(new RoomUserTypingWriter
+        await roomUser.Room.BroadcastDataAsync(new RoomUserTypingWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             IsTyping = false
         });
     }

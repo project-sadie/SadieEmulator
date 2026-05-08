@@ -1,7 +1,8 @@
-﻿using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+﻿using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Purse;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -10,7 +11,7 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var playerData = client.Player.Data;
+        var playerData = client.Player.Player.Data;
         
         await client.WriteToStreamAsync(new PlayerCreditsBalanceWriter
         {
@@ -19,7 +20,10 @@ public class PlayerBalanceEventHandler : INetworkPacketEventHandler
         
         await client.WriteToStreamAsync(new PlayerActivityPointsBalanceWriter
         {
-            Currencies = NetworkPacketEventHelpers.GetPlayerCurrencyMapFromData(playerData)
+            Currencies = PlayerCurrencyMapper.FromBalances(
+                playerData.PixelBalance,
+                playerData.SeasonalBalance,
+                playerData.GotwPoints)
         });
     }
 }

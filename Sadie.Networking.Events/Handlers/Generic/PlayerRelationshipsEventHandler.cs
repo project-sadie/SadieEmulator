@@ -1,8 +1,8 @@
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Generic;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Generic;
 
@@ -14,10 +14,10 @@ public class PlayerRelationshipsEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        var player = await playerRepository.GetPlayerByIdAsync(PlayerId);
+        var player = playerRepository.GetPlayerLogicById(PlayerId);
 
         var relationships = player != null ? 
-                player.Relationships : 
+                player.Player.OriginRelationships : 
                 await playerRepository.GetRelationshipsForPlayerAsync(PlayerId);
 
         await client.WriteToStreamAsync(new PlayerRelationshipsWriter

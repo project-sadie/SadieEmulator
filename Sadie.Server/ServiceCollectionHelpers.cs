@@ -1,39 +1,62 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sadie.API.Game.Rooms.Chat.Commands;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Furniture.Processors;
+using Sadie.API.Interfaces.Game.Rooms.Chat.Commands;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Furniture.Processors;
+using Sadie.API.Interfaces.Plugins;
+using Serilog;
 
-namespace SadieEmulator;
+namespace Sadie.Server;
 
 public static class ServiceCollectionHelpers
 {
-    public static void RegisterRoomChatCommands(this IServiceCollection serviceCollection, Assembly[]  assemblies)
+    extension(IServiceCollection serviceCollection)
     {
-        serviceCollection.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
-            .As<IRoomChatCommand>()
-            .WithSingletonLifetime());
-    }
-    
-    public static void RegisterFurnitureInteractors(this IServiceCollection serviceCollection, Assembly[]  assemblies)
-    {
-        serviceCollection.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo<AbstractRoomFurnitureItemInteractor>())
-            .AsImplementedInterfaces()
-            .WithSingletonLifetime());
-    }
-    
-    public static void RegisterRoomFurnitureProcessors(this IServiceCollection serviceCollection, Assembly[]  assemblies)
-    {
-        serviceCollection.Scan(scan => scan
-            .FromAssemblies(assemblies)
-            .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemProcessor>())
-            .AsImplementedInterfaces()
-            .WithSingletonLifetime());
+        public void RegisterRoomChatCommands(Assembly[]  assemblies)
+        {
+            serviceCollection.Scan(scan => scan
+                .FromAssemblies(assemblies)
+                .AddClasses(classes => classes.AssignableTo<IRoomChatCommand>())
+                .As<IRoomChatCommand>()
+                .WithSingletonLifetime());
+        }
+
+        public void RegisterFurnitureInteractors(Assembly[]  assemblies)
+        {
+            serviceCollection.Scan(scan => scan
+                .FromAssemblies(assemblies)
+                .AddClasses(classes => classes.AssignableTo<AbstractRoomFurnitureItemInteractor>())
+                .AsImplementedInterfaces()
+                .WithSingletonLifetime());
+        }
+
+        public void RegisterRoomFurnitureProcessors(Assembly[]  assemblies)
+        {
+            serviceCollection.Scan(scan => scan
+                .FromAssemblies(assemblies)
+                .AddClasses(classes => classes.AssignableTo<IRoomFurnitureItemProcessor>())
+                .AsImplementedInterfaces()
+                .WithSingletonLifetime());
+        }
+
+        public void RegisterPluginServices(Assembly[]  assemblies)
+        {
+            var pluginServiceCollections =
+                assemblies
+                    .SelectMany(a => a.GetTypes())
+                    .Where(t =>
+                        typeof(IPluginServiceCollection).IsAssignableFrom(t) &&
+                        t is { IsClass: true, IsAbstract: false })
+                    .Select(t => Activator.CreateInstance(t) as IPluginServiceCollection)
+                    .Where(x => x is not null)!
+                    .ToList();
+
+            foreach (var pluginServiceCollection in pluginServiceCollections)
+            {
+                pluginServiceCollection?.Register(serviceCollection);
+            }
+        }
     }
 
     public static void LoadPlugins(IConfiguration config)
@@ -42,6 +65,7 @@ public static class ServiceCollectionHelpers
 
         if (string.IsNullOrEmpty(pluginFolder) || !Directory.Exists(pluginFolder))
         {
+            Log.Warning($"Plugin folder not found: {pluginFolder}");
             return;
         }
         

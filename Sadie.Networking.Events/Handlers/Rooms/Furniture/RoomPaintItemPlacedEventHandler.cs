@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms.Furniture;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Enums.Game.Rooms.Furniture;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -21,13 +21,13 @@ public class RoomPaintItemPlacedEventHandler(
     {
         if (client.Player == null || client.RoomUser == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
 
         if (!client.RoomUser.HasRights())
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.MissingRights);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.MissingRights);
             return;
         }
         
@@ -35,16 +35,16 @@ public class RoomPaintItemPlacedEventHandler(
         
         if (room == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
         
         var player = client.Player;
-        var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
+        var playerItem = player.Player.FurnitureItems.FirstOrDefault(x => x.Id == ItemId);
 
         if (playerItem == null)
         {
-            await NetworkPacketEventHelpers.SendFurniturePlacementErrorAsync(client, RoomFurniturePlacementError.CantSetItem);
+            await FurniturePlacementErrorSender.SendAsync(client, RoomFurniturePlacementError.CantSetItem);
             return;
         }
         
@@ -53,20 +53,20 @@ public class RoomPaintItemPlacedEventHandler(
         switch (playerItem.FurnitureItem.AssetName)
         {
             case "floor":
-                room.PaintSettings.FloorPaint = playerItem.MetaData;
-                dbContext.Entry(room.PaintSettings).Property(x => x.FloorPaint).IsModified = true;
+                room.Room.PaintSettings.FloorPaint = playerItem.MetaData;
+                dbContext.Entry(room.Room.PaintSettings).Property(x => x.FloorPaint).IsModified = true;
                 break;
             case "wallpaper":
-                room.PaintSettings.WallPaint = playerItem.MetaData;
-                dbContext.Entry(room.PaintSettings).Property(x => x.WallPaint).IsModified = true;
+                room.Room.PaintSettings.WallPaint = playerItem.MetaData;
+                dbContext.Entry(room.Room.PaintSettings).Property(x => x.WallPaint).IsModified = true;
                 break;
             case "landscape":
-                room.PaintSettings.LandscapePaint = playerItem.MetaData;
-                dbContext.Entry(room.PaintSettings).Property(x => x.LandscapePaint).IsModified = true;
+                room.Room.PaintSettings.LandscapePaint = playerItem.MetaData;
+                dbContext.Entry(room.Room.PaintSettings).Property(x => x.LandscapePaint).IsModified = true;
                 break;
         }
 
-        player.FurnitureItems.Remove(playerItem);
+        player.Player.FurnitureItems.Remove(playerItem);
         await dbContext.SaveChangesAsync();
         
         await client.WriteToStreamAsync(new PlayerInventoryRemoveItemWriter
@@ -74,7 +74,7 @@ public class RoomPaintItemPlacedEventHandler(
             ItemId = ItemId
         });
         
-        await room.UserRepository.BroadcastDataAsync(new RoomPaintWriter
+        await room.BroadcastDataAsync(new RoomPaintWriter
         {
             Type = playerItem.FurnitureItem.AssetName,
             Value = playerItem.MetaData

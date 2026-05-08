@@ -1,48 +1,25 @@
-﻿using System.Buffers.Binary;
-using Microsoft.Extensions.Options;
-using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
+using System.Buffers.Binary;
+using Sadie.API.Interfaces.Networking.Packets;
 
 namespace Sadie.Networking.Packets;
 
-public class NetworkPacketDecoder(IOptions<NetworkPacketOptions> options)
+public class NetworkPacketDecoder : INetworkPacketDecoder
 {
-    private readonly NetworkPacketOptions _packetSettings = options.Value;
-
-    public List<NetworkPacket> DecodePacketsFromBytes(byte[] packet)
+    public INetworkPacket Decode(Guid guid, byte[] buffer, int length)
     {
-        if (packet.Length < _packetSettings.FrameLengthByteCount || 
-            packet.Length > _packetSettings.BufferByteSize - _packetSettings.FrameLengthByteCount)
-        {
-            return new List<NetworkPacket>();
-        }
+        var span = buffer.AsSpan(0, length);
 
-        using var reader = new BinaryReader(new MemoryStream(packet));
-        var packetLength = BinaryPrimitives.ReadInt32BigEndian(reader.ReadBytes(4));
+        var offset = 0;
 
-        var packetData = reader.ReadBytes(packetLength);
+        _ = BinaryPrimitives.ReadInt32BigEndian(span.Slice(offset, 4));
+        offset += 4;
 
-        using var br2 = new BinaryReader(new MemoryStream(packetData));
-        var packetId = BinaryPrimitives.ReadInt16BigEndian(br2.ReadBytes(2));
+        var packetId = BinaryPrimitives.ReadInt16BigEndian(span.Slice(offset, 2));
+        offset += 2;
 
-        var content = new byte[packetData.Length - 2];
-        Buffer.BlockCopy(packetData, 2, content, 0, packetData.Length - 2);
+        var bodyOffset = offset;
+        var bodyLength = length - offset;
 
-        var packets = new List<NetworkPacket>();
-
-        if (reader.BaseStream.Length - 4 > packetLength)
-        {
-            var extra = new byte[reader.BaseStream.Length - reader.BaseStream.Position];
-            
-            Buffer.BlockCopy(packet,
-                (int)reader.BaseStream.Position,
-                extra,
-                0,
-                (int)(reader.BaseStream.Length - reader.BaseStream.Position));
-
-            packets.AddRange(DecodePacketsFromBytes(extra));
-        }
-
-        packets.Add(new NetworkPacket(packetId, content));
-        return packets;
+        return new NetworkPacket(packetId, buffer, bodyOffset, bodyLength);
     }
 }

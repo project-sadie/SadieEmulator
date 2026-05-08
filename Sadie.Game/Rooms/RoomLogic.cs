@@ -1,62 +1,44 @@
-﻿using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Bots;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.Db.Models.Players;
-using Sadie.Db.Models.Players.Furniture;
+﻿using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Bots;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking;
 using Sadie.Db.Models.Rooms;
-using Sadie.Db.Models.Rooms.Chat;
-using Sadie.Db.Models.Rooms.Rights;
-using Sadie.Game.Rooms.Mapping;
+using Sadie.Networking.Packets.Serialization;
 
 namespace Sadie.Game.Rooms;
 
-public class RoomLogic : Room, IRoomLogic
+public class RoomLogic(
+    RoomDto room,
+    IRoomTileMap tileMap,
+    IRoomPathFinder pathFinder,
+    IRoomUserRepository userRepository,
+    IRoomBotRepository botRepository)
+    : Room, IRoomLogic
 {
-    public RoomLogic(int id,
-        string name,
-        RoomLayout? layout,
-        RoomTileMap tileMap,
-        Player? owner,
-        string description,
-        int maxUsersAllowed,
-        bool isMuted,
-        IRoomUserRepository userRepository,
-        IRoomBotRepository botRepository,
-        ICollection<PlayerFurnitureItemPlacementData> furnitureItems,
-        RoomSettings? settings,
-        RoomChatSettings? chatSettings,
-        ICollection<RoomChatMessage> chatMessages,
-        ICollection<RoomPlayerRight> playerRights,
-        RoomPaintSettings? paintSettings,
-        ICollection<RoomTag> tags,
-        ICollection<PlayerRoomLike> playerLikes)
-    {
-        Id = id;
-        Name = name;
-        Layout = layout;
-        Owner = owner;
-        MaxUsersAllowed = maxUsersAllowed;
-        Description = description;
-        IsMuted = isMuted;
-        Settings = settings;
-        ChatSettings = chatSettings;
-        ChatMessages = chatMessages;
-        PaintSettings = paintSettings;
-        PlayerRights = playerRights;
-        Tags = tags;
-        PlayerLikes = playerLikes;
-        FurnitureItems = furnitureItems;
-        TileMap = tileMap;
-        UserRepository = userRepository;
-        BotRepository = botRepository;
-    }
+    public RoomDto Room { get; } = room;
+    public IRoomTileMap TileMap { get; } = tileMap;
+    public IRoomPathFinder PathFinder { get; } = pathFinder;
+    public IRoomUserRepository UserRepository { get; } = userRepository;
+    public IRoomBotRepository BotRepository { get; } = botRepository;
     
-    public IRoomTileMap TileMap { get; }
-    public IRoomUserRepository UserRepository { get; }
-    public IRoomBotRepository BotRepository { get; }
-
     public async ValueTask DisposeAsync()
     {
+    }
+    
+    public async Task BroadcastDataAsync(AbstractPacketWriter writer, IReadOnlyCollection<long>? excludedIds = null)
+    {
+        var packet = NetworkPacketWriterSerializer.Serialize(writer);
+        
+        var usersToBroadcastTo = excludedIds == null || excludedIds.Count == 0
+            ? UserRepository.GetAll()
+            : UserRepository.GetAll().Where(x => !excludedIds.Contains(x.Player.Player.Id));
+        
+        foreach (var user in usersToBroadcastTo)
+        {
+            await user.NetworkObject.WriteToStreamAsync(packet);
+        }
     }
 }

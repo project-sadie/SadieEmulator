@@ -1,9 +1,9 @@
 using System.Drawing;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Shared.Attributes;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -18,10 +18,10 @@ public class RoomTriggerDiceEventHandler(IRoomFurnitureItemInteractorRepository 
         var roomFurnitureItem = client
             .RoomUser
             .Room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
 
-        if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem!.MetaData == "-1")
+        if (roomFurnitureItem == null || roomFurnitureItem.PlayerFurnitureItem.MetaData == "-1")
         {
             return;
         }
@@ -34,7 +34,9 @@ public class RoomTriggerDiceEventHandler(IRoomFurnitureItemInteractorRepository 
         }
         
         var interactors = interactorRepository
-            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+            .GetInteractorsForType(roomFurnitureItem
+                .PlayerFurnitureItem
+                .FurnitureItem.InteractionType ?? "");
         
         foreach (var interactor in interactors)
         {

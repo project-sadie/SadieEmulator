@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -27,7 +27,7 @@ public class RoomItemUpdateObjectDataEventHandler(
         var roomFurnitureItem = client
             .RoomUser
             .Room
-            .FurnitureItems
+            .Room.FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
         
         if (roomFurnitureItem == null)
@@ -39,7 +39,7 @@ public class RoomItemUpdateObjectDataEventHandler(
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(client.RoomUser.Room, roomFurnitureItem, metaData);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem!).Property(x => x.MetaData).IsModified = true;
+        dbContext.Entry(roomFurnitureItem.PlayerFurnitureItem).Property(x => x.MetaData).IsModified = true;
         await dbContext.SaveChangesAsync();
     }
 }

@@ -1,45 +1,43 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Sadie.API.Game.Players;
+using Sadie.API.DTOs.Players;
+using Sadie.API.Interfaces.Game.Players;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
 using Sadie.Game.Players.Options;
 
 namespace Sadie.Game.Players;
 
 public class PlayerLoaderService(IDbContextFactory<SadieDbContext> dbContextFactory,
-    IOptions<PlayerOptions> playerOptions) : IPlayerLoaderService
+    IOptions<PlayerOptions> playerOptions,
+    IMapper mapper) : IPlayerLoaderService
 {
-    public async Task<PlayerSsoToken?> GetTokenAsync(string token, int delayMs)
+    public async Task<PlayerSsoTokenDto?> GetTokenAsync(string token, int delayMs)
     {
-        var expires = DateTime
-            .Now
+        var expires = DateTime.Now
             .Subtract(TimeSpan.FromMilliseconds(delayMs));
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        
-        var tokenRecord = await dbContext
-            .PlayerSsoToken
+
+        var entity = await dbContext.PlayerSsoToken
             .FirstOrDefaultAsync(x =>
                 x.Token == token &&
-                x.ExpiresAt > expires &&
+                x.ExpiresAt >= expires &&
                 x.UsedAt == null);
 
-        if (tokenRecord == null)
+        if (entity == null)
         {
-            return tokenRecord;
+            return null;
         }
 
         if (playerOptions.Value.CanReuseSsoTokens)
         {
-            return tokenRecord;
+            return mapper.Map<PlayerSsoTokenDto>(entity);
         }
-        
-        tokenRecord.UsedAt = DateTime.Now;
 
-        dbContext.Entry(tokenRecord).State = EntityState.Modified;
+        entity.UsedAt = DateTime.Now;
         await dbContext.SaveChangesAsync();
 
-        return tokenRecord;
+        return mapper.Map<PlayerSsoTokenDto>(entity);
     }
 }

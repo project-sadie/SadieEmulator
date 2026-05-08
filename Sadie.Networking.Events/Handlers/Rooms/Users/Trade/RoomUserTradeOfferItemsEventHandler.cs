@@ -1,8 +1,8 @@
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Shared.Attributes;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
@@ -13,7 +13,7 @@ public class RoomUserTradeOfferItemsEventHandler(IRoomRepository roomRepository)
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return;
         }
@@ -24,11 +24,11 @@ public class RoomUserTradeOfferItemsEventHandler(IRoomRepository roomRepository)
         }
 
         var player = client.Player;
-        var items = new List<PlayerFurnitureItem>();
+        var items = new List<PlayerFurnitureItemDto>();
         
         foreach (var id in Ids)
         {
-            var playerItem = player.FurnitureItems.FirstOrDefault(x => x.Id == id);
+            var playerItem = player.Player.FurnitureItems.FirstOrDefault(x => x.Id == id);
 
             if (playerItem == null)
             {
@@ -38,6 +38,6 @@ public class RoomUserTradeOfferItemsEventHandler(IRoomRepository roomRepository)
             items.Add(playerItem);
         }
 
-        roomUser.Trade.OfferItems(items);
+        await roomUser.Trade.OfferItemsAsync(items);
     }
 }

@@ -79,13 +79,9 @@ jobs:
         run: |
           mkdir -p ./publish/release/linux
           mkdir -p ./publish/release/windows
-          
-          # Move the Linux executable to the combined release folder
           if [ "${{ runner.os }}" == "Linux" ]; then
             mv ./publish/linux/Sadie.Console ./publish/release/linux/Sadie.Console
           fi
-
-          # Move the Windows executable to the combined release folder
           if [ "${{ runner.os }}" == "Windows" ]; then
             mv ./publish/windows/Sadie.Console.exe ./publish/release/windows/Sadie.Console.exe
           fi
@@ -94,15 +90,42 @@ jobs:
         id: check_tag
         run: |
           tag="v${{ steps.get_version.outputs.version }}"
-          echo "Checking if tag $tag exists"
           exists=$(curl -s --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/tags/$tag" | jq -r .message)
           if [[ "$exists" == "Not Found" ]]; then
-            echo "Tag does not exist, proceeding to create release"
             echo "tag_exists=false" >> $GITHUB_ENV
           else
-            echo "Tag exists, skipping release creation"
             echo "tag_exists=true" >> $GITHUB_ENV
           fi
+
+      - name: Pack Sadie.Core
+        run: |
+          dotnet pack ./Sadie.Core/Sadie.Core.csproj \
+            -c Release \
+            -p:PackageVersion=${{ steps.get_version.outputs.version }} \
+            -o ./nuget
+
+      - name: Pack Sadie.Networking.Writers
+        run: |
+          dotnet pack ./Sadie.Networking.Writers/Sadie.Networking.Writers.csproj \
+            -c Release \
+            -p:PackageVersion=${{ steps.get_version.outputs.version }} \
+            -o ./nuget
+
+      - name: Publish Sadie.Core to NuGet
+        if: env.tag_exists == 'false'
+        run: |
+          dotnet nuget push "./nuget/Sadie.Core.*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Publish Sadie.Networking.Writers to NuGet
+        if: env.tag_exists == 'false'
+        run: |
+          dotnet nuget push "./nuget/Sadie.Networking.Writers.*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
 
       - name: Create GitHub Release and Upload Executables
         if: env.tag_exists == 'false'
@@ -114,7 +137,6 @@ jobs:
           artifacts: |
             ./publish/release/linux/Sadie.Console
             ./publish/release/windows/Sadie.Console.exe
-
 
       - name: Send Discord Notification
         if: env.tag_exists == 'false'

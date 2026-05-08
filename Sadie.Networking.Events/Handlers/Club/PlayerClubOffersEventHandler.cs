@@ -1,16 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Sadie.API.DTOs.Catalog;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Catalog;
 using Sadie.Networking.Writers.Players.Other;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubData)]
 public class PlayerClubOffersEventHandler(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public int WindowId { get; set; }
     
@@ -25,7 +28,7 @@ public class PlayerClubOffersEventHandler(
         
         var clubSubscription = client
             .Player
-            .Subscriptions
+            .Player.Subscriptions
             .FirstOrDefault(x => x.Subscription.Name == "HABBO_CLUB");
 
         if (clubSubscription != null)
@@ -44,7 +47,7 @@ public class PlayerClubOffersEventHandler(
         
         await client.WriteToStreamAsync(new PlayerClubOffersWriter
         {
-            Offers = catalogClubOffers,
+            Offers = mapper.Map<IReadOnlyCollection<CatalogClubOfferDto>>(catalogClubOffers),
             WindowId = WindowId,
             Unused = false,
             CanGift = false,

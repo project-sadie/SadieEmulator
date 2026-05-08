@@ -1,7 +1,7 @@
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Players.Inventory;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Inventory;
 
@@ -10,10 +10,10 @@ public class PlayerInventoryBadgesEventHandler : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        var badges = client.Player.Badges
+        var badges = client.Player.Player.Badges
             .ToDictionary(x => x.Id, x => x.Badge?.Code ?? "");
         
-        var equippedBadges = client.Player.Badges
+        var equippedBadges = client.Player.Player.Badges
             .Where(x => x.Slot is > 0 and <= 5)
             .ToDictionary(x => x.Id, x => x.Badge?.Code ?? "");
         

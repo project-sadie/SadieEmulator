@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Rooms.Users.Trading;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Trade;
 
@@ -14,7 +14,7 @@ public class RoomUserTradeConfirmEventHandler(IRoomRepository roomRepository,
 {
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out _, out var roomUser))
         {
             return;
         }
@@ -28,7 +28,7 @@ public class RoomUserTradeConfirmEventHandler(IRoomRepository roomRepository,
         
         await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeStatusWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             Status = roomUser.TradeStatus
         });
 
@@ -36,7 +36,7 @@ public class RoomUserTradeConfirmEventHandler(IRoomRepository roomRepository,
         {
             await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeCloseWindowWriter());
             await roomUser.Trade.BroadcastToUsersAsync(new RoomUserTradeCompletedWriter());
-            await roomUser.Trade.SwapItemsAsync(dbContextFactory);
+            await roomUser.Trade.SwapItemsAsync();
             
             foreach (var user in roomUser.Trade.Users)
             {

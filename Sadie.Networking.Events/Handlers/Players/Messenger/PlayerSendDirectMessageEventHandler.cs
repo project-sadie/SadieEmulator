@@ -1,21 +1,24 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Players;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
+using Sadie.Core.Shared.Constants;
+using Sadie.Core.Shared.Extensions;
 using Sadie.Db;
 using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Players;
 using Sadie.Networking.Writers.Players.Messenger;
-using Sadie.Shared.Attributes;
-using Sadie.Shared.Constants;
-using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players.Messenger;
 
 [PacketId(EventHandlerId.PlayerSendDirectMessage)]
 public class PlayerSendDirectMessageEventHandler(
     IPlayerRepository playerRepository,
-    IDbContextFactory<SadieDbContext> dbContextFactory)
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper)
     : INetworkPacketEventHandler
 {
     public int PlayerId { get; set; }
@@ -58,10 +61,10 @@ public class PlayerSendDirectMessageEventHandler(
             return;
         }
 
-        var playerMessage = new PlayerMessage
+        var playerMessage = new PlayerMessageDto
         {
-            OriginPlayerId = client.Player.Id,
-            TargetPlayerId = targetPlayer.Id,
+            OriginPlayerId = client.Player.Player.Id,
+            TargetPlayerId = targetPlayer.Player.Id,
             Message = message,
             CreatedAt = DateTime.Now
         };
@@ -70,9 +73,11 @@ public class PlayerSendDirectMessageEventHandler(
         {
             Message = playerMessage
         });
+
+        var entity = mapper.Map<PlayerMessage>(playerMessage);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.PlayerMessages.Add(playerMessage);
+        dbContext.PlayerMessages.Add(entity);
         await dbContext.SaveChangesAsync();
     }
 }

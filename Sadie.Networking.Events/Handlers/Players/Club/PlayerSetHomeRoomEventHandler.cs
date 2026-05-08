@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Players.Rooms;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players.Club;
 
@@ -16,7 +16,7 @@ public class PlayerSetHomeRoomEventHandler(
     public async Task HandleAsync(INetworkClient client)
     {
         if (client.Player?.NetworkObject == null ||
-            client.Player.Data.HomeRoomId == RoomId)
+            client.Player.Player.Data.HomeRoomId == RoomId)
         {
             return;
         }
@@ -27,12 +27,12 @@ public class PlayerSetHomeRoomEventHandler(
             RoomIdToEnter = 0
         });
         
-        client.Player.Data.HomeRoomId = RoomId;
+        client.Player.Player.Data.HomeRoomId = RoomId;
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         
         dbContext
-            .Entry(client.Player.Data)
+            .Entry(client.Player.Player.Data)
             .Property(x => x.HomeRoomId)
             .IsModified = true;
         

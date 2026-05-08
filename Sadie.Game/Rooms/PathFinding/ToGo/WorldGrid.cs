@@ -1,3 +1,4 @@
+using Sadie.API.Interfaces.Game.Rooms.Pathfinding.ToGo;
 using Sadie.Game.Rooms.PathFinding.ToGo.Collections.MultiDimensional;
 
 namespace Sadie.Game.Rooms.PathFinding.ToGo;
@@ -5,7 +6,7 @@ namespace Sadie.Game.Rooms.PathFinding.ToGo;
 /// <summary>
 /// A world grid consisting of integers where a closed cell is represented by 0
 /// </summary>
-public class WorldGrid : Grid<short>
+public class WorldGrid : Grid<short>, IWorldGrid
 {
     /// <summary>
     /// Creates a new world with values set from the provided 2d array.

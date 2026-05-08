@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
+using Sadie.Core.Shared.Extensions;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Attributes;
-using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -20,27 +20,29 @@ public class PlayerChangedMottoEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (client.Player?.AvatarData == null)
+        if (client.Player?.Player.AvatarData == null)
         {
             return;
         }
         
         var player = client.Player!;
         var newMotto = Motto.Truncate(constants.MaxMottoLength);
-
-        player.AvatarData.Motto = newMotto;
         
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
         
-        await room.UserRepository.BroadcastDataAsync(new RoomUserDataWriter{
+        await room.BroadcastDataAsync(new RoomUserDataWriter{
             Users = [roomUser]
         });
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-        dbContext.Entry(player.AvatarData).Property(x => x.Motto).IsModified = true;
-        await dbContext.SaveChangesAsync();
+        
+        await dbContext.PlayerAvatarData
+            .Where(x => x.PlayerId == player.Player.Id)
+            .ExecuteUpdateAsync(x => x.SetProperty(p => p.Motto, newMotto));
+
+        player.Player.AvatarData.Motto = newMotto;
     }
 }

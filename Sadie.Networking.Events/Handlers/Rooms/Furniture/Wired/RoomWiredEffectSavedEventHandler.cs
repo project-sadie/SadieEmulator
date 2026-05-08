@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
 using Sadie.Networking.Events.Attributes;
 using Sadie.Networking.Writers.Rooms.Furniture;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture.Wired;
 
@@ -27,7 +27,9 @@ public class RoomWiredEffectSavedEventHandler(
     {
         var room = client.RoomUser?.Room;
 
-        var roomItem = room?.FurnitureItems
+        var roomItem = room?
+            .Room
+            .FurnitureItems
             .FirstOrDefault(x => x.Id == ItemId);
 
         if (roomItem == null)
@@ -36,14 +38,14 @@ public class RoomWiredEffectSavedEventHandler(
         }
 
         var selectedItems = room!
+            .Room
             .FurnitureItems
             .Where(x => ItemIds.Contains(x.Id))
             .ToList();
 
         await wiredService.SaveSettingsAsync(
             roomItem,
-            dbContextFactory,
-            new PlayerFurnitureItemWiredData
+            new PlayerFurnitureItemWiredDataDto
             {
                 PlayerFurnitureItemPlacementDataId = roomItem.Id,
                 PlacementData = roomItem,

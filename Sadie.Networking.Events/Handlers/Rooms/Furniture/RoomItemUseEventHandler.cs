@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Events.Attributes;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Furniture;
 
@@ -22,7 +22,7 @@ public class RoomItemUseEventHandler(
         var room = client.RoomUser!.Room;
 
         var roomFurnitureItem = room
-                .FurnitureItems
+                .Room.FurnitureItems
                 .FirstOrDefault(x => x.PlayerFurnitureItemId == ItemId);
 
         if (roomFurnitureItem == null)
@@ -31,11 +31,14 @@ public class RoomItemUseEventHandler(
         }
         
         var interactors = interactorRepository
-            .GetInteractorsForType(roomFurnitureItem.FurnitureItem.InteractionType);
+            .GetInteractorsForType(roomFurnitureItem
+                .PlayerFurnitureItem
+                .FurnitureItem.InteractionType ?? "");
 
         if (!interactors.Any())
         {
-            await roomFurnitureItemHelperService.CycleInteractionStateForItemAsync(room, roomFurnitureItem, dbContextFactory);
+            await roomFurnitureItemHelperService.CycleInteractionStateForItemAsync(
+                room, roomFurnitureItem);
         }
         else
         {

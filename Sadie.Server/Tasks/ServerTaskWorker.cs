@@ -1,46 +1,80 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Sadie.API.Interfaces.Server.Tasks;
 
-namespace SadieEmulator.Tasks;
+namespace Sadie.Server.Tasks;
 
 public class ServerTaskWorker(
-    ILogger<ServerTaskWorker> logger, 
-    IEnumerable<IServerTask> tasks) : IServerTaskWorker
+    ILogger<ServerTaskWorker> logger,
+    IEnumerable<IServerTask> tasks)
+    : IServerTaskWorker
 {
-    public async Task WorkAsync(CancellationToken token)
+    private readonly List<IServerTask> _tasks = tasks.ToList();
+    private readonly List<Task> _runningTasks = [];
+    private CancellationTokenSource? _cts;
+
+    public Task WorkAsync(CancellationToken token)
+    {
+        _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+
+        foreach (var running in _tasks.Select(task => RunPeriodicTaskAsync(task, _cts.Token)))
+        {
+            _runningTasks.Add(running);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private async Task RunPeriodicTaskAsync(IServerTask task, CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            foreach (var task in tasks.Where(task => task.WaitingToExecute()))
+            try
             {
-                task.LastExecuted = DateTime.Now;
-                ProcessTaskAsync(task);
+                var now = DateTime.UtcNow;
+                var last = new DateTime(task.LastExecutedTicks);
+
+                if (now - last >= task.PeriodicInterval)
+                {
+                    var sw = Stopwatch.StartNew();
+
+                    await task.ExecuteAsync();
+                    task.LastExecutedTicks = DateTime.UtcNow.Ticks;
+
+                    sw.Stop();
+
+                    if (sw.Elapsed > task.PeriodicInterval)
+                    {
+                        logger.LogWarning(
+                            "Task '{Task}' exceeded its interval: {Duration}ms",
+                            task.GetType().Name,
+                            sw.ElapsedMilliseconds
+                        );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex,
+                    "Unhandled exception in server task '{TaskName}'",
+                    task.GetType().Name);
             }
 
-            await Task.Delay(50, token);
-        }
-    }
-
-    private async Task ProcessTaskAsync(IServerTask task)
-    {
-        try
-        {
-            var stopwatch = Stopwatch.StartNew();
-            await task.ExecuteAsync();
-            stopwatch.Stop();
-
-            if (stopwatch.ElapsedMilliseconds >= task.PeriodicInterval.TotalMilliseconds / 2)
+            try
             {
-                logger.LogWarning($"Task '{task.GetType().Name}' took {stopwatch.ElapsedMilliseconds}ms to run.");
+                await Task.Delay(50, token);
             }
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e.ToString());
+            catch (TaskCanceledException)
+            {
+                return;
+            }
         }
     }
 
     public void Dispose()
     {
+        _cts?.Cancel();
+        Task.WhenAll(_runningTasks).GetAwaiter().GetResult();
+        _cts?.Dispose();
     }
 }

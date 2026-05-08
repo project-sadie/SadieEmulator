@@ -3,46 +3,34 @@ using System.Text;
 
 namespace Sadie.Networking.Packets;
 
-public class NetworkPacketReader : INetworkPacketReader
+public ref struct NetworkPacketReader(ReadOnlySpan<byte> span)
 {
-    private readonly byte[] _packetData;
-    private int _packetPosition;
+    private readonly ReadOnlySpan<byte> _span = span;
+    private int _position = 0;
 
-    public NetworkPacketReader(byte[] packetData)
-    {
-        _packetData = packetData;
-    }
+    public int ReadInt()
+        => BinaryPrimitives.ReadInt32BigEndian(Read(4));
+
+    public long ReadLong()
+        => BinaryPrimitives.ReadInt64BigEndian(Read(8));
+
+    private short ReadShort()
+        => BinaryPrimitives.ReadInt16BigEndian(Read(2));
+
+    public bool ReadBool()
+        => _span[_position++] == 1;
 
     public string ReadString()
     {
-        int packetLength = BinaryPrimitives.ReadInt16BigEndian(ReadBytes(2));
-        return Encoding.Default.GetString(ReadBytes(packetLength));
+        int len = ReadShort();
+        var slice = Read(len);
+        return Encoding.UTF8.GetString(slice);
     }
 
-    public int ReadInt()
+    private ReadOnlySpan<byte> Read(int count)
     {
-        return BinaryPrimitives.ReadInt32BigEndian(ReadBytes(4));
-    }
-
-    public bool ReadBool()
-    {
-        return _packetData[_packetPosition++] == 1;
-    }
-
-    private byte[] ReadBytes(int bytes)
-    {
-        var data = new byte[bytes];
-
-        for (var i = 0; i < bytes; i++)
-        {
-            data[i] = _packetData[_packetPosition++];
-        }
-
-        return data;
-    }
-
-    public long ReadLong()
-    {
-        return BinaryPrimitives.ReadInt64BigEndian(ReadBytes(4));
+        var slice = _span.Slice(_position, count);
+        _position += count;
+        return slice;
     }
 }

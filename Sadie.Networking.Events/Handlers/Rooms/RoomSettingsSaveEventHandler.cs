@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms;
+using Sadie.Core.Shared.Attributes;
+using Sadie.Core.Shared.Extensions;
 using Sadie.Db;
 using Sadie.Db.Models.Constants;
-using Sadie.Db.Models.Rooms;
-using Sadie.Enums.Game.Rooms;
 using Sadie.Networking.Writers.Rooms;
-using Sadie.Shared.Attributes;
-using Sadie.Shared.Extensions;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
@@ -51,7 +51,7 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
 
-        if (room.OwnerId != client.Player!.Id)
+        if (room.Room.OwnerId != client.Player!.Player.Id)
         {
             return;
         }
@@ -60,7 +60,7 @@ public class RoomSettingsSaveEventHandler(
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 ErrorCode = (int)RoomSettingsError.TagTooLong,
                 Message = ""
             });
@@ -71,7 +71,7 @@ public class RoomSettingsSaveEventHandler(
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 ErrorCode = (int)RoomSettingsError.NameRequired,
                 Message = ""
             });
@@ -82,7 +82,7 @@ public class RoomSettingsSaveEventHandler(
         {
             await client.WriteToStreamAsync(new RoomSettingsErrorWriter
             {
-                RoomId = room.Id,
+                RoomId = room.Room.Id,
                 ErrorCode = (int) RoomSettingsError.PasswordRequired,
                 Message = ""
             });
@@ -90,25 +90,25 @@ public class RoomSettingsSaveEventHandler(
             return;
         }
 
-        room.Name = Name.Truncate(roomConstants.MaxNameLength);
-        room.Description = Description.Truncate(roomConstants.MaxDescriptionLength);
-        room.MaxUsersAllowed = MaxUsers;
+        room.Room.Name = Name.Truncate(roomConstants.MaxNameLength);
+        room.Room.Description = Description.Truncate(roomConstants.MaxDescriptionLength);
+        room.Room.MaxUsersAllowed = MaxUsers;
 
         foreach (var tag in Tags)
         {
-            room.Tags.Add(new RoomTag
+            room.Room.Tags.Add(new RoomTagDto
             {
                 Name = tag
             });
         }
         
-        UpdateSettings(room.Settings);
-        UpdateChatSettings(room.ChatSettings);
+        UpdateSettings(room.Room.Settings);
+        UpdateChatSettings(room.Room.ChatSettings);
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(room).State = EntityState.Modified;
-        dbContext.Entry(room.Settings).State = EntityState.Modified;
-        dbContext.Entry(room.ChatSettings).State = EntityState.Modified;
+        dbContext.Entry(room.Room.Settings).State = EntityState.Modified;
+        dbContext.Entry(room.Room.ChatSettings).State = EntityState.Modified;
         
         await dbContext.SaveChangesAsync();
         await BroadcastUpdatesAsync(room);
@@ -119,7 +119,7 @@ public class RoomSettingsSaveEventHandler(
         });
     }
 
-    private void UpdateSettings(RoomSettings settings)
+    private void UpdateSettings(RoomSettingsDto settings)
     {
         settings.AccessType = (RoomAccessType) AccessType;
         settings.Password = Password;
@@ -135,7 +135,7 @@ public class RoomSettingsSaveEventHandler(
         settings.WhoCanBan = WhoCanBan;
     }
 
-    private void UpdateChatSettings(RoomChatSettings chatSettings)
+    private void UpdateChatSettings(RoomChatSettingsDto chatSettings)
     {
         chatSettings.ChatType = ChatType;
         chatSettings.ChatWeight = ChatWeight;
@@ -145,8 +145,8 @@ public class RoomSettingsSaveEventHandler(
     }
     private async Task BroadcastUpdatesAsync(IRoomLogic room)
     {
-        var settings = room.Settings;
-        var chatSettings = room.ChatSettings;
+        var settings = room.Room.Settings;
+        var chatSettings = room.Room.ChatSettings;
         
         var floorSettingsWriter = new RoomWallFloorSettingsWriter
         {
@@ -169,8 +169,8 @@ public class RoomSettingsSaveEventHandler(
             RoomId = RoomId
         };
 
-        await room.UserRepository.BroadcastDataAsync(floorSettingsWriter);
-        await room.UserRepository.BroadcastDataAsync(settingsWriter);
-        await room.UserRepository.BroadcastDataAsync(settingsUpdatedWriter);
+        await room.BroadcastDataAsync(floorSettingsWriter);
+        await room.BroadcastDataAsync(settingsWriter);
+        await room.BroadcastDataAsync(settingsUpdatedWriter);
     }
 }

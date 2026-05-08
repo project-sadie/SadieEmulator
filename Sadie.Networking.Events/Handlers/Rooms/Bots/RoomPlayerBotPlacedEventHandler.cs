@@ -1,14 +1,14 @@
 using System.Drawing;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Bots;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Bots;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Players.Inventory;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Bots;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Bots;
 
@@ -24,7 +24,7 @@ public class RoomPlayerBotPlacedEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository,
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository,
                 client,
                 out var room,
                 out var roomUser))
@@ -34,7 +34,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         var bot = client
             .Player!
-            .Bots
+            .Player.Bots
             .FirstOrDefault(x => x.Id == Id);
 
         if (bot == null)
@@ -42,14 +42,14 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        if (room.OwnerId != roomUser.Player.Id)
+        if (room.Room.OwnerId != roomUser.Player.Player.Id)
         {
             return;
         }
 
         var placePoint = new Point(X, Y);
         
-        if (room.TileMap.UsersAtPoint(placePoint) && !room.Settings.CanUsersOverlap)
+        if (room.TileMap.UsersAtPoint(placePoint) && !room.Room.Settings.CanUsersOverlap)
         {
             await client.WriteToStreamAsync(new RoomBotErrorWriter
             {
@@ -61,7 +61,7 @@ public class RoomPlayerBotPlacedEventHandler(
 
         var roomBot = roomBotFactory.Create(
             room, 
-            room.MaxUsersAllowed + bot.Id, 
+            room.Room.MaxUsersAllowed + bot.Id, 
             new Point(X, Y), 
             room.TileMap.ZMap[Y, X]);
 
@@ -70,7 +70,7 @@ public class RoomPlayerBotPlacedEventHandler(
             return;
         }
 
-        bot.RoomId = room.Id;
+        bot.RoomId = room.Room.Id;
 
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
         dbContext.Entry(bot).Property(x => x.RoomId).IsModified = true;
@@ -78,12 +78,12 @@ public class RoomPlayerBotPlacedEventHandler(
 
         room.TileMap.AddUnitToMap(new Point(X, Y), roomBot);
         
-        await room.UserRepository.BroadcastDataAsync(new RoomBotDataWriter
+        await room.BroadcastDataAsync(new RoomBotDataWriter
         {
             Bots = [roomBot]
         });
 
-        await room.UserRepository.BroadcastDataAsync(new RoomBotStatusWriter
+        await room.BroadcastDataAsync(new RoomBotStatusWriter
         {
             Bots = [roomBot]
         });

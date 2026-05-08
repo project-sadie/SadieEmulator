@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Networking.Client;
+using Sadie.Networking.Packets;
 using Sadie.Networking.Validators;
 using NetworkOptions = Sadie.Networking.Options.NetworkOptions;
 using NetworkPacketOptions = Sadie.Networking.Options.NetworkPacketOptions;
@@ -19,12 +20,18 @@ public static class NetworkServiceCollection
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
 
         serviceCollection.AddTransient<INetworkClient, NetworkClient>();
-        serviceCollection.AddSingleton<INetworkListener, NetworkListener>();
+        serviceCollection.AddHostedService<NetworkListener>();
         
         serviceCollection.Configure<NetworkOptions>(options => config.GetSection("NetworkOptions").Bind(options));
         serviceCollection.Configure<NetworkPacketOptions>(options => config.GetSection("NetworkOptions:PacketOptions").Bind(options));
 
         serviceCollection.AddSingleton<IValidateOptions<NetworkOptions>, NetworkOptionsValidator>();
         serviceCollection.AddSingleton<IValidateOptions<NetworkPacketOptions>, NetworkPacketOptionsValidator>();
+        
+        serviceCollection.AddSingleton<PacketHandlerFactory>(sp =>
+        {
+            var handlerTypes = sp.GetRequiredService<Dictionary<short, Type>>();
+            return new PacketHandlerFactory(sp, handlerTypes);
+        });
     }
 }

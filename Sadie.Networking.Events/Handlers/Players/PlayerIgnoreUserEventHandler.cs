@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Players;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
-using Sadie.Db.Models.Players;
-using Sadie.Enums.Game.Players;
 using Sadie.Networking.Writers.Players;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Players;
 
@@ -28,24 +28,24 @@ public class PlayerIgnoreUserEventHandler(IPlayerRepository playerRepository,
         var targetPlayer = playerRepository.GetPlayerLogicByUsername(Username);
         
         if (targetPlayer == null || 
-            player.Ignores.Any(x => x.TargetPlayerId == targetPlayer.Id))
+            player.Player.OutgoingIgnores.Any(x => x.TargetPlayerId == targetPlayer.Player.Id))
         {
             return;
         }
 
-        var ignore = new PlayerIgnore
+        var ignore = new PlayerIgnoreDto
         {
-            PlayerId = player.Id,
-            TargetPlayerId = targetPlayer.Id
+            PlayerId = player.Player.Id,
+            TargetPlayerId = targetPlayer.Player.Id
         };
 
-        player.Ignores.Add(ignore);
+        player.Player.OutgoingIgnores.Add(ignore);
 
         await player.NetworkObject.WriteToStreamAsync(
             new PlayerIgnoreStateWriter
             {
                 State = (int) PlayerIgnoreState.Ignored,
-                Username = targetPlayer.Username,
+                Username = targetPlayer.Player.Username
             });
         
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();

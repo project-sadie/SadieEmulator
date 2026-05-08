@@ -1,22 +1,24 @@
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Game.Rooms.Furniture;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Rooms.Furniture;
-using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Rooms.Users;
 
 namespace Sadie.Game.Rooms.Services;
 
-public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelperService) : IRoomWiredService
+public class RoomWiredService(
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IRoomFurnitureItemHelperService furnitureItemHelperService) : IRoomWiredService
 {
-    public IEnumerable<PlayerFurnitureItemPlacementData> GetTriggers(
+    public IEnumerable<PlayerFurnitureItemPlacementDataDto> GetTriggers(
         string interactionType,
-        IEnumerable<PlayerFurnitureItemPlacementData> roomItems,
+        IEnumerable<PlayerFurnitureItemPlacementDataDto> roomItems,
         string requiredMessage = "",
         List<int>? requiredSelectedIds = null)
     {
@@ -30,12 +32,12 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
     }
     
     public async Task RunTriggerForRoomAsync(IRoomLogic room,
-        PlayerFurnitureItemPlacementData trigger,
+        PlayerFurnitureItemPlacementDataDto trigger,
         IRoomUser userWhoTriggered)
     {
-        CycleInteractionStateAsync(room, trigger);
+        _ = CycleInteractionStateAsync(room, trigger);
         
-        var effectsOnTrigger = GetEffectsForTrigger(trigger, room.FurnitureItems);
+        var effectsOnTrigger = GetEffectsForTrigger(trigger, room.Room.FurnitureItems);
 
         foreach (var effect in effectsOnTrigger)
         {
@@ -43,9 +45,9 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         }
     }
     
-    public IEnumerable<PlayerFurnitureItemPlacementData> GetEffectsForTrigger(
-        PlayerFurnitureItemPlacementData trigger,
-        IEnumerable<PlayerFurnitureItemPlacementData> roomItems)
+    public IEnumerable<PlayerFurnitureItemPlacementDataDto> GetEffectsForTrigger(
+        PlayerFurnitureItemPlacementDataDto trigger,
+        IEnumerable<PlayerFurnitureItemPlacementDataDto> roomItems)
     {
         var stack = roomItems
             .Where(x =>
@@ -56,10 +58,13 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         
         foreach (var playerFurnitureItemPlacementData in stack)
         {
-            if (!playerFurnitureItemPlacementData
-                    .FurnitureItem
-                    .InteractionType
-                    .Contains("_act_"))
+            var interactionType = playerFurnitureItemPlacementData
+                .PlayerFurnitureItem
+                .FurnitureItem
+                .InteractionType;
+            
+            if (!string.IsNullOrEmpty(interactionType) && 
+                !interactionType.Contains("_act_"))
             {
                 break;
             }
@@ -70,7 +75,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
     
     private async Task RunEffectForRoomAsync(
         IRoomLogic room,
-        PlayerFurnitureItemPlacementData effect,
+        PlayerFurnitureItemPlacementDataDto effect,
         IRoomUser userWhoTriggered)
     {
         if (effect.WiredData == null)
@@ -78,12 +83,12 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             return;
         }
         
-        switch (effect.FurnitureItem.InteractionType)
+        switch (effect.PlayerFurnitureItem.FurnitureItem.InteractionType)
         {
             case FurnitureItemInteractionType.WiredEffectShowMessage:
                 await userWhoTriggered.NetworkObject.WriteToStreamAsync(new RoomUserWhisperWriter
                 {
-                    SenderId = userWhoTriggered.Player.Id,
+                    SenderId = userWhoTriggered.Player.Player.Id,
                     Message = effect.WiredData.Message,
                     EmotionId = 0,
                     ChatBubbleId = (int)ChatBubble.Alert,
@@ -94,13 +99,13 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
             case FurnitureItemInteractionType.WiredEffectKickUser:
                 foreach (var user in room.UserRepository.GetAll())
                 {
-                    await user.Room.UserRepository.TryRemoveAsync(user.Player.Id, true, true);
+                    await user.Room.UserRepository.TryRemoveAsync(user.Player.Player.Id, true, true);
                     await user.Player.SendAlertAsync(effect.WiredData.Message);
                 }
                 break;
         }
         
-        CycleInteractionStateAsync(room, effect);
+        _ = CycleInteractionStateAsync(room, effect);
     }
     
     public int GetWiredCode(string interactionType)
@@ -119,9 +124,8 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
     }
 
     public async Task SaveSettingsAsync(
-        PlayerFurnitureItemPlacementData placementData,
-        IDbContextFactory<SadieDbContext> dbContextFactory,
-        PlayerFurnitureItemWiredData wiredData)
+        PlayerFurnitureItemPlacementDataDto placementData,
+        PlayerFurnitureItemWiredDataDto wiredData)
     {
         var existingData = placementData.WiredData;
         
@@ -141,7 +145,7 @@ public class RoomWiredService(IRoomFurnitureItemHelperService furnitureItemHelpe
         await dbContext.SaveChangesAsync();
     }
 
-    private async Task CycleInteractionStateAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item)
+    private async Task CycleInteractionStateAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item)
     {
         await furnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "1");
         await Task.Delay(500);

@@ -1,7 +1,7 @@
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Enums.Miscellaneous;
-using Sadie.Shared.Attributes;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Miscellaneous;
+using Sadie.Core.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
@@ -12,6 +12,6 @@ public class RoomUserChangeChatBubbleEventHandler : INetworkPacketEventHandler
     
     public async Task HandleAsync(INetworkClient client)
     {
-        client.Player.AvatarData.ChatBubbleId = (ChatBubble) Bubble;
+        client.Player.Player.AvatarData.ChatBubbleId = (ChatBubble) Bubble;
     }
 }

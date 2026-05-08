@@ -1,13 +1,13 @@
 using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Users;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.Core.Enums.Game.Furniture;
 using Sadie.Db;
-using Sadie.Db.Models.Players.Furniture;
-using Sadie.Enums.Game.Furniture;
 using Sadie.Networking.Events;
 using Sadie.Networking.Writers.Rooms.Users;
 
@@ -24,7 +24,7 @@ public class TeleportInteractor(
 
     private readonly TimeSpan _delay = TimeSpan.FromMilliseconds(500);
     
-    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementData item, IRoomUser roomUser)
+    public override async Task OnTriggerAsync(IRoomLogic room, PlayerFurnitureItemPlacementDataDto item, IRoomUser roomUser)
     {
         var itemPosition = new Point(item.PositionX, item.PositionY);
         var itemInFront = tileMapHelperService.GetPointInFront(item.PositionX, item.PositionY, item.Direction);
@@ -33,10 +33,11 @@ public class TeleportInteractor(
         {
             roomUser.CanWalk = false;
             
-            var facingDirection = tileMapHelperService.GetOppositeDirection((int) item.Direction);
+            var facingDirection = tileMapHelperService.GetOppositeDirection(item.Direction);
         
             roomUser.Direction = facingDirection;
             roomUser.DirectionHead = facingDirection;
+            roomUser.NeedsUpdate = true;
 
             await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "1");
             await UseTeleportAsync(room, item, roomUser);
@@ -53,7 +54,7 @@ public class TeleportInteractor(
             {
                 roomUser.OverridePoints.Remove(itemPosition);
 
-                if (item.FurnitureItem.InteractionModes == 1)
+                if (item.PlayerFurnitureItem.FurnitureItem.InteractionModes == 1)
                 {
                     await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, item, "2");
                     await Task.Delay(_delay);
@@ -77,7 +78,7 @@ public class TeleportInteractor(
 
     private async Task UseTeleportAsync(
         IRoomLogic room,
-        PlayerFurnitureItemPlacementData item,
+        PlayerFurnitureItemPlacementDataDto item,
         IRoomUser roomUser)
     {
         await using var dbContext = await dbContextFactory.CreateDbContextAsync();
@@ -95,6 +96,7 @@ public class TeleportInteractor(
         var targetItemId = link.ParentId == item.PlayerFurnitureItemId ? link.ChildId : link.ParentId;
         
         var targetRoomItem = room
+            .Room
             .FurnitureItems
             .FirstOrDefault(x => x.PlayerFurnitureItemId == targetItemId);
         
@@ -116,7 +118,7 @@ public class TeleportInteractor(
 
     private async Task UseTeleportInDifferentRoomAsync(
         IRoomUser roomUser, 
-        PlayerFurnitureItemPlacementData item,
+        PlayerFurnitureItemPlacementDataDto item,
         long targetItemId,
         IRoomLogic room)
     {
@@ -135,7 +137,7 @@ public class TeleportInteractor(
                 dbContextFactory,
                 mapper);
 
-            var targetItem = targetRoom?.FurnitureItems
+            var targetItem = targetRoom?.Room.FurnitureItems
                 .FirstOrDefault(x => x.PlayerFurnitureItemId == targetItemId);
 
             if (targetItem != null)
@@ -158,11 +160,11 @@ public class TeleportInteractor(
 
     private async Task UseTeleportInSameRoomAsync(
         IRoomUser roomUser,
-        PlayerFurnitureItemPlacementData item,
-        PlayerFurnitureItemPlacementData targetItem,
+        PlayerFurnitureItemPlacementDataDto item,
+        PlayerFurnitureItemPlacementDataDto targetItem,
         IRoomLogic room)
     {
-        if (item.FurnitureItem.InteractionModes == 1)
+        if (item.PlayerFurnitureItem.FurnitureItem.InteractionModes == 1)
         {
             await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, targetItem, "2");
             await Task.Delay(_delay);
@@ -177,6 +179,7 @@ public class TeleportInteractor(
         
         roomUser.Direction = targetItem.Direction;
         roomUser.DirectionHead = targetItem.Direction;
+        roomUser.NeedsUpdate = true;
             
         await roomFurnitureItemHelperService.UpdateMetaDataForItemAsync(room, targetItem, "1");
         

@@ -1,21 +1,26 @@
-﻿using Sadie.API;
-using Sadie.API.Db.Models.Rooms;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Enums.Game.Furniture;
+﻿using AutoMapper;
+using Sadie.API;
+using Sadie.API.DTOs.Players.Furniture;
+using Sadie.API.DTOs.Rooms;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms;
 using Sadie.Networking.Writers.Rooms.Bots;
 using Sadie.Networking.Writers.Rooms.Furniture;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms;
 
 [PacketId(EventHandlerId.RoomHeightmap)]
 public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
-    IRoomFurnitureItemHelperService roomFurnitureItemHelperService) : INetworkPacketEventHandler
+    IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
+    IMapper mapper,
+    IPlayerRepository playerRepository) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -28,7 +33,7 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
 
         var roomTileMap = room.TileMap;
         var userRepository = room.UserRepository;
-        var isOwner = room.OwnerId == client.Player.Id;
+        var isOwner = room.Room.OwnerId == client.Player.Player.Id;
         
         await client.WriteToStreamAsync(new RoomRelativeMapWriter
         {
@@ -39,14 +44,14 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
         {
             Scale = true,
             WallHeight = -1,
-            RelativeHeightmap = room.Layout.Heightmap.Replace("\r\n", "\r")
+            RelativeHeightmap = room.Room.Layout.Heightmap.Replace("\r\n", "\r")
         });
         
         await client.WriteToStreamAsync(new RoomWallFloorSettingsWriter
         {
-            HideWalls = room.Settings.HideWalls,
-            WallThickness = room.Settings.WallThickness,
-            FloorThickness = room.Settings.FloorThickness
+            HideWalls = room.Room.Settings.HideWalls,
+            WallThickness = room.Room.Settings.WallThickness,
+            FloorThickness = room.Room.Settings.FloorThickness
         });
         
         if (room.BotRepository.Count > 0)
@@ -62,50 +67,78 @@ public class RoomHeightmapEventHandler(IRoomRepository roomRepository,
             });
         }
 
-        await SendFurnitureItemsAsync(room, client);
-        
-        await userRepository.BroadcastDataAsync(new RoomForwardDataWriter
+        await SendFurnitureItemsAsync(room.Room, client, playerRepository);
+
+        try
         {
-            Room = room,
-            RoomForward = false,
-            EnterRoom = true,
-            IsOwner = isOwner
-        });
+            await client.WriteToStreamAsync(new RoomForwardDataWriter
+            {
+                Room = room.Room,
+                RoomForward = false,
+                EnterRoom = true,
+                IsOwner = isOwner,
+                UsersNow = room.UserRepository.Count,
+                PlayerRepository = playerRepository
+            });
+        }
+        catch (NullReferenceException)
+        {
+            var y = 0;
+        }
     }
 
     private async Task SendFurnitureItemsAsync(
-        IRoom room,
-        INetworkObject client)
+        RoomDto room,
+        INetworkObject client,
+        IPlayerRepository playerRepository)
     {
         var floorItems = room.FurnitureItems
-            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Floor)
+            .Where(x => x.PlayerFurnitureItem.FurnitureItem.Type == FurnitureItemType.Floor)
             .ToList();
         
         var wallItems = room.FurnitureItems
-            .Where(x => x.FurnitureItem.Type == FurnitureItemType.Wall)
+            .Where(x => x.PlayerFurnitureItem.FurnitureItem.Type == FurnitureItemType.Wall)
             .ToList();
 
-        var floorFurnitureOwners = floorItems
-            .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
+        var tasks = floorItems
+            .Select(async item => new
+            {
+                Key = item.PlayerFurnitureItem.PlayerId,
+                Value = await playerRepository
+                    .GetPlayerUsernameByIdAsync(item.PlayerFurnitureItem.PlayerId) ?? "Unknown User"
+            });
+
+        var results = await Task.WhenAll(tasks);
+
+        var floorFurnitureOwners = results
             .Distinct()
             .ToDictionary(x => x.Key, x => x.Value);
 
-        var wallFurnitureOwners = wallItems
-            .Select(item => new { Key = item.PlayerFurnitureItem.PlayerId, Value = item.PlayerFurnitureItem.Player.Username })
+        var wallTasks = wallItems
+            .Select(async item => new
+            {
+                Key = item.PlayerFurnitureItem.PlayerId,
+                Value = await playerRepository
+                    .GetPlayerUsernameByIdAsync(item.PlayerFurnitureItem.PlayerId) ?? "Unknown User"
+            });
+
+        var wallResults = await Task.WhenAll(wallTasks);
+
+        var wallFurnitureOwners = wallResults
             .Distinct()
             .ToDictionary(x => x.Key, x => x.Value);
 
         await client.WriteToStreamAsync(new RoomFloorItemsWriter
         {
-            FloorItems = floorItems,
+            FloorItems = mapper.Map<List<PlayerFurnitureItemPlacementDataDto>>(floorItems),
             FurnitureOwners = floorFurnitureOwners,
             RoomFurnitureItemHelperService = roomFurnitureItemHelperService
         });
-        
+
         await client.WriteToStreamAsync(new RoomWallItemsWriter
         {
             FurnitureOwners = wallFurnitureOwners,
-            WallItems = wallItems
+            WallItems = mapper.Map<List<PlayerFurnitureItemPlacementDataDto>>(wallItems)
         });
     }
 }

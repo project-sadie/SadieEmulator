@@ -1,4 +1,4 @@
-using Sadie.API.Game.Players.Friendships;
+using Sadie.API.Interfaces.Game.Players.Friendships;
 
 namespace Sadie.Networking.Events.Dtos;
 

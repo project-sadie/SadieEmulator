@@ -1,16 +1,17 @@
 using System.Drawing;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.Core.Enums.Game.Furniture;
+using Sadie.Core.Enums.Game.Players;
+using Sadie.Core.Enums.Miscellaneous;
 using Sadie.Db;
-using Sadie.Enums.Game.Furniture;
-using Sadie.Enums.Game.Players;
-using Sadie.Enums.Miscellaneous;
 using Sadie.Networking.Writers.Players;
 using Sadie.Networking.Writers.Rooms;
 using Serilog;
@@ -28,11 +29,12 @@ public static class RoomEntryEventHelpers
         IRoomTileMapHelperService tileMapHelperService,
         IPlayerHelperService playerHelperService,
         IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
-        IRoomWiredService wiredService)
+        IRoomWiredService wiredService,
+        IMapper mapper)
     {
         var player = client.Player;
-        var entryPoint = new Point(room.Layout.DoorX, room.Layout.DoorY);
-        var entryDirection = room.Layout.DoorDirection;
+        var entryPoint = new Point(room.Room.Layout.DoorX, room.Room.Layout.DoorY);
+        var entryDirection = room.Room.Layout.DoorDirection;
         var teleport = player.State.Teleport;
 
         if (teleport != null)
@@ -65,11 +67,11 @@ public static class RoomEntryEventHelpers
         
         if (!room.UserRepository.TryAdd(roomUser))
         {
-            Log.Error($"Failed to add user {player.Id} to room {room.Id}");
+            Log.Error($"Failed to add user {player.Player.Id} to room {room.Room.Id}");
             return;
         }
         
-        player.State.CurrentRoomId = room.Id;
+        player.State.CurrentRoomId = room.Room.Id;
 
         room.TileMap.AddUnitToMap(entryPoint, roomUser);
         
@@ -87,37 +89,38 @@ public static class RoomEntryEventHelpers
             true,
             playerRepository);
         
-        await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Id, dbContextFactory);
+        await RoomHelpers.CreateRoomVisitForPlayerAsync(player, room.Room.Id, dbContextFactory, mapper);
         
         await Task.Delay(100);
         
         foreach (var user in room.UserRepository.GetAll())
         {
-            if (user.Player.Ignores.Any(pi => pi.TargetPlayerId == player.Id))
+            if (user.Player.Player.OutgoingIgnores.Any(pi => pi.TargetPlayerId == player.Player.Id))
             {
                 await user.Player.NetworkObject!.WriteToStreamAsync(
                     new PlayerIgnoreStateWriter
                     {
                         State = (int) PlayerIgnoreState.Ignored,
-                        Username = player.Username,
+                        Username = player.Player.Username
                     });
             }
             
-            if (player.Ignores.Any(pi => pi.TargetPlayerId == user.Player.Id))
+            if (player.Player.OutgoingIgnores.Any(pi => pi.TargetPlayerId == user.Player.Player.Id))
             {
                 await player.NetworkObject!.WriteToStreamAsync(
                     new PlayerIgnoreStateWriter
                     {
                         State = (int) PlayerIgnoreState.Ignored,
-                        Username = user.Player.Username,
+                        Username = user.Player.Player.Username
                     });
             }
         }
             
-        var matchingWiredTriggers = room.FurnitureItems
+        var matchingWiredTriggers = room.Room.FurnitureItems
             .Where(x =>
-                x.FurnitureItem.InteractionType ==
-                FurnitureItemInteractionType.WiredTriggerEnterRoom)
+                x
+                    .PlayerFurnitureItem
+                    .FurnitureItem.InteractionType == FurnitureItemInteractionType.WiredTriggerEnterRoom)
             .ToList();
 
         foreach (var trigger in matchingWiredTriggers)
@@ -130,41 +133,41 @@ public static class RoomEntryEventHelpers
     {
         var player = client.Player;
         var roomUser = client.RoomUser;
-        var canLikeRoom = player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Id) == null;
+        var canLikeRoom = player.Player.RoomLikes.FirstOrDefault(x => x.RoomId == room.Room.Id) == null;
         
         await client.WriteToStreamAsync(new RoomDataWriter
         {
-            LayoutName = room.Layout.Name,
-            RoomId = room.Id
+            LayoutName = room.Room.Layout.Name,
+            RoomId = room.Room.Id
         });
 
-        if (room.PaintSettings?.FloorPaint != "0.0")
+        if (room.Room.PaintSettings?.FloorPaint != "0.0")
         {
             await client.WriteToStreamAsync(new RoomPaintWriter
             {
                 Type = "floor",
-                Value = room.PaintSettings?.FloorPaint ?? "0.0"
+                Value = room.Room.PaintSettings?.FloorPaint ?? "0.0"
             });
         }
 
-        if (room.PaintSettings?.WallPaint != "0.0")
+        if (room.Room.PaintSettings?.WallPaint != "0.0")
         {
             await client.WriteToStreamAsync(new RoomPaintWriter
             {
                 Type = "wallpaper",
-                Value = room.PaintSettings?.WallPaint ?? "0.0"
+                Value = room.Room.PaintSettings?.WallPaint ?? "0.0"
             });
         }
         
         await client.WriteToStreamAsync(new RoomPaintWriter
         {
             Type = "landscape",
-            Value = room.PaintSettings?.LandscapePaint ?? "0.0"
+            Value = room.Room.PaintSettings?.LandscapePaint ?? "0.0"
         });
         
         await client.WriteToStreamAsync(new RoomScoreWriter
         {
-            Score = room.PlayerLikes.Count,
+            Score = room.Room.PlayerLikes.Count,
             CanUpvote = canLikeRoom
         });
         
@@ -182,11 +185,11 @@ public static class RoomEntryEventHelpers
             CategoryId = 0
         });
         
-        var owner = room.OwnerId == player.Id;
+        var owner = room.Room.OwnerId == player.Player.Id;
         
         await client.WriteToStreamAsync(new RoomPaneWriter
         {
-            RoomId = room.Id,
+            RoomId = room.Room.Id,
             Owner = owner
         });
         

@@ -1,11 +1,12 @@
-﻿using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Chat.Commands;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+﻿using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Chat.Commands;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Miscellaneous;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db.Models.Constants;
-using Sadie.Enums.Miscellaneous;
-using Sadie.Shared.Attributes;
+using Sadie.Networking.Events.Application;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users.Chat;
 
@@ -23,7 +24,7 @@ public class RoomUserChatEventHandler(
     
     public async Task HandleAsync(INetworkClient client)
     {
-        await NetworkPacketEventHelpers.OnChatMessageAsync(client,
+        await RoomChatService.OnChatMessageAsync(client,
             Message,
             false,
             roomConstants,

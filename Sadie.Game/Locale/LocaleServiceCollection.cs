@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Sadie.API.Game.Locale;
+using Sadie.API.Interfaces.Game.Locale;
 
 namespace Sadie.Game.Locale;
 

@@ -1,17 +1,20 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.DTOs.Catalog.Pages;
+using Sadie.API.DTOs.Players;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Db.Models.Catalog.Pages;
-using Sadie.Db.Models.Players;
 using Sadie.Networking.Writers.Players.Other;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Club;
 
 [PacketId(EventHandlerId.HabboClubGifts)]
 public class HabboClubGiftsEventHandler(
-    IDbContextFactory<SadieDbContext> dbContextFactory) : INetworkPacketEventHandler
+    IDbContextFactory<SadieDbContext> dbContextFactory,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public async Task HandleAsync(INetworkClient client)
     {
@@ -27,7 +30,7 @@ public class HabboClubGiftsEventHandler(
             .IgnoreAutoIncludes()
             .FirstOrDefaultAsync(x => x.Layout == "club_gift");
 
-        var daysAsClub = CalculateDaysAsClub(client.Player.Subscriptions);
+        var daysAsClub = CalculateDaysAsClub(client.Player.Player.Subscriptions);
         var daysTillNextClubGift = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400;
         var unclaimedGifts = daysAsClub * 86400 / 2678400 * 2678400 - daysAsClub * 86400; 
         
@@ -36,11 +39,11 @@ public class HabboClubGiftsEventHandler(
             DaysTillNext = daysTillNextClubGift,
             UnclaimedGifts = unclaimedGifts,
             DaysAsClub = daysAsClub,
-            ClubGiftPage = clubGiftPage
+            ClubGiftPage = mapper.Map<CatalogPageDto>(clubGiftPage)
         });
     }
 
-    private int CalculateDaysAsClub(ICollection<PlayerSubscription> subscriptions)
+    private static int CalculateDaysAsClub(ICollection<PlayerSubscriptionDto> subscriptions)
     {
         var days = 0;
 

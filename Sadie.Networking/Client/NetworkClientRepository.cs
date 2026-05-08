@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
-using DotNetty.Transport.Channels;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Sadie.API.Game.Players;
-using Sadie.API.Networking.Client;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Networking.Client;
 using Sadie.Db;
 
 namespace Sadie.Networking.Client;
@@ -12,20 +12,28 @@ public class NetworkClientRepository(
     ILogger<NetworkClientRepository> logger,
     IPlayerRepository playerRepository,
     IDbContextFactory<SadieDbContext> dbContextFactory,
-    IPlayerHelperService playerHelperService) : INetworkClientRepository
+    IPlayerHelperService playerHelperService,
+    IMapper mapper) : INetworkClientRepository
 {
-    private readonly ConcurrentDictionary<IChannelId, INetworkClient> _clients = new();
+    private readonly ConcurrentDictionary<Guid, INetworkClient> _clients = new();
+    private readonly ConcurrentDictionary<Guid, byte> _removalGuard = new();
 
-    public void AddClient(IChannelId channelId, INetworkClient client)
+    public ICollection<INetworkClient> Clients => _clients.Values;
+    
+    public void AddClient(Guid guid, INetworkClient client)
     {
-        _clients[channelId] = client;
+        _clients[guid] = client;
     }
 
-    public async Task<bool> TryRemoveAsync(IChannelId channelId)
+    public async Task<bool> TryRemoveAsync(Guid guid)
     {
-        if (!_clients.TryRemove(channelId, out var client))
+        if (!_removalGuard.TryAdd(guid, 0))
         {
-            logger.LogError("Failed to remove a network client.");
+            return false;
+        }
+
+        if (!_clients.TryRemove(guid, out var client))
+        {
             return false;
         }
 
@@ -34,29 +42,46 @@ public class NetworkClientRepository(
 
         if (roomUser != null)
         {
-            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Id, true, true);
+            await roomUser.Room.UserRepository.TryRemoveAsync(roomUser.Player.Player.Id, true, true);
         }
-        
-        if (player != null)
-        {
-            if (!await playerRepository.TryRemovePlayerAsync(player.Id))
-            {
-                logger.LogError("Failed to remove player whilst disposing network client.");
-                return false;
-            }
-                
-            await playerHelperService.UpdatePlayerStatusForFriendsAsync(
-                player, 
-                player.GetMergedFriendships(), 
-                false, 
-                false, 
-                playerRepository);
-                
-            player.Data.IsOnline = false;
 
-            await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-            dbContext.Entry(player.Data).Property(x => x.IsOnline).IsModified = true;
-            await dbContext.SaveChangesAsync();
+        try
+        {
+            if (player != null)
+            {
+                if (!await playerRepository.TryRemovePlayerAsync(player.Player.Id))
+                {
+                    logger.LogError("Failed to remove player whilst disposing network client.");
+                    return false;
+                }
+
+                var friendships = player.GetMergedFriendships();
+
+                if (friendships.Count != 0)
+                {
+                    await playerHelperService.UpdatePlayerStatusForFriendsAsync(
+                        player,
+                        friendships,
+                        false,
+                        false,
+                        playerRepository);
+                }
+                
+                await using var dbContext = await dbContextFactory.CreateDbContextAsync();
+                
+                await dbContext.Database
+                    .ExecuteSqlRawAsync(
+                        "UPDATE player_data SET is_online = 0 WHERE id = @p0 LIMIT 1", 
+                        player.Player.Id);
+            }
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Another thread removed the player already, safe to ignore
+        }
+        finally
+        {
+            _removalGuard.TryRemove(guid, out _);
         }
         
         await client.DisposeAsync();
@@ -66,29 +91,39 @@ public class NetworkClientRepository(
     public async Task DisconnectIdleClientsAsync()
     {
         var idleClients = _clients.Values
-            .Where(x => (DateTime.Now - x.LastPing).TotalSeconds >= 60)
-            .Take(50)
+            .Where(x => (DateTime.Now - x.LastPong).TotalSeconds >= 60)
+            .Take(20)
             .ToList();
-
+        
         if (idleClients.Count < 1)
         {
             return;
         }
         
         logger.LogWarning($"Disconnecting {idleClients.Count} idle players");
+        
+        var throttler = new SemaphoreSlim(10);
 
-        foreach (var client in idleClients)
+        var tasks = idleClients.Select(async client =>
         {
-            if (!await TryRemoveAsync(client.Channel.Id))
+            await throttler.WaitAsync();
+
+            try
             {
-                logger.LogError("Failed to dispose of network client");
+                await TryRemoveAsync(client.Guid);
             }
-        }
+            finally
+            {
+                throttler.Release();
+            }
+        });
+
+        await Task.WhenAll(tasks);
     }
 
-    public INetworkClient? TryGetClientByChannelId(IChannelId channelId)
+    public INetworkClient? TryGetClientByGuid(Guid guid)
     {
-        return _clients.GetValueOrDefault(channelId);
+        return _clients.GetValueOrDefault(guid);
     }
 
     public async ValueTask DisposeAsync()

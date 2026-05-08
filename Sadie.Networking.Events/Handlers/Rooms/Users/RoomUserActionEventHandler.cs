@@ -1,9 +1,9 @@
-﻿using Sadie.API.Game.Rooms;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
-using Sadie.Enums.Game.Rooms.Users;
+﻿using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Enums.Game.Rooms.Users;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Networking.Writers.Rooms.Users;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Users;
 
@@ -14,7 +14,7 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out var roomUser))
         {
             return;
         }
@@ -26,18 +26,18 @@ public class RoomUserActionEventHandler(IRoomRepository roomRepository) : INetwo
                 roomUser.LastAction -= roomUser.IdleTime;
             }
             
-            await room.UserRepository.BroadcastDataAsync(new RoomUserIdleWriter
+            await room.BroadcastDataAsync(new RoomUserIdleWriter
             {
-                UserId = roomUser.Player.Id,
+                UserId = roomUser.Player.Player.Id,
                 IsIdle = roomUser.IsIdle
             });
             
             return;
         }
 
-        await room.UserRepository.BroadcastDataAsync(new RoomUserActionWriter
+        await room.BroadcastDataAsync(new RoomUserActionWriter
         {
-            UserId = roomUser.Player.Id,
+            UserId = roomUser.Player.Player.Id,
             Action = Action
         });
     }

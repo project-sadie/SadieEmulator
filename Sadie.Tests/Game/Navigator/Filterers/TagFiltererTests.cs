@@ -4,7 +4,7 @@ using Sadie.Game.Navigator.Filterers;
 
 namespace Sadie.Tests.Game.Navigator.Filterers;
 
-public class TagFiltererTests : RoomMockHelpers
+public class TagFiltererTests : MockHelpers
 {
     private TagFilterer? _filterer;
     

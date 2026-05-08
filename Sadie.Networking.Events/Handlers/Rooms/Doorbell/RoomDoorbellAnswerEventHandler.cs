@@ -1,15 +1,16 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Sadie.API.Game.Players;
-using Sadie.API.Game.Rooms;
-using Sadie.API.Game.Rooms.Furniture;
-using Sadie.API.Game.Rooms.Mapping;
-using Sadie.API.Game.Rooms.Services;
-using Sadie.API.Game.Rooms.Users;
-using Sadie.API.Networking.Client;
-using Sadie.API.Networking.Events.Handlers;
+using Sadie.API.Interfaces.Game.Players;
+using Sadie.API.Interfaces.Game.Rooms;
+using Sadie.API.Interfaces.Game.Rooms.Furniture;
+using Sadie.API.Interfaces.Game.Rooms.Mapping;
+using Sadie.API.Interfaces.Game.Rooms.Services;
+using Sadie.API.Interfaces.Game.Rooms.Users;
+using Sadie.API.Interfaces.Networking.Client;
+using Sadie.API.Interfaces.Networking.Events.Handlers;
+using Sadie.Core.Shared.Attributes;
 using Sadie.Db;
 using Sadie.Networking.Writers.Rooms.Doorbell;
-using Sadie.Shared.Attributes;
 
 namespace Sadie.Networking.Events.Handlers.Rooms.Doorbell;
 
@@ -23,14 +24,15 @@ public class RoomDoorbellAnswerEventHandler(
     IRoomTileMapHelperService tileMapHelperService,
     IPlayerHelperService playerHelperService,
     IRoomFurnitureItemHelperService roomFurnitureItemHelperService,
-    IRoomWiredService wiredService) : INetworkPacketEventHandler
+    IRoomWiredService wiredService,
+    IMapper mapper) : INetworkPacketEventHandler
 {
     public required string Username { get; init; }
     public bool Accept { get; init; }
     
     public async Task HandleAsync(INetworkClient client)
     {
-        if (!NetworkPacketEventHelpers.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
+        if (!RoomContextResolver.TryResolveRoomObjectsForClient(roomRepository, client, out var room, out _))
         {
             return;
         }
@@ -49,7 +51,7 @@ public class RoomDoorbellAnswerEventHandler(
                 Username = Username
             });
 
-            var playerClient = clientRepository.TryGetClientByChannelId(player.Channel!.Id);
+            var playerClient = clientRepository.TryGetClientByGuid(player.NetworkObject.Guid);
 
             if (playerClient != null)
             {
@@ -62,7 +64,8 @@ public class RoomDoorbellAnswerEventHandler(
                     tileMapHelperService,
                     playerHelperService,
                     roomFurnitureItemHelperService,
-                    wiredService);
+                    wiredService,
+                    mapper);
             }
             
             return;
